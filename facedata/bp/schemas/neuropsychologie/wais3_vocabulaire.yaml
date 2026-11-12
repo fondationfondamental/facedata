@@ -1,0 +1,90 @@
+instrument: wais3_vocabulaire
+title: WAIS-III vocabulary (33 items)
+tab: NEUROPSYCHOLOGIE
+section: Vocabulaire
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 in PROGRESS.md). The columns vocab01_wais3 to vocab33_wais3
+  hold the 33-item WAIS-III vocabulary test on WAIS-III visits (1,219 visits,
+  2009 to 2016) and the 30-item WAIS-IV vocabulary test on WAIS-IV visits
+  (2,107 visits, 2011 to 2021), in spite of their name. This schema reads the
+  WAIS-III visits; wais4_vocabulaire.yaml reads the others.
+
+  Every WAIS-III item is scored 0 to 2, so the raw total goes up to 66.
+
+  The stored raw total is wrong on WAIS-III visits. It is the sum of the 33
+  items minus 3 on 1,207 of the 1,210 rows that have one, and it is never
+  the sum itself. The total is therefore recomputed here from the items. The
+  stored one is still compared with it, with that offset of -3, so that only
+  the 3 rows that differ for another reason get score_mismatch.
+
+  The EMR derived the stored scaled score, and its z-score, from that wrong
+  total (decision D11 in PROGRESS.md). Both are marked derived_from the
+  total, so every value is delivered with derived_doubt. They cannot be
+  corrected without the WAIS-III norm table (open question O12).
+
+  Size of the error, estimated from the extraction itself (the scaled scores
+  stored for other patients of the same age band whose stored total equals
+  this patient's true total): the scaled score is 1 point too low on three
+  rows in four, 2 points too low on one row in ten, and right on one row in
+  six.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 2], versions: [wais3]}
+
+variables:
+  wais3_vocab01: {column: vocab01_wais3, label: Vocabulary item 1}
+  wais3_vocab02: {column: vocab02_wais3, label: Vocabulary item 2}
+  wais3_vocab03: {column: vocab03_wais3, label: Vocabulary item 3}
+  wais3_vocab04: {column: vocab04_wais3, label: Vocabulary item 4}
+  wais3_vocab05: {column: vocab05_wais3, label: Vocabulary item 5}
+  wais3_vocab06: {column: vocab06_wais3, label: Vocabulary item 6}
+  wais3_vocab07: {column: vocab07_wais3, label: Vocabulary item 7}
+  wais3_vocab08: {column: vocab08_wais3, label: Vocabulary item 8}
+  wais3_vocab09: {column: vocab09_wais3, label: Vocabulary item 9}
+  wais3_vocab10: {column: vocab10_wais3, label: Vocabulary item 10}
+  wais3_vocab11: {column: vocab11_wais3, label: Vocabulary item 11}
+  wais3_vocab12: {column: vocab12_wais3, label: Vocabulary item 12}
+  wais3_vocab13: {column: vocab13_wais3, label: Vocabulary item 13}
+  wais3_vocab14: {column: vocab14_wais3, label: Vocabulary item 14}
+  wais3_vocab15: {column: vocab15_wais3, label: Vocabulary item 15}
+  wais3_vocab16: {column: vocab16_wais3, label: Vocabulary item 16}
+  wais3_vocab17: {column: vocab17_wais3, label: Vocabulary item 17}
+  wais3_vocab18: {column: vocab18_wais3, label: Vocabulary item 18}
+  wais3_vocab19: {column: vocab19_wais3, label: Vocabulary item 19}
+  wais3_vocab20: {column: vocab20_wais3, label: Vocabulary item 20}
+  wais3_vocab21: {column: vocab21_wais3, label: Vocabulary item 21}
+  wais3_vocab22: {column: vocab22_wais3, label: Vocabulary item 22}
+  wais3_vocab23: {column: vocab23_wais3, label: Vocabulary item 23}
+  wais3_vocab24: {column: vocab24_wais3, label: Vocabulary item 24}
+  wais3_vocab25: {column: vocab25_wais3, label: Vocabulary item 25}
+  wais3_vocab26: {column: vocab26_wais3, label: Vocabulary item 26}
+  wais3_vocab27: {column: vocab27_wais3, label: Vocabulary item 27}
+  wais3_vocab28: {column: vocab28_wais3, label: Vocabulary item 28}
+  wais3_vocab29: {column: vocab29_wais3, label: Vocabulary item 29}
+  wais3_vocab30: {column: vocab30_wais3, label: Vocabulary item 30}
+  wais3_vocab31: {column: vocab31_wais3, label: Vocabulary item 31}
+  wais3_vocab32: {column: vocab32_wais3, label: Vocabulary item 32}
+  wais3_vocab33: {column: vocab33_wais3, label: Vocabulary item 33}
+
+  wais3_vocab_total_stored: {column: vocabtot_wais3, label: Raw total as stored (wrong), range: [0, 66], keep: false}
+  wais3_vocab_scaled:       {column: vocabstd_wais3, label: Age-scaled score as stored (from a total 3 points too low), range: [1, 19], derived_from: wais3_vocab_total}
+  wais3_vocab_z:            {column: vocabcr_wais3,  label: Stored scaled score as a z-score, type: number, range: [-3, 3.34], winsor: false, derived_from: wais3_vocab_total}
+
+scores:
+  wais3_vocab_total:
+    label: Vocabulary raw total (33 items)
+    sum: [wais3_vocab01, wais3_vocab02, wais3_vocab03, wais3_vocab04, wais3_vocab05,
+          wais3_vocab06, wais3_vocab07, wais3_vocab08, wais3_vocab09, wais3_vocab10,
+          wais3_vocab11, wais3_vocab12, wais3_vocab13, wais3_vocab14, wais3_vocab15,
+          wais3_vocab16, wais3_vocab17, wais3_vocab18, wais3_vocab19, wais3_vocab20,
+          wais3_vocab21, wais3_vocab22, wais3_vocab23, wais3_vocab24, wais3_vocab25,
+          wais3_vocab26, wais3_vocab27, wais3_vocab28, wais3_vocab29, wais3_vocab30,
+          wais3_vocab31, wais3_vocab32, wais3_vocab33]
+    compare: wais3_vocab_total_stored
+    compare_offset: -3

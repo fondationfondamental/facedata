@@ -1,0 +1,46 @@
+instrument: wais4_code_symboles_ivt
+title: WAIS-IV coding, symbol search and processing speed index
+tab: NEUROPSYCHOLOGIE
+section: Code, Symboles & IVT
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 in PROGRESS.md). This schema reads the WAIS-IV visits
+  (about 4,650 visits); wais3_code_symboles_ivt.yaml reads the others. The
+  two editions have the same subtests and the same columns, but different
+  sheets and norms: the coding sheet has 135 boxes in WAIS-IV and 133 in
+  WAIS-III.
+
+  Symbol search has 60 items. A few rows hold impossible values (a raw score
+  of -5, or 149 correct answers); they will be flagged out_of_range.
+
+  The confidence interval of the index (ivt03_w) is text such as "90-105"
+  and is delivered as text.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  # Coding (Code)
+  wais4_code_filled: {column: code01_w, label: Coding - boxes filled,             range: [0, 135]}
+  wais4_code_errors: {column: code02_w, label: Coding - boxes filled incorrectly, range: [0, 135]}
+  wais4_code_raw:    {column: code03_w, label: Coding - raw score,                range: [0, 135]}
+  wais4_code_scaled: {column: code04_w, label: Coding - age-scaled score,         range: [1, 19]}
+  wais4_code_z:      {column: code05_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+
+  # Symbol search (Symboles)
+  wais4_symbol_correct: {column: symbol01_w, label: Symbol search - correct answers,   range: [0, 60]}
+  wais4_symbol_errors:  {column: symbol02_w, label: Symbol search - incorrect answers, range: [0, 60]}
+  wais4_symbol_raw:     {column: symbol03_w, label: Symbol search - raw score,         range: [0, 60]}
+  wais4_symbol_scaled:  {column: symbol04_w, label: Symbol search - age-scaled score,  range: [1, 19]}
+  wais4_symbol_z:       {column: symbol05_w, label: Symbol search - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+
+  # Processing speed index (IVT)
+  wais4_ivt_sum_scaled: {column: ivt04_w, label: Sum of the two scaled scores, range: [2, 38]}
+  wais4_ivt_index:      {column: ivt01_w, label: Processing speed index,      range: [50, 150]}
+  wais4_ivt_percentile: {column: ivt02_w, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}
+  wais4_ivt_interval:   {column: ivt03_w, label: 95% confidence interval of the index, type: text}

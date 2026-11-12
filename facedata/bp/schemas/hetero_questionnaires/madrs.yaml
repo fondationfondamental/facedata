@@ -1,0 +1,38 @@
+instrument: madrs
+title: Montgomery-Asberg Depression Rating Scale (MADRS)
+tab: HETERO-QUESTIONNAIRES
+section: Questionnaire MADRS
+status: draft
+notes: >
+  Ten clinician-rated items, each 0 to 6. The dictionary labels only the even
+  anchors (0, 2, 4, 6); odd values are valid intermediate ratings and are
+  present in the data.
+
+  The stored total (madrs_) equals the sum of the ten items in every row
+  where both exist (17,243 rows), so the comparison below should raise no
+  score_mismatch.
+
+  The second rating (madrs01_n1 ...) is a separate dictionary section. It gets
+  its own schema once we know what it is (open question O5 in PROGRESS.md).
+
+defaults: {type: item, range: [0, 6]}
+
+variables:
+  madrs01: {label: Tristesse apparente}
+  madrs02: {label: Tristesse exprimée}
+  madrs03: {label: Tension intérieure}
+  madrs04: {label: Réduction de sommeil}
+  madrs05: {label: Réduction de l'appétit}
+  madrs06: {label: Difficultés de concentration}
+  madrs07: {label: Lassitude}
+  madrs08: {label: Incapacité à ressentir}
+  madrs09: {label: Pensées pessimistes}
+  madrs10: {label: Idées de suicide}
+  madrs_stored: {column: madrs_, label: MADRS total as stored, range: [0, 60], keep: false}
+
+scores:
+  madrs_total:
+    label: MADRS total
+    sum: [madrs01, madrs02, madrs03, madrs04, madrs05,
+          madrs06, madrs07, madrs08, madrs09, madrs10]
+    compare: madrs_stored

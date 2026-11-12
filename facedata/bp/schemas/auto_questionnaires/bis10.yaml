@@ -1,0 +1,162 @@
+instrument: bis10
+title: Barratt Impulsiveness Scale, BIS-10 (34 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire BIS10 (version long 34 items)
+status: draft
+notes: >
+  BIS-10 and BIS-12 are two instruments. An error in the EMR stored the
+  answers of the 12-item BIS-12 (used from 2021 on) in twelve of the columns
+  of the 34-item BIS-10 (used from 2009 to 2022). The columns are therefore
+  split by form: this schema reads the visits where the 34-item form was
+  used, bis12.yaml reads the visits where the 12-item form was used. Both
+  files carry the same version block. There is no column saying which form
+  was used: a visit is "bis10" when at least one of the 22 items that only
+  the 34-item form has is filled.
+
+  Items are coded 1 to 4. Reversed items, from the dictionary: 1, 7, 8, 9,
+  10, 12, 13, 15, 21, 33, 34.
+
+  The stored scores were recovered exactly from the items on every complete
+  row. Three things follow.
+
+  1. The extraction reverses an item as 6 - value. With a 1 to 4 scale the
+  usual rule is 5 - value, which is what this schema does. Each stored score
+  is therefore higher than ours by one point per reversed item; that is the
+  compare_offset of each score. Open question O1 in PROGRESS.md: which rule
+  do we keep?
+
+  2. The dictionary formula for the planning subscale is incomplete. The
+  stored score also includes items 14, 18 and 31 (not reversed).
+
+  3. The stored behavioural and general scores (bis1039, bis1040) are rounded
+  to one decimal. Comparing them would flag most rows for a rounding
+  difference, so those two scores have no compare.
+
+  The last four scores use only the 12 items that the BIS-12 also has. They
+  are the only bridge between the two instruments. Whether an answer given
+  inside a 34-item questionnaire can be compared with the same item asked in
+  a 12-item one is a scientific choice; the two are delivered as separate
+  columns (bis10_sum12 here, bis12_total there) so that nobody mixes them by
+  accident.
+
+version:
+  name: bis_form
+  filled:
+    bis10: [bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    bis12: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+            bis1020, bis1021, bis1023, bis1025, bis1028]
+
+defaults: {type: item, range: [1, 4], versions: [bis10]}
+
+variables:
+  bis1001: {label: BIS-10 item 1}
+  bis1002: {label: BIS-10 item 2}
+  bis1003: {label: BIS-10 item 3}
+  bis1004: {label: BIS-10 item 4}
+  bis1005: {label: BIS-10 item 5}
+  bis1006: {label: BIS-10 item 6}
+  bis1007: {label: BIS-10 item 7}
+  bis1008: {label: BIS-10 item 8}
+  bis1009: {label: BIS-10 item 9}
+  bis1010: {label: BIS-10 item 10}
+  bis1011: {label: BIS-10 item 11}
+  bis1012: {label: BIS-10 item 12}
+  bis1013: {label: BIS-10 item 13}
+  bis1014: {label: BIS-10 item 14}
+  bis1015: {label: BIS-10 item 15}
+  bis1016: {label: BIS-10 item 16}
+  bis1017: {label: BIS-10 item 17}
+  bis1018: {label: BIS-10 item 18}
+  bis1019: {label: BIS-10 item 19}
+  bis1020: {label: BIS-10 item 20}
+  bis1021: {label: BIS-10 item 21}
+  bis1022: {label: BIS-10 item 22}
+  bis1023: {label: BIS-10 item 23}
+  bis1024: {label: BIS-10 item 24}
+  bis1025: {label: BIS-10 item 25}
+  bis1026: {label: BIS-10 item 26}
+  bis1027: {label: BIS-10 item 27}
+  bis1028: {label: BIS-10 item 28}
+  bis1029: {label: BIS-10 item 29}
+  bis1030: {label: BIS-10 item 30}
+  bis1031: {label: BIS-10 item 31}
+  bis1032: {label: BIS-10 item 32}
+  bis1033: {label: BIS-10 item 33}
+  bis1034: {label: BIS-10 item 34}
+
+  # Scores as stored in the extraction. Used only to check our own scores.
+  bis10_motor_stored:       {column: bis10_imp_mot,     range: [12, 45],  keep: false}
+  bis10_attention_stored:   {column: bis10_imp_att,     range: [10, 34],  keep: false}
+  bis10_planning_stored:    {column: bis10_imp_pla,     range: [19, 52],  keep: false}
+  bis10_total_stored:       {column: bis10_score_total, range: [41, 131], keep: false}
+  bis10_score11_stored:     {column: bis11,             range: [16, 52],  keep: false}
+  bis10_sum12_stored:       {column: bis10,             range: [17, 53],  keep: false}
+  bis10_cognitive_stored:   {column: bis1038, type: number, range: [2, 5],     winsor: false, keep: false}
+  bis10_behavioural_stored: {column: bis1039, type: number, range: [1, 4],     winsor: false, keep: false}
+  bis10_general_stored:     {column: bis1040, type: number, range: [1.5, 4.5], winsor: false, keep: false}
+
+scores:
+  # Scores of the 34-item form.
+  bis10_motor:
+    label: Motor impulsivity (11 items)
+    sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020,
+          bis1022, bis1023, bis1024, bis1028, bis1034]
+    reverse: [bis1034]
+    compare: bis10_motor_stored
+    compare_offset: 1
+
+  bis10_attention:
+    label: Attentional impulsivity (8 items)
+    sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
+    reverse: [bis1009, bis1021]
+    compare: bis10_attention_stored
+    compare_offset: 2
+
+  bis10_planning:
+    label: Planning difficulty (11 items)
+    sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013,
+          bis1014, bis1015, bis1018, bis1031, bis1033]
+    reverse: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1015, bis1033]
+    compare: bis10_planning_stored
+    compare_offset: 8
+
+  bis10_total:
+    label: BIS-10 total (motor + attention + planning, 30 items)
+    sum: [bis10_motor, bis10_attention, bis10_planning]
+    compare: bis10_total_stored
+    compare_offset: 11
+
+  bis10_score11:
+    label: Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25)
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014,
+          bis1017, bis1019, bis1020, bis1022, bis1024, bis1025]
+    reverse: [bis1001, bis1008, bis1009, bis1012]
+    compare: bis10_score11_stored
+    compare_offset: 4
+
+  # Bridge to the BIS-12: the same four scores, from the 12 items both forms have.
+  bis10_sum12:
+    label: Total of the 12 items that the BIS-12 also has
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014,
+          bis1017, bis1020, bis1021, bis1023, bis1025, bis1028]
+    reverse: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    compare: bis10_sum12_stored
+    compare_offset: 5
+
+  bis10_cognitive:
+    label: Cognitive impulsivity (mean of 5 items)
+    mean: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    reverse: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    compare: bis10_cognitive_stored
+    compare_offset: 1
+
+  bis10_behavioural:
+    label: Behavioural impulsivity (mean of 7 items)
+    mean: [bis1006, bis1014, bis1017, bis1020, bis1023, bis1025, bis1028]
+
+  bis10_general:
+    label: General impulsivity (mean of the cognitive and behavioural scores)
+    mean: [bis10_cognitive, bis10_behavioural]

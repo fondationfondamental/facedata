@@ -1,0 +1,59 @@
+instrument: dsm4_depuis_derniere_visite
+title: Mood episodes since the last visit, DSM-IV criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique du trouble depuis la dernière visite à la visite de suivi
+status: draft
+notes: >
+  The mood evaluation was made with DSM-IV criteria for some patients and
+  with DSM-5 criteria for others, in the same columns (decision D9 in
+  PROGRESS.md). The criteria used are recorded once, at the inclusion visit
+  (dsm_criteria). This section is filled at follow-up visits only, so the
+  version of a visit comes from three decisions:
+
+  D12. Before 2022 a follow-up visit takes the criteria of the patient's
+  inclusion.
+
+  D14. From 2022 the follow-up form is the DSM-5 form for everyone. The
+  change was made centre by centre between the end of 2021 and May 2022; the
+  date used is 1 January 2022.
+
+  D15. A patient with no criteria recorded at inclusion is DSM-IV if
+  included before 2020 and DSM-5 if included from 2023 (version_inferred).
+  Included in 2020 to 2022, the version stays unknown.
+
+  This schema reads the DSM-IV visits; dsm5_depuis_derniere_visite.yaml
+  reads the others. Mixed episodes exist in DSM-IV only, so the two
+  mixed-episode counts are in this schema and not in the DSM-5 one.
+
+  The counts are capped at 20 on the form: ">20" is read as right-censored
+  at 20.
+
+  Three columns named like this section (mhoccur_edm_psy_spv,
+  mhoccur_epman_psy_spv, mhoccur_epmixt_psy_spv) are filled at inclusion
+  only. They hold lifetime answers and belong to the lifetime section.
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {type: number, range: [0, 50], versions: [dsm4]}
+
+variables:
+  dsm4_fu_any_episode:       {column: mhoccur_epthym_spv,   label: At least one mood episode since the last visit, type: category, codes: {Oui: yes, Non: no}}
+  dsm4_fu_n_episodes:        {column: evnum_epthym_spv,     label: Number of mood episodes}
+  dsm4_fu_mde:               {column: mhoccur_edm_spv,      label: At least one major depressive episode, type: category, codes: {1: yes, 0: no}}
+  dsm4_fu_n_mde:             {column: evnum_edm_spv,        label: Number of major depressive episodes}
+  dsm4_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,    label: Number of major depressive episodes with psychotic features}
+  dsm4_fu_hypomania:         {column: mhoccur_ehman_spv,    label: At least one hypomanic episode, type: category, codes: {1: yes, 0: no}}
+  dsm4_fu_n_hypomania:       {column: evnum_ehman_spv,      label: Number of hypomanic episodes}
+  dsm4_fu_mania:             {column: mhoccur_epman_spv,    label: At least one manic episode, type: category, codes: {1: yes, 0: no}}
+  dsm4_fu_n_mania:           {column: evnum_epman_spv,      label: Number of manic episodes}
+  dsm4_fu_n_mania_psychotic: {column: evnum_epman_psy_spv,  label: Number of manic episodes with psychotic features}
+  dsm4_fu_n_mixed:           {column: evnum_epmixt_spv,     label: Number of mixed episodes}
+  dsm4_fu_n_mixed_psychotic: {column: evnum_epmixt_psy_spv, label: Number of mixed episodes with psychotic features}

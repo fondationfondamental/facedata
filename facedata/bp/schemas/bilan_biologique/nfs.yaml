@@ -1,0 +1,30 @@
+instrument: nfs
+title: Full blood count (NFS)
+tab: BILAN BIOLOGIQUE
+section: NFS
+status: draft
+notes: >
+  Tracer schema: only haemoglobin so far. The other counts of the section are
+  added in the BILAN BIOLOGIQUE milestone.
+
+  Haemoglobin. Almost all of the 13,435 results are labelled g/dL, but 473 of
+  them are 50 or more: they are g/L. They come mostly from two centres between 2010 and
+  2022, mixed cell by cell with correctly scaled values, so a rule by centre
+  or period would not work. The magnitude decides.
+
+  Twelve cells are labelled mmol/L but hold values from 12 to 96. That label
+  is left out of the list below on purpose: it then counts as unknown and the
+  magnitude decides.
+
+defaults: {type: number}
+
+variables:
+  haemoglobin:
+    label: Haemoglobin
+    column: hgb_lbstresc
+    unit_column: hgb_lborresu
+    unit: g/dL
+    units:
+      g/dL: {factor: 1, expect: [5, 25]}
+      g/L: {factor: 0.1, expect: [50, 250]}
+    range: [5, 25]

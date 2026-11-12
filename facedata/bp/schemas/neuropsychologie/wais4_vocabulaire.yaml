@@ -1,0 +1,75 @@
+instrument: wais4_vocabulaire
+title: WAIS-IV vocabulary (30 items)
+tab: NEUROPSYCHOLOGIE
+section: Vocabulaire
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 in PROGRESS.md). The columns vocab01_wais3 to vocab30_wais3
+  hold the 30-item WAIS-IV vocabulary test on WAIS-IV visits (2,107 visits,
+  2011 to 2021), in spite of their name. This schema reads those visits;
+  wais3_vocabulaire.yaml reads the WAIS-III visits. From 2018 on the WAIS-IV
+  battery uses Similitudes instead (wais4_similitudes.yaml).
+
+  Items 1 to 3 are picture items scored 0 or 1; items 4 to 30 are scored 0
+  to 2, so the raw total goes up to 57. 27 cells of items 1 to 3 hold a 2 and
+  will be flagged out_of_range.
+
+  The stored raw total equals the sum of the 30 items on 99.5% of rows.
+
+  Not read. Items 31 to 33 do not exist in WAIS-IV. They are filled on 11
+  WAIS-IV visits; coverage() reports those cells as unread.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 2], versions: [wais4]}
+
+variables:
+  wais4_vocab01: {column: vocab01_wais3, label: Vocabulary item 1 (picture), range: [0, 1]}
+  wais4_vocab02: {column: vocab02_wais3, label: Vocabulary item 2 (picture), range: [0, 1]}
+  wais4_vocab03: {column: vocab03_wais3, label: Vocabulary item 3 (picture), range: [0, 1]}
+  wais4_vocab04: {column: vocab04_wais3, label: Vocabulary item 4}
+  wais4_vocab05: {column: vocab05_wais3, label: Vocabulary item 5}
+  wais4_vocab06: {column: vocab06_wais3, label: Vocabulary item 6}
+  wais4_vocab07: {column: vocab07_wais3, label: Vocabulary item 7}
+  wais4_vocab08: {column: vocab08_wais3, label: Vocabulary item 8}
+  wais4_vocab09: {column: vocab09_wais3, label: Vocabulary item 9}
+  wais4_vocab10: {column: vocab10_wais3, label: Vocabulary item 10}
+  wais4_vocab11: {column: vocab11_wais3, label: Vocabulary item 11}
+  wais4_vocab12: {column: vocab12_wais3, label: Vocabulary item 12}
+  wais4_vocab13: {column: vocab13_wais3, label: Vocabulary item 13}
+  wais4_vocab14: {column: vocab14_wais3, label: Vocabulary item 14}
+  wais4_vocab15: {column: vocab15_wais3, label: Vocabulary item 15}
+  wais4_vocab16: {column: vocab16_wais3, label: Vocabulary item 16}
+  wais4_vocab17: {column: vocab17_wais3, label: Vocabulary item 17}
+  wais4_vocab18: {column: vocab18_wais3, label: Vocabulary item 18}
+  wais4_vocab19: {column: vocab19_wais3, label: Vocabulary item 19}
+  wais4_vocab20: {column: vocab20_wais3, label: Vocabulary item 20}
+  wais4_vocab21: {column: vocab21_wais3, label: Vocabulary item 21}
+  wais4_vocab22: {column: vocab22_wais3, label: Vocabulary item 22}
+  wais4_vocab23: {column: vocab23_wais3, label: Vocabulary item 23}
+  wais4_vocab24: {column: vocab24_wais3, label: Vocabulary item 24}
+  wais4_vocab25: {column: vocab25_wais3, label: Vocabulary item 25}
+  wais4_vocab26: {column: vocab26_wais3, label: Vocabulary item 26}
+  wais4_vocab27: {column: vocab27_wais3, label: Vocabulary item 27}
+  wais4_vocab28: {column: vocab28_wais3, label: Vocabulary item 28}
+  wais4_vocab29: {column: vocab29_wais3, label: Vocabulary item 29}
+  wais4_vocab30: {column: vocab30_wais3, label: Vocabulary item 30}
+
+  wais4_vocab_total_stored: {column: vocabtot_wais3, label: Raw total as stored, range: [0, 57], keep: false}
+  wais4_vocab_scaled:       {column: vocabstd_wais3, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_vocab_total}
+  wais4_vocab_z:            {column: vocabcr_wais3,  label: Scaled score as a z-score, type: number, range: [-3, 3.34], winsor: false, derived_from: wais4_vocab_total}
+
+scores:
+  wais4_vocab_total:
+    label: Vocabulary raw total (30 items)
+    sum: [wais4_vocab01, wais4_vocab02, wais4_vocab03, wais4_vocab04, wais4_vocab05,
+          wais4_vocab06, wais4_vocab07, wais4_vocab08, wais4_vocab09, wais4_vocab10,
+          wais4_vocab11, wais4_vocab12, wais4_vocab13, wais4_vocab14, wais4_vocab15,
+          wais4_vocab16, wais4_vocab17, wais4_vocab18, wais4_vocab19, wais4_vocab20,
+          wais4_vocab21, wais4_vocab22, wais4_vocab23, wais4_vocab24, wais4_vocab25,
+          wais4_vocab26, wais4_vocab27, wais4_vocab28, wais4_vocab29, wais4_vocab30]
+    compare: wais4_vocab_total_stored

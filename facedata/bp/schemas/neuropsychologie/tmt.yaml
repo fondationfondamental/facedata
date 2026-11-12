@@ -1,0 +1,91 @@
+instrument: tmt
+title: Trail Making Test, parts A and B
+tab: NEUROPSYCHOLOGIE
+section: TMT
+status: draft
+notes: >
+  Draft, written to settle the z-scores (decision D13 in PROGRESS.md). The
+  seven percentile columns (tmta01a_, tmta02a_, tmtb01a_, tmtb02a_,
+  tmtb05a_, tmtba01a_, tmtba02a_) are not read yet. They mix numbers, bands
+  ("25 - 50") and classes (">95"), and wait for the percentile-band type
+  that comes with the NEUROPSYCHOLOGIE tab.
+
+  Z-scores. The five z-scores listed under sign were written with the
+  opposite sign in the early years: a slow time gave a positive z-score.
+  Eight centres changed between 2012 and 2014, each at its own date; the
+  other centres always used the present convention. The old values are
+  multiplied by -1, so that in every z-score of this instrument a higher
+  value means a better performance. About 770 visits are concerned.
+
+  The rule was checked against a second piece of evidence, row by row: a
+  visit with no error must have a positive error z-score in the present
+  convention, and a visit with one error or more a negative one. The switch
+  dates found agree with it on 5,767 of the 5,806 visits where it can be
+  read. Of the 39 visits that disagree, 14 are within 90 days of a switch
+  date, where the values get sign_doubt; the other 25 are not flagged.
+
+  The z-score of the B-A error difference has the present sign in every
+  centre and every year, so it is not listed under sign.
+
+  Errors. The error z-scores and the stored B-A error difference were
+  computed from corrected plus uncorrected errors, so the two are added up
+  in tmt_a_errors and tmt_b_errors. Most patients make no error. The norms
+  then have a very small standard deviation and a single error gives a
+  z-score of -2 to -8: the error z-scores are extreme by construction.
+
+  Times are in seconds. In part B, "impossible" and "arrêt" (12 visits) mean
+  that the patient could not finish; they are treated as missing codes. A
+  few cells hold text such as "26s" and stay unparsed.
+
+  The stored B-A time equals part B minus part A on 5,836 of 5,842 rows, and
+  the stored B-A error difference equals the difference of the two error
+  totals on every row. Both are delivered as stored: a score cannot be a
+  difference yet.
+
+sign:
+  relation: negative
+  by: siteid
+  pairs:
+    tmt_a_time_z: tmt_a_time
+    tmt_b_time_z: tmt_b_time
+    tmt_ba_time_z: tmt_ba_time
+    tmt_a_errors_z: [tmt_a_errors_corrected, tmt_a_errors_uncorrected]
+    tmt_b_errors_z: [tmt_b_errors_corrected, tmt_b_errors_uncorrected]
+
+defaults: {type: item}
+
+variables:
+  # Part A
+  tmt_a_time:               {column: tmta01_,  label: Part A - time, type: number, unit: s, range: [10, 300]}
+  tmt_a_errors_corrected:   {column: tmta03_,  label: Part A - corrected errors,   range: [0, 10]}
+  tmt_a_errors_uncorrected: {column: tmta04_,  label: Part A - uncorrected errors, range: [0, 10]}
+  tmt_a_time_z:             {column: tmta01b_, label: Part A - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_a_errors_z:           {column: tmta02b_, label: Part A - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+  # Part B
+  tmt_b_time:
+    column: tmtb01_
+    label: Part B - time
+    type: number
+    unit: s
+    range: [15, 600]
+    missing: {impossible: not_applicable, arret: not_applicable, arrêt: not_applicable}
+  tmt_b_errors_corrected:     {column: tmtb03_,  label: Part B - corrected errors,     range: [0, 25]}
+  tmt_b_errors_uncorrected:   {column: tmtb04_,  label: Part B - uncorrected errors,   range: [0, 25]}
+  tmt_b_errors_perseverative: {column: tmtb05_,  label: Part B - perseverative errors, range: [0, 25]}
+  tmt_b_time_z:               {column: tmtb01b_, label: Part B - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_b_errors_z:             {column: tmtb02b_, label: Part B - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+  # Part B minus part A
+  tmt_ba_time:     {column: tmtba01_,  label: B minus A - time as stored, type: number, unit: s, range: [-100, 600]}
+  tmt_ba_errors:   {column: tmtba02_,  label: B minus A - errors as stored, range: [-10, 25]}
+  tmt_ba_time_z:   {column: tmtba01b_, label: B minus A - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_ba_errors_z: {column: tmtba02b_, label: B minus A - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+scores:
+  tmt_a_errors:
+    label: Part A - errors, corrected and uncorrected
+    sum: [tmt_a_errors_corrected, tmt_a_errors_uncorrected]
+  tmt_b_errors:
+    label: Part B - errors, corrected and uncorrected
+    sum: [tmt_b_errors_corrected, tmt_b_errors_uncorrected]

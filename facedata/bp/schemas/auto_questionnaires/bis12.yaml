@@ -1,0 +1,88 @@
+instrument: bis12
+title: Barratt Impulsiveness Scale, BIS-12 (12 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire BIS10 (version long 34 items)
+status: draft
+notes: >
+  BIS-10 and BIS-12 are two instruments. An error in the EMR stored the
+  answers of the 12-item BIS-12 (used from 2021 on) in twelve of the columns
+  of the 34-item BIS-10. The BIS-12 has no column of its own in the
+  extraction and no section in the dictionary; the dictionary's contents tab
+  only lists "Bis10 (12 items)" among the questionnaires reduced since 2021.
+  This schema reads those twelve columns on the visits where the 12-item form
+  was used: the visits where none of the 22 other BIS-10 items is filled.
+  bis10.yaml reads the other visits. Both files carry the same version block.
+
+  Item names. The twelve questions are BIS-10 items 1, 6, 8, 9, 12, 14, 17,
+  20, 21, 23, 25 and 28, numbered 1 to 12 in that order (confirmed, decision
+  D8 in PROGRESS.md). bis12_01 to bis12_12 follow that numbering.
+
+  Items are coded 1 to 4. The reversed items are those stored in the columns
+  of the reversed BIS-10 items 1, 8, 9, 12 and 21, that is bis12_01, 03, 04,
+  05 and 09.
+
+  Stored scores. The extraction stores the 12-item total in the column bis10
+  and the cognitive mean in bis1038, both reversing items as 6 - value. This
+  schema reverses as 5 - value, hence the compare_offset (open question O1).
+  The stored behavioural and general means are rounded to one decimal and are
+  not compared.
+
+  Not read. On these visits the EMR also filled bis10_imp_mot, bis10_imp_att,
+  bis10_imp_pla, bis10_score_total and bis11, using the 4, 4, 4, 12 and 9
+  items that happen to exist. They are not BIS-12 scores.
+
+version:
+  name: bis_form
+  filled:
+    bis10: [bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    bis12: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+            bis1020, bis1021, bis1023, bis1025, bis1028]
+
+defaults: {type: item, range: [1, 4], versions: [bis12]}
+
+variables:
+  bis12_01: {column: bis1001, label: BIS-12 item 1 (stored in bis1001)}
+  bis12_02: {column: bis1006, label: BIS-12 item 2 (stored in bis1006)}
+  bis12_03: {column: bis1008, label: BIS-12 item 3 (stored in bis1008)}
+  bis12_04: {column: bis1009, label: BIS-12 item 4 (stored in bis1009)}
+  bis12_05: {column: bis1012, label: BIS-12 item 5 (stored in bis1012)}
+  bis12_06: {column: bis1014, label: BIS-12 item 6 (stored in bis1014)}
+  bis12_07: {column: bis1017, label: BIS-12 item 7 (stored in bis1017)}
+  bis12_08: {column: bis1020, label: BIS-12 item 8 (stored in bis1020)}
+  bis12_09: {column: bis1021, label: BIS-12 item 9 (stored in bis1021)}
+  bis12_10: {column: bis1023, label: BIS-12 item 10 (stored in bis1023)}
+  bis12_11: {column: bis1025, label: BIS-12 item 11 (stored in bis1025)}
+  bis12_12: {column: bis1028, label: BIS-12 item 12 (stored in bis1028)}
+
+  # Scores as stored in the extraction. Used only to check our own scores.
+  bis12_total_stored:       {column: bis10,   range: [17, 53], keep: false}
+  bis12_cognitive_stored:   {column: bis1038, type: number, range: [2, 5],     winsor: false, keep: false}
+  bis12_behavioural_stored: {column: bis1039, type: number, range: [1, 4],     winsor: false, keep: false}
+  bis12_general_stored:     {column: bis1040, type: number, range: [1.5, 4.5], winsor: false, keep: false}
+
+scores:
+  bis12_total:
+    label: BIS-12 total
+    sum: [bis12_01, bis12_02, bis12_03, bis12_04, bis12_05, bis12_06,
+          bis12_07, bis12_08, bis12_09, bis12_10, bis12_11, bis12_12]
+    reverse: [bis12_01, bis12_03, bis12_04, bis12_05, bis12_09]
+    compare: bis12_total_stored
+    compare_offset: 5
+
+  bis12_cognitive:
+    label: Cognitive impulsivity (mean of 5 items)
+    mean: [bis12_01, bis12_03, bis12_04, bis12_05, bis12_09]
+    reverse: [bis12_01, bis12_03, bis12_04, bis12_05, bis12_09]
+    compare: bis12_cognitive_stored
+    compare_offset: 1
+
+  bis12_behavioural:
+    label: Behavioural impulsivity (mean of 7 items)
+    mean: [bis12_02, bis12_06, bis12_07, bis12_08, bis12_10, bis12_11, bis12_12]
+
+  bis12_general:
+    label: General impulsivity (mean of the cognitive and behavioural scores)
+    mean: [bis12_cognitive, bis12_behavioural]

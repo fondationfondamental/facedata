@@ -1,0 +1,48 @@
+instrument: biochimie
+title: Blood biochemistry
+tab: BILAN BIOLOGIQUE
+section: Biochimie
+status: draft
+notes: >
+  Tracer schema: only CRP and glucose so far. The other analytes of the
+  section are added in the BILAN BIOLOGIQUE milestone.
+
+  The unit columns are filled even where there is no result, so a unit label
+  alone says nothing.
+
+  CRP. 2,328 of 13,026 results are censored (2,323 below a limit, 5 above),
+  with 18 different detection limits from 0.1 to 60 mg/L depending on the
+  laboratory. The limit is kept as the value and crp_cens marks it. In 30
+  more rows the mark sits in the unit column ("inf") and the result column
+  holds the limit. 389 results are exactly 0; they are kept as 0 for now
+  (open question O3 in PROGRESS.md).
+
+  Glucose. Of 12,930 results, 354 are labelled g/L and look like g/L
+  (converted). 124 are labelled mmol/L but are too low to be mmol/L; these
+  are g/L values with the wrong label (unit_inferred). 23 are possible under
+  their label but fit the other unit better (unit_doubt). 6 fit neither.
+
+defaults: {type: number}
+
+variables:
+  crp:
+    label: C-reactive protein
+    column: crp_lbstresc
+    unit_column: crp_lborresu
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 400]}
+    censor_units: {inf: left, inferieur: left}
+    range: [0, 400]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  glucose:
+    label: Fasting glucose
+    column: gluc_lbstresc
+    unit_column: gluc_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2.5, 40]}
+      g/L: {factor: 5.551, expect: [0.3, 2.5]}
+    range: [1.5, 40]

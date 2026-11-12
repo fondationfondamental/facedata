@@ -1,0 +1,63 @@
+instrument: wais3_matrices
+title: WAIS-III matrix reasoning (26 items)
+tab: NEUROPSYCHOLOGIE
+section: Matrices
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 in PROGRESS.md). The columns mat01_w to mat26_w hold the
+  WAIS-III matrices on WAIS-III visits (1,215 visits) and the WAIS-IV
+  matrices on WAIS-IV visits (4,277 visits). Both tests have 26 items scored
+  0 or 1, but the items and the norms differ. This schema reads the WAIS-III
+  visits; wais4_matrices.yaml reads the others.
+
+  The stored raw total equals the sum of the items on every row.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais3]}
+
+variables:
+  wais3_mat01: {column: mat01_w, label: Matrices item 1}
+  wais3_mat02: {column: mat02_w, label: Matrices item 2}
+  wais3_mat03: {column: mat03_w, label: Matrices item 3}
+  wais3_mat04: {column: mat04_w, label: Matrices item 4}
+  wais3_mat05: {column: mat05_w, label: Matrices item 5}
+  wais3_mat06: {column: mat06_w, label: Matrices item 6}
+  wais3_mat07: {column: mat07_w, label: Matrices item 7}
+  wais3_mat08: {column: mat08_w, label: Matrices item 8}
+  wais3_mat09: {column: mat09_w, label: Matrices item 9}
+  wais3_mat10: {column: mat10_w, label: Matrices item 10}
+  wais3_mat11: {column: mat11_w, label: Matrices item 11}
+  wais3_mat12: {column: mat12_w, label: Matrices item 12}
+  wais3_mat13: {column: mat13_w, label: Matrices item 13}
+  wais3_mat14: {column: mat14_w, label: Matrices item 14}
+  wais3_mat15: {column: mat15_w, label: Matrices item 15}
+  wais3_mat16: {column: mat16_w, label: Matrices item 16}
+  wais3_mat17: {column: mat17_w, label: Matrices item 17}
+  wais3_mat18: {column: mat18_w, label: Matrices item 18}
+  wais3_mat19: {column: mat19_w, label: Matrices item 19}
+  wais3_mat20: {column: mat20_w, label: Matrices item 20}
+  wais3_mat21: {column: mat21_w, label: Matrices item 21}
+  wais3_mat22: {column: mat22_w, label: Matrices item 22}
+  wais3_mat23: {column: mat23_w, label: Matrices item 23}
+  wais3_mat24: {column: mat24_w, label: Matrices item 24}
+  wais3_mat25: {column: mat25_w, label: Matrices item 25}
+  wais3_mat26: {column: mat26_w, label: Matrices item 26}
+
+  wais3_mat_total_stored: {column: mat_tot_w, label: Raw total as stored, range: [0, 26], keep: false}
+  wais3_mat_scaled:       {column: mat_std_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_mat_total}
+  wais3_mat_z:            {column: mat_cr_w,  label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_mat_total}
+
+scores:
+  wais3_mat_total:
+    label: Matrices raw total (26 items)
+    sum: [wais3_mat01, wais3_mat02, wais3_mat03, wais3_mat04, wais3_mat05, wais3_mat06,
+          wais3_mat07, wais3_mat08, wais3_mat09, wais3_mat10, wais3_mat11, wais3_mat12,
+          wais3_mat13, wais3_mat14, wais3_mat15, wais3_mat16, wais3_mat17, wais3_mat18,
+          wais3_mat19, wais3_mat20, wais3_mat21, wais3_mat22, wais3_mat23, wais3_mat24,
+          wais3_mat25, wais3_mat26]
+    compare: wais3_mat_total_stored

@@ -1,0 +1,42 @@
+instrument: wais3_memoire_chiffres
+title: WAIS-III digit span
+tab: NEUROPSYCHOLOGIE
+section: Mémoire des chiffres WAIS III
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 in PROGRESS.md). Each has its own schema and reads only its
+  own visits, recognised by wais_version: 1,302 WAIS-III visits, mostly 2009
+  to 2015, and 4,978 WAIS-IV visits from 2011 on. Every visit with WAIS data
+  has a version.
+
+  Summary scores only for now. The trial-level columns (mcod0101_w ...) and
+  the span z-scores (wais_mc_end_std_w, wais_mc_env_std_w) are added in the
+  NEUROPSYCHOLOGIE milestone.
+
+  On WAIS-III visits the columns hold what the dictionary says, and the raw
+  total equals forward + backward on all 1,249 rows where both exist.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais3]}
+
+variables:
+  wais3_ds_forward_raw:     {column: mcod_w,    label: Forward raw score (8 items of 2 trials),  range: [0, 16]}
+  wais3_ds_backward_raw:    {column: mcoi_w,    label: Backward raw score (7 items of 2 trials), range: [0, 14]}
+  wais3_ds_total:           {column: nbrut_w,   label: Raw total (forward + backward),           range: [0, 30]}
+  wais3_ds_forward_span:    {column: mcodemp_w, label: Longest forward span,                     range: [0, 9]}
+  wais3_ds_backward_span:   {column: mcoiemp_w, label: Longest backward span,                    range: [0, 8]}
+  wais3_ds_span_difference: {column: empdid_w,  label: Forward span minus backward span,         range: [-8, 9]}
+  wais3_ds_scaled:          {column: nstand_w,  label: Age-scaled score (mean 10 and SD 3),      range: [1, 19], derived_from: wais3_ds_total_check}
+  wais3_ds_z:               {column: vstand_w,  label: Scaled score as a z-score, type: number,  range: [-3, 3], winsor: false, derived_from: wais3_ds_total_check}
+
+scores:
+  # Consistency check only: the stored total must equal the sum of its parts.
+  wais3_ds_total_check:
+    sum: [wais3_ds_forward_raw, wais3_ds_backward_raw]
+    compare: wais3_ds_total
+    keep: false

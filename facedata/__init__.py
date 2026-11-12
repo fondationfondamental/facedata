@@ -1,0 +1,9 @@
+"""facedata: load, harmonise and quality-check FACE cohort extractions.
+
+One module per cohort:
+
+    from facedata import bp
+    result = bp.load("data/bp/BPALL_20261030.tsv")
+
+The design is in docs/ARCHITECTURE.md, the schema fields in docs/SCHEMA_SPEC.md.
+"""

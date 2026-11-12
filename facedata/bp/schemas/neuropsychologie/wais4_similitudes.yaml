@@ -1,0 +1,54 @@
+instrument: wais4_similitudes
+title: WAIS-IV similarities (18 items)
+tab: NEUROPSYCHOLOGIE
+section: Similitudes
+status: draft
+notes: >
+  Similitudes exists only in WAIS-IV, in its own columns (802 visits, 2018 to
+  2026). It replaced the vocabulary test in the WAIS-IV battery. No WAIS-III
+  visit has any value here; the version block is kept so that this stays
+  true: a value on a WAIS-III visit would be reported as unread.
+
+  Every item is scored 0 to 2, so the raw total goes up to 36. The stored raw
+  total equals the sum of the items on every row.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 2], versions: [wais4]}
+
+variables:
+  wais4_simil01: {column: simil01_wais4, label: Similarities item 1}
+  wais4_simil02: {column: simil02_wais4, label: Similarities item 2}
+  wais4_simil03: {column: simil03_wais4, label: Similarities item 3}
+  wais4_simil04: {column: simil04_wais4, label: Similarities item 4}
+  wais4_simil05: {column: simil05_wais4, label: Similarities item 5}
+  wais4_simil06: {column: simil06_wais4, label: Similarities item 6}
+  wais4_simil07: {column: simil07_wais4, label: Similarities item 7}
+  wais4_simil08: {column: simil08_wais4, label: Similarities item 8}
+  wais4_simil09: {column: simil09_wais4, label: Similarities item 9}
+  wais4_simil10: {column: simil10_wais4, label: Similarities item 10}
+  wais4_simil11: {column: simil11_wais4, label: Similarities item 11}
+  wais4_simil12: {column: simil12_wais4, label: Similarities item 12}
+  wais4_simil13: {column: simil13_wais4, label: Similarities item 13}
+  wais4_simil14: {column: simil14_wais4, label: Similarities item 14}
+  wais4_simil15: {column: simil15_wais4, label: Similarities item 15}
+  wais4_simil16: {column: simil16_wais4, label: Similarities item 16}
+  wais4_simil17: {column: simil17_wais4, label: Similarities item 17}
+  wais4_simil18: {column: simil18_wais4, label: Similarities item 18}
+
+  wais4_simil_not_done:     {column: chk_wais_simi_test_non_fait_wais4, label: Test not done, type: category, codes: {Test non fait: yes}}
+  wais4_simil_total_stored: {column: similtot_wais4, label: Raw total as stored, range: [0, 36], keep: false}
+  wais4_simil_scaled:       {column: similstd_wais4, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_simil_total}
+  wais4_simil_z:            {column: similcr_wais4,  label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_simil_total}
+
+scores:
+  wais4_simil_total:
+    label: Similarities raw total (18 items)
+    sum: [wais4_simil01, wais4_simil02, wais4_simil03, wais4_simil04, wais4_simil05,
+          wais4_simil06, wais4_simil07, wais4_simil08, wais4_simil09, wais4_simil10,
+          wais4_simil11, wais4_simil12, wais4_simil13, wais4_simil14, wais4_simil15,
+          wais4_simil16, wais4_simil17, wais4_simil18]
+    compare: wais4_simil_total_stored
