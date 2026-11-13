@@ -7,25 +7,34 @@ level: patient
 notes: >
   One value per patient.
 
-  Open question O16 in PROGRESS.md: the dictionary gives neither a label nor
-  a coding for these two columns. Until their meaning is known, the codes
-  are delivered as written.
+  The dictionary gives neither a label nor a coding for these two columns.
+  The data managers answered in November 2026 (decision D68 in PROGRESS.md).
 
-  formoppos (computer name rad_html_formoppos) is filled for 613 patients,
-  most of them included from 2021 on: 610 with code 1 and 3 with code 2. If
-  it records an opposition to the use of the data, those patients matter.
+  formoppos (computer name rad_html_formoppos) is the raw code of the EMR
+  for the non-opposition form. It is filled for 619 patients, most of them
+  included from 2021 on: 616 with code 1 and 3 with code 2. The patients
+  with code 3 or 4 are the oppositions: the export removes them, so these
+  codes never occur here. Code 2 is kept on purpose. The data managers
+  have no documented definition of codes 1 and 2: "signed under curatelle"
+  for code 2 is their reading of the raw data. social_protec cannot settle
+  it: it comes from the social assessment, a separate form that may be
+  missing or out of date, and two of the three patients with code 2 have no
+  value there (the third has no measure). The meaning of codes 1 and 2 is
+  still open (O16), so the codes are delivered as written.
 
   social_protec (computer name PROTEC) is the legal protection measure of
   the SOCIAL tab ("7. Mesures de protection": 0 none, 1 curatelle, 2
-  tutelle, 3 sauvegarde de justice): the column protec of that tab holds the
-  same answer on every inclusion visit (decision D55 in PROGRESS.md). It is
-  filled for 4,840 patients: 4,774 with no measure, 62 under curatelle and
-  4 under tutelle. protec itself is not loaded.
+  tutelle, 3 sauvegarde de justice), a coding the data managers confirmed:
+  the column protec of that tab holds the same answer on every inclusion
+  visit (decision D55). It is filled for 4,858 patients: 4,792 with no
+  measure, 62 under curatelle and 4 under tutelle. The export removes the
+  patients under sauvegarde de justice, so code 3 never occurs. protec
+  itself is not loaded.
 
 variables:
   opposition_form:
     column: formoppos
-    label: Opposition form (codes not documented)
+    label: Non-opposition form, code of the EMR (meaning of 1 and 2 not documented)
     type: category
     codes: {1: "1", 2: "2"}
   protection_measure:

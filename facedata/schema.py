@@ -22,7 +22,7 @@ VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit
 SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "reverse", "min_items",
                 "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
-VERSION_FIELDS = {"name", "column", "codes", "filled", "level", "follow_up", "by_inclusion_date"}
+VERSION_FIELDS = {"name", "column", "codes", "filled", "level", "follow_up", "by_inclusion_date", "since"}
 TYPES = {"number", "item", "band", "category", "date", "time", "text"}
 
 
@@ -324,6 +324,15 @@ def check_version(schema, columns):
     for name in names:
         if name not in version_names(schema):
             problems.append(f"version: '{name}' is not listed in codes")
+    since = version.get("since", {})
+    if not isinstance(since, dict):
+        problems.append("version: since is written {version: YYYY-MM-DD}")
+        since = {}
+    for name, first_day in since.items():
+        if name not in version_names(schema):
+            problems.append(f"version: since names '{name}', which is not a version of the block")
+        if pd.isna(pd.to_datetime(first_day, format="%Y-%m-%d", errors="coerce")):
+            problems.append(f"version: since '{name}' needs a date written YYYY-MM-DD")
     if columns is not None:
         used = [version["column"]] if "column" in version else []
         for group in version.get("filled", {}).values():

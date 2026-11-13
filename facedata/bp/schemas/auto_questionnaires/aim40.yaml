@@ -1,0 +1,90 @@
+instrument: aim40
+title: Affect Intensity Measure, 40 items (AIM-40)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire AIM (version réduite 20 items)
+status: draft
+notes: >
+  AIM-40 and AIM-20 are two instruments. The 40-item AIM was filled until
+  2021 (2022 in two centres); the 20-item AIM-20 replaced it (answer of the
+  data managers in November 2026, decision D66 in PROGRESS.md). The 20
+  questions of the AIM-20 are 20 of the 40, and the extraction stores both
+  in the same columns. The columns are therefore split by form: this schema
+  reads the visits where the 40-item questionnaire was filled, aim20.yaml
+  reads the others. Both files carry the same version block.
+
+  Which form a visit used. Nothing in the AIM columns says it, and no field
+  of the source database records it. The form is read from the other
+  self-questionnaires of the same visit, with the rule of the WURS
+  (wurs61.yaml): "aim40" when the visit holds something that only the long
+  questionnaires have, a score of the 54-item ALS (als58 or als60) or one
+  of the 22 items that only the 34-item BIS-10 has; "aim20" when it holds
+  ALS or BIS answers and none of those. This rests on the AIM having
+  changed with the ALS and the BIS in each centre, which the AIM columns
+  cannot confirm. A visit with an AIM and neither an ALS nor a BIS has no
+  form: version_unknown, and its answers are not delivered. A visit dated
+  before 2021 is never read as the 20-item form (since, in the version
+  block): aim20.yaml says why.
+
+  Filled once, at the inclusion visit. Each item is 1 (never) to 6 (always).
+
+  What the extraction holds. Only the 20 items that the AIM-20 also has, out
+  of 40; the 20 others exist in the source database and are not exported.
+  aim40_02 is item 2 of the 40-item questionnaire.
+
+  Bridge to the AIM-20: aim40_score20 is the score of the AIM-20, computed
+  from the 20 items both forms have: their mean (1 to 6), six of them
+  reversed (7 - value): 12, 24, 29, 33, 37 and 40. The stored score (aim_)
+  is exactly this mean in every row where both exist. The score of the 40
+  items is not in the extraction. Whether an answer given inside a 40-item
+  questionnaire can be compared with the same question asked in a 20-item
+  one is a scientific choice; the two are delivered as separate columns
+  (aim40_score20 here, aim20_score there) so that nobody mixes them by
+  accident.
+
+version:
+  name: aim_form
+  filled:
+    aim40: [als58, als60,
+            bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    aim20: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
+            als25, als33, als34, als36, als41, als42, als43, als45, als46,
+            bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+            bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {aim20: 2021-01-01}
+
+defaults: {type: item, range: [1, 6], versions: [aim40]}
+
+variables:
+  aim40_02: {column: aim02, label: "AIM-40 item 2"}
+  aim40_07: {column: aim07, label: "AIM-40 item 7"}
+  aim40_09: {column: aim09, label: "AIM-40 item 9"}
+  aim40_11: {column: aim11, label: "AIM-40 item 11"}
+  aim40_12: {column: aim12, label: "AIM-40 item 12"}
+  aim40_13: {column: aim13, label: "AIM-40 item 13"}
+  aim40_18: {column: aim18, label: "AIM-40 item 18"}
+  aim40_20: {column: aim20, label: "AIM-40 item 20"}
+  aim40_22: {column: aim22, label: "AIM-40 item 22"}
+  aim40_24: {column: aim24, label: "AIM-40 item 24"}
+  aim40_25: {column: aim25, label: "AIM-40 item 25"}
+  aim40_27: {column: aim27, label: "AIM-40 item 27"}
+  aim40_29: {column: aim29, label: "AIM-40 item 29"}
+  aim40_30: {column: aim30, label: "AIM-40 item 30"}
+  aim40_33: {column: aim33, label: "AIM-40 item 33"}
+  aim40_35: {column: aim35, label: "AIM-40 item 35"}
+  aim40_36: {column: aim36, label: "AIM-40 item 36"}
+  aim40_37: {column: aim37, label: "AIM-40 item 37"}
+  aim40_39: {column: aim39, label: "AIM-40 item 39"}
+  aim40_40: {column: aim40, label: "AIM-40 item 40"}
+  aim40_score20_stored: {column: aim_, type: number, label: Score of the 20 items as stored, keep: false}
+
+scores:
+  # Bridge to the AIM-20: its score, from the 20 items both forms have.
+  aim40_score20:
+    label: Mean of the 20 items that the AIM-20 also has
+    mean: [aim40_02, aim40_07, aim40_09, aim40_11, aim40_12, aim40_13, aim40_18, aim40_20, aim40_22, aim40_24,
+          aim40_25, aim40_27, aim40_29, aim40_30, aim40_33, aim40_35, aim40_36, aim40_37, aim40_39, aim40_40]
+    reverse: [aim40_12, aim40_24, aim40_29, aim40_33, aim40_37, aim40_40]
+    compare: aim40_score20_stored

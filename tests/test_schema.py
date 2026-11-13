@@ -163,6 +163,34 @@ def test_a_doubtful_period_is_read_as_dates_and_checked(tmp_path):
     assert len(problems) == 4
 
 
+SINCE = """
+instrument: since
+title: Since
+tab: TEST
+section: Since
+status: draft
+version:
+  name: form
+  filled: {long: [it2], short: [it1]}
+  since: {short: 2021-01-01}
+defaults: {type: item, range: [0, 4]}
+variables:
+  it1: {versions: [short]}
+  it2: {versions: [long]}
+"""
+
+
+def test_since_names_a_version_and_a_date(tmp_path):
+    assert check_schema(load_schema(write(tmp_path, "since", SINCE))) == []
+    bad = SINCE.replace("since: {short: 2021-01-01}", "since: {brief: 2021-01-01, long: January 2021}")
+    problems = " | ".join(check_schema(load_schema(write(tmp_path, "since", bad))))
+    assert "since names 'brief', which is not a version of the block" in problems
+    assert "since 'long' needs a date written YYYY-MM-DD" in problems
+    bad = SINCE.replace("since: {short: 2021-01-01}", "since: 2021-01-01")
+    problems = " | ".join(check_schema(load_schema(write(tmp_path, "since", bad))))
+    assert "version: since is written {version: YYYY-MM-DD}" in problems
+
+
 ASKED = """
 instrument: asked
 title: Asked

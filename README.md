@@ -29,7 +29,7 @@ uv sync
 ```python
 from facedata import bp
 
-result = bp.load("data/bp/BPALL_20261030.tsv")
+result = bp.load("data/bp/BPALL_20261113_2.tsv")
 
 result.data       # one row per patient visit, harmonised
 result.patients   # one row per patient
@@ -39,7 +39,7 @@ result.treatments # one row per patient and medication, with its dates
 result.relatives  # one row per patient and relative: the family history
 
 bp.report(result, "reports/bp")          # open reports/bp/index.html
-bp.coverage("data/bp/BPALL_20261030.tsv", "thesauri/FACEBP_thesaurus_V4.34.xlsx")
+bp.coverage("data/bp/BPALL_20261113_2.tsv", "thesauri/FACEBP_thesaurus_V4.34.xlsx")
 ```
 
 Loading everything takes about a minute and a half (a few seconds when you
@@ -71,7 +71,7 @@ The extractions (`data/`) and the data dictionaries (`thesauri/`) are not part
 of the repository. Put them next to the code:
 
 ```
-data/bp/BPALL_20261030.tsv
+data/bp/BPALL_20261113_2.tsv
 thesauri/FACEBP_thesaurus_V4.34.xlsx
 norms/wais3_vocabulary.csv
 ```

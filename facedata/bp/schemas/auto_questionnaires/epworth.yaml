@@ -1,0 +1,55 @@
+instrument: epworth
+title: Epworth Sleepiness Scale (ESS, 8 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire EPWORTH
+status: draft
+notes: >
+  Eight situations of daily life; for each, the chance of dozing off, from 0
+  (would never doze) to 3 (high chance). Filled at every visit. The total is
+  the sum of the eight items (0 to 24, higher is sleepier).
+
+  History. Until the extraction of November 2026 only the answers equal to 0
+  reached the extraction: the text of the three other answers holds an
+  apostrophe, which the export step lost, so the scale was not loaded
+  (decision D33 in PROGRESS.md). The data managers corrected the export
+  (D64).
+
+  Items. The dictionary gives the same label to the eight items ("Items
+  EPWORTH") and not the situations. The labels below are those of the
+  published scale in its usual order. The answers support that order: item
+  5 (lying down in the afternoon) is the most endorsed (mean 2.2), items 6
+  (talking to someone) and 8 (in a car stopped in traffic) the least (0.2
+  and 0.4). The form itself was not seen.
+
+  Total. The stored total (ess0109) exists where the eight items are filled
+  and equals their sum in every row. Its mean is the same in every year (8.3
+  to 9.3) and close at inclusion and at follow-up (9.3 and 8.4): the same
+  question at every visit, one schema.
+
+  A last question (essdorm) asks when the sleepiness comes. It is a
+  category and is not part of the score. Its fourth answer ("at any time of
+  the day") was lost for the same reason and is back.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  ess0101: {label: "Epworth item 1: sitting and reading"}
+  ess0102: {label: "Epworth item 2: watching television"}
+  ess0103: {label: "Epworth item 3: sitting inactive in a public place"}
+  ess0104: {label: "Epworth item 4: passenger in a car for an hour"}
+  ess0105: {label: "Epworth item 5: lying down to rest in the afternoon"}
+  ess0106: {label: "Epworth item 6: sitting and talking to someone"}
+  ess0107: {label: "Epworth item 7: sitting quietly after a lunch without alcohol"}
+  ess0108: {label: "Epworth item 8: in a car, stopped for a few minutes in traffic"}
+  epworth_when:
+    column: essdorm
+    type: category
+    label: When the sleepiness comes
+    codes: {0: after_meals, 1: fixed_hours, 2: night, 3: any_time}
+  epworth_stored: {column: ess0109, label: Epworth total as stored, range: [0, 24], keep: false}
+
+scores:
+  epworth_total:
+    label: Epworth total (0 to 24, higher is sleepier)
+    sum: [ess0101, ess0102, ess0103, ess0104, ess0105, ess0106, ess0107, ess0108]
+    compare: epworth_stored

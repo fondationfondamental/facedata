@@ -501,6 +501,26 @@ version:
     wurs25: [als05, bis1001]         # an ALS or BIS answer, and none of the above
 ```
 
+An edition that did not exist before a known day says so with `since`:
+
+```yaml
+version:
+  name: wurs_form
+  filled:
+    wurs61: [als58, bis1002]
+    wurs25: [als05, bis1001]
+  since: {wurs25: 2021-01-01}        # no visit dated before that day is a wurs25
+```
+
+A visit dated before that day does not get the edition, whatever its columns
+hold. It does not fall back on another edition either: it has no version, its
+values are not delivered, and it gets `version_unknown` with the detail
+"dated before the form came into use". A visit with no date keeps its
+edition. `since` works with the three ways of recognising an edition. The
+reduced questionnaires came into use in 2021, and the data managers advise
+not to deliver the few earlier visits that look like one (decision D71 in
+PROGRESS.md).
+
 Then each schema:
 
 - carries that `version` block, word for word the same in every schema that
@@ -520,7 +540,8 @@ Rules:
   schema's own variables read: a column of another instrument listed under
   `filled` does not give a version to a visit where the instrument is empty.
 - A visit with data but a version code that is not listed gets
-  `version_unknown`.
+  `version_unknown`. So does a visit dated before the `since` day of the
+  edition that its columns give.
 - With `level: patient`, a patient whose visits hold two different values
   keeps the earliest one and gets `patient_value_varies`. A visit that none
   of the four rules reaches has no version: if it holds data it gets
@@ -798,6 +819,8 @@ the list is not empty.
 - A `version` block with `level` says `patient` and reads a `column`.
   `follow_up` and `by_inclusion_date` need `level: patient`; they name
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.
+  `since` names versions of the block, each with one date written
+  `YYYY-MM-DD`.
 - A `sign` block has `relation`, `by` and `pairs`; `by` is a key column; every
   name in `pairs` is a variable of the schema, and the standard scores are of
   type `number`.
@@ -820,8 +843,8 @@ mechanism. Read them as examples.
 | `patient/fin_de_suivi.yaml` | A patient-level instrument, variables read from two generations of columns, dates with a range |
 | `bilan_biologique/biochimie.yaml` | Censoring with many detection limits (CRP), two units with an unreliable label (glucose) |
 | `bilan_biologique/nfs.yaml` | A hidden unit mixture under one label (haemoglobin) |
-| `auto_questionnaires/bis10.yaml`, `auto_questionnaires/bis12.yaml` | Two instruments stored in the same columns and split by form, the form found from which items are filled, a documented offset of the stored scores |
-| `auto_questionnaires/als54.yaml`, `auto_questionnaires/als18.yaml`, `auto_questionnaires/wurs61.yaml`, `auto_questionnaires/wurs25.yaml` | A long questionnaire and the reduced one that replaced it, stored in the same columns; the form found from what only the long questionnaires of the same visit have, a bridge score from the common items |
+| `auto_questionnaires/bis10.yaml`, `auto_questionnaires/bis12.yaml` | Two instruments stored in the same columns and split by form, the form found from which items are filled, a form with a first day (`since`), a documented offset of the stored scores |
+| `auto_questionnaires/als54.yaml`, `auto_questionnaires/als18.yaml`, `auto_questionnaires/wurs61.yaml`, `auto_questionnaires/wurs25.yaml`, `auto_questionnaires/aim40.yaml`, `auto_questionnaires/aim20.yaml` | A long questionnaire and the reduced one that replaced it, stored in the same columns; the form found from what only the long questionnaires of the same visit have, a bridge score from the common items; a reduced form that no visit can have before the year it came into use (`since`) |
 | `neuropsychologie/wais3_*.yaml`, `neuropsychologie/wais4_*.yaml` | Two editions stored in the same columns and split by a version column: digit span, vocabulary, matrices, coding and symbol search (two schemas each), and similarities (WAIS-IV only). Scaled scores marked `derived_from` their raw total |
 | `neuropsychologie/tmt.yaml` | Z-scores whose sign convention changed centre by centre (`sign`), missing codes of one variable |
 | `evaluation_medicale/dsm4_depuis_derniere_visite.yaml`, `evaluation_medicale/dsm5_depuis_derniere_visite.yaml` | Two editions split by a version recorded once per patient (`level: patient`), yes/no codes, counts with a cap (`>20`) |

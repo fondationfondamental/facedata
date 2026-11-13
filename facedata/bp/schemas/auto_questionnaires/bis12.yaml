@@ -13,6 +13,13 @@ notes: >
   was used: the visits where none of the 22 other BIS-10 items is filled.
   bis10.yaml reads the other visits. Both files carry the same version block.
 
+  Before 2021. The 12-item form did not exist, and the data managers advise
+  not to deliver the reduced questionnaires of a visit dated before 2021
+  (decision D71 in PROGRESS.md). The version block says so (since): such a
+  visit has no form, gets version_unknown, and its answers are not
+  delivered. 8 visits, dated 2018 to 2020; als18.yaml says what they look
+  like.
+
   Item names. The twelve questions are BIS-10 items 1, 6, 8, 9, 12, 14, 17,
   20, 21, 23, 25 and 28, numbered 1 to 12 in that order (confirmed, decision
   D8 in PROGRESS.md). bis12_01 to bis12_12 follow that numbering.
@@ -40,6 +47,7 @@ version:
             bis1034]
     bis12: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
             bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {bis12: 2021-01-01}
 
 defaults: {type: item, range: [1, 4], versions: [bis12]}
 

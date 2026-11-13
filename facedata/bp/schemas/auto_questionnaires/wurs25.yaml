@@ -25,6 +25,14 @@ notes: >
   The stored total (wurs) equals the sum of the 25 items (0 to 100) in
   every row where both exist.
 
+  Before 2021. The data managers found no visit with only the reduced
+  questionnaires before 2021, and advise not to deliver the questionnaires
+  of a visit that looks like one (decision D71 in PROGRESS.md). The version
+  block says so (since): a visit dated before 2021 that would be read here
+  has no form, gets version_unknown, and its answers are not delivered. 8
+  visits, dated 2018 to 2020, each with its 25 answers; als18.yaml says
+  what they look like.
+
 version:
   name: wurs_form
   filled:
@@ -37,8 +45,12 @@ version:
              als25, als33, als34, als36, als41, als42, als43, als45, als46,
              bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
              bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {wurs25: 2021-01-01}
 
-defaults: {type: item, range: [0, 4], versions: [wurs25]}
+defaults:
+  type: item
+  range: [0, 4]
+  versions: [wurs25]
 
 variables:
   wurs25_03: {column: wurs03, label: "WURS-25 item (number 3 of the WURS-61)"}

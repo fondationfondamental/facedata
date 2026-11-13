@@ -22,10 +22,20 @@ notes: >
   Sub-scores. Emotional reactivity (items 3, 7, 10, 18), motivation (2, 11,
   12, 15, 16, 17, 19), sensory perception (1, 6, 8, 13, 20), interpersonal
   communication (4, 14) and cognition (5, 9), with the same reversed items.
-  The stored sub-scores (mathys29 to mathys33) are not read: until 2021 the
-  EMR added the items without reversing any, and from 2022 on it reverses
-  them, so the same column holds two different scores. They are listed in
-  ignored.yaml. Our sub-scores equal the stored ones from 2023 on.
+  The stored sub-scores (mathys29 to mathys33, in that order) are read to
+  check ours and are not delivered. Like the stored total they add the
+  values as written, so they differ from ours on the visits with a lost
+  decimal point (score_mismatch, or out_of_range on the stored sub-score).
+
+  History. Until the extraction of October 2026 the stored sub-scores held
+  two formulas: the items added without reversing any until 2021, with the
+  reversed items from 2022 on (decision D34 in PROGRESS.md); they were not
+  read. In the extraction of November 2026 they follow the reversed-item
+  rule in every year and equal ours (D65). The data managers confirmed that
+  it is intended: since 10 November 2026 their pipeline recalculates the
+  five sub-scores from the items, with one formula for every year, instead
+  of taking the values stored in the EMR. The comparison therefore checks
+  our formula against theirs, not against the EMR.
 
 # A value above 10 has lost its decimal point: 55 is 5.5.
 defaults:
@@ -67,6 +77,42 @@ variables:
     units:
       point: {factor: 1, expect: [0, 200.01]}
     keep: false
+  # The stored sub-scores, read as written like the stored total.
+  mathys_emotion_stored:
+    column: mathys29
+    label: MAThyS emotional reactivity as stored
+    range: [0, 40]
+    units:
+      point: {factor: 1, expect: [0, 40.01]}
+    keep: false
+  mathys_motivation_stored:
+    column: mathys30
+    label: MAThyS motivation as stored
+    range: [0, 70]
+    units:
+      point: {factor: 1, expect: [0, 70.01]}
+    keep: false
+  mathys_perception_stored:
+    column: mathys31
+    label: MAThyS sensory perception as stored
+    range: [0, 50]
+    units:
+      point: {factor: 1, expect: [0, 50.01]}
+    keep: false
+  mathys_interaction_stored:
+    column: mathys32
+    label: MAThyS interpersonal communication as stored
+    range: [0, 20]
+    units:
+      point: {factor: 1, expect: [0, 20.01]}
+    keep: false
+  mathys_cognition_stored:
+    column: mathys33
+    label: MAThyS cognition as stored
+    range: [0, 20]
+    units:
+      point: {factor: 1, expect: [0, 20.01]}
+    keep: false
 
 scores:
   mathys_total:
@@ -79,18 +125,23 @@ scores:
     label: MAThyS emotional reactivity (4 items)
     sum: [mathys03, mathys07, mathys10, mathys18]
     reverse: [mathys07, mathys10, mathys18]
+    compare: mathys_emotion_stored
   mathys_motivation:
     label: MAThyS motivation (7 items)
     sum: [mathys02, mathys11, mathys12, mathys15, mathys16, mathys17, mathys19]
     reverse: [mathys17]
+    compare: mathys_motivation_stored
   mathys_perception:
     label: MAThyS sensory perception (5 items)
     sum: [mathys01, mathys06, mathys08, mathys13, mathys20]
     reverse: [mathys06, mathys08]
+    compare: mathys_perception_stored
   mathys_interaction:
     label: MAThyS interpersonal communication (2 items)
     sum: [mathys04, mathys14]
+    compare: mathys_interaction_stored
   mathys_cognition:
     label: MAThyS cognition (2 items)
     sum: [mathys05, mathys09]
     reverse: [mathys05, mathys09]
+    compare: mathys_cognition_stored

@@ -24,13 +24,19 @@ notes: >
   moment as the ALS and the BIS in each centre, which the WURS columns
   cannot confirm. A visit with a WURS and neither an ALS nor a BIS (49
   visits) has no form: version_unknown, and its answers are not delivered.
+  A visit dated before 2021 is never read as the 25-item form (since, in
+  the version block): wurs25.yaml says why.
 
   Filled once, at the inclusion visit: symptoms of attention deficit and
   hyperactivity in childhood. Each item is 0 (not at all) to 4 (very much).
 
   What the extraction holds. Only the 25 items that the WURS-25 also has,
   out of 61; the 36 others were not exported. wurs61_03 is item 3 of the
-  61-item questionnaire.
+  61-item questionnaire. The data managers confirmed in November 2026
+  (decision D67 in PROGRESS.md) that the patients filled the 61 items until
+  2021 (2022 in two centres), that the 36 other items are still in the
+  source database, and that no field records the form of a visit: the rule
+  above stays an assumption until the export names the form.
 
   Bridge to the WURS-25: wurs61_sum25 is the sum of these 25 items (0 to
   100), the score that the WURS has always used. The stored total (wurs)
@@ -53,6 +59,7 @@ version:
              als25, als33, als34, als36, als41, als42, als43, als45, als46,
              bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
              bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {wurs25: 2021-01-01}
 
 defaults: {type: item, range: [0, 4], versions: [wurs61]}
 

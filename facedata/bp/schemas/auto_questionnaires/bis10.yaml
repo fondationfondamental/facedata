@@ -11,7 +11,8 @@ notes: >
   used, bis12.yaml reads the visits where the 12-item form was used. Both
   files carry the same version block. There is no column saying which form
   was used: a visit is "bis10" when at least one of the 22 items that only
-  the 34-item form has is filled.
+  the 34-item form has is filled. A visit dated before 2021 is never read
+  as the 12-item form (since, in the version block): bis12.yaml says why.
 
   Items are coded 1 to 4. Reversed items, from the dictionary: 1, 7, 8, 9,
   10, 12, 13, 15, 21, 33, 34.
@@ -48,6 +49,7 @@ version:
             bis1034]
     bis12: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
             bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {bis12: 2021-01-01}
 
 defaults: {type: item, range: [1, 4], versions: [bis10]}
 

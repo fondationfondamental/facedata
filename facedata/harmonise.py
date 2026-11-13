@@ -32,7 +32,14 @@ def detect_version(raw, keys, schema):
         if version.get("level") == "patient":
             result, flags = patient_version(result, keys, version, has_data)
     unknown = has_data & result.isna()
-    flags = stack_flags(flags + [make_flags(unknown, version["name"], "version_unknown")])
+    # An edition that did not exist before a day: an earlier visit has no version.
+    too_early = pd.Series(False, index=raw.index)
+    for name, first_day in version.get("since", {}).items():
+        too_early = too_early | ((result == name) & (keys["visit_date"] < pd.Timestamp(first_day)))
+    result = result.mask(too_early)
+    flags = stack_flags(flags + [make_flags(unknown, version["name"], "version_unknown"),
+                                 make_flags(too_early, version["name"], "version_unknown",
+                                            "dated before the form came into use")])
     return result, flags
 
 

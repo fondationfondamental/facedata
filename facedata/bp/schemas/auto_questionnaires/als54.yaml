@@ -20,18 +20,25 @@ notes: >
   ALS and a BIS, 99% have the two in the same generation. The 45 others have
   ALS answers, a BIS-10 and no score of the 54-item ALS: questionnaires with
   unanswered items, for which the EMR computed no long score. Each centre
-  changed at its own date, between September 2021 and May 2022.
+  changed at its own date, between September 2021 and May 2022. A visit
+  dated before 2021 is never read as the 18-item form (since, in the
+  version block): als18.yaml says why.
 
   Filled once, at the inclusion visit. Each item is 0 (not at all like me)
   to 3 (very much like me).
 
   What the extraction holds. Only the 18 items that the ALS-18 also has, out
   of 54; the 36 others were not exported. als54_05 is item 5 of the 54-item
-  questionnaire.
+  questionnaire. The data managers confirmed in November 2026 (decision D67
+  in PROGRESS.md) that the patients filled the 54 items until 2021 (2022 in
+  two centres), that the 36 other items are still in the source database,
+  and that no field records the form of a visit.
 
   Scores of the 54-item form: anxiety-depression (als57), anxiety (als58)
   and bipolar (als60). Their items are not in the extraction, so they cannot
-  be checked and are delivered as stored.
+  be checked and are delivered as stored. The data managers recomputed
+  als57 from the source: on these visits it is the mean of eight items of
+  the long form (3, 10, 16, 17, 22, 37, 38 and 49).
 
   Bridge to the ALS-18: the four scores of the ALS-18, computed from the 18
   items both forms have (means, 0 to 3): anxiety-depression (items 5, 12,
@@ -39,7 +46,9 @@ notes: >
   (14, 21, 23, 33, 41) and the total. The extraction stores them under the
   names of scales of the long form (als55 "Depression", als56 "Elation",
   als59 "Anger", als_ "Total"), but they are exactly the means of these
-  items in every row. Whether an answer given inside a 54-item questionnaire
+  items in every row: the score step of the data managers' pipeline writes
+  them on every visit where the items are answered, whatever the form
+  (decision D72). Whether an answer given inside a 54-item questionnaire
   can be compared with the same question asked in an 18-item one is a
   scientific choice; the two are delivered as separate columns
   (als54_total18 here, als18_total there) so that nobody mixes them by
@@ -56,6 +65,7 @@ version:
             bis1034]
     als18: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
             als25, als33, als34, als36, als41, als42, als43, als45, als46]
+  since: {als18: 2021-01-01}
 
 defaults: {type: item, range: [0, 3], versions: [als54]}
 

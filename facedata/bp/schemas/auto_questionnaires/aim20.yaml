@@ -1,0 +1,84 @@
+instrument: aim20
+title: Affect Intensity Measure, 20 items (AIM-20)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire AIM (version réduite 20 items)
+status: draft
+notes: >
+  AIM-40 and AIM-20 are two instruments. The 20-item AIM-20 replaced the
+  40-item AIM in 2021 and 2022, depending on the centre (answer of the data
+  managers in November 2026, decision D66 in PROGRESS.md). Its 20 questions
+  are 20 of the 40, and the extraction stores both in the same columns.
+  This schema reads those columns on the visits where the 20-item
+  questionnaire was filled. Nothing in the AIM columns says which form a
+  visit used; it is read from the ALS and the BIS of the same visit:
+  "aim20" when the visit holds ALS or BIS answers and nothing that only the
+  long questionnaires have. aim40.yaml reads the other visits and explains
+  the rule and its limit. Both files carry the same version block.
+
+  Filled once, at the inclusion visit. Each item is 1 (never) to 6 (always).
+
+  Item names. The EMR kept the numbers that the questions have in the
+  40-item questionnaire: aim20_02 is the question numbered 2 there. The
+  order of the questions on the 20-item form is not known.
+
+  Score. The mean of the 20 items (1 to 6), six of them reversed (7 -
+  value): 12, 24, 29, 33, 37 and 40. The stored score (aim_) is exactly this
+  mean in every row where both exist.
+
+  Before 2021. The data managers found no visit with only the reduced
+  questionnaires before 2021, and advise not to deliver the questionnaires
+  of a visit that looks like one (decision D71 in PROGRESS.md). The version
+  block says so (since): a visit dated before 2021 that would be read here
+  has no form, gets version_unknown, and its answers are not delivered. 8
+  visits, dated 2017 to 2020, each with its 20 answers; als18.yaml says
+  what they look like.
+
+version:
+  name: aim_form
+  filled:
+    aim40: [als58, als60,
+            bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    aim20: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
+            als25, als33, als34, als36, als41, als42, als43, als45, als46,
+            bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+            bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {aim20: 2021-01-01}
+
+defaults:
+  type: item
+  range: [1, 6]
+  versions: [aim20]
+
+variables:
+  aim20_02: {column: aim02, label: "AIM-20 item (number 2 of the AIM-40)"}
+  aim20_07: {column: aim07, label: "AIM-20 item (number 7 of the AIM-40)"}
+  aim20_09: {column: aim09, label: "AIM-20 item (number 9 of the AIM-40)"}
+  aim20_11: {column: aim11, label: "AIM-20 item (number 11 of the AIM-40)"}
+  aim20_12: {column: aim12, label: "AIM-20 item (number 12 of the AIM-40)"}
+  aim20_13: {column: aim13, label: "AIM-20 item (number 13 of the AIM-40)"}
+  aim20_18: {column: aim18, label: "AIM-20 item (number 18 of the AIM-40)"}
+  aim20_20: {column: aim20, label: "AIM-20 item (number 20 of the AIM-40)"}
+  aim20_22: {column: aim22, label: "AIM-20 item (number 22 of the AIM-40)"}
+  aim20_24: {column: aim24, label: "AIM-20 item (number 24 of the AIM-40)"}
+  aim20_25: {column: aim25, label: "AIM-20 item (number 25 of the AIM-40)"}
+  aim20_27: {column: aim27, label: "AIM-20 item (number 27 of the AIM-40)"}
+  aim20_29: {column: aim29, label: "AIM-20 item (number 29 of the AIM-40)"}
+  aim20_30: {column: aim30, label: "AIM-20 item (number 30 of the AIM-40)"}
+  aim20_33: {column: aim33, label: "AIM-20 item (number 33 of the AIM-40)"}
+  aim20_35: {column: aim35, label: "AIM-20 item (number 35 of the AIM-40)"}
+  aim20_36: {column: aim36, label: "AIM-20 item (number 36 of the AIM-40)"}
+  aim20_37: {column: aim37, label: "AIM-20 item (number 37 of the AIM-40)"}
+  aim20_39: {column: aim39, label: "AIM-20 item (number 39 of the AIM-40)"}
+  aim20_40: {column: aim40, label: "AIM-20 item (number 40 of the AIM-40)"}
+  aim20_score_stored: {column: aim_, type: number, label: AIM-20 score as stored, keep: false}
+
+scores:
+  aim20_score:
+    label: AIM-20 affect intensity (mean of 20 items)
+    mean: [aim20_02, aim20_07, aim20_09, aim20_11, aim20_12, aim20_13, aim20_18, aim20_20, aim20_22, aim20_24,
+          aim20_25, aim20_27, aim20_29, aim20_30, aim20_33, aim20_35, aim20_36, aim20_37, aim20_39, aim20_40]
+    reverse: [aim20_12, aim20_24, aim20_29, aim20_33, aim20_37, aim20_40]
+    compare: aim20_score_stored

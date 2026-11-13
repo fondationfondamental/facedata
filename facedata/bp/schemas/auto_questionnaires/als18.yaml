@@ -26,12 +26,31 @@ notes: >
   depression-elation (8, 25, 34, 36, 42, 43, 45, 46), anger (14, 21, 23, 33,
   41) and the total. The extraction stores them under the names of scales of
   the long form (als55 "Depression", als56 "Elation", als59 "Anger", als_
-  "Total"), but they are exactly the means of these items in every row.
+  "Total"), but they are exactly the means of these items in every row. The
+  data managers confirmed the three keys in November 2026 (decision D67 in
+  PROGRESS.md): the eight items of als56 come from the depression, elation
+  and bipolar scales of the long form, so it is a depression-elation score
+  and the label "Elation" does not fit; "Anger" is right. als55 is written
+  by the score step of their pipeline: the mean of items 5, 12, 16, 17 and
+  20 on every visit where the five are answered, in the long and in the
+  reduced form alike (decision D72). It is the anxiety-depression score of
+  the 18 items under the label "Depression".
 
   Not read. On these visits als57 holds the anxiety-depression score a
   second time (the same value as als55 on 94% of the visits, empty on the
-  others). On the visits of the 54-item form the column holds another score,
-  read by als54.yaml.
+  others), as the data managers confirmed. On the visits of the 54-item
+  form the column holds another score, read by als54.yaml.
+
+  Before 2021. The data managers found no visit with only the 18 items
+  before 2021, and advise not to deliver the questionnaires of a visit that
+  looks like one (decision D71 in PROGRESS.md). The version block says so
+  (since): a visit dated before 2021 that would be read here has no form,
+  gets version_unknown, and its answers are not delivered. 8 visits, dated
+  2017 to 2020. They read them as long questionnaires with unanswered
+  items. The extraction suggests something else: seven of the eight hold
+  the 18 answers, and their BIS holds the twelve items of the BIS-12 and
+  none of the 22 others, which looks like reduced questionnaires typed
+  under an early visit date. Either way the form or the date is wrong.
 
 version:
   name: als_form
@@ -43,8 +62,12 @@ version:
             bis1034]
     als18: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
             als25, als33, als34, als36, als41, als42, als43, als45, als46]
+  since: {als18: 2021-01-01}
 
-defaults: {type: item, range: [0, 3], versions: [als18]}
+defaults:
+  type: item
+  range: [0, 3]
+  versions: [als18]
 
 variables:
   als18_05: {column: als05, label: "ALS-18 item (number 5 of the ALS-54)"}

@@ -9,7 +9,7 @@ level: relatives
 notes: >
   One row per patient and relative: the mother, the father, up to five
   sisters, five brothers, five daughters and five sons, and the four
-  grandparents. 29,101 relatives of 5,529 patients, delivered in the table
+  grandparents. 29,849 relatives of 5,555 patients, delivered in the table
   relatives (decision D58 in PROGRESS.md). The columns fdr_ and gp_ of the
   table patients sum them up (family_history_per_patient, below).
 
@@ -18,21 +18,21 @@ notes: >
   have something to describe: a parent or a grandparent answered "yes" in
   family_structure, and as many sisters, brothers, daughters and sons as
   the patient counted there. So a row does not say that the relative has a
-  disorder: half of the rows (14,357) hold only a birth date, a death or a
+  disorder: half of the rows (15,040) hold only a birth date, a death or a
   date of death. A relative for whom nothing is known has no row.
 
   Read once. A family is described at the inclusion visit, and sometimes
   completed later. For each relative and question the first visit that
   holds an answer is read; where a later visit holds another one, the
-  first is kept and the cell gets patient_value_varies (up to 250 relatives
+  first is kept and the cell gets patient_value_varies (up to 257 relatives
   per variable).
 
   Disorder. One answer per relative: unipolar (a major depressive episode
   or unipolar disorder), bipolar, schizophrenia or none. "None" is the
-  answer for 5,295 relatives who are described for something else: an
+  answer for 5,329 relatives who are described for something else: an
   anxiety disorder, a substance, a suicide attempt, a cardiovascular risk
   factor. "Unknown" (written U for the parents, "Ne sais pas" for the
-  others) is a missing code: 2,466 relatives.
+  others) is a missing code: 2,473 relatives.
 
   Suicide. One answer too: none, attempt or completed. A relative who died
   by suicide is therefore not among the attempts.
@@ -49,18 +49,25 @@ notes: >
   it.
 
   Dates. Most of the dates are placeholders: 1000-01-01 is written in a
-  date that was not typed (10,994 birth dates, 11,178 dates of death:
+  date that was not typed (11,781 birth dates, 11,984 dates of death:
   date_placeholder). From 2022 the dates are almost never typed: the birth
   date is filled for 70% of the relatives of the patients included until
-  2020 and for 9% of those of the patients included from 2022, the date of
-  death for 51% and for 1% of the deceased relatives. Hard limits: a birth
+  2020 and for 8% of those of the patients included from 2022, the date of
+  death for 52% and for 1% of the deceased relatives. Hard limits: a birth
   from 1840, a death from 1900. 19 dates are outside (out_of_range): ten
   have a year below 100 and nine are deaths in the nineteenth century.
   Three birth dates have a month written 00 with a day (unparsed).
 
   Death. Written Y or N for the parents and the grandparents, Oui or Non
-  for the others. The answer for the mother is almost never in the
-  extraction (115 mothers, against 4,142 fathers).
+  for the others. 4,303 mothers have an answer (727 have died) and 4,161
+  fathers (1,199). Until the first extraction of 13 November 2026 the
+  column of the mother (mere_dthfl) held something else, for 165 patients:
+  the export filled it from the anxiety question about the second brother
+  (the two columns were equal on every filled row). The data managers
+  corrected the mapping and ran the extraction again (decision D70 in
+  PROGRESS.md). The mother now follows the father: "no" comes with the
+  placeholder date, "yes" with a date or the placeholder, and the share of
+  "yes" is the same every year (13% to 21%; 23% to 37% for the fathers).
 
   Not delivered: the cause of death, a free text (8,258 cells).
 

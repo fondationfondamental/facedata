@@ -145,6 +145,23 @@ def test_version_from_the_columns_of_another_instrument():
     assert pd.isna(version[3]) and flagged(flags, "version_unknown") == [3]   # an answer, and nothing tells the form
 
 
+def test_a_form_is_not_read_before_the_day_it_came_into_use():
+    # The four visits hold the short form's item. The first is dated before the form existed.
+    raw = pd.DataFrame({"i1": ["1", "1", "1", "1"], "i2": ["", "", "2", "2"]})
+    keys = make_keys(["A", "B", "C", "D"], [0, 0, 0, 0], ["2019-06-01", "2021-01-01", "2019-06-01", "2022-03-01"])
+    keys.loc[3, "visit_date"] = pd.NaT
+    schema = {"version": {"name": "form", "filled": {"long": ["i2"], "short": ["i1"]}, "since": {"short": "2021-01-01"}},
+              "variables": {"a": {"columns": ["i1"]}, "b": {"columns": ["i2"]}}}
+    version, flags = detect_version(raw, keys, schema)
+    assert pd.isna(version[0]) and list(version[1:]) == ["short", "long", "long"]   # no fall back on the long form
+    assert flagged(flags, "version_unknown") == [0]
+    assert list(flags["detail"]) == ["dated before the form came into use"]
+    raw["i2"] = ""                                       # now the four visits look like the short form
+    version, flags = detect_version(raw, keys, schema)
+    assert version[1] == "short" and version[3] == "short"   # the first day counts; a visit with no date keeps its form
+    assert flagged(flags, "version_unknown") == [0, 2]
+
+
 def test_version_recorded_once_per_patient():
     usubjid = ["A", "A", "A", "B", "B", "C", "C", "C", "D", "D", "E"]
     months = [0, 12, 84, 0, 6, 0, 12, 60, 0, 6, 0]

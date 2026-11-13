@@ -3,6 +3,18 @@
 Written on 2026-11-13 from the extraction `BPALL_20261030.tsv` (22,070
 visits of 6,476 patients) and the dictionary `FACEBP_thesaurus_V4.34.xlsx`.
 
+Updated the same day with the first answers of the data managers and the
+extraction they ran again, `BPALL_20261113.tsv` (22,171 visits of 6,498
+patients). The answers are listed just below and repeated under each
+question; the questions that they raise are in section 5. The counts inside
+the questions are those of the extraction of 30 October.
+
+Updated again that evening with the answers to the follow-up questions of
+section 5 and a second run of the extraction, `BPALL_20261113_2.tsv` (the
+same visits and patients; the death of the mother is corrected). Each answer
+is written under its question in section 5. What is still to send is in
+section 6.
+
 Every column of the extraction is now read by the `facedata` package. Where
 the data were ambiguous, the package took a careful default and wrote it
 down. This document lists what only you can settle, so that the defaults can
@@ -27,6 +39,29 @@ short answer is enough; "we do not know" is a useful answer too.
 are not named, because this repository is public: their codes can be given
 on request. The schemas are still drafts: a clinician's review of each tab
 is a separate task (PI-12).
+
+**Answers received on 2026-11-13 (data managers)**
+
+| Question | Answer | What changed in the package |
+|---|---|---|
+| DEV-4 | The answers were right in the EMR and were lost in the cleaning step of the export: the text of an answer with an apostrophe did not match the mapping (Epworth answers 1 to 3, the fourth answer of `essdorm`, Fagerström "any other"), and one CSM answer was spelt differently. Corrected, extraction run again | Epworth is loaded; the Fagerström and CSM totals are complete (D64) |
+| DEV-5 (1) to (3) | The patients filled the full questionnaires until 2021. The centres changed in 2021 and 2022, not all three questionnaires in the same year everywhere. The AIM-40 was replaced by the AIM-20 too. No field records the form; the items of the long forms exist in the source database and are not exported | The AIM is split into `aim40` and `aim20` (D66); the rule that reads the form stays, with a flag on 9 early visits (D67). Part (4) is still open |
+| DEV-14, row `als57`; DM-7, ALS labels | `als57` is the mean of eight items of the long form on its visits and the mean of five of the 18 items on the others. `als56` is a depression-elation score, `als59` is anger | Nothing: it is what the schemas read (D67). One point differs from the extraction: FU-2 |
+| DM-3, DEV-10 (`formoppos`) | It is the raw code of the EMR for the non-opposition form. The export removes the patients with code 3 or 4, the oppositions; code 2 is kept on purpose | No patient to exclude (D68). The meaning of codes 1 and 2 is not documented: FU-5 |
+| DM-7 (`social_protec`) | 0 none, 1 curatelle, 2 tutelle, 3 sauvegarde de justice; the patients with code 3 are removed by the export | Nothing: it is the coding already used (D68) |
+| DM-8 (`isf08_qsdtc`) | The question was removed from the BP form; the source database no longer holds it | Nothing to load (D69). The four other columns of DM-8 are still open |
+
+**Answers received on 2026-11-13, second batch (follow-up questions of section 5)**
+
+| Question | Answer | What changed in the package |
+|---|---|---|
+| FU-1 | No column names the form today. Keep the rule | Nothing (D75) |
+| FU-2 | "About 125 visits" was wrong. The score step of the data managers writes into `als55` the mean of items 5, 12, 16, 17 and 20 on every visit where the five are answered, in both forms | Nothing: the schemas already read it that way (D72) |
+| FU-3 | Most probably long forms with unanswered items; better to drop these questionnaires on these visits | A reduced questionnaire is no longer delivered on a visit dated before 2021: 8 visits per questionnaire (D71). The extraction suggests another cause: FU-10 |
+| FU-4 | No opposition. These patients are registered in two centres and have two records; each run keeps one of them at random. 23 of the 41 new patients are really new | Nothing. The identifier and the centre of these patients are not stable (D73): FU-9 |
+| FU-5 | No documented definition of codes 1 and 2. `social_protec` comes from another form, which may be missing or out of date | Nothing (D75). The question goes to the EMR developers (DEV-10) |
+| FU-6 | Every lookup table of the four cohorts was checked. `rad_tb_subst` is empty on purpose; `mere_dthfl` was a mapping error, corrected, and the BP extraction was run again; `empjob` needs a mapping from the list of the form to the nine classes of the dictionary | The death of the mother is delivered for 4,303 patients (D70). `empjob` waits for the mapping (D74): FU-8 |
+| FU-7 | Intended. Since 10 November the five sub-scores are recalculated from the items with one formula for every year | Nothing (D75) |
 
 | Recipient | A | B | C | Questions |
 |---|---|---|---|---|
@@ -99,6 +134,9 @@ corrected?** (O24, D33)
 - Today: the Epworth is not delivered as a score; the two other totals are
   missing on these visits.
 - Your answer changes: three scores become usable.
+- **Answered on 2026-11-13: corrected.** In the extraction of 13 November
+  the Epworth total exists on 16,648 visits, the Fagerström total on 5,738
+  and the CSM total on 6,076, each equal to the sum of its items (D64).
 
 **DEV-5. Reduced questionnaires of 2021-2022: which form was used at each
 visit?** (O30, O23, D47)
@@ -117,6 +155,10 @@ visit?** (O30, O23, D47)
 - Today: one schema per form; one schema `aim` for all visits.
 - Your answer changes: the 49 WURS visits, the split of the AIM, and the
   proof that the long and short forms are never mixed.
+- **Answered on 2026-11-13, parts (1) to (3).** (1) Not everywhere in the
+  same year: see the table of answers. (2) Yes: the AIM is now two schemas
+  (D66). (3) No field records the form, so the question becomes a request
+  (FU-1). Part (4) is still open.
 
 **DEV-6. Computed scores whose rule changed over the years: is there a list
 of the changes with their dates?** (D13, D34, D42, D43)
@@ -173,7 +215,10 @@ of the changes with their dates?** (D13, D34, D42, D43)
 
 **DEV-10. Columns and codes with no documented meaning.** (O16, O34, O35)
 - `formoppos`: 1 for 610 patients, 2 for 3 patients, mostly from 2021. Is it
-  an opposition to the use of the data? See DM-3.
+  an opposition to the use of the data? See DM-3. **Answered on 2026-11-13:
+  no (D68). The data managers have no documented definition of codes 1 and
+  2 (D75): what do they mean in the application? This is now a question for
+  the EMR developers only.**
 - `rad_agethym` (915 ages, from 2020): which age is it? It looks like the
   age at the first mood stabiliser.
 - `saltyp` (main source of income): code 8 "other" never appears, and code 7
@@ -184,7 +229,9 @@ of the changes with their dates?** (D13, D34, D42, D43)
   leave (`rad_arret_travail`, `arret_travail_nb`, `arret_travail_duree`)
   have no label.
 - `empjob` (class of the current job): two of its nine codes are exported
-  (122 of 2,300 employed patients).
+  (122 of 2,300 employed patients). **Answered on 2026-11-13 (D74): the
+  form offers about 17 classes and the export looks them up in the nine of
+  the dictionary. A mapping is proposed in FU-8.**
 
 **DEV-11. `dsm_criteria`: how does the export decide between DSM-IV and
 DSM-5?** (D12)
@@ -221,7 +268,7 @@ list to correct at the source; each is already neutralised in the package.
 | 0 when nothing was measured | Heart rate (20), creatinine clearance (246), perinatal measures in 2009-2010 (57 visits) | |
 | The day of birth set to 15 | All patients | 6,476 |
 | The unit chosen on the form is not exported | LDL cholesterol chosen as g/L, labelled mmol/L | 246 results |
-| `rad_tb_subst` loses the "unknown" answers | 94 "U" are empty in it | |
+| `rad_tb_subst` leaves the "unknown" answers empty | 95 "U" are empty in it. Answered on 2026-11-13: on purpose; the full answer is in `rad_tb_subst_raw` (D74) | |
 
 **DEV-14. Stored scores that do not follow their items, and names.**
 
@@ -238,7 +285,7 @@ list to correct at the source; each is already neutralised in the package.
 | PSQI: minutes to fall asleep multiplied by 60, or a bedtime | 277 and 83 values |
 | WAIS-IV digit-span summary columns are shifted against their labels | 4 columns |
 | WAIS-IV vocabulary is stored in columns named `vocab*_wais3` | 2,107 visits |
-| `als57` holds two different scores depending on the form | All ALS-18 visits |
+| `als57` holds two different scores depending on the form. **Confirmed on 2026-11-13 (D67)** | All ALS-18 visits |
 | A column name is cut: `connaissance_centre_expert_preci` | |
 | Names that differ from the dictionary: `lost_to_follow_up_chgdiag_stopsuivi`, `date_saise_neuropsychologie`, the CPT-3 columns | |
 | Legacy columns still exported: second ratings `_n1` of MADRS and YMRS | 23 columns |
@@ -294,6 +341,11 @@ norm tables.
 - Question: what do the codes mean? If 2 is an opposition, these 3 patients
   may have to be removed from every extraction.
 - Today: delivered with its codes as written.
+- **Answered on 2026-11-13.** Codes 3 and 4 are the oppositions, and the
+  export already removes these patients; code 2 is kept on purpose. Nobody
+  is to be removed here (D68). What codes 1 and 2 mean is not documented:
+  the data managers have no definition (D75), so the question is with the
+  EMR developers (DEV-10).
 
 ### Priority B
 
@@ -367,6 +419,8 @@ asked?
 hold.** Were they dropped on purpose? `isf08_qsdtc` (date of the most
 violent attempt), `hooccur_hospitalisation_ly`, `nom_centre_expert`,
 `armcd`, `ageu`. `nom_centre` is in the extraction and empty on every row.
+**Answered on 2026-11-13 for `isf08_qsdtc`:** the question was removed from
+the BP form (D69). The four others are still open.
 
 **DM-9. Screening rows.** The extraction holds 3,973 screening rows that
 carry almost no measure. Are they needed, and should anything be read from
@@ -499,3 +553,160 @@ Three things would improve the standard scores more than anything else:
    the ones already received;
 3. the list of the dates at which the application changed a norm or a
    formula (DEV-6).
+
+## 5. Follow-up questions after the answers of 2026-11-13
+
+For the data managers. They come from the comparison of the two extractions
+(30 October and 13 November 2026) and from the answers themselves.
+
+**FU-1. A column that names the form of the ALS, the AIM and the WURS.**
+(O30, D67) No field records the form, and it can only be told from the
+items answered, which the extraction does not hold for the long forms. Can
+the export add, for each of the three questionnaires, a column that says
+which form the visit used, computed where all the items are available? Or
+export the items of the long forms and their scores? Today the form is
+read from the ALS score of the long form and the BIS of the same visit: 49
+WURS and 4 AIM visits have no form and are not delivered, and the rule
+cannot be checked for the WURS and the AIM.
+- **Answered on 2026-11-13.** There is no such column today; keep the rule
+  (D75). The limit stays written in the schemas (O30).
+
+**FU-2. `als55`.** (O42) The answer says that it exists only on about 125
+visits of the reduced form. In the extraction it is filled on 6,135 visits
+from 2009 to 2026 and equals the mean of items 5, 12, 16, 17 and 20 on
+every visit that has the 18 items. The same holds for `als56`, `als59` and
+`als_` on the long-form visits. Which layer computes these scores?
+- **Answered on 2026-11-13.** "About 125" was wrong. The score step of the
+  data managers, which runs after their models, writes into `als55` the
+  mean of items 5, 12, 16, 17 and 20 on every visit where the five are
+  answered, in the long and in the reduced form alike. The extraction
+  agrees on each of the 6,135 rows (D72). It is the anxiety-depression
+  score of the 18 items in a column labelled "Depression": the label of the
+  dictionary should be corrected (DM-7).
+
+**FU-3. Reduced forms before 2021.** (D67) The answer says that no visit
+holds only the reduced items before 2021. 9 visits dated before 2021 hold
+ALS or BIS answers and nothing that only the long questionnaires have (no
+score of the 54-item ALS, no item that only the BIS-10 has). Are they long
+questionnaires with unanswered items, or visits typed long after their
+date? Today they are read as reduced forms and flagged.
+- **Answered on 2026-11-13.** Most probably long forms with unanswered
+  items; better to drop these questionnaires on these visits. Done: a
+  reduced ALS, WURS, AIM or BIS is not delivered on a visit dated before
+  2021 (8 visits per questionnaire, flagged `version_unknown`; D71). The
+  extraction points to another cause: see FU-10.
+
+**FU-4. Patients who left the extraction.** (O41) 19 patients (77 visits)
+of the extraction of 30 October are not in that of 13 November, and 41
+patients are new, with visits dated from 2011 to 2026. What removed and
+added them? If the 19 opposed the use of their data, the tables exported
+from the earlier extraction must be cleaned.
+- **Answered on 2026-11-13.** No opposition. The same patient code is in
+  the new file under another `usubjid` and another centre: these patients
+  are registered in two centres, the patient table keeps one record per
+  patient code with no ordering, and each run can pick the other record.
+  23 of the 41 new patients are really new (D73). Nothing to clean. What
+  it means for the identifier and the centre is asked in FU-9.
+
+**FU-5. `formoppos`, codes 1 and 2.** (O16) What does code 1 mean? Code 2
+was read as the form signed under curatelle; none of the 3 patients with
+code 2 is recorded under curatelle in `social_protec` (2 have no answer, 1
+has no measure). Can the EMR developers give the list of the codes?
+- **Answered on 2026-11-13.** The data managers have no documented
+  definition of codes 1 and 2; "signed under curatelle" was their reading
+  of the raw data. `social_protec` comes from the social assessment, a
+  separate form that may be missing or out of date, so it cannot settle
+  the point (D75). The question stays open, for the EMR developers
+  (DEV-10).
+
+**FU-6. Other answers that the same defect may lose.** (D63) The cleaning
+step lost the answers whose text did not match its mapping. Were all the
+mappings checked, or only the four that we reported? Three columns look
+alike and did not change: `rad_tb_subst` (its "U" answers are empty, while
+`rad_tb_subst_raw` holds them), `empjob` (two of its nine codes occur) and
+`mere_dthfl` (filled on 172 rows, against 4,358 for `pere_dthfl`).
+- **Answered on 2026-11-13.** Every lookup table of the four cohorts was
+  checked: BP (Epworth, Fagerström, CSM item 7) and SZ (Fagerström,
+  Birchwood, SOGS, physical activity) were affected and are corrected; ASP
+  and DR are not affected (D74). The three columns have other causes.
+  `rad_tb_subst`: "Ne sais pas" is left empty on purpose in this 0/1
+  column; the full answer is in `rad_tb_subst_raw`, which the package
+  reads. `mere_dthfl`: a mapping error (the column was filled from the
+  anxiety question about the second brother), corrected in a second run of
+  the BP extraction: the answer is now there for 4,303 patients and
+  behaves like the father's (D70). `empjob`: the export uses the nine
+  classes of the dictionary, the form offers about 17; the data managers
+  ask for the mapping (FU-8).
+
+**FU-7. MAThyS sub-scores.** (D65) In the extraction of 13 November the
+stored sub-scores `mathys29` to `mathys33` follow one rule in every year
+(the reversed items); in that of 30 October they were plain sums until
+2021. Was this recomputation intended, and where is it done? It is welcome:
+the stored sub-scores now equal ours.
+- **Answered on 2026-11-13.** Intended. Since the change of 10 November the
+  five sub-scores are recalculated from the items with one formula for
+  every year, instead of the values stored in the EMR (D75).
+
+## 6. Still to send after the second answers of 2026-11-13
+
+**FU-8. `empjob`: the mapping that the data managers ask for.** (O43, D74)
+For the data managers, after the principal investigator has agreed. The
+nine classes of the dictionary are the eight groups of the INSEE
+nomenclature of occupations and socio-professional categories, plus
+"other". The classes of the form are the second level of the same
+nomenclature, in which every class belongs to one group. The mapping is
+therefore the nesting of the nomenclature itself:
+
+| Class on the form | Class of the dictionary |
+|---|---|
+| Agriculteur exploitant | 1 agriculteurs exploitants |
+| Artisan; Commerçant et assimilé; Chef d'entreprise de 10 salariés ou plus (if the list has it) | 2 artisans, commerçants, chefs d'entreprise |
+| Profession libérale et assimilé; Cadre de la fonction publique, profession intellectuelle et artistique; Cadre d'entreprise | 3 cadres et professions intellectuelles supérieures |
+| Profession intermédiaire de l'enseignement, de la santé, de la fonction publique et assimilés; Profession intermédiaire administrative et commerciale des entreprises; Technicien; Contremaître, agent de maîtrise | 4 professions intermédiaires |
+| Employé de la fonction publique; Employé administratif d'entreprise; Employé de commerce; Personnel de service direct aux particuliers | 5 employés |
+| Ouvrier qualifié; Ouvrier non qualifié; Ouvrier agricole | 6 ouvriers |
+| No class of the form | 7 retraités; 8 autres personnes sans activité professionnelle; 0 autres |
+
+- The 17 classes above are those that the extraction holds for the same
+  question at follow-up (`empjob_psytaitement`). We have not seen the list
+  of the source for `empjob`: can you send its distinct labels with their
+  counts, so that none is left out? If it also holds answers such as
+  "retired" or "no occupation", they go to 7 and 8.
+- A simpler way, which loses nothing: export the label of the form as it
+  is, as `empjob_psytaitement` already is. The package then delivers the
+  detailed class, and the nine groups can be derived from it.
+- To settle by the PI: is the nesting above the grouping wanted for the
+  analyses?
+- Today: `empjob` is not loaded.
+
+**FU-9. Patients registered in two centres.** (O41, D73) For the data
+managers.
+- What it means: for these patients the identifier (`usubjid`) and the
+  centre (`siteid`) can change at each run. Two extractions cannot be
+  joined on `usubjid` for them, and their visits move from one centre to
+  another in the comparisons between centres.
+- Can the export always keep the same record (the first registration, or
+  the centre of each visit)?
+- Can it hold an identifier that does not change from one run to the next,
+  a pseudonym of the patient code?
+- How many patients are registered in two centres? Are the visits made in
+  both centres exported under the record that is kept?
+- 19 patients left and, by your count, 18 came back under another
+  identifier. What about the last one? From the extraction we can match 14
+  of the 19 (same birth month, sex and first visit date, in another
+  centre).
+- Between the two runs of 13 November, one questionnaire of one visit of
+  2024 changed (six cells of the PRISE-M). An edit in the EMR in between,
+  or two records of the same form?
+- Today: loaded as extracted.
+
+**FU-10. The reduced questionnaires dated before 2021 look complete.**
+(D71) For the data managers; a remark more than a question. The visits
+that we no longer deliver do not look like long forms with unanswered
+items: seven of the eight hold the 18 ALS answers, all hold the 25 WURS
+and the 20 AIM answers, and their BIS holds the twelve items of the BIS-12
+and none of the 22 others. They look like reduced questionnaires typed
+under an early visit date. Can the visit dates of these 9 visits be
+checked in the EMR? Their identifiers can be given on request. If the date
+is wrong and is corrected, the questionnaires come back by themselves.
+- Today: not delivered, flagged `version_unknown`.

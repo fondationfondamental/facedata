@@ -45,26 +45,7 @@ rad_tcmh: unit choice, already in mch_lborresu
 rad_ccmh: unit choice, already in mchc_lborresu
 rad_prolactine: unit choice, already in prolctn_lborresu
 
-# Epworth sleepiness scale. The export keeps only the answers equal to 0: an item is 0 or
-# empty, never 1, 2 or 3, and the total is filled only when the eight items are 0. An empty
-# cell is then an answer of 1 to 3 or no answer at all, so the scale cannot be used.
-ess0101: only the answers equal to 0 are exported
-ess0102: only the answers equal to 0 are exported
-ess0103: only the answers equal to 0 are exported
-ess0104: only the answers equal to 0 are exported
-ess0105: only the answers equal to 0 are exported
-ess0106: only the answers equal to 0 are exported
-ess0107: only the answers equal to 0 are exported
-ess0108: only the answers equal to 0 are exported
-ess0109: Epworth total, filled only when it is 0
-essdorm: question that follows the Epworth items; one of its four answers never occurs
-
 # Stored scores that a schema replaces or does not need.
-mathys29: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
-mathys30: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
-mathys31: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
-mathys32: MAThyS sub-score, recomputed in mathys.yaml
-mathys33: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
 psqi15: PSQI component 1, a copy of item 6 (psqi06)
 psqi16: PSQI component 6, a copy of item 7 (psqi07)
 ctq41: 1 when the CTQ denial score (ctq40) is 1 or more
@@ -81,7 +62,7 @@ tmtb05a_: TMT part B, percentile of the perseverative errors; three rules over t
 tmtba02a_: TMT B minus A, percentile of the errors; three rules over the years
 
 # SUBSTANCES ET COMORBIDITE
-rad_tb_subst: a copy of rad_tb_subst_raw written as 0 and 1, in which the "unknown" answers are empty
+rad_tb_subst: a copy of rad_tb_subst_raw written as 0 and 1, in which the "unknown" answers are left empty on purpose
 
 # EVALUATION MEDICALE, lifetime mood episodes. The export writes "Y" where the count of the row is 1 or more
 # and "N" everywhere else, also where the count is unknown or empty and on every row of the other visits.
@@ -94,7 +75,7 @@ mhoccur_epman_psy_spv: a copy of mhoccur_epman_psy_lt, identical on every row
 mhoccur_epmixt_psy_spv: a copy of mhoccur_epmixt_psy_lt, identical on every row
 
 # SOCIAL
-empjob: class of the current job; the export keeps two of its nine codes (122 of 2,300 employed patients)
+empjob: class of the current job; the export keeps two of its nine codes (122 of 2,300 employed patients); the 17 classes of the form are not the nine of the dictionary (D74, O43)
 protec: the legal protection measure; the same answers as social_protec, delivered as protection_measure
 
 # ANTECEDENTS, family history (decision D58 in docs/bp/PROGRESS.md)

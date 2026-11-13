@@ -20,7 +20,7 @@ Out of scope: imputation, scaling, one-hot encoding. Missing stays missing.
 
 | Fact | Consequence |
 |---|---|
-| Each cohort has one extraction, one row per patient visit and one column per variable (BP: 22,077 × 2,236) | The pipeline works column by column |
+| Each cohort has one extraction, one row per patient visit and one column per variable (BP: 22,178 × 2,236) | The pipeline works column by column |
 | `.csv`, `.tsv` and `_sc.csv` hold the same content; the `.xlsx` has types already coerced by Excel | The source is the `.tsv`, read as text |
 | The data dictionary (thesaurus) maps names and labels but has no types, units, ranges, missing codes or versions | Schemas carry that information; the thesaurus only seeds them |
 | Key columns have the same names in all four cohorts | Keys and visits are handled once, in generic code |
@@ -65,7 +65,7 @@ tests/            small hand-written tables only
 ```python
 from facedata import bp
 
-result = bp.load("data/bp/BPALL_20261030.tsv")              # every instrument that has a schema
+result = bp.load("data/bp/BPALL_20261113_2.tsv")              # every instrument that has a schema
 result = bp.load(path, instruments=["madrs", "biochimie"])  # or only some
 result = bp.load(path, norms="norms")                       # folder of the norm tables (the default)
 
@@ -316,7 +316,7 @@ A schema says how to recognise its visits: from a version column
 (`wais_version`), from which items are filled (BIS), or from a column that is
 filled once per patient (the DSM criteria, recorded at inclusion). The items
 may be those of another questionnaire of the same visit, when the
-instrument's own columns do not tell its form (ALS, WURS).
+instrument's own columns do not tell its form (ALS, WURS, AIM).
 `detect_version` gives every visit its edition; each variable is then read
 only on the visits of its schema's edition and is missing elsewhere, without
 a flag.
@@ -329,7 +329,9 @@ at all, the version that the schema attaches to the patient's inclusion date
 (`version_inferred`).
 
 A visit with data but no recognisable edition gets `version_unknown`, and the
-variables that depend on the edition are missing.
+variables that depend on the edition are missing. The same holds for a visit
+dated before the day its edition came into use, when the schema gives that
+day (`since`).
 
 ### Step 8: sign conventions
 
