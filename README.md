@@ -17,6 +17,7 @@ The other BP instruments are added one by one; see
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
 | [docs/SCHEMA_SPEC.md](docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
 | [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
+| [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The questions that only the EMR developers, the data manager or the principal investigator can settle, sorted by recipient and priority, and the state of the norms |
 | [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
 
 ## Use
