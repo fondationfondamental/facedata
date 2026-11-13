@@ -1,0 +1,105 @@
+instrument: skin_history_v0
+title: "Medical history: skin diseases (inclusion visit)"
+tab: ANTECEDENTS
+section: Pathologies dermatologiques
+status: draft
+notes: >
+  Psoriasis, acne, eczema, drug eruption and major hair loss. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code.
+
+  Lithium and valproic acid. For psoriasis and acne the form asks whether
+  the disease was triggered or worsened by lithium, and for hair loss by
+  valproic acid. After a "yes" two boxes say which: triggered, worsened.
+  These two are 0 after a "no" (asked_if) and missing when the first question
+  is not answered.
+
+  Drug eruption. The type is a simple rash, a Lyell syndrome or a
+  Stevens-Johnson syndrome. The drugs are boxes ticked in one cell
+  ("Antibiotiques,AINS"): one yes/no variable per box.
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  349 of the 681 "yes" of this section that are answered again (35 of 111 for psoriasis, 51 of 85 for a drug eruption). The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  From 2022 the section is mostly left empty (open question O37). Until 2021
+  it is answered at 87% of the inclusion visits, from 2022 at 31%, and the
+  answered visits hold more "yes": 1.03 per visit against 0.53. The section seems to
+  be opened only for a patient who has one of its diseases. From 2022 the
+  share of "yes" among the answers (23.9% against 10.6%) is therefore not a
+  prevalence. The values are delivered as recorded: an empty section is
+  missing, not "no". The yearly visits answer the section at 31% of the
+  visits until 2021 and at 5% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026. One date of onset of psoriasis is in the nineteenth century: out_of_range.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  psoriasis_v0: {column: psoriasis_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis, at inclusion"}
+  psoriasis_lithium_v0: {column: psoriasis_mhmodify_lithium, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: triggered or worsened by lithium, at inclusion"}
+  psoriasis_start_v0: {column: psoriasis_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Psoriasis: date of onset, at inclusion"}
+  psoriasis_treated_v0: {column: psoriasis_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: treated, at inclusion"}
+  psoriasis_controlled_v0: {column: psoriasis_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: controlled, at inclusion"}
+  psoriasis_triggered_by_lithium_v0: {column: psoriasis_mhmodify_decl, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: psoriasis_lithium_v0, label: "Psoriasis: triggered by lithium, at inclusion"}
+  psoriasis_worsened_by_lithium_v0: {column: psoriasis_mhmodify_agg, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: psoriasis_lithium_v0, label: "Psoriasis: worsened by lithium, at inclusion"}
+  acne_v0: {column: acne_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne, at inclusion"}
+  acne_start_v0: {column: acne_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acne: date of onset, at inclusion"}
+  acne_treated_v0: {column: acne_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: treated, at inclusion"}
+  acne_controlled_v0: {column: acne_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: controlled, at inclusion"}
+  acne_lithium_v0: {column: acne_mhmodify_lithium, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: triggered or worsened by lithium, at inclusion"}
+  acne_triggered_by_lithium_v0: {column: acne_mhmodify_decl, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: acne_lithium_v0, label: "Acne: triggered by lithium, at inclusion"}
+  acne_worsened_by_lithium_v0: {column: acne_mhmodify_agg, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: acne_lithium_v0, label: "Acne: worsened by lithium, at inclusion"}
+  eczema_v0: {column: eczema_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema, at inclusion"}
+  eczema_start_v0: {column: eczema_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Eczema: date of onset, at inclusion"}
+  eczema_treated_v0: {column: eczema_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: treated, at inclusion"}
+  eczema_controlled_v0: {column: eczema_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: controlled, at inclusion"}
+  drug_eruption_v0: {column: toxidermi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug eruption, at inclusion"}
+  drug_eruption_start_v0: {column: toxidermi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug eruption: date of onset, at inclusion"}
+  drug_eruption_type_v0: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens-Johnson": stevens_johnson}, label: "Drug eruption: type, at inclusion"}
+  drug_eruption_antibiotic_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 1, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption, the drug: an antibiotic, at inclusion"}
+  drug_eruption_nsaid_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 1, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption, the drug: an anti-inflammatory drug, at inclusion"}
+  drug_eruption_anticonvulsant_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 1, "Autres médicaments": 0}, label: "Drug eruption, the drug: an anticonvulsant, at inclusion"}
+  drug_eruption_other_drug_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 1}, label: "Drug eruption, the drug: another drug, at inclusion"}
+  hair_loss_v0: {column: cheveux_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss, at inclusion"}
+  hair_loss_start_v0: {column: cheveux_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Major hair loss: date of onset, at inclusion"}
+  hair_loss_treated_v0: {column: cheveux_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: treated, at inclusion"}
+  hair_loss_controlled_v0: {column: cheveux_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: controlled, at inclusion"}
+  hair_loss_valproate_v0: {column: cheveux_mhmodify_dep, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: triggered or worsened by valproic acid, at inclusion"}
+  hair_loss_triggered_by_valproate_v0: {column: cheveux_mhmodify_decl, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: hair_loss_valproate_v0, label: "Major hair loss: triggered by valproic acid, at inclusion"}
+  hair_loss_worsened_by_valproate_v0: {column: cheveux_mhmodify_agg, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: hair_loss_valproate_v0, label: "Major hair loss: worsened by valproic acid, at inclusion"}

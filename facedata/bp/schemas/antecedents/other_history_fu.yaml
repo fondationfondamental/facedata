@@ -1,0 +1,110 @@
+instrument: other_history_fu
+title: "Medical history: cancers, infections, surgery, eye and other diseases (yearly follow-up visits)"
+tab: ANTECEDENTS
+section: Autres pathologies
+status: draft
+notes: >
+  Cancer, HIV infection, chronic viral hepatitis and its virus, major
+  surgery, genetic disease, "another somatic disease", and the eye diseases.
+  Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code. "Unknown" is frequent for HIV and viral hepatitis (164 and 169
+  inclusion visits). The surgery, the genetic disease, the other somatic
+  disease and the cancer are named in free texts delivered as written.
+
+  Cancer. The types are boxes ticked in one cell (gynaecological, digestive,
+  ear nose and throat, lung, other), delivered as one yes/no variable each.
+
+  Eye diseases. One yes/no question, then angle-closure glaucoma, chronic
+  open-angle glaucoma and cataract, which are 0 after a "no" (asked_if). The
+  treatment under which an angle-closure glaucoma started is filled in one
+  cell and is not read.
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  305 of the 660 "yes" of this section that are answered again (9 of 37 for a cancer, 78 of 130 for a major surgery, 142 of 366 for another somatic disease). The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  From 2022 the section is mostly left empty (open question O37). Until 2021
+  it is answered at 86% of the inclusion visits, from 2022 at 39%, and the
+  answered visits hold more "yes": 0.72 per visit against 0.47. The section seems to
+  be opened only for a patient who has one of its diseases. From 2022 the
+  share of "yes" among the answers (9.0% against 4.8%) is therefore not a
+  prevalence. The values are delivered as recorded: an empty section is
+  missing, not "no". The yearly visits answer the section at 32% of the
+  visits until 2021 and at 11% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  cancer_fu: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at follow-up"}
+  cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of diagnosis, at follow-up"}
+  cancer_gynaecological_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 1, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: gynaecological, at follow-up"}
+  cancer_digestive_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 1, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: digestive, at follow-up"}
+  cancer_ent_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 1, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: ear, nose and throat, at follow-up"}
+  cancer_lung_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 1, "Autre cancers": 0}, label: "Cancer, the type: lung, at follow-up"}
+  cancer_other_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 1}, label: "Cancer, the type: another cancer, at follow-up"}
+  cancer_text_fu: {column: neoplasi_mhmodify, type: text, label: "Cancer: which one, as written, at follow-up"}
+  hiv_fu: {column: vih_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection, at follow-up"}
+  hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "HIV infection: date of diagnosis, at follow-up"}
+  hiv_treated_fu: {column: vih_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: treated, at follow-up"}
+  hiv_controlled_fu: {column: vih_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: controlled, at follow-up"}
+  chronic_viral_hepatitis_fu: {column: hvc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis, at follow-up"}
+  chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
+  chronic_viral_hepatitis_virus_fu: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: the virus, at follow-up"}
+  chronic_viral_hepatitis_treated_fu: {column: hvc_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: treated, at follow-up"}
+  chronic_viral_hepatitis_controlled_fu: {column: hvc_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: controlled, at follow-up"}
+  major_surgery_fu: {column: atdchir_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major surgery, at follow-up"}
+  major_surgery_text_fu: {column: atdchir_mhmodify, type: text, label: "Major surgery: which one, as written, at follow-up"}
+  genetic_disease_fu: {column: genetique_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Genetic disease, at follow-up"}
+  genetic_disease_text_fu: {column: genetique_mhmodify, type: text, label: "Genetic disease: which one, as written, at follow-up"}
+  other_somatic_fu: {column: autsomat_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another somatic disease, at follow-up"}
+  other_somatic_text_fu: {column: autsomat_mhmodify, type: text, label: "Another somatic disease: which one, as written, at follow-up"}
+  eye_disease_fu: {column: rad_somat_opht, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "An eye disease, at follow-up"}
+  closed_angle_glaucoma_fu: {column: glaucomef_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Angle-closure glaucoma, at follow-up"}
+  closed_angle_glaucoma_diagnosis_fu: {column: glaucomef_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Angle-closure glaucoma: date of diagnosis, at follow-up"}
+  closed_angle_glaucoma_under_treatment_fu: {column: glaucomef_mhmodify_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Angle-closure glaucoma: started under a treatment, at follow-up"}
+  open_angle_glaucoma_fu: {column: glaucomeo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Chronic open-angle glaucoma, at follow-up"}
+  open_angle_glaucoma_start_fu: {column: glaucomeo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic open-angle glaucoma: date of onset, at follow-up"}
+  open_angle_glaucoma_treated_fu: {column: glaucomeo_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic open-angle glaucoma: treated, at follow-up"}
+  open_angle_glaucoma_controlled_fu: {column: glaucomeo_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic open-angle glaucoma: controlled, at follow-up"}
+  cataract_fu: {column: cataracte_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Cataract, at follow-up"}
+  cataract_start_fu: {column: cataracte_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cataract: date of onset, at follow-up"}
+  cataract_treated_fu: {column: cataracte_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cataract: treated, at follow-up"}
+  cataract_controlled_fu: {column: cataracte_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cataract: controlled, at follow-up"}

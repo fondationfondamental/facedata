@@ -1,0 +1,89 @@
+instrument: allergic_history_v0
+title: "Medical history: allergic and inflammatory diseases (inclusion visit)"
+tab: ANTECEDENTS
+section: Pathologies allergiques et inflammatoires
+status: draft
+notes: >
+  One yes/no question (does the patient have an allergic or inflammatory
+  disease), then a list of five boxes: asthma, allergy other than asthma,
+  lupus, rheumatoid arthritis, another autoimmune disease. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code.
+
+  The list. The boxes ticked are written in one cell ("Asthme (allergique ou
+  non),Lupus") and delivered as one yes/no variable each. They are 0 after a
+  "no" to the first question (asked_if), and missing when it is "unknown" or
+  when the list is empty after a "yes". The extraction also holds one 0/1
+  column per disease, written by the export on every row: where the list is
+  filled they say the same as the list, elsewhere they are 0 whatever the
+  first answer. They are not read.
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  373 of the 715 "yes" of this section that are answered again (60 of 130 for asthma, 137 of 219 for an allergy). The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  This section is not emptied in 2022 like the others (open question O37):
+  it is answered at 87% of the inclusion visits until 2021 and at 81% from
+  2022, with the same share of "yes" among the answers (8.8% and 8.0%). The
+  yearly visits answer it at 31% of the visits until 2021 and at 19% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026. "Another autoimmune disease" is named in a free text delivered as written.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  allergic_inflammatory_v0: {column: somat_all, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "An allergic or inflammatory disease, at inclusion"}
+  asthma_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Asthme (allergique ou non)": 1, "Allergies hors asthme": 0, "Lupus": 0, "Polyarthrite rhumatoïde": 0, "Autres maladies auto-immunes": 0}, asked_if: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: asthma, at inclusion"}
+  allergy_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Asthme (allergique ou non)": 0, "Allergies hors asthme": 1, "Lupus": 0, "Polyarthrite rhumatoïde": 0, "Autres maladies auto-immunes": 0}, asked_if: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: an allergy other than asthma, at inclusion"}
+  lupus_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Asthme (allergique ou non)": 0, "Allergies hors asthme": 0, "Lupus": 1, "Polyarthrite rhumatoïde": 0, "Autres maladies auto-immunes": 0}, asked_if: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: lupus, at inclusion"}
+  rheumatoid_arthritis_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Asthme (allergique ou non)": 0, "Allergies hors asthme": 0, "Lupus": 0, "Polyarthrite rhumatoïde": 1, "Autres maladies auto-immunes": 0}, asked_if: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: rheumatoid arthritis, at inclusion"}
+  other_autoimmune_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Asthme (allergique ou non)": 0, "Allergies hors asthme": 0, "Lupus": 0, "Polyarthrite rhumatoïde": 0, "Autres maladies auto-immunes": 1}, asked_if: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: another autoimmune disease, at inclusion"}
+  asthma_start_v0: {column: asthme_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Asthma: date of onset, at inclusion"}
+  asthma_treated_v0: {column: asthme_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Asthma: treated, at inclusion"}
+  asthma_controlled_v0: {column: asthme_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Asthma: controlled, at inclusion"}
+  allergy_start_v0: {column: allergie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Allergy: date of onset, at inclusion"}
+  allergy_treated_v0: {column: allergie_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Allergy: treated, at inclusion"}
+  allergy_controlled_v0: {column: allergie_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Allergy: controlled, at inclusion"}
+  lupus_start_v0: {column: lupus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Lupus: date of onset, at inclusion"}
+  lupus_treated_v0: {column: lupus_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus: treated, at inclusion"}
+  lupus_controlled_v0: {column: lupus_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus: controlled, at inclusion"}
+  rheumatoid_arthritis_start_v0: {column: polyarthr_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Rheumatoid arthritis: date of onset, at inclusion"}
+  rheumatoid_arthritis_treated_v0: {column: polyarthr_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis: treated, at inclusion"}
+  rheumatoid_arthritis_controlled_v0: {column: polyarthr_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis: controlled, at inclusion"}
+  other_autoimmune_start_v0: {column: autautoim_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another autoimmune disease: date of onset, at inclusion"}
+  other_autoimmune_text_v0: {column: autautoim_mhmodify, type: text, label: "Another autoimmune disease: which one, as written, at inclusion"}

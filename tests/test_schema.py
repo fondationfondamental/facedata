@@ -177,14 +177,17 @@ variables:
   no_such: {asked_if: nothing}
   a_count: {type: number, range: [0, 50], asked_if: disorder}
   a_rating: {range: [1, 5], asked_if: disorder}
-  after_a_count: {asked_if: a_count}
+  after_a_number: {asked_if: a_count}
+  how_many: {range: [0, 20]}
+  how_many_of_them: {range: [0, 20], asked_if: how_many}
+  after_a_rating: {asked_if: a_rating}
 """
 
 
 def test_asked_if_names_a_yes_no_question_listed_before(tmp_path):
     problems = check_schema(load_schema(write(tmp_path, "asked", ASKED)))
-    # A box or a count may be asked after a yes/no question; a rating that cannot be 0 may not,
-    # and the question named must itself be a yes/no.
-    for name in ["too_early", "no_such", "a_rating", "after_a_count"]:
-        assert f"asked: {name}: asked_if must name a yes/no item listed before" in " | ".join(problems), name
-    assert len(problems) == 4
+    # A box or a count may be asked after a yes/no question or after a count of whole things ("how many of them");
+    # a rating that cannot be 0 may not, and the question named cannot be a measure or a rating.
+    for name in ["too_early", "no_such", "a_rating", "after_a_number", "after_a_rating"]:
+        assert f"asked: {name}: asked_if must name a yes/no item or a count" in " | ".join(problems), name
+    assert len(problems) == 5

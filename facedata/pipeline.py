@@ -12,10 +12,12 @@ from facedata.harmonise import (band_from_table, censoring_from_units, check_ran
 from facedata.parse import clean_text, own_cells, parse_column, split_missing
 from facedata.qc import qc_table
 from facedata.read import prepare_visits, read_extraction, read_norms
-from facedata.schema import check_cohort, check_schema, load_schemas
+from facedata.relatives import stack_relatives, summarise_relatives
+from facedata.schema import check_cohort, check_schema, load_schemas, raw_columns
 from facedata.tokens import EMPTY_DATE, KEY_COLUMNS
+from facedata.treatments import at_visit, open_lists
 
-Result = namedtuple("Result", ["data", "patients", "flags", "qc"])
+Result = namedtuple("Result", ["data", "patients", "flags", "qc", "treatments", "relatives"])
 
 
 def read_text(raw, version, name, variable):
@@ -189,6 +191,62 @@ def once_per_patient(result, table, keys):
     return result
 
 
+def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None):
+    """An instrument whose cells hold lists: one row per patient and item (SCHEMA_SPEC, section 15).
+
+    Returns the table of items, the yes/no columns of the visit table, the
+    flags and the QC tables.
+    """
+    items, item_keys, list_flags = open_lists(raw, keys, schema)
+    result = run_instrument(items, item_keys, schema, limits, norms)
+    result["flags"] = stack_flags([result["flags"], list_flags])
+    front = pd.DataFrame({"usubjid": item_keys["usubjid"], "item": item_keys["visit_order"]})
+    table = pd.concat([front, delivered_columns(schema, result)], axis=1)
+    flags = finish_flags(result["flags"], item_keys, raw_strings(items, schema), result["values"])
+    qc = [qc_table(schema, result, item_keys)]
+    visit_columns = pd.DataFrame(index=keys.index)
+    if "at_visit" in schema:
+        visit_columns = at_visit(result["values"], item_keys, keys, schema["at_visit"])
+        qc.append(qc_table(schemas[schema["instrument"] + "_at_visit"], computed(visit_columns), keys))
+    return table, visit_columns, flags, qc
+
+
+def computed(values, n_rows=None):
+    """Columns computed from other values, in the shape of what run_instrument() returns."""
+    return {"values": values, "cens": pd.DataFrame(index=values.index), "flags": stack_flags([]),
+            "limits": {}, "n_rows": n_rows or {}, "n_filled": {}, "version": None}
+
+
+def run_relatives_instrument(raw, keys, schema, limits=None, norms=None):
+    """The same questions asked for each relative: one row per patient and relative (SCHEMA_SPEC, section 16).
+
+    Returns the table of relatives, the flags and the QC table.
+    """
+    rows, row_keys, varying_flags = stack_relatives(raw, keys, schema)
+    result = run_instrument(rows, row_keys, schema, limits, norms)
+    result["flags"] = stack_flags([result["flags"], varying_flags])
+    flags = finish_flags(result["flags"], row_keys, raw_strings(rows, schema), result["values"])
+    asked = [name for name, variable in schema["variables"].items() if raw_columns(schema, variable)]
+    described = result["values"][asked].notna().any(axis=1)      # something is known about the relative
+    front = pd.DataFrame({"usubjid": row_keys["usubjid"], "relative": row_keys["visit"]})
+    table = pd.concat([front, delivered_columns(schema, result)], axis=1)[described].reset_index(drop=True)
+    result["values"], result["cens"] = result["values"][described], result["cens"][described]
+    return table, flags, qc_table(schema, result, row_keys[described])
+
+
+def run_per_patient(relatives, patients, keys, schema, computed_schema):
+    """The yes/no columns of the patients table that sum up the relatives (SCHEMA_SPEC, section 16).
+
+    Returns the patients table with these columns, and their QC table. For
+    the QC table the values sit on the first visit of each patient.
+    """
+    summary = summarise_relatives(relatives, patients, schema["per_patient"])
+    values = keys[["usubjid"]].merge(summary, on="usubjid", how="left").set_index(keys.index).drop(columns="usubjid")
+    values.loc[~keys.index.isin(first_rows(keys))] = float("nan")
+    n_rows = {name: len(patients) for name in values.columns}
+    return patients.merge(summary, on="usubjid", how="left"), qc_table(computed_schema, computed(values, n_rows), keys)
+
+
 def raw_strings(raw, schema):
     """The original text of each variable, untouched, for the flag log."""
     table = pd.DataFrame(index=raw.index)
@@ -223,7 +281,8 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
         unknown = [name for name in instruments if name not in schemas]
         if unknown:
             raise ValueError(f"No schema for {unknown}. Known instruments: {sorted(schemas)}")
-        schemas = {name: schemas[name] for name in instruments}
+        schemas = {name: schema for name, schema in schemas.items()
+                   if name in instruments or schema.get("derived_from") in instruments}
     limits = read_limits(winsor_limits)
     norms = read_norms(norms_folder)
 
@@ -232,7 +291,22 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
     visit_text = pd.DataFrame({"visit_date": raw["svdtc"]})
     all_flags = [finish_flags(visit_flags, keys, visit_text, keys)]
     all_qc = []
+    treatments = pd.DataFrame(columns=["usubjid", "item"])
+    relatives = pd.DataFrame(columns=["usubjid", "relative"])
     for schema in schemas.values():
+        if "derived_from" in schema:                     # computed with the instrument it comes from
+            continue
+        if schema.get("level") == "relatives":
+            relatives, flags, qc = run_relatives_instrument(raw, keys, schema, limits, norms)
+            all_flags.append(flags)
+            all_qc.append(qc)
+            continue
+        if schema.get("level") == "list":
+            treatments, visit_columns, flags, qc = run_list_instrument(raw, keys, schema, schemas, limits, norms)
+            data = pd.concat([data, visit_columns], axis=1)
+            all_flags.append(flags)
+            all_qc.extend(qc)
+            continue
         result = run_instrument(raw, keys, schema, limits, norms)
         table = delivered_columns(schema, result)
         for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
@@ -250,6 +324,10 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             final[schema["version"]["name"]] = result["version"]
         all_flags.append(finish_flags(result["flags"], keys, raw_strings(raw, schema), final))
         all_qc.append(qc_table(schema, result, keys))
+    for name, schema in schemas.items():                 # the relatives summed up per patient, once patients is whole
+        if "per_patient" in schema:
+            patients, qc = run_per_patient(relatives, patients, keys, schema, schemas[name + "_per_patient"])
+            all_qc.append(qc)
     flags = pd.concat(all_flags, ignore_index=True)
     flags = flags.drop_duplicates(subset=["usubjid", "visit", "variable", "flag"]).reset_index(drop=True)
-    return Result(data, patients, flags, pd.concat(all_qc, ignore_index=True))
+    return Result(data, patients, flags, pd.concat(all_qc, ignore_index=True), treatments, relatives)

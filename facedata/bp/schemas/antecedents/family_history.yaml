@@ -1,0 +1,306 @@
+instrument: family_history
+title: Family history, one row per relative
+tab: ANTECEDENTS
+section: >-
+  Enfants, Fratrie, Parents, Grands-parents, Antécédents filles, Antécédents fils, Antécédents sœurs,
+  Antécédents frères, Antécédents maternels, Antécédents paternels
+status: draft
+level: relatives
+notes: >
+  One row per patient and relative: the mother, the father, up to five
+  sisters, five brothers, five daughters and five sons, and the four
+  grandparents. 29,101 relatives of 5,529 patients, delivered in the table
+  relatives (decision D58 in PROGRESS.md). The columns fdr_ and gp_ of the
+  table patients sum them up (family_history_per_patient, below).
+
+  Who has a row. The birth date, the death and its date are asked for
+  every relative. The other questions are asked only for the relatives who
+  have something to describe: a parent or a grandparent answered "yes" in
+  family_structure, and as many sisters, brothers, daughters and sons as
+  the patient counted there. So a row does not say that the relative has a
+  disorder: half of the rows (14,357) hold only a birth date, a death or a
+  date of death. A relative for whom nothing is known has no row.
+
+  Read once. A family is described at the inclusion visit, and sometimes
+  completed later. For each relative and question the first visit that
+  holds an answer is read; where a later visit holds another one, the
+  first is kept and the cell gets patient_value_varies (up to 250 relatives
+  per variable).
+
+  Disorder. One answer per relative: unipolar (a major depressive episode
+  or unipolar disorder), bipolar, schizophrenia or none. "None" is the
+  answer for 5,295 relatives who are described for something else: an
+  anxiety disorder, a substance, a suicide attempt, a cardiovascular risk
+  factor. "Unknown" (written U for the parents, "Ne sais pas" for the
+  others) is a missing code: 2,466 relatives.
+
+  Suicide. One answer too: none, attempt or completed. A relative who died
+  by suicide is therefore not among the attempts.
+
+  Substances and cardiovascular risk factors. The form lets the rater tick
+  several boxes, and the extraction writes them in one cell
+  ("Alcool,Cannabis"). Each box is delivered as a yes/no variable, and
+  relative_substance is 1 when at least one of the three substances is
+  ticked. "None" ticked together with "do not know" is read as unknown.
+  The extraction also holds three 0/1 columns per relative (alcool,
+  cannabis, autre_substance), written by the export on every row. They are
+  not read: autre_substance is 1 on 2,709 rows of the mother whose list
+  does not hold it, and alcool misses 55 of the 394 rows whose list holds
+  it.
+
+  Dates. Most of the dates are placeholders: 1000-01-01 is written in a
+  date that was not typed (10,994 birth dates, 11,178 dates of death:
+  date_placeholder). From 2022 the dates are almost never typed: the birth
+  date is filled for 70% of the relatives of the patients included until
+  2020 and for 9% of those of the patients included from 2022, the date of
+  death for 51% and for 1% of the deceased relatives. Hard limits: a birth
+  from 1840, a death from 1900. 19 dates are outside (out_of_range): ten
+  have a year below 100 and nine are deaths in the nineteenth century.
+  Three birth dates have a month written 00 with a day (unparsed).
+
+  Death. Written Y or N for the parents and the grandparents, Oui or Non
+  for the others. The answer for the mother is almost never in the
+  extraction (115 mothers, against 4,142 fathers).
+
+  Not delivered: the cause of death, a free text (8,258 cells).
+
+relatives:
+  mere: {relative: mother, kinship: mother, degree: 1}
+  pere: {relative: father, kinship: father, degree: 1}
+  soeur1: {relative: sister_1, kinship: sister, degree: 1}
+  soeur2: {relative: sister_2, kinship: sister, degree: 1}
+  soeur3: {relative: sister_3, kinship: sister, degree: 1}
+  soeur4: {relative: sister_4, kinship: sister, degree: 1}
+  soeur5: {relative: sister_5, kinship: sister, degree: 1}
+  frere1: {relative: brother_1, kinship: brother, degree: 1}
+  frere2: {relative: brother_2, kinship: brother, degree: 1}
+  frere3: {relative: brother_3, kinship: brother, degree: 1}
+  frere4: {relative: brother_4, kinship: brother, degree: 1}
+  frere5: {relative: brother_5, kinship: brother, degree: 1}
+  fille1: {relative: daughter_1, kinship: daughter, degree: 1}
+  fille2: {relative: daughter_2, kinship: daughter, degree: 1}
+  fille3: {relative: daughter_3, kinship: daughter, degree: 1}
+  fille4: {relative: daughter_4, kinship: daughter, degree: 1}
+  fille5: {relative: daughter_5, kinship: daughter, degree: 1}
+  fils1: {relative: son_1, kinship: son, degree: 1}
+  fils2: {relative: son_2, kinship: son, degree: 1}
+  fils3: {relative: son_3, kinship: son, degree: 1}
+  fils4: {relative: son_4, kinship: son, degree: 1}
+  fils5: {relative: son_5, kinship: son, degree: 1}
+  gmmaternel: {relative: maternal_grandmother, kinship: maternal_grandmother, degree: 2}
+  gpmaternel: {relative: maternal_grandfather, kinship: maternal_grandfather, degree: 2}
+  gmpaternel: {relative: paternal_grandmother, kinship: paternal_grandmother, degree: 2}
+  gppaternel: {relative: paternal_grandfather, kinship: paternal_grandfather, degree: 2}
+
+variables:
+  kinship:
+    column: kinship
+    label: Who the relative is
+    type: category
+    codes:
+      mother: mother
+      father: father
+      sister: sister
+      brother: brother
+      daughter: daughter
+      son: son
+      maternal_grandmother: maternal_grandmother
+      maternal_grandfather: maternal_grandfather
+      paternal_grandmother: paternal_grandmother
+      paternal_grandfather: paternal_grandfather
+  degree: {column: degree, type: item, range: [1, 2], label: "Degree of kinship (1: parent, sibling, child; 2: grandparent)"}
+  relative_birth_date: {column: brthdtc, type: date, range: [1840-01-01, 2026-12-31], label: Date of birth of the relative}
+  relative_deceased:
+    column: dthfl
+    label: The relative has died
+    type: item
+    range: [0, 1]
+    codes: {Y: 1, N: 0, Oui: 1, Non: 0}
+    missing: {U: unknown}
+  relative_death_date: {column: dthdtc, type: date, range: [1900-01-01, 2026-12-31], label: Date of death of the relative}
+  relative_disorder:
+    column: trouble
+    label: Mood or psychotic disorder of the relative
+    type: category
+    codes:
+      EDM ou Unipolaire: unipolar
+      Bipolaire: bipolar
+      Schizophrène: schizophrenia
+      Aucun: none
+    missing: {U: unknown}
+  relative_suicide:
+    column: suicide
+    label: Suicide or suicide attempt of the relative
+    type: category
+    codes:
+      Aucun: none
+      Tentative de suicide: attempt
+      Suicide abouti: completed
+    missing: {U: unknown}
+  relative_substance:
+    column: substance
+    label: Abuse of or dependence on a substance
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Alcool: 1, Cannabis: 1, Autre substance: 1, Aucun: 0}
+  relative_alcohol:
+    column: substance
+    label: Abuse of or dependence on alcohol
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Alcool: 1, Cannabis: 0, Autre substance: 0, Aucun: 0}
+  relative_cannabis:
+    column: substance
+    label: Abuse of or dependence on cannabis
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Alcool: 0, Cannabis: 1, Autre substance: 0, Aucun: 0}
+  relative_other_substance:
+    column: substance
+    label: Abuse of or dependence on another substance
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Alcool: 0, Cannabis: 0, Autre substance: 1, Aucun: 0}
+  relative_anxiety:
+    column: anx
+    label: Anxiety disorder of the relative
+    type: item
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+  relative_dementia:
+    column: dem
+    label: Dementia of the relative
+    type: item
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+  relative_hypertension:
+    column: risque
+    label: "Cardiovascular risk factor: hypertension"
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Hypertension: 1, Hyperlipidémie: 0, Diabète: 0, Obésité: 0, Aucun: 0}
+  relative_hyperlipidaemia:
+    column: risque
+    label: "Cardiovascular risk factor: hyperlipidaemia"
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Hypertension: 0, Hyperlipidémie: 1, Diabète: 0, Obésité: 0, Aucun: 0}
+  relative_diabetes:
+    column: risque
+    label: "Cardiovascular risk factor: diabetes"
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Hypertension: 0, Hyperlipidémie: 0, Diabète: 1, Obésité: 0, Aucun: 0}
+  relative_obesity:
+    column: risque
+    label: "Cardiovascular risk factor: obesity"
+    type: item
+    range: [0, 1]
+    separator: ","
+    codes: {Hypertension: 0, Hyperlipidémie: 0, Diabète: 0, Obésité: 1, Aucun: 0}
+  relative_diabetes_type:
+    column: typdiab
+    label: Type of diabetes of the relative
+    type: category
+    codes: {Type I: type_1, Type II: type_2}
+
+per_patient:
+  title: Family history, per patient
+  notes: >
+    One answer per patient: is there a relative with bipolar disorder,
+    depression, schizophrenia, a completed suicide, a suicide attempt or a
+    substance problem? The columns fdr_ look at the first-degree relatives
+    (mother, father, sisters, brothers, daughters, sons), the columns gp_
+    at the four grandparents. Computed from the rows of the table relatives
+    and from the counts of family_structure (decision D58 in PROGRESS.md).
+
+    1 when at least one relative of the group has it. 0 when every part of
+    the group is answered and nobody has it: each parent is answered yes or
+    no, the number of affected sisters, brothers, daughters and sons is
+    known, and every relative counted there is described with a known
+    answer. Missing otherwise: one "do not know" is enough, unless another
+    relative says yes.
+
+    Of the 5,712 patients with a family answer, fdr_bipolar is 1 for 1,208,
+    0 for 2,386 and missing for 2,118. For 1,237 of these a part of the
+    family is not answered (a parent answered "unknown", or a count left
+    empty); for 881 a relative counted as affected has no known disorder.
+    The columns gp_ are missing more often: "unknown" is the answer for a
+    fifth to a third of each grandparent. For "a relative is known to
+    have it, or not", compare the column with 1.
+
+    Depression means the answer "major depressive episode or unipolar
+    disorder", not bipolar disorder. A suicide attempt does not include a
+    completed suicide: the form takes one answer per relative. The shares
+    do not move with the year of inclusion (fdr_bipolar is 1 for 26% to 39%
+    of the known answers every year from 2011 to 2025).
+  by: kinship
+  counts:
+    mother: mother_affected
+    father: father_affected
+    sister: n_sisters_affected
+    brother: n_brothers_affected
+    daughter: n_daughters_affected
+    son: n_sons_affected
+    maternal_grandmother: maternal_grandmother_affected
+    maternal_grandfather: maternal_grandfather_affected
+    paternal_grandmother: paternal_grandmother_affected
+    paternal_grandfather: paternal_grandfather_affected
+  columns:
+    fdr_bipolar:
+      label: "A parent, a sibling or a child with bipolar disorder"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: bipolar}
+    fdr_depression:
+      label: "A parent, a sibling or a child with depression (a major depressive episode or unipolar disorder)"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: unipolar}
+    fdr_schizophrenia:
+      label: "A parent, a sibling or a child with schizophrenia"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: schizophrenia}
+    fdr_suicide:
+      label: "A parent, a sibling or a child who died by suicide"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_suicide: completed}
+    fdr_suicide_attempt:
+      label: "A parent, a sibling or a child who attempted suicide"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_suicide: attempt}
+    fdr_substance:
+      label: "A parent, a sibling or a child with abuse of or dependence on a substance"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_substance: 1}
+    gp_bipolar:
+      label: "A grandparent with bipolar disorder"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_disorder: bipolar}
+    gp_depression:
+      label: "A grandparent with depression (a major depressive episode or unipolar disorder)"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_disorder: unipolar}
+    gp_schizophrenia:
+      label: "A grandparent with schizophrenia"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_disorder: schizophrenia}
+    gp_suicide:
+      label: "A grandparent who died by suicide"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_suicide: completed}
+    gp_suicide_attempt:
+      label: "A grandparent who attempted suicide"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_suicide: attempt}
+    gp_substance:
+      label: "A grandparent with abuse of or dependence on a substance"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_substance: 1}

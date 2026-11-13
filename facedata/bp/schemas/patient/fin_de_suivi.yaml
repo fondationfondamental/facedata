@@ -25,8 +25,10 @@ notes: >
 
   The free-text columns (other reason, new centre, new diagnosis, other
   cause of death) are delivered as text and never appear in the report.
-  The dictionary also lists lost_to_follow_up_chdiag_stopsuivi and
-  nom_centre_expert, which are not in the extraction.
+  The new diagnosis of the newer form is in the extraction under the name
+  lost_to_follow_up_chgdiag_stopsuivi; the dictionary spells it
+  lost_to_follow_up_chdiag_stopsuivi. nom_centre_expert, which the
+  dictionary also lists, is not in the extraction.
 
 variables:
   followup_end_reason:
@@ -49,7 +51,7 @@ variables:
     label: New expert centre after a move, free text
     type: text
   new_diagnosis:
-    column: lost_to_follow_up_chdiag_patient
+    column: [lost_to_follow_up_chgdiag_stopsuivi, lost_to_follow_up_chdiag_patient]
     label: New diagnosis, free text
     type: text
   diagnosis_change_date:

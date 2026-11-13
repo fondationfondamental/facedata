@@ -24,7 +24,7 @@ def load(path, instruments=None, winsor_limits=None, norms="norms"):
     instruments: names of the instruments to load. Default: all that have a schema.
     winsor_limits: the qc table of an earlier load, to reuse its winsor limits.
     norms: the folder that holds the norm tables (they are not part of the repository).
-    Returns a Result with four tables: data, patients, flags and qc.
+    Returns a Result with six tables: data, patients, flags, qc, treatments and relatives.
     """
     return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms)
 

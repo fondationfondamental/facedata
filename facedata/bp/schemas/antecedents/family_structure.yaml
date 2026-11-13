@@ -1,0 +1,94 @@
+instrument: family_structure
+title: "Family: number of relatives, and how many have a disorder"
+tab: ANTECEDENTS
+section: Enfants, Fratrie, Parents, Grands-parents
+status: draft
+level: patient
+notes: >
+  How many daughters, sons, sisters and brothers the patient has, how many of
+  them have something to describe, and whether each parent and grandparent
+  has. One value per patient, delivered in the table patients (decision D58
+  in PROGRESS.md). The details of each relative are in family_history.
+
+  The question. For the mother, the father and each grandparent the form
+  asks whether the relative has "a psychiatric disorder, an abuse of or
+  dependence on a substance, a history of suicide attempt or a
+  cardiovascular risk factor": yes, no or unknown. For the daughters, the
+  sons, the sisters and the brothers it asks how many of them have one of
+  these. A yes is therefore not a psychiatric history: it can be
+  hypertension alone. The names of the variables say "affected" for short.
+
+  Counts. Numbers go from 0 to 5. The number of affected sisters is asked
+  only when the patient has sisters: with no sister it is 0 (asked_if), and
+  the same for the brothers, the daughters and the sons. It is left empty
+  for 180 to 270 patients who have such relatives: unknown. Four rows count
+  more affected relatives than relatives; they are kept as recorded.
+
+  Unknown. "Unknown" (U) is the answer for 199 mothers, 345 fathers and
+  1,153 to 1,677 of each grandparent: a missing code.
+
+  One value per patient. The family is described at the inclusion visit and
+  sometimes again later. The first answer is kept; 9 to 62 patients per
+  variable give another answer later and get patient_value_varies.
+defaults: {type: item}
+variables:
+  n_daughters: {column: fille_structure, range: [0, 20], label: Number of daughters}
+  n_daughters_affected:
+    column: fille_structureatteint
+    range: [0, 20]
+    asked_if: n_daughters
+    label: Daughters with a disorder or a cardiovascular risk factor
+  n_sons: {column: fils_structure, range: [0, 20], label: Number of sons}
+  n_sons_affected:
+    column: fils_structureatteint
+    range: [0, 20]
+    asked_if: n_sons
+    label: Sons with a disorder or a cardiovascular risk factor
+  n_sisters: {column: soeur_structure, range: [0, 20], label: Number of sisters}
+  n_sisters_affected:
+    column: soeur_structureatteint
+    range: [0, 20]
+    asked_if: n_sisters
+    label: Sisters with a disorder or a cardiovascular risk factor
+  n_brothers: {column: frere_structure, range: [0, 20], label: Number of brothers}
+  n_brothers_affected:
+    column: frere_structureatteint
+    range: [0, 20]
+    asked_if: n_brothers
+    label: Brothers with a disorder or a cardiovascular risk factor
+  mother_affected:
+    column: mere_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The mother has a disorder or a cardiovascular risk factor
+  father_affected:
+    column: pere_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The father has a disorder or a cardiovascular risk factor
+  maternal_grandmother_affected:
+    column: gmmaternel_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The maternal grandmother has a disorder or a cardiovascular risk factor
+  maternal_grandfather_affected:
+    column: gpmaternel_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The maternal grandfather has a disorder or a cardiovascular risk factor
+  paternal_grandmother_affected:
+    column: gmpaternel_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The paternal grandmother has a disorder or a cardiovascular risk factor
+  paternal_grandfather_affected:
+    column: gppaternel_structure
+    range: [0, 1]
+    codes: {Y: 1, N: 0}
+    missing: {U: unknown}
+    label: The paternal grandfather has a disorder or a cardiovascular risk factor

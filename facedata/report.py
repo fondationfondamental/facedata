@@ -64,6 +64,17 @@ def patient_frame(result):
     return first.join(result.patients.set_index("usubjid"), on="usubjid")
 
 
+def rows_frame(result, table, visit):
+    """The rows of result.treatments or result.relatives with the key columns of the patient's first visit.
+
+    One row per item or relative, so that these variables can be plotted
+    per year and per site like the others. visit: what the flag log writes
+    in its visit column for each row.
+    """
+    first = result.data.loc[first_rows(result.data), KEY_COLUMNS].set_index("usubjid").drop(columns="visit")
+    return table.join(first, on="usubjid").assign(visit=visit)
+
+
 def instrument_page(schema, data, qc, flags, folder):
     """Write the page and the figures of one instrument. Returns the page's file name.
 
@@ -94,7 +105,7 @@ def instrument_page(schema, data, qc, flags, folder):
                 raw_names = [raw_names] if isinstance(raw_names, str) else raw_names
                 sign_pairs[score] = (data[raw_names].sum(axis=1, min_count=len(raw_names)), before)
     delivered = data[[v for v in qc["variable"] if v in data.columns]]
-    unit = "patients" if schema.get("level") == "patient" else "visits"
+    unit = {"patient": "patients", "list": "items", "relatives": "relatives"}.get(schema.get("level"), "visits")
     plot_instrument(plots / "_instrument.png", schema["title"], delivered, version, sign_pairs, data, unit)
 
     body = f"<p><a href='index.html'>Index</a></p><h1>{html.escape(schema['title'])}</h1>"
@@ -122,12 +133,19 @@ def write_report(result, schemas, folder):
     flags = result.flags.merge(rows, on=["usubjid", "visit"], how="left")
     contents = []
     per_patient = patient_frame(result)
+    frames = {"list": rows_frame(result, result.treatments, "item " + result.treatments["item"].astype(str)),
+              "relatives": rows_frame(result, result.relatives, result.relatives["relative"])}
     for name, schema in schemas.items():
         qc = result.qc[result.qc["instrument"] == name]
         if len(qc) == 0:                             # this instrument was not loaded
             continue
         data = per_patient if schema.get("level") == "patient" else result.data
-        link = instrument_page(schema, data, qc, flags, folder)
+        if schema.get("level") in frames:                # several rows per patient: items or relatives
+            frame = frames[schema["level"]]
+            own = result.flags.merge(frame[["usubjid", "visit"]].assign(row=frame.index), on=["usubjid", "visit"])
+            link = instrument_page(schema, frame, qc, own, folder)
+        else:
+            link = instrument_page(schema, data, qc, flags, folder)
         contents.append({"instrument": f"<a href='{link}'>{html.escape(schema['title'])}</a>", "tab": schema["tab"],
                          "status": schema["status"], "variables": len(qc), "values": int(qc["n_valid"].sum()),
                          "info": int(qc["n_info"].sum()), "discrepancy": int(qc["n_discrepancy"].sum()),

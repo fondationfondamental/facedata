@@ -166,6 +166,30 @@ def parse_item(text, name, variable):
     return values.where(~not_whole), flags
 
 
+def parse_boxes(text, name, variable):
+    """A cell that holds the boxes ticked in a list ("Alcool,Cannabis"): the largest of their codes.
+
+    A missing code among the boxes is not a box. Where no wanted box is
+    ticked next to one, the value is missing: "none, and I do not know" is
+    not a no.
+    """
+    codes = {}
+    for code, value in variable["codes"].items():
+        codes[code.strip().lower()] = value
+    tokens = set(MISSING_TOKENS) | {token.lower() for token in variable.get("missing", {})}
+    tokens = tokens - set(codes)                       # a box the variable lists is a value
+    boxes = text.str.lower().str.split(variable["separator"]).explode().str.strip()
+    boxes = boxes[boxes.notna() & (boxes != "")]
+    is_token = boxes.isin(tokens)
+    worth = pd.to_numeric(boxes[~is_token].map(codes), errors="coerce")
+    values = worth.groupby(level=0).max().reindex(text.index)
+    unknown = worth.isna().groupby(level=0).any().reindex(text.index, fill_value=False)
+    not_sure = is_token.groupby(level=0).any().reindex(text.index, fill_value=False) & ~(values > 0)
+    flags = stack_flags([make_flags(unknown, name, "unknown_code"),
+                         make_flags(not_sure & ~unknown, name, "missing_code", "unknown")])
+    return values.where(~unknown & ~not_sure), flags
+
+
 def parse_category(text, name, variable):
     """Text to harmonised labels, through the variable's codes."""
     codes = {}
@@ -215,6 +239,9 @@ def parse_column(text, name, variable):
     """
     kind = variable["type"]
     no_cens = pd.Series(0, index=text.index)
+    if "separator" in variable:                        # several boxes ticked in one cell
+        values, flags = parse_boxes(text, name, variable)
+        return values, no_cens, flags
     if kind in ("number", "item") and "codes" in variable:
         text = recode(text, variable)                  # answers written as letters, counted as numbers
     if kind == "number":

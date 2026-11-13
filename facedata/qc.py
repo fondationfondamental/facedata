@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from facedata.harmonise import detect_version
+from facedata.schema import raw_columns
 from facedata.tokens import EMPTY_DATE, SEVERITY
 
 
@@ -107,7 +108,7 @@ def coverage(raw, keys, schemas, thesaurus_names, ignored):
                 read_on[column] = always
         for variable in schema["variables"].values():
             rows = version.isin(variable["versions"]) if "versions" in variable else always
-            for column in variable["columns"]:
+            for column in raw_columns(schema, variable):
                 read_on[column] = read_on.get(column, ~always) | rows
             for column in variable.get("unit_columns", []):
                 read_on[column] = always

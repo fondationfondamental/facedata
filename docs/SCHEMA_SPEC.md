@@ -43,7 +43,7 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `tab` | yes | Dictionary tab, as written there |
 | `section` | yes | Dictionary section header, as written there |
 | `status` | yes | `draft` or `reviewed` |
-| `level` | no | `visit` (default) or `patient` (one value per patient) |
+| `level` | no | `visit` (default), `patient` (one value per patient), `list` (the cells hold lists: one row per item, section 15) or `relatives` (the same questions asked for each relative: one row per relative, section 16) |
 | `notes` | no | Decisions, open questions, differences from the dictionary |
 | `defaults` | no | Variable fields applied to every variable that does not set them. A field that does not apply to a variable's type is ignored |
 | `version` | no | How to recognise the visits of this edition or form, when several share the same raw columns (section 7) |
@@ -51,6 +51,10 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `scores` | no | Output name → score fields (section 8) |
 | `sign` | no | Standard scores whose sign convention changed during the study, and how to recognise it (section 9) |
 | `checks` | no | Names of functions in `facedata/custom.py` (section 10) |
+| `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
+| `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
+| `relatives` | no | With `level: relatives`, required: the prefix of the raw columns of each relative, and who the relative is (section 16) |
+| `per_patient` | no | With `level: relatives`: the yes/no columns of the patients table computed from the rows of the relatives (section 16) |
 
 ## 4. Variable fields
 
@@ -82,7 +86,8 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item | Name of a score that has `compare`. Says that the EMR computed this stored value from the stored score, so it is doubtful wherever that stored score is wrong (section 8) |
-| `asked_if` | item, number | Name of a yes/no variable listed before. The question is asked only after a yes to it: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `asked_if` | item, number | Name of a yes/no variable or of a count listed before. The question is asked only after a yes to it (or a count above 0): where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ...}`: the cells of the visits dated in the period keep their value and get `period_doubt` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
 | `note` | all | Free text |
@@ -135,8 +140,10 @@ panic_disorder:   {column: ceoccurtrouble_panique, type: item, range: [0, 1], as
 ```
 
 - `asked_if` names a variable of the same schema, listed before: a yes/no
-  item with `range: [0, 1]`. The variable itself is a yes/no box or a count:
-  an item or a number whose range starts at 0.
+  item with `range: [0, 1]`, or a count (an item whose range starts at 0:
+  "how many of them..." is asked only when the number of sisters is not 0).
+  The variable itself is a yes/no box or a count: an item or a number whose
+  range starts at 0.
 - Where the named answer is 0 and the cell is empty, the value is 0.
 - Where the named answer is missing (unknown, or the form was not filled),
   the value stays missing. Where it is 1, the cell is read as usual.
@@ -155,6 +162,39 @@ n_mde:       {column: evnum_edm_ly, type: number, range: [0, 50], asked_if: any_
 Never use it for a detail of the thing asked about, such as an age at onset
 or a severity: after a "no" it has no value and stays missing. The schema
 check cannot tell a count from an age; that is for the author to see.
+
+### Several boxes in one cell
+
+Some questions let the rater tick several boxes of a list, and the
+extraction writes the ticked boxes in one cell, one after the other:
+`Alcool,Cannabis`. Such a cell is not one category. It is read as one yes/no
+variable per box, or per group of boxes:
+
+```yaml
+relative_alcohol:
+  column: substance
+  type: item
+  range: [0, 1]
+  separator: ","
+  codes: {Alcool: 1, Cannabis: 0, Autre substance: 0, Aucun: 0}
+relative_substance:
+  column: substance
+  type: item
+  range: [0, 1]
+  separator: ","
+  codes: {Alcool: 1, Cannabis: 1, Autre substance: 1, Aucun: 0}
+```
+
+- The cell is cut at the `separator`. Each box is read through `codes`, and
+  the largest number is the value: 1 as soon as one wanted box is ticked.
+- `codes` lists every box of the list. A box that is not listed makes the
+  cell `unknown_code`.
+- A missing code among the boxes (`Aucun,Ne sais pas`) is not a box. Where
+  the value would be 0 next to it, the value is missing and the cell gets
+  `missing_code`: "none, and I do not know" cannot be read as a no. A wanted
+  box next to it still gives 1.
+- Several variables may read the same column this way: this is the one case,
+  with `shared`, where a raw column feeds several delivered variables.
 
 ## 5. Units
 
@@ -736,14 +776,17 @@ the list is not empty.
 - `unit_rule` names a function that exists in `facedata/custom.py`.
 - `doubt` has a `period` of two dates, first day ≤ last day, and no field
   other than `period`, `values` and `note`.
-- `asked_if` names a yes/no item (`range: [0, 1]`) listed before in the
-  same schema, on an item or a number whose range starts at 0.
+- `asked_if` names an item whose range starts at 0 (a yes/no item or a
+  count), listed before in the same schema, on an item or a number whose
+  range starts at 0.
+- `separator` is on an item that has `codes`.
 - Versions named in `versions` exist in `version`.
 - Schemas that use the same version `name` have identical `version` blocks.
 - A raw column feeds at most one variable per version, across all schemas of
-  the cohort. Two exceptions: a variable with `keep: false` may read a column
-  that a delivered variable reads, and a `band` and a `number` may both say
-  `shared: true`.
+  the cohort. Three exceptions: a variable with `keep: false` may read a
+  column that a delivered variable reads, a `band` and a `number` may both
+  say `shared: true`, and several items with `separator` may each read one
+  box of the same list.
 - Scores refer to variables or earlier scores that exist; reversed items have a `range`.
 - `derived_from` names a score that has `compare`.
 - `checks` names variables or scores of the schema and functions that exist
@@ -782,6 +825,9 @@ mechanism. Read them as examples.
 | `neuropsychologie/wais3_*.yaml`, `neuropsychologie/wais4_*.yaml` | Two editions stored in the same columns and split by a version column: digit span, vocabulary, matrices, coding and symbol search (two schemas each), and similarities (WAIS-IV only). Scaled scores marked `derived_from` their raw total |
 | `neuropsychologie/tmt.yaml` | Z-scores whose sign convention changed centre by centre (`sign`), missing codes of one variable |
 | `evaluation_medicale/dsm4_depuis_derniere_visite.yaml`, `evaluation_medicale/dsm5_depuis_derniere_visite.yaml` | Two editions split by a version recorded once per patient (`level: patient`), yes/no codes, counts with a cap (`>20`) |
+| `traitements/medications.yaml` | Cells that hold lists (`level: list`), names looked up in a table, yes/no columns of a visit computed from dates |
+| `antecedents/family_structure.yaml`, `antecedents/family_history.yaml` | A count asked only after another count (`asked_if`), the same questions for each relative (`level: relatives`), boxes ticked in one cell (`separator`), yes/no columns per patient computed from the relatives |
+| `antecedents/allergic_history_v0.yaml`, `antecedents/allergic_history_fu.yaml` | A list of boxes shown only after a yes (`separator` with `asked_if`), in an inclusion form and a yearly form |
 
 ## 14. Adding an instrument
 
@@ -795,3 +841,162 @@ mechanism. Read them as examples.
    the report page.
 5. Explain what remains flagged in `notes`, log decisions in
    `docs/<cohort>/PROGRESS.md`, and set `status: reviewed`.
+
+## 15. Lists: one row per item
+
+The current treatments are exported as lists in one cell: `['TERALITHE',
+'LAMICTAL']` in the column of the names, `['2015-03-15', '2018-06-15']` in
+the column of the start dates, and so on. The lists of a row have the same
+length (item 1 of each list describes the same treatment), and every row of
+a patient holds the same lists: the cell is the patient's whole history, not
+the treatment of the visit.
+
+```yaml
+instrument: medications
+level: list
+names:
+  column: med_psy_cmtrt            # the list that holds the names
+  clean: medication_name           # function of custom.py: "TERALITHE LP 400 mg, comprimé" -> "TERALITHE LP"
+  table: medications.csv           # in the cohort folder: name, molecule, atc, treatment_group
+  gives: [molecule, atc, treatment_group]
+variables:
+  medication: {column: med_psy_cmtrt, type: text}
+  molecule: {column: molecule, type: text}
+  treatment_group: {column: treatment_group, type: category, codes: {lithium: lithium, antidepressant: antidepressant}}
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1950-01-01, 2026-12-31]}
+  end_date: {column: med_psy_cmendtc, type: date, range: [1950-01-01, 2026-12-31]}
+at_visit:
+  title: Treatments on the day of the visit
+  start: start_date
+  end: end_date
+  columns:
+    on_lithium: {where: {treatment_group: lithium}, label: On lithium at the visit}
+    on_lamotrigine: {where: {molecule: lamotrigine}, label: On lamotrigine at the visit}
+```
+
+**`level: list`.** The lists are opened into one row per patient and item,
+and these rows go through the same steps as visit rows: every variable field
+of section 4 applies to an item. The rows are delivered in the table
+`treatments` of the result, with `usubjid` and `item` (1, 2, 3...) in front.
+In the flag log the column `visit` holds `item 3`. Where the rows of a
+patient hold different lists, the first is kept and the patient gets
+`patient_value_varies`.
+
+**`names`.** One list holds names typed or picked in a catalogue, and many
+names mean the same thing (a brand, the same brand with its dose, a generic
+with the maker's name). `clean` names a function of `custom.py` that cuts a
+name to its stem. The stem is looked up in the `name` column of the table:
+first whole, then its first two words, then its first word, so that
+`LAMOTRIGINE ARROW` is found under `LAMOTRIGINE`. The columns listed in
+`gives` are then columns that variables can read, like raw columns. A name
+that is not in the table keeps what was written, leaves the columns of
+`gives` empty and gets `unknown_code`: a name is never guessed.
+
+The table is data of the package, not patient data: it holds what the
+pharmacopoeia says (TERALITHE is lithium, group lithium, ATC N05AN01). It is
+written by hand and must be read by someone who knows the drugs.
+
+**`at_visit`.** A list has no visit: what a visit needs is whether the
+patient was on a treatment that day. Each column of `columns` is 1 on a
+visit when at least one item that fits `where` (a variable and the value it
+must have) has `start` on or before the visit date and `end` on or after it,
+or no `end`: an item without an end date is taken as still running. It is 0
+when the patient has items and none fits. It is missing when the patient has
+no list at all, when the visit has no date, and when the only items that fit
+have no start date. These columns are delivered in `data` and described as
+an instrument of their own, named `<instrument>_at_visit`, with a page in
+the report.
+
+`check_schema` verifies that `names` and `at_visit` come with `level: list`,
+that `clean` is a function of `custom.py`, that `start`, `end` and the
+variables named in `where` are variables of the schema, and that every
+column has a `where` and a `label`.
+
+## 16. Relatives: one row per relative
+
+The family history asks the same questions for the mother, the father, each
+sister, each brother and so on. The extraction has one set of columns per
+relative, with the same endings: `mere_trouble`, `pere_trouble`,
+`soeur1_trouble`... A schema with `level: relatives` describes the questions
+once and lists the relatives.
+
+```yaml
+instrument: family_history
+level: relatives
+relatives:                 # prefix of the raw columns: what the rows of this relative get
+  mere:   {relative: mother,   kinship: mother, degree: 1}
+  pere:   {relative: father,   kinship: father, degree: 1}
+  soeur1: {relative: sister_1, kinship: sister, degree: 1}
+  soeur2: {relative: sister_2, kinship: sister, degree: 1}
+variables:
+  kinship: {column: kinship, type: category, codes: {mother: mother, father: father, sister: sister}}
+  relative_disorder: {column: trouble, type: category, codes: {Bipolaire: bipolar, Aucun: none}}
+  relative_birth_date: {column: brthdtc, type: date, range: [1840-01-01, 2026-12-31]}
+per_patient:
+  title: Family history, per patient
+  by: kinship
+  counts: {mother: mother_affected, father: father_affected, sister: n_sisters_affected}
+  columns:
+    fdr_bipolar:
+      label: A first-degree relative with bipolar disorder
+      among: [mother, father, sister]
+      where: {relative_disorder: bipolar}
+```
+
+**`relatives`.** Each key is the prefix of the raw columns of one relative:
+the variable that says `column: trouble` reads `mere_trouble` for the
+mother and `soeur1_trouble` for the first sister. Every column must exist
+for every relative. The fields of a relative are free, except `relative`,
+which is required and names the row: they become columns that variables can
+read like raw columns (`kinship`, `degree`).
+
+**`level: relatives`.** The columns of every relative are put under one
+another, and these rows go through the same steps as visit rows: every
+variable field of section 4 applies. They are delivered in the table
+`relatives` of the result, with `usubjid` and `relative` in front. In the
+flag log the column `visit` holds the name of the relative.
+
+- A family is described once, most often at inclusion, sometimes completed
+  at a later visit. For each relative and column, the first cell of the
+  patient that is not empty is read, in visit order. Where a later visit
+  holds another text, the first is kept and the cell gets
+  `patient_value_varies`.
+- A relative has a row when at least one of the variables read from the raw
+  columns has a value. A relative for whom the cells hold only missing codes
+  or placeholder dates has no row; the flags of these cells stay in the log.
+
+**`per_patient`.** What an analysis most often needs is one answer per
+patient: is there a relative with bipolar disorder among the parents, the
+siblings and the children? Each column of `columns` is computed from the
+rows of the relatives:
+
+- `by` names the variable that says to which group of relatives a row
+  belongs, and `among` lists the groups that the column looks at.
+- `where` gives variables and the value they must have. A list of values
+  means any of them: `{relative_suicide: [attempt, completed]}`.
+- `counts` names, for each group, a variable of a patient-level schema of
+  the cohort that says how many relatives of the group have something to
+  describe: 1 or 0 for the mother, a number for the sisters. The form asks
+  for the details of these relatives only.
+
+A group answers **yes** when one of its rows fits `where`. It answers **no**
+when its count is known and at least that many of its rows have a value for
+every variable of `where`: all the relatives that had to be described are
+described, and none fits. With a count of 0 this is a no without any row.
+Otherwise the group is **unknown**. The column is 1 when one group of
+`among` answers yes, 0 when all of them answer no, and missing otherwise:
+one "do not know" is enough to leave it missing, unless another relative
+says yes.
+
+These columns are delivered in `patients` and described as an instrument of
+their own, named `<instrument>_per_patient`, with a page in the report. The
+schema that holds the counts must be loaded with the relatives: `load()`
+stops with a message if it is not.
+
+`check_schema` verifies that `relatives` and `per_patient` come with `level:
+relatives`, that every relative has a `relative`, that `by` and the
+variables named in `where` are variables of the schema, that the groups of
+`among` are listed in `counts`, and that every column has a `label`. Put
+side by side, the schemas of the cohort must give the variables named in
+`counts`, in patient-level schemas.
+

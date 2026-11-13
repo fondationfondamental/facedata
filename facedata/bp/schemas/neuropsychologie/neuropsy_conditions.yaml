@@ -19,6 +19,12 @@ notes: >
   The hour of the testing (rad_heure_passation_) sits in the SCIP section of
   the dictionary but concerns the whole assessment; it exists from 2018.
 
+  The date the form was entered (date_saise_neuropsychologie, a column that
+  is not in the dictionary) is filled on the same 6,280 visits. It is the
+  day of the visit for 1,922 of them, before it for 59, more than a month
+  after it for 1,036 and more than a year after it for 195: it says when
+  the form was typed, not when the tests were given.
+
 defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
 
 variables:
@@ -43,3 +49,8 @@ variables:
   neuropsy_no_recent_ect: {column: cclin11_, label: No electroconvulsive therapy in the past year}
   neuropsy_accepted: {column: cclin17_, label: Patient accepted for the neuropsychological assessment}
   neuropsy_hour: {column: rad_heure_passation_, label: Hour of the testing, range: [0, 23]}
+  neuropsy_entry_date:
+    column: date_saise_neuropsychologie
+    type: date
+    range: [2008-01-01, 2030-12-31]
+    label: Date the neuropsychology form was entered

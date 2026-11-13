@@ -10,7 +10,9 @@ import pytest
 
 from facedata import bp
 from facedata.read import prepare_visits, read_extraction
+from facedata.relatives import stack_relatives
 from facedata.schema import load_schemas
+from facedata.treatments import open_lists
 from test_pipeline import assert_invariant
 
 ROOT = Path(__file__).parent.parent
@@ -82,13 +84,22 @@ def test_derived_values_and_sign(result, qc):
 def test_nothing_disappears_silently():
     raw, keys, visit_flags = prepare_visits(read_extraction(EXTRACTION))
     for schema in load_schemas(bp.SCHEMAS).values():
-        assert_invariant(raw, keys, schema)
+        if schema.get("level") == "list":            # cells that hold lists: the invariant holds on the items
+            items, item_keys, list_flags = open_lists(raw, keys, schema)
+            assert_invariant(items, item_keys, schema)
+        elif schema.get("level") == "relatives":     # one row per relative: the invariant holds on these rows
+            rows, row_keys, varying_flags = stack_relatives(raw, keys, schema)
+            assert_invariant(rows, row_keys, schema)
+        elif "derived_from" not in schema:           # columns computed from other rows have no raw cell
+            assert_invariant(raw, keys, schema)
 
 
 def test_patient_tab(result, qc):
     patients = result.patients
-    # One row per patient: the key, 23 columns of the PATIENT tab and 11 of the perinatal schema.
-    assert patients.shape == (6476, 35)
+    # One row per patient: the key, 23 columns of the PATIENT tab, 11 of the perinatal schema,
+    # 52 of the two lifetime treatment forms (45 variables and 7 censoring columns),
+    # 14 counts of the family and 12 columns that sum up the relatives.
+    assert patients.shape == (6476, 113)
     assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 23
     assert patients["sex"].value_counts().to_dict() == {"female": 4097, "male": 2377}
     assert patients["diagnosis"].value_counts().to_dict() == {"bp2": 3095, "bp1": 2714, "bp_nos": 667}
@@ -291,6 +302,43 @@ def test_care_and_sick_leave(result, qc):
     assert data["drug_advice_followed"].value_counts().to_dict() == {"fully": 5879, "partly": 2364, "not_followed": 1200}
 
 
+def test_treatments(result, qc):
+    items, data = result.treatments, result.data
+    # One row per patient and medication: the lists of a patient are the same on every row.
+    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (22634, 4762, 103)
+    assert qc.loc["medication", "patient_value_varies"] == 0
+    # 99% of the names are found in the table; the others keep what was written and are flagged.
+    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22405, 229)
+    groups = items["treatment_group"].value_counts()
+    assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2977, 4980, 4786, 10)
+    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22506, 10832, 3111)
+    assert (qc.loc["units_per_day", "missing_code"], qc.loc["daily_dose", "n_valid"]) == (889, 6402)
+    # On the day of the visit: computed for the patients who have a list.
+    assert qc.loc["on_lithium", "instrument"] == "medications_at_visit"
+    assert (data["on_lithium"].notna().sum(), round(data["on_lithium"].mean(), 2)) == (18050, 0.36)
+    first = data[data["visit"] == "V0"]
+    assert round(first["on_lithium"].mean(), 2) == 0.30 and round(first["on_anticonvulsant"].mean(), 2) == 0.44
+    assert data.loc[~data["usubjid"].isin(items["usubjid"]), "on_lithium"].isna().all()
+
+
+def test_treatment_forms(result, qc):
+    data, patients = result.data, result.patients
+    forms = qc[qc["instrument"].isin(["drug_classes_lifetime", "non_drug_lifetime", "non_drug_fu"])]
+    assert forms["unknown_code"].sum() == 0 and forms["winsorised"].sum() == 0 and forms["patient_value_varies"].sum() == 0
+    # The two lifetime forms are repeated on every row of the patient: one value per patient.
+    assert "ever_lithium" in patients.columns and "ever_lithium" not in data.columns
+    assert (qc.loc["ever_lithium", "n_valid"], round(patients["ever_lithium"].mean(), 2)) == (2521, 0.47)
+    # Months of exposure: a list that stops at 240, and 0 where the patient never took the class.
+    assert (qc.loc["lithium_months", "n_valid"], qc.loc["lithium_months", "censored_right"], patients["lithium_months"].max()) == (2177, 35, 240)
+    assert (patients.loc[patients["ever_lithium"] == 0, "lithium_months"] == 0).all()
+    assert (qc.loc["ever_non_drug_treatment", "n_valid"], round(patients["ever_cbt"].mean(), 2)) == (1243, 0.16)
+    # The follow-up form: boxes are 0 after a "no" to the first question.
+    assert (qc.loc["non_drug_treatment_fu", "n_valid"], round(data["non_drug_treatment_fu"].mean(), 2)) == (9254, 0.34)
+    assert (data.loc[data["non_drug_treatment_fu"] == 0, "cbt_fu"] == 0).all()
+    # 1000-01-01 is written in every date that was not typed.
+    assert forms.loc[forms["instrument"] != "drug_classes_lifetime", "date_placeholder"].sum() == 5268
+
+
 def test_social(result, qc):
     data = result.data
     tab = qc[qc["tab"] == "SOCIAL"]
@@ -353,3 +401,58 @@ def test_suicide(result, qc):
     assert tab["unknown_code"].sum() == 0
     assert (qc.loc["violent_method", "n_valid"], qc.loc["serious_method", "n_valid"]) == (336, 456)
     assert (qc.loc["css0101", "n_valid"], qc.loc["cssrs_intensity", "n_valid"]) == (3543, 1000)
+
+
+def test_family_history(result, qc):
+    relatives, patients = result.relatives, result.patients
+    # One row per patient and relative about whom something is known.
+    assert (len(relatives), relatives["usubjid"].nunique(), relatives.shape[1]) == (29101, 5529, 20)
+    kinship = relatives["kinship"].value_counts()
+    assert (kinship["mother"], kinship["father"], kinship["sister"], len(kinship)) == (4610, 5106, 1716, 10)
+    assert not relatives.duplicated(["usubjid", "relative"]).any()
+    disorder = relatives["relative_disorder"].value_counts()
+    assert (disorder["unipolar"], disorder["bipolar"], disorder["schizophrenia"], disorder["none"]) == (4670, 1863, 243, 5295)
+    assert (qc.loc["relative_disorder", "missing_code"], qc.loc["relative_disorder", "unknown_code"]) == (2466, 0)
+    # Boxes ticked in one cell: one yes/no variable per box, and one for any substance.
+    boxes = relatives[["relative_substance", "relative_alcohol", "relative_cannabis", "relative_other_substance"]]
+    assert list(boxes.sum()) == [3478, 2848, 591, 513] and qc.loc["relative_alcohol", "unknown_code"] == 0
+    known = boxes[boxes.notna().all(axis=1)]
+    assert len(known) == 12702 and (known["relative_substance"] == known.drop(columns="relative_substance").max(axis=1)).all()
+    # Most dates were never typed: a placeholder is a missing code.
+    assert (qc.loc["relative_birth_date", "date_placeholder"], qc.loc["relative_birth_date", "n_valid"]) == (10994, 16420)
+    # Counts: with no sister, no sister has anything.
+    assert (qc.loc["n_sisters", "n_valid"], qc.loc["n_sisters_affected", "n_valid"]) == (5357, 5125)
+    assert ((patients["n_sisters"] == 0).sum(), (patients.loc[patients["n_sisters"] == 0, "n_sisters_affected"] == 0).sum()) == (2081, 2080)
+    assert (qc.loc["mother_affected", "missing_code"], round(patients["mother_affected"].mean(), 2)) == (199, 0.60)
+    # The relatives summed up per patient: yes, no, or not known.
+    assert qc.loc["fdr_bipolar", "instrument"] == "family_history_per_patient"
+    assert patients["fdr_bipolar"].value_counts().to_dict() == {0.0: 2386, 1.0: 1208}
+    assert patients["gp_bipolar"].value_counts().to_dict() == {0.0: 2030, 1.0: 449}
+    first_degree = relatives[relatives["degree"] == 1]
+    with_bipolar = first_degree.loc[first_degree["relative_disorder"] == "bipolar", "usubjid"]
+    assert set(patients.loc[patients["fdr_bipolar"] == 1, "usubjid"]) == set(with_bipolar)
+    counts = ["mother_affected", "father_affected", "n_sisters_affected", "n_brothers_affected", "n_daughters_affected", "n_sons_affected"]
+    assert patients.loc[patients["fdr_bipolar"] == 0, counts].notna().all().all()
+
+
+def test_medical_history(result, qc):
+    data = result.data
+    medical = qc[qc["instrument"].str.endswith(("_history_v0", "_history_fu"))]
+    # Nine sections, each in an inclusion form and a yearly form: never two forms in one column.
+    assert (medical["instrument"].nunique(), len(medical)) == (18, 374)
+    first = data["visit"] == "V0"
+    assert (qc.loc["migraine_v0", "n_valid"], data["migraine_v0"].sum(), data.loc[~first, "migraine_v0"].notna().sum()) == (4764, 1069, 0)
+    assert (qc.loc["migraine_fu", "n_valid"], data["migraine_fu"].sum(), data.loc[first, "migraine_fu"].notna().sum()) == (1811, 246, 0)
+    assert (data["hypertension_v0"].sum(), data["diabetes_v0"].sum()) == (444, 163)
+    # Every list of boxes is read whole, and almost nothing is lost: one count and two dates.
+    flags = medical[["unknown_code", "unparsed", "out_of_range", "winsorised"]].sum()
+    assert list(flags) == [0, 1, 2, 0] and medical["date_placeholder"].sum() == 21903
+    # Boxes shown only after a yes are 0 after a no, and stay missing after "unknown".
+    no_allergy = data["allergic_inflammatory_v0"] == 0
+    assert (no_allergy.sum(), (data.loc[no_allergy, "asthma_v0"] == 0).sum(), data["asthma_v0"].sum()) == (4193, 4193, 462)
+    assert data.loc[data["allergic_inflammatory_v0"].isna(), "asthma_v0"].isna().all()
+    assert (data.loc[data["eye_disease_v0"] == 0, "closed_angle_glaucoma_v0"] == 0).all() and data["closed_angle_glaucoma_v0"].sum() == 7
+    # Numbers of pregnancies: "Aucune" is 0, and with no pregnancy the other numbers are 0 unless typed otherwise.
+    assert (qc.loc["n_pregnancies_v0", "n_valid"], data["n_pregnancies_v0"].sum(), data["n_pregnancies_v0"].max()) == (3611, 5219, 11)
+    none = data["n_pregnancies_v0"] == 0
+    assert (none.sum(), (data.loc[none, "n_live_births_v0"] == 0).sum()) == (1513, 1506)

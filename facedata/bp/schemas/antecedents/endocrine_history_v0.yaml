@@ -1,0 +1,91 @@
+instrument: endocrine_history_v0
+title: "Medical history: endocrine and metabolic diseases (inclusion visit)"
+tab: ANTECEDENTS
+section: Pathologies endocriniennes et métaboliques
+status: draft
+notes: >
+  Diabetes and its type, thyroid disorder, dyslipidaemia and its type, and
+  "another endocrine disease", which is then named in a free text delivered
+  as written. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code. A type answered "Ne sais pas" is a
+  missing code too.
+
+  Thyroid disorder. The answer is in a column named dysthyro_mhoccur_tt.
+  Then: hypothyroidism or hyperthyroidism, a date of onset for each, treated,
+  controlled, and whether the disorder was induced by lithium or by another
+  treatment (answered for a third of the patients who have one).
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  96 of the 399 "yes" of this section that are answered again (1 of 30 for diabetes, 24 of 153 for a thyroid disorder, 57 of 193 for a dyslipidaemia). The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  From 2022 the section is mostly left empty (open question O37). Until 2021
+  it is answered at 88% of the inclusion visits, from 2022 at 30%, and the
+  answered visits hold more "yes": 0.81 per visit against 0.32. The section seems to
+  be opened only for a patient who has one of its diseases. From 2022 the
+  share of "yes" among the answers (23.4% against 8.1%) is therefore not a
+  prevalence. The values are delivered as recorded: an empty section is
+  missing, not "no". The yearly visits answer the section at 32% of the
+  visits until 2021 and at 8% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  diabetes_v0: {column: diabete_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes, at inclusion"}
+  diabetes_start_v0: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at inclusion"}
+  diabetes_treated_v0: {column: diabete_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes: treated, at inclusion"}
+  diabetes_controlled_v0: {column: diabete_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes: controlled, at inclusion"}
+  diabetes_type_v0: {column: diabete_mhmodify, type: category, codes: {"Type I": type_1, "Type II": type_2}, label: "Diabetes: type, at inclusion"}
+  thyroid_disorder_v0: {column: dysthyro_mhoccur_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder, at inclusion"}
+  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"Hypo-thyroïdie": hypothyroidism, "Hyper-thyroïdie": hyperthyroidism}, label: "Thyroid disorder: type, at inclusion"}
+  hyperthyroidism_start_v0: {column: dysthyro_mhstdtc_hyper, type: date, range: [1900-01-01, 2026-12-31], label: "Hyperthyroidism: date of onset, at inclusion"}
+  hypothyroidism_start_v0: {column: dysthyro_mhstdtc_hypo, type: date, range: [1900-01-01, 2026-12-31], label: "Hypothyroidism: date of onset, at inclusion"}
+  thyroid_disorder_treated_v0: {column: dysthyro_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder: treated, at inclusion"}
+  thyroid_disorder_induced_by_v0: {column: dysthyro_mhmodify_tt, type: category, codes: {"Induite par le Lithium": lithium, "Induite par un autre Traitement": other_treatment}, label: "Thyroid disorder: induced by a treatment, at inclusion"}
+  thyroid_disorder_controlled_v0: {column: dysthyro_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder: controlled, at inclusion"}
+  dyslipidaemia_v0: {column: dyslipid_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia, at inclusion"}
+  dyslipidaemia_start_v0: {column: dyslipid_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at inclusion"}
+  dyslipidaemia_treated_v0: {column: dyslipid_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia: treated, at inclusion"}
+  dyslipidaemia_controlled_v0: {column: dyslipid_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia: controlled, at inclusion"}
+  dyslipidaemia_type_v0: {column: dyslipid_mhmodify, type: category, codes: {"Hypercholestérolémie": hypercholesterolaemia, "Hypertriglycéridémie": hypertriglyceridaemia, "Les deux": both}, label: "Dyslipidaemia: type, at inclusion"}
+  other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another endocrine disease, at inclusion"}
+  other_endocrine_start_v0: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at inclusion"}
+  other_endocrine_text_v0: {column: autendoc_mhmodify, type: text, label: "Another endocrine disease: which one, as written, at inclusion"}

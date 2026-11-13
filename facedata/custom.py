@@ -135,3 +135,10 @@ def recency_z_without_recency(values):
     where that is the case.
     """
     return values["cvlt_recency_z"].notna() & values["cvlt_recency"].isna()
+
+
+def medication_name(names):
+    """The stem of a medication name: "TERALITHE LP 400 mg, comprimé sécable" gives "TERALITHE LP"."""
+    stems = names.str.upper().str.replace(r"\s+\d.*|[,(/*].*", "", regex=True)
+    return stems.str.replace(r"\s+", " ", regex=True).str.strip()
+

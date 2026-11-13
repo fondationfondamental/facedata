@@ -1,0 +1,85 @@
+instrument: urinary_history_fu
+title: "Medical history: diseases of the urinary tract (yearly follow-up visits)"
+tab: ANTECEDENTS
+section: Pathologies des voies urinaires
+status: draft
+notes: >
+  Nephropathy, prostate adenoma and acute urinary retention. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code.
+  The prostate adenoma is answered for women too, always "no" or "unknown".
+
+  Treatments. For a nephropathy the form asks whether it is probably linked
+  to a past or current treatment. For a urinary retention it asks whether it
+  started under a treatment, and then which: neuroleptic, antidepressant,
+  other, boxes ticked in one cell and delivered as one yes/no variable each.
+  They are 0 after a "no" to "under a treatment" (asked_if).
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  30 of the 55 "yes" of this section that are answered again. The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  From 2022 the section is mostly left empty (open question O37). Until 2021
+  it is answered at 87% of the inclusion visits, from 2022 at 14%, and the
+  answered visits hold more "yes": 0.21 per visit against 0.04. The section seems to
+  be opened only for a patient who has one of its diseases. From 2022 the
+  share of "yes" among the answers (7.6% against 1.5%) is therefore not a
+  prevalence. The values are delivered as recorded: an empty section is
+  missing, not "no". The yearly visits answer the section at 31% of the
+  visits until 2021 and at 3% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  nephropathy_fu: {column: nephropat_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy, at follow-up"}
+  nephropathy_start_fu: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Nephropathy: date of onset, at follow-up"}
+  nephropathy_treated_fu: {column: nephropat_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: treated, at follow-up"}
+  nephropathy_controlled_fu: {column: nephropat_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: controlled, at follow-up"}
+  nephropathy_treatment_related_fu: {column: nephropat_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: probably linked to a past or current treatment, at follow-up"}
+  prostate_adenoma_fu: {column: adenompro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma, at follow-up"}
+  prostate_adenoma_start_fu: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Prostate adenoma: date of onset, at follow-up"}
+  prostate_adenoma_treated_fu: {column: adenompro_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma: treated, at follow-up"}
+  prostate_adenoma_controlled_fu: {column: adenompro_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma: controlled, at follow-up"}
+  urinary_retention_fu: {column: returin_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute urinary retention, at follow-up"}
+  urinary_retention_start_fu: {column: returin_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acute urinary retention: date of onset, at follow-up"}
+  urinary_retention_under_treatment_fu: {column: returin_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute urinary retention: started under a treatment, at follow-up"}
+  urinary_retention_neuroleptic_fu: {column: returin_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Neuroleptiques": 1, "Antidépresseurs": 0, "Autres traitements": 0}, asked_if: urinary_retention_under_treatment_fu, label: "Acute urinary retention, the treatment: a neuroleptic, at follow-up"}
+  urinary_retention_antidepressant_fu: {column: returin_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Neuroleptiques": 0, "Antidépresseurs": 1, "Autres traitements": 0}, asked_if: urinary_retention_under_treatment_fu, label: "Acute urinary retention, the treatment: an antidepressant, at follow-up"}
+  urinary_retention_other_treatment_fu: {column: returin_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Neuroleptiques": 0, "Antidépresseurs": 0, "Autres traitements": 1}, asked_if: urinary_retention_under_treatment_fu, label: "Acute urinary retention, the treatment: another treatment, at follow-up"}

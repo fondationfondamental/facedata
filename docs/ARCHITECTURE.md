@@ -41,11 +41,13 @@ facedata/
   tokens.py       constants only: missing tokens, placeholder dates, flag codes
   flags.py        make_flags(), stack_flags(), finish_flags(): the flag log
   read.py         read_extraction(), read_norms(), prepare_visits()
-  parse.py        clean_text(), split_missing(), parse_number(), parse_item(),
+  parse.py        clean_text(), split_missing(), parse_number(), parse_item(), parse_boxes(),
                   parse_category(), parse_date(), parse_time(), parse_column()
   harmonise.py    detect_version(), convert_units(), fix_sign(), check_range(),
                   compute_scores(), collapse_patient_level(), winsorise()
   pipeline.py     read_variable(), run_instrument(), run_cohort(): the ordered steps, nothing else
+  treatments.py   open_lists(), look_up_names(), at_visit(): cells that hold lists (treatments)
+  relatives.py    stack_relatives(), summarise_relatives(): the same questions asked for each relative
   qc.py           qc_table(), coverage()
   plots.py        plot_variable(), plot_instrument()
   report.py       write_report()
@@ -71,13 +73,15 @@ result.data       # one row per patient visit
 result.patients   # one row per patient
 result.flags      # one row per flagged cell
 result.qc         # one row per variable
+result.treatments # one row per patient and medication
+result.relatives  # one row per patient and relative
 
 bp.report(result, "reports/bp")                              # HTML report and plots
 bp.coverage(path, "thesauri/FACEBP_thesaurus_V4.34.xlsx")    # which columns have a schema
 bp.load(new_path, winsor_limits=result.qc)                   # reuse winsor limits on new data
 ```
 
-`result` is a named tuple of four DataFrames.
+`result` is a named tuple of six DataFrames.
 
 ## 4. What `load()` returns
 
@@ -112,15 +116,45 @@ editions.
 
 ### `patients`: one row per patient
 
-Variables whose schema says `level: patient` (demographics, lifetime history,
-family history). They are repeated on every visit row in the extraction; here
-they appear once.
+Variables whose schema says `level: patient` (demographics, lifetime
+history). They are repeated on every visit row in the extraction; here they
+appear once. The table also holds the yes/no columns that sum up the
+relatives of the patient (below).
+
+### `treatments`: one row per patient and treatment
+
+The extraction stores the treatments of a patient as lists in one cell, the
+same on every row of the patient. An instrument whose schema says `level:
+list` opens them: one row per patient and item, with `usubjid`, `item` (1,
+2, 3...) and the variables of the schema (the name as written, the molecule
+and the group it belongs to, the dose, the start and end dates). The table
+is empty when no such instrument is loaded.
+
+What a visit needs, whether the patient was on a treatment that day, is
+computed from the dates of the items and delivered in `data` as yes/no
+columns (SCHEMA_SPEC, section 15).
+
+### `relatives`: one row per patient and relative
+
+The family history asks the same questions for the mother, the father, each
+sister and so on, in one set of columns per relative. An instrument whose
+schema says `level: relatives` puts them under one another: one row per
+patient and relative about whom something is known, with `usubjid`,
+`relative` (`mother`, `sister_1`...) and the variables of the schema. A
+family is described once: for each relative and question the first visit
+that holds an answer is read. The table is empty when no such instrument is
+loaded.
+
+What an analysis most often needs, whether a relative of the patient has a
+given disorder, is computed from these rows and delivered in `patients` as
+columns that are 1, 0 or missing: missing when it cannot be told
+(SCHEMA_SPEC, section 16).
 
 ### `flags`: one row per flagged cell
 
 | Column | Content |
 |---|---|
-| `usubjid`, `visit` | Where |
+| `usubjid`, `visit` | Where. For a row of `treatments`, `visit` holds `item 3`; for a row of `relatives`, the name of the relative |
 | `variable` | Output variable name |
 | `raw` | The original string, untouched |
 | `value` | The value now in `data` (empty if removed). For a variable that is read but not delivered (`keep: false`), the value used for the checks |
@@ -407,7 +441,7 @@ QC table counts patients, not visit rows.
 | `column_conflict` | discrepancy | Two raw columns of one variable hold different values; the first one listed is kept |
 | `score_mismatch` | discrepancy | Stored and recomputed scores differ |
 | `derived_doubt` | discrepancy | The value was computed by the EMR from a stored score that differs from the recomputed one |
-| `patient_value_varies` | discrepancy | A patient-level variable changes between visits |
+| `patient_value_varies` | discrepancy | A patient-level variable, or an answer about a relative, changes between visits |
 | `visit_order` | discrepancy | Visit dates are not in visit order |
 | `check_failed` | discrepancy | A custom check named in the schema failed |
 | `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |

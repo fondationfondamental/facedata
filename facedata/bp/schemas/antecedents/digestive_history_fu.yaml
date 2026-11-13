@@ -1,0 +1,82 @@
+instrument: digestive_history_fu
+title: "Medical history: diseases of the liver and the digestive tract (yearly follow-up visits)"
+tab: ANTECEDENTS
+section: Pathologies hépato-gastro-entérologiques
+status: draft
+notes: >
+  Chronic inflammatory bowel disease and its type (Crohn's disease,
+  ulcerative colitis), cirrhosis, gastric or duodenal ulcer, and drug-induced
+  hepatitis with the kind of treatment that caused it. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
+  missing code. A type
+  answered "Ne sais pas" is a missing code too (half of the answers).
+
+  Two forms in the same columns (decision D59 in PROGRESS.md). The same
+  questions are asked at the inclusion visit and at the yearly visits, never
+  at the six-monthly ones. At inclusion they are about the whole life. At the
+  yearly visits a disease answered "yes" at inclusion is often answered "no":
+  39 of the 79 "yes" of this section that are answered again. The
+  yearly form therefore seems to ask about the time since the last visit; this
+  is not confirmed (open question O38). The two are delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
+  says which form a visit used and is read from the visit label.
+
+  From 2022 the section is mostly left empty (open question O37). Until 2021
+  it is answered at 87% of the inclusion visits, from 2022 at 16%, and the
+  answered visits hold more "yes": 0.28 per visit against 0.06. The section seems to
+  be opened only for a patient who has one of its diseases. From 2022 the
+  share of "yes" among the answers (7.9% against 1.5%) is therefore not a
+  prevalence. The values are delivered as recorded: an empty section is
+  missing, not "no". The yearly visits answer the section at 31% of the
+  visits until 2021 and at 3% from 2022.
+
+  Details. The date of onset, "treated" and "controlled" (équilibrée) are
+  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
+  in a date that was not typed, and from 2025 in every date of the form:
+  date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  inflammatory_bowel_disease_fu: {column: inflachro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease, at follow-up"}
+  inflammatory_bowel_disease_start_fu: {column: inflachro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic inflammatory bowel disease: date of onset, at follow-up"}
+  inflammatory_bowel_disease_treated_fu: {column: inflachro_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease: treated, at follow-up"}
+  inflammatory_bowel_disease_controlled_fu: {column: inflachro_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease: controlled, at follow-up"}
+  inflammatory_bowel_disease_type_fu: {column: inflachro_mhmodify, type: category, codes: {"Maladie de Crohn": crohn, "Rectocolite hémorragique": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: type, at follow-up"}
+  cirrhosis_fu: {column: cirrhose_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis, at follow-up"}
+  cirrhosis_start_fu: {column: cirrhose_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cirrhosis: date of onset, at follow-up"}
+  cirrhosis_treated_fu: {column: cirrhose_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis: treated, at follow-up"}
+  cirrhosis_controlled_fu: {column: cirrhose_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis: controlled, at follow-up"}
+  peptic_ulcer_fu: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gastric or duodenal ulcer, at follow-up"}
+  peptic_ulcer_start_fu: {column: ulcgasduo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Gastric or duodenal ulcer: date of onset, at follow-up"}
+  peptic_ulcer_treated_fu: {column: ulcgasduo_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gastric or duodenal ulcer: treated, at follow-up"}
+  peptic_ulcer_controlled_fu: {column: ulcgasduo_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gastric or duodenal ulcer: controlled, at follow-up"}
+  drug_hepatitis_fu: {column: hepmedic_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug-induced hepatitis, at follow-up"}
+  drug_hepatitis_start_fu: {column: hepmedic_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug-induced hepatitis: date of onset, at follow-up"}
+  drug_hepatitis_treatment_fu: {column: hepmedic_mhmodify, type: category, codes: {"Neuroleptiques": neuroleptic, "Antidépresseurs": antidepressant, "Anticonvulsivants": anticonvulsant, "Autres traitements": other}, label: "Drug-induced hepatitis: the treatment, at follow-up"}

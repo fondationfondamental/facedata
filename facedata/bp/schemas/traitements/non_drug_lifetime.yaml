@@ -1,0 +1,67 @@
+instrument: non_drug_lifetime
+title: Non-drug treatments over the life
+tab: TRAITEMENTS
+section: Traitement non pharmacologique LIFETIME
+status: draft
+level: patient
+notes: >
+  Non-drug treatments over the whole life: one yes/no question, then for
+  each of six kinds (electroconvulsive therapy, TMS, cognitive behavioural
+  therapy, psychoeducation groups, IPSRT, other) a box, the number of
+  sessions and the start and end dates. Asked once, of 1,265 patients, from
+  2013 on. Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a
+  missing code.
+
+  One value per patient: the extraction repeats these columns on every row
+  of the patient, and they never differ. The dictionary gives the first
+  question the label of the follow-up form ("since the last visit"); the
+  section and the column names say "lifetime".
+
+  Asked only after a yes (asked_if). The six boxes are shown only after a
+  yes to the first question, and a number of sessions only after a yes to
+  its box; they are empty otherwise in the extraction and are read as 0. The
+  dates stay missing: they are details of a treatment that did not take
+  place.
+
+  Dates. 1000-01-01 is the form's placeholder (date_placeholder): from 2025
+  the form writes it in every date that was not typed, also next to a "no".
+  Numbers of sessions are typed freely; a few cells hold words and end
+  unparsed. They are not winsorised.
+
+  The kind of "another treatment" is free text, delivered as written
+  (psychanalyse, EMDR, soutien, hypnose...).
+
+variables:
+  ever_non_drug_treatment: {column: rad_non_pharmacologique_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has ever had a non-drug treatment"}
+
+  ever_ect: {column: proccur_sismo_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Electroconvulsive therapy: ever"}
+  ect_sessions: {column: prdur_sismo_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_ect, label: "Electroconvulsive therapy: number of sessions"}
+  ect_start_date: {column: prstdtc_sismo_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: start"}
+  ect_end_date: {column: prendtc_sismo_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: end"}
+
+  ever_tms: {column: proccur_tms_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Transcranial magnetic stimulation: ever"}
+  tms_sessions: {column: prdur_tms_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_tms, label: "Transcranial magnetic stimulation: number of sessions"}
+  tms_start_date: {column: prstdtc_tms_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: start"}
+  tms_end_date: {column: prendtc_tms_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: end"}
+
+  ever_cbt: {column: proccur_tcc_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Cognitive behavioural therapy: ever"}
+  cbt_sessions: {column: prdur_tcc_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_cbt, label: "Cognitive behavioural therapy: number of sessions"}
+  cbt_start_date: {column: prstdtc_tcc_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy: start"}
+  cbt_end_date: {column: prendtc_tcc_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy: end"}
+
+  ever_psychoeducation: {column: proccur_psychoed_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Psychoeducation group: ever"}
+  psychoeducation_sessions: {column: prdur_psychoed_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_psychoeducation, label: "Psychoeducation group: number of sessions"}
+  psychoeducation_start_date: {column: prstdtc_psychoed_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoeducation group: start"}
+  psychoeducation_end_date: {column: prendtc_psychoed_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoeducation group: end"}
+
+  ever_ipsrt: {column: proccur_ipsrt_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Interpersonal and social rhythm therapy: ever"}
+  ipsrt_format: {column: prdecod_iprst_lt, type: text, label: "IPSRT: individual or group, as written"}
+  ipsrt_sessions: {column: prdur_ipsrt_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: number of sessions"}
+  ipsrt_start_date: {column: prstdtc_ipsrt_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy: start"}
+  ipsrt_end_date: {column: prendtc_ipsrt_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy: end"}
+
+  ever_other_therapy: {column: proccur_autre_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, label: "Another non-drug treatment: ever"}
+  other_therapy_name: {column: prdecod_autre_lt, type: text, label: "Another non-drug treatment: which one, as written"}
+  other_therapy_sessions: {column: prdur_autre_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_other_therapy, label: "Another non-drug treatment: number of sessions"}
+  other_therapy_start_date: {column: prstdtc_autre_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Another non-drug treatment: start"}
+  other_therapy_end_date: {column: prendtc_autre_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Another non-drug treatment: end"}

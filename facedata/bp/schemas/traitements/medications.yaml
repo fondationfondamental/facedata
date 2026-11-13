@@ -1,0 +1,118 @@
+instrument: medications
+title: Psychotropic treatments, one row per treatment
+tab: TRAITEMENTS
+section: TRAITEMENTS PSYCHOTROPES
+status: draft
+level: list
+notes: >
+  The medications of each patient with their dates. The extraction writes
+  them as lists in one cell (the name of each medication in one column, its
+  start date in another, and so on), and every row of a patient holds the
+  same lists: the patient's whole history, not the treatment of the visit.
+  The lists are opened into one row per patient and medication, delivered in
+  the table treatments (decision D56 in PROGRESS.md).
+
+  Name, molecule and group. The name is delivered as written: a brand, a
+  brand with its dose and form, or a generic with the name of its maker. It
+  is looked up in medications.csv, which gives the molecule, its ATC code
+  and one of ten groups: lithium, anticonvulsant, antipsychotic_2g,
+  antipsychotic_1g, antidepressant, benzodiazepine,
+  other_anxiolytic_hypnotic, stimulant, other_nervous_system and
+  non_psychotropic. The table is written by hand from the pharmacopoeia and
+  has not yet been read by a pharmacist. A name that is not in it keeps what
+  was written, has no molecule and no group, and gets unknown_code.
+
+  Dates. The start date is filled for almost every medication, most often
+  with the day set to 15 (the month is known, not the day). The end date is
+  empty for half of the medications, written 0000-00-00 or 0000-00-15: a
+  missing code. A medication without an end date is taken as still running
+  when the columns of a visit are computed.
+
+  Dose. The total daily dose is filled for a third of the medications: for
+  four in five until 2013, for one in twenty from 2018. The number of units
+  a day is filled for most; "Si besoin" (as needed) is a missing code there.
+  The strength is delivered as written.
+
+  At a visit. The columns of medications_at_visit say, for each visit,
+  whether the patient was on a group or a molecule that day: a medication
+  that started on or before the visit date and has no end date, or an end
+  date on or after the visit.
+
+names:
+  column: med_psy_cmtrt
+  clean: medication_name
+  table: medications.csv
+  gives: [molecule, atc, treatment_group]
+
+variables:
+  medication: {column: med_psy_cmtrt, type: text, label: Medication as written}
+  molecule: {column: molecule, type: text, label: Molecule}
+  atc: {column: atc, type: text, label: ATC code of the molecule}
+  treatment_group:
+    column: treatment_group
+    label: Group of the medication
+    type: category
+    codes:
+      lithium: lithium
+      anticonvulsant: anticonvulsant
+      antipsychotic_2g: antipsychotic_2g
+      antipsychotic_1g: antipsychotic_1g
+      antidepressant: antidepressant
+      benzodiazepine: benzodiazepine
+      other_anxiolytic_hypnotic: other_anxiolytic_hypnotic
+      stimulant: stimulant
+      other_nervous_system: other_nervous_system
+      non_psychotropic: non_psychotropic
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1950-01-01, 2026-12-31], label: Start of the treatment}
+  end_date:
+    column: med_psy_cmendtc
+    type: date
+    range: [1950-01-01, 2026-12-31]
+    missing: {"0000-00-15": not_recorded}
+    label: End of the treatment
+  strength: {column: med_psy_cmdose, type: text, label: "Strength and form, as written"}
+  dose_unit: {column: med_psy_cmdosu, type: text, label: "Unit of the strength, as written"}
+  dose_text: {column: med_psy_cmdostxt, type: text, label: "Strength of a liquid form, as written"}
+  units_per_day:
+    column: med_psy_cmdosfrq
+    type: number
+    range: [0, 100]
+    winsor: false
+    codes: {"1/2": 0.5}
+    missing: {"si besoin": as_needed, sb: as_needed}
+    label: Number of units a day
+  daily_dose: {column: med_psy_cmdostot, type: number, range: [0, 5000], winsor: false, label: Total daily dose (in the unit of the strength)}
+
+at_visit:
+  title: Psychotropic treatments on the day of the visit
+  notes: >
+    For each visit, whether the patient was on a group of medications, or on
+    one of seven molecules, that day: 1 or 0. Computed from the rows of the
+    table treatments (medications.yaml): 1 when a medication of the group
+    started on or before the visit date and has no end date, or an end date
+    on or after the visit. Missing for the patients who have no medication
+    list at all (a quarter of the patients), for a visit without a date, and
+    where the only medications of the group have no start date.
+
+    A medication without an end date is taken as still running: an end that
+    was never typed keeps the patient "on" the medication at every later
+    visit. A name that is not in medications.csv belongs to no group.
+  start: start_date
+  end: end_date
+  columns:
+    on_lithium: {where: {treatment_group: lithium}, label: On lithium at the visit}
+    on_anticonvulsant: {where: {treatment_group: anticonvulsant}, label: On an anticonvulsant mood stabiliser at the visit}
+    on_antipsychotic_2g: {where: {treatment_group: antipsychotic_2g}, label: On a second-generation antipsychotic at the visit}
+    on_antipsychotic_1g: {where: {treatment_group: antipsychotic_1g}, label: On a first-generation antipsychotic at the visit}
+    on_antidepressant: {where: {treatment_group: antidepressant}, label: On an antidepressant at the visit}
+    on_benzodiazepine: {where: {treatment_group: benzodiazepine}, label: On a benzodiazepine at the visit}
+    on_other_anxiolytic_hypnotic: {where: {treatment_group: other_anxiolytic_hypnotic}, label: On another anxiolytic or hypnotic at the visit}
+    on_stimulant: {where: {treatment_group: stimulant}, label: On a stimulant at the visit}
+    on_other_nervous_system: {where: {treatment_group: other_nervous_system}, label: On another medication of the nervous system at the visit}
+    on_valproate: {where: {molecule: valproate}, label: On valproate at the visit}
+    on_lamotrigine: {where: {molecule: lamotrigine}, label: On lamotrigine at the visit}
+    on_carbamazepine: {where: {molecule: carbamazepine}, label: On carbamazepine at the visit}
+    on_quetiapine: {where: {molecule: quetiapine}, label: On quetiapine at the visit}
+    on_aripiprazole: {where: {molecule: aripiprazole}, label: On aripiprazole at the visit}
+    on_olanzapine: {where: {molecule: olanzapine}, label: On olanzapine at the visit}
+    on_risperidone: {where: {molecule: risperidone}, label: On risperidone at the visit}

@@ -12,12 +12,13 @@ from facedata import custom
 from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
-                     "defaults", "version", "variables", "scores", "sign", "checks"}
+                     "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
+                     "relatives", "per_patient"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
-                   "doubt", "asked_if", "parse", "note"}
+                   "doubt", "asked_if", "separator", "parse", "note"}
 SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "reverse", "min_items",
                 "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
@@ -101,7 +102,34 @@ def load_schema(path):
             score["winsor"] = to_numbers(score["winsor"])
         if "range" in score:
             score["range"] = to_numbers(score["range"])
+    if isinstance(schema.get("names"), dict):        # the names table is a file of the cohort folder
+        schema["names"]["path"] = Path(path).parents[2] / schema["names"].get("table", "")
+    block = schema.get("per_patient")
+    if isinstance(block, dict) and isinstance(block.get("columns"), dict):
+        for column in block["columns"].values():     # where: each variable with the list of values that fit
+            if isinstance(column, dict) and isinstance(column.get("where"), dict):
+                for variable, wanted in column["where"].items():
+                    column["where"][variable] = to_numbers(wanted if isinstance(wanted, list) else [wanted])
     return schema
+
+
+def computed_schema(schema, field):
+    """The yes/no columns computed from the rows of an instrument, described as an instrument of their own.
+
+    field: at_visit (columns of the visit table, from a list) or per_patient
+    (columns of the patients table, from the relatives).
+    """
+    block = schema[field]
+    name = schema["instrument"] + "_" + field
+    variables = {}
+    for column, fields in block.get("columns", {}).items():
+        variables[column] = {"label": fields.get("label", ""), "type": "item", "range": [0.0, 1.0], "columns": [], "keep": True}
+    computed = {"instrument": name, "file": name, "title": block.get("title", name), "tab": schema["tab"],
+                "section": schema["section"], "status": schema["status"], "notes": block.get("notes", ""),
+                "variables": variables, "derived_from": schema["instrument"]}
+    if field == "per_patient":
+        computed["level"] = "patient"
+    return computed
 
 
 def load_schemas(folder):
@@ -111,7 +139,38 @@ def load_schemas(folder):
         schema = load_schema(path)
         schema["file"] = path.stem
         schemas[schema.get("instrument", path.stem)] = schema
+        for field in ["at_visit", "per_patient"]:
+            if isinstance(schema.get(field), dict):
+                derived = computed_schema(schema, field)
+                schemas[derived["instrument"]] = derived
     return schemas
+
+
+def given_columns(schema):
+    """The columns that variables read and that are not in the extraction.
+
+    A names table gives columns to the items of a list, and the list of
+    relatives gives columns to the rows of each relative.
+    """
+    given = set()
+    if isinstance(schema.get("names"), dict):
+        given = given | set(schema["names"].get("gives", []))
+    if isinstance(schema.get("relatives"), dict):
+        for who in schema["relatives"].values():
+            given = given | set(who if isinstance(who, dict) else [])
+    return given
+
+
+def raw_columns(schema, variable):
+    """The columns of the extraction that a variable reads.
+
+    With level: relatives, a column of the schema is an ending, read once
+    per relative: "trouble" is mere_trouble, pere_trouble and so on.
+    """
+    columns = [column for column in variable["columns"] if column not in given_columns(schema)]
+    if isinstance(schema.get("relatives"), dict):
+        columns = [prefix + "_" + column for prefix in schema["relatives"] for column in columns]
+    return columns
 
 
 def is_range(value):
@@ -178,10 +237,13 @@ def check_variable(name, variable, schema, columns):
     if "asked_if" in variable:
         names = list(schema["variables"])
         gate = schema["variables"].get(variable["asked_if"], {})
-        gate_is_yes_no = gate.get("type") == "item" and gate.get("range") == [0.0, 1.0]
+        gate_takes_zero = gate.get("type") == "item" and gate.get("range", [None])[0] == 0.0
         takes_zero = kind in ("item", "number") and variable.get("range", [None])[0] == 0.0
-        if variable["asked_if"] not in names[:names.index(name)] or not gate_is_yes_no or not takes_zero:
-            problems.append(f"{name}: asked_if must name a yes/no item listed before, on an item or a number whose range starts at 0")
+        if variable["asked_if"] not in names[:names.index(name)] or not gate_takes_zero or not takes_zero:
+            problems.append(f"{name}: asked_if must name a yes/no item or a count (an item whose range starts at 0) "
+                            "listed before, on an item or a number whose range starts at 0")
+    if "separator" in variable and (kind != "item" or "codes" not in variable):
+        problems.append(f"{name}: separator goes on an item that has codes")
     if "doubt" in variable:
         doubt = variable["doubt"]
         is_block = isinstance(doubt, dict) and set(doubt) <= {"period", "values", "note"}
@@ -201,7 +263,7 @@ def check_variable(name, variable, schema, columns):
         if "compare" not in score:
             problems.append(f"{name}: derived_from must name a score that has compare")
     if columns is not None:
-        for column in variable["columns"] + variable.get("unit_columns", []):
+        for column in raw_columns(schema, variable) + variable.get("unit_columns", []):
             if column not in columns:
                 problems.append(f"{name}: column '{column}' is not in the extraction")
     return problems
@@ -294,15 +356,65 @@ def check_sign(schema):
     return problems
 
 
+def check_lists(schema):
+    """Problems of the fields of a list instrument (SCHEMA_SPEC, section 15)."""
+    problems = []
+    names, block = schema.get("names"), schema.get("at_visit")
+    if (names is not None or block is not None) and schema.get("level") != "list":
+        problems.append("names and at_visit need level: list")
+    if names is not None:
+        if not isinstance(names, dict) or set(names) - {"path"} != {"column", "clean", "table", "gives"}:
+            problems.append("names needs column, clean, table and gives, and nothing else")
+        elif not hasattr(custom, names["clean"]):
+            problems.append(f"names: there is no function '{names['clean']}' in facedata/custom.py")
+        elif not Path(names["path"]).exists():
+            problems.append(f"names: there is no table '{names['table']}' in the cohort folder")
+    if block is not None:
+        known = set(schema.get("variables", {}))
+        if not isinstance(block, dict) or not {"start", "end", "columns"} <= set(block) or not {block.get("start"), block.get("end")} <= known:
+            problems.append("at_visit needs start and end, two variables of the schema, and columns")
+            return problems
+        for name, column in block["columns"].items():
+            if not isinstance(column, dict) or not {"where", "label"} <= set(column) or not set(column["where"]) <= known:
+                problems.append(f"at_visit: column '{name}' needs a label and a where that names variables of the schema")
+    return problems
+
+
+def check_relatives(schema):
+    """Problems of the fields of an instrument asked for each relative (SCHEMA_SPEC, section 16)."""
+    problems = []
+    relatives, block = schema.get("relatives"), schema.get("per_patient")
+    is_level = schema.get("level") == "relatives"
+    if is_level != isinstance(relatives, dict) or (block is not None and not is_level):
+        problems.append("level: relatives and relatives go together, and per_patient needs them")
+        return problems
+    if not is_level:
+        return problems
+    for prefix, who in relatives.items():
+        if not isinstance(who, dict) or "relative" not in who:
+            problems.append(f"relatives: '{prefix}' needs a relative, the name of its rows")
+    if block is not None:
+        known = set(schema.get("variables", {}))
+        if not isinstance(block, dict) or not {"by", "counts", "columns"} <= set(block) or block.get("by") not in known:
+            problems.append("per_patient needs by, a variable of the schema, counts and columns")
+            return problems
+        for name, column in block["columns"].items():
+            complete = isinstance(column, dict) and {"among", "where", "label"} <= set(column)
+            if not complete or not set(column["where"]) <= known or not set(column["among"]) <= set(block["counts"]):
+                problems.append(f"per_patient: column '{name}' needs a label, an among that lists groups of counts "
+                                "and a where that names variables of the schema")
+    return problems
+
+
 def check_schema(schema, columns=None):
     """Problems found in one schema. An empty list means the schema is correct.
 
     columns: the column names of the extraction. Without them, the test that
     every raw column exists is left out.
     """
-    problems = []
+    problems = check_lists(schema) + check_relatives(schema)
     for field in schema:
-        if field not in INSTRUMENT_FIELDS and field != "file":
+        if field not in INSTRUMENT_FIELDS and field not in ("file", "derived_from"):
             problems.append(f"unknown field '{field}'")
     for field in REQUIRED_FIELDS:
         if field not in schema:
@@ -311,8 +423,8 @@ def check_schema(schema, columns=None):
         problems.append("the instrument name must be the file name")
     if schema.get("status") not in ("draft", "reviewed"):
         problems.append("status is draft or reviewed")
-    if schema.get("level", "visit") not in ("visit", "patient"):
-        problems.append("level is visit or patient")
+    if schema.get("level", "visit") not in ("visit", "patient", "list", "relatives"):
+        problems.append("level is visit, patient, list or relatives")
     for name, variable in schema.get("variables", {}).items():
         problems = problems + check_variable(name, variable, schema, columns)
     problems = problems + check_scores(schema) + check_version(schema, columns) + check_sign(schema)
@@ -332,7 +444,15 @@ def check_cohort(schemas):
     seen_versions = {}
     readers = {}                 # raw column -> list of (edition, variable, is it delivered)
     sharing = {}                 # raw column -> types of the variables that share it
+    per_patient = set()          # the variables that patient-level schemas give
+    for schema in schemas.values():
+        if schema.get("level") == "patient":
+            per_patient = per_patient | set(schema["variables"])
     for instrument, schema in schemas.items():
+        block = schema.get("per_patient")
+        for name in block.get("counts", {}).values() if isinstance(block, dict) else []:
+            if name not in per_patient:
+                problems.append(f"{instrument}: per_patient counts with '{name}', which no patient-level schema gives")
         for name in list(schema["variables"]) + list(schema.get("scores", {})):
             if name in seen_outputs:
                 problems.append(f"output '{name}' is in {seen_outputs[name]} and in {instrument}")
@@ -344,10 +464,10 @@ def check_cohort(schemas):
                 problems.append(f"{instrument}: version block '{block.get('name')}' differs from another schema's")
         for name, variable in schema["variables"].items():
             for edition in variable.get("versions", ["every visit"]):
-                for column in variable["columns"]:
+                for column in raw_columns(schema, variable):
                     if variable.get("shared"):           # a band and a number may read the same column
                         sharing.setdefault(column, []).append(variable["type"])
-                    else:
+                    elif "separator" not in variable:    # each box of a list may have its variable
                         readers.setdefault(column, []).append((edition, name, variable["keep"]))
     for column, types in sharing.items():
         if sorted(types) != ["band", "number"] or column in readers:
