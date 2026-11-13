@@ -330,4 +330,5 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_qc.append(qc)
     flags = pd.concat(all_flags, ignore_index=True)
     flags = flags.drop_duplicates(subset=["usubjid", "visit", "variable", "flag"]).reset_index(drop=True)
+    data = data.copy()                                   # built column by column: a copy puts it back in one piece
     return Result(data, patients, flags, pd.concat(all_qc, ignore_index=True), treatments, relatives)

@@ -4,11 +4,8 @@ Colours: grey for the values as written, blue for the harmonised values. The
 four class colours are colour-blind safe in this order.
 """
 
-import matplotlib
-
-matplotlib.use("Agg")                     # draw to files, no window
-import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.figure import Figure      # figures drawn to files: pyplot and its windows are left to the user
 from matplotlib.ticker import MaxNLocator
 import pandas as pd
 
@@ -184,7 +181,8 @@ def plot_variable(path, title, kind, before, after, classes, keys, limits):
     before, after: the values as written and harmonised. classes: what each
     raw cell held. limits: {"range": [low, high], "winsor": [low, high]}.
     """
-    figure, axes = plt.subplots(2, 2, figsize=(11, 6.5), dpi=80)
+    figure = Figure(figsize=(11, 6.5), dpi=80)
+    axes = figure.subplots(2, 2)
     year = keys["visit_date"].dt.year.astype("Int64")
     site = keys["siteid"]
     panel_classes(axes[0, 1], classes[year.notna()], year[year.notna()])
@@ -205,7 +203,6 @@ def plot_variable(path, title, kind, before, after, classes, keys, limits):
     figure.suptitle(title, x=0.01, ha="left", fontsize=12, color=INK)
     figure.tight_layout()
     figure.savefig(path, facecolor=SURFACE)
-    plt.close(figure)
 
 
 def plot_instrument(path, title, values, version, sign_pairs, keys, unit="visits"):
@@ -216,7 +213,8 @@ def plot_instrument(path, title, values, version, sign_pairs, keys, unit="visits
     unit: "visits", or "patients" for a patient-level instrument.
     """
     year = keys["visit_date"].dt.year
-    figure, axes = plt.subplots(1, 3 if sign_pairs else 2, figsize=(14 if sign_pairs else 11, 4.5), dpi=80)
+    figure = Figure(figsize=(14 if sign_pairs else 11, 4.5), dpi=80)
+    axes = figure.subplots(1, 3 if sign_pairs else 2)
 
     style(axes[0], f"Share of {unit} with a value, per variable and year")
     complete = values.notna().groupby(year).mean().T
@@ -256,4 +254,3 @@ def plot_instrument(path, title, values, version, sign_pairs, keys, unit="visits
     figure.suptitle(title, x=0.01, ha="left", fontsize=12, color=INK)
     figure.tight_layout()
     figure.savefig(path, facecolor=SURFACE)
-    plt.close(figure)

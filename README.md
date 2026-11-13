@@ -17,6 +17,7 @@ The other BP instruments are added one by one; see
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
 | [docs/SCHEMA_SPEC.md](docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
 | [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
+| [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
 
 ## Use
 
@@ -40,7 +41,19 @@ bp.report(result, "reports/bp")          # open reports/bp/index.html
 bp.coverage("data/bp/BPALL_20261030.tsv", "thesauri/FACEBP_thesaurus_V4.34.xlsx")
 ```
 
-Loading takes about 15 seconds, the report about one minute.
+Loading everything takes about a minute and a half (a few seconds when you
+name the instruments you need), the report about ten minutes.
+
+## Tutorial
+
+```bash
+uv run jupyter lab bipolar-tutorial.ipynb
+```
+
+The notebook opens in the web browser. Run its cells from top to bottom with
+`Shift` + `Enter`. What appears under a cell is patient data: clear it
+(*Edit*, *Clear Outputs of All Cells*) before you save a notebook that will
+be shared or sent to GitHub.
 
 ## Tests
 

@@ -27,6 +27,8 @@ instrument. Specs live in `docs/` and are the source of truth:
   commits or chat. Report aggregates only. Do not name individual sites in
   committed files.
 - Tests use small hand-written tables. No real data in the repository.
+- A notebook is saved without its results: what appears under a cell is
+  patient data. `tests/test_notebook.py` checks it.
 - Read an extraction as text, never let pandas guess types:
   `pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")`.
   The `.tsv` is the source; the `.xlsx` has Excel-coerced types.
