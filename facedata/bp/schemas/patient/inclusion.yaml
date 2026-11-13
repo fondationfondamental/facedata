@@ -15,8 +15,12 @@ notes: >
   most of them included from 2021 on: 610 with code 1 and 3 with code 2. If
   it records an opposition to the use of the data, those patients matter.
 
-  social_protec (computer name PROTEC) is filled for 4,840 patients: 4,774
-  with code 0, 62 with code 1 and 4 with code 2.
+  social_protec (computer name PROTEC) is the legal protection measure of
+  the SOCIAL tab ("7. Mesures de protection": 0 none, 1 curatelle, 2
+  tutelle, 3 sauvegarde de justice): the column protec of that tab holds the
+  same answer on every inclusion visit (decision D55 in PROGRESS.md). It is
+  filled for 4,840 patients: 4,774 with no measure, 62 under curatelle and
+  4 under tutelle. protec itself is not loaded.
 
 variables:
   opposition_form:
@@ -24,8 +28,8 @@ variables:
     label: Opposition form (codes not documented)
     type: category
     codes: {1: "1", 2: "2"}
-  social_protection:
+  protection_measure:
     column: social_protec
-    label: Social protection (codes not documented)
+    label: Legal protection measure
     type: category
-    codes: {0: "0", 1: "1", 2: "2"}
+    codes: {0: none, 1: curatorship, 2: guardianship, 3: judicial_protection}

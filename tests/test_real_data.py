@@ -291,6 +291,25 @@ def test_care_and_sick_leave(result, qc):
     assert data["drug_advice_followed"].value_counts().to_dict() == {"fully": 5879, "partly": 2364, "not_followed": 1200}
 
 
+def test_social(result, qc):
+    data = result.data
+    tab = qc[qc["tab"] == "SOCIAL"]
+    assert tab["unknown_code"].sum() == 0 and tab["unparsed"].sum() == 0
+    assert data["marital_status"].value_counts().to_dict() == {"couple": 2404, "single": 1975, "divorced": 383, "separated": 181, "widowed": 29}
+    # Education is a list of levels: two of them are exported as words, the others as codes.
+    levels = data["education_level"].value_counts()
+    assert (levels["bac"], levels["bac_plus_5"], levels["primary_certificate"], len(levels)) == (712, 1198, 21, 17)
+    # Code 7 of the source of income holds "other" as well as "no income"; code 3 of the work status never appears.
+    assert data["income_source"].value_counts()["none_or_other"] == 1067
+    assert "student" not in set(data["work_status"].dropna()) and (data["work_status"] == "employed").sum() == 2300
+    assert (qc.loc["last_job_end_date", "n_valid"], qc.loc["last_job_end_date", "date_placeholder"]) == (827, 162)
+    assert (qc.loc["total_work_years", "out_of_range"], qc.loc["longest_job_years", "out_of_range"], qc.loc["household_size", "out_of_range"]) == (4, 1, 5)
+    assert (qc.loc["debt_level", "n_valid"], qc.loc["debt_level", "missing_code"]) == (4464, 153)
+    assert qc.loc["job_class_fu", "n_valid"] == 214
+    # The legal protection measure: one column of the PATIENT tab, once per patient.
+    assert result.patients["protection_measure"].value_counts().to_dict() == {"none": 4774, "curatorship": 62, "guardianship": 4}
+
+
 def test_perinatal(result, qc):
     patients = result.patients
     # One value per patient: the columns are in the patients table, not in the visit table.

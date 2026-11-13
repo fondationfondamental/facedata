@@ -6,7 +6,7 @@ Load, harmonise and quality-check data from the FACE psychiatric cohorts
 One module per cohort. Everything specific to an instrument is written in a
 small YAML schema; the Python code is generic and stays small.
 
-**Status:** the pipeline works on FACE BP for the first 105 instrument schemas.
+**Status:** the pipeline works on FACE BP for the first 106 instrument schemas.
 The other BP instruments are added one by one; see
 [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md).
 
