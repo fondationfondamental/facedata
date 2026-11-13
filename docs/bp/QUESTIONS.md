@@ -332,6 +332,10 @@ can be given on request.
 
 **DM-6. Centres that fill a form differently from the others.** Can each be
 asked?
+- History sections at inclusion since 2022: two large centres hold almost
+  none of the comorbidities, the lifetime mood history and the
+  hospitalisations (388 inclusions; they were at about two thirds before).
+  Did they stop filling these sections, or are they stored elsewhere? (O40)
 - Suicide questions at follow-up in 2022-2023: five centres of eight
   (DEV-3).
 - Prolactin in mUI/L: one centre holds 69% of the high results.
