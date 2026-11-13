@@ -1,0 +1,39 @@
+instrument: cobra
+title: Cognitive Complaints in Bipolar Disorder Rating Assessment (COBRA)
+tab: NEUROPSYCHOLOGIE
+section: COBRA
+status: draft
+notes: >
+  A self-rated questionnaire on cognitive complaints, in the extraction
+  from 2018 (about 586 visits). Sixteen items, each 0 (never) to 3 (always).
+
+  The stored total (cobra_) equals the sum of the sixteen items (0 to 48) in
+  every row where both exist (525).
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  cobra01: {column: cobra01_, label: "Vous est-il difficile de vous souvenir de nom de personnes ?"}
+  cobra02: {column: cobra02_, label: "Vous est-il difficile de retrouver des objets du quotidien (clés,..."}
+  cobra03: {column: cobra03_, label: "Éprouvez-vous des difficultés à vous souvenir d'évènements qui ont été..."}
+  cobra04: {column: cobra04_, label: "Vous est-il difficile de situer dans le temps ces mêmes évènements ?"}
+  cobra05: {column: cobra05_, label: "Faites-vous un effort pour vous concentrer en lisant un livre, un..."}
+  cobra06: {column: cobra06_, label: "Vous-est-il difficile de vous souvenir de ce que vous avez lu ou ce..."}
+  cobra07: {column: cobra07_, label: "Avez-vous le sentiment de ne pas terminer ce que vous commencez ?"}
+  cobra08: {column: cobra08_, label: "Avez-vous besoin de plus de temps pour réaliser les tâches quotidiennes..."}
+  cobra09: {column: cobra09_, label: "Vous est-il arrivé d'être désorienté dans la rue ?"}
+  cobra10: {column: cobra10_, label: "Lorsque l'on vous rappelle une conversation ou une remarque, avez-vous..."}
+  cobra11: {column: cobra11_, label: "Vous est-il difficile de trouver les mots adéquats pour exprimer vos..."}
+  cobra12: {column: cobra12_, label: "Vous déconcentrez-vous facilement ?"}
+  cobra13: {column: cobra13_, label: "Les calculs mentaux simples vous semblent-ils compliqués ?"}
+  cobra14: {column: cobra14_, label: "Avez-vous l'impression de perdre le fil de la conversation ?"}
+  cobra15: {column: cobra15_, label: "Avez-vous remarqué s'il vous est difficile d'apprendre de nouvelles..."}
+  cobra16: {column: cobra16_, label: "Vous est-il difficile de maintenir votre attention sur une tâche de..."}
+  cobra_stored: {column: cobra_, label: COBRA total as stored, range: [0, 48], keep: false}
+
+scores:
+  cobra_total:
+    label: COBRA total (0 to 48)
+    sum: [cobra01, cobra02, cobra03, cobra04, cobra05, cobra06, cobra07, cobra08,
+          cobra09, cobra10, cobra11, cobra12, cobra13, cobra14, cobra15, cobra16]
+    compare: cobra_stored

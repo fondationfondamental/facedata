@@ -2,3 +2,92 @@
 # coverage() lists them with the status "ignored".
 cpt_version: filled on every row with WAIS labels; it says nothing about the CPT
 nom_centre: empty on every row
+subjid: a second patient identifier; usubjid is the key
+id_fiche_clinique: identifier of the visit record; (usubjid, visit) is the key
+
+# Second ratings of MADRS and YMRS: legacy columns left by a data-management experiment.
+# They are not part of the cohort's data (decision D27 in docs/bp/PROGRESS.md).
+madrs01_n1: legacy second rating, not part of the cohort's data
+madrs02_n1: legacy second rating, not part of the cohort's data
+madrs03_n1: legacy second rating, not part of the cohort's data
+madrs04_n1: legacy second rating, not part of the cohort's data
+madrs05_n1: legacy second rating, not part of the cohort's data
+madrs06_n1: legacy second rating, not part of the cohort's data
+madrs07_n1: legacy second rating, not part of the cohort's data
+madrs08_n1: legacy second rating, not part of the cohort's data
+madrs09_n1: legacy second rating, not part of the cohort's data
+madrs10_n1: legacy second rating, not part of the cohort's data
+madrs__n1: legacy second rating, not part of the cohort's data
+ymrs01_n1: legacy second rating, not part of the cohort's data
+ymrs02_n1: legacy second rating, not part of the cohort's data
+ymrs03_n1: legacy second rating, not part of the cohort's data
+ymrs04_n1: legacy second rating, not part of the cohort's data
+ymrs05_n1: legacy second rating, not part of the cohort's data
+ymrs06_n1: legacy second rating, not part of the cohort's data
+ymrs07_n1: legacy second rating, not part of the cohort's data
+ymrs08_n1: legacy second rating, not part of the cohort's data
+ymrs09_n1: legacy second rating, not part of the cohort's data
+ymrs10_n1: legacy second rating, not part of the cohort's data
+ymrs11_n1: legacy second rating, not part of the cohort's data
+ymrs__n1: legacy second rating, not part of the cohort's data
+
+# Unit chosen on the form for nine analytes. The export copies the choice into the unit
+# column of the analyte (<analyte>_lborresu), which is the one the schemas read.
+# The tenth, rad_chol_hll, is not copied and is read by the LDL cholesterol variable.
+rad_glycemie: unit choice, already in gluc_lborresu
+rad_bilirubi: unit choice, already in bili_lborresu
+rad_tsh: unit choice, already in tsh_lborresu
+rad_hb: unit choice, already in hgb_lborresu
+rad_chol_hdl: unit choice, already in hdl_lborresu
+rad_ht: unit choice, already in hct_lborresu
+rad_tcmh: unit choice, already in mch_lborresu
+rad_ccmh: unit choice, already in mchc_lborresu
+rad_prolactine: unit choice, already in prolctn_lborresu
+
+# Epworth sleepiness scale. The export keeps only the answers equal to 0: an item is 0 or
+# empty, never 1, 2 or 3, and the total is filled only when the eight items are 0. An empty
+# cell is then an answer of 1 to 3 or no answer at all, so the scale cannot be used.
+ess0101: only the answers equal to 0 are exported
+ess0102: only the answers equal to 0 are exported
+ess0103: only the answers equal to 0 are exported
+ess0104: only the answers equal to 0 are exported
+ess0105: only the answers equal to 0 are exported
+ess0106: only the answers equal to 0 are exported
+ess0107: only the answers equal to 0 are exported
+ess0108: only the answers equal to 0 are exported
+ess0109: Epworth total, filled only when it is 0
+essdorm: question that follows the Epworth items; one of its four answers never occurs
+
+# Stored scores that a schema replaces or does not need.
+mathys29: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
+mathys30: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
+mathys31: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
+mathys32: MAThyS sub-score, recomputed in mathys.yaml
+mathys33: MAThyS sub-score; the EMR changed its formula in 2022, recomputed in mathys.yaml
+psqi15: PSQI component 1, a copy of item 6 (psqi06)
+psqi16: PSQI component 6, a copy of item 7 (psqi07)
+ctq41: 1 when the CTQ denial score (ctq40) is 1 or more
+apnee08: STOP-BANG criterion "male sex", filled on two visits; the sex is in the PATIENT tab
+wais: the WAIS edition again (wais-3, wais-4); the same as wais_version, filled less often
+
+# TMT, percentiles of the errors. The EMR wrote them with three different rules (until 2015,
+# 2016 to 2021, from 2022): a patient with no error has ">95", then ">10", then "<5".
+# The cell does not tell which rule it follows (decision D42 in docs/bp/PROGRESS.md).
+# tmt.yaml reads the four bands again in the norm tables, from the numbers of errors (D43).
+tmta02a_: TMT part A, percentile of the errors; three rules over the years
+tmtb02a_: TMT part B, percentile of the errors; three rules over the years
+tmtb05a_: TMT part B, percentile of the perseverative errors; three rules over the years
+tmtba02a_: TMT B minus A, percentile of the errors; three rules over the years
+
+# SUBSTANCES ET COMORBIDITE
+rad_tb_subst: a copy of rad_tb_subst_raw written as 0 and 1, in which the "unknown" answers are empty
+
+# EVALUATION MEDICALE, lifetime mood episodes. The export writes "Y" where the count of the row is 1 or more
+# and "N" everywhere else, also where the count is unknown or empty and on every row of the other visits.
+mhoccur_edm_lt: Y where evnum_edm_lt is 1 or more, N everywhere else; N does not mean "none"
+mhoccur_ehman_lt: Y where evnum_ehman_lt is 1 or more, N everywhere else; N does not mean "none"
+mhoccur_epman_lt: Y where evnum_epman_lt is 1 or more, N everywhere else; N does not mean "none"
+mhoccur_epmixt_lt: Y where evnum_epmixt_lt is 1 or more, N everywhere else; N does not mean "none"
+mhoccur_edm_psy_spv: a copy of mhoccur_edm_psy_lt, identical on every row
+mhoccur_epman_psy_spv: a copy of mhoccur_epman_psy_lt, identical on every row
+mhoccur_epmixt_psy_spv: a copy of mhoccur_epmixt_psy_lt, identical on every row

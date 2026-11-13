@@ -1,0 +1,101 @@
+instrument: spatial_span
+title: Spatial span (Wechsler Memory Scale III)
+tab: NEUROPSYCHOLOGIE
+section: Mémoire spatiale
+status: draft
+notes: >
+  The psychologist taps blocks in a sequence that the patient repeats, in
+  the same order (forward) and then in reverse (backward). Eight items of
+  two trials for each order; the test stops after two failures on an item,
+  so the last items are often empty. About 5,215 visits.
+
+  An item score is the number of its trials passed (0 to 2): this holds in
+  every row. The raw score of an order is the sum of its item scores, an
+  empty item counting 0 (0 to 16); the stored one equals it on 99.5% of the
+  visits and is compared. The total is the sum of the two orders (0 to 32),
+  compared with the stored total.
+
+  The scaled scores (1 to 19) come from the norms of the manual and are
+  delivered as stored. Each z-score is the scaled score brought to mean 0
+  and SD 1, (scaled - 10) / 3, in every row.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  # Forward: two trials per item (1 = correct), then the item scores
+  spatial_forward_1a: {column: msd01a_, label: "Forward - item 1, trial 1"}
+  spatial_forward_1b: {column: msd01b_, label: "Forward - item 1, trial 2"}
+  spatial_forward_2a: {column: msd02a_, label: "Forward - item 2, trial 1"}
+  spatial_forward_2b: {column: msd02b_, label: "Forward - item 2, trial 2"}
+  spatial_forward_3a: {column: msd03a_, label: "Forward - item 3, trial 1"}
+  spatial_forward_3b: {column: msd03b_, label: "Forward - item 3, trial 2"}
+  spatial_forward_4a: {column: msd04a_, label: "Forward - item 4, trial 1"}
+  spatial_forward_4b: {column: msd04b_, label: "Forward - item 4, trial 2"}
+  spatial_forward_5a: {column: msd05a_, label: "Forward - item 5, trial 1"}
+  spatial_forward_5b: {column: msd05b_, label: "Forward - item 5, trial 2"}
+  spatial_forward_6a: {column: msd06a_, label: "Forward - item 6, trial 1"}
+  spatial_forward_6b: {column: msd06b_, label: "Forward - item 6, trial 2"}
+  spatial_forward_7a: {column: msd07a_, label: "Forward - item 7, trial 1"}
+  spatial_forward_7b: {column: msd07b_, label: "Forward - item 7, trial 2"}
+  spatial_forward_8a: {column: msd08a_, label: "Forward - item 8, trial 1"}
+  spatial_forward_8b: {column: msd08b_, label: "Forward - item 8, trial 2"}
+  spatial_forward_item1: {column: msd01_, label: "Forward - item 1 score", range: [0, 2]}
+  spatial_forward_item2: {column: msd02_, label: "Forward - item 2 score", range: [0, 2]}
+  spatial_forward_item3: {column: msd03_, label: "Forward - item 3 score", range: [0, 2]}
+  spatial_forward_item4: {column: msd04_, label: "Forward - item 4 score", range: [0, 2]}
+  spatial_forward_item5: {column: msd05_, label: "Forward - item 5 score", range: [0, 2]}
+  spatial_forward_item6: {column: msd06_, label: "Forward - item 6 score", range: [0, 2]}
+  spatial_forward_item7: {column: msd07_, label: "Forward - item 7 score", range: [0, 2]}
+  spatial_forward_item8: {column: msd08_, label: "Forward - item 8 score", range: [0, 2]}
+  # Backward: two trials per item (1 = correct), then the item scores
+  spatial_backward_1a: {column: msi01a_, label: "Backward - item 1, trial 1"}
+  spatial_backward_1b: {column: msi01b_, label: "Backward - item 1, trial 2"}
+  spatial_backward_2a: {column: msi02a_, label: "Backward - item 2, trial 1"}
+  spatial_backward_2b: {column: msi02b_, label: "Backward - item 2, trial 2"}
+  spatial_backward_3a: {column: msi03a_, label: "Backward - item 3, trial 1"}
+  spatial_backward_3b: {column: msi03b_, label: "Backward - item 3, trial 2"}
+  spatial_backward_4a: {column: msi04a_, label: "Backward - item 4, trial 1"}
+  spatial_backward_4b: {column: msi04b_, label: "Backward - item 4, trial 2"}
+  spatial_backward_5a: {column: msi05a_, label: "Backward - item 5, trial 1"}
+  spatial_backward_5b: {column: msi05b_, label: "Backward - item 5, trial 2"}
+  spatial_backward_6a: {column: msi06a_, label: "Backward - item 6, trial 1"}
+  spatial_backward_6b: {column: msi06b_, label: "Backward - item 6, trial 2"}
+  spatial_backward_7a: {column: msi07a_, label: "Backward - item 7, trial 1"}
+  spatial_backward_7b: {column: msi07b_, label: "Backward - item 7, trial 2"}
+  spatial_backward_8a: {column: msi08a_, label: "Backward - item 8, trial 1"}
+  spatial_backward_8b: {column: msi08b_, label: "Backward - item 8, trial 2"}
+  spatial_backward_item1: {column: msi01_, label: "Backward - item 1 score", range: [0, 2]}
+  spatial_backward_item2: {column: msi02_, label: "Backward - item 2 score", range: [0, 2]}
+  spatial_backward_item3: {column: msi03_, label: "Backward - item 3 score", range: [0, 2]}
+  spatial_backward_item4: {column: msi04_, label: "Backward - item 4 score", range: [0, 2]}
+  spatial_backward_item5: {column: msi05_, label: "Backward - item 5 score", range: [0, 2]}
+  spatial_backward_item6: {column: msi06_, label: "Backward - item 6 score", range: [0, 2]}
+  spatial_backward_item7: {column: msi07_, label: "Backward - item 7 score", range: [0, 2]}
+  spatial_backward_item8: {column: msi08_, label: "Backward - item 8 score", range: [0, 2]}
+
+  # Scores as stored
+  spatial_forward_stored: {column: msdtot_, label: Forward raw score as stored, range: [0, 16], keep: false}
+  spatial_backward_stored: {column: msitot_, label: Backward raw score as stored, range: [0, 16], keep: false}
+  spatial_total_stored: {column: mstbrut_, label: Total raw score as stored, range: [0, 32], keep: false}
+  spatial_forward_scaled: {column: msdstd_, label: Forward scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_forward}
+  spatial_forward_z: {column: msdcr_, type: number, label: Forward scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_forward}
+  spatial_backward_scaled: {column: msistd_, label: Backward scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_backward}
+  spatial_backward_z: {column: msicr_, type: number, label: Backward scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_backward}
+  spatial_total_scaled: {column: mststd_, label: Total scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_total}
+  spatial_total_z: {column: mstcr_, type: number, label: Total scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_total}
+
+scores:
+  spatial_forward:
+    label: Forward raw score (0 to 16)
+    sum: [spatial_forward_item1, spatial_forward_item2, spatial_forward_item3, spatial_forward_item4, spatial_forward_item5, spatial_forward_item6, spatial_forward_item7, spatial_forward_item8]
+    min_items: 1
+    compare: spatial_forward_stored
+  spatial_backward:
+    label: Backward raw score (0 to 16)
+    sum: [spatial_backward_item1, spatial_backward_item2, spatial_backward_item3, spatial_backward_item4, spatial_backward_item5, spatial_backward_item6, spatial_backward_item7, spatial_backward_item8]
+    min_items: 1
+    compare: spatial_backward_stored
+  spatial_total:
+    label: Total raw score (0 to 32)
+    sum: [spatial_forward, spatial_backward]
+    compare: spatial_total_stored

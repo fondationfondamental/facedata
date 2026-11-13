@@ -1,0 +1,64 @@
+instrument: parametres_physiques
+title: Height, weight, body mass index and waist
+tab: CONSTANTES et ECG
+section: Paramètres physiques
+status: draft
+notes: >
+  These columns have no unit column, and a few values are written on another
+  scale: a height in millimetres (1650 for 165 cm), a weight with a lost
+  decimal point (8602 for 86.02 kg). The unit is recognised from the size of
+  the value and the cell is flagged unit_inferred.
+
+  The stored body mass index confirms these readings: on the 181 visits where
+  a height or a weight is rescaled and a body mass index is stored, the
+  stored index equals the one computed from the rescaled values.
+
+  Height: 180 values in millimetres and 2 in tenths of a millimetre. Half of
+  them come from one centre, from 2018 on.
+
+  The body mass index is recomputed from the harmonised weight and height
+  (custom function body_mass_index) and compared with the stored one, which
+  is rounded to one decimal: 34 visits differ by more than the rounding
+  (score_mismatch). It is also computed on the 250 visits where the EMR
+  stored none. Seven stored values have no height or weight beside them and
+  are not delivered.
+
+  A waist under 40 cm is impossible for an adult: out_of_range.
+
+defaults: {type: number}
+
+variables:
+  height:
+    label: Height
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [100, 230]}
+      mm: {factor: 0.1, expect: [1000, 2300]}
+      0.1 mm: {factor: 0.01, expect: [10000, 23000]}
+    range: [100, 230]
+  weight:
+    label: Weight
+    unit: kg
+    units:
+      kg: {factor: 1, expect: [25, 300]}
+      0.1 kg: {factor: 0.1, expect: [300, 2500]}
+      0.01 kg: {factor: 0.01, expect: [2500, 25000]}
+    range: [25, 300]
+  waist:
+    column: wstcir
+    label: Waist circumference
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [40, 200]}
+      mm: {factor: 0.1, expect: [400, 2000]}
+    range: [40, 200]
+  bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
+
+scores:
+  bmi:
+    label: Body mass index, from the harmonised weight and height
+    custom: body_mass_index
+    compare: bmi_stored
+    compare_tolerance: 0.051
+    range: [10, 80]
+    winsor: [0.01, 0.99]

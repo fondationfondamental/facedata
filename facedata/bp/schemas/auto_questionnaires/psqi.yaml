@@ -1,0 +1,91 @@
+instrument: psqi
+title: Pittsburgh Sleep Quality Index (PSQI)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire PSQI
+status: draft
+notes: >
+  Sleep over the last 30 days. Filled at every visit. Four questions ask for
+  a time or a duration, the others are rated 0 to 3 (the dictionary says 1
+  to 4; no cell holds a 4). Seven component scores of 0 to 3 add up to the
+  total (0 to 21, higher is worse).
+
+  Times. Bedtime, rising time and hours of sleep are written HH:MM and
+  delivered in hours (23:30 is 23.5), as written: 634 bedtimes are between
+  6:00 and 17:00 (a 12-hour clock, or patients who sleep by day), and 16
+  visits give more than 16 hours of sleep.
+
+  Minutes to fall asleep (psqi02). 310 values are above 5 hours. Most are
+  the minutes multiplied by 60: 300, 600, 900, 1800 and 3600 are frequent,
+  and the patients who wrote them answer item 5a ("cannot fall asleep within
+  30 minutes") like those who wrote 5, 10, 15, 30 and 60 minutes, not like
+  those who need hours. A value above 240 is therefore divided by 60
+  (unit_inferred). The exception is 1260 to 1439: these are bedtimes typed
+  in the wrong field (22:30 is 1350 minutes after midnight). They fit no
+  unit and end out_of_range.
+
+  Components. Checked against the items on all rows: the EMR computes each
+  of them as the PSQI manual says. Quality is item 6 and medication is item
+  7, so their copies (psqi15, psqi16) are not read (ignored.yaml). Duration,
+  efficiency, disturbances and daytime dysfunction are delivered as stored.
+  The latency component is recomputed by the function psqi_latency of
+  custom.py from the corrected minutes and item 5a, because the stored one
+  (psqi14) used the minutes as written: it differs on the visits above
+  (score_mismatch), and so does the stored total.
+
+  Sleep of 7 hours exactly counts as 0 in the duration component, as in the
+  EMR.
+
+  The dictionary marks the PSQI as reduced in 2021. Questions 1 to 9 are
+  filled alike in every year, so what was removed is not among the columns
+  of the extraction.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours)}
+  psqi_latency:
+    column: psqi02
+    type: number
+    label: Minutes to fall asleep
+    unit: min
+    units:
+      min: {factor: 1, expect: [0, 240.01]}
+      "min x 60": {factor: 0.0166667, expect: [240.01, 1260]}
+      "min x 60, long": {factor: 0.0166667, expect: [1440, 4501]}
+    range: [0, 240]
+  psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours)}
+  psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night}
+  psqi05a: {label: "Vous n’êtes pas arrivé(e) à vous endormir en 30 minutes"}
+  psqi05b: {label: "Vous vous êtes réveillé(e) au milieu de la nuit ou plus tôt que..."}
+  psqi05c: {label: "Vous avez dû vous lever pour aller aux toilettes"}
+  psqi05d: {label: "Vous avez eu du mal à respirer"}
+  psqi05e: {label: "Vous avez toussé ou ronflé bruyamment"}
+  psqi05f: {label: "Vous avez eu trop froid"}
+  psqi05g: {label: "Vous avez eu trop chaud"}
+  psqi05h: {label: "Vous avez fait des cauchemars"}
+  psqi05i: {label: "Vous avez eu des douleurs"}
+  psqi05j: {label: "Combien de fois, au cours des 30 derniers jours, avez-vous eu des..."}
+  psqi05k: {type: text, label: "Other reason for troubled sleep, as written"}
+  psqi06: {label: "Comment qualifieriez-vous la qualité de votre sommeil en général au..."}
+  psqi07: {label: "Au cours des 30 derniers jours, combien de fois avez-vous pris des..."}
+  psqi08: {label: "Au cours des 30 derniers jours, combien de fois avez-vous eu des..."}
+  psqi09: {label: "Au cours des 30 derniers jours, combien vous a-t-il été difficile..."}
+
+  # Component scores as stored, 0 to 3.
+  psqi_efficiency: {column: psqi11, label: Component 4 - habitual sleep efficiency}
+  psqi_duration: {column: psqi12, label: Component 3 - sleep duration}
+  psqi_disturbances: {column: psqi13, label: Component 5 - sleep disturbances}
+  psqi_latency_stored: {column: psqi14, label: Component 2 as stored, keep: false}
+  psqi_dysfunction: {column: psqi17, label: Component 7 - daytime dysfunction}
+  psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
+
+scores:
+  psqi_latency_component:
+    label: Component 2 - sleep latency
+    custom: psqi_latency
+    compare: psqi_latency_stored
+  psqi_total:
+    label: PSQI total (0 to 21, higher is worse)
+    sum: [psqi06, psqi_latency_component, psqi_duration, psqi_efficiency,
+          psqi_disturbances, psqi07, psqi_dysfunction]
+    compare: psqi_stored

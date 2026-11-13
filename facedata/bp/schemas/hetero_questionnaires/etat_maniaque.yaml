@@ -1,0 +1,37 @@
+instrument: etat_maniaque
+title: "Current manic episode: DSM-IV symptom checklist"
+tab: HETERO-QUESTIONNAIRES
+section: Episode maniaque actuel
+status: draft
+notes: >
+  Part of the "État du patient" form: a DSM-IV symptom checklist, filled at
+  the inclusion visit and at the follow-up visits. It is the same form for
+  every patient, so it does not depend on dsm_version.
+
+  The answers are Y and N in the extraction. They are delivered as 1 and 0, so
+  that the symptoms can be counted. U ("does not know") is a missing code.
+
+  The stored score is the number of symptoms present, and exists only when the
+  nine symptoms are answered. It equals the count on 14,507 of 14,529 rows; the
+  others get score_mismatch and the recomputed count is kept.
+
+defaults: {type: item, range: [0, 1], codes: {Y: 1, N: 0}, missing: {U: unknown}}
+
+variables:
+  etatm01: {label: "Humeur élevée, expansive"}
+  etatm02: {label: "Humeur irritable"}
+  etatm03: {label: "Augmentation de l'estime de soi ou idées de grandeur"}
+  etatm04: {label: "Réduction du besoin de sommeil"}
+  etatm05: {label: "Plus grande communicabilité que d'habitude ou désir de parler constamment"}
+  etatm06: {label: "Fuite des idées ou sensation subjective que les pensées défilent"}
+  etatm07: {label: "Distractibilité : l'attention du sujet étant trop facilement attirée par des stimuli extérieurs sans pertinence"}
+  etatm08: {label: "Activité dirigée vers un but ou impatience motrice : augmentation de l'activité ou agitation psychomotrice"}
+  etatm09: {label: "Implication excessive dans des activités qui ont un potentiel élevé de conséquences dommageables quoique non reconnues par le patient"}
+  etatm_total_stored: {column: etatm, label: "Number of symptoms as stored", range: [0, 9], keep: false}
+
+scores:
+  etatm_total:
+    label: "Number of manic symptoms present (0 to 9)"
+    sum: [etatm01, etatm02, etatm03, etatm04, etatm05, etatm06,
+          etatm07, etatm08, etatm09]
+    compare: etatm_total_stored

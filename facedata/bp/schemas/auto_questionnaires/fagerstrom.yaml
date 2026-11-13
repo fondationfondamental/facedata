@@ -1,0 +1,39 @@
+instrument: fagerstrom
+title: Fagerström Test for Nicotine Dependence (6 items)
+tab: AUTO-QUESTIONNAIRES
+section: FAGERSTROM  (SUBSTANCES)
+status: draft
+notes: >
+  Six questions for smokers. Filled at every visit by the patients who
+  smoke. Items 1 and 4 are 0 to 3, the others 0 or 1; the total is their sum
+  (0 to 10).
+
+  Item 3 ("which cigarette would you hate most to give up?") has two
+  answers: the first of the day (1 point) or any other (0). The extraction
+  only holds the first one: the cell is 1 on 3,628 visits and empty on the
+  2,113 others where the five other items are filled. The answer "any other"
+  is lost in the export.
+
+  Total. The stored total (fagers) exists only on the visits where item 3 is
+  filled, so it is missing for every patient who answered "any other". It is
+  recomputed here as soon as five of the six items are filled, an empty item
+  counting 0: an empty item 3 is then read as "any other". On the visits
+  where the stored total exists, it equals ours in every row.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  fagers01: {label: "Combien de temps après votre réveil fumez-vous votre première cigarette", range: [0, 3]}
+  fagers02: {label: "Trouvez-vous difficile de vous abstenir de fumer dans les endroits où..."}
+  fagers03: {label: "A quelle cigarette de la journée vous serait-il le plus difficile de...", codes: {1: 1, 2: 0}}
+  fagers04: {label: "Combien de cigarettes fumez-vous par jour", range: [0, 3]}
+  fagers05: {label: "Fumez-vous à un rythme plus soutenu le matin que l'après-midi"}
+  fagers06: {label: "Fumez-vous lorsque vous êtes si malade que vous devez rester au lit..."}
+  fagers_stored: {column: fagers, label: Fagerström total as stored, range: [0, 10], keep: false}
+
+scores:
+  fagerstrom_total:
+    label: Fagerström total (0 to 10)
+    sum: [fagers01, fagers02, fagers03, fagers04, fagers05, fagers06]
+    min_items: 5
+    compare: fagers_stored

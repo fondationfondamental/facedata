@@ -4,21 +4,84 @@ tab: BILAN BIOLOGIQUE
 section: NFS
 status: draft
 notes: >
-  Tracer schema: only haemoglobin so far. The other counts of the section are
-  added in the BILAN BIOLOGIQUE milestone.
+  How the units are read (the same in every schema of this tab). The unit
+  column is filled by the form with a default label, also where there is no
+  result, so it proves little. Each analyte lists the units that occur, with
+  the values one expects on each scale. A value that fits its label keeps it.
+  A value that cannot be on the labelled scale and fits exactly one other is
+  converted and flagged (unit_inferred, or unit_doubt when it was possible but
+  unlikely under its label). A value that fits no scale is left as it is and
+  the hard range decides (out_of_range).
 
   Haemoglobin. Almost all of the 13,435 results are labelled g/dL, but 473 of
-  them are 50 or more: they are g/L. They come mostly from two centres between 2010 and
-  2022, mixed cell by cell with correctly scaled values, so a rule by centre
-  or period would not work. The magnitude decides.
+  them are 50 or more: they are g/L. They come mostly from two centres
+  between 2010 and 2022, mixed cell by cell with correctly scaled values, so
+  a rule by centre or period would not work. The magnitude decides. Twelve
+  cells are labelled mmol/L but hold values from 12 to 96; that label is not
+  listed, so it counts as unknown and the magnitude decides.
 
-  Twelve cells are labelled mmol/L but hold values from 12 to 96. That label
-  is left out of the list below on purpose: it then counts as unknown and the
-  magnitude decides.
+  Haematocrit: 477 results are fractions (0.41 for 41%), and 58 have lost
+  their decimal point (411 for 41.1). MCHC: 550 results are in g/L. The
+  default labels of MCH and MCHC say "%"; the values are pg and g/dL.
+
+  Counts per mm3. Leukocytes, platelets and the five kinds of white cells
+  are sometimes written per mm3 (5300 for 5.3 G/L), about 35 visits each.
+
+  White cells in percent (decision D30 in PROGRESS.md). Some results are
+  percentages of the leukocytes instead of counts: about 40 visits have the
+  five kinds in percent, and several hundred single cells do, mostly
+  basophils. Almost none is labelled "%". A percentage is recognised by its
+  label or by its size: a value too large to be a count (25 G/L of
+  neutrophils, 12 of lymphocytes, 2.5 of monocytes, 1.5 of eosinophils, 0.3
+  of basophils) is one. It is converted with the leukocytes of the same
+  visit, value x leukocytes / 100: 844 results (461 basophils, 128
+  monocytes, 108 eosinophils, 84 lymphocytes, 63 neutrophils). Thirteen
+  more cannot be converted, because the visit has no valid leukocyte count
+  (unit_unknown).
+
+  The limits were checked against the visit totals: with the other four
+  kinds as read, does the visit add up when this value is a count, or when
+  it is a percentage? For eosinophils the two scales overlap. From 1.5 on,
+  the visit adds up as a percentage far more often than as a count (75
+  visits against 9), so the value is read as one, with unit_doubt up to 5.
+  Under 1.5 it stays a count, although about 65 values between 0.6 and 1.5
+  only add up as percentages: their visit fails the check below.
+
+  The custom check differential_differs flags the visits where the five
+  kinds do not add up to the leukocytes within 10% (check_failed, on
+  leukocytes): 222 visits. The kinds add up on 98% of the complete visits
+  (96% before the percentages were converted).
+
+  MCV: 31 results between 5 and 13 have a misplaced decimal point (9.07 for
+  90.7). MCH: 10 results are in fmol.
+
+  Platelets: about 65 results between 0.1 and 13 fit no scale (they may be a
+  mean platelet volume typed in the wrong field) and end out_of_range.
 
 defaults: {type: number}
 
 variables:
+  leukocytes:
+    label: Leukocytes
+    column: wbc_lbstresc
+    unit_column: wbc_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0.5, 100], aliases: [Giga/L]}
+      "/mm3": {factor: 0.001, expect: [500, 100000], aliases: ["/mm"]}
+    range: [0.5, 100]
+
+  erythrocytes:
+    label: Erythrocytes
+    column: rbc_lbstresc
+    unit_column: rbc_lborresu
+    unit: T/L
+    units:
+      T/L: {factor: 1, expect: [1.5, 8], aliases: [Tera/L]}
+      G/L: {factor: 0.001, expect: [1500, 8000]}
+      "/mm3": {factor: 1e-06, expect: [1500000, 8000000], aliases: ["/mm"]}
+    range: [1.5, 8]
+
   haemoglobin:
     label: Haemoglobin
     column: hgb_lbstresc
@@ -28,3 +91,112 @@ variables:
       g/dL: {factor: 1, expect: [5, 25]}
       g/L: {factor: 0.1, expect: [50, 250]}
     range: [5, 25]
+
+  haematocrit:
+    label: Haematocrit
+    column: hct_lbstresc
+    unit_column: hct_lborresu
+    unit: "%"
+    units:
+      "%": {factor: 1, expect: [15, 65]}
+      L/L: {factor: 100, expect: [0.15, 0.65]}
+      "0.1 %": {factor: 0.1, expect: [150, 650]}
+    range: [15, 65]
+
+  neutrophils:
+    label: Neutrophils
+    column: neut_lbstresc
+    unit_column: neut_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 25]}
+      "/mm3": {factor: 0.001, expect: [100, 25000], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 100], aliases: [pour]}
+    range: [0, 25]
+
+  basophils:
+    label: Basophils
+    column: baso_lbstresc
+    unit_column: baso_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 0.3]}
+      "/mm3": {factor: 0.001, expect: [5, 300], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 5], aliases: [pour]}
+    range: [0, 0.3]
+
+  eosinophils:
+    label: Eosinophils
+    column: eos_lbstresc
+    unit_column: eos_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 1.5]}
+      "/mm3": {factor: 0.001, expect: [10, 5000], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 10], aliases: [pour]}
+    range: [0, 5]
+
+  lymphocytes:
+    label: Lymphocytes
+    column: lym_lbstresc
+    unit_column: lym_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 12]}
+      "/mm3": {factor: 0.001, expect: [100, 12000], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 100], aliases: [pour]}
+    range: [0, 12]
+
+  monocytes:
+    label: Monocytes
+    column: mono_lbstresc
+    unit_column: mono_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 2.5]}
+      "/mm3": {factor: 0.001, expect: [20, 2500], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 20], aliases: [pour]}
+    range: [0, 2.5]
+
+  mcv:
+    label: Mean corpuscular volume (VGM)
+    column: mcv_lbstresc
+    unit_column: mcv_lborresu
+    unit: fL
+    units:
+      fL: {factor: 1, expect: [50, 130], aliases: [microns, u, µ]}
+      "10 fL": {factor: 10, expect: [5, 13]}
+    range: [50, 130]
+
+  mch:
+    label: Mean corpuscular haemoglobin (TCMH)
+    column: mch_lbstresc
+    unit_column: mch_lborresu
+    unit: pg
+    units:
+      pg: {factor: 1, expect: [15, 45], aliases: ["%"]}
+      fmol: {factor: 16.11, expect: [1.2, 2.5], aliases: [femto]}
+    range: [15, 45]
+
+  mchc:
+    label: Mean corpuscular haemoglobin concentration (CCMH)
+    column: mchc_lbstresc
+    unit_column: mchc_lborresu
+    unit: g/dL
+    units:
+      g/dL: {factor: 1, expect: [25, 40], aliases: ["%"]}
+      g/L: {factor: 0.1, expect: [250, 400]}
+    range: [25, 40]
+
+  platelets:
+    label: Platelets
+    column: plat_lbstresc
+    unit_column: plat_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [10, 1500], aliases: [Giga/L]}
+      "/mm3": {factor: 0.001, expect: [10000, 1500000], aliases: ["/mm"]}
+    range: [10, 1500]
+
+checks:
+  leukocytes: differential_differs

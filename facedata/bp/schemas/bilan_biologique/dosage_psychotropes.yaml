@@ -1,0 +1,94 @@
+instrument: dosage_psychotropes
+title: Plasma levels of psychotropic drugs
+tab: BILAN BIOLOGIQUE
+section: Dosage des psychotropes
+status: draft
+notes: >
+  These columns have no unit column. The dictionary gives one unit per drug;
+  a few results are on the molar scale instead and are recognised by their
+  size: valproate above 200 (µmol/L), carbamazepine above 16, lamotrigine
+  above 20. They are converted and flagged unit_inferred.
+
+  Lamotrigine cannot always be told apart: its usual levels in µmol/L (12 to
+  55) overlap its high levels in mg/L. Only the values of 20 and more are
+  converted.
+
+  Clozapine (65 results) is on three scales at least: µg/L, mg/L and probably
+  µmol/L. Only the first two are recognised; 31 results fit neither and end
+  out_of_range.
+
+  A level below the laboratory's limit is left-censored ("<0.1"). The upper
+  tail only is winsorised.
+
+  Lithium above 3 mmol/L is impossible in an outpatient and ends
+  out_of_range (10 results, some with a lost decimal point).
+
+defaults: {type: number}
+
+variables:
+  treatment_taken_before_sampling:
+    label: Treatment taken on the morning of the blood sample
+    column: rad_prisetraitement
+    type: category
+    codes: {Oui: yes, Non: no}
+
+  clozapine:
+    label: Clozapine plasma level
+    column: clozapin
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [20, 3000]}
+      mg/L: {factor: 1000, expect: [0.02, 1]}
+    range: [20, 3000]
+    winsor: [0, 0.99]
+
+  lithium:
+    label: Lithium plasma level
+    column: lithiumplasma
+    unit: mmol/L
+    range: [0, 3]
+    winsor: [0, 0.99]
+
+  lithium_erythrocyte:
+    label: Lithium level in the red cells
+    column: lithiumintra_erythrocitaire
+    unit: mmol/L
+    range: [0, 3]
+    winsor: [0, 0.99]
+
+  valproate:
+    label: Valproate plasma level
+    column: valproplasma
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 200]}
+      µmol/L: {factor: 0.1442, expect: [200, 1500]}
+    range: [0, 250]
+    winsor: [0, 0.99]
+
+  carbamazepine:
+    label: Carbamazepine plasma level
+    column: carbamaz
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 16]}
+      µmol/L: {factor: 0.2363, expect: [16, 100]}
+    range: [0, 25]
+    winsor: [0, 0.99]
+
+  oxcarbazepine:
+    label: Oxcarbazepine plasma level
+    column: oxcarbaz
+    unit: mg/L
+    range: [0, 60]
+    winsor: [0, 0.99]
+
+  lamotrigine:
+    label: Lamotrigine plasma level
+    column: lamotrig
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 20]}
+      µmol/L: {factor: 0.2561, expect: [20, 250]}
+    range: [0, 30]
+    winsor: [0, 0.99]

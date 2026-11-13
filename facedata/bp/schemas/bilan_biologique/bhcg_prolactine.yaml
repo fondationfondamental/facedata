@@ -1,0 +1,82 @@
+instrument: bhcg_prolactine
+title: Beta-hCG and prolactin
+tab: BILAN BIOLOGIQUE
+section: bHCG
+status: draft
+notes: >
+  How the units are read (the same in every schema of this tab). The unit
+  column is filled by the form with a default label, also where there is no
+  result, so it proves little. Each analyte lists the units that occur, with
+  the values one expects on each scale. A value that fits its label keeps it.
+  A value that cannot be on the labelled scale and fits exactly one other is
+  converted and flagged (unit_inferred, or unit_doubt when it was possible but
+  unlikely under its label). A value that fits no scale is left as it is and
+  the hard range decides (out_of_range).
+
+  Beta-hCG is a pregnancy test: more than half of the results are a
+  detection limit ("<2", "<5"), and 417 are 0. In 55 rows the censoring mark
+  sits in the unit column ("inf"). A few labels are words ("negatif",
+  "enceinte"); the value beside them is read on the usual scale.
+
+  Prolactin (decision D31 in PROGRESS.md). The results are on two scales,
+  ng/mL (µg/L is the same number) and mUI/L (1 ng/mL = 21.2 mUI/L). They
+  overlap between about 30 and 500: a value there can be a high prolactin in
+  ng/mL (under antipsychotics) or an ordinary one in mUI/L.
+
+  The extraction has the unit column of the form (prolctn_lborresu) and the
+  unit choice itself (rad_prolactine, not read). They agree wherever a unit
+  was chosen. On 4,668 of the 6,523 results nobody chose one, and the unit
+  column holds the form's default label, "mg/L". No prolactin is in mg/L, so
+  that label is ignored (ignore_units).
+
+  A chosen unit is believed (1,855 results): ng/mL or µg/L up to 500, mUI/L
+  from 30 on. The 34 results of 100 and more written in ng/mL or µg/L stay
+  as they are; 31 of them are women's, as one expects of a truly high
+  prolactin.
+
+  Where no unit was chosen, the function prolactin_unit of custom.py decides:
+
+  - under 30, the result is ng/mL (3,822); from 500 on, mUI/L (73);
+  - in between, the centre's other results within 180 days decide. In ng/mL
+    2 results in 100 reach 100. Where a quarter or more of them do, the
+    centre was reporting in mUI/L: a result of 100 to 500 is mUI/L (248),
+    and one of 30 to 100 cannot be told (34);
+  - elsewhere a result of 30 to 100 is ng/mL (351), and one of 100 to 500
+    cannot be told (140).
+
+  The 174 results that cannot be told are missing, with unit_unknown. Open
+  question O20 in PROGRESS.md.
+
+  Two checks of the rule. The centre with the most results reported in
+  mUI/L during two periods, where its median as written is between 190 and
+  320; after the rule its median is between 9 and 15 in every half-year.
+  And men are 37% of the results read as mUI/L by the period, as among the
+  results labelled mUI/L (36%), against 9% of the high results written in
+  ng/mL and 16% of the 140 that cannot be told: those are a mixture.
+
+defaults: {type: number}
+
+variables:
+  hcg:
+    label: Beta-hCG
+    column: hcg_lbstresc
+    unit_column: hcg_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [0, 300000], aliases: [UI]}
+    censor_units: {inf: left, inferieur: left}
+    range: [0, 300000]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  prolactin:
+    label: Prolactin
+    column: prolctn_lbstresc
+    unit_column: prolctn_lborresu
+    ignore_units: [mg/L]
+    unit: ng/mL
+    units:
+      ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L]}
+      mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l]}
+    unit_rule: prolactin_unit
+    range: [0.5, 500]

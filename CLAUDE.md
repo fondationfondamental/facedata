@@ -19,6 +19,9 @@ instrument. Specs live in `docs/` and are the source of truth:
 
 ## Data rules
 
+- `norms/` holds copyrighted norm tables of the test manuals and is
+  git-ignored. Never copy a value of a norm table into code, tests, docs or
+  commits; tests use made-up tables.
 - `data/` and `thesauri/` hold pseudonymised patient records and are
   git-ignored. Never copy patient rows or identifiers into code, tests, docs,
   commits or chat. Report aggregates only. Do not name individual sites in

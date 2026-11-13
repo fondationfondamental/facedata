@@ -1,0 +1,70 @@
+instrument: etat_depressif
+title: "Current major depressive episode: DSM-IV symptom checklist"
+tab: HETERO-QUESTIONNAIRES
+section: Episode depressif majeur actuel
+status: draft
+notes: >
+  Part of the "État du patient" form: a DSM-IV symptom checklist, filled at
+  the inclusion visit and at the follow-up visits. It is the same form for
+  every patient, so it does not depend on dsm_version.
+
+  The answers are Y and N in the extraction. They are delivered as 1 and 0, so
+  that the symptoms can be counted. U ("does not know") is a missing code.
+
+  The stored score is the number of symptoms present, and exists only when the
+  nine symptoms are answered. It equals the count on 13,326 of 13,386 rows; the
+  others get score_mismatch and the recomputed count is kept.
+
+  Five symptoms have a detail that says which way the change goes (loss or
+  gain, insomnia or hypersomnia). It is asked when the symptom is present.
+
+defaults: {type: item, range: [0, 1], codes: {Y: 1, N: 0}, missing: {U: unknown}}
+
+variables:
+  etatd01: {label: "Humeur dépressive la majeure partie de la journée"}
+  etatd01a:
+    label: "Mood reactivity (asked when the symptom is present)"
+    type: category
+    codes:
+      "Hypo-réactivité ou d’anesthésie": hypo_reactivity
+      "Hyper-réactivité émotionnelle": hyper_reactivity
+  etatd02: {label: "Diminution marquée d'intérêt ou de plaisir dans toutes ou presque les activités habituelles, presque toute la journée"}
+  etatd03: {label: "Perte ou gain de poids significatif, ou, diminution ou augmentation de l'appétit"}
+  etatd03a:
+    label: "Weight or appetite change (asked when the symptom is present)"
+    type: category
+    codes:
+      "Perte": loss
+      "Gain": gain
+  etatd04: {label: "Insomnie ou hypersomnie"}
+  etatd04a:
+    label: "Sleep change (asked when the symptom is present)"
+    type: category
+    codes:
+      "Insomnie": insomnia
+      "Hypersomnie": hypersomnia
+  etatd05: {label: "Agitation ou ralentissement psychomoteur"}
+  etatd05a:
+    label: "Psychomotor change (asked when the symptom is present)"
+    type: category
+    codes:
+      "Agitation": agitation
+      "Ralentissement": retardation
+  etatd06: {label: "Fatigue ou perte d'énergie"}
+  etatd07: {label: "Sentiment d'indignité, d'auto-accusation ou de culpabilité excessive ou inappropriée"}
+  etatd08: {label: "Diminution de l'aptitude à penser ou se concentrer ou indécision chaque jour"}
+  etatd08a:
+    label: "Thinking speed (asked when the symptom is present)"
+    type: category
+    codes:
+      "Accélération idéïque": racing_thoughts
+      "Ralentissement idéïque": slowed_thinking
+  etatd09: {label: "Pensées récurrentes de mort, idéation suicidaire récurrente sans plan spécifique, ou tentative de suicide"}
+  etatd_total_stored: {column: etatd, label: "Number of symptoms as stored", range: [0, 9], keep: false}
+
+scores:
+  etatd_total:
+    label: "Number of depressive symptoms present (0 to 9)"
+    sum: [etatd01, etatd02, etatd03, etatd04, etatd05, etatd06,
+          etatd07, etatd08, etatd09]
+    compare: etatd_total_stored

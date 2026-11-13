@@ -8,7 +8,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from facedata.harmonise import first_rows
 from facedata.plots import plot_instrument, plot_variable
+from facedata.tokens import KEY_COLUMNS
 
 STYLE = """<style>
 body {font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 1100px; padding: 0 1rem; color: #0b0b0b;}
@@ -52,10 +54,22 @@ def value_classes(after, flags):
     return classes
 
 
-def instrument_page(schema, result, qc, flags, folder):
-    """Write the page and the figures of one instrument. Returns the page's file name."""
+def patient_frame(result):
+    """Patient-level values, on the row of each patient's first visit.
+
+    One row per patient, with the key columns of that visit, so that these
+    variables can be plotted per year and per site like the others.
+    """
+    first = result.data.loc[first_rows(result.data), KEY_COLUMNS]
+    return first.join(result.patients.set_index("usubjid"), on="usubjid")
+
+
+def instrument_page(schema, data, qc, flags, folder):
+    """Write the page and the figures of one instrument. Returns the page's file name.
+
+    data: result.data, or patient_frame(result) for a patient-level instrument.
+    """
     name = schema["instrument"]
-    data = result.data
     plots = folder / "plots" / name
     plots.mkdir(parents=True, exist_ok=True)
     specs = {**schema["variables"], **schema.get("scores", {})}
@@ -64,8 +78,8 @@ def instrument_page(schema, result, qc, flags, folder):
     sign_pairs = {}
     for row in qc.to_dict("records"):
         variable, spec = row["variable"], specs[row["variable"]]
-        if row["type"] in ("text", "date") or variable not in data.columns:
-            continue
+        if row["type"] in ("text", "date") or variable not in data.columns or row["n_valid"] < 20:
+            continue                                 # nothing to draw, or too few values to show
         own_flags = flags[flags["variable"] == variable]
         after = data[variable]
         numeric = row["type"] not in ("category",)
@@ -80,7 +94,8 @@ def instrument_page(schema, result, qc, flags, folder):
                 raw_names = [raw_names] if isinstance(raw_names, str) else raw_names
                 sign_pairs[score] = (data[raw_names].sum(axis=1, min_count=len(raw_names)), before)
     delivered = data[[v for v in qc["variable"] if v in data.columns]]
-    plot_instrument(plots / "_instrument.png", schema["title"], delivered, version, sign_pairs, data)
+    unit = "patients" if schema.get("level") == "patient" else "visits"
+    plot_instrument(plots / "_instrument.png", schema["title"], delivered, version, sign_pairs, data, unit)
 
     body = f"<p><a href='index.html'>Index</a></p><h1>{html.escape(schema['title'])}</h1>"
     body += f"<p>{html.escape(schema['tab'])} / {html.escape(schema['section'])} &middot; schema <code>{name}</code> &middot; status {schema['status']}</p>"
@@ -106,11 +121,13 @@ def write_report(result, schemas, folder):
     rows = result.data[["usubjid", "visit"]].assign(row=result.data.index)
     flags = result.flags.merge(rows, on=["usubjid", "visit"], how="left")
     contents = []
+    per_patient = patient_frame(result)
     for name, schema in schemas.items():
         qc = result.qc[result.qc["instrument"] == name]
         if len(qc) == 0:                             # this instrument was not loaded
             continue
-        link = instrument_page(schema, result, qc, flags, folder)
+        data = per_patient if schema.get("level") == "patient" else result.data
+        link = instrument_page(schema, data, qc, flags, folder)
         contents.append({"instrument": f"<a href='{link}'>{html.escape(schema['title'])}</a>", "tab": schema["tab"],
                          "status": schema["status"], "variables": len(qc), "values": int(qc["n_valid"].sum()),
                          "info": int(qc["n_info"].sum()), "discrepancy": int(qc["n_discrepancy"].sum()),

@@ -1,0 +1,50 @@
+instrument: asrs
+title: Adult ADHD Self-Report Scale (ASRS v1.1, 18 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire ASRS
+status: draft
+notes: >
+  Added in 2021, filled at the inclusion visit. Eighteen items, each 0
+  (never) to 4 (very often).
+
+  The screening result (asrs_) is delivered as stored. It follows part A,
+  the first six items: an item counts when it is 2 or more (items 1 to 3) or
+  3 or more (items 4 to 6), and the result is positive from four items on.
+  This rule gives the stored result on all but 2 of 1,210 visits.
+
+  The extraction stores no total. The sum of the eighteen items is added
+  here (0 to 72).
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  asrs01: {label: "ASRS item 1"}
+  asrs02: {label: "ASRS item 2"}
+  asrs03: {label: "ASRS item 3"}
+  asrs04: {label: "ASRS item 4"}
+  asrs05: {label: "ASRS item 5"}
+  asrs06: {label: "ASRS item 6"}
+  asrs07: {label: "ASRS item 7"}
+  asrs08: {label: "ASRS item 8"}
+  asrs09: {label: "ASRS item 9"}
+  asrs10: {label: "ASRS item 10"}
+  asrs11: {label: "ASRS item 11"}
+  asrs12: {label: "ASRS item 12"}
+  asrs13: {label: "ASRS item 13"}
+  asrs14: {label: "ASRS item 14"}
+  asrs15: {label: "ASRS item 15"}
+  asrs16: {label: "ASRS item 16"}
+  asrs17: {label: "ASRS item 17"}
+  asrs18: {label: "ASRS item 18"}
+  asrs_screen:
+    column: asrs_
+    type: category
+    label: ASRS screening result (part A)
+    codes: {Positif: positive, Négatif: negative, "N?gatif": negative}
+
+scores:
+  asrs_total:
+    label: ASRS total (18 items)
+    sum: [asrs01, asrs02, asrs03, asrs04, asrs05, asrs06, asrs07, asrs08,
+          asrs09, asrs10, asrs11, asrs12, asrs13, asrs14, asrs15, asrs16,
+          asrs17, asrs18]

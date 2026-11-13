@@ -1,0 +1,92 @@
+instrument: als18
+title: Affective Lability Scale, 18 items (ALS-18)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire ALS (version réduite 18 items)
+status: draft
+notes: >
+  ALS-54 and ALS-18 are two instruments. The 18-item ALS-18 replaced the
+  54-item ALS (confirmed by the developers of the EMR, decision D47 in
+  PROGRESS.md). Its 18 questions are 18 of the 54, and the extraction stores
+  both in the same columns. This schema reads those columns on the visits
+  where the 18-item questionnaire was filled: the visits that hold ALS
+  answers and nothing that only the long questionnaires have (no score of
+  the 54-item ALS, no item that only the BIS-10 has). als54.yaml reads the
+  other visits and explains the rule. Both files carry the same version
+  block.
+
+  Filled once, at the inclusion visit, from September 2021 to May 2022
+  depending on the centre; 22 earlier visits also hold an ALS-18 and a
+  BIS-12. Each item is 0 (not at all like me) to 3 (very much like me).
+
+  Item names. The EMR kept the numbers that the questions have in the
+  54-item questionnaire: als18_05 is the question numbered 5 there. The
+  order of the questions on the 18-item form is not known.
+
+  Scores (means, 0 to 3): anxiety-depression (items 5, 12, 16, 17, 20),
+  depression-elation (8, 25, 34, 36, 42, 43, 45, 46), anger (14, 21, 23, 33,
+  41) and the total. The extraction stores them under the names of scales of
+  the long form (als55 "Depression", als56 "Elation", als59 "Anger", als_
+  "Total"), but they are exactly the means of these items in every row.
+
+  Not read. On these visits als57 holds the anxiety-depression score a
+  second time (the same value as als55 on 94% of the visits, empty on the
+  others). On the visits of the 54-item form the column holds another score,
+  read by als54.yaml.
+
+version:
+  name: als_form
+  filled:
+    als54: [als58, als60,
+            bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    als18: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
+            als25, als33, als34, als36, als41, als42, als43, als45, als46]
+
+defaults: {type: item, range: [0, 3], versions: [als18]}
+
+variables:
+  als18_05: {column: als05, label: "ALS-18 item (number 5 of the ALS-54)"}
+  als18_08: {column: als08, label: "ALS-18 item (number 8 of the ALS-54)"}
+  als18_12: {column: als12, label: "ALS-18 item (number 12 of the ALS-54)"}
+  als18_14: {column: als14, label: "ALS-18 item (number 14 of the ALS-54)"}
+  als18_16: {column: als16, label: "ALS-18 item (number 16 of the ALS-54)"}
+  als18_17: {column: als17, label: "ALS-18 item (number 17 of the ALS-54)"}
+  als18_20: {column: als20, label: "ALS-18 item (number 20 of the ALS-54)"}
+  als18_21: {column: als21, label: "ALS-18 item (number 21 of the ALS-54)"}
+  als18_23: {column: als23, label: "ALS-18 item (number 23 of the ALS-54)"}
+  als18_25: {column: als25, label: "ALS-18 item (number 25 of the ALS-54)"}
+  als18_33: {column: als33, label: "ALS-18 item (number 33 of the ALS-54)"}
+  als18_34: {column: als34, label: "ALS-18 item (number 34 of the ALS-54)"}
+  als18_36: {column: als36, label: "ALS-18 item (number 36 of the ALS-54)"}
+  als18_41: {column: als41, label: "ALS-18 item (number 41 of the ALS-54)"}
+  als18_42: {column: als42, label: "ALS-18 item (number 42 of the ALS-54)"}
+  als18_43: {column: als43, label: "ALS-18 item (number 43 of the ALS-54)"}
+  als18_45: {column: als45, label: "ALS-18 item (number 45 of the ALS-54)"}
+  als18_46: {column: als46, label: "ALS-18 item (number 46 of the ALS-54)"}
+
+  # Scores as stored in the extraction. Used only to check our own scores.
+  als18_anxiety_depression_stored: {column: als55, type: number, label: ALS-18 anxiety-depression as stored, winsor: false, keep: false}
+  als18_depression_elation_stored: {column: als56, type: number, label: ALS-18 depression-elation as stored, winsor: false, keep: false}
+  als18_anger_stored: {column: als59, type: number, label: ALS-18 anger as stored, winsor: false, keep: false}
+  als18_total_stored: {column: als_, type: number, label: ALS-18 total as stored, winsor: false, keep: false}
+
+scores:
+  als18_anxiety_depression:
+    label: ALS-18 anxiety-depression (mean of 5 items)
+    mean: [als18_05, als18_12, als18_16, als18_17, als18_20]
+    compare: als18_anxiety_depression_stored
+  als18_depression_elation:
+    label: ALS-18 depression-elation (mean of 8 items)
+    mean: [als18_08, als18_25, als18_34, als18_36, als18_42, als18_43, als18_45, als18_46]
+    compare: als18_depression_elation_stored
+  als18_anger:
+    label: ALS-18 anger (mean of 5 items)
+    mean: [als18_14, als18_21, als18_23, als18_33, als18_41]
+    compare: als18_anger_stored
+  als18_total:
+    label: ALS-18 total (mean of 18 items)
+    mean: [als18_05, als18_08, als18_12, als18_14, als18_16, als18_17, als18_20, als18_21, als18_23,
+          als18_25, als18_33, als18_34, als18_36, als18_41, als18_42, als18_43, als18_45, als18_46]
+    compare: als18_total_stored

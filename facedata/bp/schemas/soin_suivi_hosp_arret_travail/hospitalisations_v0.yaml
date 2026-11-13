@@ -1,0 +1,76 @@
+instrument: hospitalisations_v0
+title: Hospitalisations before inclusion (inclusion visit)
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: VIE ENTIERE / DEPUIS LA DERNIERE VISITE
+status: draft
+notes: >
+  Psychiatric hospitalisations up to the inclusion visit: the age at the
+  first one, their number and total duration over the whole life, and their
+  number and duration in the 12 months before the visit.
+
+  Two periods in the same columns (decision D54 in PROGRESS.md). The number
+  of hospitalisations and their total duration are asked at the inclusion
+  visit, about the whole life, and at every follow-up visit, about the time
+  since the last visit; the dictionary names the section "whole life / since
+  the last visit". The patients have 2.5 hospitalisations on average at
+  inclusion and 0.17 at a follow-up visit. The two are delivered as separate
+  columns, ending in _v0 and _fu; visit_form says which form a visit used
+  and is read from the visit label.
+
+  Number. The form stops at 20: ">20" is read as 20 with a mark in the
+  censoring column (this value or more). "Ne sais pas" is a missing code.
+
+  Duration, in months. A choice in a list: 0, a quarter, half or three
+  quarters of a month, 1 to 20 months, more than 20 (censored at 20).
+
+  No winsorising (decision D54 in PROGRESS.md): most answers are 0, so the
+  99th percentile would bring the rare high values down to it, or to 0.
+
+  Age at the first hospitalisation. "<5" (21 patients) is read as 5 with a
+  mark in the censoring column (this value or less). 10 patients give an age
+  although they have had no hospitalisation, and 30 have had some and give
+  none.
+
+  The 12 months before inclusion. Number and total duration in weeks; a
+  duration above 52 weeks is out of range (3 cells). The dictionary also
+  lists a yes/no question (hooccur_hospitalisation_ly) that is not in the
+  extraction. 20 patients give more hospitalisations in the year than in
+  their whole life; delivered as written.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, range: [0, 90], winsor: false, label: "Age at the first hospitalisation"}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations over the life, at inclusion"}
+  hospitalisation_months_v0: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, label: "Total duration of the hospitalisations over the life, at inclusion"}
+
+  # The 12 months before the inclusion visit.
+  n_hospitalisations_12m: {column: nboccur_hospitalisation_ly, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations in the 12 months before inclusion"}
+  hospitalisation_weeks_12m: {column: hodur_hospitalisation_ly, type: number, unit: weeks, range: [0, 52], winsor: false, label: "Total duration of the hospitalisations in the 12 months before inclusion"}

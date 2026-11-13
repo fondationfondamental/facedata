@@ -2,8 +2,8 @@
 
 import pandas as pd
 
-from facedata.parse import (clean_text, parse_category, parse_column, parse_date, parse_item,
-                            parse_number, parse_time, split_missing)
+from facedata.parse import (clean_text, parse_band, parse_category, parse_column, parse_date,
+                            parse_item, parse_number, parse_time, split_missing)
 from helpers import flagged, texts
 
 
@@ -81,3 +81,56 @@ def test_parse_column_follows_the_type():
     values, cens, flags = parse_column(texts(["a", ""]), "x", {"type": "text"})
     assert values[0] == "a" and pd.isna(values[1])
     assert len(flags) == 0
+
+
+def test_letter_answers_can_be_counted():
+    """An item with codes: the letters are replaced by numbers before parsing."""
+    variable = {"type": "item", "range": [0.0, 1.0], "codes": {"Y": "1", "N": "0"}, "missing": {"U": "unknown"}}
+    text, missing_flags = split_missing(texts(["Y", "n", "U", "1", "X"]), "x", variable)
+    values, cens, flags = parse_column(text, "x", variable)
+    assert list(values[:2]) == [1, 0] and values[3] == 1
+    assert pd.isna(values[2]) and pd.isna(values[4])
+    assert flagged(missing_flags, "missing_code") == [2]
+    assert flagged(flags, "unparsed") == [4]
+
+
+def test_a_band_is_read_as_its_middle():
+    column = texts(["60-51", "41 - 50", "100_91", "70", "-5", "a-b"])
+    values, cens, flags = parse_number(column, "x", {"bands": "middle"})
+    assert list(values[:5]) == [55.5, 45.5, 95.5, 70, -5]
+    assert flagged(flags, "band_middle") == [0, 1, 2]
+    assert flagged(flags, "unparsed") == [5]
+    assert list(flags.loc[flags["flag"] == "band_middle", "detail"])[0] == "band 60-51"
+    values, cens, flags = parse_number(column, "x", {})          # without the field, a band is not read
+    assert flagged(flags, "unparsed") == [0, 1, 2, 5]
+
+
+def test_parse_number_reads_a_number_without_its_leading_zero():
+    values, cens, flags = parse_number(texts([".45", "-.02", ",5"]), "x", {})
+    assert list(values) == [0.45, -0.02, 0.5]
+    assert flagged(flags, "format_repaired") == [0, 1, 2]
+
+
+def test_parse_band_gives_the_lower_limit_of_the_band():
+    """The decision table of SCHEMA_SPEC, section 6."""
+    variable = {"limits": [5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0]}
+    column = texts(["25 - 50", "50 - 25", "[25-50]", "50", ">95", "<5", ">10", "10 - 50", "<10", ">=75", "12", "30 - 40", ""])
+    values, cens, flags = parse_band(column, "x", variable)
+    assert list(values[:10]) == [25, 25, 25, 50, 95, 0, 10, 10, 5, 75]
+    assert values[10:].isna().all()
+    assert list(cens[:10]) == [0, 0, 0, 0, 0, 0, 1, 1, -1, 1]
+    assert flagged(flags, "censored_right") == [6, 7, 9]     # this band or a higher one
+    assert flagged(flags, "censored_left") == [8]            # this band or a lower one
+    assert flagged(flags, "unparsed") == [10, 11]            # 12 is no limit, 30 - 40 is no band
+
+
+def test_parse_band_turns_a_z_score_into_its_band():
+    """With z_range, a z-score gets the band it has under the normal law."""
+    variable = {"limits": [1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0], "z_range": [-5.0, 5.0]}
+    column = texts(["0.00", "0.80", "-1.70", "2.40", "-3.00", "25 - 50", "7.50", "1,65"])
+    values, cens, flags = parse_band(column, "x", variable)
+    assert list(values[:6]) == [50, 75, 1, 99, 0, 25]        # 50th, 79th and 4th percentile, above the 99th, under the 1st
+    assert pd.isna(values[6]) and values[7] == 95            # 7.50 is no z-score; a decimal comma is read
+    assert flagged(flags, "band_from_z") == [0, 1, 2, 3, 4, 7]
+    assert flagged(flags, "out_of_range") == [6]
+    assert list(cens) == [0] * 8

@@ -6,56 +6,89 @@ import pandas as pd
 
 from facedata import custom
 from facedata.flags import finish_flags, make_flags, stack_flags
-from facedata.harmonise import (censoring_from_units, check_range, collapse_patient_level,
-                                compute_scores, convert_units, detect_version, fix_sign, winsorise)
-from facedata.parse import clean_text, parse_column, split_missing
+from facedata.harmonise import (band_from_table, censoring_from_units, check_range, collapse_patient_level,
+                                compute_scores, convert_units, detect_version, doubt_period, first_rows,
+                                fix_sign, winsorise)
+from facedata.parse import clean_text, own_cells, parse_column, split_missing
 from facedata.qc import qc_table
-from facedata.read import prepare_visits, read_extraction
+from facedata.read import prepare_visits, read_extraction, read_norms
 from facedata.schema import check_cohort, check_schema, load_schemas
 from facedata.tokens import EMPTY_DATE, KEY_COLUMNS
 
 Result = namedtuple("Result", ["data", "patients", "flags", "qc"])
 
 
-def read_variable(raw, version, name, variable):
+def read_text(raw, version, name, variable):
+    """Steps 3 and 5 for one variable: its cleaned text, without missing codes.
+
+    A variable may list several raw columns, when the extraction moved it to
+    a new column: the first column that holds a value is read. Returns the
+    text, which visits are read, which cells were filled, and the flags.
+    """
+    is_read = pd.Series(True, index=raw.index)
+    if "versions" in variable:
+        is_read = version.isin(variable["versions"])     # read only on the visits of its edition
+    text = pd.Series("", index=raw.index)
+    filled = pd.Series(False, index=raw.index)
+    flags = []
+    for column in variable["columns"]:
+        other = clean_text(raw[column]).where(is_read, "")
+        if variable.get("shared"):                       # the column also holds the cells of another variable
+            other = own_cells(other, variable)
+        filled = filled | ((other != "") & (other != EMPTY_DATE))
+        other, missing_flags = split_missing(other, name, variable)
+        conflict = (text != "") & (other != "") & (text != other)
+        flags.append(missing_flags)
+        flags.append(make_flags(conflict, name, "column_conflict", "column " + column + " holds " + other))
+        text = text.where(text != "", other)
+    return text, is_read, filled, flags
+
+
+def read_variable(raw, version, name, variable, keys=None, wholes=None, norms=None):
     """Steps 3, 5, 6 and 7 for one variable: from the raw column to clean values.
 
-    Returns the values, the censoring, the flags, and how many cells were
-    read and how many of them were filled.
+    keys and wholes (the values read so far, inside their range) are passed on
+    to the unit conversion. A band that names a norm table is read there, with
+    wholes and norms. Returns the values, the censoring, the flags, which
+    visits are read and which cells were filled.
     """
-    text = clean_text(raw[variable["column"]])
-    n_rows = len(text)
-    if "versions" in variable:
-        of_edition = version.isin(variable["versions"])
-        text = text.where(of_edition, "")            # read only on the visits of its edition
-        n_rows = int(of_edition.sum())
-    n_filled = int(((text != "") & (text != EMPTY_DATE)).sum())
-    text, missing_flags = split_missing(text, name, variable)
+    text, is_read, filled, flags = read_text(raw, version, name, variable)
     if "parse" in variable:                          # escape hatch: a function of custom.py
         values = getattr(custom, variable["parse"])(text)
         cens, parse_flags = pd.Series(0, index=text.index), stack_flags([])
     else:
         values, cens, parse_flags = parse_column(text, name, variable)
-    flags = [missing_flags, parse_flags]
+    if "lookup" in variable:                         # a band the EMR read in a table: read it again from the raw score
+        values, cens, parse_flags = band_from_table(text, values, cens, parse_flags, name, variable,
+                                                    keys["age"], wholes, norms)
+    flags.append(parse_flags)
     labels = pd.Series("", index=text.index)
     if "unit_column" in variable:
-        labels = clean_text(raw[variable["unit_column"]]).where(values.notna(), "")
+        for column in variable["unit_columns"]:      # the first column that holds a label
+            labels = labels.where(labels != "", clean_text(raw[column]))
+        labels = labels.where(values.notna(), "")
         cens, censor_flags = censoring_from_units(cens, labels, name, variable)
         flags.append(censor_flags)
+        # A censoring mark says nothing about the unit, and neither does a label the schema ignores.
+        says_nothing = list(variable.get("censor_units", {})) + variable.get("ignore_units", [])
+        labels = labels.where(~labels.str.lower().isin(says_nothing), "")
     if "units" in variable:
-        values, unit_flags = convert_units(values, labels, name, variable)
+        values, unit_flags = convert_units(values, labels, name, variable, keys, wholes)
         flags.append(unit_flags)
     if variable.get("censored") == "half":
         values = values.where(cens != -1, values / 2)
-    return values, cens, stack_flags(flags), n_rows, n_filled
+    return values, cens, stack_flags(flags), is_read, filled
 
 
-def run_instrument(raw, keys, schema, limits=None):
+def run_instrument(raw, keys, schema, limits=None, norms=None):
     """Run every step for one instrument.
 
+    limits: winsor limits of an earlier load. norms: the norm tables.
+
     Returns a dict: values (one column per variable and score), cens, version,
-    flags, limits (winsor limits used), n_rows, n_filled and switch (the
-    dates at which centres changed sign convention).
+    flags, limits (winsor limits used), n_rows (cells read), n_filled (cells
+    that held something) and switch (the dates at which centres changed sign
+    convention).
     """
     limits = limits or {}
     flags = []
@@ -66,11 +99,24 @@ def run_instrument(raw, keys, schema, limits=None):
 
     values = pd.DataFrame(index=raw.index)
     cens = pd.DataFrame(index=raw.index)
+    wholes = pd.DataFrame(index=raw.index)           # the values inside their range, for a percentage or a norm table
     n_rows, n_filled = {}, {}
+    per_patient = schema.get("level") == "patient"
     for name, variable in schema["variables"].items():
-        values[name], cens[name], variable_flags, n_rows[name], n_filled[name] = read_variable(
-            raw, version, name, variable)
+        values[name], cens[name], variable_flags, is_read, filled = read_variable(
+            raw, version, name, variable, keys, wholes, norms)
         flags.append(variable_flags)
+        if "asked_if" in variable:                   # a box shown only after a yes: a "no" there answers it too
+            answered = ~filled & (values[variable["asked_if"]] == 0)
+            values[name] = values[name].mask(answered, 0)
+            filled = filled | answered
+        if variable["type"] in ("number", "item") and "range" in variable:
+            wholes[name], _ = check_range(values[name], name, variable)
+        if per_patient:                              # count patients, not visit rows
+            n_rows[name] = keys["usubjid"][is_read].nunique()
+            n_filled[name] = keys["usubjid"][filled].nunique()
+        else:
+            n_rows[name], n_filled[name] = int(is_read.sum()), int(filled.sum())
 
     switch = {}
     if "sign" in schema:
@@ -78,23 +124,29 @@ def run_instrument(raw, keys, schema, limits=None):
         flags.append(sign_flags)
 
     for name, variable in schema["variables"].items():
-        if "range" in variable and variable["type"] in ("number", "item"):
+        if "range" in variable and variable["type"] in ("number", "item", "date"):
             values[name], range_flags = check_range(values[name], name, variable)
             flags.append(range_flags)
+        if "doubt" in variable:                      # a period in which the column is not reliable
+            flags.append(doubt_period(values[name], keys["visit_date"], name, variable["doubt"]))
     cens = cens.where(values[cens.columns].notna(), 0)
 
-    values, score_flags = compute_scores(values, schema, version)
+    values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens)
     flags.append(score_flags)
 
-    for check in schema.get("checks", []):           # custom checks: True where the row fails
+    for name, check in schema.get("checks", {}).items():     # custom checks: True where the row fails
         failed = getattr(custom, check)(values)
-        flags.append(make_flags(failed, schema["instrument"], "check_failed", check))
+        flags.append(make_flags(failed, name, "check_failed", check))
 
     used_limits = {}
     for name, variable in schema["variables"].items():
         if variable["type"] == "number":
             values[name], winsor_flags, used_limits[name] = winsorise(
                 values[name], name, variable, limits.get(name))
+            flags.append(winsor_flags)
+    for name, score in schema.get("scores", {}).items():
+        if "winsor" in score:                        # a continuous score that asks for it (a body mass index)
+            values[name], winsor_flags, used_limits[name] = winsorise(values[name], name, score, limits.get(name))
             flags.append(winsor_flags)
 
     return {"values": values, "cens": cens, "version": version, "flags": stack_flags(flags),
@@ -116,11 +168,35 @@ def delivered_columns(schema, result):
     return table
 
 
+def once_per_patient(result, table, keys):
+    """For a patient-level instrument: put values and flags on each patient's first visit.
+
+    table is the one-row-per-patient table of the instrument. After this, the
+    QC table and the flag log count patients, not visit rows.
+    """
+    first = first_rows(keys)
+    is_first = keys.index.isin(first)
+    lookup = table.set_index("usubjid")
+    for name in lookup.columns:
+        on_first_visit = keys["usubjid"].map(lookup[name]).where(is_first)
+        if name in result["values"].columns:
+            result["values"][name] = on_first_visit
+        elif name.endswith("_cens"):
+            result["cens"][name[:-5]] = on_first_visit.fillna(0)
+    flags = result["flags"].copy()
+    flags["row"] = first.loc[keys["usubjid"].loc[flags["row"]]].to_numpy()
+    result["flags"] = flags.drop_duplicates(subset=["row", "variable", "flag"]).reset_index(drop=True)
+    return result
+
+
 def raw_strings(raw, schema):
     """The original text of each variable, untouched, for the flag log."""
     table = pd.DataFrame(index=raw.index)
     for name, variable in schema["variables"].items():
-        table[name] = raw[variable["column"]]
+        text = raw[variable["columns"][0]]
+        for column in variable["columns"][1:]:       # the first column that holds something
+            text = text.where((text.str.strip() != "") & (text != EMPTY_DATE), raw[column])
+        table[name] = text
     if "column" in schema.get("version", {}):
         table[schema["version"]["name"]] = raw[schema["version"]["column"]]
     return table
@@ -134,7 +210,7 @@ def read_limits(qc):
     return {row["variable"]: (row["winsor_low"], row["winsor_high"]) for index, row in with_limits.iterrows()}
 
 
-def run_cohort(path, schema_folder, instruments=None, winsor_limits=None):
+def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms"):
     """Load an extraction with every schema of the folder (or only some instruments)."""
     raw, keys, visit_flags = prepare_visits(read_extraction(path))
     schemas = load_schemas(schema_folder)
@@ -149,6 +225,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None):
             raise ValueError(f"No schema for {unknown}. Known instruments: {sorted(schemas)}")
         schemas = {name: schemas[name] for name in instruments}
     limits = read_limits(winsor_limits)
+    norms = read_norms(norms_folder)
 
     data = keys[KEY_COLUMNS].copy()
     patients = pd.DataFrame({"usubjid": sorted(keys["usubjid"].unique())})
@@ -156,13 +233,16 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None):
     all_flags = [finish_flags(visit_flags, keys, visit_text, keys)]
     all_qc = []
     for schema in schemas.values():
-        result = run_instrument(raw, keys, schema, limits)
+        result = run_instrument(raw, keys, schema, limits, norms)
         table = delivered_columns(schema, result)
+        for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
+            data[column] = data[column].fillna(table[column])
         table = table[[column for column in table.columns if column not in data.columns]]
         if schema.get("level") == "patient":
             table, patient_flags = collapse_patient_level(table, keys)
             patients = patients.merge(table, on="usubjid", how="left")
             result["flags"] = stack_flags([result["flags"], patient_flags])
+            result = once_per_patient(result, table, keys)
         else:
             data = pd.concat([data, table], axis=1)
         final = result["values"].copy()

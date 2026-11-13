@@ -27,6 +27,17 @@ def write_workbook(path):
     pd.DataFrame(rows).to_excel(path, sheet_name="TEST", header=False, index=False)
 
 
+def test_read_thesaurus_skips_a_code_list_column(tmp_path):
+    rows = [["CODELIST", "NOM VARIABLE EXTRACTION", "NOM VARIABLE INFORMATIQUE", "LABEL", "COCHER", "CODAGE", "TABLE"],
+            ["BIRTH", "", "", "", "", "", ""],
+            ["", "AGEMERE", "mother_age", "Age of the mother", "", "", "SC"],
+            ["C76325", "BRTHWT", "weight", "Birth weight", "", "num", "VS"]]
+    pd.DataFrame(rows).to_excel(tmp_path / "thesaurus.xlsx", sheet_name="BIRTH", header=False, index=False)
+    thesaurus = read_thesaurus(tmp_path / "thesaurus.xlsx")
+    assert list(thesaurus["name"]) == ["agemere", "brthwt"]          # the names, not the code-list codes
+    assert list(thesaurus["label"]) == ["Age of the mother", "Birth weight"] and list(thesaurus["coding"]) == ["", "num"]
+
+
 def test_read_thesaurus_and_draft_schema(tmp_path):
     write_workbook(tmp_path / "thesaurus.xlsx")
     (tmp_path / "extraction.tsv").write_text(EXTRACTION, encoding="utf-8")
@@ -38,7 +49,11 @@ def test_read_thesaurus_and_draft_schema(tmp_path):
     assert '  it1: {label: "An item", type: TODO}' in draft
     assert "# dictionary coding: 0=No; 1=Yes" in draft
     assert "# old: not in the extraction" in draft
-    assert describe(raw["glu"]) == "5 filled; 3 numbers from 0.95 to 300"      # "<0.5" is not a plain number
+    assert describe(raw["glu"], raw["usubjid"]) == "5 filled; 3 numbers from 0.95 to 300"   # "<0.5" is not a plain number
+    many = pd.DataFrame({"usubjid": ["A", "A", "A", "A", "A", "B"], "x": ["Oui"] * 5 + ["Dr X"]})
+    assert describe(many["x"], many["usubjid"]) == "6 filled"                # 5 rows, but one patient only
+    many["usubjid"] = list("ABCDEF")
+    assert describe(many["x"], many["usubjid"]) == "6 filled; texts: 'Oui' in 5 patients"
 
 
 def test_coverage(tmp_path):

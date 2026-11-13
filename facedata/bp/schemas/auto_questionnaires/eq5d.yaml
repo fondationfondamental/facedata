@@ -1,0 +1,24 @@
+instrument: eq5d
+title: EQ-5D-5L, health-related quality of life
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire EQ5D
+status: draft
+notes: >
+  Five dimensions, each rated 1 (no problem) to 5 (extreme problem), and a
+  visual scale of today's health from 0 to 100. In the extraction from 2013.
+
+  The index (eq5d_) is read in a value set from the five answers; 1 is full
+  health and the lowest value in the data is -0.53. It is delivered as
+  stored: the value set is not in the project, so the index is not
+  recomputed.
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  eq5d0201: {label: "Mobilité"}
+  eq5d0202: {label: "Autonomie de la personne"}
+  eq5d0203: {label: "Activités courantes (exemples : travail, études, travaux domestiques,..."}
+  eq5d0204: {label: "Douleurs, gêne"}
+  eq5d0205: {label: "Anxiété, dépression"}
+  eq5d_vas: {column: eq5d0206, type: number, label: "Health today, visual scale", range: [0, 100], winsor: false}
+  eq5d_index: {column: eq5d_, type: number, label: EQ-5D-5L index as stored, range: [-0.6, 1], winsor: false}

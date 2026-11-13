@@ -1,0 +1,33 @@
+instrument: tobacco
+title: Tobacco
+tab: SUBSTANCES ET COMORBIDITE
+section: TABAC
+status: draft
+notes: >
+  The tobacco status at each visit, with the pack-years, the age when the
+  patient started smoking and the age when they stopped. Filled at the
+  inclusion visit and at every follow-up visit; the answer describes the day
+  of the visit, so there is one form.
+
+  "Statut inconnu" is a missing code. The details are filled for the smokers
+  and the ex-smokers only (pack-years for 73% and 80% of them).
+
+  Pack-years. Typed freely: 101 cells hold "NA" (a missing code) and 34 hold
+  words or a fraction, which end unparsed. A value above 200 is out of range
+  (29 cells, up to 51,050): 200 pack-years is four packs a day for fifty
+  years. 115 values are above three packs a day for the years the patient
+  smoked; they are delivered as written.
+
+  Ages. 4 patients started after their age at the visit, 10 stopped after
+  it, 4 stopped before they started; delivered as written.
+
+variables:
+  tobacco_status:
+    column: suncf_cigarettes_lt
+    type: category
+    label: Tobacco status
+    codes: {"Non fumeur": non_smoker, "Fumeur actuel": current_smoker, "Ex-fumeur": ex_smoker}
+    missing: {"Statut inconnu": unknown}
+  pack_years: {column: sudose_cigarettes_lt, type: number, unit: pack-years, range: [0, 200], label: Pack-years}
+  smoking_start_age: {column: agedebut_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient started smoking}
+  smoking_stop_age: {column: agefin_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient stopped smoking}

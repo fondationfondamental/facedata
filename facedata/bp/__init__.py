@@ -18,14 +18,15 @@ FOLDER = Path(__file__).parent
 SCHEMAS = FOLDER / "schemas"
 
 
-def load(path, instruments=None, winsor_limits=None):
+def load(path, instruments=None, winsor_limits=None, norms="norms"):
     """Load a FACE BP extraction (.tsv).
 
     instruments: names of the instruments to load. Default: all that have a schema.
     winsor_limits: the qc table of an earlier load, to reuse its winsor limits.
+    norms: the folder that holds the norm tables (they are not part of the repository).
     Returns a Result with four tables: data, patients, flags and qc.
     """
-    return run_cohort(path, SCHEMAS, instruments, winsor_limits)
+    return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms)
 
 
 def report(result, folder):

@@ -1,0 +1,19 @@
+instrument: recommendations
+title: Following of the recommendations (follow-up visits)
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: Suivi des Recommandations
+status: draft
+notes: >
+  Whether the recommendations made at the first evaluation were followed,
+  for the drug treatment and for the other treatments, and why not. Asked at
+  every follow-up visit: the drug recommendations are fully followed on 62%
+  of the visits, the others on 53%.
+
+  The reason is asked where the recommendations were followed partly or not
+  at all; it is empty on 4% to 5% of those visits.
+
+variables:
+  drug_advice_followed: {column: trtmed_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Recommendations on the drug treatment: followed"}
+  drug_advice_reason: {column: trtmed_reason, type: category, codes: {"Refus du patient": patient_refusal, "Désaccord du médecin pratiquant le suivi": physician_disagreement, "Problème de tolérance": tolerance, "Problème de rechute": relapse, "Autres": other}, label: "Drug recommendations not followed: why"}
+  other_advice_followed: {column: trtnmed_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Recommendations on the other treatments: followed"}
+  other_advice_reason: {column: trtnmed_reason, type: category, codes: {"Impossible à mettre en place": not_feasible, "Refus du patient": patient_refusal, "Désaccord avec le médecin pratiquant le suivi": physician_disagreement, "Autres": other}, label: "Other recommendations not followed: why"}

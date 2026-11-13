@@ -1,0 +1,39 @@
+instrument: cssrs
+title: Columbia Suicide Severity Rating Scale, suicidal ideation (C-SSRS)
+tab: SUICIDE
+section: Questionnaire C-SSRS Idéation suicidaire
+status: draft
+notes: >
+  In the extraction from 2021 (a few visits in 2019 and 2020), at every
+  visit. Five yes/no questions of rising severity, delivered as 1 (yes) and
+  0 (no). The first two are asked of everyone (about 3,550 visits); the
+  three others, the most severe ideation (1 to 5) and the five intensity
+  ratings only when there is ideation (700 to 1,040 visits).
+
+  The most severe ideation (css0106) is the highest question answered yes
+  on 376 of 666 visits; on the others it is higher or lower, so it is not
+  simply derived from the five questions and is delivered as stored.
+
+  The extraction stores no intensity total. The usual one is added here:
+  the sum of the five intensity ratings (frequency, duration,
+  controllability, deterrents, reasons).
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  css0101: {label: "Désir d'être mort (e): Avez-vous souhaité être mort(e) ou de vous...", codes: {Oui: 1, Non: 0}}
+  css0102: {label: "Pensées suicidaires actives non spécifiques. Avez-vous réellement pensé...", codes: {Oui: 1, Non: 0}}
+  css0103: {label: "Idéation suicidaire active avec la définition des méthodes (sans...", codes: {Oui: 1, Non: 0}}
+  css0104: {label: "Idéation suicidaire active avec intention de passage à l'acte, sans...", codes: {Oui: 1, Non: 0}}
+  css0105: {label: "Idéation suicidaire active avec scénario précis et intention de...", codes: {Oui: 1, Non: 0}}
+  css0106: {label: "Intensité - Idéation la plus grave", range: [1, 5]}
+  css0108: {label: "Intensité - Fréquence", range: [1, 5]}
+  css0109: {label: "Intensité - Durée", range: [1, 5]}
+  css0110: {label: "Intensité - Maitrise des pensées suicidaires", range: [0, 5]}
+  css0111: {label: "Intensité - Eléments dissuasifs", range: [0, 5]}
+  css0112: {label: "Intensité - Causes de l'idéation", range: [0, 5]}
+
+scores:
+  cssrs_intensity:
+    label: C-SSRS intensity of ideation (sum of the five ratings)
+    sum: [css0108, css0109, css0110, css0111, css0112]

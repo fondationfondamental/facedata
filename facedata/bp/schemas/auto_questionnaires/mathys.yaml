@@ -1,0 +1,96 @@
+instrument: mathys
+title: Multidimensional Assessment of Thymic States (MAThyS, 20 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire MATHYS
+status: draft
+notes: >
+  Twenty visual scales from 0 to 10, on the last week. Filled at every
+  visit. The seven questions on emotions that follow them in the form are in
+  mathys_emotions.yaml.
+
+  Items. A third of the values have a decimal (5.5). In 52 cells the decimal
+  point is lost: 55 for 5.5, and once 510 for 5.10. A value above 10 is
+  divided by 10 or by 100 (unit_inferred).
+
+  Total. Eight items are reversed (10 - value): 5, 6, 7, 8, 9, 10, 17 and
+  18. The total is the sum of the twenty items, from 0 (inhibition) to 200
+  (activation). The stored total (mathys_) is exactly this sum of the values
+  as written, so it is wrong on the visits with a lost decimal point: there
+  it differs from ours (score_mismatch), or it is impossible (out_of_range
+  on the stored total, which is not delivered).
+
+  Sub-scores. Emotional reactivity (items 3, 7, 10, 18), motivation (2, 11,
+  12, 15, 16, 17, 19), sensory perception (1, 6, 8, 13, 20), interpersonal
+  communication (4, 14) and cognition (5, 9), with the same reversed items.
+  The stored sub-scores (mathys29 to mathys33) are not read: until 2021 the
+  EMR added the items without reversing any, and from 2022 on it reverses
+  them, so the same column holds two different scores. They are listed in
+  ignored.yaml. Our sub-scores equal the stored ones from 2023 on.
+
+# A value above 10 has lost its decimal point: 55 is 5.5.
+defaults:
+  type: number
+  range: [0, 10]
+  unit: point
+  units:
+    point: {factor: 1, expect: [0, 10.01]}
+    "0.1 point": {factor: 0.1, expect: [10.01, 100.01]}
+    "0.01 point": {factor: 0.01, expect: [100.01, 1000.01]}
+  winsor: false
+
+variables:
+  mathys01: {label: MAThyS item 1}
+  mathys02: {label: MAThyS item 2}
+  mathys03: {label: MAThyS item 3}
+  mathys04: {label: MAThyS item 4}
+  mathys05: {label: MAThyS item 5}
+  mathys06: {label: MAThyS item 6}
+  mathys07: {label: MAThyS item 7}
+  mathys08: {label: MAThyS item 8}
+  mathys09: {label: MAThyS item 9}
+  mathys10: {label: MAThyS item 10}
+  mathys11: {label: MAThyS item 11}
+  mathys12: {label: MAThyS item 12}
+  mathys13: {label: MAThyS item 13}
+  mathys14: {label: MAThyS item 14}
+  mathys15: {label: MAThyS item 15}
+  mathys16: {label: MAThyS item 16}
+  mathys17: {label: MAThyS item 17}
+  mathys18: {label: MAThyS item 18}
+  mathys19: {label: MAThyS item 19}
+  mathys20: {label: MAThyS item 20}
+  # The stored total is read as written: its own units replace those of the items.
+  mathys_stored:
+    column: mathys_
+    label: MAThyS total as stored
+    range: [0, 200]
+    units:
+      point: {factor: 1, expect: [0, 200.01]}
+    keep: false
+
+scores:
+  mathys_total:
+    label: MAThyS total (0 inhibition to 200 activation)
+    sum: [mathys01, mathys02, mathys03, mathys04, mathys05, mathys06, mathys07, mathys08, mathys09, mathys10,
+          mathys11, mathys12, mathys13, mathys14, mathys15, mathys16, mathys17, mathys18, mathys19, mathys20]
+    reverse: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
+    compare: mathys_stored
+  mathys_emotion:
+    label: MAThyS emotional reactivity (4 items)
+    sum: [mathys03, mathys07, mathys10, mathys18]
+    reverse: [mathys07, mathys10, mathys18]
+  mathys_motivation:
+    label: MAThyS motivation (7 items)
+    sum: [mathys02, mathys11, mathys12, mathys15, mathys16, mathys17, mathys19]
+    reverse: [mathys17]
+  mathys_perception:
+    label: MAThyS sensory perception (5 items)
+    sum: [mathys01, mathys06, mathys08, mathys13, mathys20]
+    reverse: [mathys06, mathys08]
+  mathys_interaction:
+    label: MAThyS interpersonal communication (2 items)
+    sum: [mathys04, mathys14]
+  mathys_cognition:
+    label: MAThyS cognition (2 items)
+    sum: [mathys05, mathys09]
+    reverse: [mathys05, mathys09]

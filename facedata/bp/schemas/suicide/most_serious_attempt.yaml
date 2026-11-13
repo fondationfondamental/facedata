@@ -1,0 +1,91 @@
+instrument: most_serious_attempt
+title: The most serious suicide attempt (method and lethality)
+tab: SUICIDE
+section: Columbia TS la plus grave
+status: draft
+notes: >
+  For patients with a serious attempt: its method (drugs with or without a
+  sedative effect, or cutting), the kind of drug, its medical consequences
+  on a scale that has its own wording for each method, and what triggered
+  it. Filled until 2022, almost always at the inclusion visit (456 visits).
+
+  The lethality columns are delivered as written, with short codes that
+  follow the order of the scale. A drug type "Inconnu" is a missing code.
+  On 17 visits the method is empty although the other columns are filled.
+
+defaults: {type: category}
+
+variables:
+  serious_method:
+    column: ltsg01
+    label: Method of the most serious attempt
+    codes:
+      "Médicaments (drogues) avec effets sédatifs": sedative_drugs
+      "Médicaments (drogues) sans effets sédatifs et pour toutes autres substances ingérées": non_sedative_drugs_or_substances
+      "Phlébotomie": cutting
+  serious_sedative_type:
+    column: ltsg02
+    label: Kind of drug with a sedative effect
+    missing: {Inconnu: unknown}
+    codes:
+      "Benzodiazépines / Hypnotique": benzodiazepine_or_hypnotic
+      "Antipsychotique": antipsychotic
+      "Antidépresseur": antidepressant
+      "Anticonvulsivant": anticonvulsant
+      "Prescription autre que psychotrope": other_prescription
+      "Sédatif en vente libre": over_the_counter_sedative
+      "Alcool": alcohol
+      "Substances festives": recreational_drug
+      "Gaz / Asphyxiant": gas
+  serious_non_sedative_type:
+    column: ltsg03
+    label: Kind of drug or substance without a sedative effect
+    missing: {Inconnu: unknown}
+    codes:
+      "Prescription autre que psychotrope": other_prescription
+      "Lithium": lithium
+      "Médicament en vente libre": over_the_counter_drug
+      "Autres substances ingérées": other_substance
+  serious_sedative_lethality:
+    column: ltsg04
+    label: Consequences of the attempt with sedative drugs
+    codes:
+      "Complètement conscient et lucide": fully_conscious
+      "Conscient mais somnolent / engourdi": conscious_drowsy
+      "Léthargique avec diminution des capacités intellectuelles": lethargic
+      "Endormi mais facilement réveillé": asleep_easily_roused
+      "Comateux - évitement des stimuli douloureux réflexes intacts blessures suffisantes pour l'hospitalisation": coma_withdraws_from_pain
+      "Comateux - pas d'évitement des stimuli douloureux la plupart des réflexes intacts pas de défaillance respiratoire ou circulatoire, blessures suffisantes pour surveillance aux Soins Intensifs.": coma_no_withdrawal
+      "Comateux - la plupart des réflexes absents, pas de défaillance respiratoire ou circulatoire, Soins Intensifs. et procédures médicales sérieuses": coma_most_reflexes_absent
+      "Comateux - tous les réflexes absents défaillance respiratoire avec cyanose ou défaillance circulatoire et choc ou les deux": coma_all_reflexes_absent
+  serious_non_sedative_lethality:
+    column: ltsg05
+    label: Consequences of the attempt with other drugs or substances
+    codes:
+      "Pas de conséquences médicales ou de traitement, ou minime": none_or_minimal
+      "Quelques blessures (ex : bouche brûlée) et traitement en urgence ou en ambulatoire (ex : lavage gastrique)": emergency_or_outpatient_treatment
+      "Blessures suffisantes pour l'hospitalisation - signes vitaux et niveau de conscience peuvent être affectés": hospitalisation
+      "Effets majeures systématiques - tels que perforation gastro-intestinale, défaillance rénale, hémolyse, ou choc signes vitaux instables": major_systemic_effects
+      "Mort": death
+  serious_cutting_lethality:
+    column: ltsg06
+    label: Consequences of the cutting
+    codes:
+      "Surfaces griffées, pas ou peu de saignements, pas ou peu de soins requis pour les blessures": scratches
+      "Saignement modéré avec caillot avant qu'il n'y ait perte de sang significative simples soins requis": moderate_bleeding
+      "Saignement des veines majeures, danger de perte de sang considérable sans intervention chirurgicale - suture nécessaire mais pas de transfusion, zones vitales intactes et pas de changement dans les signes vitaux, soins en ambulatoire": major_vein_bleeding
+      "Perte de sang importante, suture, transfusion nécessaire, réparation de tendons requise, blessures possibles sur la tête, le thorax, ou l'abdomen mais organes vitaux intacts et signes vitaux stables rétablissement attendu après hospitalisation": major_blood_loss
+  serious_triggered: {column: ltsg07, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: A precise event seems to have triggered the attempt}
+  serious_trigger:
+    column: ltsg08
+    label: External trigger of the attempt
+    codes:
+      "Conjugal": partner
+      "Autre facteur interpersonnel": other_interpersonal
+      "Professionnel": work
+      "Evènement de vie": life_event
+      "Santé": health
+      "Sévices physiques": physical_abuse
+      "Abus sexuel": sexual_abuse
+      "Autre": other
+      "Ne peut pas être évalué": cannot_be_assessed

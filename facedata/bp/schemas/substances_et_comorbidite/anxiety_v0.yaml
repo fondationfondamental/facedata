@@ -1,0 +1,116 @@
+instrument: anxiety_v0
+title: Anxiety disorders (inclusion visit)
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles ANXIEUX
+status: draft
+notes: >
+  One yes/no question (does the patient have an anxiety disorder), then one
+  box per disorder and, for each, the age at onset and whether symptoms were
+  present in the past month. Yes/no answers are delivered as 1 and 0;
+  "unknown" (U) is a missing code.
+
+  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
+  The same questions are asked at the inclusion visit and at the yearly
+  visits, but at the yearly visits they are about the time since the last
+  visit (confirmed by the project lead). The data show it: 48% of the
+  patients have an anxiety disorder at inclusion, 35% at the yearly visits;
+  of the patients who had one at inclusion, 41% are answered "no" a year or
+  more later, in every centre. The two are therefore delivered as separate
+  columns, ending in _v0 (inclusion visit) and _fu (yearly visits, since the
+  last visit); visit_form says which form a visit used and is read
+  from the visit label.
+
+  The boxes are shown only after a yes to the first question: 0 means "not
+  ticked". After a no they are empty in the extraction and are read as 0
+  (asked_if, decision D50): a patient with no anxiety disorder has none of
+  them. Where the first answer is unknown or empty they stay missing. The
+  ages at onset and the "symptoms in the past month" stay missing after a
+  no: they have no value.
+
+  Panic disorder. panic_disorder is ticked exactly where one of the two
+  boxes (with or without agoraphobia) is. The form has one age at onset and
+  one "symptoms in the past month" for each of the two boxes, but the
+  clinicians fill either one whatever the box (of the visits with the box
+  "without agoraphobia" and an age, 44% have it in the column of "with
+  agoraphobia"). The two columns are therefore read as one detail of the
+  panic disorder: the first that is filled; column_conflict where both are
+  and differ.
+
+  Four columns are not in the dictionary and are read here: the box "panic
+  disorder" and the boxes of the last three disorders (the dictionary lists
+  one of them as a section title).
+
+  A detail is sometimes filled although its box is not ticked (1 to 17
+  visits per disorder), and often empty although it is (the age at onset of
+  half of the ticked disorders). Both are delivered as written.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  anxiety_disorder_v0: {column: rad_tb_anx, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has an anxiety disorder, at inclusion"}
+
+  # Which ones: boxes, filled only after a yes (1 = ticked, 0 = not ticked).
+  panic_disorder_v0: {column: ceoccurtrouble_panique, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Panic disorder, at inclusion"}
+  panic_with_agora_v0: {column: ceoccurtroubpanago, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Panic disorder with agoraphobia, at inclusion"}
+  panic_without_agora_v0: {column: ceoccurtroubpansago, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Panic disorder without agoraphobia, at inclusion"}
+  # One set of details for the panic disorder: the form has two, and either one is filled.
+  panic_onset_age_v0: {column: [agedebuttroubpanago, agedebuttroubpansago], type: item, range: [0, 90], label: "Panic disorder: age at onset, at inclusion"}
+  panic_last_month_v0: {column: [occurtroubpanago, occurtroubpansago], type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Panic disorder: symptoms in the past month, at inclusion"}
+
+  agoraphobia_v0: {column: ceoccuragostroubpan, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Agoraphobia without panic disorder, at inclusion"}
+  agoraphobia_onset_age_v0: {column: agedebutagostroubpan, type: item, range: [0, 90], label: "Agoraphobia: age at onset, at inclusion"}
+  agoraphobia_last_month_v0: {column: occuragostroubpan, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Agoraphobia: symptoms in the past month, at inclusion"}
+  social_phobia_v0: {column: ceoccurphobiesoc, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Social phobia, at inclusion"}
+  social_phobia_onset_age_v0: {column: agedebutphobiesoc, type: item, range: [0, 90], label: "Social phobia: age at onset, at inclusion"}
+  social_phobia_last_month_v0: {column: occurphobiesoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Social phobia: symptoms in the past month, at inclusion"}
+  specific_phobia_v0: {column: ceoccurphobie_sp_cifi, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Specific phobia, at inclusion"}
+  specific_phobia_onset_age_v0: {column: agedebutphobie_sp_cifi, type: item, range: [0, 90], label: "Specific phobia: age at onset, at inclusion"}
+  specific_phobia_last_month_v0: {column: occurphobie_sp_cifi, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Specific phobia: symptoms in the past month, at inclusion"}
+  ocd_v0: {column: ceoccurtoc, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Obsessive-compulsive disorder, at inclusion"}
+  ocd_onset_age_v0: {column: agedebuttoc, type: item, range: [0, 90], label: "Obsessive-compulsive disorder: age at onset, at inclusion"}
+  ocd_last_month_v0: {column: occurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Obsessive-compulsive disorder: symptoms in the past month, at inclusion"}
+  ptsd_v0: {column: ceoccurspt, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Post-traumatic stress disorder, at inclusion"}
+  ptsd_onset_age_v0: {column: agedebutspt, type: item, range: [0, 90], label: "Post-traumatic stress disorder: age at onset, at inclusion"}
+  ptsd_last_month_v0: {column: occurspt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Post-traumatic stress disorder: symptoms in the past month, at inclusion"}
+  gad_v0: {column: ceoccuranxietegeneral, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Generalised anxiety disorder (current episode only), at inclusion"}
+  gad_onset_age_v0: {column: agedebutanxietegeneral, type: item, range: [0, 90], label: "Generalised anxiety disorder: age at onset, at inclusion"}
+  gad_last_month_v0: {column: occuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Generalised anxiety disorder: symptoms in the past month, at inclusion"}
+
+  anxiety_medical_v0: {column: ceoccurtrouble_anxieux_affection_medicale_generale, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Anxiety disorder due to a general medical condition, at inclusion"}
+  anxiety_medical_condition_v0: {column: cedecodtroubanxaffmed, type: text, label: "Anxiety due to a medical condition: the condition, as written, at inclusion"}
+  anxiety_medical_onset_age_v0: {column: agedebuttroubanxaffmed, type: item, range: [0, 90], label: "Anxiety due to a medical condition: age at onset, at inclusion"}
+  anxiety_medical_last_month_v0: {column: occurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety due to a medical condition: symptoms in the past month, at inclusion"}
+  anxiety_substance_v0: {column: ce_occurtrouble_anxieux_induit_substance, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Substance-induced anxiety disorder, at inclusion"}
+  anxiety_substance_name_v0: {column: cedecodtroubanxindsub, type: text, label: "Substance-induced anxiety: the substance, as written, at inclusion"}
+  anxiety_substance_onset_age_v0: {column: agedebuttroubanxindsub, type: item, range: [0, 90], label: "Substance-induced anxiety: age at onset, at inclusion"}
+  anxiety_substance_last_month_v0: {column: occurtroubanxindsub, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Substance-induced anxiety: symptoms in the past month, at inclusion"}
+  anxiety_unspecified_v0: {column: ceoccur_trouble_anxieux_non_specifie, type: item, range: [0, 1], asked_if: anxiety_disorder_v0, label: "Anxiety disorder not otherwise specified, at inclusion"}
+  anxiety_unspecified_onset_age_v0: {column: agedebuttroubanxnonspe, type: item, range: [0, 90], label: "Anxiety disorder not otherwise specified: age at onset, at inclusion"}
+  anxiety_unspecified_last_month_v0: {column: occurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety disorder not otherwise specified: symptoms in the past month, at inclusion"}

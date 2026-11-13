@@ -1,0 +1,42 @@
+instrument: stop_bang
+title: STOP-BANG, risk of obstructive sleep apnoea
+tab: AUTO-QUESTIONNAIRES
+section: APNEES DU SOMMEIL
+status: draft
+notes: >
+  Added in 2021. Seven yes/no questions (1 = yes): snoring, tiredness,
+  observed apnoea, blood pressure, body mass index above 35, age above 50,
+  neck size. The eighth criterion is male sex; its column (apnee08) is filled
+  on two visits only and is not read (ignored.yaml).
+
+  The risk class is delivered as the EMR wrote it. It follows the number of
+  criteria met, male sex included: low up to 2, high from 5 on. With 3 or 4
+  criteria the class is intermediate or high, depending on which criteria
+  are met.
+
+  A few cells hold "d?AOS": the apostrophe was damaged by the export.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  apnee01: {label: "Ronflements ? Ronflez-vous fort (suffisamment fort pour qu’on vous..."}
+  apnee02: {label: "Fatigue ? Vous sentez-vous souvent fatigué(e), épuisé(e) ou..."}
+  apnee03: {label: "Observation ? Quelqu'un a-t-il observé que vous arrêtiez de respirer ou..."}
+  apnee04: {label: "Tension ? Êtes-vous atteint(e) d’hypertension artérielle ou êtes-vous..."}
+  apnee05: {label: "Indice de Masse Corporelle supérieur à 35 kg/m² ?"}
+  apnee06: {label: "Âge supérieur à 50 ans ?"}
+  apnee07: {label: "Tour de cou important ? (mesuré au niveau de la pomme d’Adam) Pour les..."}
+  stopbang_risk:
+    column: apnee_
+    type: category
+    label: Risk of obstructive sleep apnoea
+    codes:
+      "Faible risque d’AOS": low
+      "Faible risque d'AOS": low
+      "Faible risque d?AOS": low
+      "Risque moyen d’AOS": intermediate
+      "Risque moyen d'AOS": intermediate
+      "Risque moyen d?AOS": intermediate
+      "Risque élevé d’AOS": high
+      "Risque élevé d'AOS": high
+      "Risque élevé d?AOS": high

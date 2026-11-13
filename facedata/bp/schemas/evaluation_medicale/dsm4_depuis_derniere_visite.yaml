@@ -28,6 +28,15 @@ notes: >
   The counts are capped at 20 on the form: ">20" is read as right-censored
   at 20.
 
+  Yes/no answers are delivered as 1 and 0. The boxes and the counts are
+  shown only after a yes to the first question; where it is no they are
+  empty in the extraction and are read as 0 (asked_if, decision D53): with
+  no mood episode since the last visit, the number of depressive episodes is
+  0.
+
+  The type of the most recent episode since the last visit is filled where
+  the first answer is yes. The follow-up form has no mixed type of episode.
+
   Three columns named like this section (mhoccur_edm_psy_spv,
   mhoccur_epman_psy_spv, mhoccur_epmixt_psy_spv) are filled at inclusion
   only. They hold lifetime answers and belong to the lifetime section.
@@ -42,18 +51,23 @@ version:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
 
-defaults: {type: number, range: [0, 50], versions: [dsm4]}
+defaults: {type: number, range: [0, 50], winsor: false, versions: [dsm4]}
 
 variables:
-  dsm4_fu_any_episode:       {column: mhoccur_epthym_spv,   label: At least one mood episode since the last visit, type: category, codes: {Oui: yes, Non: no}}
-  dsm4_fu_n_episodes:        {column: evnum_epthym_spv,     label: Number of mood episodes}
-  dsm4_fu_mde:               {column: mhoccur_edm_spv,      label: At least one major depressive episode, type: category, codes: {1: yes, 0: no}}
-  dsm4_fu_n_mde:             {column: evnum_edm_spv,        label: Number of major depressive episodes}
-  dsm4_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,    label: Number of major depressive episodes with psychotic features}
-  dsm4_fu_hypomania:         {column: mhoccur_ehman_spv,    label: At least one hypomanic episode, type: category, codes: {1: yes, 0: no}}
-  dsm4_fu_n_hypomania:       {column: evnum_ehman_spv,      label: Number of hypomanic episodes}
-  dsm4_fu_mania:             {column: mhoccur_epman_spv,    label: At least one manic episode, type: category, codes: {1: yes, 0: no}}
-  dsm4_fu_n_mania:           {column: evnum_epman_spv,      label: Number of manic episodes}
-  dsm4_fu_n_mania_psychotic: {column: evnum_epman_psy_spv,  label: Number of manic episodes with psychotic features}
-  dsm4_fu_n_mixed:           {column: evnum_epmixt_spv,     label: Number of mixed episodes}
-  dsm4_fu_n_mixed_psychotic: {column: evnum_epmixt_psy_spv, label: Number of mixed episodes with psychotic features}
+  dsm4_fu_any_episode:       {column: mhoccur_epthym_spv,   label: At least one mood episode since the last visit, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  dsm4_fu_n_episodes:        {column: evnum_epthym_spv,     label: Number of mood episodes, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_mde:               {column: mhoccur_edm_spv,      label: At least one major depressive episode, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mde:             {column: evnum_edm_spv,        label: Number of major depressive episodes, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,    label: Number of major depressive episodes with psychotic features, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_hypomania:         {column: mhoccur_ehman_spv,    label: At least one hypomanic episode, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_hypomania:       {column: evnum_ehman_spv,      label: Number of hypomanic episodes, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_mania:             {column: mhoccur_epman_spv,    label: At least one manic episode, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mania:           {column: evnum_epman_spv,      label: Number of manic episodes, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mania_psychotic: {column: evnum_epman_psy_spv,  label: Number of manic episodes with psychotic features, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mixed:           {column: evnum_epmixt_spv,     label: Number of mixed episodes, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_n_mixed_psychotic: {column: evnum_epmixt_psy_spv, label: Number of mixed episodes with psychotic features, asked_if: dsm4_fu_any_episode}
+  dsm4_fu_recent_type:
+    column: cetermepisode_recent_type
+    label: Type of the most recent episode since the last visit
+    type: category
+    codes: {"Episode Dépressif Majeur": mde, "Hypomaniaque": hypomania, "Maniaque": mania, "Episode non spécifié": unspecified}

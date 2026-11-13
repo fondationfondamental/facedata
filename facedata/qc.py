@@ -27,7 +27,7 @@ def largest_shift(values, groups):
 
 def qc_row(name, spec, values, cens, keys, flag_counts):
     """The QC figures of one variable, as a dict. `values` is the final column."""
-    row = {"variable": name, "label": spec.get("label", ""), "column": spec.get("column", ""),
+    row = {"variable": name, "label": spec.get("label", ""), "column": ", ".join(spec.get("columns", [])),
            "type": spec.get("type", "score"), "unit": spec.get("unit", "")}
     valid = values.notna()
     row["n_valid"] = int(valid.sum())
@@ -44,7 +44,7 @@ def qc_row(name, spec, values, cens, keys, flag_counts):
     years = keys["visit_date"].dt.year[valid]
     row["first_year"], row["last_year"] = years.min(), years.max()
     row["n_sites"] = int(keys["siteid"][valid].nunique())
-    if row["type"] in ("number", "item", "time", "score") and valid.any():
+    if row["type"] in ("number", "item", "band", "time", "score") and valid.any():
         numbers = values.astype(float)
         row["min"], row["max"] = numbers.min(), numbers.max()
         for label, share in [("p01", 0.01), ("p25", 0.25), ("median", 0.5), ("p75", 0.75), ("p99", 0.99)]:
@@ -107,9 +107,10 @@ def coverage(raw, keys, schemas, thesaurus_names, ignored):
                 read_on[column] = always
         for variable in schema["variables"].values():
             rows = version.isin(variable["versions"]) if "versions" in variable else always
-            read_on[variable["column"]] = read_on.get(variable["column"], ~always) | rows
-            if "unit_column" in variable:
-                read_on[variable["unit_column"]] = always
+            for column in variable["columns"]:
+                read_on[column] = read_on.get(column, ~always) | rows
+            for column in variable.get("unit_columns", []):
+                read_on[column] = always
     names = sorted(set(raw.columns) | set(read_on) | set(thesaurus_names) | set(ignored))
     lines = []
     for name in names:

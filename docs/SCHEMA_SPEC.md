@@ -60,21 +60,30 @@ get a readable English name (`glucose`, `haemoglobin`).
 
 | Field | Applies to | Meaning |
 |---|---|---|
-| `column` | all | Raw column. Default: the output name |
+| `column` | all | Raw column. Default: the output name. A list of columns when the extraction moved the variable to another column (see below) |
 | `label` | all | Short label for the report |
-| `type` | all | `number`, `item`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
-| `range` | number, item | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item` |
-| `codes` | category | `{raw: label}`. Required. Matching ignores case and surrounding spaces |
+| `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
+| `range` | number, item, date | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD` |
+| `codes` | category, item, number | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). Matching ignores case and surrounding spaces |
 | `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded` |
 | `unit` | number | Target unit of the output |
-| `unit_column` | number | Raw column holding the unit label |
+| `unit_column` | number | Raw column holding the unit label. A list when two columns hold it: the first one that is filled is read |
 | `units` | number | `{unit: {factor, expect}}` (section 5) |
+| `ignore_units` | number | Unit labels that say nothing, read as no label: a default label of the form that names the wrong unit (section 5) |
+| `unit_rule` | number | Name of a function in `facedata/custom.py` that gives the unit of the values with no usable label (section 5) |
 | `censor_units` | number | Unit-column values that really mean censoring: `{inf: left}` (section 6) |
 | `censored` | number | `limit` (default) or `half`: the value given to a left-censored cell |
+| `bands` | number | `middle`: a cell that holds a band of values (`60-51`) is read as the middle of the band and flagged `band_middle` (section 6) |
+| `limits` | band | The percentiles that separate the bands, in rising order: `[5, 10, 25, 50, 75, 90, 95]` (section 6) |
+| `shared` | band, number | `true`: the raw column holds bands and z-scores, read by two variables (section 6) |
+| `lookup` and `from` | band | The band is read again in a norm table, from a raw score, where the cell holds a percentile (section 6) |
+| `z_range` | band | `[low, high]`: the band also takes the z-scores of its column. A z-score inside the range is turned into its band under the normal law (section 6) |
 | `versions` | all | The editions on whose visits the variable is read (section 7). Usually set once in `defaults`. Default: all visits |
-| `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false` |
-| `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison) |
+| `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
+| `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item | Name of a score that has `compare`. Says that the EMR computed this stored value from the stored score, so it is doubtful wherever that stored score is wrong (section 8) |
+| `asked_if` | item, number | Name of a yes/no variable listed before. The question is asked only after a yes to it: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `doubt` | all | `{period: [first day, last day], values: [...], note: ...}`: the cells of the visits dated in the period keep their value and get `period_doubt` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
 | `note` | all | Free text |
 
@@ -84,13 +93,68 @@ get a readable English name (`glucose`, `haemoglobin`).
 |---|---|---|---|
 | `number` | Measurements: lab results, weight, reaction times, z-scores | float | yes, unless `winsor: false` |
 | `item` | Questionnaire items and bounded whole-number scores | float holding whole numbers | never |
+| `band` | Percentile bands (`25 - 50`, `>95`) | lower limit of the band, as a float | never |
 | `category` | Coded answers | harmonised label | never |
 | `date` | Dates | date | never |
 | `time` | Clock times and durations written `HH:MM` | hours as float | never |
 | `text` | Free text | cleaned string | never |
 
-More types are added only when an instrument needs one (percentile bands for
-CVLT, lists for treatments).
+More types are added only when an instrument needs one (lists for
+treatments).
+
+### A variable that moved to another column
+
+The EMR sometimes replaced a form by a new one that asks the same question
+with the same answers, and the extraction keeps both columns. List them, the
+current one first:
+
+```yaml
+followup_end_reason:
+  column: [lost_to_followup_stopsuivi, lost_to_follow_up_patient]
+  type: category
+  codes: {Refus du patient: patient_refused, Déménagement: moved}
+```
+
+On each row, the first column that holds a value is read. When two columns
+hold different values on the same row, the first one is kept and the cell
+gets `column_conflict`.
+
+This is for one question stored in two places. Two editions of an instrument
+are never merged this way (section 7).
+
+### A question asked only after a yes
+
+Some forms show a question only when the answer to an earlier one is yes: the
+box of each anxiety disorder is shown only if the patient has an anxiety
+disorder. After a "no" the cell is empty in the extraction, although the
+answer is known: none.
+
+```yaml
+anxiety_disorder: {column: rad_tb_anx, type: item, range: [0, 1], codes: {Y: 1, N: 0}}
+panic_disorder:   {column: ceoccurtrouble_panique, type: item, range: [0, 1], asked_if: anxiety_disorder}
+```
+
+- `asked_if` names a variable of the same schema, listed before: a yes/no
+  item with `range: [0, 1]`. The variable itself is a yes/no box or a count:
+  an item or a number whose range starts at 0.
+- Where the named answer is 0 and the cell is empty, the value is 0.
+- Where the named answer is missing (unknown, or the form was not filled),
+  the value stays missing. Where it is 1, the cell is read as usual.
+- These values get no flag: no cell is changed, and the answer they come
+  from is delivered next to them. In the QC table they count as filled
+  cells.
+
+Use it for yes/no boxes and for counts: with no mood episode in the past
+year, the number of depressive episodes in the past year is 0.
+
+```yaml
+any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+n_mde:       {column: evnum_edm_ly, type: number, range: [0, 50], asked_if: any_episode}
+```
+
+Never use it for a detail of the thing asked about, such as an age at onset
+or a severity: after a "no" it has no value and stays missing. The schema
+check cannot tell a count from an age; that is for the author to see.
 
 ## 5. Units
 
@@ -110,7 +174,7 @@ glucose:
 |---|---|
 | `factor` | Multiply a value in this unit by `factor` to get the target unit. The target unit has factor 1 |
 | `expect` | `[low, high)`: the values one expects to see **in this unit's own scale**. Used to recognise the unit from the magnitude |
-| `aliases` | Other spellings of the unit label. Case and spaces are already ignored, so `g/l` needs no alias |
+| `aliases` | Other spellings of the unit label. Case and spaces are already ignored, so `g/l` needs no alias. Also for a label that the form prints wrongly and that can only mean this unit (`mmol/L` for a bilirubin in µmol/L) |
 
 How the pipeline uses them is in ARCHITECTURE.md, step 7. In short:
 
@@ -124,8 +188,72 @@ Choose `expect` ranges that do not overlap whenever the units can be told
 apart by magnitude. When they cannot (two units on almost the same scale),
 let them overlap: a cell with an unknown label then gets `unit_unknown`.
 
+### A percentage of another variable
+
+Some results are written as a percentage of another result of the same
+visit: a kind of white cells as a percentage of the leukocytes. Such a unit
+has `percent_of` in place of `factor`:
+
+```yaml
+neutrophils:
+  unit: G/L
+  units:
+    G/L:    {factor: 1, expect: [0, 25]}
+    "/mm3": {factor: 0.001, expect: [100, 25000], aliases: ["/mm"]}
+    "%":    {percent_of: leukocytes, expect: [0, 100], aliases: [pour]}
+  range: [0, 25]
+```
+
+The value is multiplied by the other variable and divided by 100. The other
+variable is taken in its own target unit, and only where it is inside its
+hard range. It must be a number listed **before** this variable in the same
+schema. Where it is missing, the percentage cannot be converted: the cell
+becomes missing and gets `unit_unknown`.
+
+The `expect` range of the percentage may overlap the others. The rule of
+step 7 still works: a value that fits its label keeps it, and a value too
+large for its label that fits only the percentage is read as one.
+
+### A label that says nothing
+
+The form may print a default unit label that names the wrong unit, on every
+result for which nobody chose a unit. List it in `ignore_units`: it is then
+read as no label at all, so that the magnitude decides without a flag on
+every cell.
+
+```yaml
+ignore_units: [mg/L]        # the default label of the form; no prolactin is in mg/L
+```
+
+Do not use it for a default label that names the usual unit: that label is
+believed whenever the value fits it, which is what one wants.
+
+### Two units on the same scale
+
+When the `expect` ranges of two units overlap widely and most results have
+no usable label, the magnitude cannot decide, and every such result would be
+`unit_unknown`. A `unit_rule` names a function of `facedata/custom.py` that
+decides from other evidence, such as the unit a centre used at the time
+(section 10). It is asked only about the values with no usable label. Where
+it names a unit, that unit is used (`unit_inferred` when it is not the
+target unit). Where it cannot tell, the value is treated as before:
+`unit_unknown` if several units fit.
+
+```yaml
+prolactin:
+  unit_column: prolctn_lborresu
+  ignore_units: [mg/L]
+  unit: ng/mL
+  units:
+    ng/mL: {factor: 1,      expect: [0.5, 500], aliases: [µg/L]}
+    mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml]}
+  unit_rule: prolactin_unit
+```
+
 A variable with no unit column can still list several units; the magnitude
-alone decides (ECG intervals in s or ms).
+alone decides (ECG intervals in s or ms, a height in cm or mm). Only the
+values that are converted get `unit_inferred`. The units can also describe a
+lost decimal point: `0.1 kg` with factor 0.1 for a weight written 655.
 
 ## 6. Censoring
 
@@ -145,9 +273,119 @@ crp:
   censor_units: {inf: left, inferieur: left}   # unit "inf" means "< value"
 ```
 
-Not everything written with `<` or `>` is censoring. Percentile classes
-(`>95`) and labels (`>= baccalaureat`) are categories: give them
-`type: category` and list them in `codes`.
+Not everything written with `<` or `>` is censoring. A label such as
+`>= baccalaureat` is a category: give it `type: category` and list it in
+`codes`. Percentile classes (`>95`) are bands, described below.
+
+A rater sometimes writes a band instead of a number: `60-51` for a
+functioning score between 51 and 60. With `bands: middle` the cell is read as
+the middle of the band (55.5) and gets `band_middle`. The value is kept, but
+it is only known to within the band. Without the field, such a cell is
+`unparsed`.
+
+### Percentile bands
+
+Some tests give a result as a percentile band: "between the 25th and the
+50th percentile". The column then holds bands in several spellings
+(`25 - 50`, `50 - 25`), one-sided classes (`>95`, `<5`, `>10`) and plain
+numbers (`50`). `type: band` puts them all on one ordered scale.
+
+```yaml
+tmt_a_time_band:
+  column: tmta01a_
+  type: band
+  limits: [5, 10, 25, 50, 75, 90, 95]     # the percentiles that separate the bands
+```
+
+The value is the **lower limit of the band**: 0 for the band under the first
+limit, then 5, 10, 25 and so on, up to 95 for the band of 95 and more.
+
+| Cell | Value | `<variable>_cens` | Flag |
+|---|---|---|---|
+| `25 - 50` or `50 - 25` | 25 | 0 | none |
+| `50`, a limit | 50, the band that starts there | 0 | none |
+| `>95`, the last limit | 95 | 0 | none |
+| `<5`, the first limit | 0 | 0 | none |
+| `>10` | 10: this band or a higher one | +1 | `censored_right` |
+| `10 - 50`, wider than one band | 10: this band or a higher one | +1 | `censored_right` |
+| `<10` | 5: this band or a lower one | −1 | `censored_left` |
+| anything else (`12`, `30 - 40`) | missing | 0 | `unparsed` |
+
+The two ends of a band must be limits (0 and 100 are accepted as ends). The
+value says where the patient stands among the norms at the least; a cell
+with `_cens` = −1 may stand lower than its value.
+
+Before delivering a band, compare the share of each band from one period to
+the next (the report draws it per year). The EMR changed more than once
+what it writes when several limits of the norms fall on the same raw score,
+as for the TMT errors; such a column holds several scales and is not
+delivered (decision D42 in `docs/bp/PROGRESS.md`).
+
+### A column shared by a z-score and a band
+
+For some measures the EMR writes a percentile for one age group and a
+z-score for another, in the same column. Two variables then read the
+column, and both say `shared: true`:
+
+```yaml
+cvlt_trial5_band: {column: cvlt05z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true}
+cvlt_trial5_z:    {column: cvlt05z_, type: number, range: [-10, 10], shared: true}
+```
+
+The band takes the cells that hold a band or a whole number. The number
+takes all the others: a z-score is written with a decimal point (`1.00`).
+Neither variable sees, counts or flags the cells of the other.
+
+### A band from a z-score
+
+Two variables that are each filled for part of the patients are hard to
+use. To put every patient on one scale, the band can also take the z-scores
+of the column: give it `z_range`.
+
+```yaml
+cvlt_trial5_band: {column: cvlt05z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-5, 5]}
+cvlt_trial5_z:    {column: cvlt05z_, type: number, range: [-5, 5], shared: true}
+```
+
+A z-score inside `z_range` is turned into the band it has under the normal
+law: the share of the law that lies under the z-score, in percent, is put
+between the limits. A z-score of 0 is the 50th percentile (band 50), 0.80
+the 79th (band 75) and -1.70 the 4th (band 1). The cell gets `band_from_z`.
+A z-score outside `z_range` is an error: the band is missing and the cell
+gets `out_of_range`. The number variable still delivers the z-score itself.
+
+This assumes that the scores of the norm group follow a normal law, which a
+norm table does not. `band_from_z` tells which bands rest on that
+assumption. A higher band is a higher z-score; whether that is a better
+performance depends on the measure.
+
+### A band read again in a norm table
+
+When several limits of the norms fall on the same raw score (a perfect
+recall, no error), the EMR has written the highest percentile for some
+tests and the lowest for others, and has changed its mind over the years.
+A band read from such cells is not on one scale. With `lookup` and `from`,
+the band is read again in the norm table:
+
+```yaml
+cvlt_trial5_band:
+  column: cvlt05z_
+  type: band
+  limits: [1, 5, 25, 50, 75, 95, 99]
+  lookup: cvlt_trial5          # the file norms/cvlt_trial5.csv
+  from: cvlt_trial5            # the raw score: a number or an item listed before
+  shared: true
+  z_range: [-5, 5]
+```
+
+A cell that holds a percentile is then not read for its content: it only
+tells that the EMR used a table for this patient. The band comes from the
+table, the raw score and the age at the visit, exactly as for a score
+(section 8): the lowest band the raw score can be, with
+`<variable>_cens` = +1 and `censored_right` where the table says "this band
+or a higher one". If nothing can be read (no table, no raw score, no age),
+the band is missing and the cell gets `norm_missing`. A cell that holds a
+z-score is still turned into a band through `z_range`.
 
 ## 7. Editions and forms
 
@@ -208,6 +446,21 @@ version:
     bis12: [bis1001, bis1006]
 ```
 
+The columns listed may belong to another instrument filled at the same
+visit, when the instrument's own columns do not tell its form. The 25 WURS
+items are the same columns in the 61-item and in the 25-item questionnaire,
+and nothing else in the WURS tells them apart. The reduced questionnaires
+replaced the long ones together (decision D47 in PROGRESS.md), so the form
+of the WURS is read from the ALS and the BIS of the same visit:
+
+```yaml
+version:
+  name: wurs_form
+  filled:
+    wurs61: [als58, bis1002]         # a score or an item that only the long questionnaires have
+    wurs25: [als05, bis1001]         # an ALS or BIS answer, and none of the above
+```
+
 Then each schema:
 
 - carries that `version` block, word for word the same in every schema that
@@ -223,7 +476,9 @@ knowingly.
 Rules:
 
 - A visit where nothing is filled has no version and is not flagged: the
-  instrument was not administered.
+  instrument was not administered. "Nothing" means the columns that the
+  schema's own variables read: a column of another instrument listed under
+  `filled` does not give a version to a visit where the instrument is empty.
 - A visit with data but a version code that is not listed gets
   `version_unknown`.
 - With `level: patient`, a patient whose visits hold two different values
@@ -259,14 +514,81 @@ scores:
 | Field | Meaning |
 |---|---|
 | `sum` or `mean` | The variables to combine. Scores defined higher up in the file may be used too |
+| `lookup` and `from` | Instead of `sum` or `mean`: the score is read in a norm table. `lookup` names the table, `from` the raw score to look up, and `by` a second variable the table depends on (see below) |
+| `custom` | Instead of `sum` or `mean`: the name of a function of `facedata/custom.py` that computes the score from the instrument's values, when it is a formula (a body mass index, a corrected QT interval) |
 | `reverse` | Items reversed first: `min + max − value`, using the item's own `range` |
+| `minus` | With `sum`: variables or earlier scores subtracted from the sum. All of them must be present |
+| `floor` | The lowest value the score can take; a lower result is raised to it (the Alda total is A minus B, not below 0) |
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
+| `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
+| `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
 | `label`, `range`, `keep` | As for variables. `keep: false` makes a score a pure consistency check |
 
-Scores are never winsorised.
+A score is not winsorised unless it sets `winsor`.
+
+### Scores read in a norm table
+
+A scaled score depends on the raw score and on the age of the patient,
+through a table of the test manual. The tables are copyrighted, so they are
+not in the repository: they are CSV files in a folder that `load()` is given
+(`norms/` by default), one file per table, one line per cell:
+
+```
+age_min,age_max,raw_min,raw_max,value
+16,17,0,3,1
+```
+
+A line says: at an age from `age_min` to `age_max` (completed years, at the
+visit) and a raw score from `raw_min` to `raw_max`, the standard score is
+`value`.
+
+```yaml
+scores:
+  wais3_vocab_scaled_check:
+    lookup: wais3_vocabulary          # the file norms/wais3_vocabulary.csv
+    from: wais3_vocab_total           # the raw score: a variable or an earlier score
+    compare: wais3_vocab_scaled       # the scaled score stored by the EMR
+    keep: false
+```
+
+A raw score for which nothing can be read gets `norm_missing`: the table was
+not found, the visit has no date (so no age), or the age or the raw score is
+outside the table.
+
+A table can depend on a second variable besides the age, such as the years
+of education. It then has two more columns, `by_min` and `by_max`, and the
+score names the variable with `by`. Like the age, the variable is taken in
+completed units (rounded down).
+
+A table of percentile bands gives the lower limit of the band as `value`
+(section 6). It can have a column `cens`: 1 on the lines where the raw score
+only says "this band or a higher one", because several limits of the norms
+fall on that raw score (most patients make no error). The score then gets
+`<score>_cens` = +1 and `censored_right` on those rows, like a band read
+from a cell.
+
+```
+age_min,age_max,by_min,by_max,raw_min,raw_max,value,cens
+0,49,10,99,0,0,25,1
+```
+
+```yaml
+scores:
+  tmt_a_errors_band:
+    lookup: tmt_a_errors              # the file norms/tmt_a_errors.csv
+    from: tmt_a_errors                # the number of errors
+    by: tmt_education                 # the table also depends on the years of education
+```
+
+(The numbers of this example are made up.)
+
+Use it in one of two ways. As a check (`keep: false` and `compare`), when the
+EMR already stores the standard score: the stored one is delivered, and the
+rows where the table disagrees are flagged. Or as the delivered score, when
+the extraction has none.
 
 ### Stored values derived from a stored score
 
@@ -291,6 +613,13 @@ On every row where the stored score differs from the recomputed one, the
 derived value is kept and flagged `derived_doubt`. A documented
 `compare_offset` does not excuse it: the offset says that the stored score is
 wrong in a known way, and what was derived from it carries the error.
+
+Check first that the value really was derived from the stored score. The
+WAIS-III vocabulary scaled score looked like it; the norm table showed that
+the EMR had used the true total, and that only the total column of the
+extraction was wrong. Its schema now names the norm-table check instead:
+`derived_from: wais3_vocab_scaled_check` flags the scaled score where the
+table gives another value.
 
 ## 9. Sign conventions
 
@@ -334,11 +663,50 @@ Rules:
 `facedata/custom.py` holds the few rules that cannot be written as data.
 
 - `parse: name` on a variable: `name(column) -> values` replaces step 6.
-- `checks: [name]` on an instrument: `name(data) -> True/False per row`; rows
-  that return True get `check_failed` with the function name in `detail`.
+- `checks: {variable: name}` on an instrument: `name(values)` takes the
+  table of the instrument's values and returns True for the rows where the
+  variable fails the check. Those cells keep their value and get
+  `check_failed`, with the function name in `detail`.
+- `custom: name` on a score: `name(values)` takes the same table and returns
+  the score.
+- `unit_rule: name` on a variable: `name(values, keys)` takes the values
+  that have no usable unit label (the others are missing) and the key
+  columns. It returns, for each value, the name of a unit listed in `units`,
+  or missing where it cannot tell (section 5).
+
+```yaml
+checks:
+  cgi_efficacy_index: cgi_index_differs     # (therapeutic effect - 1) x 4 + side effects
+```
 
 Use them rarely. A second instrument needing the same rule is a sign that the
 spec should gain a field instead.
+
+### A period in which a column is not reliable
+
+Sometimes the data show that a column was filled wrongly during some months,
+and the cell itself does not tell which answers are wrong. The schema then
+names the period, and the cells of the visits dated in it keep their value
+and get the flag `period_doubt` (discrepancy):
+
+```yaml
+defaults:
+  doubt:
+    period: [2022-01-01, 2023-12-31]     # visit dates, both days included
+    values: [1]                          # optional: only the cells that hold one of these values
+    note: answers about the whole life entered at follow-up visits
+```
+
+- `period` is required: two dates written `YYYY-MM-DD`.
+- `values` lists delivered values (numbers, or labels of a category).
+  Without it every filled cell of the period is flagged.
+- `note` is the text written in the `detail` column of the flag log.
+- A cell that is missing, or that another step removed (`out_of_range`,
+  `unknown_code`), is not flagged.
+
+Like every field, `doubt` can be set once in `defaults`. Write in the schema
+`notes` what the data show, and log the decision in PROGRESS.md: a period is
+never doubted without evidence.
 
 ## 11. What needs no schema entry
 
@@ -348,7 +716,7 @@ Done for every variable (details in ARCHITECTURE.md, section 5):
 - global missing codes: `Ne sais pas`, `NSP`, `Non applicable`, `NA`, `NaN`, ...;
 - empty dates `0000-00-00` and placeholder dates `1000-01-01`, `1850-01-01`,
   `1900-01-01`;
-- number repairs: decimal comma, trailing dot, trailing `%`;
+- number repairs: decimal comma, missing leading zero, trailing dot, trailing `%`;
 - censoring marks in front of a number.
 
 ## 12. What `check_schema` verifies
@@ -357,15 +725,33 @@ Done for every variable (details in ARCHITECTURE.md, section 5):
 the list is not empty.
 
 - Only the fields listed in this document are used, and required ones are present.
-- `type` is known; `item` has a `range`; `category` has `codes`.
+- `type` is known; `item` has a `range`; `category` has `codes`; `band` has
+  `limits`, numbers in rising order. `z_range` is `[low, high]`, on a band.
+  On a variable, `lookup` and `from` go together, on a band, and `from` names
+  a number or an item with a range, listed before.
 - Fields that must be numbers are numbers; `range` and `expect` have low ≤ high.
 - A variable with `units` has a `unit`, that unit is listed, and its factor is 1.
+  Every unit has an `expect` range and either a `factor` or `percent_of`.
+  `percent_of` names a number listed before the variable in the same schema.
+- `unit_rule` names a function that exists in `facedata/custom.py`.
+- `doubt` has a `period` of two dates, first day ≤ last day, and no field
+  other than `period`, `values` and `note`.
+- `asked_if` names a yes/no item (`range: [0, 1]`) listed before in the
+  same schema, on an item or a number whose range starts at 0.
 - Versions named in `versions` exist in `version`.
 - Schemas that use the same version `name` have identical `version` blocks.
 - A raw column feeds at most one variable per version, across all schemas of
-  the cohort.
+  the cohort. Two exceptions: a variable with `keep: false` may read a column
+  that a delivered variable reads, and a `band` and a `number` may both say
+  `shared: true`.
 - Scores refer to variables or earlier scores that exist; reversed items have a `range`.
 - `derived_from` names a score that has `compare`.
+- `checks` names variables or scores of the schema and functions that exist
+  in `facedata/custom.py`.
+- A score has exactly one of `sum`, `mean`, `lookup` and `custom`; `lookup`
+  comes with `from`, `by` with `lookup`, `minus` with `sum`, and `custom` names a function that
+  exists in `facedata/custom.py`. Whether the norm table exists is not checked here: a missing table
+  gives `norm_missing` flags, not an error.
 - A `version` block with `level` says `patient` and reads a `column`.
   `follow_up` and `by_inclusion_date` need `level: patient`; they name
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.
@@ -383,9 +769,16 @@ mechanism. Read them as examples.
 | File | Shows |
 |---|---|
 | `hetero_questionnaires/madrs.yaml` | `defaults`, items, a score compared with the stored total |
+| `hetero_questionnaires/etat_depressif.yaml` | Answers written Y and N, delivered as 1 and 0 and counted (`codes` on items) |
+| `hetero_questionnaires/alda.yaml` | A score that is a difference with a floor (`minus`, `floor`) |
+| `hetero_questionnaires/cgi_egf.yaml` | A code that means "not assessed" (`missing`), a custom check (`checks`) |
+| `constantes_et_ecg/parametres_physiques.yaml` | Units recognised with no unit column, lost decimal points, a score computed by a custom function and compared with a rounded stored value |
+| `constantes_et_ecg/ecg.yaml` | Intervals in seconds, milliseconds or hundredths of a second; a stored score delivered next to the recomputed one |
+| `patient/fin_de_suivi.yaml` | A patient-level instrument, variables read from two generations of columns, dates with a range |
 | `bilan_biologique/biochimie.yaml` | Censoring with many detection limits (CRP), two units with an unreliable label (glucose) |
 | `bilan_biologique/nfs.yaml` | A hidden unit mixture under one label (haemoglobin) |
 | `auto_questionnaires/bis10.yaml`, `auto_questionnaires/bis12.yaml` | Two instruments stored in the same columns and split by form, the form found from which items are filled, a documented offset of the stored scores |
+| `auto_questionnaires/als54.yaml`, `auto_questionnaires/als18.yaml`, `auto_questionnaires/wurs61.yaml`, `auto_questionnaires/wurs25.yaml` | A long questionnaire and the reduced one that replaced it, stored in the same columns; the form found from what only the long questionnaires of the same visit have, a bridge score from the common items |
 | `neuropsychologie/wais3_*.yaml`, `neuropsychologie/wais4_*.yaml` | Two editions stored in the same columns and split by a version column: digit span, vocabulary, matrices, coding and symbol search (two schemas each), and similarities (WAIS-IV only). Scaled scores marked `derived_from` their raw total |
 | `neuropsychologie/tmt.yaml` | Z-scores whose sign convention changed centre by centre (`sign`), missing codes of one variable |
 | `evaluation_medicale/dsm4_depuis_derniere_visite.yaml`, `evaluation_medicale/dsm5_depuis_derniere_visite.yaml` | Two editions split by a version recorded once per patient (`level: patient`), yes/no codes, counts with a cap (`>20`) |

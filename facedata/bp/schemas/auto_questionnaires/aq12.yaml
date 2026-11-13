@@ -1,0 +1,46 @@
+instrument: aq12
+title: Aggression Questionnaire, short form (AQ-12)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire AQ12
+status: draft
+notes: >
+  In the extraction from 2021, filled at the inclusion visit; it took the
+  place of the BDHI. The dictionary lists it among the questionnaires
+  reduced in 2021, but the extraction holds no longer form. Twelve items,
+  each 1 (not at all like me) to 6 (completely like me).
+
+  Four sub-scores of three items each (3 to 18): physical aggression (items
+  1, 5, 9), verbal aggression (2, 6, 10), anger (3, 7, 11) and hostility
+  (4, 8, 12). The stored sub-scores equal these sums on all but one of about
+  1,310 visits. The extraction stores no total; the sum of the twelve items
+  is added here (12 to 72).
+
+defaults: {type: item, range: [1, 6]}
+
+variables:
+  aq1201: {label: "AQ-12 item 1"}
+  aq1202: {label: "AQ-12 item 2"}
+  aq1203: {label: "AQ-12 item 3"}
+  aq1204: {label: "AQ-12 item 4"}
+  aq1205: {label: "AQ-12 item 5"}
+  aq1206: {label: "AQ-12 item 6"}
+  aq1207: {label: "AQ-12 item 7"}
+  aq1208: {label: "AQ-12 item 8"}
+  aq1209: {label: "AQ-12 item 9"}
+  aq1210: {label: "AQ-12 item 10"}
+  aq1211: {label: "AQ-12 item 11"}
+  aq1212: {label: "AQ-12 item 12"}
+  aq12_physical_stored: {column: aq1213, label: Physical aggression as stored, range: [3, 18], keep: false}
+  aq12_verbal_stored: {column: aq1214, label: Verbal aggression as stored, range: [3, 18], keep: false}
+  aq12_anger_stored: {column: aq1215, label: Anger as stored, range: [3, 18], keep: false}
+  aq12_hostility_stored: {column: aq1216, label: Hostility as stored, range: [3, 18], keep: false}
+
+scores:
+  aq12_physical: {label: AQ-12 physical aggression, sum: [aq1201, aq1205, aq1209], compare: aq12_physical_stored}
+  aq12_verbal: {label: AQ-12 verbal aggression, sum: [aq1202, aq1206, aq1210], compare: aq12_verbal_stored}
+  aq12_anger: {label: AQ-12 anger, sum: [aq1203, aq1207, aq1211], compare: aq12_anger_stored}
+  aq12_hostility: {label: AQ-12 hostility, sum: [aq1204, aq1208, aq1212], compare: aq12_hostility_stored}
+  aq12_total:
+    label: AQ-12 total (12 items)
+    sum: [aq1201, aq1202, aq1203, aq1204, aq1205, aq1206, aq1207, aq1208,
+          aq1209, aq1210, aq1211, aq1212]

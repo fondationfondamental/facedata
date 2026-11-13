@@ -1,6 +1,7 @@
 """Read an extraction and build the key columns of each visit."""
 
 import re
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -12,6 +13,18 @@ from facedata.tokens import EMPTY_DATE, PLACEHOLDER_VISIT_DATES
 def read_extraction(path):
     """Read the .tsv extraction. Every cell stays text, exactly as written."""
     return pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+
+
+def read_norms(folder):
+    """Read the norm tables of a folder: {file name without .csv: table}.
+
+    A table has one line per cell: age_min, age_max, raw_min, raw_max, value.
+    A folder that does not exist gives no table.
+    """
+    tables = {}
+    for path in sorted(Path(folder).glob("*.csv")):
+        tables[path.stem] = pd.read_csv(path)
+    return tables
 
 
 def visit_month(label):
@@ -46,6 +59,11 @@ def prepare_visits(raw):
     date_text = raw["svdtc"].where(~is_placeholder & (raw["svdtc"] != EMPTY_DATE), "")
     keys["visit_date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
     keys["siteid"] = raw["siteid"]
+    # Age at the visit, in years. The export gives the date of birth to the month only.
+    keys["age"] = np.nan
+    if "brthdtc" in raw.columns:
+        birth = pd.to_datetime(raw["brthdtc"], format="%Y-%m-%d", errors="coerce")
+        keys["age"] = (keys["visit_date"] - birth).dt.days / 365.25
 
     # A visit dated before the patient's previous visit is out of order.
     dated = keys.dropna(subset=["visit_date"]).sort_values(["usubjid", "visit_order"])

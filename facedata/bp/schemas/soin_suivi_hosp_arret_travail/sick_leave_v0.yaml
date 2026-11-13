@@ -1,0 +1,42 @@
+instrument: sick_leave_v0
+title: Sick leave before inclusion (inclusion visit)
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: LES 12 DERNIERS MOIS / DEPUIS LA DERNIERE VISITE
+status: draft
+notes: >
+  Sick leave in the 12 months before the inclusion visit (whether there was
+  any, how many, their total duration in weeks) and on the day of the visit
+  (on sick leave, and whether it is a long-term one). Yes/no answers are
+  delivered as 1 and 0. "Non applicable" (the patient has no job: a quarter
+  of the answers) and "Ne sais pas" are missing codes.
+
+  These columns are filled at the inclusion visit only; the follow-up visits
+  have columns of their own, read by sick_leave_fu.yaml.
+
+  Asked only after a yes (asked_if). The number and the duration are 0 where
+  the patient had no sick leave in the year. Where the first answer is "Non
+  applicable" or empty they stay missing.
+
+  Number. Typed freely: "NA" (962 cells) and "Ne sais pas" (914) are missing
+  codes, ">20" is censored at 20, and a number above 52 is out of range (4
+  cells).
+
+  Duration, in weeks. 52 (the whole year) is the most frequent answer after
+  0. A duration above 53 weeks cannot be about 12 months and is out of range
+  (43 cells, up to 208), like the one negative value. About 90 cells hold
+  words ("2 semaines", "3 mois") and end unparsed.
+
+  Long-term sick leave is a detail of the current sick leave: it stays
+  missing where the patient is not on sick leave.
+
+  The numbers and durations are not winsorised (decision D54 in
+  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
+  rare high values down to it, or to 0.
+
+variables:
+  sick_leave_12m: {column: hooccur_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave in the 12 months before inclusion"}
+  n_sick_leaves_12m: {column: nboccur_arret_travail, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_12m, label: "Number of sick leaves in the 12 months before inclusion"}
+  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, asked_if: sick_leave_12m, label: "Total duration of the sick leaves in the 12 months before inclusion"}
+
+  sick_leave_current: {column: hooccur_arret_travail_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "On sick leave at the inclusion visit"}
+  sick_leave_current_long: {column: hodur_arret_travail_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current sick leave: a long-term one"}

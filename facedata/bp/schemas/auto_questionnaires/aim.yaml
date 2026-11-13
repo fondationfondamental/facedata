@@ -1,0 +1,50 @@
+instrument: aim
+title: Affect Intensity Measure, 20 items (AIM-20)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire AIM (version réduite 20 items)
+status: draft
+notes: >
+  Filled once, at the inclusion visit. Each item is 1 (never) to 6 (always).
+  The items keep the numbers they have in the 40-item questionnaire.
+
+  The dictionary lists the AIM among the questionnaires reduced in 2021. The
+  extraction only holds the 20 items of the reduced form, for every year,
+  and nothing in it says which form a patient filled (open question O23 in
+  PROGRESS.md).
+
+  Score. The mean of the 20 items (1 to 6), six of them reversed (7 -
+  value): 12, 24, 29, 33, 37 and 40. The stored score (aim_) is exactly this
+  mean in every row where both exist (6,063).
+
+defaults: {type: item, range: [1, 6]}
+
+variables:
+  aim02: {label: "AIM item 2"}
+  aim07: {label: "AIM item 7"}
+  aim09: {label: "AIM item 9"}
+  aim11: {label: "AIM item 11"}
+  aim12: {label: "AIM item 12"}
+  aim13: {label: "AIM item 13"}
+  aim18: {label: "AIM item 18"}
+  aim20: {label: "AIM item 20"}
+  aim22: {label: "AIM item 22"}
+  aim24: {label: "AIM item 24"}
+  aim25: {label: "AIM item 25"}
+  aim27: {label: "AIM item 27"}
+  aim29: {label: "AIM item 29"}
+  aim30: {label: "AIM item 30"}
+  aim33: {label: "AIM item 33"}
+  aim35: {label: "AIM item 35"}
+  aim36: {label: "AIM item 36"}
+  aim37: {label: "AIM item 37"}
+  aim39: {label: "AIM item 39"}
+  aim40: {label: "AIM item 40"}
+  aim_stored: {column: aim_, type: number, label: AIM-20 score as stored, keep: false}
+
+scores:
+  aim_score:
+    label: AIM-20 affect intensity (mean of 20 items)
+    mean: [aim02, aim07, aim09, aim11, aim12, aim13, aim18, aim20, aim22, aim24,
+          aim25, aim27, aim29, aim30, aim33, aim35, aim36, aim37, aim39, aim40]
+    reverse: [aim12, aim24, aim29, aim33, aim37, aim40]
+    compare: aim_stored

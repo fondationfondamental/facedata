@@ -1,0 +1,46 @@
+instrument: csm
+title: Composite Scale of Morningness (CSM, 13 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire CSM
+status: draft
+notes: >
+  Filled once, at the inclusion visit. Thirteen questions on the preferred
+  hours of the day. Items 1, 2 and 7 have five answers, the others four.
+
+  Coding. The items are stored as points: a higher value is the more
+  morning-type answer, for every item (each item rises with the sum of the
+  others). The dictionary lists the answers in the order of the form, which
+  for some items is the reverse; its numbers are not those of the data.
+
+  The stored total (csm_) equals the sum of the thirteen items (13 to 55,
+  higher is more of a morning type) in every row where both exist (5,605).
+
+  Item 7 (the hour at which one needs to go to bed) never holds a 5, and it
+  is empty on 450 visits where the twelve other items are filled, against
+  10 to 20 for any other item. One of its five answers is lost in the
+  export. The total is missing on those visits, in the extraction and here.
+
+defaults: {type: item, range: [1, 4]}
+
+variables:
+  csm01: {label: "En ne considérant que le rythme de vie qui vous convient le mieux, à...", range: [1, 5]}
+  csm02: {label: "En ne considérant que le rythme de vie qui vous convient le mieux, à...", range: [1, 5]}
+  csm03: {label: "Dans des conditions adéquates (environnement favorable, sans..."}
+  csm04: {label: "Comment vous sentez-vous durant la demi-heure qui suit votre réveil du..."}
+  csm05: {label: "Comment vous sentez-vous durant la demi-heure qui suit votre réveil du..."}
+  csm06: {label: "Vous avez décidé de faire un sport. Un ami vous suggère de faire deux..."}
+  csm07: {label: "A quelle heure dans la soirée vous sentez-vous fatigué au point de...", range: [1, 5]}
+  csm08: {label: "Vous devez être à votre maximum de performance pour un examen écrit qui..."}
+  csm09: {label: "On entend souvent dire que telle personne est “du matin” et que telle..."}
+  csm10: {label: "A quelle heure vous lèveriez-vous en prévision d’une journée de travail..."}
+  csm11: {label: "Si vous deviez toujours vous lever à 6h 00, cela vous paraîtrait ?"}
+  csm12: {label: "Après une bonne nuit de sommeil, combien de temps vous faut-il pour..."}
+  csm13: {label: "Dans quelle partie de la journée êtes-vous le plus actif ?"}
+  csm_stored: {column: csm_, label: CSM total as stored, range: [13, 55], keep: false}
+
+scores:
+  csm_total:
+    label: CSM total (higher is more of a morning type)
+    sum: [csm01, csm02, csm03, csm04, csm05, csm06, csm07, csm08, csm09, csm10,
+          csm11, csm12, csm13]
+    compare: csm_stored

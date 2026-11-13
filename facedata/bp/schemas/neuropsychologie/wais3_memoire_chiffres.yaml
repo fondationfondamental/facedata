@@ -17,6 +17,16 @@ notes: >
   On WAIS-III visits the columns hold what the dictionary says, and the raw
   total equals forward + backward on all 1,249 rows where both exist.
 
+  Trials. Each item has two trials (1 = correct) and an item score, the
+  number of trials passed (0 to 2): this holds in all but one or two rows.
+  The test stops after two failures on an item, so the last items are often
+  empty; "Na" in an item score is a missing code. The stored raw score of
+  each order is compared with the sum of its item scores, an empty item
+  counting 0: they agree on 99.7% of the visits.
+
+  The z-scores of the longest spans come from norms that are not in the
+  project and are delivered as stored.
+
 version:
   name: wais_version
   column: wais_version
@@ -34,9 +44,71 @@ variables:
   wais3_ds_scaled:          {column: nstand_w,  label: Age-scaled score (mean 10 and SD 3),      range: [1, 19], derived_from: wais3_ds_total_check}
   wais3_ds_z:               {column: vstand_w,  label: Scaled score as a z-score, type: number,  range: [-3, 3], winsor: false, derived_from: wais3_ds_total_check}
 
+  wais3_ds_forward_span_z: {column: wais_mc_end_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest forward span as a z-score}
+  wais3_ds_backward_span_z: {column: wais_mc_env_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest backward span as a z-score}
+  # Forward: two trials per item (1 = correct), then the item scores
+  wais3_ds_forward_1a: {column: mcod0101_w, label: "Forward - item 1, trial 1", range: [0, 1]}
+  wais3_ds_forward_1b: {column: mcod0102_w, label: "Forward - item 1, trial 2", range: [0, 1]}
+  wais3_ds_forward_2a: {column: mcod0201_w, label: "Forward - item 2, trial 1", range: [0, 1]}
+  wais3_ds_forward_2b: {column: mcod0202_w, label: "Forward - item 2, trial 2", range: [0, 1]}
+  wais3_ds_forward_3a: {column: mcod0301_w, label: "Forward - item 3, trial 1", range: [0, 1]}
+  wais3_ds_forward_3b: {column: mcod0302_w, label: "Forward - item 3, trial 2", range: [0, 1]}
+  wais3_ds_forward_4a: {column: mcod0401_w, label: "Forward - item 4, trial 1", range: [0, 1]}
+  wais3_ds_forward_4b: {column: mcod0402_w, label: "Forward - item 4, trial 2", range: [0, 1]}
+  wais3_ds_forward_5a: {column: mcod0501_w, label: "Forward - item 5, trial 1", range: [0, 1]}
+  wais3_ds_forward_5b: {column: mcod0502_w, label: "Forward - item 5, trial 2", range: [0, 1]}
+  wais3_ds_forward_6a: {column: mcod0601_w, label: "Forward - item 6, trial 1", range: [0, 1]}
+  wais3_ds_forward_6b: {column: mcod0602_w, label: "Forward - item 6, trial 2", range: [0, 1]}
+  wais3_ds_forward_7a: {column: mcod0701_w, label: "Forward - item 7, trial 1", range: [0, 1]}
+  wais3_ds_forward_7b: {column: mcod0702_w, label: "Forward - item 7, trial 2", range: [0, 1]}
+  wais3_ds_forward_8a: {column: mcod0801_w, label: "Forward - item 8, trial 1", range: [0, 1]}
+  wais3_ds_forward_8b: {column: mcod0802_w, label: "Forward - item 8, trial 2", range: [0, 1]}
+  wais3_ds_forward_item1: {column: mcod_1_w, label: "Forward - item 1 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item2: {column: mcod_2_w, label: "Forward - item 2 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item3: {column: mcod_3_w, label: "Forward - item 3 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item4: {column: mcod_4_w, label: "Forward - item 4 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item5: {column: mcod_5_w, label: "Forward - item 5 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item6: {column: mcod_6_w, label: "Forward - item 6 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item7: {column: mcod_7_w, label: "Forward - item 7 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_forward_item8: {column: mcod_8_w, label: "Forward - item 8 score", range: [0, 2], missing: {Na: not_applicable}}
+  # Backward: two trials per item (1 = correct), then the item scores
+  wais3_ds_backward_1a: {column: mcoi0101_w, label: "Backward - item 1, trial 1", range: [0, 1]}
+  wais3_ds_backward_1b: {column: mcoi0102_w, label: "Backward - item 1, trial 2", range: [0, 1]}
+  wais3_ds_backward_2a: {column: mcoi0201_w, label: "Backward - item 2, trial 1", range: [0, 1]}
+  wais3_ds_backward_2b: {column: mcoi0202_w, label: "Backward - item 2, trial 2", range: [0, 1]}
+  wais3_ds_backward_3a: {column: mcoi0301_w, label: "Backward - item 3, trial 1", range: [0, 1]}
+  wais3_ds_backward_3b: {column: mcoi0302_w, label: "Backward - item 3, trial 2", range: [0, 1]}
+  wais3_ds_backward_4a: {column: mcoi0401_w, label: "Backward - item 4, trial 1", range: [0, 1]}
+  wais3_ds_backward_4b: {column: mcoi0402_w, label: "Backward - item 4, trial 2", range: [0, 1]}
+  wais3_ds_backward_5a: {column: mcoi0501_w, label: "Backward - item 5, trial 1", range: [0, 1]}
+  wais3_ds_backward_5b: {column: mcoi0502_w, label: "Backward - item 5, trial 2", range: [0, 1]}
+  wais3_ds_backward_6a: {column: mcoi0601_w, label: "Backward - item 6, trial 1", range: [0, 1]}
+  wais3_ds_backward_6b: {column: mcoi0602_w, label: "Backward - item 6, trial 2", range: [0, 1]}
+  wais3_ds_backward_7a: {column: mcoi0701_w, label: "Backward - item 7, trial 1", range: [0, 1]}
+  wais3_ds_backward_7b: {column: mcoi0702_w, label: "Backward - item 7, trial 2", range: [0, 1]}
+  wais3_ds_backward_item1: {column: mcoi_1_w, label: "Backward - item 1 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item2: {column: mcoi_2_w, label: "Backward - item 2 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item3: {column: mcoi_3_w, label: "Backward - item 3 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item4: {column: mcoi_4_w, label: "Backward - item 4 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item5: {column: mcoi_5_w, label: "Backward - item 5 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item6: {column: mcoi_6_w, label: "Backward - item 6 score", range: [0, 2], missing: {Na: not_applicable}}
+  wais3_ds_backward_item7: {column: mcoi_7_w, label: "Backward - item 7 score", range: [0, 2], missing: {Na: not_applicable}}
+
 scores:
   # Consistency check only: the stored total must equal the sum of its parts.
   wais3_ds_total_check:
     sum: [wais3_ds_forward_raw, wais3_ds_backward_raw]
     compare: wais3_ds_total
+    keep: false
+  # Consistency check only: the stored raw score must equal the sum of its item scores.
+  wais3_ds_forward_check:
+    sum: [wais3_ds_forward_item1, wais3_ds_forward_item2, wais3_ds_forward_item3, wais3_ds_forward_item4, wais3_ds_forward_item5, wais3_ds_forward_item6, wais3_ds_forward_item7, wais3_ds_forward_item8]
+    min_items: 1
+    compare: wais3_ds_forward_raw
+    keep: false
+  # Consistency check only: the stored raw score must equal the sum of its item scores.
+  wais3_ds_backward_check:
+    sum: [wais3_ds_backward_item1, wais3_ds_backward_item2, wais3_ds_backward_item3, wais3_ds_backward_item4, wais3_ds_backward_item5, wais3_ds_backward_item6, wais3_ds_backward_item7]
+    min_items: 1
+    compare: wais3_ds_backward_raw
     keep: false

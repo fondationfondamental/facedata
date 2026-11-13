@@ -1,0 +1,39 @@
+instrument: cpt3
+title: Conners' Continuous Performance Test 3 (CPT-3)
+tab: NEUROPSYCHOLOGIE
+section: CPT III
+status: draft
+notes: >
+  The third edition of the test, in the extraction from 2018 (about 507
+  visits). It is another instrument than the CPT-II (cpt2.yaml), with its
+  own columns: nothing has to be split. The dictionary names these columns
+  with a final underscore (cpt306a_) that the extraction does not have.
+
+  Nine measures, each with a T-score and the level printed by the report.
+  The level is filled on a third of the visits or fewer.
+
+  T-scores of the CPT-3 go from 20 to 90. On about 37 visits the column
+  holds something else, probably the raw value (a hit reaction time of 300
+  to 600, a detectability near 0): these cells end out_of_range.
+
+defaults: {type: number, range: [20, 90], winsor: false}
+
+variables:
+  cpt3_detectability_t: {column: cpt306a, label: "Detectability (d') - T-score"}
+  cpt3_detectability_level: {column: cpt306d, type: category, label: "Detectability (d') - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_omissions_t: {column: cpt301a, label: "Omissions - T-score"}
+  cpt3_omissions_level: {column: cpt301d, type: category, label: "Omissions - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_commissions_t: {column: cpt302a, label: "Commissions - T-score"}
+  cpt3_commissions_level: {column: cpt302d, type: category, label: "Commissions - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_perseverations_t: {column: cpt308a, label: "Perseverations - T-score"}
+  cpt3_perseverations_level: {column: cpt308d, type: category, label: "Perseverations - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_hrt_t: {column: cpt303a, label: "Hit reaction time - T-score"}
+  cpt3_hrt_level: {column: cpt303d, type: category, label: "Hit reaction time - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_hrt_sd_t: {column: cpt304a, label: "Hit reaction time SD - T-score"}
+  cpt3_hrt_sd_level: {column: cpt304d, type: category, label: "Hit reaction time SD - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_variability_t: {column: cpt305a, label: "Variability - T-score"}
+  cpt3_variability_level: {column: cpt305d, type: category, label: "Variability - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_hrt_block_change_t: {column: cpt309a, label: "Hit reaction time block change - T-score"}
+  cpt3_hrt_block_change_level: {column: cpt309d, type: category, label: "Hit reaction time block change - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
+  cpt3_hrt_isi_change_t: {column: cpt311a, label: "Hit reaction time ISI change - T-score"}
+  cpt3_hrt_isi_change_level: {column: cpt311d, type: category, label: "Hit reaction time ISI change - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}

@@ -1,0 +1,42 @@
+instrument: circadian
+title: Circadian Type Inventory (11 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire INVENTAIRE DU RYTHME CIRCADIEN
+status: draft
+notes: >
+  Habits around sleep. Filled at the inclusion visit and, for part of the
+  patients, at the yearly visits. Eleven items, each 1 (almost never) to 5
+  (almost always).
+
+  Two scores: flexibility of the sleep habits (items 2, 4, 6, 8, 10; 5 to
+  25) and languidness, the difficulty to overcome drowsiness (items 1, 3, 5,
+  7, 9, 11; 6 to 30). The item lists were read from the data: each stored
+  score equals the sum of its items in every row where both exist (about
+  8,270).
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  circad01: {label: "Circadian item 1"}
+  circad02: {label: "Circadian item 2"}
+  circad03: {label: "Circadian item 3"}
+  circad04: {label: "Circadian item 4"}
+  circad05: {label: "Circadian item 5"}
+  circad06: {label: "Circadian item 6"}
+  circad07: {label: "Circadian item 7"}
+  circad08: {label: "Circadian item 8"}
+  circad09: {label: "Circadian item 9"}
+  circad10: {label: "Circadian item 10"}
+  circad11: {label: "Circadian item 11"}
+  circadian_flexibility_stored: {column: circad12, label: Flexibility as stored, range: [5, 25], keep: false}
+  circadian_languidness_stored: {column: circad13, label: Languidness as stored, range: [6, 30], keep: false}
+
+scores:
+  circadian_flexibility:
+    label: Flexibility of sleep habits (5 items)
+    sum: [circad02, circad04, circad06, circad08, circad10]
+    compare: circadian_flexibility_stored
+  circadian_languidness:
+    label: Languidness (6 items)
+    sum: [circad01, circad03, circad05, circad07, circad09, circad11]
+    compare: circadian_languidness_stored

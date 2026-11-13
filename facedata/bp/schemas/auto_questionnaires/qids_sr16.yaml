@@ -1,0 +1,42 @@
+instrument: qids_sr16
+title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire QIDS-SR16
+status: draft
+notes: >
+  Sixteen items, each 0 to 3, on the last seven days. Filled at every visit.
+
+  Total. The sixteen items cover nine symptoms, and the total adds one value
+  per symptom (0 to 27): the highest of the four sleep items (1 to 4), item
+  5, the highest of the four appetite and weight items (6 to 9), items 10 to
+  14, and the highest of the two psychomotor items (15 and 16). This is not
+  a sum, so the function qids_total of custom.py computes it. The stored
+  total (qidsr120) is exactly this in every row where it exists (19,235); it
+  is stored only when the sixteen items are filled, and so is ours.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  qidsr101: {label: "Endormissement"}
+  qidsr102: {label: "Sommeil pendant la nuit"}
+  qidsr103: {label: "Réveil avant l'heure prévue"}
+  qidsr104: {label: "Sommeil excessif"}
+  qidsr105: {label: "Tristesse"}
+  qidsr106: {label: "Diminution de l'appétit"}
+  qidsr107: {label: "Augmentation de l'appétit"}
+  qidsr108: {label: "Perte de poids (au cours des 15 derniers jours)"}
+  qidsr109: {label: "Prise de poids (au cours des 15 derniers jours)"}
+  qidsr110: {label: "Concentration/Prise de décisions"}
+  qidsr111: {label: "Opinion de moi-même"}
+  qidsr112: {label: "Idées de mort ou de suicide"}
+  qidsr113: {label: "Enthousiasme général"}
+  qidsr114: {label: "Énergie"}
+  qidsr115: {label: "Impression de ralentissement"}
+  qidsr116: {label: "Impression d'agitation"}
+  qids_stored: {column: qidsr120, label: QIDS-SR16 total as stored, range: [0, 27], keep: false}
+
+scores:
+  qids_total:
+    label: QIDS-SR16 total
+    custom: qids_total
+    compare: qids_stored

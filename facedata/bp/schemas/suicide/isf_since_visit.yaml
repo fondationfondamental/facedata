@@ -1,0 +1,118 @@
+instrument: isf_since_visit
+title: Suicidal thoughts and acts since the last visit (follow-up visits)
+tab: SUICIDE
+section: Intentionnalité suicidaire actuelle
+status: draft
+notes: >
+  The five yes/no questions of isf_lifetime, asked at the follow-up visits
+  about the time since the last visit, each followed by "when did it last
+  happen?". Delivered as 1 (yes) and 0 (no).
+
+  Two forms in the same columns (decision D46 in PROGRESS.md). At the
+  inclusion visit the five questions are about the whole life ("have you
+  ever..."): 83% answer yes to the first and 38% say they have attempted
+  suicide. At the follow-up visits the same columns hold the answers for
+  the time since the last visit: 38% and 3%, and 93% of the patients who
+  said yes at inclusion say no later. The answers to "when did it last
+  happen" differ too: last week, two weeks to a year ago or more than a
+  year ago at inclusion; last week or since the last visit at follow-up.
+  The two forms are therefore two instruments, isf_lifetime and
+  isf_since_visit, with their own output columns. visit_form says which form
+  a visit used; it is read from the visit label.
+
+  A doubtful period (open question O29 in PROGRESS.md). From 2012 to 2021,
+  2% to 4% of the follow-up visits say that the patient attempted suicide
+  since the last visit. In 2022 it is 16% and in 2023 9%, then 2% to 3%
+  again from 2024. The first question rises too (36% to 54%). Of the eight
+  centres with 30 answers or more in these two years, five rise and three
+  do not. The rise starts in the first quarter of 2022 and stops in the
+  first quarter of 2024; the years of the COVID epidemic, 2020 and 2021,
+  are at 3% to 4%. The clinician's rating of suicidal thoughts at the same
+  visits (MADRS item 10) has no peak in these two years. On the "yes"
+  visits of 2022 and 2023 the number of attempts and the date of the first
+  attempt given at inclusion are often typed again. It looks as if answers
+  about the whole life were entered at part of the follow-up visits during
+  these two years. The cell does not tell which. So every "yes" of a
+  follow-up visit dated 2022 or 2023, and the "when" that goes with it,
+  keeps its value and gets the flag period_doubt (decision D48). The "no"
+  answers are not flagged. What changed in the follow-up form of these
+  centres in early 2022 is still open question O29.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults:
+  type: item
+  range: [0, 1]
+  codes: {Oui: 1, Non: 0}
+  versions: [follow_up]
+  doubt:
+    period: [2022-01-01, 2023-12-31]
+    values: [1, last_week, since_last_visit]       # a "yes", and the "when" that goes with it
+    note: answers about the whole life entered at part of the follow-up visits of 2022 and 2023
+
+variables:
+  isf01_since_visit: {column: isf01, label: "Felt that life is not worth living - since the last visit"}
+  isf01_since_visit_when:
+    column: isf01a
+    type: category
+    label: "Felt that life is not worth living - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf02_since_visit: {column: isf02, label: "Wished to be dead - since the last visit"}
+  isf02_since_visit_when:
+    column: isf02a
+    type: category
+    label: "Wished to be dead - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf03_since_visit: {column: isf03, label: "Thought of taking own life - since the last visit"}
+  isf03_since_visit_when:
+    column: isf03a
+    type: category
+    label: "Thought of taking own life - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf04_since_visit: {column: isf04, label: "Seriously considered or planned suicide - since the last visit"}
+  isf04_since_visit_when:
+    column: isf04a
+    type: category
+    label: "Seriously considered or planned suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf05_since_visit: {column: isf05, label: "Attempted suicide - since the last visit"}
+  isf05_since_visit_when:
+    column: isf05a
+    type: category
+    label: "Attempted suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit

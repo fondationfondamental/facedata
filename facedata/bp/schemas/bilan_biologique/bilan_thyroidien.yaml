@@ -1,0 +1,55 @@
+instrument: bilan_thyroidien
+title: Thyroid tests
+tab: BILAN BIOLOGIQUE
+section: Bilan thyroidien
+status: draft
+notes: >
+  How the units are read (the same in every schema of this tab). The unit
+  column is filled by the form with a default label, also where there is no
+  result, so it proves little. Each analyte lists the units that occur, with
+  the values one expects on each scale. A value that fits its label keeps it.
+  A value that cannot be on the labelled scale and fits exactly one other is
+  converted and flagged (unit_inferred, or unit_doubt when it was possible but
+  unlikely under its label). A value that fits no scale is left as it is and
+  the hard range decides (out_of_range).
+
+  TSH. The three labels of the form (µUI/L, mUI/L, microUI/ml) hold values on
+  the same scale, with the same median: the default label "µUI/L" is a
+  misprint for µUI/mL, which is the same as mUI/L. They are one unit here.
+
+  Free T4: 116 results between 0.3 and 4 are in ng/dL (1 ng/dL = 12.87
+  pmol/L). Free T3 and free T4 in pg/mL overlap the pmol/L scale and are
+  recognised by their label only.
+
+defaults: {type: number}
+
+variables:
+  tsh:
+    label: Thyroid-stimulating hormone (TSH)
+    column: tsh_lbstresc
+    unit_column: tsh_lborresu
+    unit: mUI/L
+    units:
+      mUI/L: {factor: 1, expect: [0, 150], aliases: [µUI/L, microUI/ml, µUI/mL]}
+    range: [0, 150]
+
+  free_t3:
+    label: Free T3
+    column: t3fr_lbstresc
+    unit_column: t3fr_lborresu
+    unit: pmol/L
+    units:
+      pmol/L: {factor: 1, expect: [1.5, 30]}
+      pg/mL: {factor: 1.536, expect: [1, 20], aliases: [ng/L]}
+    range: [1.5, 30]
+
+  free_t4:
+    label: Free T4
+    column: t4fr_lbstresc
+    unit_column: t4fr_lborresu
+    unit: pmol/L
+    units:
+      pmol/L: {factor: 1, expect: [4, 80]}
+      ng/dL: {factor: 12.87, expect: [0.3, 4]}
+      pg/mL: {factor: 1.287, expect: [3, 60]}
+    range: [3, 100]

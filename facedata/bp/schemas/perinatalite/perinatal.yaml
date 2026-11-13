@@ -1,0 +1,131 @@
+instrument: perinatal
+title: The patient's own birth
+tab: PERINATALITE
+section: PERINATALITE
+status: draft
+level: patient
+notes: >
+  How the patient was born: the age of each parent at the birth, term,
+  gestational age, type of birth, stay in a neonatal unit, weight, length,
+  head circumference and Apgar scores. Asked of an adult patient, so most
+  answers are memories or come from a health booklet: the type of birth is
+  known for 4,500 patients, the Apgar scores for 900.
+
+  One value per patient (decision D51 in PROGRESS.md). A birth does not
+  change, so the value is the one of the patient's earliest visit that has
+  it (the inclusion visit for 99% of them). The form can be filled again at a
+  yearly visit: one answer in five then differs from the first (62 of 317
+  for the mother's age, 36 of 153 for the weight). The first is kept and the
+  patient gets patient_value_varies.
+
+  Zeros. In 2009 and 2010 the form saved a 0 in the measures that were not
+  known: 67 visits hold a 0 in the weight, the length, the head
+  circumference or an Apgar score, 57 of them in these two years, and an
+  Apgar score of 0 at one minute always comes with a 0 at five minutes. A 0
+  is therefore a missing code in these five measures, in the gestational age
+  and in the two ages. An age of 99 is a missing code too (3 patients each).
+
+  Gestational age, in weeks of amenorrhoea. 14 cells hold 6 to 9: months.
+  They are converted to weeks (unit_inferred); 8 of these patients are
+  recorded as premature. 12 cells hold a birth weight (2,000 and more) and a
+  few hold other impossible values: out_of_range. The term (born at term,
+  premature, post-term) and the gestational age are two answers of the
+  patient and often disagree: of the patients recorded as premature who
+  give a gestational age, a third give 37 weeks or more.
+
+  Hard limits. Weight 400 to 6,500 g (17 values outside: 12 below 100,
+  which may be hectograms or weeks, 2 between 100 and 400, 3 above 7,000);
+  length 25 to 60 cm (5 outside); head circumference 20 to 42 cm (6
+  outside, most of them above 46: a length typed in the wrong field); Apgar
+  1 to 10 (3 above); mother's age 12 to 60, father's age 12 to 90 (1 below).
+
+  No winsorising (decision D52 in PROGRESS.md). The weight, the length, the
+  head circumference and the gestational age are delivered as they are
+  inside their hard limits: a very low birth weight or an extreme
+  prematurity is the information, and the limits already remove the
+  impossible values.
+
+  Apgar score at one minute. 10 for three quarters of the patients, far more
+  than at a birth clinic, where 10 at one minute is unusual; the share goes from 45%
+  to 95% between centres. Delivered as written.
+
+  The dictionary sheet of this tab has one more column than the others (a
+  code list before the names); the names used here are those of the column
+  "NOM VARIABLE EXTRACTION".
+
+variables:
+  mother_age_at_birth:
+    column: agemere
+    label: Age of the mother when the patient was born, in years
+    type: item
+    range: [12, 60]
+    missing: {0: not_recorded, 99: unknown}
+  father_age_at_birth:
+    column: agepere
+    label: Age of the father when the patient was born, in years
+    type: item
+    range: [12, 90]
+    missing: {0: not_recorded, 99: unknown}
+  birth_term:
+    column: prembrth
+    label: Term of the birth
+    type: category
+    codes: {"Né à terme": term, "Prématurité": preterm, "Post-maturité": post_term}
+  gestational_age:
+    column: gstabrth
+    label: Gestational age at birth, in weeks of amenorrhoea
+    type: number
+    unit: weeks
+    units:
+      weeks: {factor: 1, expect: [20, 45]}
+      months: {factor: 4.345, expect: [5, 10]}
+    range: [20, 45]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_type:
+    column: naisstyp
+    label: Type of birth
+    type: category
+    codes: {"Voie basse": vaginal, "Césarienne": caesarean}
+  neonatal_hospitalisation:
+    column: honeonat
+    label: Was admitted to a neonatal unit
+    type: item
+    range: [0, 1]
+    codes: {Oui: 1, Non: 0}
+  birth_weight:
+    column: brthwt
+    label: Birth weight
+    type: number
+    unit: g
+    range: [400, 6500]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_length:
+    column: brthht
+    label: Birth length
+    type: number
+    unit: cm
+    range: [25, 60]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_head_circumference:
+    column: brthcirc
+    label: Head circumference at birth
+    type: number
+    unit: cm
+    range: [20, 42]
+    missing: {0: not_recorded}
+    winsor: false
+  apgar_1min:
+    column: apgr0106_1min
+    label: Apgar score at 1 minute
+    type: item
+    range: [1, 10]
+    missing: {0: not_recorded}
+  apgar_5min:
+    column: apgr0106_5min
+    label: Apgar score at 5 minutes
+    type: item
+    range: [1, 10]
+    missing: {0: not_recorded}

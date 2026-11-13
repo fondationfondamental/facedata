@@ -1,0 +1,45 @@
+instrument: neuropsy_conditions
+title: Neuropsychological assessment, conditions of the testing
+tab: NEUROPSYCHOLOGIE
+section: NEUROPSYCHOLOGIE
+status: draft
+notes: >
+  The first lines of the neuropsychology form: who the patient is on the day
+  of the testing, and whether the tests can be given. Filled once per
+  assessment (about 6,280 visits).
+
+  The age and the years of education are those the psychologist entered;
+  the norms of the tests were read with them. The age differs by more than
+  a year from the age computed from the dates on 199 visits. Education is
+  counted in years from the first year of primary school.
+
+  The yes/no criteria are delivered as 1 (yes) and 0 (no). Each is worded so
+  that "yes" is the condition wanted for the testing.
+
+  The hour of the testing (rad_heure_passation_) sits in the SCIP section of
+  the dictionary but concerns the whole assessment; it exists from 2018.
+
+defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+
+variables:
+  neuropsy_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years)", range: [15, 100], winsor: false}
+  handedness:
+    column: cclin02_
+    type: category
+    label: Handedness
+    codes: {Droitier: right, Gaucher: left, Ambidextre: both}
+  neuropsy_french_fluent: {column: cclin03_, label: Sufficient command of French}
+  neuropsy_mood_rating_delay:
+    column: cclin04_
+    type: category
+    label: Time since the last rating of the mood state
+    codes: {"Moins d'une semaine": under_a_week, "Plus d'une semaine": over_a_week}
+  neuropsy_euthymic: {column: cclin05_, label: Patient euthymic}
+  neuropsy_no_recent_episode: {column: cclin06_, label: No episode in the last 3 months}
+  neuropsy_social_data: {column: cclin07_, label: Socio-professional data available}
+  education_years: {column: cclin08_, type: number, label: Years of education, range: [0, 30], winsor: false}
+  neuropsy_no_visual_disorder: {column: cclin09_, label: No colour blindness or disabling visual disorder}
+  neuropsy_no_hearing_disorder: {column: cclin10_, label: No uncorrected hearing disorder}
+  neuropsy_no_recent_ect: {column: cclin11_, label: No electroconvulsive therapy in the past year}
+  neuropsy_accepted: {column: cclin17_, label: Patient accepted for the neuropsychological assessment}
+  neuropsy_hour: {column: rad_heure_passation_, label: Hour of the testing, range: [0, 23]}

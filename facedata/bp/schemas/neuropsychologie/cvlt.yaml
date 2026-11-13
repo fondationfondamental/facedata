@@ -1,0 +1,176 @@
+instrument: cvlt
+title: California Verbal Learning Test (CVLT)
+tab: NEUROPSYCHOLOGIE
+section: Troubles des acquisitions et des apprentissages
+status: draft
+notes: >
+  A list of 16 words ("Monday list") learned over five trials, a second list
+  ("Tuesday list", list B), then recalls of the first list after a short and
+  a long delay, free and cued, and a recognition task. About 5,820 visits.
+  In the dictionary the CVLT has no header: it follows the learning
+  disorders.
+
+  Raw scores. Recalls are numbers of words, 0 to 16. The total of trials 1
+  to 5 is recomputed and compared with the stored one (cvlt06_). The
+  clustering indices, the discriminability, primacy and recency (percent)
+  and the response bias are delivered as stored, within wide limits: their
+  formulas are not in the project.
+
+  Standardised scores (decisions D38 and D39 in PROGRESS.md). The EMR gives a z-score
+  (from a regression on age, sex and education) or a percentile (from a
+  table), depending on the measure and on the age group, and writes both in
+  the same column:
+
+  - a z-score at every age: trial 1, trials 1 to 5, list B, primacy,
+    recency, bias;
+  - a percentile at every age: serial clustering, perseverations,
+    intrusions, correct and false recognitions, discriminability;
+  - trial 5: a percentile up to 69 years, a z-score from 70;
+  - the four delayed recalls: a percentile up to 39 years, a z-score from 40;
+  - semantic clustering: a percentile from 40 to 69, a z-score otherwise.
+
+  The data follow this exactly. A z-score is always written with two
+  decimals; a percentile is written as a band ("25 - 50", "<1") or as a
+  whole number (1, 5, 25, 50, 75, 95 or 99). The cell itself tells what it
+  holds.
+
+  One band for every age (decision D44, asked by the project lead). Each
+  measure has a band variable that is filled for all patients. Where the
+  cell holds a percentile, the band is read from it. Where it holds a
+  z-score, the band is the one the z-score has under the normal law, as the
+  EMR note proposes: the cell gets band_from_z. So the bands of trial 1,
+  trials 1 to 5, list B, primacy, recency and bias all come from z-scores,
+  and those of the six mixed measures come from a percentile for one age
+  group and from a z-score for the other. The z-scores themselves are still
+  delivered, where the EMR gave one.
+
+  The conversion assumes a normal law in the norm group, which the note
+  says is not validated clinically. For the recalls a higher band is a
+  better performance. For primacy, recency and bias a higher band only
+  means a higher value.
+
+  Bands read again in the norm tables (decision D45, asked by the project
+  lead). Where the EMR wrote a percentile, the band is not taken from the
+  cell: it is read in the norm table of the measure, from the raw score and
+  the age at the visit (norms/cvlt_*.csv, not in the repository; without
+  them these bands are missing with norm_missing). This is done for eleven
+  measures: trial 5, the four delayed recalls, semantic clustering,
+  perseverations, intrusions, correct and false recognitions and
+  discriminability.
+
+  The reason is one rule for every test. When several limits of the norms
+  fall on the same raw score, the EMR wrote the highest percentile for the
+  CVLT: every cell written 99 for trial 5 and the delayed recalls is a
+  perfect recall of 16 words. The table gives the lowest band such a score
+  can be, with <variable>_cens = +1 (this band or a higher one), as for the
+  TMT errors. Where no limits coincide the recomputed band is the one the
+  EMR wrote on 98% to 100% of the visits.
+
+  Serial clustering is the exception: its band stays as the EMR wrote it.
+  The note gives its table in whole numbers although the index has
+  decimals, and the bands read in it differ from the EMR's on 9% of the
+  visits. Its best scores are therefore still written 99 (open question
+  O28 in PROGRESS.md).
+
+  What remains between the two sources of a mixed band. For trial 5 and the
+  delayed recalls, 12% to 27% of the bands read in the table are open bands
+  at the top of the scale (the perfect recalls), against 1% to 4% of the
+  bands computed from a z-score that reach the same level; there a perfect
+  recall is most often one band lower. This is no longer a difference of
+  rule: the norm table and the regression do not place a perfect recall at
+  the same level. Under band 25 the shares are 18% to 25% against 31% to
+  41%.
+
+  Bands. The value is the lower limit of the band: 0 (under the 1st
+  percentile), 1, 5, 25, 50, 75, 95 or 99. A whole number is read as the
+  band that starts there.
+
+  Odd values. "NaN", "inf" and "Non applicable" in the z-score columns are
+  missing codes: the EMR could not compute the score. The recency z-score
+  holds "Non applicable" on 835 visits of patients aged 40 to 69.
+
+  Impossible z-scores. A z-score of a recall beyond 5 is taken as an error
+  (out_of_range). The z-score of trials 1 to 5 is above 5 on 246 visits,
+  two thirds of them in 2009, 2013 and 2014, although the raw totals of
+  these visits are ordinary: the EMR computed it wrongly then. The same
+  holds for 100 z-scores of the semantic clustering, most in 2012 and 2013.
+  Primacy, recency and bias have long tails and keep wider limits (10).
+
+  A recency z-score without a recency. On 43 visits the recency is empty
+  and its z-score is -5.77, the z-score of a recency of 0: the EMR computed
+  it from the empty cell. The check recency_z_without_recency of custom.py
+  flags these cells, and the bands computed from them (check_failed); the
+  values are kept.
+
+defaults: {type: item, range: [0, 16]}
+
+variables:
+  # Raw scores
+  cvlt_trial1: {column: cvlt01_, label: Trial 1 - words recalled}
+  cvlt_trial2: {column: cvlt02_, label: Trial 2 - words recalled}
+  cvlt_trial3: {column: cvlt03_, label: Trial 3 - words recalled}
+  cvlt_trial4: {column: cvlt04_, label: Trial 4 - words recalled}
+  cvlt_trial5: {column: cvlt05_, label: Trial 5 - words recalled}
+  cvlt_total_1_5_stored: {column: cvlt06_, label: Trials 1 to 5 as stored, range: [0, 80], keep: false}
+  cvlt_list_b: {column: cvlt07_, label: List B - words recalled}
+  cvlt_short_free: {column: cvlt08_, label: Short-delay free recall}
+  cvlt_short_cued: {column: cvlt09_, label: Short-delay cued recall}
+  cvlt_long_free: {column: cvlt10_, label: Long-delay free recall}
+  cvlt_long_cued: {column: cvlt11_, label: Long-delay cued recall}
+  cvlt_semantic: {column: cvlt12_, type: number, label: Semantic clustering index, range: [-5, 50]}
+  cvlt_serial: {column: cvlt13_, type: number, label: Serial clustering index, range: [-15, 50]}
+  cvlt_perseverations: {column: cvlt14_, label: Perseverations, range: [0, 50]}
+  cvlt_intrusions: {column: cvlt15_, label: Intrusions, range: [0, 50]}
+  cvlt_hits: {column: cvlt16_, label: Correct recognitions}
+  cvlt_false_alarms: {column: cvlt17_, label: False recognitions, range: [0, 28]}
+  cvlt_discriminability: {column: cvlt18_, type: number, label: Discriminability (percent), range: [0, 100], winsor: false}
+  cvlt_primacy: {column: cvlt19_, type: number, label: Primacy (percent), range: [0, 100], winsor: false}
+  cvlt_recency: {column: cvlt20_, type: number, label: Recency (percent), range: [0, 100], winsor: false}
+  cvlt_bias: {column: cvlt21_, type: number, label: Response bias, range: [-1, 1], winsor: false}
+  cvlt_delay: {column: cvlt22_, type: number, label: Minutes between the first recalls and the delayed recalls, range: [0, 120]}
+
+  # A z-score at every age: the band is computed from it
+  cvlt_trial1_band: {column: cvlt01z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Trial 1, percentile band"}
+  cvlt_trial1_z: {column: cvlt01z_, shared: true, label: "Trial 1, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_total_1_5_band: {column: cvlt06z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Trials 1 to 5, percentile band"}
+  cvlt_total_1_5_z: {column: cvlt06z_, shared: true, label: "Trials 1 to 5, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_list_b_band: {column: cvlt07z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "List B, percentile band"}
+  cvlt_list_b_z: {column: cvlt07z_, shared: true, label: "List B, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_primacy_band: {column: cvlt19z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}, label: "Primacy, percentile band"}
+  cvlt_primacy_z: {column: cvlt19z_, shared: true, label: "Primacy, z-score", type: number, range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_recency_band: {column: cvlt20z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}, label: "Recency, percentile band"}
+  cvlt_recency_z: {column: cvlt20z_, shared: true, label: "Recency, z-score", type: number, range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_bias_band: {column: cvlt21z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], shared: true, z_range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}, label: "Response bias, percentile band"}
+  cvlt_bias_z: {column: cvlt21z_, shared: true, label: "Response bias, z-score", type: number, range: [-10, 10], missing: {inf: not_recorded, -inf: not_recorded}}
+
+  # A percentile or a z-score, depending on the age group: the band is read or computed, the z-score kept
+  cvlt_trial5_band: {column: cvlt05z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_trial5, from: cvlt_trial5, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Trial 5, percentile band"}
+  cvlt_trial5_z: {column: cvlt05z_, shared: true, label: "Trial 5, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_short_free_band: {column: cvlt08z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_short_free, from: cvlt_short_free, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Short-delay free recall, percentile band"}
+  cvlt_short_free_z: {column: cvlt08z_, shared: true, label: "Short-delay free recall, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_short_cued_band: {column: cvlt09z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_short_cued, from: cvlt_short_cued, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Short-delay cued recall, percentile band"}
+  cvlt_short_cued_z: {column: cvlt09z_, shared: true, label: "Short-delay cued recall, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_long_free_band: {column: cvlt10z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_long_free, from: cvlt_long_free, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Long-delay free recall, percentile band"}
+  cvlt_long_free_z: {column: cvlt10z_, shared: true, label: "Long-delay free recall, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_long_cued_band: {column: cvlt11z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_long_cued, from: cvlt_long_cued, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Long-delay cued recall, percentile band"}
+  cvlt_long_cued_z: {column: cvlt11z_, shared: true, label: "Long-delay cued recall, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+  cvlt_semantic_band: {column: cvlt12z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_semantic, from: cvlt_semantic, shared: true, z_range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}, label: "Semantic clustering, percentile band"}
+  cvlt_semantic_z: {column: cvlt12z_, shared: true, label: "Semantic clustering, z-score", type: number, range: [-5, 5], missing: {inf: not_recorded, -inf: not_recorded}}
+
+  # A percentile band at every age
+  cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], label: "Serial clustering, percentile band"}
+  cvlt_perseverations_band: {column: cvlt14z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_perseverations, from: cvlt_perseverations, label: "Perseverations, percentile band"}
+  cvlt_intrusions_band: {column: cvlt15z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_intrusions, from: cvlt_intrusions, label: "Intrusions, percentile band"}
+  cvlt_hits_band: {column: cvlt16z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_hits, from: cvlt_hits, label: "Correct recognitions, percentile band"}
+  cvlt_false_alarms_band: {column: cvlt17z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_false_alarms, from: cvlt_false_alarms, label: "False recognitions, percentile band"}
+  cvlt_discriminability_band: {column: cvlt18z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_discriminability, from: cvlt_discriminability, label: "Discriminability, percentile band"}
+
+scores:
+  cvlt_total_1_5:
+    label: Trials 1 to 5 - words recalled
+    sum: [cvlt_trial1, cvlt_trial2, cvlt_trial3, cvlt_trial4, cvlt_trial5]
+    compare: cvlt_total_1_5_stored
+
+checks:
+  cvlt_recency_z: recency_z_without_recency
+  cvlt_recency_band: recency_z_without_recency

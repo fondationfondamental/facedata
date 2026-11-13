@@ -1,0 +1,53 @@
+instrument: dsm5_premier_episode
+title: First mood episode, DSM-5 criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique du PREMIER EPISODE
+status: draft
+notes: >
+  The first mood episode of the patient: its type, the age at which it
+  began, whether it came within six months of a birth and whether a
+  cyclothymic period came before. Filled once, at the inclusion visit.
+  Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
+  evaluation was made with DSM-IV criteria for the patients included until
+  2021 and with DSM-5 criteria since, in the same columns. This schema reads
+  the DSM-5 visits; dsm4_premier_episode.yaml reads the others. Both carry
+  the version block of the two schemas of the follow-up form (decisions D12,
+  D14 and D15). The DSM-5 form has no mixed episode. The age at the first
+  episode is filled for 64% of these patients only (98% with the DSM-IV
+  form).
+
+  Three columns exist in the DSM-5 form only, from 2020; the dictionary
+  gives them no label (section "New Columns"). age_ehman and age_epman are
+  filled exactly where the patient has had at least one hypomanic episode,
+  or one manic episode: the age at the first one. rad_agethym is filled for
+  89% of the patients (60 "Ne sais pas"). It is not the age at the first
+  episode (later in 511 of 625 patients, by a median of six years) and it is
+  almost never before the age at the first psychotropic treatment (3 of 893;
+  the same age for 309): it looks like the age at the first mood stabiliser.
+  Its meaning is open question O34 in PROGRESS.md, and it keeps its raw
+  name.
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {versions: [dsm5]}
+
+variables:
+  dsm5_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic}, label: "Type of the first mood episode"}
+  dsm5_first_episode_age: {column: agedebutpremier_episode, type: item, range: [0, 90], label: "Age at the first mood episode"}
+  dsm5_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
+  dsm5_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}
+
+  # Three columns that only the DSM-5 form has; the dictionary lists them without a label.
+  dsm5_first_hypomania_age: {column: age_ehman, type: item, range: [0, 90], label: "Age at the first hypomanic episode"}
+  dsm5_first_mania_age: {column: age_epman, type: item, range: [0, 90], label: "Age at the first manic episode"}
+  dsm5_agethym: {column: rad_agethym, type: item, range: [0, 90], label: "Age written in rad_agethym (probably the age at the first mood stabiliser)"}

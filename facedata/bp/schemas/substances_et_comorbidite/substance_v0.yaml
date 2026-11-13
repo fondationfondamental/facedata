@@ -1,0 +1,123 @@
+instrument: substance_v0
+title: Substance use disorders (inclusion visit)
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles liés à une SUBSTANCE AU COURS DE LA VIE
+status: draft
+notes: >
+  One yes/no question (does the patient have, or have they had, a substance
+  use disorder), then for each of eight substances: a box, the type (abuse
+  or dependence), whether symptoms were present in the past month, the age
+  at onset and the cumulated duration of the disorder over the whole life,
+  in months. Yes/no answers are delivered as 1 and 0; "unknown" (U) is a
+  missing code.
+
+  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
+  The same questions are asked at the inclusion visit and at the yearly
+  visits, but at the yearly visits they are about the time since the last
+  visit (confirmed by the project lead). The data show it: at inclusion the
+  question is about the whole life, and of the patients answered "yes" then,
+  40% are answered "no" a year or more later, in every centre and every
+  period (37% of the patients have a disorder at inclusion, 23% at the
+  yearly visits). The details given after a yes still describe the whole
+  life at the yearly visits (same ages at onset, same cumulated durations).
+  The two are therefore delivered as separate columns, ending in _v0
+  (inclusion visit) and _fu (yearly visits, since the last visit);
+  visit_form says which form a visit used and is read from the visit
+  label.
+
+  The first question is read in rad_tb_subst_raw. The column rad_tb_subst is
+  a copy of it written as 0 and 1, in which the 94 "unknown" answers are
+  empty; it is not loaded.
+
+  The boxes are 0 where the first answer is no: the export writes them. They
+  are empty on 29 visits where it is yes.
+
+  Durations. Typed in months; a few cells hold words or a fraction and end
+  unparsed. "ne sa" (a cut "ne sais pas") is a missing code. A duration
+  above 840 months (70 years) is out of range (2 cells). 40 durations are
+  longer than the time between the age at onset and the visit; they are
+  delivered as written.
+
+  Abuse and dependence are the DSM-IV names. They are used in every year,
+  also for the patients evaluated with DSM-5 criteria.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  substance_disorder_v0: {column: rad_tb_subst_raw, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has or has had a substance use disorder (abuse or dependence), at inclusion"}
+
+  alcohol_disorder_v0: {column: suoccur_alcool, type: item, range: [0, 1], label: "Alcohol: abuse or dependence, at inclusion"}
+  alcohol_type_v0: {column: type_alcool, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Alcohol: abuse or dependence, which, at inclusion"}
+  alcohol_last_month_v0: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: symptoms in the past month, at inclusion"}
+  alcohol_onset_age_v0: {column: agedebut_alcool, type: item, range: [0, 90], label: "Alcohol: age at onset, at inclusion"}
+  alcohol_months_v0: {column: sudur_alcool, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Alcohol: cumulated duration of the disorder over the life, at inclusion"}
+
+  sedative_disorder_v0: {column: suoccur_sedatif, type: item, range: [0, 1], label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, at inclusion"}
+  sedative_type_v0: {column: type_sedatif, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, which, at inclusion"}
+  sedative_last_month_v0: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: symptoms in the past month, at inclusion"}
+  sedative_onset_age_v0: {column: agedebut_sedatif, type: item, range: [0, 90], label: "Sedatives, hypnotics, anxiolytics: age at onset, at inclusion"}
+  sedative_months_v0: {column: sudur_sedatif, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Sedatives, hypnotics, anxiolytics: cumulated duration of the disorder over the life, at inclusion"}
+
+  cannabis_disorder_v0: {column: suoccur_cannabis, type: item, range: [0, 1], label: "Cannabis: abuse or dependence, at inclusion"}
+  cannabis_type_v0: {column: type_cannabis, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Cannabis: abuse or dependence, which, at inclusion"}
+  cannabis_last_month_v0: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: symptoms in the past month, at inclusion"}
+  cannabis_onset_age_v0: {column: agedebut_cannabis, type: item, range: [0, 90], label: "Cannabis: age at onset, at inclusion"}
+  cannabis_months_v0: {column: sudur_cannabis, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Cannabis: cumulated duration of the disorder over the life, at inclusion"}
+
+  stimulant_disorder_v0: {column: suoccur_stimulants, type: item, range: [0, 1], label: "Stimulants: abuse or dependence, at inclusion"}
+  stimulant_type_v0: {column: type_stimulants, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Stimulants: abuse or dependence, which, at inclusion"}
+  stimulant_last_month_v0: {column: abudep_stimulants, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Stimulants: symptoms in the past month, at inclusion"}
+  stimulant_onset_age_v0: {column: agedebut_stimulants, type: item, range: [0, 90], label: "Stimulants: age at onset, at inclusion"}
+  stimulant_months_v0: {column: sudur_stimulants, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Stimulants: cumulated duration of the disorder over the life, at inclusion"}
+
+  opiate_disorder_v0: {column: suoccur_opiaces, type: item, range: [0, 1], label: "Opiates: abuse or dependence, at inclusion"}
+  opiate_type_v0: {column: type_opiaces, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Opiates: abuse or dependence, which, at inclusion"}
+  opiate_last_month_v0: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: symptoms in the past month, at inclusion"}
+  opiate_onset_age_v0: {column: agedebut_opiaces, type: item, range: [0, 90], label: "Opiates: age at onset, at inclusion"}
+  opiate_months_v0: {column: sudur_opiaces, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Opiates: cumulated duration of the disorder over the life, at inclusion"}
+
+  cocaine_disorder_v0: {column: suoccur_cocaine, type: item, range: [0, 1], label: "Cocaine: abuse or dependence, at inclusion"}
+  cocaine_type_v0: {column: type_cocaine, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Cocaine: abuse or dependence, which, at inclusion"}
+  cocaine_last_month_v0: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: symptoms in the past month, at inclusion"}
+  cocaine_onset_age_v0: {column: agedebut_cocaine, type: item, range: [0, 90], label: "Cocaine: age at onset, at inclusion"}
+  cocaine_months_v0: {column: sudur_cocaine, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Cocaine: cumulated duration of the disorder over the life, at inclusion"}
+
+  hallucinogen_disorder_v0: {column: suoccur_hallucinogenes, type: item, range: [0, 1], label: "Hallucinogens: abuse or dependence, at inclusion"}
+  hallucinogen_type_v0: {column: type_hallucinogenes, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Hallucinogens: abuse or dependence, which, at inclusion"}
+  hallucinogen_last_month_v0: {column: abudep_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Hallucinogens: symptoms in the past month, at inclusion"}
+  hallucinogen_onset_age_v0: {column: agedebut_hallucinogenes, type: item, range: [0, 90], label: "Hallucinogens: age at onset, at inclusion"}
+  hallucinogen_months_v0: {column: sudur_hallucinogenes, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Hallucinogens: cumulated duration of the disorder over the life, at inclusion"}
+
+  other_substance_disorder_v0: {column: suoccur_autre, type: item, range: [0, 1], label: "Another substance: abuse or dependence, at inclusion"}
+  other_substance_name_v0: {column: sutrt_autre, type: text, label: "Another substance: which one, as written, at inclusion"}
+  other_substance_type_v0: {column: type_autre, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Another substance: abuse or dependence, which, at inclusion"}
+  other_substance_last_month_v0: {column: abudep_autre, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another substance: symptoms in the past month, at inclusion"}
+  other_substance_onset_age_v0: {column: agedebut_autre, type: item, range: [0, 90], label: "Another substance: age at onset, at inclusion"}
+  other_substance_months_v0: {column: sudur_autre, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Another substance: cumulated duration of the disorder over the life, at inclusion"}

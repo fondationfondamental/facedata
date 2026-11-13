@@ -6,7 +6,7 @@ Load, harmonise and quality-check data from the FACE psychiatric cohorts
 One module per cohort. Everything specific to an instrument is written in a
 small YAML schema; the Python code is generic and stays small.
 
-**Status:** the pipeline works on FACE BP for the first 17 instrument schemas.
+**Status:** the pipeline works on FACE BP for the first 105 instrument schemas.
 The other BP instruments are added one by one; see
 [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md).
 
@@ -57,7 +57,13 @@ of the repository. Put them next to the code:
 ```
 data/bp/BPALL_20261030.tsv
 thesauri/FACEBP_thesaurus_V4.34.xlsx
+norms/wais3_vocabulary.csv
 ```
+
+`norms/` holds the norm tables of the tests (age band and raw score to
+scaled score or percentile band). They are copyrighted, so they stay out of the repository
+too. Without them the package still loads; the checks that need a table say
+so in `result.flags`.
 
 They hold pseudonymised patient records. Never copy rows or identifiers into
 code, tests, documents or commits.

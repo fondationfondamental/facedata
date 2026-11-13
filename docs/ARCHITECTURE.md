@@ -40,7 +40,7 @@ facedata/
   schema.py       load_schema(), check_schema()
   tokens.py       constants only: missing tokens, placeholder dates, flag codes
   flags.py        make_flags(), stack_flags(), finish_flags(): the flag log
-  read.py         read_extraction(), prepare_visits()
+  read.py         read_extraction(), read_norms(), prepare_visits()
   parse.py        clean_text(), split_missing(), parse_number(), parse_item(),
                   parse_category(), parse_date(), parse_time(), parse_column()
   harmonise.py    detect_version(), convert_units(), fix_sign(), check_range(),
@@ -65,6 +65,7 @@ from facedata import bp
 
 result = bp.load("data/bp/BPALL_20261030.tsv")              # every instrument that has a schema
 result = bp.load(path, instruments=["madrs", "biochimie"])  # or only some
+result = bp.load(path, norms="norms")                       # folder of the norm tables (the default)
 
 result.data       # one row per patient visit
 result.patients   # one row per patient
@@ -92,6 +93,7 @@ Key columns first, then the harmonised variables of every instrument.
 | `visit_month` | Planned months since inclusion, read from the label (`V0` = 0, `V6_mois` = 6, `V1_an` = 12) |
 | `visit_date` | Visit date (from `svdtc`) |
 | `siteid` | Centre (text, leading zeros kept) |
+| `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The export gives the date of birth to the month only, so it is exact to about two weeks |
 | harmonised variables | Numbers are floats in the schema's unit, categories are harmonised labels, dates are dates |
 
 (`usubjid`, `visit`) is unique.
@@ -138,7 +140,15 @@ See section 7.
 > `data` / `patients`, or as a row in `flags`.
 
 Nothing disappears silently. A test checks this for each instrument.
-"Empty" means the empty string and `0000-00-00` (the export's empty date).
+"Empty" means the empty string and `0000-00-00` (the export's empty date),
+once the text repairs of step 3 are done: a cell that holds only an escaped
+line break is empty (two cells of the BP extraction).
+
+An empty cell gets a value in one case only: a yes/no question or a count
+that the form asks only after a yes to another question (`asked_if` in the
+schema) is 0 where that other answer is no. A patient with no anxiety
+disorder has no panic disorder; with no mood episode in the past year, the
+number of depressive episodes of that year is 0. These values get no flag.
 
 ## 5. The pipeline
 
@@ -170,6 +180,8 @@ stacks the flags.
   (`duplicate_row`).
 - `visit_month` comes from the label: `V<n>_mois` is n months, `V<n>_an(s)` is
   12 × n months, `V0` is 0.
+- `screening` is a visit of its own, before `V0`. It has no `visit_month`:
+  it took place a median of 70 days before the inclusion, with a wide spread.
 - Placeholder visit dates (`1950-01-01`) become missing (`date_placeholder`).
 - A patient whose visit dates do not increase with the visit order gets
   `visit_order` on the visits concerned.
@@ -202,16 +214,27 @@ Placeholder dates (`1000-01-01`, `1850-01-01`, `1900-01-01`) get
 meaning "not done"). A token that the variable's own `codes` lists is a value,
 not a missing code.
 
+### Variables in several columns
+
+When the extraction moved a variable to a new column, the schema lists both.
+Steps 3 and 5 run on each column, then the first column that holds a value is
+kept. Two columns with different values on the same row give
+`column_conflict`.
+
 ### Step 6: parsing
 
 | Type | Accepted | Repairs flagged `format_repaired` |
 |---|---|---|
-| `number` | Integer or decimal, optional sign, optional `<`, `>`, `<=`, `>=` in front | Decimal comma (`27,90`), trailing dot (`28.2.`), trailing `%`, space after the sign |
+| `number` | Integer or decimal, optional sign, optional `<`, `>`, `<=`, `>=` in front | Decimal comma (`27,90`), missing leading zero (`.45`), trailing dot (`28.2.`), trailing `%`, space after the sign |
 | `item` | Whole number | Same |
+| `band` | A percentile band (`25 - 50`), a one-sided class (`>95`) or a limit (`50`); the value is the lower limit of the band | none; a one-sided or wide band gives `censored_right` or `censored_left` (SCHEMA_SPEC.md, section 6) |
 | `category` | A key of the variable's `codes`, ignoring case and spaces | none |
 | `date` | `YYYY-MM-DD` | Partial dates `YYYY-00-00` and `YYYY-MM-00` become the middle of the period (`date_partial`) |
 | `time` | `HH:MM`, returned as hours | none |
 | `text` | Anything | none |
+
+An item or a number can list `codes`: the raw text is replaced by the code's
+number first, so that answers written `Y` and `N` become 1 and 0.
 
 A censoring mark gives the value (the limit) and `<variable>_cens`, with
 `censored_left` or `censored_right`. Whatever is still not understood becomes
@@ -226,13 +249,26 @@ values in its own scale. The rule is the same for every variable.
 |---|---|---|---|
 | Known | The labelled unit's expected range | Converted from the labelled unit | none, or `unit_converted` if it is not the target unit |
 | Known | Not the labelled unit's range, exactly one other unit's | Converted from the other unit | `unit_inferred` if the value is impossible under the label, otherwise `unit_doubt` |
-| Unknown or empty | Exactly one unit's range | Converted from that unit | `unit_inferred` |
+| Unknown or empty | Exactly one unit's range | Converted from that unit | `unit_inferred`; none when there is no label at all and the unit is the schema's own |
 | Unknown or empty | Several units' ranges | Missing | `unit_unknown` |
 | Any | No unit's range | Converted from the labelled unit (target unit if unknown) | none here; step 9 decides |
 
-Censoring limits go through the same rule. Variables without a unit column
+Censoring limits go through the same rule. A label that is a censoring
+mark (`inf`) is not a unit label: it counts as no label at all, and so does
+a label listed in `ignore_units`. Variables without a unit column
 (ECG intervals in seconds or milliseconds, height with a lost decimal point)
 use the same rule with an empty label.
+
+Two additions, both written in the schema (SCHEMA_SPEC.md, section 5):
+
+- A unit can be a **percentage of another variable** of the same visit (a
+  kind of white cells as a percentage of the leukocytes). Its factor is that
+  other value divided by 100, row by row. Where the other value is missing
+  or out of range, the cell becomes missing and gets `unit_unknown`.
+- A variable can name a **unit rule**, a function of `custom.py`, for the
+  values with no usable label. Where the rule names a unit, it replaces the
+  two "unknown or empty" lines of the table. Where it cannot tell, the table
+  applies.
 
 ### Step 4 and versions
 
@@ -244,7 +280,9 @@ visits.
 
 A schema says how to recognise its visits: from a version column
 (`wais_version`), from which items are filled (BIS), or from a column that is
-filled once per patient (the DSM criteria, recorded at inclusion).
+filled once per patient (the DSM criteria, recorded at inclusion). The items
+may be those of another questionnaire of the same visit, when the
+instrument's own columns do not tell its form (ALS, WURS).
 `detect_version` gives every visit its edition; each variable is then read
 only on the visits of its schema's edition and is missing elsewhere, without
 a flag.
@@ -290,28 +328,45 @@ gives no switch date, and nothing is flipped.
 ### Step 9: range
 
 A value outside the schema's hard `range` is impossible. It becomes missing
-with `out_of_range`. It is never clipped into range.
+with `out_of_range`. It is never clipped into range. Dates have a range too:
+a date before the cohort existed, or far in the future, is impossible.
+
+A schema can also name a period in which a column is not reliable (`doubt`).
+The values of the visits dated in that period are possible, so they are
+kept, but they get `period_doubt`: the analyst decides.
 
 ### Step 10: scores
 
 Scores are recomputed from the harmonised items (sum or mean, with reverse
-items). When the extraction also stores the score, the two are compared; a
+items; a sum can subtract other values and have a floor). A score that is a
+formula, such as a body mass index, is a small function in `custom.py`. When the extraction also stores the score, the two are compared; a
 difference above 0.01 gives `score_mismatch` and the recomputed value is kept.
 
-Some stored values were computed by the EMR from a stored score (a scaled
-score from a raw total). They cannot be recomputed without the norm tables.
-Where the stored score differs from the recomputed one, such a value is kept
-and gets `derived_doubt`.
+A score can also be read in a norm table, from a raw score and the age at
+the visit (a scaled score), and if the table says so from a second variable
+such as the years of education (the percentile bands of the TMT errors). The
+tables are copyrighted and are not in the repository; `load()` reads them
+from a folder. A raw score for which nothing can be read gets `norm_missing`.
+
+Some stored values were computed by the EMR from another value (a scaled
+score from a raw total). Where the check of that other value fails, such a
+value is kept and gets `derived_doubt`.
 
 ### Step 11: patient level
 
-For `level: patient` variables the first non-missing value by visit date is
+For `level: patient` variables the first non-missing value in visit order is
 kept. If visits disagree, the patient gets `patient_value_varies`.
+
+The extraction repeats a patient-level value on every visit row, so a bad
+cell would be flagged once per visit. The flags of a patient-level variable
+are therefore given once per patient, on the patient's first visit, and the
+QC table counts patients, not visit rows.
 
 ### Step 12: winsorising
 
-- Only variables of type `number`. Never items, bounded scores, categories,
-  dates or times.
+- Only variables of type `number`, and the continuous scores that ask for it
+  (a body mass index). Never items, bounded scores, categories, dates or
+  times.
 - Runs last, so scores are computed from unclipped inputs.
 - Default limits: the 1st and 99th percentile of the valid values, pooled over
   sites and visits. Each limit is a value that was really observed (the
@@ -337,8 +392,9 @@ kept. If visits disagree, the patient gets `patient_value_varies`.
 | `date_placeholder` | info | The date was a placeholder |
 | `date_partial` | info | Day or month was unknown |
 | `format_repaired` | info | A number was written unusually but unambiguously |
-| `censored_left` | info | The cell was `<limit` |
-| `censored_right` | info | The cell was `>limit` |
+| `censored_left` | info | The cell was `<limit`. For a band: this band or a lower one |
+| `censored_right` | info | The cell was `>limit`. For a band: this band or a higher one |
+| `band_from_z` | info | The cell held a z-score; the band is the one it has under the normal law |
 | `unit_converted` | info | Converted from a labelled unit |
 | `unit_inferred` | info | Unit taken from the magnitude; the label was missing, unknown or impossible |
 | `sign_flipped` | info | A standard score written in the old sign convention was multiplied by −1 |
@@ -347,16 +403,20 @@ kept. If visits disagree, the patient gets `patient_value_varies`.
 | `winsorised` | info | The value was clipped |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |
 | `sign_doubt` | discrepancy | The standard score is dated within 90 days of the centre's change of sign convention, or has no date |
+| `band_middle` | discrepancy | The cell held a band of values (`60-51`); the value is the middle of the band |
+| `column_conflict` | discrepancy | Two raw columns of one variable hold different values; the first one listed is kept |
 | `score_mismatch` | discrepancy | Stored and recomputed scores differ |
 | `derived_doubt` | discrepancy | The value was computed by the EMR from a stored score that differs from the recomputed one |
 | `patient_value_varies` | discrepancy | A patient-level variable changes between visits |
 | `visit_order` | discrepancy | Visit dates are not in visit order |
 | `check_failed` | discrepancy | A custom check named in the schema failed |
+| `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |
 | `unparsed` | danger | The cell could not be read as its type |
 | `unknown_code` | danger | A category value is not in the code list |
 | `out_of_range` | danger | The value is outside the hard range |
-| `unit_unknown` | danger | No usable unit label and the magnitude fits several units |
+| `unit_unknown` | danger | No usable unit label and the magnitude fits several units; or a percentage of a value that is missing |
 | `version_unknown` | danger | Data present but version not recognisable |
+| `norm_missing` | danger | No standard score could be read: the norm table was not found, or it has nothing for this age, raw score and second variable |
 
 ## 7. QC and report
 
@@ -393,7 +453,16 @@ One figure per variable, four panels:
 
 For categories, and for scales with 10 levels or fewer, panels 1, 3 and 4
 show the levels instead: how many values at each level, then the share of
-each level per year and per site. Text and date variables get no figure.
+each level per year and per site. An ordered scale is drawn in one hue, from
+light to dark. The levels of a category get one colour each, at most seven;
+the rarer ones are drawn together.
+
+Text and date variables get no figure, and neither does a variable with
+fewer than 20 values: a figure of so few patients would show individuals.
+For the same reason a site or a year with fewer than 20 values is left out
+of the per-site and per-year panels.
+Patient-level variables are drawn with the year and the site of the
+patient's first visit.
 
 "As written" is read again from the raw text kept in `flags`, so the report
 needs nothing but the result of `load()`.

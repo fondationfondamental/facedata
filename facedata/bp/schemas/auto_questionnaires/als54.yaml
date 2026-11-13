@@ -1,0 +1,111 @@
+instrument: als54
+title: Affective Lability Scale, 54 items (ALS-54)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire ALS (version réduite 18 items)
+status: draft
+notes: >
+  ALS-54 and ALS-18 are two instruments. The 54-item ALS was filled until
+  2021; the 18-item ALS-18 replaced it (confirmed by the developers of the
+  EMR, decision D47 in PROGRESS.md). The 18 questions of the ALS-18 are 18
+  of the 54, and the extraction stores both in the same columns. The columns
+  are therefore split by form: this schema reads the visits where the
+  54-item questionnaire was filled, als18.yaml reads the others. Both files
+  carry the same version block.
+
+  Which form a visit used. No column says it. A visit is "als54" when it
+  holds something that only the long questionnaires have: a score of the
+  54-item ALS (als58 or als60), or one of the 22 items that only the
+  34-item BIS-10 has. The BIS is used because the reduced questionnaires
+  replaced the long ones together: of the 6,085 visits that have both an
+  ALS and a BIS, 99% have the two in the same generation. The 45 others have
+  ALS answers, a BIS-10 and no score of the 54-item ALS: questionnaires with
+  unanswered items, for which the EMR computed no long score. Each centre
+  changed at its own date, between September 2021 and May 2022.
+
+  Filled once, at the inclusion visit. Each item is 0 (not at all like me)
+  to 3 (very much like me).
+
+  What the extraction holds. Only the 18 items that the ALS-18 also has, out
+  of 54; the 36 others were not exported. als54_05 is item 5 of the 54-item
+  questionnaire.
+
+  Scores of the 54-item form: anxiety-depression (als57), anxiety (als58)
+  and bipolar (als60). Their items are not in the extraction, so they cannot
+  be checked and are delivered as stored.
+
+  Bridge to the ALS-18: the four scores of the ALS-18, computed from the 18
+  items both forms have (means, 0 to 3): anxiety-depression (items 5, 12,
+  16, 17, 20), depression-elation (8, 25, 34, 36, 42, 43, 45, 46), anger
+  (14, 21, 23, 33, 41) and the total. The extraction stores them under the
+  names of scales of the long form (als55 "Depression", als56 "Elation",
+  als59 "Anger", als_ "Total"), but they are exactly the means of these
+  items in every row. Whether an answer given inside a 54-item questionnaire
+  can be compared with the same question asked in an 18-item one is a
+  scientific choice; the two are delivered as separate columns
+  (als54_total18 here, als18_total there) so that nobody mixes them by
+  accident. From July 2021 to June 2022, when both forms were in use, the
+  two totals have the same mean (1.44 and 1.40).
+
+version:
+  name: als_form
+  filled:
+    als54: [als58, als60,
+            bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    als18: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
+            als25, als33, als34, als36, als41, als42, als43, als45, als46]
+
+defaults: {type: item, range: [0, 3], versions: [als54]}
+
+variables:
+  als54_05: {column: als05, label: "ALS-54 item 5"}
+  als54_08: {column: als08, label: "ALS-54 item 8"}
+  als54_12: {column: als12, label: "ALS-54 item 12"}
+  als54_14: {column: als14, label: "ALS-54 item 14"}
+  als54_16: {column: als16, label: "ALS-54 item 16"}
+  als54_17: {column: als17, label: "ALS-54 item 17"}
+  als54_20: {column: als20, label: "ALS-54 item 20"}
+  als54_21: {column: als21, label: "ALS-54 item 21"}
+  als54_23: {column: als23, label: "ALS-54 item 23"}
+  als54_25: {column: als25, label: "ALS-54 item 25"}
+  als54_33: {column: als33, label: "ALS-54 item 33"}
+  als54_34: {column: als34, label: "ALS-54 item 34"}
+  als54_36: {column: als36, label: "ALS-54 item 36"}
+  als54_41: {column: als41, label: "ALS-54 item 41"}
+  als54_42: {column: als42, label: "ALS-54 item 42"}
+  als54_43: {column: als43, label: "ALS-54 item 43"}
+  als54_45: {column: als45, label: "ALS-54 item 45"}
+  als54_46: {column: als46, label: "ALS-54 item 46"}
+
+  # Scores of the 18 items as stored. Used only to check our own scores.
+  als54_anxiety_depression18_stored: {column: als55, type: number, label: Anxiety-depression (18 items) as stored, winsor: false, keep: false}
+  als54_depression_elation18_stored: {column: als56, type: number, label: Depression-elation (18 items) as stored, winsor: false, keep: false}
+  als54_anger18_stored: {column: als59, type: number, label: Anger (18 items) as stored, winsor: false, keep: false}
+  als54_total18_stored: {column: als_, type: number, label: Total of the 18 items as stored, winsor: false, keep: false}
+
+  # Scores of the 54-item form, as stored: their items are not in the extraction.
+  als54_anxiety_depression: {column: als57, type: number, label: ALS-54 anxiety-depression as stored, winsor: false}
+  als54_anxiety: {column: als58, type: number, label: ALS-54 anxiety as stored, winsor: false}
+  als54_bipolar: {column: als60, type: number, label: ALS-54 bipolar as stored, winsor: false}
+
+scores:
+  # Bridge to the ALS-18: its four scores, from the 18 items both forms have.
+  als54_anxiety_depression18:
+    label: Anxiety-depression, 5 of the items that the ALS-18 also has (mean)
+    mean: [als54_05, als54_12, als54_16, als54_17, als54_20]
+    compare: als54_anxiety_depression18_stored
+  als54_depression_elation18:
+    label: Depression-elation, 8 of the items that the ALS-18 also has (mean)
+    mean: [als54_08, als54_25, als54_34, als54_36, als54_42, als54_43, als54_45, als54_46]
+    compare: als54_depression_elation18_stored
+  als54_anger18:
+    label: Anger, 5 of the items that the ALS-18 also has (mean)
+    mean: [als54_14, als54_21, als54_23, als54_33, als54_41]
+    compare: als54_anger18_stored
+  als54_total18:
+    label: Mean of the 18 items that the ALS-18 also has
+    mean: [als54_05, als54_08, als54_12, als54_14, als54_16, als54_17, als54_20, als54_21, als54_23,
+          als54_25, als54_33, als54_34, als54_36, als54_41, als54_42, als54_43, als54_45, als54_46]
+    compare: als54_total18_stored

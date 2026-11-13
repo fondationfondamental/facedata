@@ -1,0 +1,27 @@
+instrument: altman
+title: Altman Self-Rating Mania Scale (ASRM, 5 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire ALTMAN
+status: draft
+notes: >
+  Five items, each 0 to 4, on the last week. Filled at every visit.
+
+  The stored total (altman_) equals the sum of the five items in every row
+  where both exist (19,457), so the comparison below should raise no
+  score_mismatch.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  altman01: {label: Cheerfulness}
+  altman02: {label: Self-confidence}
+  altman03: {label: Reduced need for sleep}
+  altman04: {label: Talkativeness}
+  altman05: {label: Activity}
+  altman_stored: {column: altman_, label: ASRM total as stored, range: [0, 20], keep: false}
+
+scores:
+  altman_total:
+    label: ASRM total
+    sum: [altman01, altman02, altman03, altman04, altman05]
+    compare: altman_stored

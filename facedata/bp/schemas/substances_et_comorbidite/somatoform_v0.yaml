@@ -1,0 +1,55 @@
+instrument: somatoform_v0
+title: Somatoform disorders (inclusion visit)
+tab: SUBSTANCES ET COMORBIDITE
+section: Trouble SOMATOFORME
+status: draft
+notes: >
+  Whether the patient has a current somatoform disorder, which one, the age
+  at onset and whether symptoms were present in the past month. Yes/no
+  answers are delivered as 1 and 0; "unknown" (U) is a missing code.
+
+  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
+  The same questions are asked at the inclusion visit and at the yearly
+  visits, but at the yearly visits they are about the time since the last
+  visit (confirmed by the project lead). The data show it: 3.6% of the
+  patients have a somatoform disorder at inclusion, 1.7% at the yearly
+  visits; of the patients who had one at inclusion, 74% are answered "no" a
+  year or more later. The two are therefore delivered as separate columns,
+  ending in _v0 (inclusion visit) and _fu (yearly visits, since the last
+  visit); visit_form says which form a visit used and is read from the
+  visit label.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  somatoform_disorder_v0: {column: ceoccurtroubsomato, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has a current somatoform disorder, at inclusion"}
+  somatoform_type_v0: {column: cedecodtroubsomato, type: category, codes: {"Trouble de somatisation": somatisation, "Trouble douloureux": pain, "Trouble somatoforme indifférencié": undifferentiated, "Hypocondrie": hypochondriasis, "Peur d'une dysmorphie corporelle": body_dysmorphic}, label: "Somatoform disorder: which one, at inclusion"}
+  somatoform_onset_age_v0: {column: agedebuttroubsomato, type: item, range: [0, 90], label: "Somatoform disorder: age at onset, at inclusion"}
+  somatoform_last_month_v0: {column: occurtroubsomato, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Somatoform disorder: symptoms in the past month, at inclusion"}

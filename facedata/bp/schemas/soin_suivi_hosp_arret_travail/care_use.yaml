@@ -1,0 +1,56 @@
+instrument: care_use
+title: Use of care since the last visit (follow-up visits)
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: RECOURS AUX SOINS
+status: draft
+notes: >
+  The care the patient used for the psychiatric disorder since the last
+  visit, asked at every follow-up visit. Two parts: the usual follow-up (90%
+  of the visits say yes) and unscheduled or emergency care (12%). In each,
+  one yes/no per kind of professional and the number of consultations, and
+  for the second part the visits to an emergency room without admission.
+  Yes/no answers are delivered as 1 and 0.
+
+  Asked only after a yes (asked_if). The boxes of a part are shown only
+  after a yes to its first question, and a number only after a yes to its
+  box; in the extraction they are empty otherwise. They are read as 0 there:
+  with no unscheduled care, there was no emergency consultation of a
+  psychiatrist, and their number is 0. Where the first question is not
+  answered everything stays missing.
+
+  Numbers. Typed freely. "NSP" is a missing code; about a hundred cells hold
+  words ("1 fois par mois") and end unparsed. A number above 365 is out of
+  range. 71 numbers are above 52, most of them for the psychiatrist or the
+  psychologist. After a yes to a box, the number is empty for 15% to 26% of
+  the visits.
+
+  The numbers and durations are not winsorised (decision D54 in
+  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
+  rare high values down to it, or to 0.
+
+variables:
+  care_usual: {column: rad_recours_soin_psy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used care for the psychiatric disorder since the last visit, usual follow-up"}
+  care_gp: {column: hooccur_psy_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a general practitioner"}
+  n_care_gp: {column: nboccur_psy_generaliste, type: number, range: [0, 365], winsor: false, asked_if: care_gp, label: "Usual follow-up: number of consultations, general practitioner"}
+  care_psychiatrist: {column: hooccur_psy_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a psychiatrist"}
+  n_care_psychiatrist: {column: nboccur_psy_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: care_psychiatrist, label: "Usual follow-up: number of consultations, psychiatrist"}
+  care_psychologist: {column: hooccur_psy_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a psychologist"}
+  n_care_psychologist: {column: nboccur_psy_psychologue, type: number, range: [0, 365], winsor: false, asked_if: care_psychologist, label: "Usual follow-up: number of consultations, psychologist"}
+  care_specialist: {column: hooccur_psy_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted other medical specialists"}
+  n_care_specialist: {column: nboccur_psy_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: care_specialist, label: "Usual follow-up: number of consultations, other medical specialists"}
+  care_other: {column: hooccur_psy_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted other professionals (dietician, nurse...)"}
+  n_care_other: {column: nboccur_psy_autres, type: number, range: [0, 365], winsor: false, asked_if: care_other, label: "Usual follow-up: number of consultations, other professionals (dietician, nurse...)"}
+
+  care_urgent: {column: rad_recours_soin_urgence, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used unscheduled or emergency care since the last visit"}
+  urgent_gp: {column: hooccur_urgence_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a general practitioner"}
+  n_urgent_gp: {column: nboccur_urg_generaliste, type: number, range: [0, 365], winsor: false, asked_if: urgent_gp, label: "Unscheduled care: number of consultations, general practitioner"}
+  urgent_psychiatrist: {column: hooccur_urgence_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a psychiatrist"}
+  n_urgent_psychiatrist: {column: nboccur_urg_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychiatrist, label: "Unscheduled care: number of consultations, psychiatrist"}
+  urgent_psychologist: {column: hooccur_urgence_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a psychologist"}
+  n_urgent_psychologist: {column: nboccur_urg_psychologue, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychologist, label: "Unscheduled care: number of consultations, psychologist"}
+  urgent_specialist: {column: hooccur_urgence_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted other medical specialists"}
+  n_urgent_specialist: {column: nboccur_urg_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: urgent_specialist, label: "Unscheduled care: number of consultations, other medical specialists"}
+  urgent_other: {column: hooccur_urgence_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted other professionals (dietician, nurse...)"}
+  n_urgent_other: {column: nboccur_urg_autres, type: number, range: [0, 365], winsor: false, asked_if: urgent_other, label: "Unscheduled care: number of consultations, other professionals (dietician, nurse...)"}
+  emergency_room: {column: hooccur_urg_sans_hosp, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Went to an emergency room for the psychiatric disorder, without admission"}
+  n_emergency_room: {column: nboccur_urg_sans_hosp, type: number, range: [0, 365], winsor: false, asked_if: emergency_room, label: "Number of visits to an emergency room without admission"}

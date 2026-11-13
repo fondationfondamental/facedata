@@ -1,0 +1,36 @@
+instrument: dsm4_premier_episode
+title: First mood episode, DSM-IV criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique du PREMIER EPISODE
+status: draft
+notes: >
+  The first mood episode of the patient: its type, the age at which it
+  began, whether it came within six months of a birth and whether a
+  cyclothymic period came before. Filled once, at the inclusion visit.
+  Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
+  evaluation was made with DSM-IV criteria for the patients included until
+  2021 and with DSM-5 criteria since, in the same columns. This schema reads
+  the DSM-IV visits; dsm5_premier_episode.yaml reads the others. Both carry
+  the version block of the two schemas of the follow-up form (decisions D12,
+  D14 and D15). The DSM-IV form has two more types of first episode, mixed
+  with and without psychotic features (91 patients).
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {versions: [dsm4]}
+
+variables:
+  dsm4_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic, "Mixte sans caractéristiques psychotiques": mixed, "Mixte avec caractéristiques psychotiques": mixed_psychotic}, label: "Type of the first mood episode"}
+  dsm4_first_episode_age: {column: agedebutpremier_episode, type: item, range: [0, 90], label: "Age at the first mood episode"}
+  dsm4_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
+  dsm4_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}

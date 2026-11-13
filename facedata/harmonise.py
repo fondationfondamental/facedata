@@ -7,8 +7,9 @@ returns the new values and a table of flags.
 import numpy as np
 import pandas as pd
 
+from facedata import custom
 from facedata.flags import make_flags, stack_flags
-from facedata.parse import clean_text
+from facedata.parse import PERCENTILE_BAND, clean_text
 from facedata.tokens import EMPTY_DATE
 
 
@@ -17,13 +18,14 @@ from facedata.tokens import EMPTY_DATE
 def detect_version(raw, keys, schema):
     """The edition or form of the instrument used at each visit."""
     version = schema["version"]
-    columns = sorted({variable["column"] for variable in schema["variables"].values()})
+    columns = sorted({column for variable in schema["variables"].values() for column in variable["columns"]})
     has_data = ((raw[columns] != "") & (raw[columns] != EMPTY_DATE)).any(axis=1)
     flags = []
     if "filled" in version:
         result = pd.Series(np.nan, index=raw.index, dtype=object)
         for name, items in reversed(list(version["filled"].items())):   # the first one listed wins
             result = result.mask((raw[items] != "").any(axis=1), name)
+        result = result.where(has_data)                  # the instrument was not administered: no version
     else:
         codes = {code.lower(): name for code, name in version["codes"].items()}
         result = clean_text(raw[version["column"]]).str.lower().map(codes)
@@ -73,8 +75,20 @@ def censoring_from_units(cens, labels, name, variable):
     return cens, flags
 
 
-def convert_units(values, labels, name, variable):
-    """Bring numbers to the schema's unit, from the unit label and the size of the value."""
+def pick(table, names):
+    """For each row, the value of the column whose name is given (missing where no name is)."""
+    result = pd.Series(np.nan, index=table.index)
+    for column in table.columns:
+        result = result.mask(names == column, table[column])
+    return result
+
+
+def convert_units(values, labels, name, variable, keys=None, wholes=None):
+    """Bring numbers to the schema's unit, from the unit label and the size of the value.
+
+    keys: the key columns, for a unit rule. wholes: the numbers of the
+    instrument read so far, for a unit that is a percentage of one of them.
+    """
     units = variable["units"]
     target = variable["unit"]
     spelling = {}                                      # label as written (lower case) -> unit
@@ -84,13 +98,19 @@ def convert_units(values, labels, name, variable):
     labelled = labels.str.lower().str.replace(" ", "", regex=False).map(spelling)
 
     fits = pd.DataFrame(index=values.index)            # one True/False column per unit
-    factor = {}
+    factor = pd.DataFrame(index=values.index)          # and the factor of each unit, row by row
     for unit, spec in units.items():
         low, high = spec["expect"]
         fits[unit] = (values >= low) & (values < high)
-        factor[unit] = spec["factor"]
+        if "percent_of" in spec:                       # a percentage of another result of the visit
+            factor[unit] = wholes[spec["percent_of"]] / 100
+        else:
+            factor[unit] = spec["factor"]
     n_fits = fits.sum(axis=1)
     only_fit = fits.idxmax(axis=1).where(n_fits == 1)  # the single unit whose range holds the value
+    if "unit_rule" in variable:                        # custom.py decides for the values with no usable label
+        ruled = getattr(custom, variable["unit_rule"])(values.where(labelled.isna()), keys)
+        only_fit = only_fit.mask(labelled.isna() & ruled.notna(), ruled)
     fits_label = pd.Series(False, index=values.index)
     for unit in units:
         fits_label = fits_label | ((labelled == unit) & fits[unit])
@@ -98,24 +118,29 @@ def convert_units(values, labels, name, variable):
     present = values.notna()
     known = present & labelled.notna()
     other = known & ~fits_label & only_fit.notna()             # the size points to another unit
-    guessed = present & labelled.isna() & only_fit.notna()     # no usable label, one unit fits
-    unclear = present & labelled.isna() & (n_fits > 1)         # no usable label, several fit
+    guessed = present & labelled.isna() & only_fit.notna()     # no usable label, one unit is found
+    unclear = present & labelled.isna() & only_fit.isna() & (n_fits > 1)   # no usable label, several fit
 
     used = labelled.fillna(target)
     used = used.mask(other | guessed, only_fit)
-    as_labelled = values * labelled.map(factor)
-    converted = (values * used.map(factor)).where(~unclear)
+    as_labelled = values * pick(factor, labelled)
+    converted = (values * pick(factor, used)).where(~unclear)
+    done = converted.notna()
+    no_whole = present & ~unclear & ~done              # a percentage of a result that is missing
 
     low, high = variable.get("range", [-np.inf, np.inf])
     impossible = (as_labelled < low) | (as_labelled > high)
     detail = used.astype(str) + " -> " + target
     said = "label " + labelled.astype(str) + ", read as " + used.astype(str)
     flags = stack_flags([
-        make_flags(known & fits_label & (labelled != target), name, "unit_converted", detail),
-        make_flags(other & impossible, name, "unit_inferred", said),
-        make_flags(other & ~impossible, name, "unit_doubt", said),
-        make_flags(guessed, name, "unit_inferred", "no usable label, read as " + used.astype(str)),
+        make_flags(done & known & fits_label & (labelled != target), name, "unit_converted", detail),
+        make_flags(done & other & impossible, name, "unit_inferred", said),
+        make_flags(done & other & ~impossible, name, "unit_doubt", said),
+        # With no label at all, a value that is simply in the schema's unit needs no flag.
+        make_flags(done & guessed & ((labels != "") | (used != target)), name, "unit_inferred",
+                   "no usable label, read as " + used.astype(str)),
         make_flags(unclear, name, "unit_unknown", "no usable label, several units fit"),
+        make_flags(no_whole, name, "unit_unknown", "read as " + used.astype(str) + " of a missing value"),
     ])
     return converted, flags
 
@@ -209,25 +234,117 @@ def check_range(values, name, variable):
     """A value outside the hard range is impossible: it becomes missing, never clipped."""
     low, high = variable["range"]
     outside = values.notna() & ((values < low) | (values > high))
+    if isinstance(low, pd.Timestamp):
+        low, high = low.date(), high.date()
     detail = "outside " + str(low) + " to " + str(high)
     return values.where(~outside), make_flags(outside, name, "out_of_range", detail)
 
 
+def doubt_period(values, dates, name, doubt):
+    """Flag the values of the visits dated in a period in which the column is not reliable.
+
+    The values are kept. With doubt["values"], only those values are flagged.
+    """
+    first, last = doubt["period"]
+    doubtful = values.notna() & dates.between(first, last)
+    if "values" in doubt:
+        doubtful = doubtful & values.isin(doubt["values"])
+    return make_flags(doubtful, name, "period_doubt", doubt.get("note", ""))
+
+
 # ---------------------------------------------------------------- step 10: scores
 
-def compute_scores(values, schema, version=None):
-    """Recompute scores from the items and compare them with the stored scores."""
+def combine_items(values, score, schema):
+    """A score that is the sum or the mean of its items, some of them reversed first.
+
+    minus: variables subtracted from a sum. floor: the lowest value the score can take.
+    """
+    items = score.get("sum") or score.get("mean")
+    table = values[items].copy()
+    for item in score.get("reverse", []):
+        low, high = schema["variables"][item]["range"]
+        table[item] = low + high - table[item]
+    enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
+    result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
+    if "minus" in score:
+        taken_off = values[score["minus"]]
+        enough = enough & taken_off.notna().all(axis=1)
+        result = result - taken_off.sum(axis=1)
+    if "floor" in score:
+        result = result.clip(lower=score["floor"])
+    return result.where(enough)
+
+
+def look_up(raw, age, table, name, by=None):
+    """Read a standard score in a norm table, from a raw score and the age at the visit.
+
+    table: one line per cell (age_min, age_max, raw_min, raw_max, value), or
+    None when the table was not found. by: a second variable the table
+    depends on (columns by_min and by_max), such as the years of education.
+    A table of percentile bands can have a column cens: 1 where the raw
+    score only says "this band or a higher one".
+
+    Returns the values, the censoring and the flags.
+    """
+    result = pd.Series(np.nan, index=raw.index)
+    cens = pd.Series(0, index=raw.index)
+    if table is not None:
+        years = np.floor(age)                          # completed years
+        for line in table.itertuples():
+            fits = years.between(line.age_min, line.age_max) & raw.between(line.raw_min, line.raw_max)
+            if by is not None:
+                fits = fits & np.floor(by).between(line.by_min, line.by_max)
+            result = result.mask(fits, line.value)
+            cens = cens.mask(fits, getattr(line, "cens", 0))
+    detail = "the norm table was not found" if table is None else "nothing in the norm table for this visit"
+    flags = stack_flags([
+        make_flags(raw.notna() & result.isna(), name, "norm_missing", detail),
+        make_flags(cens == 1, name, "censored_right", "this band or a higher one"),
+    ])
+    return result, cens, flags
+
+
+def band_from_table(text, values, cens, flags, name, variable, age, others, norms):
+    """A band that the EMR read in a norm table is read again there, from the raw score.
+
+    Only the cells that hold a percentile are concerned; what the cell said
+    is dropped. A band computed from a z-score stays as it is. others: the
+    values of the instrument read so far.
+    """
+    is_percentile = text.str.fullmatch(PERCENTILE_BAND)
+    raw = others[variable["from"]].where(is_percentile)
+    looked, looked_cens, lookup_flags = look_up(raw, age, (norms or {}).get(variable["lookup"]), name)
+    values = values.mask(is_percentile, looked)
+    cens = cens.mask(is_percentile, looked_cens)
+    flags = stack_flags([
+        flags[~flags["row"].isin(text.index[is_percentile])],
+        lookup_flags[lookup_flags["flag"] == "censored_right"],
+        make_flags(is_percentile & values.isna(), name, "norm_missing", "no band can be read in the norm table"),
+    ])
+    return values, cens, flags
+
+
+def compute_scores(values, schema, version=None, age=None, norms=None, cens=None):
+    """Recompute scores from the items and compare them with the stored scores.
+
+    age and norms (the norm tables) are needed only by scores read in a norm
+    table. cens: the censoring table of the instrument; a band read in a norm
+    table writes its own column there.
+    """
     flags = []
     stored_differs = {}                # score -> rows where the stored score is not the recomputed one
     for name, score in schema.get("scores", {}).items():
-        items = score.get("sum") or score.get("mean")
-        table = values[items].copy()
-        for item in score.get("reverse", []):
-            low, high = schema["variables"][item]["range"]
-            table[item] = low + high - table[item]
-        enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
-        result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
-        result = result.where(enough)
+        if "lookup" in score:
+            by = values[score["by"]] if "by" in score else None
+            table = (norms or {}).get(score["lookup"])
+            result, censoring, lookup_flags = look_up(values[score["from"]], age, table, name, by)
+            flags.append(lookup_flags)
+            if cens is not None and (censoring != 0).any():
+                cens[name] = censoring
+        elif "custom" in score:                        # a formula written as a function of custom.py
+            result = getattr(custom, score["custom"])(values)
+        else:
+            result = combine_items(values, score, schema)
         if "versions" in score:
             result = result.where(version.isin(score["versions"]))
         if "range" in score:
@@ -237,8 +354,9 @@ def compute_scores(values, schema, version=None):
         if "compare" in score:
             stored = values[score["compare"]]
             both = stored.notna() & result.notna()
-            stored_differs[name] = both & ((stored - result).abs() > 0.01)
-            unexplained = both & ((stored - result - score["compare_offset"]).abs() > 0.01)
+            tolerance = score.get("compare_tolerance", 0.01)
+            stored_differs[name] = both & ((stored - result).abs() > tolerance)
+            unexplained = both & ((stored - result - score["compare_offset"]).abs() > tolerance)
             detail = "stored " + stored.astype(str) + ", computed " + result.astype(str)
             flags.append(make_flags(unexplained, name, "score_mismatch", detail))
     for name, variable in schema["variables"].items():
@@ -251,17 +369,23 @@ def compute_scores(values, schema, version=None):
 
 # ---------------------------------------------------------------- step 11: patient level
 
+def first_rows(keys):
+    """The row of each patient's first visit: a Series, patient -> row number."""
+    first = keys.sort_values("visit_order").groupby("usubjid").head(1)
+    return pd.Series(first.index, index=first["usubjid"])
+
+
 def collapse_patient_level(values, keys):
     """One row per patient: the first value that is not missing, in visit order."""
     ordered = values.assign(usubjid=keys["usubjid"], order=keys["visit_order"]).sort_values("order")
     per_patient = ordered.drop(columns="order").groupby("usubjid")
     patients = per_patient.first()
     n_values = per_patient.nunique()
-    first_rows = keys.groupby("usubjid").head(1).index       # the flag goes on the patient's first row
+    is_first = keys.index.isin(first_rows(keys))             # the flag goes on the patient's first visit
     flags = []
     for name in values.columns:
         varying = n_values.index[n_values[name] > 1]
-        rows = keys["usubjid"].isin(varying) & keys.index.isin(first_rows)
+        rows = keys["usubjid"].isin(varying) & is_first
         flags.append(make_flags(rows, name, "patient_value_varies"))
     return patients.reset_index(), stack_flags(flags)
 

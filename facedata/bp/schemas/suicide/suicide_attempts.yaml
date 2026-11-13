@@ -1,0 +1,38 @@
+instrument: suicide_attempts
+title: History of suicide attempts
+tab: SUICIDE
+section: Histoire des conduites suicidaires
+status: draft
+notes: >
+  Date of the first attempt, number of attempts, and whether some were
+  violent (firearm, hanging, jump...) or serious (intensive care). Filled
+  mostly at the inclusion visit (about 2,800 visits). Yes/no answers are
+  delivered as 1 and 0.
+
+  Date of the first attempt. 1,133 cells hold 2011-11-11, on visits from
+  2012 to 2022: a placeholder, read as a missing code. 148 hold the
+  placeholder 1000-01-01. 431 dates are a first of January: only the year
+  was known.
+
+  Number of attempts. One cell holds 99 and ends out_of_range. 67 visits
+  give a number above 0 although the patient answered "no" to "have you
+  attempted suicide": most are follow-up visits, where that question is
+  about the time since the last visit (isf_since_visit).
+
+  The date of the most violent attempt (isf08_qsdtc) is in the dictionary
+  but not in the extraction.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  first_attempt_date:
+    column: isf05_qsdtc
+    type: date
+    label: Date of the first suicide attempt
+    range: [1920-01-01, 2026-12-31]
+    missing: {"2011-11-11": not_recorded}
+  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
+  violent_attempts: {column: isf08, label: Has made violent suicide attempts, codes: {Oui: 1, Non: 0}}
+  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}
+  serious_attempts: {column: isf09, label: Has made serious suicide attempts (intensive care), codes: {Oui: 1, Non: 0}}
+  n_serious_attempts: {column: isf09a, label: Number of serious suicide attempts, range: [0, 20]}

@@ -1,0 +1,68 @@
+instrument: ecg
+title: Electrocardiogram
+tab: CONSTANTES et ECG
+section: ECG
+status: draft
+notes: >
+  The intervals are in seconds in the dictionary. Part of them are written
+  in milliseconds (413 for 0.413 s), more and more often since 2023, and a
+  few in hundredths of a second (39 for 0.39 s). The unit is recognised from
+  the size of the value and the cell is flagged unit_inferred.
+
+  A value of 0 stands for "not measured" in the heart rate and the three
+  intervals: missing code.
+
+  The RR interval holds 25 values from 30 to 300, which fit no unit; they
+  look like heart rates typed in the wrong field and are out_of_range.
+
+  QTc. The EMR computes it with Bazett's formula, QT divided by the square
+  root of RR. But it applies the formula to the numbers as typed, so when
+  QT and RR are not on the same scale the stored QTc is absurd (0.013 or
+  13): 164 stored values are out_of_range. Two columns are therefore
+  delivered. qtc_bazett is recomputed from the harmonised QT and RR (custom
+  function corrected_qt); it agrees with the stored value on 7,622 of the
+  7,668 visits where both exist, and gives a value on 124 visits where the
+  stored one is absurd or absent. qtc_stored is the stored value on the
+  harmonised scale; 759 visits have it and no RR to recompute it from.
+
+defaults: {type: number, unit: s, missing: {0: not_recorded}}
+
+variables:
+  ecg_done:
+    column: rad_electrocardiogramme
+    label: Electrocardiogram done
+    type: category
+    codes: {Oui: yes, Non: no}
+  ecg_heart_rate: {column: eghrmn, label: Heart rate on the ECG (beats per minute), unit: bpm, range: [30, 220]}
+  qt_interval:
+    column: qt
+    label: QT interval
+    units:
+      s: {factor: 1, expect: [0.2, 0.7]}
+      cs: {factor: 0.01, expect: [20, 70]}
+      ms: {factor: 0.001, expect: [200, 700]}
+    range: [0.2, 0.7]
+  rr_interval:
+    column: rr
+    label: RR interval
+    units:
+      s: {factor: 1, expect: [0.3, 2.0]}
+      ms: {factor: 0.001, expect: [300, 2000]}
+    range: [0.3, 2.0]
+  qtc_stored:
+    column: qtc
+    label: Corrected QT interval as stored by the EMR
+    units:
+      s: {factor: 1, expect: [0.2, 0.7]}
+      cs: {factor: 0.01, expect: [20, 70]}
+      ms: {factor: 0.001, expect: [200, 700]}
+    range: [0.2, 0.7]
+
+scores:
+  qtc_bazett:
+    label: Corrected QT interval, Bazett's formula on the harmonised QT and RR
+    custom: corrected_qt
+    compare: qtc_stored
+    compare_tolerance: 0.005
+    range: [0.2, 0.7]
+    winsor: [0.01, 0.99]

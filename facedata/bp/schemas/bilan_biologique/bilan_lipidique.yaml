@@ -1,0 +1,88 @@
+instrument: bilan_lipidique
+title: Blood lipids
+tab: BILAN BIOLOGIQUE
+section: Bilan lipidique
+status: draft
+notes: >
+  How the units are read (the same in every schema of this tab). The unit
+  column is filled by the form with a default label, also where there is no
+  result, so it proves little. Each analyte lists the units that occur, with
+  the values one expects on each scale. A value that fits its label keeps it.
+  A value that cannot be on the labelled scale and fits exactly one other is
+  converted and flagged (unit_inferred, or unit_doubt when it was possible but
+  unlikely under its label). A value that fits no scale is left as it is and
+  the hard range decides (out_of_range).
+
+  Cholesterol is reported in mmol/L or in g/L (1 g/L = 2.586 mmol/L). The two
+  scales overlap, so the label matters here; where a value can only be on the
+  other scale, it is converted.
+
+  LDL. The form has a unit choice (rad_chol_hll) that the export copies into
+  the unit column for every analyte except this one: 246 results chosen as
+  g/L are labelled mmol/L in ldl_lborresu. The unit is therefore read from
+  rad_chol_hll first, and from ldl_lborresu when the choice is empty.
+
+  Total cholesterol. About 230 results labelled mmol/L lie between 1.5 and
+  2.6, with a mode under 2: these are g/L. They are converted (unit_inferred
+  below 1.5 mmol/L, which is impossible; unit_doubt above).
+
+  Triglycerides in g/L and in mmol/L are on almost the same scale (factor
+  1.129), so only the label can tell them apart.
+
+  The ratio of total to HDL cholesterol is recomputed from the harmonised
+  values (custom function cholesterol_ratio) and compared with the stored one,
+  which the EMR computes from the numbers as typed.
+
+defaults: {type: number}
+
+variables:
+  hdl:
+    label: HDL cholesterol
+    column: hdl_lbstresc
+    unit_column: hdl_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.4, 4]}
+      g/L: {factor: 2.586, expect: [0.15, 1.3]}
+    range: [0.2, 4]
+
+  ldl:
+    label: LDL cholesterol
+    column: ldl_lbstresc
+    unit_column: [rad_chol_hll, ldl_lborresu]
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.8, 10]}
+      g/L: {factor: 2.586, expect: [0.3, 2.6]}
+    range: [0.3, 12]
+
+  cholesterol:
+    label: Total cholesterol
+    column: chol_lbstresc
+    unit_column: chol_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2.6, 15]}
+      g/L: {factor: 2.586, expect: [1.0, 3.5]}
+    range: [1.5, 15]
+
+  triglycerides:
+    label: Triglycerides
+    column: trig_lbstresc
+    unit_column: trig_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.1, 40]}
+      g/L: {factor: 1.129, expect: [0.1, 40]}
+    range: [0.1, 40]
+
+  cholesterol_hdl_ratio_stored: {column: cholhdl_lbstresc, label: Total over HDL cholesterol as stored, range: [0.5, 30], winsor: false, keep: false}
+
+scores:
+  cholesterol_hdl_ratio:
+    label: Total cholesterol divided by HDL cholesterol, from the harmonised values
+    custom: cholesterol_ratio
+    compare: cholesterol_hdl_ratio_stored
+    compare_tolerance: 0.051
+    range: [1, 30]
+    winsor: [0.01, 0.99]

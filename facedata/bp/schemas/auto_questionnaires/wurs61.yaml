@@ -1,0 +1,96 @@
+instrument: wurs61
+title: Wender Utah Rating Scale, 61 items (WURS-61)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire WURS (version réduite 25 items)
+status: draft
+notes: >
+  WURS-61 and WURS-25 are two instruments. The 61-item WURS was filled until
+  2021; the 25-item WURS-25 replaced it (confirmed by the developers of the
+  EMR, decision D47 in PROGRESS.md). The 25 questions of the WURS-25 are 25
+  of the 61, and the extraction stores both in the same columns. The columns
+  are therefore split by form: this schema reads the visits where the
+  61-item questionnaire was filled, wurs25.yaml reads the others. Both files
+  carry the same version block.
+
+  Which form a visit used. Nothing in the WURS columns says it: the 25 items
+  and their sum are stored alike in both forms. The form is read from the
+  other self-questionnaires of the same visit, because the reduced
+  questionnaires replaced the long ones together (99% of the visits that
+  have an ALS and a BIS have the two in the same generation). A visit is
+  "wurs61" when it holds something that only the long questionnaires have: a
+  score of the 54-item ALS (als58 or als60) or one of the 22 items that only
+  the 34-item BIS-10 has. It is "wurs25" when it holds ALS or BIS answers
+  and none of those. This rests on the WURS having changed at the same
+  moment as the ALS and the BIS in each centre, which the WURS columns
+  cannot confirm. A visit with a WURS and neither an ALS nor a BIS (49
+  visits) has no form: version_unknown, and its answers are not delivered.
+
+  Filled once, at the inclusion visit: symptoms of attention deficit and
+  hyperactivity in childhood. Each item is 0 (not at all) to 4 (very much).
+
+  What the extraction holds. Only the 25 items that the WURS-25 also has,
+  out of 61; the 36 others were not exported. wurs61_03 is item 3 of the
+  61-item questionnaire.
+
+  Bridge to the WURS-25: wurs61_sum25 is the sum of these 25 items (0 to
+  100), the score that the WURS has always used. The stored total (wurs)
+  equals it in every row where both exist. Whether an answer given inside a
+  61-item questionnaire can be compared with the same question asked in a
+  25-item one is a scientific choice; the two are delivered as separate
+  columns (wurs61_sum25 here, wurs25_total there) so that nobody mixes them
+  by accident. From July 2021 to June 2022, when both forms were in use, the
+  two sums have the same mean (35.5 and 35.5).
+
+version:
+  name: wurs_form
+  filled:
+    wurs61: [als58, als60,
+             bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+             bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+             bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+             bis1034]
+    wurs25: [als05, als08, als12, als14, als16, als17, als20, als21, als23,
+             als25, als33, als34, als36, als41, als42, als43, als45, als46,
+             bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+             bis1020, bis1021, bis1023, bis1025, bis1028]
+
+defaults: {type: item, range: [0, 4], versions: [wurs61]}
+
+variables:
+  wurs61_03: {column: wurs03, label: "WURS-61 item 3"}
+  wurs61_04: {column: wurs04, label: "WURS-61 item 4"}
+  wurs61_05: {column: wurs05, label: "WURS-61 item 5"}
+  wurs61_06: {column: wurs06, label: "WURS-61 item 6"}
+  wurs61_07: {column: wurs07, label: "WURS-61 item 7"}
+  wurs61_09: {column: wurs09, label: "WURS-61 item 9"}
+  wurs61_10: {column: wurs10, label: "WURS-61 item 10"}
+  wurs61_11: {column: wurs11, label: "WURS-61 item 11"}
+  wurs61_12: {column: wurs12, label: "WURS-61 item 12"}
+  wurs61_15: {column: wurs15, label: "WURS-61 item 15"}
+  wurs61_16: {column: wurs16, label: "WURS-61 item 16"}
+  wurs61_17: {column: wurs17, label: "WURS-61 item 17"}
+  wurs61_20: {column: wurs20, label: "WURS-61 item 20"}
+  wurs61_21: {column: wurs21, label: "WURS-61 item 21"}
+  wurs61_24: {column: wurs24, label: "WURS-61 item 24"}
+  wurs61_25: {column: wurs25, label: "WURS-61 item 25"}
+  wurs61_26: {column: wurs26, label: "WURS-61 item 26"}
+  wurs61_27: {column: wurs27, label: "WURS-61 item 27"}
+  wurs61_28: {column: wurs28, label: "WURS-61 item 28"}
+  wurs61_29: {column: wurs29, label: "WURS-61 item 29"}
+  wurs61_40: {column: wurs40, label: "WURS-61 item 40"}
+  wurs61_41: {column: wurs41, label: "WURS-61 item 41"}
+  wurs61_51: {column: wurs51, label: "WURS-61 item 51"}
+  wurs61_56: {column: wurs56, label: "WURS-61 item 56"}
+  wurs61_59: {column: wurs59, label: "WURS-61 item 59"}
+  wurs61_sum25_stored: {column: wurs, label: Sum of the 25 items as stored, range: [0, 100], keep: false}
+
+scores:
+  # Bridge to the WURS-25: the sum of the 25 items both forms have.
+  wurs61_sum25:
+    label: Sum of the 25 items that the WURS-25 also has
+    sum: [wurs61_03, wurs61_04, wurs61_05, wurs61_06, wurs61_07, wurs61_09,
+          wurs61_10, wurs61_11, wurs61_12, wurs61_15, wurs61_16, wurs61_17,
+          wurs61_20, wurs61_21, wurs61_24, wurs61_25, wurs61_26, wurs61_27,
+          wurs61_28, wurs61_29, wurs61_40, wurs61_41, wurs61_51, wurs61_56,
+          wurs61_59]
+    compare: wurs61_sum25_stored

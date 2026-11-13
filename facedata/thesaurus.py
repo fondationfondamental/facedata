@@ -39,6 +39,8 @@ def read_thesaurus(path):
     lines = []
     for tab, sheet in sheets.items():
         sheet = sheet.fillna("")
+        if (sheet[0].str.strip().str.upper() == "CODELIST").any():    # one tab has a code-list column before the names
+            sheet = sheet.iloc[:, 1:]
         if sheet.shape[1] < 5:                     # contents and instructions tabs
             continue
         section = ""
@@ -55,15 +57,21 @@ def read_thesaurus(path):
     return pd.DataFrame(lines)
 
 
-def describe(column):
-    """What a raw column holds, in a few words. Only texts seen 5 times or more are shown."""
-    filled = column[(column.str.strip() != "") & (column != "0000-00-00")].str.strip()
+def describe(column, patient):
+    """What a raw column holds, in a few words.
+
+    A text is shown only if at least 5 patients share it, so that no name,
+    date or free text of one patient is printed. patient: the patient of each row.
+    """
+    is_filled = (column.str.strip() != "") & (column != "0000-00-00")
+    filled = column[is_filled].str.strip()
     numbers = pd.to_numeric(filled.str.replace(",", ".", regex=False), errors="coerce")
     words = [f"{len(filled)} filled"]
     if numbers.notna().any():
         words.append(f"{int(numbers.notna().sum())} numbers from {numbers.min():g} to {numbers.max():g}")
-    counts = filled[numbers.isna()].value_counts()
-    common = [f"'{text}' x{count}" for text, count in counts[counts >= 5].head(6).items()]
+    is_text = numbers.isna()
+    counts = patient[is_filled][is_text].groupby(filled[is_text]).nunique().sort_values(ascending=False)
+    common = [f"'{text}' in {count} patients" for text, count in counts[counts >= 5].head(6).items()]
     if common:
         words.append("texts: " + ", ".join(common))
     return "; ".join(words)
@@ -84,7 +92,7 @@ def draft_schema(thesaurus, raw, tab, section):
             continue
         label = row.label.replace('"', "'")
         lines.append(f'  {row.name}: {{label: "{label}", type: TODO}}')
-        lines.append(f"    # data: {describe(raw[row.name])}")
+        lines.append(f"    # data: {describe(raw[row.name], raw['usubjid'])}")
         if row.coding:
             lines.append(f"    # dictionary coding: {row.coding}")
     return "\n".join(lines)

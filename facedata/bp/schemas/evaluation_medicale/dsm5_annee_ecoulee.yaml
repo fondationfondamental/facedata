@@ -1,0 +1,55 @@
+instrument: dsm5_annee_ecoulee
+title: Mood episodes of the year before inclusion, DSM-5 criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique du trouble au cours de l'année ecoulée
+status: draft
+notes: >
+  The mood episodes of the year before the inclusion visit: one yes/no
+  question (at least one episode), then for each kind of episode a box and a
+  number, and those with psychotic features. Yes/no answers are delivered as
+  1 and 0; "Ne sais pas" is a missing code.
+
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
+  evaluation was made with DSM-IV criteria for the patients included until
+  2021 and with DSM-5 criteria since, in the same columns. This schema reads
+  the DSM-5 visits; dsm4_annee_ecoulee.yaml reads the others. Both carry the
+  version block of the two schemas of the follow-up form (decisions D12, D14
+  and D15). The DSM-5 form has no mixed episode: the four mixed-episode
+  columns are not read here.
+
+  Asked only after a yes (asked_if). The boxes and the numbers are shown
+  only where the first answer is yes; where it is no they are empty in the
+  extraction and are read as 0: with no mood episode in the year, there was
+  no depressive episode. Where the first answer is unknown or empty they
+  stay missing. In the same way the number of episodes with psychotic
+  features is 0 where the answer to "at least one" is no.
+
+  The boxes add nothing to the numbers: a box is 1 where the number is 1 or
+  more, 0 where it is 0, and empty where the number is unknown. They are
+  delivered because the follow-up form has the same pair.
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {versions: [dsm5]}
+
+variables:
+  dsm5_ly_any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one mood episode in the past year"}
+
+  dsm5_ly_mde: {column: mhoccur_edm_ly, type: item, range: [0, 1], asked_if: dsm5_ly_any_episode, label: "At least one major depressive episode in the past year"}
+  dsm5_ly_n_mde: {column: evnum_edm_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm5_ly_any_episode, label: "Number of major depressive episodes in the past year"}
+  dsm5_ly_mde_psychotic: {column: mhoccur_edmpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm5_ly_any_episode, label: "At least one major depressive episode with psychotic features in the past year"}
+  dsm5_ly_n_mde_psychotic: {column: evnum_edmpsy_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm5_ly_mde_psychotic, label: "Number of major depressive episodes with psychotic features in the past year"}
+  dsm5_ly_hypomania: {column: mhoccur_ehman_ly, type: item, range: [0, 1], asked_if: dsm5_ly_any_episode, label: "At least one hypomanic episode in the past year"}
+  dsm5_ly_n_hypomania: {column: evnum_ehman_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm5_ly_any_episode, label: "Number of hypomanic episodes in the past year"}
+  dsm5_ly_mania: {column: mhoccur_epman_ly, type: item, range: [0, 1], asked_if: dsm5_ly_any_episode, label: "At least one manic episode in the past year"}
+  dsm5_ly_n_mania: {column: evnum_epman_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm5_ly_any_episode, label: "Number of manic episodes in the past year"}
+  dsm5_ly_mania_psychotic: {column: mhoccur_epman_psy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm5_ly_any_episode, label: "At least one manic episode with psychotic features in the past year"}
+  dsm5_ly_n_mania_psychotic: {column: evnum_epman_psy_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm5_ly_mania_psychotic, label: "Number of manic episodes with psychotic features in the past year"}

@@ -1,0 +1,48 @@
+instrument: dsm4_episode_recent
+title: Most recent mood episode at inclusion, DSM-IV criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique  de l'EPISODE LE PLUS RECENT
+status: draft
+notes: >
+  The most recent mood episode before the inclusion visit: its dates, type,
+  specifier, chronicity, severity and whether it followed a birth. Filled
+  once, at the inclusion visit. Yes/no answers are delivered as 1 and 0; "Ne
+  sais pas" is a missing code.
+
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
+  evaluation was made with DSM-IV criteria for the patients included until
+  2021 and with DSM-5 criteria since, in the same columns. This schema reads
+  the DSM-IV visits; dsm5_episode_recent.yaml reads the others. Both carry
+  the version block of the two schemas of the follow-up form (decisions D12,
+  D14 and D15). The DSM-IV form has a mixed type of episode. The specifier
+  of a depressive episode is melancholic, atypical, catatonic or none of the
+  three.
+
+  Dates. 1000-01-01 is the form's placeholder (date_placeholder). A date
+  outside 1950 to 2026 is out of range. Of the 4,700 start dates, 112 are
+  after the visit; of the 3,900 end dates, 101 are more than a month after
+  the visit and 89 are before the start. They are delivered as written.
+
+  The type of the most recent episode recorded at the follow-up visits is
+  another column, read by the schemas of the follow-up form.
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {versions: [dsm4]}
+
+variables:
+  dsm4_recent_start_date: {column: cestdtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "Start of the most recent episode"}
+  dsm4_recent_end_date: {column: ceendtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "End of the most recent episode"}
+  dsm4_recent_type: {column: cetermepisode_recent, type: category, codes: {"Episode Dépressif Majeur": mde, "Hypomanie": hypomania, "Manie": mania, "Mixte": mixed, "Episode non spécifié": unspecified}, label: "Type of the most recent episode"}
+  dsm4_recent_specifier: {column: cedecodepisode_recent, type: category, codes: {"Sans caractéristique mélancolique atypique ou catatonique": none, "Sans caractéristique mélancolique atypique catatonique ou mixte": none, "Mélancolique": melancholic, "Atypique": atypical, "Catatonique": catatonic}, label: "Most recent episode, if depressive: specifier"}
+  dsm4_recent_chronic: {column: chronepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Most recent episode: chronic"}
+  dsm4_recent_severity: {column: cesevepisode_recent, type: category, codes: {"Léger": mild, "Modéré": moderate, "Sévère sans caractéristiques psychotiques": severe, "Sévère sans caractéristique psychotique": severe, "Sévère avec caractéristiques psychotiques congruentes": severe_psychotic_congruent, "Sévère avec caractéristiques psychotiques non congruentes": severe_psychotic_incongruent}, label: "Severity of the most recent episode"}
+  dsm4_recent_postpartum: {column: ppartepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Most recent episode: after a birth"}

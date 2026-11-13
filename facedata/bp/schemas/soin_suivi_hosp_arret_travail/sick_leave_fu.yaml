@@ -1,0 +1,32 @@
+instrument: sick_leave_fu
+title: Sick leave since the last visit (follow-up visits)
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: ARRET DE TRAVAIL
+status: draft
+notes: >
+  Sick leave since the last visit: whether there was any, how many, and
+  their total duration in weeks. Asked at every follow-up visit. Yes/no
+  answers are delivered as 1 and 0; "Non applicable" (the patient has no
+  job: a third of the answers) is a missing code.
+
+  These three columns are filled at the follow-up visits only and have no
+  label in the dictionary; the inclusion visit has columns of its own, read
+  by sick_leave_v0.yaml.
+
+  Asked only after a yes (asked_if). The number and the duration are filled
+  only after a yes; they are 0 where the patient had no sick leave. Where
+  the first answer is "Non applicable" or empty they stay missing.
+
+  Hard limits. A number above 52 is out of range. A duration above 260 weeks
+  (five years) is out of range (2 cells, one of them 880,410). 112 durations
+  are longer than the time since the patient's previous visit; delivered as
+  written.
+
+  The numbers and durations are not winsorised (decision D54 in
+  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
+  rare high values down to it, or to 0.
+
+variables:
+  sick_leave_fu: {column: rad_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave since the last visit"}
+  n_sick_leaves_fu: {column: arret_travail_nb, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_fu, label: "Number of sick leaves since the last visit"}
+  sick_leave_weeks_fu: {column: arret_travail_duree, type: number, unit: weeks, range: [0, 260], winsor: false, asked_if: sick_leave_fu, label: "Total duration of the sick leaves since the last visit"}

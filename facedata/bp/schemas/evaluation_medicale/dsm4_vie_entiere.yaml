@@ -1,0 +1,68 @@
+instrument: dsm4_vie_entiere
+title: Mood disorder over the whole life, DSM-IV criteria
+tab: EVALUATION MEDICALE
+section: Caractéristique du trouble vie entière
+status: draft
+notes: >
+  The mood disorder over the whole life, as recorded at the inclusion visit:
+  the number of episodes of each kind, those with psychotic features,
+  induced episodes, rapid cycling, remission between episodes, seasonal
+  pattern and the age at the first psychotropic treatment. Yes/no answers
+  are delivered as 1 and 0; "Ne sais pas" is a missing code.
+
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
+  evaluation was made with DSM-IV criteria for the patients included until
+  2021 and with DSM-5 criteria since, in the same columns. This schema reads
+  the DSM-IV visits; dsm5_vie_entiere.yaml reads the others. Both carry the
+  version block of the two schemas of the follow-up form (decisions D12, D14
+  and D15). The DSM-IV form counts mixed episodes; the DSM-5 form has none.
+
+  Counts. The form stops at 20: ">20" is read as 20 with a mark in the
+  censoring column (this value or more). 15% of the counts of depressive
+  episodes are "Ne sais pas".
+
+  A count asked only after a yes (asked_if): the number of episodes with
+  psychotic features, and of induced episodes, is 0 where the answer to "at
+  least one" is no.
+
+  Not loaded (ignored.yaml). mhoccur_edm_lt, mhoccur_ehman_lt,
+  mhoccur_epman_lt and mhoccur_epmixt_lt say "Y" where the count of the row
+  is 1 or more and "N" everywhere else, also where the count is unknown or
+  empty and on every row of the other visits: the export writes them, and
+  their "N" does not mean "none". The three columns mhoccur_edm_psy_spv,
+  mhoccur_epman_psy_spv and mhoccur_epmixt_psy_spv are copies of the
+  lifetime columns read here.
+
+  210 patients have a first treatment more than two years before their first
+  episode; delivered as written.
+
+version:
+  name: dsm_version
+  column: dsm_criteria
+  codes: {DSM4: dsm4, DSM5: dsm5}
+  level: patient
+  follow_up: {dsm5: 2022-01-01}
+  by_inclusion_date:
+    dsm4: [1900-01-01, 2019-12-31]
+    dsm5: [2023-01-01, 2100-12-31]
+
+defaults: {versions: [dsm4]}
+
+variables:
+  dsm4_lt_n_mde: {column: evnum_edm_lt, type: number, range: [0, 50], winsor: false, label: "Number of major depressive episodes over the life"}
+  dsm4_lt_mde_psychotic: {column: mhoccur_edm_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one major depressive episode with psychotic features"}
+  dsm4_lt_n_mde_psychotic: {column: evnum_edm_psy_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_mde_psychotic, label: "Number of major depressive episodes with psychotic features"}
+  dsm4_lt_n_hypomania: {column: evnum_ehman_lt, type: number, range: [0, 50], winsor: false, label: "Number of hypomanic episodes over the life"}
+  dsm4_lt_n_mania: {column: evnum_epman_lt, type: number, range: [0, 50], winsor: false, label: "Number of manic episodes over the life"}
+  dsm4_lt_mania_psychotic: {column: mhoccur_epman_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one manic episode with psychotic features"}
+  dsm4_lt_n_mania_psychotic: {column: evnum_epman_psy_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_mania_psychotic, label: "Number of manic episodes with psychotic features"}
+  dsm4_lt_n_mixed: {column: evnum_epmixt_lt, type: number, range: [0, 50], winsor: false, label: "Number of mixed episodes over the life"}
+  dsm4_lt_mixed_psychotic: {column: mhoccur_epmixt_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one mixed episode with psychotic features"}
+  dsm4_lt_n_mixed_psychotic: {column: evnum_epmixt_psy_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_mixed_psychotic, label: "Number of mixed episodes with psychotic features"}
+  dsm4_lt_induced: {column: mhoccur_epind_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one induced episode (switch under antidepressants or ECT)"}
+  dsm4_lt_n_induced: {column: evnum_epind_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_induced, label: "Number of induced episodes"}
+
+  dsm4_lt_rapid_cycling: {column: cyclerap, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Rapid cycling, now or in the past"}
+  dsm4_lt_full_remission: {column: remisc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Full remission between the episodes"}
+  dsm4_lt_seasonal: {column: saison, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Seasonal pattern"}
+  dsm4_lt_first_treatment_age: {column: agetrt, type: item, range: [0, 90], label: "Age at the first psychotropic treatment"}

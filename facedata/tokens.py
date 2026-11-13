@@ -1,7 +1,7 @@
 """Constants shared by the whole pipeline. There are no functions in this file."""
 
 # Key columns of the output tables, in order.
-KEY_COLUMNS = ["usubjid", "visit", "visit_order", "visit_month", "visit_date", "siteid"]
+KEY_COLUMNS = ["usubjid", "visit", "visit_order", "visit_month", "visit_date", "siteid", "age"]
 
 # The export writes an empty date as 0000-00-00.
 EMPTY_DATE = "0000-00-00"
@@ -42,6 +42,7 @@ SEVERITY = {
     "format_repaired": "info",
     "censored_left": "info",
     "censored_right": "info",
+    "band_from_z": "info",
     "unit_converted": "info",
     "unit_inferred": "info",
     "sign_flipped": "info",
@@ -50,16 +51,20 @@ SEVERITY = {
     "winsorised": "info",
     "unit_doubt": "discrepancy",
     "sign_doubt": "discrepancy",
+    "band_middle": "discrepancy",
+    "column_conflict": "discrepancy",
     "score_mismatch": "discrepancy",
     "derived_doubt": "discrepancy",
     "patient_value_varies": "discrepancy",
     "visit_order": "discrepancy",
     "check_failed": "discrepancy",
+    "period_doubt": "discrepancy",
     "unparsed": "danger",
     "unknown_code": "danger",
     "out_of_range": "danger",
     "unit_unknown": "danger",
     "version_unknown": "danger",
+    "norm_missing": "danger",
 }
 
 FLAG_COLUMNS = ["usubjid", "visit", "variable", "raw", "value", "flag", "severity", "detail"]

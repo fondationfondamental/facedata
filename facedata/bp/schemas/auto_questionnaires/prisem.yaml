@@ -1,0 +1,66 @@
+instrument: prisem
+title: PRISE-M, side effects of the treatment (32 items)
+tab: AUTO-QUESTIONNAIRES
+section: Questionnaire PRISEM
+status: draft
+notes: >
+  Patient-Rated Inventory of Side Effects, modified. 32 symptoms in nine
+  groups, each rated 0 (absent), 1 (tolerable) or 2 (distressing). Filled at
+  every visit.
+
+  Two items are for one sex only: prism06d (irregular periods, women) and
+  prism08c (erection, men). A patient therefore answers 31 items at most.
+
+  The stored total (prism) is the sum of the items that are filled, in every
+  row (16,147). It is recomputed here in the same way, but only when at least
+  28 of the 32 items are filled: a total over a few items would look like a
+  low score. The comparison below should raise no score_mismatch.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  prism01a: {label: "Diarrhée"}
+  prism01b: {label: "Constipation"}
+  prism01c: {label: "Bouche sèche"}
+  prism01d: {label: "Nausée, vomissement"}
+  prism02a: {label: "Palpitations"}
+  prism02b: {label: "Vertiges"}
+  prism02c: {label: "Douleurs dans la poitrine"}
+  prism03a: {label: "Augmentation de la transpiration"}
+  prism03b: {label: "Démangeaisons"}
+  prism03c: {label: "Sécheresse de la peau"}
+  prism04a: {label: "Mal a tête"}
+  prism04b: {label: "Tremblements"}
+  prism04c: {label: "Mauvais contrôle moteur"}
+  prism04d: {label: "Etourdissements"}
+  prism05a: {label: "Vision flou"}
+  prism05b: {label: "Acouphènes (bourdonnement dans les oreilles)"}
+  prism06a: {label: "Difficultés pour uriner"}
+  prism06b: {label: "Mictions douloureuses"}
+  prism06c: {label: "Mictions fréquentes"}
+  prism06d: {label: "Règles irrégulières (pour les femmes)"}
+  prism07a: {label: "Difficultés d'endormissements"}
+  prism07b: {label: "Augmentation du temps de sommeil"}
+  prism08a: {label: "Fonctions sexuelles"}
+  prism08b: {label: "Difficultés à atteindre un orgasme"}
+  prism08c: {label: "Trouble de l'érection (pour les hommes)"}
+  prism09a: {label: "Anxiété"}
+  prism09b: {label: "Difficultés de concentration"}
+  prism09c: {label: "Malaise générale"}
+  prism09d: {label: "Agitation"}
+  prism09e: {label: "Fatigue"}
+  prism09f: {label: "Diminution de l'énergie"}
+  prism09g: {label: "Poids"}
+  prism_stored: {column: prism, label: PRISE-M total as stored, range: [0, 64], keep: false}
+
+scores:
+  prisem_total:
+    label: PRISE-M total
+    sum: [prism01a, prism01b, prism01c, prism01d, prism02a, prism02b,
+          prism02c, prism03a, prism03b, prism03c, prism04a, prism04b,
+          prism04c, prism04d, prism05a, prism05b, prism06a, prism06b,
+          prism06c, prism06d, prism07a, prism07b, prism08a, prism08b,
+          prism08c, prism09a, prism09b, prism09c, prism09d, prism09e,
+          prism09f, prism09g]
+    min_items: 28
+    compare: prism_stored

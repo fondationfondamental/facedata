@@ -1,0 +1,87 @@
+instrument: provenance
+title: How the patient came to the expert centre
+tab: PATIENT
+section: Provenance
+status: draft
+level: patient
+notes: >
+  One value per patient.
+
+  The dictionary lists adresseur_date, connaissance_centre_expert and its
+  free-text detail under "Fin de suivi". They describe the referral, so they
+  are read here. The free-text detail is named
+  connaissance_centre_expert_preci in the extraction (the name is cut).
+
+  The purpose of the visit is a multiple choice, exported as a list in one
+  cell; only three combinations occur.
+
+  information_date is the date at which this information was collected. It
+  is the screening date for about half of the patients and is before the
+  inclusion visit for most. A few dates before 2008, when the cohort did not
+  exist yet, are flagged out_of_range. The date of the referral letter holds
+  the placeholder 1000-01-01 for 51 patients (date_placeholder).
+
+  The two free-text details may hold names of people; they are delivered as
+  text and never appear in the report.
+
+variables:
+  catchment:
+    column: secteur
+    label: Patient lives inside the centre's catchment area
+    type: category
+    codes: {Secteur du centre: inside, Hors secteur du centre: outside}
+  referred_by:
+    column: adresseur
+    label: Referred by
+    type: category
+    codes:
+      Psychiatre libéral: private_psychiatrist
+      Psychiatre hospitalier du secteur du centre: hospital_psychiatrist_inside
+      Psychiatre hospitalier hors du secteur: hospital_psychiatrist_outside
+      Généraliste: general_practitioner
+      Psychologue ou Psychothérapeute: psychologist
+      Patient lui-même: self
+      Entourage: relatives
+      Association: association
+      Autres: other
+  referred_by_association:
+    column: adresseur_association
+    label: Referring association
+    type: category
+    codes: {Argos: argos, Autres: other}
+  referred_by_detail:
+    column: adresseur_precis
+    label: Referred by, free text
+    type: text
+  referral_letter_date:
+    column: adresseur_date
+    label: Date of the referring doctor's letter
+    type: date
+    range: [1995-01-01, 2030-12-31]
+  visit_purpose:
+    column: objet_visite
+    label: Purpose of the visit
+    type: category
+    codes:
+      "Avis diagnostic,Avis thérapeutique": diagnosis_and_treatment
+      Avis diagnostic: diagnosis
+      Avis thérapeutique: treatment
+  information_date:
+    column: dmdtc
+    label: Date the information was collected
+    type: date
+    range: [2008-01-01, 2030-12-31]
+  heard_of_centre_from:
+    column: connaissance_centre_expert
+    label: How the patient heard of the expert centre
+    type: category
+    codes:
+      Psychiatre: psychiatrist
+      Médecin généraliste: general_practitioner
+      Internet: internet
+      Association: association
+      Autre: other
+  heard_of_centre_detail:
+    column: connaissance_centre_expert_preci
+    label: How the patient heard of the expert centre, free text
+    type: text

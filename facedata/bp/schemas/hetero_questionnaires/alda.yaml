@@ -1,0 +1,47 @@
+instrument: alda
+title: "Alda scale of the response to lithium"
+tab: HETERO-QUESTIONNAIRES
+section: Questionnaire ALDA
+status: draft
+notes: >
+  Filled at the visits where the patient is treated with lithium: 1,696 visits
+  of 987 patients. The ratings change from one visit to the next, so this is
+  a visit-level instrument.
+
+  Criterion A rates the response from 0 to 10. Criteria B1 to B5 (0 to 2 each)
+  rate how sure it is that the response is due to lithium. The total is A
+  minus the sum of B, and never below 0: this holds on all 1,586 rows that
+  have a stored total.
+
+  The stored criterion A differs from the item alda_a1 on 9 rows and the
+  stored B score from the sum of its items on 11 rows. The total recomputed
+  from the items then differs from the stored one on 14 rows. All get
+  score_mismatch, and the values recomputed from the items are kept.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  alda_lithium: {column: aldalith, label: "Currently treated with lithium", type: category, codes: {1: yes, 0: no}}
+  alda_a: {column: alda_a1, label: "Criterion A: response to lithium (0 to 10)", range: [0, 10]}
+  alda_b1: {label: "Criterion B1: number of episodes before the treatment"}
+  alda_b2: {label: "Criterion B2: frequency of episodes before the treatment"}
+  alda_b3: {label: "Criterion B3: duration of the treatment"}
+  alda_b4: {label: "Criterion B4: compliance during the stable periods"}
+  alda_b5: {label: "Criterion B5: additional medication during the stable periods"}
+  alda_a_stored: {column: aldaa, label: "Criterion A as stored", range: [0, 10], keep: false}
+  alda_b_stored: {column: aldab, label: "B score as stored", range: [0, 10], keep: false}
+  alda_total_stored: {column: alda_, label: "Total as stored", range: [0, 10], keep: false}
+
+scores:
+  # Consistency check only: the stored criterion A must be the item.
+  alda_a_check: {sum: [alda_a], compare: alda_a_stored, keep: false}
+  alda_b:
+    label: "B score: sum of B1 to B5 (0 to 10)"
+    sum: [alda_b1, alda_b2, alda_b3, alda_b4, alda_b5]
+    compare: alda_b_stored
+  alda_total:
+    label: "Alda total: A minus B, not below 0"
+    sum: [alda_a]
+    minus: [alda_b]
+    floor: 0
+    compare: alda_total_stored

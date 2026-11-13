@@ -1,0 +1,31 @@
+instrument: inclusion
+title: Inclusion
+tab: PATIENT
+section: Inclusion
+status: draft
+level: patient
+notes: >
+  One value per patient.
+
+  Open question O16 in PROGRESS.md: the dictionary gives neither a label nor
+  a coding for these two columns. Until their meaning is known, the codes
+  are delivered as written.
+
+  formoppos (computer name rad_html_formoppos) is filled for 613 patients,
+  most of them included from 2021 on: 610 with code 1 and 3 with code 2. If
+  it records an opposition to the use of the data, those patients matter.
+
+  social_protec (computer name PROTEC) is filled for 4,840 patients: 4,774
+  with code 0, 62 with code 1 and 4 with code 2.
+
+variables:
+  opposition_form:
+    column: formoppos
+    label: Opposition form (codes not documented)
+    type: category
+    codes: {1: "1", 2: "2"}
+  social_protection:
+    column: social_protec
+    label: Social protection (codes not documented)
+    type: category
+    codes: {0: "0", 1: "1", 2: "2"}
