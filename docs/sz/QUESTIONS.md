@@ -1,6 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
-Written on 2026-11-13 from the extraction `SZALL_20261113.tsv` (6,616 rows:
+Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
+PI-2 and PI-4), from the extraction `SZALL_20261113.tsv` (6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
 `FACESZ_thesaurus_V4.20.xlsx`.
 
@@ -115,6 +116,24 @@ values be computed again?
 *Today:* 240 values are out of range and removed; 260 others of the period
 are kept and flagged, with their percentile bands. (O13, D14)
 
+**DEV-14. Medical history: three sections are mostly empty since 2022.**
+(Added on 2026-11-14.) Until 2021 each section of somatic diseases is
+answered at 80% to 95% of the inclusion visits, mostly with "no". Since 2022
+the digestive section is answered at 42% of them, the other diseases at 46%
+and the autoimmune diseases at 32%; the neurological, cardiovascular,
+endocrine, skin and allergic sections do not move. The share of all included
+patients with a digestive disease is the same before and after (17%), but
+among the answered sections it goes from 21% to 40%: the "no" are no longer
+written. 288 of the 609 inclusions since 2022 hold none of the three
+sections. Between centres, the autoimmune section is answered at 3% to 83%
+of the inclusions since 2022. The same happened to every section of FACE BP
+in 2022 (DEV-1 of the BP questions).
+*Question:* did the form of these three sections change in 2022, and is an
+empty section a "no"?
+*Today:* delivered as extracted, missing where the section is empty. No
+prevalence of these diseases should be computed on the inclusions from 2022.
+(O26, D23)
+
 ### Priority B
 
 **DEV-7. S-QoL, items 17 and 18.** The answers 1 and 3 are not in the
@@ -168,6 +187,17 @@ of the TMT errors need them (about 2,300 visits per band cannot be read).
 The sheet TAP of the dictionary.
 *Question:* can they be added?
 *Today:* not delivered. (O14, O11)
+
+**DEV-15. Two values that change at a date.** (Added on 2026-11-14.) (1)
+Migraine at inclusion is "yes" for 10% to 15% of the answers of 2011 to 2017
+and for 4% to 7% of those of 2018 to 2026, while no other neurological
+disease moves. (2) The IQ estimated from two subtests of the WAIS-IV is
+stored for 41% to 68% of the inclusions of 2019 to 2021 and for 10% to 28%
+of those of 2022 to 2026, while the two subtests are still done at about
+three inclusions in four.
+*Question:* did the migraine question change in 2018? Is the two-subtest IQ
+no longer computed, or no longer exported?
+*Today:* both delivered as extracted. (O27, O28, D23)
 
 ### Priority C
 
@@ -270,6 +300,9 @@ Gaag as stored, labelled with its items. (O5, D10)
 
 **PI-2. Four corrections that the package makes.** Each rests on the data
 and is written in the notes of its schema; each needs your agreement.
+**Answered on 2026-11-14: agreed** (D22). The four corrections stay, and
+each is listed with its evidence in PROGRESS.md, section "Instrument changes
+found in the extraction".
 
 - The three PANSS factor scores (DEV-5).
 - The WAIS-IV working memory index and full-scale IQ, plus 0.7 and plus 2.9
@@ -297,6 +330,7 @@ delivers 0 where the form did not show it after a "no" (no anxiety disorder,
 so no panic disorder; never used illicit drugs, so never used heroin).
 *Question:* is that the reading you want, or should these cells stay
 missing?
+**Answered on 2026-11-14: agreed** (D22): the 0 is delivered.
 
 **PI-5. The class of the job.** As for BP: the mapping between the list of
 the form and the INSEE classes has to be confirmed before `empjob` can be

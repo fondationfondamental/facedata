@@ -18,7 +18,10 @@ The other BP instruments are added one by one; see
 | [docs/SCHEMA_SPEC.md](docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
 | [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
 | [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The questions that only the EMR developers, the data manager or the principal investigator can settle, sorted by recipient and priority, and the state of the norms |
+| [docs/sz/PROGRESS.md](docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
+| [docs/sz/QUESTIONS.md](docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
 | [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
+| [schizophrenia-tutorial.ipynb](schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
 
 ## Use
 
@@ -74,7 +77,14 @@ extraction to the next.
 uv run jupyter lab bipolar-tutorial.ipynb
 ```
 
-The notebook opens in the web browser. Run its cells from top to bottom with
+```bash
+uv run jupyter lab schizophrenia-tutorial.ipynb
+```
+
+One notebook per cohort. The second one ends with a section that loads the
+instruments shared by FACE BP and FACE SZ and stacks the two cohorts.
+
+A notebook opens in the web browser. Run its cells from top to bottom with
 `Shift` + `Enter`. What appears under a cell is patient data: clear it
 (*Edit*, *Clear Outputs of All Cells*) before you save a notebook that will
 be shared or sent to GitHub.
