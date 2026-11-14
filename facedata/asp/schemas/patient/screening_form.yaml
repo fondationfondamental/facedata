@@ -1,0 +1,60 @@
+instrument: screening_form
+title: "Conclusion of the screening form"
+tab: patient
+section: screening form
+status: draft
+level: patient
+notes: >
+  One value per patient, from the form filled before the assessment. Filled for
+  about 1,035 of the 2,318 patients (62% of the adults, 20% of the children).
+
+  The thesaurus gives the conclusion (diags): an autism spectrum disorder is
+  evoked for 868 patients, rejected for 21, and the conclusion is deferred for
+  146 (an answer removed in 2021). It is not the diagnosis of the cohort: of
+  the patients for whom it is evoked, 811 have a confirmed diagnosis (arm 1)
+  and 57 do not; of those deferred, 92 are confirmed and 54 are not.
+
+  Each answer opens its own block. When an ASD is evoked: diag1s_1 (a code
+  that the thesaurus does not document: 1 for 137 patients, 2 for 155, 4 for
+  21), whether an assessment was scheduled, why not, and whether the patient
+  agrees to be assessed later. When it is rejected: the probable diagnosis,
+  from a list, and a text. When the conclusion is deferred: a code and eleven
+  boxes that the thesaurus names with no label (O16), a text and a comment;
+  the boxes are filled for fewer than five patients. The eleven boxes
+  diag2s_1_1 to diag2s_1_11 (the type of a personality disorder) are empty on
+  every row (ignored.yaml).
+
+  Three free texts: the clinical signs suggestive of an autism spectrum
+  disorder (ece_tsa, 538 patients, almost all adults), the differential
+  diagnosis (61) and the comorbidities (370). note_info says whether the
+  information note was given to the patient, yes for 908 of 958 patients.
+
+  An instrument of the ASP cohort only.
+
+variables:
+  screening_conclusion: {column: diags, type: category, codes: {"1": asd_evoked, "2": asd_rejected, "3": deferred}, label: "An autism spectrum disorder is evoked at the end of the screening (the answer 'deferred' was removed in 2021)"}
+  asd_evoked_code: {column: diag1s_1, type: category, codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "5": code_5}, label: "ASD evoked: a code that the thesaurus does not document"}
+  assessment_scheduled: {column: diag1s_2, type: item, range: [0, 1], label: "ASD evoked: an assessment at the expert centre was scheduled"}
+  assessment_not_scheduled_reason: {column: diag1s_3, type: category, codes: {"1": screening_consultation_sufficient, "2": clinical_state_not_compatible, "3": patient_not_available, "4": patient_refusal, "5": referral_criteria_not_met, "6": other}, label: "ASD evoked: why no assessment was scheduled"}
+  assessment_not_scheduled_reason_text: {column: diag1s_3a, type: text, label: "ASD evoked: why no assessment was scheduled, free text"}
+  agrees_to_later_assessment: {column: diag1s_4, type: item, range: [0, 1], label: "ASD evoked: if the clinical state does not allow the assessment now, the patient agrees to be assessed later"}
+  rejected_probable_diagnosis: {column: diag2s_1, type: category, codes: {"1": schizophrenia, "2": other_psychotic_disorder, "3": intellectual_disability, "5": adhd, "6": depression_or_mood_disorder, "7": anxiety_disorder, "8": ocd, "9": personality_disorder, "10": learning_disorder, "11": specific_language_disorder, "12": dyspraxia, "13": other, "16": pragmatic_communication_disorder}, label: "ASD rejected: the probable diagnosis"}
+  rejected_probable_diagnosis_text: {column: diag2s_1a, type: text, label: "ASD rejected: the probable diagnosis, free text"}
+  deferred_code: {column: diag3s_1, type: category, codes: {"1": code_1, "2": code_2, "5": code_5, "6": code_6, "11": code_11, "12": code_12, "15": code_15, "19": code_19}, label: "Conclusion deferred: a code that the thesaurus does not document"}
+  deferred_text: {column: diag3s_1a, type: text, label: "Conclusion deferred: free text"}
+  deferred_box01: {column: diag3s_1_1, type: item, range: [0, 1], label: "Conclusion deferred: box 1, not documented by the thesaurus"}
+  deferred_box02: {column: diag3s_1_2, type: item, range: [0, 1], label: "Conclusion deferred: box 2, not documented by the thesaurus"}
+  deferred_box03: {column: diag3s_1_3, type: item, range: [0, 1], label: "Conclusion deferred: box 3, not documented by the thesaurus"}
+  deferred_box04: {column: diag3s_1_4, type: item, range: [0, 1], label: "Conclusion deferred: box 4, not documented by the thesaurus"}
+  deferred_box05: {column: diag3s_1_5, type: item, range: [0, 1], label: "Conclusion deferred: box 5, not documented by the thesaurus"}
+  deferred_box06: {column: diag3s_1_6, type: item, range: [0, 1], label: "Conclusion deferred: box 6, not documented by the thesaurus"}
+  deferred_box07: {column: diag3s_1_7, type: item, range: [0, 1], label: "Conclusion deferred: box 7, not documented by the thesaurus"}
+  deferred_box08: {column: diag3s_1_8, type: item, range: [0, 1], label: "Conclusion deferred: box 8, not documented by the thesaurus"}
+  deferred_box09: {column: diag3s_1_9, type: item, range: [0, 1], label: "Conclusion deferred: box 9, not documented by the thesaurus"}
+  deferred_box10: {column: diag3s_1_10, type: item, range: [0, 1], label: "Conclusion deferred: box 10, not documented by the thesaurus"}
+  deferred_box11: {column: diag3s_1_11, type: item, range: [0, 1], label: "Conclusion deferred: box 11, not documented by the thesaurus"}
+  deferred_comment: {column: diag3s_2, type: text, label: "Conclusion deferred: comment, free text"}
+  clinical_signs_text: {column: ece_tsa, type: text, label: "Clinical signs suggestive of an autism spectrum disorder, free text"}
+  differential_diagnosis_text: {column: screen_diagdiff, type: text, label: "Differential diagnosis, free text"}
+  comorbidity_text: {column: screen_comorbid, type: text, label: "Comorbidities, free text"}
+  information_note: {column: note_info, type: item, range: [0, 1], label: "The information note was given to the patient"}

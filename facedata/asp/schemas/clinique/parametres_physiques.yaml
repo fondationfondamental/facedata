@@ -1,0 +1,69 @@
+instrument: parametres_physiques
+title: "Height, weight, waist and head circumference"
+tab: clinique
+section: clinical examination
+status: draft
+notes: >
+  The measures of the clinical examination: height (978 inclusion visits),
+  weight (975), head circumference (809), and from 2020 the waist
+  (265) and a body mass index computed by the EMR (581).
+
+  Same instrument as in FACE BP, SZ and DR, in other columns (c1extail,
+  c1expoid) and with ranges that accept children: 956 of the 2,318 patients
+  are 5 to 17 years old. The head circumference is specific to this cohort.
+
+  Height: 1,097 values are in centimetres; 3 are written in metres
+  and are converted (unit_inferred); 9 lie between 2.5 and 80 and cannot be
+  a height in any unit (out_of_range).
+
+  The stored body mass index is the weight over the square of the height on
+  577 of the 578 visits that hold the three numbers. bmi is recomputed from
+  the harmonised weight and height on every visit that has both, and compared
+  with the stored value.
+
+  eclichang is the box "changed since the last visit" of the clinical
+  examination: filled at 127 follow-up visits, from 2014 to 2019.
+
+defaults: {type: number}
+
+variables:
+  height:
+    label: Height
+    column: c1extail
+    unit: "cm"
+    units:
+      "cm": {factor: 1, expect: [80, 230]}
+      "m": {factor: 100, expect: [0.8, 2.3]}
+    range: [80, 230]
+  weight:
+    label: Weight
+    column: c1expoid
+    unit: "kg"
+    units:
+      "kg": {factor: 1, expect: [10, 300]}
+    range: [10, 300]
+  waist:
+    label: Waist circumference
+    column: wstcir
+    unit: "cm"
+    units:
+      "cm": {factor: 1, expect: [40, 200]}
+    range: [40, 200]
+  head_circumference:
+    label: Head circumference
+    column: c1expc
+    unit: "cm"
+    units:
+      "cm": {factor: 1, expect: [30, 70]}
+    range: [30, 70]
+  bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
+  clinical_examination_changed: {column: eclichang, type: item, range: [0, 1], label: "The clinical examination changed since the last visit (follow-up form)"}
+
+scores:
+  bmi:
+    label: Body mass index, from the harmonised weight and height
+    custom: body_mass_index
+    compare: bmi_stored
+    compare_tolerance: 0.051
+    range: [10, 80]
+    winsor: [0.01, 0.99]

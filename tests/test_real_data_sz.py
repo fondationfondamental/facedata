@@ -266,12 +266,12 @@ def test_medical_evaluation_care_and_social(result, qc):
 
 def test_treatments(result, qc):
     items, data, patients = result.treatments, result.data, result.patients
-    assert shape_of(qc, "TRAITEMENTS") == (69, 6, 158, 2)
+    assert shape_of(qc, "TRAITEMENTS") == (69, 6, 149, 2)
     # One row per patient and medication: every row of a patient holds the same lists.
-    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (11038, 1975, 117)
+    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (11038, 1975, 122)
     assert qc.loc["medication", "patient_value_varies"] == 0
     # The table of names is shared with BP: 99% of the SZ names are in it.
-    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (10880, 158)
+    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (10889, 149)
     groups = items["treatment_group"].value_counts()
     assert (groups["antipsychotic_2g"], groups["antipsychotic_1g"], groups["antidepressant"], len(groups)) == (5278, 1325, 1492, 10)
     # The ATC code that the EMR gives for part of the medications agrees with the table.

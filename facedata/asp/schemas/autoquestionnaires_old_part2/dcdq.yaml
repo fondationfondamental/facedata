@@ -1,0 +1,48 @@
+instrument: dcdq
+title: "Developmental Coordination Disorder Questionnaire (DCDQ)"
+tab: autoquestionnaires_old_part2
+section: old questionnaires
+status: draft
+notes: >
+  Fifteen items answered from 1 to 5 by a parent and a total: 54 inclusion visits (47 of children) and fewer than five follow-up visits,
+  from 2013 to 2014. It belongs to the old set of forms; filled for children.
+
+  Identified from its name (tdc, trouble développemental de la coordination),
+  its fifteen items from 1 to 5 and its total as the Developmental
+  Coordination Disorder Questionnaire (Wilson and others, 2007), likely.
+
+  The scores, each fitted on the data:
+
+  - DCDQ total (15 to 75): the sum of 15 items, equal to the stored score on 54 of 54 complete visits.
+
+  dcdq_filled_by says who filled the child questionnaire (father, mother,
+  grandparents, guardian).
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  dcdq01: {column: tdc1, label: "DCDQ, item 1"}
+  dcdq02: {column: tdc2, label: "DCDQ, item 2"}
+  dcdq03: {column: tdc3, label: "DCDQ, item 3"}
+  dcdq04: {column: tdc4, label: "DCDQ, item 4"}
+  dcdq05: {column: tdc5, label: "DCDQ, item 5"}
+  dcdq06: {column: tdc6, label: "DCDQ, item 6"}
+  dcdq07: {column: tdc7, label: "DCDQ, item 7"}
+  dcdq08: {column: tdc8, label: "DCDQ, item 8"}
+  dcdq09: {column: tdc9, label: "DCDQ, item 9"}
+  dcdq10: {column: tdc10, label: "DCDQ, item 10"}
+  dcdq11: {column: tdc11, label: "DCDQ, item 11"}
+  dcdq12: {column: tdc12, label: "DCDQ, item 12"}
+  dcdq13: {column: tdc13, label: "DCDQ, item 13"}
+  dcdq14: {column: tdc14, label: "DCDQ, item 14"}
+  dcdq15: {column: tdc15, label: "DCDQ, item 15"}
+  dcdq_filled_by: {column: tdcrel, type: category, label: "DCDQ: relationship of the respondent to the patient, child questionnaire only", codes: {"1": father, "2": mother, "3": grandparents, "4": guardian}}
+  dcdq_total_stored: {column: score_tdc, type: number, range: [15, 75], winsor: false, keep: false, label: "DCDQ total (15 to 75), as stored"}
+
+scores:
+  dcdq_total:
+    label: "DCDQ total (15 to 75)"
+    sum: [dcdq01, dcdq02, dcdq03, dcdq04, dcdq05, dcdq06, dcdq07, dcdq08, dcdq09, dcdq10, dcdq11, dcdq12, dcdq13, dcdq14, dcdq15]
+    compare: dcdq_total_stored

@@ -453,7 +453,7 @@ separate output columns, even where the extraction stores them in the same
 raw columns.
 
 When several editions share raw columns, each schema says how to recognise
-its own visits. There are three ways.
+its own visits. There are four ways.
 
 From a column filled at every visit:
 
@@ -518,6 +518,24 @@ version:
     wurs25: [als05, bis1001]         # an ALS or BIS answer, and none of the above
 ```
 
+From the age of the patient at the visit, when the form of a child and the
+form of an adult have the same items in the same columns and nothing else
+tells them apart:
+
+```yaml
+version:
+  name: srs_relative_form
+  age:                               # years at the visit: from the first number, below the second
+    srs_relative_child: [0, 18]
+    srs_relative_adult: [18, 130]
+```
+
+The age is the one computed from the date of birth and the date of the
+visit. A visit with data and no age, or an age in none of the bands, has no
+version and gets `version_unknown`. The Social Responsiveness Scale filled by
+a relative has a school-age form and an adult form of 65 items each, stored
+in the same columns of FACE ASP (decision D14 in asp/PROGRESS.md).
+
 An edition that did not exist before a known day says so with `since`:
 
 ```yaml
@@ -533,7 +551,7 @@ A visit dated before that day does not get the edition, whatever its columns
 hold. It does not fall back on another edition either: it has no version, its
 values are not delivered, and it gets `version_unknown` with the detail
 "dated before the form came into use". A visit with no date keeps its
-edition. `since` works with the three ways of recognising an edition. The
+edition. `since` works with the four ways of recognising an edition. The
 reduced questionnaires came into use in 2021, and the data managers advise
 not to deliver the few earlier visits that look like one (decision D71 in
 PROGRESS.md).
@@ -591,16 +609,18 @@ scores:
 
 | Field | Meaning |
 |---|---|
-| `sum` or `mean` | The variables to combine. Scores defined higher up in the file may be used too |
+| `sum`, `mean` or `max` | The variables to combine: added, averaged, or the highest of them (the ADI-R counts the higher of two mannerism items). Scores defined higher up in the file may be used too |
 | `lookup` and `from` | Instead of `sum` or `mean`: the score is read in a norm table. `lookup` names the table, `from` the raw score to look up, and `by` a second variable the table depends on (see below) |
 | `custom` | Instead of `sum` or `mean`: the name of a function of `facedata/custom.py` that computes the score from the instrument's values, when it is a formula (a body mass index, a corrected QT interval) |
 | `reverse` | Items reversed first: `min + max − value`, using the item's own `range` |
+| `points` | With `sum`, `mean` or `max`: `{answer: points}`. An answer listed here counts the points given, any other answer counts as it is. The items are delivered as recorded. The algorithms of the ADI-R and of the ADOS count a code 3 as 2 and the codes 7, 8 and 9 as 0: `points: {"3": 2, "7": 0, "8": 0, "9": 0}` |
 | `minus` | With `sum`: variables or earlier scores subtracted from the sum. All of them must be present |
 | `floor` | The lowest value the score can take; a lower result is raised to it (the Alda total is A minus B, not below 0) |
 | `scale` | With `sum` or `mean`: `[factor, offset]`. The sum or the mean is multiplied by the factor, then the offset is added. A sub-score of the S-QoL is the mean of two items of 1 to 5 brought to 0 to 100: `scale: [25, -25]`. A sum that the instrument halves: `scale: [0.5, 0]` |
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept |
+| `otherwise` | With `sum`, `mean` or `max`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
 | `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
@@ -851,6 +871,9 @@ the list is not empty.
   comes with `from`, `by` with `lookup`, `minus` with `sum`, and `custom` names a function that
   exists in `facedata/custom.py`. Whether the norm table exists is not checked here: a missing table
   gives `norm_missing` flags, not an error.
+- A `version` block has a `name` and exactly one of `column` (with `codes`),
+  `filled` and `age`. `age` gives each version two numbers, the first below
+  the second.
 - A `version` block with `level` says `patient` and reads a `column`.
   `follow_up` and `by_inclusion_date` need `level: patient`; they name
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.
@@ -950,6 +973,10 @@ first whole, then its first two words, then its first word, so that
 that is not in the table keeps what was written, leaves the columns of
 `gives` empty and gets `unknown_code`: a name is never guessed.
 
+`otherwise` names a second list of names (the generic name next to the brand): it is
+looked up for the items where the first list gives nothing, an empty name or
+a name that is not in the table.
+
 The table is data of the package, not patient data: it holds what the
 pharmacopoeia says (TERALITHE is lithium, group lithium, ATC N05AN01). It is
 written by hand and must be read by someone who knows the drugs.
@@ -996,11 +1023,44 @@ Check first that the lists have this shape: the number of items is the
 number of distinct products times the number of distinct lines, for every
 patient.
 
+**Lists of the visit.** Some lists are not the history of the patient but
+what holds on the day of the visit: the treatments taken at screening, then
+at inclusion. `per_visit: true` opens the list of every row that has one.
+The table then has the column `visit` after `usubjid`, the items are
+numbered from 1 in each visit, the flag log writes `V0 item 3`, and nothing
+is compared between the rows of a patient. `at_visit` and `crossed` are not
+used with it: an item belongs to its visit.
+
+**Records packed in one cell.** One export writes several records in a cell,
+each between brackets, its fields separated by ` - ` and the records by
+` | `: `(11 - otite - 3 - 0) | (6 -  - 12 - 1)`. `packed` names such raw
+columns and the fields of a record, in order:
+
+```yaml
+level: list
+packed:
+  antorls_orla_orlag_orlrem: {fields: [ent_code, ent_text, ent_age, ent_remission], text: ent_text}
+variables:
+  disease_code: {column: ent_code, type: category, codes: {"11": code_11}}
+  disease_text: {column: ent_text, type: text}
+  age_onset: {column: ent_age, type: number, range: [0, 100]}
+```
+
+Each field becomes a list that the variables read like a raw column, one
+item per record. `text` names the field of free text, if there is one: a
+record with more ` - ` than fields has them in that field. A record with
+fewer parts than fields has its last fields empty. A cell with no bracket
+is a list of single values separated by ` | ` (one field). The field names
+must not be names of raw columns.
+
 `check_schema` verifies that `names`, `at_visit` and `crossed` come with
 `level: list`, that `clean` is a function of `custom.py`, that `start`,
 `end` and the variables named in `where` are variables of the schema, that
-every column has a `where` and a `label`, and that `crossed` names raw
-columns that variables of the schema read.
+every column has a `where` and a `label`, that `crossed` names raw
+columns that variables of the schema read, that `per_visit` and `packed` come
+with `level: list`, that `per_visit` has neither `at_visit` nor `crossed`,
+and that each packed column has `fields` and, if it names one, a `text` that
+is one of them.
 
 ## 16. Relatives: one row per relative
 

@@ -1,0 +1,64 @@
+instrument: wais4_puzzles
+title: "WAIS-IV, visual puzzles"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Visual puzzles: 26 items scored from 0 to 1, their total, the scaled score and its z-score,
+  on 210 inclusion visits.
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Checked on every visit: the stored total is the sum of the items, and the
+  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
+  tables of the test, which are not available: it is delivered as stored.
+
+  The stored total equals the sum of the items on 210 of the 210 visits that
+  hold every item.
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  wais4_vp01: {column: wais_puzl1, label: "WAIS-IV visual puzzles, item 1"}
+  wais4_vp02: {column: wais_puzl2, label: "WAIS-IV visual puzzles, item 2"}
+  wais4_vp03: {column: wais_puzl3, label: "WAIS-IV visual puzzles, item 3"}
+  wais4_vp04: {column: wais_puzl4, label: "WAIS-IV visual puzzles, item 4"}
+  wais4_vp05: {column: wais_puzl5, label: "WAIS-IV visual puzzles, item 5"}
+  wais4_vp06: {column: wais_puzl6, label: "WAIS-IV visual puzzles, item 6"}
+  wais4_vp07: {column: wais_puzl7, label: "WAIS-IV visual puzzles, item 7"}
+  wais4_vp08: {column: wais_puzl8, label: "WAIS-IV visual puzzles, item 8"}
+  wais4_vp09: {column: wais_puzl9, label: "WAIS-IV visual puzzles, item 9"}
+  wais4_vp10: {column: wais_puzl10, label: "WAIS-IV visual puzzles, item 10"}
+  wais4_vp11: {column: wais_puzl11, label: "WAIS-IV visual puzzles, item 11"}
+  wais4_vp12: {column: wais_puzl12, label: "WAIS-IV visual puzzles, item 12"}
+  wais4_vp13: {column: wais_puzl13, label: "WAIS-IV visual puzzles, item 13"}
+  wais4_vp14: {column: wais_puzl14, label: "WAIS-IV visual puzzles, item 14"}
+  wais4_vp15: {column: wais_puzl15, label: "WAIS-IV visual puzzles, item 15"}
+  wais4_vp16: {column: wais_puzl16, label: "WAIS-IV visual puzzles, item 16"}
+  wais4_vp17: {column: wais_puzl17, label: "WAIS-IV visual puzzles, item 17"}
+  wais4_vp18: {column: wais_puzl18, label: "WAIS-IV visual puzzles, item 18"}
+  wais4_vp19: {column: wais_puzl19, label: "WAIS-IV visual puzzles, item 19"}
+  wais4_vp20: {column: wais_puzl20, label: "WAIS-IV visual puzzles, item 20"}
+  wais4_vp21: {column: wais_puzl21, label: "WAIS-IV visual puzzles, item 21"}
+  wais4_vp22: {column: wais_puzl22, label: "WAIS-IV visual puzzles, item 22"}
+  wais4_vp23: {column: wais_puzl23, label: "WAIS-IV visual puzzles, item 23"}
+  wais4_vp24: {column: wais_puzl24, label: "WAIS-IV visual puzzles, item 24"}
+  wais4_vp25: {column: wais_puzl25, label: "WAIS-IV visual puzzles, item 25"}
+  wais4_vp26: {column: wais_puzl26, label: "WAIS-IV visual puzzles, item 26"}
+  wais4_vp_total: {column: wais_puzltot, range: [0, 26], label: "WAIS-IV visual puzzles, total as stored"}
+  wais4_vp_scaled: {column: wais_puzl_std, range: [1, 19], label: "WAIS-IV visual puzzles, scaled score"}
+  wais4_vp_z: {column: wais_puzl_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV visual puzzles, z-score of the scaled score"}
+
+scores:
+  wais4_vp_total_check:
+    label: "WAIS-IV visual puzzles, total of the items"
+    sum: [wais4_vp01, wais4_vp02, wais4_vp03, wais4_vp04, wais4_vp05, wais4_vp06, wais4_vp07, wais4_vp08, wais4_vp09, wais4_vp10, wais4_vp11, wais4_vp12, wais4_vp13, wais4_vp14, wais4_vp15, wais4_vp16, wais4_vp17, wais4_vp18, wais4_vp19, wais4_vp20, wais4_vp21, wais4_vp22, wais4_vp23, wais4_vp24, wais4_vp25, wais4_vp26]
+    compare: wais4_vp_total
+    keep: false

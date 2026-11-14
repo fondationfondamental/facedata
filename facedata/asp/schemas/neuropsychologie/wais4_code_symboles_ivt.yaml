@@ -1,0 +1,52 @@
+instrument: wais4_code_symboles_ivt
+title: "WAIS-IV, coding, symbol search and the processing speed index"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Coding and symbol search: boxes filled, errors, raw score, scaled score and
+  z-score, on about 278 inclusion visits; then the processing speed index
+  with its sum of scaled scores and its percentile rank (267 visits), and a
+  second set of the same three numbers whose names end in _a (276 visits).
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Coding: the raw score is the number of boxes filled on 276 of 277 visits,
+  errors not taken off. Symbol search: the raw score is the correct answers
+  minus the errors on 273 of 274. The z-scores are the scaled score minus
+  10, over 3, on every visit.
+
+  The index is one function of the sum of the two scaled scores on every visit.
+  The clinician copies it into the medical evaluation (wais4_ivt_index, schema
+  wais4_indices): the two agree on 185 of the 207 visits that hold both. The
+  index of this form is therefore named wais4_ivt_index_np. The second set (_a)
+  is the index of the abbreviated form (thesaurus), equal to the first on few
+  visits.
+
+  Same instrument as in FACE SZ and DR, in other columns; the index has
+  another name here, and the second set is specific to ASP.
+
+defaults: {type: item}
+
+variables:
+  wais4_code_filled: {column: wais_cod_tot, range: [0, 135], label: "WAIS-IV coding, boxes filled"}
+  wais4_code_errors: {column: wais_cod_err, range: [0, 135], label: "WAIS-IV coding, errors"}
+  wais4_code_raw: {column: wais_cod_brut, range: [0, 135], label: "WAIS-IV coding, raw score"}
+  wais4_code_scaled: {column: wais_cod_std, range: [1, 19], label: "WAIS-IV coding, scaled score"}
+  wais4_code_z: {column: wais_cod_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV coding, z-score of the scaled score"}
+  wais4_symbol_correct: {column: wais_symb_tot, range: [0, 60], label: "WAIS-IV symbol search, correct answers"}
+  wais4_symbol_errors: {column: wais_symb_err, range: [0, 60], label: "WAIS-IV symbol search, errors"}
+  wais4_symbol_raw: {column: wais_symb_brut, range: [0, 60], label: "WAIS-IV symbol search, raw score"}
+  wais4_symbol_scaled: {column: wais_symb_std, range: [1, 19], label: "WAIS-IV symbol search, scaled score"}
+  wais4_symbol_z: {column: wais_symb_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV symbol search, z-score of the scaled score"}
+  wais4_ivt_sum_scaled: {column: ivt_sum_std, range: [2, 38], label: "WAIS-IV processing speed, sum of the two scaled scores"}
+  wais4_ivt_index_np: {column: ivt_indice, range: [50, 150], label: "WAIS-IV processing speed index, neuropsychology form"}
+  wais4_ivt_percentile: {column: ivt_rang, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank"}
+  wais4_ivt_sum_scaled_a: {column: ivt_sum_std_a, range: [2, 38], label: "WAIS-IV processing speed, sum of scaled scores, second set (_a)"}
+  wais4_ivt_index_a: {column: ivt_indice_a, range: [50, 150], label: "WAIS-IV processing speed index, second set (_a)"}
+  wais4_ivt_percentile_a: {column: ivt_rang_a, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank, second set (_a)"}

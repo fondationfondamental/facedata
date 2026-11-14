@@ -1,0 +1,40 @@
+instrument: dosage_psychotropes
+title: "Plasma levels of psychotropic drugs"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  The section of the drug levels is almost empty in this cohort. Eight boxes
+  (psychotrop_1 to psychotrop_8: which level was asked for) are filled on 546
+  inclusion visits and are 0 on all of them but a few; a box before them (cmyn,
+  from 2020) is yes on 7 of 118 visits. Of the five levels, only the
+  lamotrigine has a value, on fewer than five visits; the lithium, the
+  carbamazepine, the oxcarbazepine and the valproate columns are empty
+  (ignored.yaml).
+
+  The order of the boxes is that of the level columns (lithium after the box 2,
+  carbamazepine after 3, oxcarbazepine after 4, valproate after 7, lamotrigine
+  after 8); the thesaurus names the eight boxes, the drug whose level is
+  measured: Téralithe 250, Téralithe LP 400, Tégrétol, Trileptal, Dépakine,
+  Dépakote, Dépamide, Lamictal. The first box (cmyn) says whether the patient
+  took the treatment on the morning of the sample. Same instrument name as in
+  FACE BP and DR, with this cohort's columns.
+defaults: {type: number}
+
+variables:
+  treatment_taken_before_sample: {column: cmyn, type: item, range: [0, 1], label: "The patient took the treatment on the morning of the sample"}
+  assay_teralithe_250: {column: psychotrop_1, type: item, range: [0, 1], label: "Drug whose level is measured: Téralithe 250 (lithium) (box)"}
+  assay_teralithe_lp400: {column: psychotrop_2, type: item, range: [0, 1], label: "Drug whose level is measured: Téralithe LP 400 (lithium) (box)"}
+  assay_tegretol: {column: psychotrop_3, type: item, range: [0, 1], label: "Drug whose level is measured: Tégrétol (carbamazepine) (box)"}
+  assay_trileptal: {column: psychotrop_4, type: item, range: [0, 1], label: "Drug whose level is measured: Trileptal (oxcarbazepine) (box)"}
+  assay_depakine: {column: psychotrop_5, type: item, range: [0, 1], label: "Drug whose level is measured: Dépakine (valproate) (box)"}
+  assay_depakote: {column: psychotrop_6, type: item, range: [0, 1], label: "Drug whose level is measured: Dépakote (divalproate) (box)"}
+  assay_depamide: {column: psychotrop_7, type: item, range: [0, 1], label: "Drug whose level is measured: Dépamide (valpromide) (box)"}
+  assay_lamictal: {column: psychotrop_8, type: item, range: [0, 1], label: "Drug whose level is measured: Lamictal (lamotrigine) (box)"}
+  lamotrigine:
+    label: Lamotrigine level
+    column: lamotrig
+    unit: "mg/L"
+    units:
+      "mg/L": {factor: 1, expect: [0, 30]}
+    range: [0, 30]

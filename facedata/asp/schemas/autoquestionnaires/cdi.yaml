@@ -1,0 +1,64 @@
+instrument: cdi
+title: "Children's Depression Inventory (CDI)"
+tab: autoquestionnaires
+section: child and parent questionnaires
+status: draft
+notes: >
+  Twenty-seven items answered from 0 to 2 and a total, filled by children:
+  482 inclusion visits of children, 2 of adults and 75 follow-up visits, from 2020 to 2026. It belongs to the new set of forms; the
+  adults fill the BDI-II.
+
+  Identified from its name and its twenty-seven items as the Children's
+  Depression Inventory (Kovacs, 1985), sure: the stored total follows the
+  published key, with its thirteen reversed items (2, 5, 7, 8, 10, 11, 13, 15,
+  16, 18, 21, 24 and 25).
+
+  The scores, each fitted on the data:
+
+  - CDI total (0 to 54): the sum of 27 items (reversed: 2, 5, 7, 8, 10, 11, 13, 15, 16, 18, 21, 24 and 25), equal to the stored score on 316 of 341 complete visits; typed without its items on 114 visits, where it is kept as stored.
+
+  The visits where the stored total is not the published sum are dated 2022
+  and 2023, differ by one point for most, and all but one come from one
+  centre: totals typed by hand. The total delivered is the published sum.
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  cdi01: {column: cdi01, label: "CDI, item 1"}
+  cdi02: {column: cdi02, label: "CDI, item 2"}
+  cdi03: {column: cdi03, label: "CDI, item 3"}
+  cdi04: {column: cdi04, label: "CDI, item 4"}
+  cdi05: {column: cdi05, label: "CDI, item 5"}
+  cdi06: {column: cdi06, label: "CDI, item 6"}
+  cdi07: {column: cdi07, label: "CDI, item 7"}
+  cdi08: {column: cdi08, label: "CDI, item 8"}
+  cdi09: {column: cdi09, label: "CDI, item 9"}
+  cdi10: {column: cdi10, label: "CDI, item 10"}
+  cdi11: {column: cdi11, label: "CDI, item 11"}
+  cdi12: {column: cdi12, label: "CDI, item 12"}
+  cdi13: {column: cdi13, label: "CDI, item 13"}
+  cdi14: {column: cdi14, label: "CDI, item 14"}
+  cdi15: {column: cdi15, label: "CDI, item 15"}
+  cdi16: {column: cdi16, label: "CDI, item 16"}
+  cdi17: {column: cdi17, label: "CDI, item 17"}
+  cdi18: {column: cdi18, label: "CDI, item 18"}
+  cdi19: {column: cdi19, label: "CDI, item 19"}
+  cdi20: {column: cdi20, label: "CDI, item 20"}
+  cdi21: {column: cdi21, label: "CDI, item 21"}
+  cdi22: {column: cdi22, label: "CDI, item 22"}
+  cdi23: {column: cdi23, label: "CDI, item 23"}
+  cdi24: {column: cdi24, label: "CDI, item 24"}
+  cdi25: {column: cdi25, label: "CDI, item 25"}
+  cdi26: {column: cdi26, label: "CDI, item 26"}
+  cdi27: {column: cdi27, label: "CDI, item 27"}
+  cdi_total_stored: {column: cdi, type: number, range: [0, 54], winsor: false, keep: false, label: "CDI total (0 to 54), as stored"}
+
+scores:
+  cdi_total:
+    label: "CDI total (0 to 54)"
+    sum: [cdi01, cdi02, cdi03, cdi04, cdi05, cdi06, cdi07, cdi08, cdi09, cdi10, cdi11, cdi12, cdi13, cdi14, cdi15, cdi16, cdi17, cdi18, cdi19, cdi20, cdi21, cdi22, cdi23, cdi24, cdi25, cdi26, cdi27]
+    reverse: [cdi02, cdi05, cdi07, cdi08, cdi10, cdi11, cdi13, cdi15, cdi16, cdi18, cdi21, cdi24, cdi25]
+    compare: cdi_total_stored
+    otherwise: cdi_total_stored

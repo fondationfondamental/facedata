@@ -1,0 +1,26 @@
+instrument: bhcg_prolactine
+title: "Prolactin"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  Prolactin, on 100 inclusion visits. Same analyte, name and target unit
+  (ng/mL) as in FACE SZ and DR; the beta-hCG is not in this extraction.
+
+  Its unit column holds a catalogue number: 67306 on 88 results (median
+  12.55: ng/mL) and 67405 on 18 (median 164.45: mUI/L, the number that
+  the TSH uses). The reading of the numbers is to confirm (open question O6).
+
+defaults: {type: number}
+
+variables:
+  prolactin:
+    label: Prolactin
+    column: prolctn
+    unit_column: prolctn_orresu
+    unit_rule: prolactin_unit
+    unit: "ng/mL"
+    units:
+      "ng/mL": {factor: 1, expect: [0.5, 500], aliases: ["67306"]}
+      "mUI/L": {factor: 0.0472, expect: [30, 20000], aliases: ["67405"]}
+    range: [0.5, 500]

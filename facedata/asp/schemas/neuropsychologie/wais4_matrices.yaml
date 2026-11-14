@@ -1,0 +1,64 @@
+instrument: wais4_matrices
+title: "WAIS-IV, matrix reasoning"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Matrix reasoning: 26 items scored from 0 to 1, their total, the scaled score and its z-score,
+  on 286 inclusion visits.
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Checked on every visit: the stored total is the sum of the items, and the
+  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
+  tables of the test, which are not available: it is delivered as stored.
+
+  The stored total equals the sum of the items on 286 of the 286 visits that
+  hold every item.
+
+  Same instrument and output names as in FACE SZ, in other columns.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  wais4_mat01: {column: wais_mat1, label: "WAIS-IV matrix reasoning, item 1"}
+  wais4_mat02: {column: wais_mat2, label: "WAIS-IV matrix reasoning, item 2"}
+  wais4_mat03: {column: wais_mat3, label: "WAIS-IV matrix reasoning, item 3"}
+  wais4_mat04: {column: wais_mat4, label: "WAIS-IV matrix reasoning, item 4"}
+  wais4_mat05: {column: wais_mat5, label: "WAIS-IV matrix reasoning, item 5"}
+  wais4_mat06: {column: wais_mat6, label: "WAIS-IV matrix reasoning, item 6"}
+  wais4_mat07: {column: wais_mat7, label: "WAIS-IV matrix reasoning, item 7"}
+  wais4_mat08: {column: wais_mat8, label: "WAIS-IV matrix reasoning, item 8"}
+  wais4_mat09: {column: wais_mat9, label: "WAIS-IV matrix reasoning, item 9"}
+  wais4_mat10: {column: wais_mat10, label: "WAIS-IV matrix reasoning, item 10"}
+  wais4_mat11: {column: wais_mat11, label: "WAIS-IV matrix reasoning, item 11"}
+  wais4_mat12: {column: wais_mat12, label: "WAIS-IV matrix reasoning, item 12"}
+  wais4_mat13: {column: wais_mat13, label: "WAIS-IV matrix reasoning, item 13"}
+  wais4_mat14: {column: wais_mat14, label: "WAIS-IV matrix reasoning, item 14"}
+  wais4_mat15: {column: wais_mat15, label: "WAIS-IV matrix reasoning, item 15"}
+  wais4_mat16: {column: wais_mat16, label: "WAIS-IV matrix reasoning, item 16"}
+  wais4_mat17: {column: wais_mat17, label: "WAIS-IV matrix reasoning, item 17"}
+  wais4_mat18: {column: wais_mat18, label: "WAIS-IV matrix reasoning, item 18"}
+  wais4_mat19: {column: wais_mat19, label: "WAIS-IV matrix reasoning, item 19"}
+  wais4_mat20: {column: wais_mat20, label: "WAIS-IV matrix reasoning, item 20"}
+  wais4_mat21: {column: wais_mat21, label: "WAIS-IV matrix reasoning, item 21"}
+  wais4_mat22: {column: wais_mat22, label: "WAIS-IV matrix reasoning, item 22"}
+  wais4_mat23: {column: wais_mat23, label: "WAIS-IV matrix reasoning, item 23"}
+  wais4_mat24: {column: wais_mat24, label: "WAIS-IV matrix reasoning, item 24"}
+  wais4_mat25: {column: wais_mat25, label: "WAIS-IV matrix reasoning, item 25"}
+  wais4_mat26: {column: wais_mat26, label: "WAIS-IV matrix reasoning, item 26"}
+  wais4_mat_total: {column: wais_mattot, range: [0, 26], label: "WAIS-IV matrix reasoning, total as stored"}
+  wais4_mat_scaled: {column: wais_mat_std, range: [1, 19], label: "WAIS-IV matrix reasoning, scaled score"}
+  wais4_mat_z: {column: wais_mat_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV matrix reasoning, z-score of the scaled score"}
+
+scores:
+  wais4_mat_total_check:
+    label: "WAIS-IV matrix reasoning, total of the items"
+    sum: [wais4_mat01, wais4_mat02, wais4_mat03, wais4_mat04, wais4_mat05, wais4_mat06, wais4_mat07, wais4_mat08, wais4_mat09, wais4_mat10, wais4_mat11, wais4_mat12, wais4_mat13, wais4_mat14, wais4_mat15, wais4_mat16, wais4_mat17, wais4_mat18, wais4_mat19, wais4_mat20, wais4_mat21, wais4_mat22, wais4_mat23, wais4_mat24, wais4_mat25, wais4_mat26]
+    compare: wais4_mat_total
+    keep: false

@@ -1,0 +1,51 @@
+instrument: bilan_hepatique
+title: "Liver panel"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  Alkaline phosphatase, AST, ALT, bilirubin and GGT, on about 480 inclusion
+  visits. Same analytes, names, target units and ranges as in FACE DR.
+
+  The extraction has no unit column for these analytes (open question O6):
+  the unit is read from the size of the value, and a result that only another
+  unit explains is converted and flagged unit_inferred.
+
+defaults: {type: number}
+
+variables:
+  alkaline_phosphatase:
+    label: Alkaline phosphatase
+    column: alp
+    unit: "UI/L"
+    units:
+      "UI/L": {factor: 1, expect: [10, 1000]}
+    range: [10, 1000]
+  ast:
+    label: AST (ASAT)
+    column: ast
+    unit: "UI/L"
+    units:
+      "UI/L": {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]
+  alt:
+    label: ALT (ALAT)
+    column: alt
+    unit: "UI/L"
+    units:
+      "UI/L": {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]
+  bilirubin:
+    label: Total bilirubin
+    column: bili
+    unit: "µmol/L"
+    units:
+      "µmol/L": {factor: 1, expect: [0, 500]}
+    range: [0, 500]
+  ggt:
+    label: Gamma-glutamyl transferase (GGT)
+    column: ggt
+    unit: "UI/L"
+    units:
+      "UI/L": {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]

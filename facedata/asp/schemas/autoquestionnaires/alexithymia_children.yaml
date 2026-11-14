@@ -1,0 +1,75 @@
+instrument: alexithymia_children
+title: "Alexithymia Questionnaire for Children"
+tab: autoquestionnaires
+section: child and parent questionnaires
+status: draft
+notes: >
+  Twenty items answered from 0 to 2 and three scores, filled by children:
+  228 inclusion visits of children, 0 of adults and 64 follow-up visits, from 2021 to 2026. It belongs to the new set of forms; the
+  adults fill the BVAQ.
+
+  Identified from its name (qae, questionnaire d'alexithymie pour enfants),
+  its twenty items and its three scores as the Alexithymia Questionnaire for
+  Children (Rieffe and others, 2006), the children's form of the TAS-20, sure:
+  the three stored scores have the items and the five reversed items (4, 5,
+  10, 18 and 19) of the three factors of the TAS-20.
+
+  The scores, each fitted on the data:
+
+  - Difficulty identifying feelings: the sum of 7 items (1, 3, 6, 7, 9, 13 and 14), equal to the stored score on 292 of 292 complete visits; typed without its items on 208 visits, where it is kept as stored.
+  - Difficulty describing feelings: the sum of 5 items (2, 4, 11, 12 and 17; reversed: 4), equal to the stored score on 292 of 292 complete visits; typed without its items on 208 visits, where it is kept as stored.
+  - Externally oriented thinking: the sum of 8 items (5, 8, 10, 15, 16, 18, 19 and 20; reversed: 5, 10, 18 and 19), equal to the stored score on 292 of 292 complete visits; typed without its items on 208 visits, where it is kept as stored.
+
+  The total is not stored: it is computed as the sum of the three factors (0
+  to 40).
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  aqc01: {column: qae01, label: "Alexithymia Questionnaire for Children, item 1"}
+  aqc02: {column: qae02, label: "Alexithymia Questionnaire for Children, item 2"}
+  aqc03: {column: qae03, label: "Alexithymia Questionnaire for Children, item 3"}
+  aqc04: {column: qae04, label: "Alexithymia Questionnaire for Children, item 4"}
+  aqc05: {column: qae05, label: "Alexithymia Questionnaire for Children, item 5"}
+  aqc06: {column: qae06, label: "Alexithymia Questionnaire for Children, item 6"}
+  aqc07: {column: qae07, label: "Alexithymia Questionnaire for Children, item 7"}
+  aqc08: {column: qae08, label: "Alexithymia Questionnaire for Children, item 8"}
+  aqc09: {column: qae09, label: "Alexithymia Questionnaire for Children, item 9"}
+  aqc10: {column: qae10, label: "Alexithymia Questionnaire for Children, item 10"}
+  aqc11: {column: qae11, label: "Alexithymia Questionnaire for Children, item 11"}
+  aqc12: {column: qae12, label: "Alexithymia Questionnaire for Children, item 12"}
+  aqc13: {column: qae13, label: "Alexithymia Questionnaire for Children, item 13"}
+  aqc14: {column: qae14, label: "Alexithymia Questionnaire for Children, item 14"}
+  aqc15: {column: qae15, label: "Alexithymia Questionnaire for Children, item 15"}
+  aqc16: {column: qae16, label: "Alexithymia Questionnaire for Children, item 16"}
+  aqc17: {column: qae17, label: "Alexithymia Questionnaire for Children, item 17"}
+  aqc18: {column: qae18, label: "Alexithymia Questionnaire for Children, item 18"}
+  aqc19: {column: qae19, label: "Alexithymia Questionnaire for Children, item 19"}
+  aqc20: {column: qae20, label: "Alexithymia Questionnaire for Children, item 20"}
+  aqc_identifying_stored: {column: qae21, type: number, range: [0, 14], winsor: false, keep: false, label: "Difficulty identifying feelings, as stored"}
+  aqc_describing_stored: {column: qae22, type: number, range: [0, 10], winsor: false, keep: false, label: "Difficulty describing feelings, as stored"}
+  aqc_externally_oriented_stored: {column: qae23, type: number, range: [0, 16], winsor: false, keep: false, label: "Externally oriented thinking, as stored"}
+
+scores:
+  aqc_identifying:
+    label: "Difficulty identifying feelings"
+    sum: [aqc01, aqc03, aqc06, aqc07, aqc09, aqc13, aqc14]
+    compare: aqc_identifying_stored
+    otherwise: aqc_identifying_stored
+  aqc_describing:
+    label: "Difficulty describing feelings"
+    sum: [aqc02, aqc04, aqc11, aqc12, aqc17]
+    reverse: [aqc04]
+    compare: aqc_describing_stored
+    otherwise: aqc_describing_stored
+  aqc_externally_oriented:
+    label: "Externally oriented thinking"
+    sum: [aqc05, aqc08, aqc10, aqc15, aqc16, aqc18, aqc19, aqc20]
+    reverse: [aqc05, aqc10, aqc18, aqc19]
+    compare: aqc_externally_oriented_stored
+    otherwise: aqc_externally_oriented_stored
+  aqc_total:
+    label: "Alexithymia Questionnaire for Children, total (0 to 40)"
+    sum: [aqc_identifying, aqc_describing, aqc_externally_oriented]

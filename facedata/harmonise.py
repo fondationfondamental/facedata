@@ -26,6 +26,11 @@ def detect_version(raw, keys, schema):
         for name, items in reversed(list(version["filled"].items())):   # the first one listed wins
             result = result.mask((raw[items] != "").any(axis=1), name)
         result = result.where(has_data)                  # the instrument was not administered: no version
+    elif "age" in version:                               # a child form and an adult form in the same columns
+        result = pd.Series(np.nan, index=raw.index, dtype=object)
+        for name, (youngest, oldest) in version["age"].items():
+            result = result.mask((keys["age"] >= float(youngest)) & (keys["age"] < float(oldest)), name)
+        result = result.where(has_data)
     else:
         codes = {code.lower(): name for code, name in version["codes"].items()}
         result = clean_text(raw[version["column"]]).str.lower().map(codes)
@@ -262,18 +267,24 @@ def doubt_period(values, dates, name, doubt):
 # ---------------------------------------------------------------- step 10: scores
 
 def combine_items(values, score, schema):
-    """A score that is the sum or the mean of its items, some of them reversed first.
+    """A score that is the sum, the mean or the highest of its items, some of them reversed first.
 
-    minus: variables subtracted from a sum. scale: [factor, offset], applied to the
-    sum or the mean. floor: the lowest value the score can take.
+    points: {answer: points}, the answers that count other points than their own
+    value. minus: variables subtracted from a sum. scale: [factor, offset],
+    applied to the sum or the mean. floor: the lowest value the score can take.
     """
-    items = score.get("sum") or score.get("mean")
+    items = score.get("sum") or score.get("mean") or score.get("max")
     table = values[items].copy()
     for item in score.get("reverse", []):
         low, high = schema["variables"][item]["range"]
         table[item] = low + high - table[item]
+    if "points" in score:
+        table = table.replace(score["points"])
     enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
-    result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
+    if "max" in score:
+        result = table.max(axis=1)
+    else:
+        result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
     if "minus" in score:
         taken_off = values[score["minus"]]
         enough = enough & taken_off.notna().all(axis=1)
@@ -284,6 +295,19 @@ def combine_items(values, score, schema):
     if "floor" in score:
         result = result.clip(lower=score["floor"])
     return result.where(enough)
+
+
+def keep_stored_score(result, values, name, score):
+    """Where none of the items of a score is recorded, the score as stored is delivered.
+
+    The form lets a clinician type a total alone. Where only some items are
+    missing the score stays missing: the stored total may be a partial sum.
+    """
+    items = score.get("sum") or score.get("mean") or score.get("max")
+    stored = values[score["otherwise"]]
+    typed_alone = values[items].isna().all(axis=1) & stored.notna()
+    flags = make_flags(typed_alone, name, "score_as_stored", "none of its items is recorded")
+    return result.where(~typed_alone, stored), flags
 
 
 def look_up(raw, age, table, name, by=None):
@@ -362,6 +386,9 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
         if "range" in score:
             result, range_flags = check_range(result, name, score)
             flags.append(range_flags)
+        if "otherwise" in score:                       # a score typed without any of its items
+            result, stored_flags = keep_stored_score(result, values, name, score)
+            flags.append(stored_flags)
         values[name] = result
         if "compare" in score:
             stored = values[score["compare"]]

@@ -1,0 +1,69 @@
+instrument: stai_ya
+title: "State-Trait Anxiety Inventory, form Y-A (state)"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Twenty items and a total, at the inclusion visit: 579 visits,
+  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children fill the STAIC.
+
+  Same instrument as in FACE BP and DR, in the same columns. The answers are
+  stored from 0 to 3 on every visit of this cohort, where the published form
+  counts from 1 to 4: the schema of FACE DR, which reads the coding from the
+  answers of the visit and delivers the items from 1 to 4, is used as it is.
+  The total does not depend on the coding.
+
+defaults: {type: item, range: [0, 5], keep: false}
+
+variables:
+  staya01_stored: {column: staya01, label: "STAI item 1 as stored"}
+  staya02_stored: {column: staya02, label: "STAI item 2 as stored"}
+  staya03_stored: {column: staya03, label: "STAI item 3 as stored"}
+  staya04_stored: {column: staya04, label: "STAI item 4 as stored"}
+  staya05_stored: {column: staya05, label: "STAI item 5 as stored"}
+  staya06_stored: {column: staya06, label: "STAI item 6 as stored"}
+  staya07_stored: {column: staya07, label: "STAI item 7 as stored"}
+  staya08_stored: {column: staya08, label: "STAI item 8 as stored"}
+  staya09_stored: {column: staya09, label: "STAI item 9 as stored"}
+  staya10_stored: {column: staya10, label: "STAI item 10 as stored"}
+  staya11_stored: {column: staya11, label: "STAI item 11 as stored"}
+  staya12_stored: {column: staya12, label: "STAI item 12 as stored"}
+  staya13_stored: {column: staya13, label: "STAI item 13 as stored"}
+  staya14_stored: {column: staya14, label: "STAI item 14 as stored"}
+  staya15_stored: {column: staya15, label: "STAI item 15 as stored"}
+  staya16_stored: {column: staya16, label: "STAI item 16 as stored"}
+  staya17_stored: {column: staya17, label: "STAI item 17 as stored"}
+  staya18_stored: {column: staya18, label: "STAI item 18 as stored"}
+  staya19_stored: {column: staya19, label: "STAI item 19 as stored"}
+  staya20_stored: {column: staya20, label: "STAI item 20 as stored"}
+  staya_stored: {column: staya, label: STAI-YA total as stored, range: [20, 80]}
+
+scores:
+  staya_shift:
+    label: "What was added to the stored answers of the visit to bring them to the coding 1 to 4 (1, 0 or -1; missing when the coding of the visit cannot be told)"
+    custom: stai_shift
+  staya01: {sum: [staya01_stored, staya_shift], label: "STAI-YA item 1"}
+  staya02: {sum: [staya02_stored, staya_shift], label: "STAI-YA item 2"}
+  staya03: {sum: [staya03_stored, staya_shift], label: "STAI-YA item 3"}
+  staya04: {sum: [staya04_stored, staya_shift], label: "STAI-YA item 4"}
+  staya05: {sum: [staya05_stored, staya_shift], label: "STAI-YA item 5"}
+  staya06: {sum: [staya06_stored, staya_shift], label: "STAI-YA item 6"}
+  staya07: {sum: [staya07_stored, staya_shift], label: "STAI-YA item 7"}
+  staya08: {sum: [staya08_stored, staya_shift], label: "STAI-YA item 8"}
+  staya09: {sum: [staya09_stored, staya_shift], label: "STAI-YA item 9"}
+  staya10: {sum: [staya10_stored, staya_shift], label: "STAI-YA item 10"}
+  staya11: {sum: [staya11_stored, staya_shift], label: "STAI-YA item 11"}
+  staya12: {sum: [staya12_stored, staya_shift], label: "STAI-YA item 12"}
+  staya13: {sum: [staya13_stored, staya_shift], label: "STAI-YA item 13"}
+  staya14: {sum: [staya14_stored, staya_shift], label: "STAI-YA item 14"}
+  staya15: {sum: [staya15_stored, staya_shift], label: "STAI-YA item 15"}
+  staya16: {sum: [staya16_stored, staya_shift], label: "STAI-YA item 16"}
+  staya17: {sum: [staya17_stored, staya_shift], label: "STAI-YA item 17"}
+  staya18: {sum: [staya18_stored, staya_shift], label: "STAI-YA item 18"}
+  staya19: {sum: [staya19_stored, staya_shift], label: "STAI-YA item 19"}
+  staya20: {sum: [staya20_stored, staya_shift], label: "STAI-YA item 20"}
+  staya_total:
+    label: STAI-YA state anxiety total
+    sum: [staya01_stored, staya02_stored, staya03_stored, staya04_stored, staya05_stored, staya06_stored, staya07_stored, staya08_stored, staya09_stored, staya10_stored, staya11_stored, staya12_stored, staya13_stored, staya14_stored, staya15_stored, staya16_stored, staya17_stored, staya18_stored, staya19_stored, staya20_stored]
+    reverse: [staya01_stored, staya02_stored, staya05_stored, staya08_stored, staya10_stored, staya11_stored, staya15_stored, staya16_stored, staya19_stored, staya20_stored]
+    compare: staya_stored

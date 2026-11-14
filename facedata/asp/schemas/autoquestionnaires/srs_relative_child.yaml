@@ -1,0 +1,190 @@
+instrument: srs_relative_child
+title: "Social Responsiveness Scale, school-age form filled by a parent"
+tab: autoquestionnaires
+section: screening questionnaires
+status: draft
+notes: >
+  The school-age form of the Social Responsiveness Scale (Constantino and
+  Gruber): sixty-five items answered from 1 to 4 by a parent or another
+  relative of a patient under 18. 982 visits of 862 patients: 517 screening
+  visits, 354 inclusion visits and 111 follow-up visits.
+
+  **Two forms in the same columns.** The summary sheet of the thesaurus lists
+  a form for a child and a form for an adult, both filled by a relative. They
+  have the same sixty-five item numbers and are stored in the same columns
+  (recsoc1 to recsoc65), and no column says which was filled: the age at the
+  visit tells it, under 18 for srs_relative_child, 18 and over for
+  srs_relative_adult (PROGRESS.md D14). The norms of the two forms are not the
+  same. A visit with answers and no age has no form (version_unknown, fewer
+  than five visits).
+
+  Identified from its sixty-five items and its five sub-scales, sure: the
+  five stored sub-scales have exactly the items of the published ones
+  (awareness 8 items, cognition 12, communication 22, motivation 11,
+  restricted interests and repetitive behaviour 12). The thesaurus names the
+  scale and its total raw score only; it gives the answers: 1 not true, 2
+  sometimes true, 3 often true, 4 almost always true, and 9 "does not apply",
+  read as missing (not_applicable). It writes the scale for the screening
+  visit only.
+
+  **The stored raw scores are wrong on every visit.** The published score
+  counts each answer from 0 to 3 and reverses seventeen items (3, 7, 11, 12,
+  15, 17, 21, 22, 26, 32, 38, 40, 43, 45, 48, 52 and 55). The stored scores
+  are plain sums of the answers from 1 to 4, with no item reversed: the total
+  is the sum of the sixty-five answers on 888 of 888 complete visits of this
+  form. The answers themselves show that the seventeen items must be
+  reversed: in this form too they are the only items that fall when the rest
+  of the scale rises (17 items with a negative item-rest correlation, the
+  published seventeen). A stored total is from 22 to 110 points above the
+  published one (median 62).
+
+  The seven scores are therefore computed with the published key and
+  delivered (the total on 887 visits, median 94). The stored ones are read
+  to be checked (formulas "as stored") and are not delivered.
+
+  **The stored T-scores are not delivered.** A T-score is read by the EMR in
+  the table of the manual from the stored raw score, which is wrong; and the
+  two total T-scores are sums of the sub-scale T-scores, not T-scores. The
+  norm table is not available, so no T-score is delivered; one can be read
+  in the manual from the corrected raw score, the sex and the form.
+
+  srsc_filled_by says who filled the form (father, mother, other).
+
+  An instrument of the ASP cohort only. The form of an adult filled by a relative is srs_relative_adult; the self-report of adults is srs_adult.
+
+version:
+  name: srs_relative_form
+  age:                               # years at the visit: from the first number, below the second
+    srs_relative_child: [0, 18]
+    srs_relative_adult: [18, 130]
+
+defaults: {type: item, range: [1, 4], missing: {"9": not_applicable}, versions: [srs_relative_child]}
+
+variables:
+  srsc_filled_by: {column: recscocremp, type: category, label: "Who filled the questionnaire", codes: {"1": father, "2": mother, "3": other}, missing: {}}
+  srsc01: {column: recsoc1, label: "SRS child form, item 1"}
+  srsc02: {column: recsoc2, label: "SRS child form, item 2"}
+  srsc03: {column: recsoc3, label: "SRS child form, item 3"}
+  srsc04: {column: recsoc4, label: "SRS child form, item 4"}
+  srsc05: {column: recsoc5, label: "SRS child form, item 5"}
+  srsc06: {column: recsoc6, label: "SRS child form, item 6"}
+  srsc07: {column: recsoc7, label: "SRS child form, item 7"}
+  srsc08: {column: recsoc8, label: "SRS child form, item 8"}
+  srsc09: {column: recsoc9, label: "SRS child form, item 9"}
+  srsc10: {column: recsoc10, label: "SRS child form, item 10"}
+  srsc11: {column: recsoc11, label: "SRS child form, item 11"}
+  srsc12: {column: recsoc12, label: "SRS child form, item 12"}
+  srsc13: {column: recsoc13, label: "SRS child form, item 13"}
+  srsc14: {column: recsoc14, label: "SRS child form, item 14"}
+  srsc15: {column: recsoc15, label: "SRS child form, item 15"}
+  srsc16: {column: recsoc16, label: "SRS child form, item 16"}
+  srsc17: {column: recsoc17, label: "SRS child form, item 17"}
+  srsc18: {column: recsoc18, label: "SRS child form, item 18"}
+  srsc19: {column: recsoc19, label: "SRS child form, item 19"}
+  srsc20: {column: recsoc20, label: "SRS child form, item 20"}
+  srsc21: {column: recsoc21, label: "SRS child form, item 21"}
+  srsc22: {column: recsoc22, label: "SRS child form, item 22"}
+  srsc23: {column: recsoc23, label: "SRS child form, item 23"}
+  srsc24: {column: recsoc24, label: "SRS child form, item 24"}
+  srsc25: {column: recsoc25, label: "SRS child form, item 25"}
+  srsc26: {column: recsoc26, label: "SRS child form, item 26"}
+  srsc27: {column: recsoc27, label: "SRS child form, item 27"}
+  srsc28: {column: recsoc28, label: "SRS child form, item 28"}
+  srsc29: {column: recsoc29, label: "SRS child form, item 29"}
+  srsc30: {column: recsoc30, label: "SRS child form, item 30"}
+  srsc31: {column: recsoc31, label: "SRS child form, item 31"}
+  srsc32: {column: recsoc32, label: "SRS child form, item 32"}
+  srsc33: {column: recsoc33, label: "SRS child form, item 33"}
+  srsc34: {column: recsoc34, label: "SRS child form, item 34"}
+  srsc35: {column: recsoc35, label: "SRS child form, item 35"}
+  srsc36: {column: recsoc36, label: "SRS child form, item 36"}
+  srsc37: {column: recsoc37, label: "SRS child form, item 37"}
+  srsc38: {column: recsoc38, label: "SRS child form, item 38"}
+  srsc39: {column: recsoc39, label: "SRS child form, item 39"}
+  srsc40: {column: recsoc40, label: "SRS child form, item 40"}
+  srsc41: {column: recsoc41, label: "SRS child form, item 41"}
+  srsc42: {column: recsoc42, label: "SRS child form, item 42"}
+  srsc43: {column: recsoc43, label: "SRS child form, item 43"}
+  srsc44: {column: recsoc44, label: "SRS child form, item 44"}
+  srsc45: {column: recsoc45, label: "SRS child form, item 45"}
+  srsc46: {column: recsoc46, label: "SRS child form, item 46"}
+  srsc47: {column: recsoc47, label: "SRS child form, item 47"}
+  srsc48: {column: recsoc48, label: "SRS child form, item 48"}
+  srsc49: {column: recsoc49, label: "SRS child form, item 49"}
+  srsc50: {column: recsoc50, label: "SRS child form, item 50"}
+  srsc51: {column: recsoc51, label: "SRS child form, item 51"}
+  srsc52: {column: recsoc52, label: "SRS child form, item 52"}
+  srsc53: {column: recsoc53, label: "SRS child form, item 53"}
+  srsc54: {column: recsoc54, label: "SRS child form, item 54"}
+  srsc55: {column: recsoc55, label: "SRS child form, item 55"}
+  srsc56: {column: recsoc56, label: "SRS child form, item 56"}
+  srsc57: {column: recsoc57, label: "SRS child form, item 57"}
+  srsc58: {column: recsoc58, label: "SRS child form, item 58"}
+  srsc59: {column: recsoc59, label: "SRS child form, item 59"}
+  srsc60: {column: recsoc60, label: "SRS child form, item 60"}
+  srsc61: {column: recsoc61, label: "SRS child form, item 61"}
+  srsc62: {column: recsoc62, label: "SRS child form, item 62"}
+  srsc63: {column: recsoc63, label: "SRS child form, item 63"}
+  srsc64: {column: recsoc64, label: "SRS child form, item 64"}
+  srsc65: {column: recsoc65, label: "SRS child form, item 65"}
+
+  # The scores as stored: plain sums of the answers. Used only to check that reading.
+  srsc_awareness_stored: {column: recsoc_awr, type: number, label: "SRS child form, social awareness, as stored (no item reversed)", range: [8, 32], winsor: false, keep: false, missing: {}}
+  srsc_cognition_stored: {column: recsoc_cog, type: number, label: "SRS child form, social cognition, as stored (no item reversed)", range: [12, 48], winsor: false, keep: false, missing: {}}
+  srsc_communication_stored: {column: recsoc_com, type: number, label: "SRS child form, social communication, as stored (no item reversed)", range: [22, 88], winsor: false, keep: false, missing: {}}
+  srsc_motivation_stored: {column: recsoc_mot, type: number, label: "SRS child form, social motivation, as stored (no item reversed)", range: [11, 44], winsor: false, keep: false, missing: {}}
+  srsc_restricted_repetitive_stored: {column: recsoc_rrb, type: number, label: "SRS child form, restricted interests and repetitive behaviour, as stored (no item reversed)", range: [12, 48], winsor: false, keep: false, missing: {}}
+  srsc_sci_stored: {column: recsoc_sci, type: number, label: "SRS child form, social communication and interaction, as stored", range: [53, 212], winsor: false, keep: false, missing: {}}
+  srsc_total_stored: {column: recsoc_score, type: number, label: "SRS child form, total, as stored (no item reversed)", range: [65, 260], winsor: false, keep: false, missing: {}}
+
+  # The T-scores as stored: read from wrong raw scores, or sums of T-scores. Not delivered.
+  srsc_awr_t_stored: {column: recsoc_tawr, type: number, label: "SRS child form, social awareness, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsc_cog_t_stored: {column: recsoc_tcog, type: number, label: "SRS child form, social cognition, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsc_com_t_stored: {column: recsoc_tcom, type: number, label: "SRS child form, social communication, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsc_mot_t_stored: {column: recsoc_tmot, type: number, label: "SRS child form, social motivation, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsc_rrb_t_stored: {column: recsoc_trrb, type: number, label: "SRS child form, restricted interests and repetitive behaviour, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsc_sci_t_stored: {column: recsoc_tsci, type: number, label: "Sum of four T-scores, as stored", range: [120, 520], winsor: false, keep: false, missing: {}}
+  srsc_total_t_stored: {column: recsoc_tscore, type: number, label: "Sum of five T-scores, as stored", range: [150, 650], winsor: false, keep: false, missing: {}}
+
+scores:
+  srsc_awareness:
+    label: "SRS child form, social awareness (0 to 24)"
+    sum: [srsc02, srsc07, srsc25, srsc32, srsc45, srsc52, srsc54, srsc56]
+    reverse: [srsc07, srsc32, srsc45, srsc52]
+    scale: [1, -8]
+  srsc_cognition:
+    label: "SRS child form, social cognition (0 to 36)"
+    sum: [srsc05, srsc10, srsc15, srsc17, srsc30, srsc40, srsc42, srsc44, srsc48, srsc58, srsc59, srsc62]
+    reverse: [srsc15, srsc17, srsc40, srsc48]
+    scale: [1, -12]
+  srsc_communication:
+    label: "SRS child form, social communication (0 to 66)"
+    sum: [srsc12, srsc13, srsc16, srsc18, srsc19, srsc21, srsc22, srsc26, srsc33, srsc35, srsc36, srsc37, srsc38, srsc41, srsc46, srsc47, srsc51, srsc53, srsc55, srsc57, srsc60, srsc61]
+    reverse: [srsc12, srsc21, srsc22, srsc26, srsc38, srsc55]
+    scale: [1, -22]
+  srsc_motivation:
+    label: "SRS child form, social motivation (0 to 33)"
+    sum: [srsc01, srsc03, srsc06, srsc09, srsc11, srsc23, srsc27, srsc34, srsc43, srsc64, srsc65]
+    reverse: [srsc03, srsc11, srsc43]
+    scale: [1, -11]
+  srsc_restricted_repetitive:
+    label: "SRS child form, restricted interests and repetitive behaviour (0 to 36)"
+    sum: [srsc04, srsc08, srsc14, srsc20, srsc24, srsc28, srsc29, srsc31, srsc39, srsc49, srsc50, srsc63]
+    scale: [1, -12]
+  srsc_sci:
+    label: "SRS child form, social communication and interaction (four sub-scales) (0 to 159)"
+    sum: [srsc01, srsc02, srsc03, srsc05, srsc06, srsc07, srsc09, srsc10, srsc11, srsc12, srsc13, srsc15, srsc16, srsc17, srsc18, srsc19, srsc21, srsc22, srsc23, srsc25, srsc26, srsc27, srsc30, srsc32, srsc33, srsc34, srsc35, srsc36, srsc37, srsc38, srsc40, srsc41, srsc42, srsc43, srsc44, srsc45, srsc46, srsc47, srsc48, srsc51, srsc52, srsc53, srsc54, srsc55, srsc56, srsc57, srsc58, srsc59, srsc60, srsc61, srsc62, srsc64, srsc65]
+    reverse: [srsc03, srsc07, srsc11, srsc12, srsc15, srsc17, srsc21, srsc22, srsc26, srsc32, srsc38, srsc40, srsc43, srsc45, srsc48, srsc52, srsc55]
+    scale: [1, -53]
+  srsc_total:
+    label: "SRS child form, total raw score (0 to 195)"
+    sum: [srsc01, srsc02, srsc03, srsc04, srsc05, srsc06, srsc07, srsc08, srsc09, srsc10, srsc11, srsc12, srsc13, srsc14, srsc15, srsc16, srsc17, srsc18, srsc19, srsc20, srsc21, srsc22, srsc23, srsc24, srsc25, srsc26, srsc27, srsc28, srsc29, srsc30, srsc31, srsc32, srsc33, srsc34, srsc35, srsc36, srsc37, srsc38, srsc39, srsc40, srsc41, srsc42, srsc43, srsc44, srsc45, srsc46, srsc47, srsc48, srsc49, srsc50, srsc51, srsc52, srsc53, srsc54, srsc55, srsc56, srsc57, srsc58, srsc59, srsc60, srsc61, srsc62, srsc63, srsc64, srsc65]
+    reverse: [srsc03, srsc07, srsc11, srsc12, srsc15, srsc17, srsc21, srsc22, srsc26, srsc32, srsc38, srsc40, srsc43, srsc45, srsc48, srsc52, srsc55]
+    scale: [1, -65]
+  srsc_awareness_as_stored: {label: "SRS child form, social awareness as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc02, srsc07, srsc25, srsc32, srsc45, srsc52, srsc54, srsc56], compare: srsc_awareness_stored, keep: false}
+  srsc_cognition_as_stored: {label: "SRS child form, social cognition as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc05, srsc10, srsc15, srsc17, srsc30, srsc40, srsc42, srsc44, srsc48, srsc58, srsc59, srsc62], compare: srsc_cognition_stored, keep: false}
+  srsc_communication_as_stored: {label: "SRS child form, social communication as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc12, srsc13, srsc16, srsc18, srsc19, srsc21, srsc22, srsc26, srsc33, srsc35, srsc36, srsc37, srsc38, srsc41, srsc46, srsc47, srsc51, srsc53, srsc55, srsc57, srsc60, srsc61], compare: srsc_communication_stored, keep: false}
+  srsc_motivation_as_stored: {label: "SRS child form, social motivation as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc01, srsc03, srsc06, srsc09, srsc11, srsc23, srsc27, srsc34, srsc43, srsc64, srsc65], compare: srsc_motivation_stored, keep: false}
+  srsc_restricted_repetitive_as_stored: {label: "SRS child form, restricted interests and repetitive behaviour as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc04, srsc08, srsc14, srsc20, srsc24, srsc28, srsc29, srsc31, srsc39, srsc49, srsc50, srsc63], compare: srsc_restricted_repetitive_stored, keep: false}
+  srsc_sci_as_stored: {label: "SRS child form, social communication and interaction as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc01, srsc02, srsc03, srsc05, srsc06, srsc07, srsc09, srsc10, srsc11, srsc12, srsc13, srsc15, srsc16, srsc17, srsc18, srsc19, srsc21, srsc22, srsc23, srsc25, srsc26, srsc27, srsc30, srsc32, srsc33, srsc34, srsc35, srsc36, srsc37, srsc38, srsc40, srsc41, srsc42, srsc43, srsc44, srsc45, srsc46, srsc47, srsc48, srsc51, srsc52, srsc53, srsc54, srsc55, srsc56, srsc57, srsc58, srsc59, srsc60, srsc61, srsc62, srsc64, srsc65], compare: srsc_sci_stored, keep: false}
+  srsc_total_as_stored: {label: "SRS child form, total as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsc01, srsc02, srsc03, srsc04, srsc05, srsc06, srsc07, srsc08, srsc09, srsc10, srsc11, srsc12, srsc13, srsc14, srsc15, srsc16, srsc17, srsc18, srsc19, srsc20, srsc21, srsc22, srsc23, srsc24, srsc25, srsc26, srsc27, srsc28, srsc29, srsc30, srsc31, srsc32, srsc33, srsc34, srsc35, srsc36, srsc37, srsc38, srsc39, srsc40, srsc41, srsc42, srsc43, srsc44, srsc45, srsc46, srsc47, srsc48, srsc49, srsc50, srsc51, srsc52, srsc53, srsc54, srsc55, srsc56, srsc57, srsc58, srsc59, srsc60, srsc61, srsc62, srsc63, srsc64, srsc65], compare: srsc_total_stored, keep: false}

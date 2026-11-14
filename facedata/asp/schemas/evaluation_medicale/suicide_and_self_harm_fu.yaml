@@ -1,0 +1,49 @@
+instrument: suicide_and_self_harm_fu
+title: "Suicide attempts and self-injurious behaviour since the last visit (follow-up form)"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  The same two questions at the follow-up visits: 124 answers, 4 of them yes for
+  a suicide attempt and 21 for self-injurious behaviour.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  Two forms share these columns. Within patients the follow-up answers do
+  not repeat the inclusion ones: of the 7 follow-up answers of patients with
+  a suicide attempt at inclusion, 2 say yes; of the 45 of patients with
+  self-injurious behaviour at inclusion, 20 say yes. The follow-up form
+  therefore asks about the time since the last visit, to confirm (open question
+  O9), and its answers are delivered in columns of their own.
+
+  An instrument of the ASP cohort only.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  suicide_attempt_since_visit: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Suicide attempt since the last visit"}
+  first_suicide_attempt_age_since_visit: {column: tsprema, type: number, range: [0, 70], winsor: false, label: "Age at the first suicide attempt since the last visit"}
+  last_suicide_attempt_age_since_visit: {column: tsreca, type: number, range: [0, 70], winsor: false, label: "Age at the most recent suicide attempt since the last visit"}
+  n_suicide_attempts_since_visit: {column: tsnb, type: number, range: [0, 99], winsor: false, asked_if: suicide_attempt_since_visit, label: "Number of suicide attempts since the last visit"}
+  serious_suicide_attempt_since_visit: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, label: "A serious suicide attempt since the last visit"}
+  self_harm_since_visit: {column: auag, type: item, range: [0, 1], missing: {"9": unknown}, label: "Self-injurious behaviour since the last visit"}
+  self_harm_first_age_since_visit: {column: auagpra, type: number, range: [0, 70], winsor: false, label: "Self-injurious behaviour since the last visit: age at the first one"}
+  self_harm_first_kind_since_visit: {column: auagprty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour since the last visit: kind, first episode"}
+  self_harm_current_kind_since_visit: {column: auagsvty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour since the last visit: kind, at present"}

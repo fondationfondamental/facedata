@@ -1,0 +1,99 @@
+instrument: developmental_disorders
+title: "ADHD, behaviour, elimination, eating, tic and communication disorders"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  The clinician's list of psychiatric comorbidities, developmental part, on
+  about 1,529 inclusion visits (9 is read as "not known"): attention deficit
+  hyperactivity disorder (tbath, yes on 475 visits, with the age at onset,
+  three presentation boxes, the remission and two treatment boxes),
+  oppositional defiant disorder (tbopp, 68), conduct disorder (tcond, 13),
+  elimination disorders (tcsfinc, 132: encopresis and enuresis with their type
+  boxes), eating disorders (tcali, 141: anorexia and bulimia), chronic tics
+  (ticchr, 94: motor, vocal, Tourette). Two blocks were added in 2019: a
+  developmental coordination disorder (tac, 141 yes of 822) and four
+  communication disorders (trbco01 to trbco04: language disorder, speech sound
+  disorder, stuttering, social communication disorder; 95, 24, 12 and 208 yes),
+  each with the age at the first symptoms and a box "in remission". The ages
+  were first read as lists of codes; the thesaurus corrected it (PROGRESS.md
+  D14).
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14). A sub-disorder is delivered as 0 where its first question is no.
+
+  otrchang is the box "changed since the last visit" of the whole list of
+  comorbidities; the old forms also fill it at inclusion (until 2020).
+
+  Follow-up: of the 36 follow-up answers of patients with ADHD at inclusion,
+  32 still say yes.
+
+  An instrument of the ASP cohort only.
+
+variables:
+  adhd: {column: tbath, type: item, range: [0, 1], missing: {"9": unknown}, label: "Attention deficit hyperactivity disorder"}
+  adhd_onset_age: {column: tbathag, type: number, range: [0, 70], winsor: false, label: "ADHD: age at onset"}
+  adhd_combined: {column: tbathmix, type: item, range: [0, 1], label: "ADHD: combined presentation"}
+  adhd_inattentive: {column: tbathatt, type: item, range: [0, 1], label: "ADHD: inattentive presentation"}
+  adhd_hyperactive: {column: tbathhyp, type: item, range: [0, 1], label: "ADHD: hyperactive presentation"}
+  adhd_remission: {column: tbathrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "ADHD: in remission"}
+  adhd_psychostimulant: {column: tbathpsy, type: item, range: [0, 1], label: "ADHD: treated with a psychostimulant"}
+  adhd_neuroleptic: {column: tbathneu, type: item, range: [0, 1], label: "ADHD: treated with a neuroleptic"}
+  oppositional_disorder: {column: tbopp, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder"}
+  oppositional_disorder_onset_age: {column: tboppag, type: number, range: [0, 70], winsor: false, label: "Oppositional defiant disorder: age at onset"}
+  oppositional_disorder_remission: {column: tbopprem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder: in remission"}
+  conduct_disorder: {column: tcond, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conduct disorder"}
+  conduct_disorder_onset_age: {column: tcondiag, type: number, range: [0, 70], winsor: false, label: "Conduct disorder: age at onset"}
+  conduct_disorder_childhood: {column: tcenf, type: item, range: [0, 1], label: "Conduct disorder: childhood onset"}
+  conduct_disorder_adolescence: {column: tcado, type: item, range: [0, 1], label: "Conduct disorder: adolescent onset"}
+  conduct_disorder_remission: {column: tcrem, type: item, range: [0, 1], label: "Conduct disorder: in remission"}
+  elimination_disorder: {column: tcsfinc, type: item, range: [0, 1], missing: {"9": unknown}, label: "Elimination disorder"}
+  encopresis: {column: presi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder, label: "Encopresis"}
+  encopresis_age: {column: presiag, type: number, range: [0, 70], winsor: false, label: "Encopresis: age"}
+  encopresis_with_constipation: {column: presit1, type: item, range: [0, 1], label: "Encopresis: with constipation and overflow incontinence"}
+  encopresis_without_constipation: {column: presit2, type: item, range: [0, 1], label: "Encopresis: without constipation and overflow incontinence"}
+  encopresis_remission: {column: presirem, type: item, range: [0, 1], label: "Encopresis: in remission"}
+  enuresis: {column: enresi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder, label: "Enuresis"}
+  enuresis_age: {column: enresiag, type: number, range: [0, 70], winsor: false, label: "Enuresis: age"}
+  enuresis_nocturnal: {column: enresit1, type: item, range: [0, 1], label: "Enuresis: nocturnal only"}
+  enuresis_diurnal: {column: enresit2, type: item, range: [0, 1], label: "Enuresis: diurnal only"}
+  enuresis_nocturnal_and_diurnal: {column: enresit3, type: item, range: [0, 1], label: "Enuresis: nocturnal and diurnal"}
+  enuresis_remission: {column: enresirem, type: item, range: [0, 1], label: "Enuresis: in remission"}
+  eating_disorder: {column: tcali, type: item, range: [0, 1], missing: {"9": unknown}, label: "Eating disorder"}
+  anorexia: {column: anor, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder, label: "Anorexia"}
+  anorexia_onset_age: {column: anorag, type: number, range: [0, 70], winsor: false, label: "Anorexia: age at onset"}
+  anorexia_restrictive: {column: anorrest, type: item, range: [0, 1], label: "Anorexia: restrictive type"}
+  anorexia_purging: {column: anorpurg, type: item, range: [0, 1], label: "Anorexia: purging type"}
+  bulimia: {column: boul, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder, label: "Bulimia"}
+  bulimia_onset_age: {column: boulag, type: number, range: [0, 70], winsor: false, label: "Bulimia: age at onset"}
+  bulimia_remission: {column: boulrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Bulimia: in remission"}
+  chronic_tics: {column: ticchr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Chronic tic disorder"}
+  motor_tics: {column: ticmo, type: item, range: [0, 1], asked_if: chronic_tics, label: "Motor tics"}
+  motor_tics_onset_age: {column: ticmoag, type: number, range: [0, 70], winsor: false, label: "Motor tics: age at onset"}
+  motor_tics_remission: {column: ticmorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Motor tics: in remission"}
+  vocal_tics: {column: ticvo, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics, label: "Vocal tics"}
+  vocal_tics_onset_age: {column: ticvoag, type: number, range: [0, 70], winsor: false, label: "Vocal tics: age at onset"}
+  vocal_tics_remission: {column: ticvorem, type: item, range: [0, 1], label: "Vocal tics: in remission"}
+  tourette: {column: gtour, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics, label: "Tourette syndrome"}
+  tourette_onset_age: {column: gtourag, type: number, range: [0, 70], winsor: false, label: "Tourette syndrome: age at onset"}
+  tourette_remission: {column: gtourrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Tourette syndrome: in remission"}
+  tourette_clonidine: {column: gtourcat, type: item, range: [0, 1], label: "Tourette syndrome: treated with clonidine (Catapressan)"}
+  tourette_neuroleptic: {column: gtourneu, type: item, range: [0, 1], label: "Tourette syndrome: treated with a neuroleptic"}
+  tourette_benzodiazepine: {column: gtourben, type: item, range: [0, 1], label: "Tourette syndrome: treated with a benzodiazepine"}
+  coordination_disorder: {column: ceoccur_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder (from 2019)"}
+  coordination_disorder_onset_age: {column: agedebut_tac, type: number, range: [0, 70], winsor: false, label: "Developmental coordination disorder: age at onset"}
+  coordination_disorder_remission: {column: remi_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder: in remission"}
+  language_disorder: {column: trbco01, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder (from 2019)"}
+  language_disorder_onset_age: {column: trbco01a, type: number, label: "Language disorder: age at the first symptoms", range: [0, 70]}
+  language_disorder_remission: {column: trbco01b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder: in remission"}
+  speech_sound_disorder: {column: trbco02, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder (from 2019)"}
+  speech_sound_disorder_onset_age: {column: trbco02a, type: number, label: "Speech sound disorder: age at the first symptoms", range: [0, 70]}
+  speech_sound_disorder_remission: {column: trbco02b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder: in remission"}
+  stuttering: {column: trbco03, type: item, range: [0, 1], missing: {"9": unknown}, label: "Childhood-onset fluency disorder (stuttering) (from 2019)"}
+  stuttering_onset_age: {column: trbco03a, type: number, label: "Childhood-onset fluency disorder (stuttering): age at the first symptoms", range: [0, 70]}
+  stuttering_remission: {column: trbco03b, type: item, range: [0, 1], label: "Childhood-onset fluency disorder (stuttering): in remission"}
+  social_communication_disorder: {column: trbco04, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder (from 2019)"}
+  social_communication_disorder_onset_age: {column: trbco04a, type: number, label: "Social (pragmatic) communication disorder: age at the first symptoms", range: [0, 70]}
+  social_communication_disorder_remission: {column: trbco04b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder: in remission"}
+  comorbidities_changed: {column: otrchang, type: item, range: [0, 1], label: "The list of comorbidities changed since the last visit (also filled at inclusion in the old forms)"}

@@ -1,0 +1,170 @@
+instrument: brief_adult
+title: "BRIEF-A"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  The Behavior Rating Inventory of Executive Function, adult version (Roth and
+  others, 2005): 75 items answered from 1 to 3, nine scale scores, two indexes
+  and the composite, three validity scores. 781 inclusion visits and 5
+  follow-up visits, from 2013 to 2026.
+
+  **Two forms in the same columns, found in the data.** A visit holds either
+  86 items or 75: 581 visits hold an item beyond the 75th (580 of them are
+  children) and 591 hold the first 75 only (584 are adults). The first is the
+  form filled by a parent for a child (BRIEF, 86 items, eight scales), the
+  second the form of adults (BRIEF-A, 75 items, nine scales): the scale
+  self-monitor (brief_score4) and the infrequency score (brief_if) exist on the
+  visits of adults only. The two forms are two instruments (brief_parent and
+  brief_adult) with their own columns, and brief_form says which one a visit
+  holds. A visit is read as the form of adults when it holds one of the two
+  scores that only that form has, and as the form of children otherwise;
+  9 visits hold the first 75 items and no such score and are read as the
+  form of children.
+
+  The scores, each fitted on the data of this form (raw sums of answers from 1
+  to 3; no T-score is stored):
+
+  - inhibit: 8 items (5, 16, 29, 36, 43, 55, 58 and 73), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - shift: 6 items (8, 22, 32, 44, 61 and 67), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - emotional control: 10 items (1, 12, 19, 28, 33, 42, 51, 57, 69 and 72), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - self-monitor: 6 items (13, 23, 37, 50, 64 and 70), equal to the stored score on 558 of 560 complete visits; typed without the items on 204 visits.
+  - initiate: 8 items (6, 14, 20, 25, 45, 49, 53 and 62), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - working memory: 8 items (4, 11, 17, 26, 35, 46, 56 and 68), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - plan and organize: 10 items (9, 15, 21, 34, 39, 47, 54, 63, 66 and 71), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - task monitor: 6 items (2, 18, 24, 41, 52 and 75), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
+  - organization of materials: 8 items (3, 7, 30, 31, 40, 60, 65 and 74), equal to the stored score on 558 of 559 complete visits; typed without the items on 203 visits.
+  - Behavioral Regulation Index: the sum of 4 scales (30 items), equal to the stored score on 558 of 560 complete visits.
+  - Metacognition Index: the sum of 5 scales (40 items), equal to the stored score on 558 of 559 complete visits.
+  - Global Executive Composite: the sum of 9 scales (70 items), equal to the stored score on 558 of 559 complete visits.
+
+  The names of the scales are those of the published profile, matched by the
+  number of items of each scale and their order: likely, to be confirmed with
+  the form (O12). A scale score typed without the items is kept as stored; a
+  few typed values are above the highest possible sum (a T-score typed in
+  place of the raw score) and are out_of_range. The validity scores do not
+  come from a plain sum and are delivered as stored.
+
+  An instrument of the ASP cohort only.
+
+version:
+  name: brief_form
+  filled:                            # tested top to bottom, first match wins
+    brief_adult: [brief_score4, brief_if]
+    brief_parent: [brief1, brief2, brief3, brief4, brief5, brief6, brief7, brief8, brief9, brief10, brief11, brief12, brief13, brief14, brief15, brief16, brief17, brief18, brief19, brief20, brief21, brief22, brief23, brief24, brief25, brief26, brief27, brief28, brief29, brief30, brief31, brief32, brief33, brief34, brief35, brief36, brief37, brief38, brief39, brief40, brief41, brief42, brief43, brief44, brief45, brief46, brief47, brief48, brief49, brief50, brief51, brief52, brief53, brief54, brief55, brief56, brief57, brief58, brief59, brief60, brief61, brief62, brief63, brief64, brief65, brief66, brief67, brief68, brief69, brief70, brief71, brief72, brief73, brief74, brief75, brief76, brief77, brief78, brief79, brief80, brief81, brief82, brief83, brief84, brief85, brief86, brief_rel, brief_rela, brief_cone, brief_cona, brief_bri, brief_mi, brief_gec, brief_is, brief_ns, brief_score1, brief_score2, brief_score3, brief_score5, brief_score6, brief_score7, brief_score8, brief_score9]
+
+defaults: {type: item, range: [1, 3], versions: [brief_adult]}
+
+variables:
+  briefa01: {column: brief1, label: "BRIEF-A, item 1"}
+  briefa02: {column: brief2, label: "BRIEF-A, item 2"}
+  briefa03: {column: brief3, label: "BRIEF-A, item 3"}
+  briefa04: {column: brief4, label: "BRIEF-A, item 4"}
+  briefa05: {column: brief5, label: "BRIEF-A, item 5"}
+  briefa06: {column: brief6, label: "BRIEF-A, item 6"}
+  briefa07: {column: brief7, label: "BRIEF-A, item 7"}
+  briefa08: {column: brief8, label: "BRIEF-A, item 8"}
+  briefa09: {column: brief9, label: "BRIEF-A, item 9"}
+  briefa10: {column: brief10, label: "BRIEF-A, item 10"}
+  briefa11: {column: brief11, label: "BRIEF-A, item 11"}
+  briefa12: {column: brief12, label: "BRIEF-A, item 12"}
+  briefa13: {column: brief13, label: "BRIEF-A, item 13"}
+  briefa14: {column: brief14, label: "BRIEF-A, item 14"}
+  briefa15: {column: brief15, label: "BRIEF-A, item 15"}
+  briefa16: {column: brief16, label: "BRIEF-A, item 16"}
+  briefa17: {column: brief17, label: "BRIEF-A, item 17"}
+  briefa18: {column: brief18, label: "BRIEF-A, item 18"}
+  briefa19: {column: brief19, label: "BRIEF-A, item 19"}
+  briefa20: {column: brief20, label: "BRIEF-A, item 20"}
+  briefa21: {column: brief21, label: "BRIEF-A, item 21"}
+  briefa22: {column: brief22, label: "BRIEF-A, item 22"}
+  briefa23: {column: brief23, label: "BRIEF-A, item 23"}
+  briefa24: {column: brief24, label: "BRIEF-A, item 24"}
+  briefa25: {column: brief25, label: "BRIEF-A, item 25"}
+  briefa26: {column: brief26, label: "BRIEF-A, item 26"}
+  briefa27: {column: brief27, label: "BRIEF-A, item 27"}
+  briefa28: {column: brief28, label: "BRIEF-A, item 28"}
+  briefa29: {column: brief29, label: "BRIEF-A, item 29"}
+  briefa30: {column: brief30, label: "BRIEF-A, item 30"}
+  briefa31: {column: brief31, label: "BRIEF-A, item 31"}
+  briefa32: {column: brief32, label: "BRIEF-A, item 32"}
+  briefa33: {column: brief33, label: "BRIEF-A, item 33"}
+  briefa34: {column: brief34, label: "BRIEF-A, item 34"}
+  briefa35: {column: brief35, label: "BRIEF-A, item 35"}
+  briefa36: {column: brief36, label: "BRIEF-A, item 36"}
+  briefa37: {column: brief37, label: "BRIEF-A, item 37"}
+  briefa38: {column: brief38, label: "BRIEF-A, item 38"}
+  briefa39: {column: brief39, label: "BRIEF-A, item 39"}
+  briefa40: {column: brief40, label: "BRIEF-A, item 40"}
+  briefa41: {column: brief41, label: "BRIEF-A, item 41"}
+  briefa42: {column: brief42, label: "BRIEF-A, item 42"}
+  briefa43: {column: brief43, label: "BRIEF-A, item 43"}
+  briefa44: {column: brief44, label: "BRIEF-A, item 44"}
+  briefa45: {column: brief45, label: "BRIEF-A, item 45"}
+  briefa46: {column: brief46, label: "BRIEF-A, item 46"}
+  briefa47: {column: brief47, label: "BRIEF-A, item 47"}
+  briefa48: {column: brief48, label: "BRIEF-A, item 48"}
+  briefa49: {column: brief49, label: "BRIEF-A, item 49"}
+  briefa50: {column: brief50, label: "BRIEF-A, item 50"}
+  briefa51: {column: brief51, label: "BRIEF-A, item 51"}
+  briefa52: {column: brief52, label: "BRIEF-A, item 52"}
+  briefa53: {column: brief53, label: "BRIEF-A, item 53"}
+  briefa54: {column: brief54, label: "BRIEF-A, item 54"}
+  briefa55: {column: brief55, label: "BRIEF-A, item 55"}
+  briefa56: {column: brief56, label: "BRIEF-A, item 56"}
+  briefa57: {column: brief57, label: "BRIEF-A, item 57"}
+  briefa58: {column: brief58, label: "BRIEF-A, item 58"}
+  briefa59: {column: brief59, label: "BRIEF-A, item 59"}
+  briefa60: {column: brief60, label: "BRIEF-A, item 60"}
+  briefa61: {column: brief61, label: "BRIEF-A, item 61"}
+  briefa62: {column: brief62, label: "BRIEF-A, item 62"}
+  briefa63: {column: brief63, label: "BRIEF-A, item 63"}
+  briefa64: {column: brief64, label: "BRIEF-A, item 64"}
+  briefa65: {column: brief65, label: "BRIEF-A, item 65"}
+  briefa66: {column: brief66, label: "BRIEF-A, item 66"}
+  briefa67: {column: brief67, label: "BRIEF-A, item 67"}
+  briefa68: {column: brief68, label: "BRIEF-A, item 68"}
+  briefa69: {column: brief69, label: "BRIEF-A, item 69"}
+  briefa70: {column: brief70, label: "BRIEF-A, item 70"}
+  briefa71: {column: brief71, label: "BRIEF-A, item 71"}
+  briefa72: {column: brief72, label: "BRIEF-A, item 72"}
+  briefa73: {column: brief73, label: "BRIEF-A, item 73"}
+  briefa74: {column: brief74, label: "BRIEF-A, item 74"}
+  briefa75: {column: brief75, label: "BRIEF-A, item 75"}
+
+  # The scores as stored. Used to check our own scores, and kept where the items are not recorded.
+  briefa_inhibit_stored: {column: brief_score1, type: number, label: "BRIEF-A inhibit, as stored", range: [8, 24], winsor: false, keep: false}
+  briefa_shift_stored: {column: brief_score2, type: number, label: "BRIEF-A shift, as stored", range: [6, 18], winsor: false, keep: false}
+  briefa_emotional_control_stored: {column: brief_score3, type: number, label: "BRIEF-A emotional control, as stored", range: [10, 30], winsor: false, keep: false}
+  briefa_self_monitor_stored: {column: brief_score4, type: number, label: "BRIEF-A self-monitor, as stored", range: [6, 18], winsor: false, keep: false}
+  briefa_initiate_stored: {column: brief_score5, type: number, label: "BRIEF-A initiate, as stored", range: [8, 24], winsor: false, keep: false}
+  briefa_working_memory_stored: {column: brief_score6, type: number, label: "BRIEF-A working memory, as stored", range: [8, 24], winsor: false, keep: false}
+  briefa_plan_organize_stored: {column: brief_score7, type: number, label: "BRIEF-A plan and organize, as stored", range: [10, 30], winsor: false, keep: false}
+  briefa_task_monitor_stored: {column: brief_score8, type: number, label: "BRIEF-A task monitor, as stored", range: [6, 18], winsor: false, keep: false}
+  briefa_organization_materials_stored: {column: brief_score9, type: number, label: "BRIEF-A organization of materials, as stored", range: [8, 24], winsor: false, keep: false}
+  briefa_bri_stored: {column: brief_bri, type: number, label: "BRIEF-A Behavioral Regulation Index, as stored", range: [30, 90], winsor: false, keep: false}
+  briefa_mi_stored: {column: brief_mi, type: number, label: "BRIEF-A Metacognition Index, as stored", range: [40, 120], winsor: false, keep: false}
+  briefa_gec_stored: {column: brief_gec, type: number, label: "BRIEF-A Global Executive Composite, as stored", range: [70, 210], winsor: false, keep: false}
+
+  # The rater and the validity scores, as stored.
+  briefa_rater: {column: brief_rel, type: category, label: "Relation of the rater to the patient", codes: {"1": parent, "2": spouse, "3": sibling, "4": friend, "5": other}}
+  briefa_rater_other: {column: brief_rela, type: text, label: "Relation of the rater, free text"}
+  briefa_knows_patient: {column: brief_cone, type: category, label: "How well the rater knows the patient", codes: {"1": not_very_well, "2": well, "3": very_well}}
+  briefa_known_for: {column: brief_cona, type: number, label: "For how long the rater has known the patient, years", range: [0, 300], winsor: false}
+  briefa_negativity: {column: brief_ns, type: number, label: "BRIEF-A negativity score, as stored", range: [0, 20], winsor: false}
+  briefa_infrequency: {column: brief_if, type: number, label: "BRIEF-A infrequency score, as stored", range: [0, 10], winsor: false}
+  briefa_inconsistency: {column: brief_is, type: number, label: "BRIEF-A inconsistency score, as stored", range: [0, 30], winsor: false}
+
+scores:
+  briefa_inhibit: {label: "BRIEF-A inhibit (8 to 24)", sum: [briefa05, briefa16, briefa29, briefa36, briefa43, briefa55, briefa58, briefa73], compare: briefa_inhibit_stored, otherwise: briefa_inhibit_stored}
+  briefa_shift: {label: "BRIEF-A shift (6 to 18)", sum: [briefa08, briefa22, briefa32, briefa44, briefa61, briefa67], compare: briefa_shift_stored, otherwise: briefa_shift_stored}
+  briefa_emotional_control: {label: "BRIEF-A emotional control (10 to 30)", sum: [briefa01, briefa12, briefa19, briefa28, briefa33, briefa42, briefa51, briefa57, briefa69, briefa72], compare: briefa_emotional_control_stored, otherwise: briefa_emotional_control_stored}
+  briefa_self_monitor: {label: "BRIEF-A self-monitor (6 to 18)", sum: [briefa13, briefa23, briefa37, briefa50, briefa64, briefa70], compare: briefa_self_monitor_stored, otherwise: briefa_self_monitor_stored}
+  briefa_initiate: {label: "BRIEF-A initiate (8 to 24)", sum: [briefa06, briefa14, briefa20, briefa25, briefa45, briefa49, briefa53, briefa62], compare: briefa_initiate_stored, otherwise: briefa_initiate_stored}
+  briefa_working_memory: {label: "BRIEF-A working memory (8 to 24)", sum: [briefa04, briefa11, briefa17, briefa26, briefa35, briefa46, briefa56, briefa68], compare: briefa_working_memory_stored, otherwise: briefa_working_memory_stored}
+  briefa_plan_organize: {label: "BRIEF-A plan and organize (10 to 30)", sum: [briefa09, briefa15, briefa21, briefa34, briefa39, briefa47, briefa54, briefa63, briefa66, briefa71], compare: briefa_plan_organize_stored, otherwise: briefa_plan_organize_stored}
+  briefa_task_monitor: {label: "BRIEF-A task monitor (6 to 18)", sum: [briefa02, briefa18, briefa24, briefa41, briefa52, briefa75], compare: briefa_task_monitor_stored, otherwise: briefa_task_monitor_stored}
+  briefa_organization_materials: {label: "BRIEF-A organization of materials (8 to 24)", sum: [briefa03, briefa07, briefa30, briefa31, briefa40, briefa60, briefa65, briefa74], compare: briefa_organization_materials_stored, otherwise: briefa_organization_materials_stored}
+  briefa_bri: {label: "BRIEF-A Behavioral Regulation Index (30 to 90)", sum: [briefa_inhibit, briefa_shift, briefa_emotional_control, briefa_self_monitor], compare: briefa_bri_stored}
+  briefa_mi: {label: "BRIEF-A Metacognition Index (40 to 120)", sum: [briefa_initiate, briefa_working_memory, briefa_plan_organize, briefa_task_monitor, briefa_organization_materials], compare: briefa_mi_stored}
+  briefa_gec: {label: "BRIEF-A Global Executive Composite (70 to 210)", sum: [briefa_inhibit, briefa_shift, briefa_emotional_control, briefa_self_monitor, briefa_initiate, briefa_working_memory, briefa_plan_organize, briefa_task_monitor, briefa_organization_materials], compare: briefa_gec_stored}

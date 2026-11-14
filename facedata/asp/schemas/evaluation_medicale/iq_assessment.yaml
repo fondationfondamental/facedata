@@ -1,0 +1,27 @@
+instrument: iq_assessment
+title: "Intellectual assessment: date, age and general ability index"
+tab: evaluation_medicale
+section: intellectual assessment
+status: draft
+notes: >
+  The summary of the intellectual assessment that the clinician copies into
+  the medical evaluation: a box "assessment done" (qirea, filled until 2020
+  only: yes on 514 of 795 inclusion visits; 9 is read as "not known"), the
+  date of the assessment (1,866 visits), the age at the assessment in years
+  and months, and the general ability index (iag, from 2018, 675 visits).
+
+  The indices themselves are in three instruments, one per edition of the
+  Wechsler scales: wisc4_indices, wisc5_indices and wais4_indices.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  iq_assessment_done: {column: qirea, type: item, range: [0, 1], missing: {"9": unknown}, label: "An IQ assessment was already done"}
+  iq_assessment_date: {column: qi_date, type: date, range: [1990-01-01, 2026-12-31], label: "Date of the intellectual assessment"}
+  iq_assessment_age_years: {column: agqia, type: number, range: [0, 70], winsor: false, label: "Age at the intellectual assessment, years"}
+  iq_assessment_age_months: {column: agqim, type: number, range: [0, 11], winsor: false, label: "Age at the intellectual assessment, months above the years"}
+  gai_index: {column: iag, type: number, range: [40, 160], winsor: false, label: "General ability index (IAG)"}

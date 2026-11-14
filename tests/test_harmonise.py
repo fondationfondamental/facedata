@@ -142,6 +142,19 @@ def test_version_from_which_items_are_filled():
     assert len(flags) == 0
 
 
+def test_version_from_the_age_at_the_visit():
+    # The child form and the adult form have the same item column. The age tells which was filled.
+    raw = pd.DataFrame({"q1": ["1", "2", "3", "", "4"]})
+    keys = make_keys(["A", "B", "C", "D", "E"], [0, 0, 0, 0, 0], ["2015-01-01"] * 5)
+    keys["age"] = [9.5, 17.99, 18.0, 30.0, np.nan]
+    schema = {"version": {"name": "form", "age": {"child": ["0", "18"], "adult": ["18", "130"]}},
+              "variables": {"a": {"columns": ["q1"]}}}
+    version, flags = detect_version(raw, keys, schema)
+    assert list(version[:3]) == ["child", "child", "adult"]
+    assert pd.isna(version[3]) and pd.isna(version[4])   # no answer; an answer and no age
+    assert flagged(flags, "version_unknown") == [4]
+
+
 def test_version_from_the_columns_of_another_instrument():
     # q1 is the instrument's own item. The form is told by another questionnaire of the same visit.
     raw = pd.DataFrame({"q1": ["1", "2", "", "3"], "other_long": ["4", "", "4", ""], "other_item": ["1", "1", "1", ""]})
@@ -240,6 +253,22 @@ def test_a_score_can_be_scaled():
     assert list(values["half"][:3]) == [3.0, 3.0, 2.5]           # (a + 6 - b) / 2
     assert values[["percent", "half"]].iloc[3].isna().all()      # an item is missing
     assert flagged(flags, "score_mismatch") == [2]
+
+
+def test_a_score_can_count_points_take_the_highest_item_and_keep_a_total_typed_alone():
+    schema = {"variables": {"a": {}, "b": {}, "stored": {}},
+              "scores": {"algorithm": {"sum": ["a", "b"], "points": {3.0: 2.0, 8.0: 0.0}, "compare": "stored",
+                                       "otherwise": "stored", "compare_offset": 0.0},
+                         "highest": {"max": ["a", "b"], "points": {3.0: 2.0, 8.0: 0.0}, "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [3.0, 1.0, np.nan, np.nan, 2.0], "b": [8.0, 3.0, np.nan, 1.0, 2.0],
+                           "stored": [2.0, 3.0, 5.0, 4.0, 9.0]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["algorithm"][:3]) == [2.0, 3.0, 5.0]      # 3 counts 2 and 8 counts 0; the third total was typed alone
+    assert pd.isna(values["algorithm"][3])                       # one item is missing: the stored total may be a partial sum
+    assert list(values["a"][:2]) == [3.0, 1.0]                   # the items stay as recorded
+    assert list(values["highest"][:2]) == [2.0, 2.0]
+    assert flagged(flags, "score_as_stored") == [2]
+    assert flagged(flags, "score_mismatch") == [4]               # 2 + 2 is not 9
 
 
 def test_units_without_a_unit_column_are_read_from_the_size_of_the_value():
@@ -369,6 +398,18 @@ def test_shaps_counts_the_items_answered_disagree():
     assert pd.isna(custom.shaps_total(values)[4])                         # one item is missing
     # The EMR counts "agree" on items 2, 4, 5, 7 and 9 and "disagree" on the nine others.
     assert list(custom.shaps_total_as_stored(values)[:4]) == [5, 9, 5, 13]
+
+
+def test_psqi_components_follow_the_published_classes():
+    values = pd.DataFrame({"psqi_bedtime": [23.0, 1.0, 22.0, np.nan], "psqi_rising_time": [7.0, 9.0, 8.0, 7.0], "psqi_sleep_hours": [7.0, 5.0, 6.0, 7.0],
+                           "psqi05b": [0.0, 1.0, 3.0, 1.0], "psqi05c": [0.0, 1.0, 3.0, 1.0], "psqi05d": [0.0, 0.0, 3.0, 1.0], "psqi05e": [0.0, 0.0, 3.0, 1.0],
+                           "psqi05f": [0.0, 0.0, 3.0, 1.0], "psqi05g": [0.0, 0.0, 3.0, 1.0], "psqi05h": [0.0, 0.0, 3.0, np.nan], "psqi05i": [0.0, 0.0, 0.0, 1.0],
+                           "psqi05j": [np.nan, 0.0, 3.0, 1.0], "psqi08": [0.0, 1.0, 3.0, 2.0], "psqi09": [0.0, 1.0, 2.0, np.nan]})
+    assert list(custom.psqi_efficiency(values)[:3]) == [0.0, 3.0, 3.0]      # 7 of 8 hours across midnight; 5 of 8; 6 of 10
+    assert pd.isna(custom.psqi_efficiency(values)[3])
+    assert list(custom.psqi_disturbances(values)[:3]) == [0.0, 1.0, 3.0]    # sums of 0, 2 and 24; an empty "other reason" counts 0
+    assert pd.isna(custom.psqi_disturbances(values)[3])                     # an item is not answered
+    assert list(custom.psqi_dysfunction(values)[:3]) == [0.0, 1.0, 3.0] and pd.isna(custom.psqi_dysfunction(values)[3])
 
 
 def test_psqi_latency_puts_minutes_and_item_5a_in_classes():

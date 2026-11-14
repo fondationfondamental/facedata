@@ -206,6 +206,17 @@ def qids_total(values, keys=None):
     return total.where(values[always].notna().all(axis=1) & appetite_answered & weight_answered)
 
 
+def adi_peer_item(values, keys=None):
+    """ADI-R algorithm: the peer item that counts at the age of the subject.
+
+    Group play with peers (item 64) under ten years at the interview,
+    friendships (item 65) from ten years. Missing when the age is.
+    """
+    under_ten = values["adi_age_years"] < 10
+    item = values["adi64_past"].where(under_ten, values["adi65_past"])
+    return item.where(values["adi_age_years"].notna())
+
+
 def psqi_latency(values, keys=None):
     """PSQI component 2, sleep latency (0 to 3).
 
@@ -217,6 +228,43 @@ def psqi_latency(values, keys=None):
     points = (minutes > 15).astype(float) + (minutes > 30) + (minutes > 60) + values["psqi05a"]
     points = points.where(minutes.notna())
     return ((points >= 1).astype(float) + (points >= 3) + (points >= 5)).where(points.notna())
+
+
+def psqi_efficiency(values, keys=None):
+    """PSQI component 4, habitual sleep efficiency (0 to 3).
+
+    The hours asleep over the hours in bed, from the bedtime to the rising
+    time across midnight: 85% or more counts 0, 75% to 84% counts 1, 65% to
+    74% counts 2, less counts 3.
+    """
+    in_bed = (values["psqi_rising_time"] - values["psqi_bedtime"]) % 24
+    efficiency = 100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)
+    points = (efficiency < 85).astype(float) + (efficiency < 75) + (efficiency < 65)
+    return points.where(efficiency.notna())
+
+
+def psqi_disturbances(values, keys=None):
+    """PSQI component 5, sleep disturbances (0 to 3).
+
+    The items 5b to 5j are added: 0 counts 0, 1 to 9 count 1, 10 to 18 count
+    2, more counts 3. The last item, "another reason", counts 0 when it is
+    empty; the eight others must be answered.
+    """
+    answered = ["psqi05b", "psqi05c", "psqi05d", "psqi05e", "psqi05f", "psqi05g", "psqi05h", "psqi05i"]
+    total = values[answered].sum(axis=1) + values["psqi05j"].fillna(0)
+    points = (total >= 1).astype(float) + (total >= 10) + (total >= 19)
+    return points.where(values[answered].notna().all(axis=1))
+
+
+def psqi_dysfunction(values, keys=None):
+    """PSQI component 7, daytime dysfunction (0 to 3).
+
+    The items 8 and 9 are added: 0 counts 0, 1 or 2 count 1, 3 or 4 count 2,
+    5 or 6 count 3.
+    """
+    total = values["psqi08"] + values["psqi09"]
+    points = (total >= 1).astype(float) + (total >= 3) + (total >= 5)
+    return points.where(total.notna())
 
 
 def stroop_interference(values, keys=None):
@@ -241,4 +289,10 @@ def medication_name(names):
     """The stem of a medication name: "TERALITHE LP 400 mg, comprimé sécable" gives "TERALITHE LP"."""
     stems = names.str.upper().str.replace(r"\s+\d.*|[,(/*].*", "", regex=True)
     return stems.str.replace(r"\s+", " ", regex=True).str.strip()
+
+
+def medication_name_plain(names):
+    """The stem of a medication name, without its accents: "Mélatonine 2 mg" gives "MELATONINE"."""
+    plain = names.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
+    return medication_name(plain)
 

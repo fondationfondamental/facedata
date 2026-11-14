@@ -1,0 +1,51 @@
+instrument: substance_use
+title: "Substance use"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  The clinician's list of psychiatric comorbidities, substance part. A first
+  question (utisubst, yes on 142 of 1,538 inclusion visits; 9 is read as "not
+  known") opens nine substances: tobacco, alcohol, benzodiazepines, cannabis,
+  stimulants, cocaine, hallucinogens, a substance named utiste and solvents.
+  For each: a level of use coded 0, 1 or 2 (tobacco: 0 on 38 visits, 1 on 12, 2
+  on 86), the age at the first use and a status coded 1 or 2. The two lists are
+  those of the thesaurus: no, abuse, dependence; past, current.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  Almost all the answers are those of adults (128 of 137 for tobacco). The
+  utiste columns for the age and the status are empty on every row
+  (ignored.yaml).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  substance_use: {column: utisubst, type: item, range: [0, 1], missing: {"9": unknown}, label: "Use of a substance"}
+  tobacco_use: {column: utitab, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Tobacco: abuse or dependence"}
+  tobacco_first_age: {column: utitabag, type: number, range: [0, 70], winsor: false, label: "Tobacco: age at the first use"}
+  tobacco_use_status: {column: utitabst, type: category, codes: {"1": past, "2": current}, label: "Tobacco: the abuse or dependence is past or current"}
+  alcohol_use: {column: utialc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Alcohol: abuse or dependence"}
+  alcohol_first_age: {column: utialcag, type: number, range: [0, 70], winsor: false, label: "Alcohol: age at the first use"}
+  alcohol_use_status: {column: utialcst, type: category, codes: {"1": past, "2": current}, label: "Alcohol: the abuse or dependence is past or current"}
+  benzodiazepines_use: {column: utiben, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Benzodiazepines: abuse or dependence"}
+  benzodiazepines_first_age: {column: utibenag, type: number, range: [0, 70], winsor: false, label: "Benzodiazepines: age at the first use"}
+  benzodiazepines_use_status: {column: utibenst, type: category, codes: {"1": past, "2": current}, label: "Benzodiazepines: the abuse or dependence is past or current"}
+  cannabis_use: {column: utican, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cannabis: abuse or dependence"}
+  cannabis_first_age: {column: uticanag, type: number, range: [0, 70], winsor: false, label: "Cannabis: age at the first use"}
+  cannabis_use_status: {column: uticanst, type: category, codes: {"1": past, "2": current}, label: "Cannabis: the abuse or dependence is past or current"}
+  stimulants_use: {column: utisti, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Psychostimulants: abuse or dependence"}
+  stimulants_first_age: {column: utistiag, type: number, range: [0, 70], winsor: false, label: "Stimulants: age at the first use"}
+  stimulants_use_status: {column: utistist, type: category, codes: {"1": past, "2": current}, label: "Psychostimulants: the abuse or dependence is past or current"}
+  cocaine_use: {column: uticoc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cocaine: abuse or dependence"}
+  cocaine_first_age: {column: uticocag, type: number, range: [0, 70], winsor: false, label: "Cocaine: age at the first use"}
+  cocaine_use_status: {column: uticocst, type: category, codes: {"1": past, "2": current}, label: "Cocaine: the abuse or dependence is past or current"}
+  hallucinogens_use: {column: utihal, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Hallucinogens: abuse or dependence"}
+  hallucinogens_first_age: {column: utihalag, type: number, range: [0, 70], winsor: false, label: "Hallucinogens: age at the first use"}
+  hallucinogens_use_status: {column: utihalst, type: category, codes: {"1": past, "2": current}, label: "Hallucinogens: the abuse or dependence is past or current"}
+  steroids_use: {column: utiste, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Androgenic steroids: abuse or dependence"}
+  solvents_use: {column: utisol, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Solvents: abuse or dependence"}
+  solvents_first_age: {column: utisolag, type: number, range: [0, 70], winsor: false, label: "Solvents: age at the first use"}
+  solvents_use_status: {column: utisolst, type: category, codes: {"1": past, "2": current}, label: "Solvents: the abuse or dependence is past or current"}

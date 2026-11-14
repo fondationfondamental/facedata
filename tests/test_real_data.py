@@ -329,12 +329,12 @@ def test_care_and_sick_leave(result, qc):
 def test_treatments(result, qc):
     items, data = result.treatments, result.data
     # One row per patient and medication: the lists of a patient are the same on every row.
-    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (22758, 4779, 116)
+    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (22758, 4779, 125)
     assert qc.loc["medication", "patient_value_varies"] == 0
     # 99% of the names are found in the table; the others keep what was written and are flagged.
-    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22569, 189)
+    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22585, 173)
     groups = items["treatment_group"].value_counts()
-    assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5002, 4807, 10)
+    assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5003, 4807, 10)
     assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22630, 10903, 3117)
     assert (qc.loc["units_per_day", "missing_code"], qc.loc["daily_dose", "n_valid"]) == (893, 6418)
     # On the day of the visit: computed for the patients who have a list.

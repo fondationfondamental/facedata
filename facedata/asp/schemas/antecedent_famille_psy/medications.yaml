@@ -1,0 +1,70 @@
+instrument: medications
+title: "Treatments at the visit, one row per treatment"
+tab: antecedent_famille_psy
+section: treatments
+status: draft
+level: list
+notes: >
+  The treatments recorded at a visit: the name, the generic name, the
+  indication, the dose, the start and the end, and whether the treatment is
+  still taken. 1,784 treatments for 966 visits of 896 patients (408 screening
+  visits, 475 inclusion visits and 83 follow-up visits), from 2011 to 2026. One row per
+  visit and treatment in the table treatments, where the column list says
+  "medications".
+
+  **The list is that of the visit, not the history of the patient.** In BP,
+  SZ and DR every row of a patient holds the same list. Here 65 patients have
+  a list on several visits, and they differ: the list of each visit is opened
+  (field per_visit) and the table has the column visit. A current treatment
+  is declared on 715 inclusion visits and a list is recorded on 456 of them:
+  **a patient with no list is not a patient with no treatment**.
+
+  Molecule and group. The name is looked up in the table medications.csv,
+  shared by the cohorts, and the generic name where the name gives nothing
+  (field otherwise): the name is written on 1,505 treatments and the generic
+  name on 602. 1,523 of the 1,735 treatments that have a name find their
+  molecule; thirty-one names of this cohort were added to the table, and the
+  212 others (205 different names, most of them somatic drugs written once or
+  twice) keep what was written and get unknown_code. The accents of the names
+  are written twice over in this export; the reader puts them back.
+
+  The dose is a number whose unit is not recorded (1,143 treatments); the start
+  is a full date on 622 treatments, a month or a year on 102, and empty on
+  1056. still_taken is 1 on 1,447 treatments and 0 on 184.
+
+per_visit: true
+
+names:
+  column: nom_trt
+  otherwise: nom_dci_trt
+  clean: medication_name_plain
+  table: medications.csv
+  gives: [molecule, atc, treatment_group]
+
+variables:
+  medication: {column: nom_trt, type: text, label: "Name of the treatment, as written"}
+  generic_name: {column: nom_dci_trt, type: text, label: "Generic name, as written"}
+  molecule: {column: molecule, type: text, label: Molecule}
+  atc: {column: atc, type: text, label: ATC code of the molecule}
+  treatment_group:
+    column: treatment_group
+    label: Group of the medication
+    type: category
+    codes:
+      lithium: lithium
+      anticonvulsant: anticonvulsant
+      antipsychotic_2g: antipsychotic_2g
+      antipsychotic_1g: antipsychotic_1g
+      antidepressant: antidepressant
+      benzodiazepine: benzodiazepine
+      other_anxiolytic_hypnotic: other_anxiolytic_hypnotic
+      stimulant: stimulant
+      other_nervous_system: other_nervous_system
+      non_psychotropic: non_psychotropic
+  indication: {column: indication, type: text, label: "Indication, as written"}
+  dose: {column: poso_trt, type: number, label: "Dose (unit not recorded)", range: [0, 5000], winsor: false}
+  units_per_intake: {column: cmdosu, type: number, label: "Units per intake, as stored", range: [0, 20], winsor: false}
+  intakes_per_day: {column: cmdosfrq, type: number, label: "Intakes a day, as stored", range: [0, 10], winsor: false}
+  start_date: {column: deb_trt, type: date, range: [1950-01-01, 2026-12-31], label: Start of the treatment}
+  end_date: {column: fin_trt, type: date, range: [1950-01-01, 2026-12-31], label: End of the treatment}
+  still_taken: {column: progress_trt, type: item, label: "The treatment is still taken (0 no, 1 yes)", range: [0, 1]}

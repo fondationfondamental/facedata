@@ -1,0 +1,30 @@
+instrument: earlier_diagnosis
+title: "Diagnoses made before the expert centre"
+tab: patient
+section: screening form
+status: draft
+level: patient
+notes: >
+  One value per patient, from the form filled before the assessment (the
+  columns are repeated on every row of a patient and never change). Filled for
+  1,072 of the 2,318 patients: 62% of the adults and 24% of the children, and
+  20% to 73% of the inclusions depending on the year.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14). oldiag ("ancien diagnostic") is 1 for 106 patients, 0 for 956 and 9 for
+  10: an earlier diagnosis of autism spectrum disorder, 9 read as "not known".
+  Its date is given for 61 patients and "by whom" (oldiag_ki) for 95,
+  (psychiatrist, paediatrician, general practitioner, other). diag_autr is
+  another earlier diagnosis (yes for 495 patients, no for 542, 9 for 22); its
+  kind is one of fifteen texts, and a free text adds to it for 143 patients.
+
+  An instrument of the ASP cohort only.
+
+variables:
+  earlier_asd_diagnosis: {column: oldiag, type: item, range: [0, 1], missing: {"9": unknown}, label: "An autism spectrum diagnosis was made before the consultation"}
+  earlier_asd_diagnosis_date: {column: oldiag_date, type: date, range: [1950-01-01, 2026-12-31], label: "Date of the earlier diagnosis"}
+  earlier_asd_diagnosis_by: {column: oldiag_ki, type: category, codes: {"1": psychiatrist, "2": paediatrician, "3": general_practitioner, "4": other}, label: "Who made the earlier diagnosis"}
+  other_earlier_diagnosis: {column: diag_autr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Another diagnosis was made before the consultation"}
+  other_earlier_diagnosis_kind: {column: diag_autr_kel, type: text, label: "Kind of the other diagnosis, as written (one of fifteen texts)"}
+  other_earlier_diagnosis_text: {column: diag_autr_kela, type: text, label: "The other diagnosis, free text"}

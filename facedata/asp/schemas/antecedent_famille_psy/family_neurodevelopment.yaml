@@ -1,0 +1,41 @@
+instrument: family_neurodevelopment
+title: "Neurodevelopmental disorders of the relatives, one row per relative"
+tab: antecedent_famille_psy
+section: history
+status: draft
+level: list
+notes: >
+  For each relative described, nine yes/no answers: autism spectrum disorder,
+  intellectual disability, communication disorder, ADHD, learning disorder,
+  motor disorder, another disorder, a neurological disorder and an
+  oppositional disorder. 562 relatives for 434 inclusion visits, from 2020 to 2026. One row
+  per patient and relative in the table treatments, where the column list
+  says "family_neurodevelopment".
+
+  The export packs the relatives of a patient in one cell, nine fields each,
+  and writes who each relative is in a second cell (srel), a code per relative
+  in the same order: the two cells have the same number of records on 253 of
+  the 264 visits that hold both. The names of the nine answers are read from
+  the name of the column (tsa, hi, trbcom, tdah, trbappr, trbmot, autretrb,
+  neuronsp, top): likely. The relative is named from the list of the thesaurus
+  (father, mother, brother, sister, son, daughter). A 9 is "not known". 85
+  records hold nine empty fields: a relative was opened and nothing was
+  answered.
+
+  A section of the ASP cohort only.
+
+packed:
+  tsa_hi_trbcom_tdah_trbappr_trbmot_autretrb_neuronsp_top: {fields: [fam_asd, fam_intellectual_disability, fam_communication_disorder, fam_adhd, fam_learning_disorder, fam_motor_disorder, fam_other_disorder, fam_neurological_nos, fam_oppositional_disorder]}
+  srel: {fields: [fam_relative]}
+
+variables:
+  relative: {column: fam_relative, type: category, label: "The relative", codes: {"1": father, "2": mother, "3": brother, "4": sister, "5": son, "6": daughter}}
+  relative_asd: {column: fam_asd, type: item, label: "The relative has: autism spectrum disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_intellectual_disability: {column: fam_intellectual_disability, type: item, label: "The relative has: intellectual disability (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_communication_disorder: {column: fam_communication_disorder, type: item, label: "The relative has: communication disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_adhd: {column: fam_adhd, type: item, label: "The relative has: ADHD (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_learning_disorder: {column: fam_learning_disorder, type: item, label: "The relative has: learning disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_motor_disorder: {column: fam_motor_disorder, type: item, label: "The relative has: motor disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_other_disorder: {column: fam_other_disorder, type: item, label: "The relative has: other neurodevelopmental disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_neurological_nos: {column: fam_neurological_nos, type: item, label: "The relative has: neurological disorder not specified (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_oppositional_disorder: {column: fam_oppositional_disorder, type: item, label: "The relative has: oppositional disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}

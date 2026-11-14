@@ -1,0 +1,26 @@
+instrument: expert_centre_referral
+title: "Boxes of the section oce"
+tab: patient
+section: screening form
+status: draft
+level: patient
+notes: >
+  One value per patient. Six yes/no boxes (oce_1 to oce_6), a date and a
+  remark, filled for about 985 patients (57% of the adults, 21% of the
+  children). Each box is yes for 96% to 100% of the patients: the section is
+  the checklist of the conditions of an assessment at the expert centre
+  (thesaurus: "orientation centre expert").
+
+  Not loaded: oce_medecin, the name of a clinician (ignored.yaml).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  referral_probable_asd: {column: oce_1, type: item, range: [0, 1], label: "Referral: probably an autism spectrum disorder without intellectual disability"}
+  referral_mental_state_compatible: {column: oce_2, type: item, range: [0, 1], label: "Referral: mental state compatible with the assessment"}
+  referral_functional_language: {column: oce_3, type: item, range: [0, 1], label: "Referral: language sufficient for the assessment at the expert centre"}
+  referral_by_physician: {column: oce_4, type: item, range: [0, 1], label: "Referral: referred by a physician who will receive the report"}
+  referral_costs_covered: {column: oce_5, type: item, range: [0, 1], label: "Referral: costs covered (full coverage, insurance, or the patient agrees to pay)"}
+  referral_consent: {column: oce_6, type: item, range: [0, 1], label: "Referral: the patient or the legal guardian agrees to the assessment"}
+  referral_date: {column: oce_date, type: date, range: [1950-01-01, 2026-12-31], label: "Date of the first assessment at the expert centre"}
+  referral_remark: {column: oce_rq, type: text, label: "Referral: remarks, free text"}

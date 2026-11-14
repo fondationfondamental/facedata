@@ -1,0 +1,35 @@
+instrument: epworth
+title: "Epworth Sleepiness Scale"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Eight items from 0 to 3 and a total, at the inclusion visit: 408 visits,
+  from 2021 to 2026. It belongs to the new set of forms. It is filled by adults only.
+
+  Same instrument and same schema as in FACE DR, in the same columns. The
+  stored total is the sum of the eight items on every complete visit.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  ess01: {label: "Epworth item 1: sitting and reading"}
+  ess02: {label: "Epworth item 2: watching television"}
+  ess03: {label: "Epworth item 3: sitting inactive in a public place"}
+  ess04: {label: "Epworth item 4: passenger in a car for an hour"}
+  ess05: {label: "Epworth item 5: lying down to rest in the afternoon"}
+  ess06: {label: "Epworth item 6: sitting and talking to someone"}
+  ess07: {label: "Epworth item 7: sitting quietly after a lunch without alcohol"}
+  ess08: {label: "Epworth item 8: in a car, stopped for a few minutes in traffic"}
+  epworth_when:
+    column: ess09
+    type: category
+    label: When the sleepiness comes
+    codes: {0: after_meals, 1: fixed_hours, 2: night, 3: any_time}
+  epworth_stored: {column: ess, label: Epworth total as stored, range: [0, 24], keep: false}
+
+scores:
+  epworth_total:
+    label: Epworth total (0 to 24, higher is sleepier)
+    sum: [ess01, ess02, ess03, ess04, ess05, ess06, ess07, ess08]
+    compare: epworth_stored

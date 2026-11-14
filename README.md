@@ -22,9 +22,12 @@ The other BP instruments are added one by one; see
 | [docs/sz/QUESTIONS.md](docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
 | [docs/dr/PROGRESS.md](docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
 | [docs/dr/QUESTIONS.md](docs/dr/QUESTIONS.md) | The same questions for FACE DR |
+| [docs/asp/PROGRESS.md](docs/asp/PROGRESS.md) | FACE ASP (autism spectrum, children and adults) checklist, decisions taken, decisions still open. The dictionary arrived after the module was written: every instrument was identified from the data, then checked against it |
+| [docs/asp/QUESTIONS.md](docs/asp/QUESTIONS.md) | The same questions for FACE ASP |
 | [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
 | [schizophrenia-tutorial.ipynb](schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
 | [depression-tutorial.ipynb](depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
+| [autism-tutorial.ipynb](autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
 
 ## Use
 
@@ -75,6 +78,16 @@ is read by one of 137 schemas or ignored with a reason, and
 its own (`visit == "screening"`), where the MINI is given. Its table
 `treatments` holds three lists, named in the column `list`.
 
+FACE ASP, the cohort of autism spectrum disorders, has children and adults
+(`from facedata import asp`). Its extraction came without a dictionary: each
+of its 4,364 columns is read by one of 138 schemas or ignored with a reason,
+and every instrument was identified from its column names, its items and its
+stored scores. The thesaurus arrived afterwards: it confirmed the instruments,
+corrected eight readings and gave the wording of the lists and the labels; a
+code that it does not document is delivered as a numbered code. Its table `treatments` holds eleven lists (the treatments of each
+visit, the diseases of each body system, the relatives, the
+hospitalisations). `docs/asp/PROGRESS.md` logs each decision.
+
 The first column of every table is `cohort`. A `usubjid` is unique inside a
 cohort only (the same number can be another patient in the other cohort), so
 the key is `cohort` with `usubjid`. `patients` also holds `fondacode`, the
@@ -95,9 +108,13 @@ uv run jupyter lab schizophrenia-tutorial.ipynb
 uv run jupyter lab depression-tutorial.ipynb
 ```
 
+```bash
+uv run jupyter lab autism-tutorial.ipynb
+```
+
 One notebook per cohort. The second one ends with a section that loads the
 instruments shared by FACE BP and FACE SZ and stacks the two cohorts; the
-third one stacks the three.
+third one stacks the three, and the fourth one the four.
 
 A notebook opens in the web browser. Run its cells from top to bottom with
 `Shift` + `Enter`. What appears under a cell is patient data: clear it

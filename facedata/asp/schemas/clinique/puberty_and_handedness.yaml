@@ -1,0 +1,29 @@
+instrument: puberty_and_handedness
+title: "Handedness and Tanner stages"
+tab: clinique
+section: clinical examination
+status: draft
+notes: >
+  lateral is the handedness, on 883 inclusion visits (right-handed on 745 of
+  them), delivered with the names of FACE BP (right, left, both).
+
+  Four stages of puberty from 1 to 5, read as the Tanner stages: tang and tanpg
+  for the boys (218 of the 222 visits with tang are boys), tans and tanpf for
+  the girls (123 of 125). Which of each pair is the pubic hair is given by the
+  thesaurus. They are filled for adults too.
+
+  fnmchang is a box of the follow-up form (98 visits, 0 on almost all).
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  handedness: {column: lateral, type: category, codes: {"1": left, "2": right, "3": both}, label: "Handedness"}
+  tanner_genital_boys: {column: tang, type: item, range: [1, 5], label: "Tanner stage, boys, genitals (1 to 5)"}
+  tanner_pubic_boys: {column: tanpg, type: item, range: [1, 5], label: "Tanner stage, boys, pubic hair (1 to 5)"}
+  tanner_breast_girls: {column: tans, type: item, range: [1, 5], label: "Tanner stage, girls, breasts (1 to 5)"}
+  tanner_pubic_girls: {column: tanpf, type: item, range: [1, 5], label: "Tanner stage, girls, pubic hair (1 to 5)"}
+  puberty_handedness_changed: {column: fnmchang, type: item, range: [0, 1], label: "Puberty and handedness changed since the last visit (follow-up form)"}

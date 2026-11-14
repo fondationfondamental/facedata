@@ -182,3 +182,87 @@ def test_several_list_instruments_are_stacked(tmp_path):
     assert set(result.flags.loc[result.flags["flag"] == "list_crossed", "visit"]) == {"pills item 1", "pills item 2"}
     problems = check_schema({**load_schemas(tmp_path / "schemas")["pills"], "level": "visit"}, {"names", "strengths", "starts", "per_day"})
     assert any("crossed needs level: list" in problem for problem in problems)
+
+
+
+PACKED = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tills\twho\tnames
+P1\tscreening\t1\t1\t2020-01-02\t01\t\t\t['CALMIX']
+P1\tV0\t2\t2\t2020-01-10\t01\t(3 - a cold - then a cough - 4 - 1) | (5 -  - 12 - 0) | (7 - x)\t2 | 4 | 4\t['SEDALINE', 'ZZZ']
+P2\tV0\t2\t3\t2020-06-01\t01\t\t\t
+"""
+
+ILLNESSES = """
+instrument: illnesses
+title: Illnesses
+tab: TEST
+section: Illnesses
+status: draft
+level: list
+packed:
+  ills: {fields: [ill_code, ill_text, ill_age, ill_over], text: ill_text}
+  who: {fields: [ill_who]}
+variables:
+  illness: {column: ill_code, type: category, codes: {"3": cold, "5": flu, "7": other}}
+  illness_text: {column: ill_text, type: text}
+  illness_age: {column: ill_age, type: number, range: [0, 100], winsor: false}
+  illness_over: {column: ill_over, type: item, range: [0, 1]}
+  illness_who: {column: ill_who, type: category, codes: {"2": mother, "4": father}}
+"""
+
+PILLS_OF_THE_VISIT = """
+instrument: pills
+title: Pills
+tab: TEST
+section: Pills
+status: draft
+level: list
+per_visit: true
+variables:
+  pill: {column: names, type: text}
+"""
+
+
+def test_records_packed_in_a_cell_and_lists_of_the_visit(tmp_path):
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "illnesses.yaml").write_text(ILLNESSES, encoding="utf-8")
+    (tmp_path / "schemas" / "tab" / "pills.yaml").write_text(PILLS_OF_THE_VISIT, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(PACKED, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    items = result.treatments
+    ills = items[items["list"] == "illnesses"].reset_index(drop=True)
+    assert list(ills["item"]) == [1, 2, 3] and list(ills["illness"]) == ["cold", "flu", "other"]
+    assert ills["illness_text"].fillna("").tolist() == ["a cold - then a cough", "", "x"]      # the separator inside the free text
+    assert list(ills["illness_age"][:2]) == [4, 12] and pd.isna(ills["illness_age"][2])          # the short record has its last fields empty
+    assert list(ills["illness_who"]) == ["mother", "father", "father"]                           # a cell of single values
+    pills = items[items["list"] == "pills"].reset_index(drop=True)
+    assert list(zip(pills["visit"], pills["item"], pills["pill"])) == [("screening", 1, "CALMIX"), ("V0", 1, "SEDALINE"), ("V0", 2, "ZZZ")]
+    assert "patient_value_varies" not in set(result.flags["flag"])                                # the two visits of P1 hold two lists
+
+
+def test_check_schema_checks_per_visit_and_packed(tmp_path):
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "illnesses.yaml").write_text(ILLNESSES.replace("level: list\n", "").replace("text: ill_text", "text: no_such_field"), encoding="utf-8")
+    (tmp_path / "schemas" / "tab" / "pills.yaml").write_text(PILLS_OF_THE_VISIT.replace("level: list\n", ""), encoding="utf-8")
+    schemas = load_schemas(tmp_path / "schemas")
+    assert "packed needs level: list" in " | ".join(check_schema(schemas["illnesses"]))
+    assert "per_visit needs level: list" in " | ".join(check_schema(schemas["pills"]))
+    assert "packed: column 'ills' is not in the extraction" in " | ".join(check_schema(schemas["illnesses"], {"who"}))
+
+
+def test_accents_written_twice_are_put_back_and_a_second_column_of_names_is_read(tmp_path):
+    from facedata.read import read_extraction, twice_encoded
+    assert twice_encoded("dÃ©pression") == "dépression" and twice_encoded("déjà") == "déjà" and twice_encoded("Ã") == "Ã"
+    assert twice_encoded("déjà Ã©té – ['Ã\\xa0 jeun']") == "déjà été – ['à jeun']"          # a cell that is only partly broken
+    assert list(custom.medication_name_plain(pd.Series(["Mélatonine 2 mg", "CALMIX LP 10 mg"]))) == ["MELATONINE", "CALMIX LP"]
+    extraction = EXTRACTION.replace("\tper_day", "\tper_day\tgeneric").replace("['2', 'Si besoin', None]", "['2', 'Si besoin', None]\t[None, None, 'SÃ©daline']")
+    extraction = extraction.replace("['1']\n", "['1']\t[None]\n").replace("\t\t\t\t\n", "\t\t\t\t\t\n")
+    schema = SCHEMA.replace("clean: medication_name,", "clean: medication_name_plain, otherwise: generic,").replace("  pill: {column: names, type: text}", "  pill: {column: names, type: text}\n  generic: {column: generic, type: text}")
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "pills.yaml").write_text(schema, encoding="utf-8")
+    (tmp_path / "pills.csv").write_text(TABLE, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    assert read_extraction(tmp_path / "extraction.tsv", repair_accents=True)["generic"][0] == "[None, None, 'Sédaline']"
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas", repair_accents=True)
+    items = result.treatments
+    assert list(items["molecule"]) == ["calmine", "sedaline", "sedaline", "sedaline"]       # ZZZ is unknown, its generic name is found
+    assert "unknown_code" not in set(result.flags["flag"])

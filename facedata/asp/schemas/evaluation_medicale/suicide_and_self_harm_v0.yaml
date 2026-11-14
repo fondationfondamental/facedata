@@ -1,0 +1,53 @@
+instrument: suicide_and_self_harm_v0
+title: "Suicide attempts and self-injurious behaviour in the life (inclusion form)"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  Two questions of the clinician at the inclusion visit, on 1,671 visits (9 is
+  read as "not known"): a suicide attempt (yes on 191 visits), with the age at
+  the first and at the most recent attempt, their number and whether one was
+  serious; self-injurious behaviour (auag, yes on 365 visits), with the age at
+  the first one and its kind at the first episode and now (biting, hitting
+  oneself, scratching, burning, cutting, amputation).
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  Two forms share these columns. Within patients the follow-up answers do
+  not repeat the inclusion ones: of the 7 follow-up answers of patients with
+  a suicide attempt at inclusion, 2 say yes; of the 45 of patients with
+  self-injurious behaviour at inclusion, 20 say yes. The follow-up form
+  therefore asks about the time since the last visit, to confirm (open question
+  O9), and its answers are delivered in columns of their own.
+
+  An instrument of the ASP cohort only.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  suicide_attempt_lifetime: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Suicide attempt in the life"}
+  first_suicide_attempt_age_lifetime: {column: tsprema, type: number, range: [0, 70], winsor: false, label: "Age at the first suicide attempt in the life"}
+  last_suicide_attempt_age_lifetime: {column: tsreca, type: number, range: [0, 70], winsor: false, label: "Age at the most recent suicide attempt in the life"}
+  n_suicide_attempts_lifetime: {column: tsnb, type: number, range: [0, 99], winsor: false, asked_if: suicide_attempt_lifetime, label: "Number of suicide attempts in the life"}
+  serious_suicide_attempt_lifetime: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, label: "A serious suicide attempt in the life"}
+  self_harm_lifetime: {column: auag, type: item, range: [0, 1], missing: {"9": unknown}, label: "Self-injurious behaviour in the life"}
+  self_harm_first_age_lifetime: {column: auagpra, type: number, range: [0, 70], winsor: false, label: "Self-injurious behaviour in the life: age at the first one"}
+  self_harm_first_kind_lifetime: {column: auagprty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour in the life: kind, first episode"}
+  self_harm_current_kind_lifetime: {column: auagsvty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour in the life: kind, at present"}

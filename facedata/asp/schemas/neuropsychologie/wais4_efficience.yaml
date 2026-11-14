@@ -1,0 +1,61 @@
+instrument: wais4_efficience
+title: "WAIS-IV, indices and full-scale IQ of the neuropsychology form"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  The sums of scaled scores, the indices and their percentile ranks, as the
+  neuropsychology form computes them: verbal comprehension, perceptual
+  reasoning, working memory and the full scale, on about 205 inclusion visits
+  (the processing speed index is in wais4_code_symboles_ivt).
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Each index is one function of its sum of scaled scores on every visit, as a
+  norm table gives it. The indices need that table: delivered as stored.
+
+  **Two sources for the same index.** The clinician copies the indices into
+  the medical evaluation (schema wais4_indices, about 995 visits), where they
+  have the names shared with FACE SZ and DR (wais4_icv_index...). Where both
+  exist they agree on 161 of 187 visits for verbal comprehension, 156 of
+  187 for perceptual reasoning, 168 of 192 for working memory and 115 of 159 for
+  the full-scale IQ. The indices of this form therefore have their own names,
+  ending in _np; neither source is corrected from the other.
+
+  A second set of numbers, whose names end in _a, exists for verbal
+  comprehension (207 visits) and, on six visits, for perceptual reasoning and
+  the full scale. It is the set of the abbreviated form (thesaurus), equal to
+  the first set on few visits.
+
+  Same instrument as in FACE SZ and DR, in other columns and with other
+  names for the indices.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  wais4_icv_sum_scaled: {column: icv_sum_std, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores"}
+  wais4_icv_index_np: {column: icv_indice, range: [40, 160], label: "WAIS-IV verbal comprehension index, neuropsychology form"}
+  wais4_icv_percentile: {column: icv_rang, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank"}
+  wais4_icv_sum_scaled_a: {column: icv_sum_std_a, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores, second set (_a)"}
+  wais4_icv_index_a: {column: icv_indice_a, range: [40, 160], label: "WAIS-IV verbal comprehension index, second set (_a)"}
+  wais4_icv_percentile_a: {column: icv_rang_a, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank, second set (_a)"}
+  wais4_irp_sum_scaled: {column: irp_sum_std, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores"}
+  wais4_irp_index_np: {column: irp_indice, range: [40, 160], label: "WAIS-IV perceptual reasoning index, neuropsychology form"}
+  wais4_irp_percentile: {column: irp_rang, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank"}
+  wais4_irp_sum_scaled_a: {column: irp_sum_std_a, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores, second set (_a)"}
+  wais4_irp_index_a: {column: irp_indice_a, range: [40, 160], label: "WAIS-IV perceptual reasoning index, second set (_a)"}
+  wais4_irp_percentile_a: {column: irp_rang_a, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank, second set (_a)"}
+  wais4_imt_sum_scaled: {column: imt_sum_std, range: [2, 38], label: "WAIS-IV working memory, sum of scaled scores"}
+  wais4_imt_index_np: {column: imt_indice, range: [40, 160], label: "WAIS-IV working memory index, neuropsychology form"}
+  wais4_imt_percentile: {column: imt_rang, range: [0, 100], label: "WAIS-IV working memory index, percentile rank"}
+  wais4_qit_sum_scaled: {column: qi_sum_std, range: [10, 190], label: "WAIS-IV full scale, sum of scaled scores"}
+  wais4_qit_np: {column: qi_indice, range: [40, 160], label: "WAIS-IV full-scale IQ, neuropsychology form"}
+  wais4_qit_percentile: {column: qi_rang, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank"}
+  wais4_qit_sum_scaled_a: {column: qi_sum_std_a, range: [10, 190], label: "WAIS-IV full scale, sum of scaled scores, second set (_a)"}
+  wais4_qit_a: {column: qi_indice_a, range: [40, 160], label: "WAIS-IV full-scale IQ, second set (_a)"}
+  wais4_qit_percentile_a: {column: qi_rang_a, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank, second set (_a)"}

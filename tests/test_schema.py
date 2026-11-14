@@ -32,7 +32,7 @@ def write(folder, name, text):
 
 
 def test_every_schema_of_the_package_is_correct():
-    for cohort in ["bp", "sz", "dr"]:
+    for cohort in ["bp", "sz", "dr", "asp"]:
         schemas = load_schemas(PACKAGE / cohort / "schemas")
         assert len(schemas) > 0
         problems = check_cohort(schemas)
@@ -198,6 +198,15 @@ def test_since_names_a_version_and_a_date(tmp_path):
     bad = SINCE.replace("since: {short: 2021-01-01}", "since: 2021-01-01")
     problems = " | ".join(check_schema(load_schema(write(tmp_path, "since", bad))))
     assert "version: since is written {version: YYYY-MM-DD}" in problems
+
+
+def test_version_by_age_needs_two_numbers(tmp_path):
+    by_age = SINCE.replace("  filled: {long: [it2], short: [it1]}\n  since: {short: 2021-01-01}", "  age: {short: [0, 18], long: [18, 130]}")
+    assert check_schema(load_schema(write(tmp_path, "since", by_age))) == []
+    bad = by_age.replace("long: [18, 130]", "long: [130, 18]")
+    assert "version: age 'long' needs two numbers, the first below the second" in " | ".join(check_schema(load_schema(write(tmp_path, "since", bad))))
+    bad = by_age.replace("  age:", "  filled: {long: [it2]}\n  age:")
+    assert "one of column with codes, filled and age" in " | ".join(check_schema(load_schema(write(tmp_path, "since", bad))))
 
 
 ASKED = """

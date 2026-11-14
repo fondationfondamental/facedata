@@ -1,0 +1,35 @@
+instrument: sleep_disorders
+title: "Insomnia and hypersomnia"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  Two questions of the clinician, on 1,699 inclusion visits (9 is read as "not
+  known"): insomnia (yes on 569 visits) with four boxes and a number (insom4,
+  median 10), and hypersomnia (yes on 94) with three boxes and a number
+  (hypers3). The boxes are named from the thesaurus: difficulty falling asleep,
+  difficulty staying asleep and non-restorative sleep; prolonged night sleep
+  and prolonged daytime sleep; the age at the first episode and the remission.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  The follow-up visits answer the same questions (60 visits). A sleep
+  complaint is a state: a yes at inclusion and a no later are not a
+  contradiction.
+
+  An instrument of the ASP cohort only.
+
+variables:
+  insomnia: {column: insom, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia"}
+  insomnia_sleep_onset: {column: insom1, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: difficulty falling asleep"}
+  insomnia_sleep_maintenance: {column: insom2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: difficulty staying asleep"}
+  insomnia_non_restorative_sleep: {column: insom3, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: non-restorative sleep"}
+  insomnia_onset_age: {column: insom4, type: number, range: [0, 70], winsor: false, label: "Insomnia: age at the first episode"}
+  insomnia_remission: {column: insom5, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: in remission"}
+  hypersomnia: {column: hypers, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia"}
+  hypersomnia_long_night_sleep: {column: hypers1, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: episodes of prolonged night sleep"}
+  hypersomnia_long_day_sleep: {column: hypers2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: episodes of prolonged daytime sleep"}
+  hypersomnia_onset_age: {column: hypers3, type: number, range: [0, 70], winsor: false, label: "Hypersomnia: age at the first episode"}
+  hypersomnia_remission: {column: hypers4, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: in remission"}

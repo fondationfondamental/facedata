@@ -202,6 +202,8 @@ def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None, lab
     result = run_instrument(items, item_keys, schema, limits, norms)
     result["flags"] = stack_flags([result["flags"], list_flags])
     front = pd.DataFrame({"usubjid": item_keys["usubjid"], "item": item_keys["visit_order"]})
+    if schema.get("per_visit"):                          # a list of the visit: say which visit
+        front.insert(1, "visit", item_keys["of_visit"])
     table = pd.concat([front, delivered_columns(schema, result)], axis=1)
     flags = finish_flags(result["flags"], item_keys, raw_strings(items, schema), result["values"])
     qc = [qc_table(schema, result, item_keys)]
@@ -276,13 +278,13 @@ def with_cohort(table, cohort):
     return table
 
 
-def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms", cohort=None):
+def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms", cohort=None, repair_accents=False):
     """Load an extraction with every schema of the folder (or only some instruments).
 
     cohort: the name written in the column `cohort` of the tables ("bp", "sz"). A usubjid is
-    unique inside a cohort only.
+    unique inside a cohort only. repair_accents: the export wrote its accents twice over.
     """
-    raw, keys, visit_flags = prepare_visits(read_extraction(path))
+    raw, keys, visit_flags = prepare_visits(read_extraction(path, repair_accents))
     schemas = load_schemas(schema_folder)
     problems = check_cohort(schemas)
     for schema in schemas.values():

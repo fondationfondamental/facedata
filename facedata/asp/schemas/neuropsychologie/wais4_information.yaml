@@ -1,0 +1,63 @@
+instrument: wais4_information
+title: "WAIS-IV, information"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Information: 26 items scored from 0 to 1, their total, the scaled score and its z-score,
+  on 208 inclusion visits.
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Checked on every visit: the stored total is the sum of the items, and the
+  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
+  tables of the test, which are not available: it is delivered as stored.
+
+  The stored total equals the sum of the items on 208 of the 208 visits that
+  hold every item.
+
+  Same instrument and output names as in FACE SZ, in other columns.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  wais4_info01: {column: wais_info1, label: "WAIS-IV information, item 1"}
+  wais4_info02: {column: wais_info2, label: "WAIS-IV information, item 2"}
+  wais4_info03: {column: wais_info3, label: "WAIS-IV information, item 3"}
+  wais4_info04: {column: wais_info4, label: "WAIS-IV information, item 4"}
+  wais4_info05: {column: wais_info5, label: "WAIS-IV information, item 5"}
+  wais4_info06: {column: wais_info6, label: "WAIS-IV information, item 6"}
+  wais4_info07: {column: wais_info7, label: "WAIS-IV information, item 7"}
+  wais4_info08: {column: wais_info8, label: "WAIS-IV information, item 8"}
+  wais4_info09: {column: wais_info9, label: "WAIS-IV information, item 9"}
+  wais4_info10: {column: wais_info10, label: "WAIS-IV information, item 10"}
+  wais4_info11: {column: wais_info11, label: "WAIS-IV information, item 11"}
+  wais4_info12: {column: wais_info12, label: "WAIS-IV information, item 12"}
+  wais4_info13: {column: wais_info13, label: "WAIS-IV information, item 13"}
+  wais4_info14: {column: wais_info14, label: "WAIS-IV information, item 14"}
+  wais4_info15: {column: wais_info15, label: "WAIS-IV information, item 15"}
+  wais4_info16: {column: wais_info16, label: "WAIS-IV information, item 16"}
+  wais4_info17: {column: wais_info17, label: "WAIS-IV information, item 17"}
+  wais4_info18: {column: wais_info18, label: "WAIS-IV information, item 18"}
+  wais4_info19: {column: wais_info19, label: "WAIS-IV information, item 19"}
+  wais4_info20: {column: wais_info20, label: "WAIS-IV information, item 20"}
+  wais4_info21: {column: wais_info21, label: "WAIS-IV information, item 21"}
+  wais4_info22: {column: wais_info22, label: "WAIS-IV information, item 22"}
+  wais4_info23: {column: wais_info23, label: "WAIS-IV information, item 23"}
+  wais4_info24: {column: wais_info24, label: "WAIS-IV information, item 24"}
+  wais4_info25: {column: wais_info25, label: "WAIS-IV information, item 25"}
+  wais4_info26: {column: wais_info26, label: "WAIS-IV information, item 26"}
+  wais4_info_total_stored: {column: wais_infotot, range: [0, 26], keep: false, label: "WAIS-IV information, total as stored"}
+  wais4_info_scaled: {column: wais_info_std, range: [1, 19], label: "WAIS-IV information, scaled score"}
+  wais4_info_z: {column: wais_info_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV information, z-score of the scaled score"}
+
+scores:
+  wais4_info_total:
+    label: "WAIS-IV information, total of the items"
+    sum: [wais4_info01, wais4_info02, wais4_info03, wais4_info04, wais4_info05, wais4_info06, wais4_info07, wais4_info08, wais4_info09, wais4_info10, wais4_info11, wais4_info12, wais4_info13, wais4_info14, wais4_info15, wais4_info16, wais4_info17, wais4_info18, wais4_info19, wais4_info20, wais4_info21, wais4_info22, wais4_info23, wais4_info24, wais4_info25, wais4_info26]
+    compare: wais4_info_total_stored

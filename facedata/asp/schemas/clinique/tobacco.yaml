@@ -1,0 +1,28 @@
+instrument: tobacco
+title: "Tobacco"
+tab: clinique
+section: clinical examination
+status: draft
+notes: >
+  Tobacco status, recorded from 2020: 563 inclusion visits (237 children).
+  The codes are those of FACE DR: 1 for a non-smoker (492), 2 for an ex-smoker
+  (22), 3 for a current smoker (49). The data agree: the age when the
+  patient stopped is filled only with the code 2, and the dose and the starting
+  age only with the codes 2 and 3.
+
+  The dose (sudose_cig, 47 visits) is called pack-years in FACE DR. Here its
+  median is 11 and 11 values are above 60, which is not possible for patients
+  this young: the thesaurus says pack-years, so these values are entry errors
+  or another unit (open question O10).
+
+  Same instrument as in FACE DR, in other columns.
+
+variables:
+  tobacco_status:
+    column: suncf
+    type: category
+    label: Tobacco status
+    codes: {"1": non_smoker, "3": current_smoker, "2": ex_smoker}
+  pack_years: {column: sudose_cig, type: number, unit: pack-years, range: [0, 200], label: Pack-years}
+  smoking_start_age: {column: agedebut_cig, type: item, range: [0, 90], label: Age when the patient started smoking}
+  smoking_stop_age: {column: agefin_cig, type: item, range: [0, 90], label: Age when the patient stopped smoking}

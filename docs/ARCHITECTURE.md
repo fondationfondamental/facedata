@@ -9,7 +9,7 @@ ready for algorithms:
 4. continuous variables are winsorised,
 5. every variable gets a quality-control (QC) summary and plots.
 
-There is one module per cohort (`facedata.bp`, `facedata.sz`, `facedata.dr`; later `asp`).
+There is one module per cohort (`facedata.bp`, `facedata.sz`, `facedata.dr`, `facedata.asp`).
 Everything specific to an instrument is written in a YAML schema
 (see [SCHEMA_SPEC.md](SCHEMA_SPEC.md)). The Python code is generic and does not
 change when an instrument is added.
@@ -46,7 +46,7 @@ facedata/
   harmonise.py    detect_version(), convert_units(), fix_sign(), check_range(),
                   compute_scores(), collapse_patient_level(), winsorise()
   pipeline.py     read_variable(), run_instrument(), run_cohort(): the ordered steps, nothing else
-  treatments.py   open_lists(), look_up_names(), at_visit(): cells that hold lists (treatments)
+  treatments.py   open_lists(), unpack(), look_up_names(), at_visit(): cells that hold lists (treatments) or several records
   relatives.py    stack_relatives(), summarise_relatives(): the same questions asked for each relative
   qc.py           qc_table(), coverage()
   plots.py        plot_variable(), plot_instrument()
@@ -61,6 +61,7 @@ facedata/
   sz/             the same three functions and files for FACE SZ, and
     differences.yaml   the instruments whose schema is not the BP one, each with the reason
   dr/             the same for FACE DR (resistant depression); its differences.yaml compares with BP, or with SZ where BP has no such schema
+  asp/            the same for FACE ASP (autism spectrum); the dictionary arrived after the module, so a schema folder is a source table of the export; differences.yaml compares with BP, then SZ, then DR
 tests/            small hand-written tables only
 ```
 
@@ -95,7 +96,7 @@ Key columns first, then the harmonised variables of every instrument.
 
 | Column | Content |
 |---|---|
-| `cohort` | `bp`, `sz` or `dr`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
+| `cohort` | `bp`, `sz`, `dr` or `asp`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
 | `usubjid` | Patient identifier (text), unique inside a cohort only |
 | `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...) |
 | `visit_order` | Rank of the visit (from `id_visit`) |
@@ -156,6 +157,14 @@ back as far as the file allows (SCHEMA_SPEC, section 15).
 What a visit needs, whether the patient was on a treatment that day, is
 computed from the dates of the items and delivered in `data` as yes/no
 columns (SCHEMA_SPEC, section 15).
+
+Two other shapes go through the same machinery (SCHEMA_SPEC, section 15).
+In FACE ASP the treatment list belongs to a visit, not to the patient
+(`per_visit`): every row that holds a list is opened, and the table has a
+column `visit`. And one export packs several records in a cell,
+`(a - b - c) | (a - b - c)`: the diseases of a body system, the relatives,
+the hospitalisations. `packed` opens them into one row per record, in lists
+of their own (FACE ASP has eleven lists).
 
 ### `relatives`: one row per patient and relative
 
@@ -230,6 +239,15 @@ All steps are generic. They run once per instrument, in this order.
 Steps 3, 5 to 7 and 9 run once per variable. Each returns the cleaned values
 and a small table of flags. `run_instrument()` only calls them in order and
 stacks the flags.
+
+### Step 1: reading
+
+Every cell is read as text. One export (FACE ASP) wrote its accents twice
+over: "dÃ©pression" is "dépression" read as Latin-1 and encoded again. The
+loader of that cohort asks the reader to put these cells back
+(`repair_accents`); a cell that the way back cannot decode stays as written.
+The SZ and DR extractions hold the same defect in a few hundred cells of
+free text, which are not repaired.
 
 ### Step 2: visits
 
@@ -341,7 +359,9 @@ A schema says how to recognise its visits: from a version column
 (`wais_version`), from which items are filled (BIS), or from a column that is
 filled once per patient (the DSM criteria, recorded at inclusion). The items
 may be those of another questionnaire of the same visit, when the
-instrument's own columns do not tell its form (ALS, WURS, AIM).
+instrument's own columns do not tell its form (ALS, WURS, AIM). A child form
+and an adult form with the same items are told apart by the age at the visit
+(the SRS filled by a relative, in ASP).
 `detect_version` gives every visit its edition; each variable is then read
 only on the visits of its schema's edition and is missing elsewhere, without
 a flag.
@@ -398,10 +418,15 @@ kept, but they get `period_doubt`: the analyst decides.
 
 ### Step 10: scores
 
-Scores are recomputed from the harmonised items (sum or mean, with reverse
-items; a sum can subtract other values and have a floor). A score that is a
+Scores are recomputed from the harmonised items (sum, mean or highest item,
+with reverse items; an answer can count other points than its code; a sum
+can subtract other values and have a floor). A score that is a
 formula, such as a body mass index, is a small function in `custom.py`. When the extraction also stores the score, the two are compared; a
 difference above 0.01 gives `score_mismatch` and the recomputed value is kept.
+
+A form can let the clinician type a total without its items. Where the schema
+says so (`otherwise`), a score with no item recorded is delivered as stored
+and gets `score_as_stored`.
 
 A score can also be read in a norm table, from a raw score and the age at
 the visit (a scaled score), and if the table says so from a second variable
@@ -462,6 +487,7 @@ QC table counts patients, not visit rows.
 | `version_inferred` | info | No version was recorded for the patient; it was taken from the inclusion date |
 | `duplicate_row` | info | A duplicated visit record was dropped |
 | `winsorised` | info | The value was clipped |
+| `score_as_stored` | info | None of the items of the score is recorded; the score typed in the extraction is delivered, unchecked |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |
 | `sign_doubt` | discrepancy | The standard score is dated within 90 days of the centre's change of sign convention, or has no date |
 | `band_middle` | discrepancy | The cell held a band of values (`60-51`); the value is the middle of the band |
@@ -579,6 +605,8 @@ formula). FACE SZ is written this way: all its columns are read or ignored
 of a BP schema: 9 are the same and 58 are listed in `differences.yaml`. FACE DR
 too (`docs/dr/PROGRESS.md`, `docs/dr/QUESTIONS.md`): 79 of its 137 schemas have the
 name of a BP schema (75) or of an SZ schema (4); 11 are the same and 68 are listed.
+FACE ASP was written before its dictionary arrived, then checked against it, and has few shared instruments (`docs/asp/PROGRESS.md`, `docs/asp/QUESTIONS.md`): 37 of its 138
+schemas have the name of a schema of another cohort; 2 are the same and 35 are listed in its `differences.yaml`.
 A stored score that follows the formula of the other cohort does not prove a copied
 schema right, because the EMR applies the same formula to the answers of another
 form: compare the answers themselves between the cohorts (the mean of each item,

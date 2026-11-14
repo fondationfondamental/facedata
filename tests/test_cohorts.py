@@ -67,3 +67,22 @@ def test_shared_instruments_are_the_same_in_dr():
     assert not_explained == {}, "add the reason to facedata/dr/differences.yaml, or bring the schemas together"
     no_longer_true = [name for name in listed if name not in differing]
     assert no_longer_true == [], "listed in differences.yaml, but the schema is the BP or SZ one (or has another name)"
+
+
+def test_shared_instruments_are_the_same_in_asp():
+    """An ASP schema is compared with the BP schema of the same name, then the SZ one, then the DR one."""
+    bp = read_as_written(PACKAGE / "bp" / "schemas")
+    sz = read_as_written(PACKAGE / "sz" / "schemas")
+    dr = read_as_written(PACKAGE / "dr" / "schemas")
+    asp = read_as_written(PACKAGE / "asp" / "schemas")
+    with open(PACKAGE / "asp" / "differences.yaml", encoding="utf-8") as file:
+        listed = yaml.load(file, Loader=yaml.BaseLoader) or {}
+    differing = {}
+    for name in sorted(asp):
+        reference = bp.get(name, sz.get(name, dr.get(name)))
+        if reference is not None and blocks_that_differ(reference, asp[name]):
+            differing[name] = blocks_that_differ(reference, asp[name])
+    not_explained = {name: blocks for name, blocks in differing.items() if name not in listed}
+    assert not_explained == {}, "add the reason to facedata/asp/differences.yaml, or bring the schemas together"
+    no_longer_true = [name for name in listed if name not in differing]
+    assert no_longer_true == [], "listed in differences.yaml, but the schema is that of the other cohort (or has another name)"

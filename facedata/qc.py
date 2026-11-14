@@ -106,6 +106,8 @@ def coverage(raw, keys, schemas, thesaurus_names, ignored):
             block = schema["version"]
             for column in [block["column"]] if "column" in block else []:
                 read_on[column] = always
+        for column in schema.get("packed", {}):   # a column of packed records: its fields are read
+            read_on[column] = always
         for variable in schema["variables"].values():
             rows = version.isin(variable["versions"]) if "versions" in variable else always
             for column in raw_columns(schema, variable):

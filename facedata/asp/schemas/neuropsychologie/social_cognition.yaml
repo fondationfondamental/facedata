@@ -1,0 +1,41 @@
+instrument: social_cognition
+title: "Social cognition: faces, faux pas and the six films"
+tab: neuropsychologie
+section: social cognition
+status: draft
+notes: >
+  Tests added in 2018, on about 996 inclusion visits (273 children): a box "done"
+  (cogsoc, yes on 906), the date and the age in months; a facial emotion test
+  (tref: done on 708 visits, seven scores from 0 to 100, read as the percentage of
+  correct answers in all and for six emotions); a faux pas test (faupa: done on
+  819, one score from 0 to 100); and the six films of FACE SZ (lis: done on 707,
+  one score on 698 visits, the distance to reference ratings: lower is better).
+  9 is read as "not known".
+
+  The thirty ratings of the six films, which FACE SZ records, are not in this
+  extraction: only the score. The seven scores of the facial emotion test are
+  the percentages of right answers for every emotion together, then joy, anger,
+  sadness, disgust, contempt and fear.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  social_cognition_done: {column: cogsoc, type: item, range: [0, 1], missing: {"9": unknown}, label: "The social cognition tests were done"}
+  social_cognition_date: {column: cogsoc_qsdtc, type: date, range: [2005-01-01, 2026-12-31], label: "Date of the social cognition tests"}
+  social_cognition_age_months: {column: cogsocag, type: number, range: [0, 900], winsor: false, label: "Age at the social cognition tests, in months"}
+  lis_done: {column: lis, type: item, range: [0, 1], missing: {"9": unknown}, label: "The six films (LIS) were done"}
+  lis_score: {column: lis_score, type: number, range: [0, 100], winsor: false, label: "Reading of intentions in situations (LIS): score (distance to the reference ratings; lower is better)"}
+  face_emotion_done: {column: tref, type: item, range: [0, 1], missing: {"9": unknown}, label: "The facial emotion test (TREF) was done"}
+  face_emotion_total: {column: tref01, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, every emotion"}
+  face_emotion_joy: {column: tref02, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, joy"}
+  face_emotion_anger: {column: tref03, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, anger"}
+  face_emotion_sadness: {column: tref04, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, sadness"}
+  face_emotion_disgust: {column: tref05, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, disgust"}
+  face_emotion_contempt: {column: tref06, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, contempt"}
+  face_emotion_fear: {column: tref07, type: number, range: [0, 100], winsor: false, label: "Facial emotion recognition test (TREF): percentage of right answers, fear"}
+  faux_pas_done: {column: faupa, type: item, range: [0, 1], missing: {"9": unknown}, label: "The faux pas test was done"}
+  faux_pas_score: {column: faupa01, type: number, range: [0, 100], winsor: false, label: "Faux pas test: percentage of right answers"}

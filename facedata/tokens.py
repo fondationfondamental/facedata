@@ -49,6 +49,7 @@ SEVERITY = {
     "version_inferred": "info",
     "duplicate_row": "info",
     "winsorised": "info",
+    "score_as_stored": "info",
     "unit_doubt": "discrepancy",
     "sign_doubt": "discrepancy",
     "band_middle": "discrepancy",

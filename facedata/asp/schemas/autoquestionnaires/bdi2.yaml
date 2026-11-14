@@ -1,0 +1,56 @@
+instrument: bdi2
+title: "Beck Depression Inventory, second edition (BDI-II)"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Twenty-one items and a total, at the inclusion visit: 437 visits,
+  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children fill the CDI.
+
+  Identified from its name (bdi02) and its twenty-one items as the second
+  edition of the Beck Depression Inventory, sure: the items 16 (sleep) and 18
+  (appetite) have seven options, as in that edition, where an increase and a
+  decrease are two options of the same level. They are stored from 0 to 6 and
+  are brought to the levels 0 to 3 (0, 1, 1, 2, 2, 3, 3); whether the change is
+  an increase or a decrease is not delivered.
+
+  The total is the sum of the twenty-one items so read: it equals the stored
+  total on 435 of the 436 visits that hold every item. On 82 visits the total was
+  typed without any item: it is kept as stored (score_as_stored). On 78 visits
+  some items are missing: the total is not delivered there, since a stored
+  total may then be a partial sum.
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  bdi01: {column: bdi0201, label: "BDI-II, item 1"}
+  bdi02: {column: bdi0202, label: "BDI-II, item 2"}
+  bdi03: {column: bdi0203, label: "BDI-II, item 3"}
+  bdi04: {column: bdi0204, label: "BDI-II, item 4"}
+  bdi05: {column: bdi0205, label: "BDI-II, item 5"}
+  bdi06: {column: bdi0206, label: "BDI-II, item 6"}
+  bdi07: {column: bdi0207, label: "BDI-II, item 7"}
+  bdi08: {column: bdi0208, label: "BDI-II, item 8"}
+  bdi09: {column: bdi0209, label: "BDI-II, item 9"}
+  bdi10: {column: bdi0210, label: "BDI-II, item 10"}
+  bdi11: {column: bdi0211, label: "BDI-II, item 11"}
+  bdi12: {column: bdi0212, label: "BDI-II, item 12"}
+  bdi13: {column: bdi0213, label: "BDI-II, item 13"}
+  bdi14: {column: bdi0214, label: "BDI-II, item 14"}
+  bdi15: {column: bdi0215, label: "BDI-II, item 15"}
+  bdi16: {column: bdi0216, codes: {"0": 0, "1": 1, "2": 1, "3": 2, "4": 2, "5": 3, "6": 3}, label: "BDI-II, item 16 (seven options brought to 0 to 3)"}
+  bdi17: {column: bdi0217, label: "BDI-II, item 17"}
+  bdi18: {column: bdi0218, codes: {"0": 0, "1": 1, "2": 1, "3": 2, "4": 2, "5": 3, "6": 3}, label: "BDI-II, item 18 (seven options brought to 0 to 3)"}
+  bdi19: {column: bdi0219, label: "BDI-II, item 19"}
+  bdi20: {column: bdi0220, label: "BDI-II, item 20"}
+  bdi21: {column: bdi0221, label: "BDI-II, item 21"}
+  bdi_total_stored: {column: bdi02, type: number, range: [0, 63], winsor: false, keep: false, label: "BDI-II total, as stored"}
+
+scores:
+  bdi_total:
+    label: "BDI-II total (0 to 63)"
+    sum: [bdi01, bdi02, bdi03, bdi04, bdi05, bdi06, bdi07, bdi08, bdi09, bdi10, bdi11, bdi12, bdi13, bdi14, bdi15, bdi16, bdi17, bdi18, bdi19, bdi20, bdi21]
+    compare: bdi_total_stored
+    otherwise: bdi_total_stored

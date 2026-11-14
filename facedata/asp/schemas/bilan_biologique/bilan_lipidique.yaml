@@ -1,0 +1,61 @@
+instrument: bilan_lipidique
+title: "Lipid panel"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  HDL, LDL and total cholesterol and triglycerides, on about 327 inclusion
+  visits. Same analytes, names and target unit (mmol/L) as in FACE SZ and DR.
+
+  Cholesterol and triglycerides have a unit column that holds a catalogue
+  number: 64387 on 282 cholesterol results (median 4.3: mmol/L) and 42576
+  on 71 (median 1.74: g/L). The triglycerides carry the same two numbers, and
+  the two units are on the same scale, so their number is believed. HDL and
+  LDL have no unit column, and their level does not move with the number of the
+  cholesterol (HDL median 1.33 against 1.41): they are read as mmol/L.
+
+  The ratio of total to HDL cholesterol is computed from the harmonised
+  values, as in the other cohorts.
+
+defaults: {type: number}
+
+variables:
+  hdl:
+    label: HDL cholesterol
+    column: hdl
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [0.2, 4]}
+    range: [0.2, 4]
+  ldl:
+    label: LDL cholesterol
+    column: ldl
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [0.3, 12]}
+    range: [0.3, 12]
+  cholesterol:
+    label: Total cholesterol
+    column: chol
+    unit_column: chol_orresu
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [2.6, 15], aliases: ["64387"]}
+      "g/L": {factor: 2.586, expect: [1.0, 3.5], aliases: ["42576"]}
+    range: [1.5, 15]
+  triglycerides:
+    label: Triglycerides
+    column: trig
+    unit_column: trig_orresu
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [0.1, 40], aliases: ["64387"]}
+      "g/L": {factor: 1.129, expect: [0.1, 40], aliases: ["42576"]}
+    range: [0.1, 40]
+
+scores:
+  cholesterol_hdl_ratio:
+    label: Total cholesterol divided by HDL cholesterol, from the harmonised values
+    custom: cholesterol_ratio
+    range: [1, 30]
+    winsor: [0.01, 0.99]

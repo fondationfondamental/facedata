@@ -10,9 +10,49 @@ from facedata.flags import make_flags, stack_flags
 from facedata.tokens import EMPTY_DATE, PLACEHOLDER_VISIT_DATES
 
 
-def read_extraction(path):
-    """Read the .tsv extraction. Every cell stays text, exactly as written."""
-    return pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+def read_extraction(path, repair_accents=False):
+    """Read the .tsv extraction. Every cell stays text, exactly as written.
+
+    repair_accents: for an export that wrote its accents twice over (see
+    twice_encoded()), the cells concerned are put back.
+    """
+    table = pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    if repair_accents:
+        for column in table.columns:
+            if table[column].str.contains("Ã", regex=False).any():
+                table[column] = table[column].map(twice_encoded)
+    return table
+
+
+def twice_encoded(cell):
+    """A cell whose accents were encoded twice: "dÃ©pression" is "dépression".
+
+    The export read UTF-8 text as Latin-1 and encoded it again. The cell is
+    put back whole when the way back gives valid text. Otherwise each broken
+    letter is put back on its own (a list cell writes the second half of "à"
+    as the escape \\xa0), and what cannot be decoded stays as written.
+    """
+    for attempt in range(3):                         # some cells were encoded three times
+        if "Ã" not in cell:
+            break
+        whole = decoded_again(cell)
+        if whole is None:
+            whole = cell.replace("Ã\\xa0", "à")
+            whole = re.sub("[Â-ô][\u0080-¿]+", lambda letter: decoded_again(letter.group()) or letter.group(), whole)
+        if whole == cell:
+            break
+        cell = whole
+    return cell
+
+
+def decoded_again(text):
+    """Text encoded as Latin-1 and read as UTF-8, or None when that is not valid text."""
+    for encoding in ["cp1252", "latin-1"]:
+        try:
+            return text.encode(encoding).decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            continue
+    return None
 
 
 def read_norms(folder):

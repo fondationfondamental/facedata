@@ -1,0 +1,100 @@
+instrument: ctq
+title: "Childhood Trauma Questionnaire (CTQ)"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Twenty-eight items from 1 to 5, five stored sub-scores, a total and the
+  denial score, at the inclusion visit: 395 visits, from 2021 to 2026.
+  It belongs to the new set of forms. It is filled by adults only.
+
+  Same instrument as in FACE BP, SZ and DR, and the same key. **The answers
+  were compared with BP before the schema was copied** (the lesson of FACE DR,
+  where seven items are stored already reversed). Here the seven "good
+  childhood" items fall when the abuse items rise, as in BP (correlations of
+  -0.38 to -0.55): the coding is the BP one.
+
+  **Two stored sub-scores leave out an item, and the stored total with them.**
+  The stored physical abuse is the sum of the items 9, 11, 15 and 17 (400 of
+  404 visits): the item 12 is missing. The stored emotional abuse is the sum
+  of the items 3, 8, 18 and 25 (400 of 401): the item 14 is missing. The stored
+  sexual abuse is right (405 of 405). The stored physical neglect follows the
+  key on 377 of 403 visits and the stored emotional neglect on 321 of 404; no
+  other rule explains the rest. The stored total is the sum of the five stored
+  sub-scores (400 of 400), so it misses two items.
+
+  The five sub-scores and the total are therefore computed with the BP key and
+  delivered. The stored values are read to be checked and are not delivered:
+  formulas "as stored" reproduce the two abuse scores and the total, and the
+  stored neglect scores are compared with the computed ones (score_mismatch
+  where they differ). The columns are not those of BP: the even numbers from
+  ctq30 to ctq38 hold the sub-scores here, and there is no severity class.
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  ctq01: {label: "CTQ item 1"}
+  ctq02: {label: "CTQ item 2"}
+  ctq03: {label: "CTQ item 3"}
+  ctq04: {label: "CTQ item 4"}
+  ctq05: {label: "CTQ item 5"}
+  ctq06: {label: "CTQ item 6"}
+  ctq07: {label: "CTQ item 7"}
+  ctq08: {label: "CTQ item 8"}
+  ctq09: {label: "CTQ item 9"}
+  ctq10: {label: "CTQ item 10"}
+  ctq11: {label: "CTQ item 11"}
+  ctq12: {label: "CTQ item 12"}
+  ctq13: {label: "CTQ item 13"}
+  ctq14: {label: "CTQ item 14"}
+  ctq15: {label: "CTQ item 15"}
+  ctq16: {label: "CTQ item 16"}
+  ctq17: {label: "CTQ item 17"}
+  ctq18: {label: "CTQ item 18"}
+  ctq19: {label: "CTQ item 19"}
+  ctq20: {label: "CTQ item 20"}
+  ctq21: {label: "CTQ item 21"}
+  ctq22: {label: "CTQ item 22"}
+  ctq23: {label: "CTQ item 23"}
+  ctq24: {label: "CTQ item 24"}
+  ctq25: {label: "CTQ item 25"}
+  ctq26: {label: "CTQ item 26"}
+  ctq27: {label: "CTQ item 27"}
+  ctq28: {label: "CTQ item 28"}
+
+  # The sub-scores and the total as stored. Used only to check our own scores.
+  ctq_physical_abuse_stored: {column: ctq30, label: Physical abuse as stored (four items), range: [4, 20], keep: false}
+  ctq_emotional_neglect_stored: {column: ctq32, label: Emotional neglect as stored, range: [5, 25], keep: false}
+  ctq_physical_neglect_stored: {column: ctq34, label: Physical neglect as stored, range: [5, 25], keep: false}
+  ctq_sexual_abuse_stored: {column: ctq36, label: Sexual abuse as stored, range: [5, 25], keep: false}
+  ctq_emotional_abuse_stored: {column: ctq38, label: Emotional abuse as stored (four items), range: [4, 20], keep: false}
+  ctq_total_stored: {column: ctq39, label: CTQ total as stored (23 items), range: [23, 115], keep: false}
+  ctq_denial: {column: ctq40, label: "Denial score (items 10, 16, 22 answered 5)", range: [0, 3]}
+
+scores:
+  ctq_emotional_abuse: {label: CTQ emotional abuse, sum: [ctq03, ctq08, ctq14, ctq18, ctq25]}
+  ctq_physical_abuse: {label: CTQ physical abuse, sum: [ctq09, ctq11, ctq12, ctq15, ctq17]}
+  ctq_sexual_abuse: {label: CTQ sexual abuse, sum: [ctq20, ctq21, ctq23, ctq24, ctq27], compare: ctq_sexual_abuse_stored}
+  ctq_emotional_neglect: {label: CTQ emotional neglect, sum: [ctq05, ctq07, ctq13, ctq19, ctq28], reverse: [ctq05, ctq07, ctq13, ctq19, ctq28], compare: ctq_emotional_neglect_stored}
+  ctq_physical_neglect: {label: CTQ physical neglect, sum: [ctq01, ctq02, ctq04, ctq06, ctq26], reverse: [ctq02, ctq26], compare: ctq_physical_neglect_stored}
+  ctq_total:
+    label: CTQ total (25 items)
+    sum: [ctq01, ctq02, ctq03, ctq04, ctq05, ctq06, ctq07, ctq08, ctq09, ctq11,
+          ctq12, ctq13, ctq14, ctq15, ctq17, ctq18, ctq19, ctq20, ctq21, ctq23,
+          ctq24, ctq25, ctq26, ctq27, ctq28]
+    reverse: [ctq02, ctq05, ctq07, ctq13, ctq19, ctq26, ctq28]
+  ctq_emotional_abuse_as_stored:
+    label: "Emotional abuse as the EMR computes it here (without the item 14), to check the stored score"
+    sum: [ctq03, ctq08, ctq18, ctq25]
+    compare: ctq_emotional_abuse_stored
+    keep: false
+  ctq_physical_abuse_as_stored:
+    label: "Physical abuse as the EMR computes it here (without the item 12), to check the stored score"
+    sum: [ctq09, ctq11, ctq15, ctq17]
+    compare: ctq_physical_abuse_stored
+    keep: false
+  ctq_total_as_stored:
+    label: "CTQ total as the EMR computes it here (the sum of the five stored sub-scores), to check the stored total"
+    sum: [ctq_physical_abuse_stored, ctq_emotional_neglect_stored, ctq_physical_neglect_stored, ctq_sexual_abuse_stored, ctq_emotional_abuse_stored]
+    compare: ctq_total_stored
+    keep: false

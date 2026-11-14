@@ -1,0 +1,61 @@
+instrument: somatic_history
+title: "Somatic history: the questions"
+tab: antecedents
+section: history
+status: draft
+notes: >
+  One yes/no question per body system, then gynaecology, genetic diseases,
+  other diseases and allergies: 2058 inclusion visits (814 of children) and 71 follow-up visits, from 2011 to 2026.
+
+  Named from the column names and checked against the thesaurus V2.13
+  (PROGRESS.md D14); a 9 is "not known". After a yes, the diseases of the
+  system are recorded as a list (the code of the disease, a free text, the age
+  of onset and whether it is over): these lists are the instruments
+  somatic_ent, somatic_cardiac, somatic_pulmonary, somatic_rheumatology,
+  somatic_digestive, somatic_endocrine, somatic_neurological and
+  somatic_cancer, delivered one row per disease in the table treatments. At the
+  inclusion visit a history is reported for 1040 patients (ear, nose, throat
+  and eyes), 584 (bones, joints and skin), 505 (digestive), 460 (lungs), 286
+  (nervous system), 169 (heart), 154 (endocrine) and 24 (cancer).
+
+  The five boxes gynco_1 to gynco_5 hold a 0 or a 1 on every visit that has
+  the form: read them with the question gynco. atcdchang is a box of the
+  follow-up form, also filled at the inclusion visit until the forms changed.
+
+  A section of the ASP cohort only.
+
+variables:
+  atcdchang: {column: atcdchang, type: item, label: "Lifetime medical history: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  history_ent: {column: antorl, type: item, label: "History: ear, nose, throat and eyes (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_cardiac: {column: antcardi, type: item, label: "History: heart and vessels (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_pulmonary: {column: antpulm, type: item, label: "History: lungs (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_allergy: {column: antalrgi, type: item, label: "History: allergy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_rheumatology: {column: antrhum, type: item, label: "History: bones, joints and skin (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_digestive: {column: anthepa, type: item, label: "History: liver and digestive tract (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_endocrine: {column: antendo, type: item, label: "History: endocrine glands (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_neurological: {column: antneuro, type: item, label: "History: nervous system (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_cancer: {column: antcanc, type: item, label: "History: cancer (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_gynaecology: {column: gynco, type: item, label: "History: gynaecology (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  gynco_1: {column: gynco_1, type: item, label: "Gynaecology and obstetrics: has periods (box) (0 no, 1 yes)", range: [0, 1]}
+  gynco_2: {column: gynco_2, type: item, label: "Gynaecology and obstetrics: menopause reached (box) (0 no, 1 yes)", range: [0, 1]}
+  gynco_3: {column: gynco_3, type: item, label: "Gynaecology and obstetrics: pregnancies (box) (0 no, 1 yes)", range: [0, 1]}
+  gynco_4: {column: gynco_4, type: item, label: "Gynaecology and obstetrics: spontaneous miscarriage (box) (0 no, 1 yes)", range: [0, 1]}
+  gynco_5: {column: gynco_5, type: item, label: "Gynaecology and obstetrics: death in utero (box) (0 no, 1 yes)", range: [0, 1]}
+  age_menarche: {column: gynrega, type: number, label: "Age at the first periods, years", unit: years, range: [7, 20], winsor: false}
+  menopa: {column: menopa, type: number, label: "Menopause, age", range: [0, 200], winsor: false}
+  gyngrost: {column: gyngrost, type: number, label: "Pregnancies, number", range: [0, 200], winsor: false}
+  gyngrosa: {column: gyngrosa, type: number, label: "Pregnancies, age", range: [0, 200], winsor: false}
+  gynfc: {column: gynfc, type: number, label: "Miscarriages, number", range: [0, 200], winsor: false}
+  gynfca: {column: gynfca, type: number, label: "Miscarriages, age", range: [0, 200], winsor: false}
+  miut: {column: miut, type: number, label: "Deaths in utero, number", range: [0, 200], winsor: false}
+  miua: {column: miua, type: number, label: "Deaths in utero, age", range: [0, 200], winsor: false}
+  history_genetic_disease: {column: malgen, type: item, label: "History: genetic disease (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  malgenc: {column: malgenc, type: text, label: "Genetic disease, which, free text"}
+  malgena: {column: malgena, type: number, label: "Genetic disease, age of onset", range: [0, 200], winsor: false}
+  malgerem: {column: malgerem, type: item, label: "Genetic disease, over (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  history_other_disease: {column: autrmal, type: item, label: "History: other disease (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  autrmalc: {column: autrmalc, type: text, label: "Other disease, which, free text"}
+  autmala: {column: autmala, type: number, label: "Other disease, age of onset", range: [0, 200], winsor: false}
+  autrmrem: {column: autrmrem, type: item, label: "Other disease, over (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  antalrgi_p: {column: antalrgi_p, type: text, label: "Allergy, which, free text"}
+  antalrgi_agedebut: {column: antalrgi_agedebut, type: number, label: "Allergy, age of onset", range: [0, 200], winsor: false}

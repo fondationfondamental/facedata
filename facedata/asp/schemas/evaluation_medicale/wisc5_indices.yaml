@@ -1,0 +1,31 @@
+instrument: wisc5_indices
+title: "WISC-V: the five indices and the full-scale IQ"
+tab: evaluation_medicale
+section: intellectual assessment
+status: draft
+notes: >
+  The indices of the Wechsler Intelligence Scale for Children, fifth edition: verbal comprehension, visual spatial, fluid reasoning, working memory, processing speed and the full-scale IQ, as the clinician copied them into the medical
+  evaluation. A box says that this edition was used (wis5: yes on 657 of
+  1,234 inclusion visits); the indices are filled only after a yes. The first
+  index is on 654 inclusion visits (635 children, 19 adults), from 2017
+  to 2026; the full-scale IQ on 555: it is not computed when the
+  indices differ too much.
+
+  One schema per edition: an index of one edition is never delivered in the
+  column of another. The indices need the norm tables of the test, which are
+  not available: they are delivered as stored, between 40 and 160.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  wisc5_done: {column: wis5, type: item, range: [0, 1], label: "This edition was used (WISC-V)"}
+  wisc5_icv_index: {column: wis5cv, type: number, range: [40, 160], winsor: false, label: "WISC-V, verbal comprehension index"}
+  wisc5_ivs_index: {column: wis5iv, type: number, range: [40, 160], winsor: false, label: "WISC-V, visual spatial index"}
+  wisc5_irf_index: {column: wis5irf, type: number, range: [40, 160], winsor: false, label: "WISC-V, fluid reasoning index"}
+  wisc5_imt_index: {column: wis5mt, type: number, range: [40, 160], winsor: false, label: "WISC-V, working memory index"}
+  wisc5_ivt_index: {column: wis5vt, type: number, range: [40, 160], winsor: false, label: "WISC-V, processing speed index"}
+  wisc5_qit: {column: wis5qt, type: number, range: [40, 160], winsor: false, label: "WISC-V, full-scale iq"}

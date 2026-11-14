@@ -1,0 +1,106 @@
+instrument: psqi
+title: "Pittsburgh Sleep Quality Index (PSQI)"
+tab: autoquestionnaires_old_part2
+section: old questionnaires
+status: draft
+notes: >
+  Nineteen questions, five questions about the bed partner, seven component
+  scores and a total, filled by adults: 162 inclusion visits (1 of children) and 44 follow-up visits, from 2013 to 2021.
+  It belongs to the old set of forms; the Epworth scale is the sleep questionnaire of the new set.
+
+  Same instrument as in FACE BP, SZ and DR, in other columns, delivered under
+  the same names. Here the seven components are stored, and each was checked
+  against the published rule:
+
+  - component 1 (quality) and component 6 (medication) are the items 6 and 7:
+    the two stored columns are copies (ignored.yaml);
+  - component 2 (latency): right, 188 of 188 visits;
+  - component 3 (duration): the stored score counts 0 from 7 hours, 1 at 6, 2
+    at 5 and 3 below (192 of 192 visits). The publication says 0 above 7
+    hours: the reading of exactly 7 hours differs. Delivered as stored, as in
+    the other cohorts;
+  - **component 4 (efficiency) is wrong when the patient goes to bed before
+    midnight.** The EMR takes the hours in bed as the difference between the
+    two clock times without crossing midnight (191 of 192 visits
+    reproduced): a night from 23:00 to 07:00 counts sixteen hours in bed. The
+    stored component is 3 on 90 of the 104 visits with a bedtime before midnight.
+    It equals the published rule on 98 of 192 visits only;
+  - **component 5 (disturbances) is 3 as soon as one disturbance is
+    reported**: 95 visits whose sum of the items 5b to 5j is from 1 to 9, which
+    counts 1, and 63 from 10 to 18, which counts 2, hold a 3. Published rule:
+    25 of 183 visits;
+  - **component 7 (daytime dysfunction) does not follow its two items**
+    (published rule: 103 of 201 visits); it is 0 on 69 visits where the two
+    items add up to 3 or more.
+
+  The stored total is the sum of the seven stored components (172 of 172
+  visits) and carries the three errors. The components 4, 5 and 7 are
+  therefore computed with the published rules (functions psqi_efficiency,
+  psqi_disturbances and psqi_dysfunction) and delivered, and the total is
+  their sum with the four others; the stored values are read to be compared
+  (score_mismatch) and are not delivered. **The same check has not been made
+  in FACE BP, SZ and DR**, where these components are delivered as stored
+  (open question O13).
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  psqi_bedtime: {column: psqi1, type: time, label: Usual bedtime (hours)}
+  psqi_latency: {column: psqi2, type: number, label: Minutes to fall asleep, unit: min, range: [0, 600], winsor: false}
+  psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours)}
+  psqi_sleep_hours: {column: psqi4, type: number, label: Hours of sleep per night, unit: h, range: [0, 24], winsor: false}
+  psqi05a: {column: psqi5a, label: "PSQI item 5a"}
+  psqi05b: {column: psqi5b, label: "PSQI item 5b"}
+  psqi05c: {column: psqi5c, label: "PSQI item 5c"}
+  psqi05d: {column: psqi5d, label: "PSQI item 5d"}
+  psqi05e: {column: psqi5e, label: "PSQI item 5e"}
+  psqi05f: {column: psqi5f, label: "PSQI item 5f"}
+  psqi05g: {column: psqi5g, label: "PSQI item 5g"}
+  psqi05h: {column: psqi5h, label: "PSQI item 5h"}
+  psqi05i: {column: psqi5i, label: "PSQI item 5i"}
+  psqi05j: {column: psqi5j, label: "PSQI item 5j"}
+  psqi05k: {column: psqi5ja, type: text, label: "Other reason for troubled sleep, as written"}
+  psqi06: {column: psqi6, label: "PSQI item 6, sleep quality (component 1)"}
+  psqi07: {column: psqi7, label: "PSQI item 7, sleep medication (component 6)"}
+  psqi08: {column: psqi8, label: "PSQI item 8"}
+  psqi09: {column: psqi9, label: "PSQI item 9"}
+
+  # The questions about the bed partner. Not part of the score.
+  psqi10: {column: psqi10, label: "Has a bed partner or a room mate (0 none to 3 in the same bed)"}
+  psqi10a: {column: psqi11a, label: "As seen by the partner: loud snoring"}
+  psqi10b: {column: psqi11b, label: "As seen by the partner: long pauses between breaths while asleep"}
+  psqi10c: {column: psqi11c, label: "As seen by the partner: legs twitching or jerking while asleep"}
+  psqi10d: {column: psqi11d, label: "As seen by the partner: episodes of disorientation or confusion during sleep"}
+  psqi10e: {column: psqi11e, label: "As seen by the partner: other restlessness"}
+  psqi10f: {column: psqi11ea, type: text, label: "As seen by the partner: other restlessness, as written"}
+
+  # Component scores as stored, 0 to 3.
+  psqi_duration: {column: psqi_duree, label: Component 3 - sleep duration}
+  psqi_latency_stored: {column: psqi_latenc, label: Component 2 as stored, keep: false}
+  psqi_efficiency_stored: {column: psqi_effic, label: Component 4 as stored (hours in bed not crossing midnight), keep: false}
+  psqi_disturbances_stored: {column: psqi_tbsom, label: Component 5 as stored, keep: false}
+  psqi_dysfunction_stored: {column: psqi_dysf, label: Component 7 as stored, keep: false}
+  psqi_stored: {column: psqi_score, label: PSQI total as stored, range: [0, 21], keep: false}
+
+scores:
+  psqi_latency_component:
+    label: Component 2 - sleep latency
+    custom: psqi_latency
+    compare: psqi_latency_stored
+  psqi_efficiency:
+    label: Component 4 - habitual sleep efficiency
+    custom: psqi_efficiency
+    compare: psqi_efficiency_stored
+  psqi_disturbances:
+    label: Component 5 - sleep disturbances
+    custom: psqi_disturbances
+    compare: psqi_disturbances_stored
+  psqi_dysfunction:
+    label: Component 7 - daytime dysfunction
+    custom: psqi_dysfunction
+    compare: psqi_dysfunction_stored
+  psqi_total:
+    label: PSQI total (0 to 21, higher is worse)
+    sum: [psqi06, psqi_latency_component, psqi_duration, psqi_efficiency,
+          psqi_disturbances, psqi07, psqi_dysfunction]
+    compare: psqi_stored

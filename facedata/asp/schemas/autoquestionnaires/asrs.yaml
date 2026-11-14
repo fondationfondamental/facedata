@@ -1,0 +1,39 @@
+instrument: asrs
+title: "Adult ADHD Self-Report Scale (ASRS v1.1)"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Eighteen items from 0 to 4, at the inclusion visit: 586 visits,
+  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children have the ADHD rating scale.
+
+  Same instrument as in FACE BP, in columns named asrs1 to asrs18. The column
+  of the stored total (asrs_scoretot) is empty on every row (ignored.yaml), and
+  the screening result of FACE BP is not exported: the total is computed.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  asrs01: {column: asrs1, label: "ASRS item 1"}
+  asrs02: {column: asrs2, label: "ASRS item 2"}
+  asrs03: {column: asrs3, label: "ASRS item 3"}
+  asrs04: {column: asrs4, label: "ASRS item 4"}
+  asrs05: {column: asrs5, label: "ASRS item 5"}
+  asrs06: {column: asrs6, label: "ASRS item 6"}
+  asrs07: {column: asrs7, label: "ASRS item 7"}
+  asrs08: {column: asrs8, label: "ASRS item 8"}
+  asrs09: {column: asrs9, label: "ASRS item 9"}
+  asrs10: {column: asrs10, label: "ASRS item 10"}
+  asrs11: {column: asrs11, label: "ASRS item 11"}
+  asrs12: {column: asrs12, label: "ASRS item 12"}
+  asrs13: {column: asrs13, label: "ASRS item 13"}
+  asrs14: {column: asrs14, label: "ASRS item 14"}
+  asrs15: {column: asrs15, label: "ASRS item 15"}
+  asrs16: {column: asrs16, label: "ASRS item 16"}
+  asrs17: {column: asrs17, label: "ASRS item 17"}
+  asrs18: {column: asrs18, label: "ASRS item 18"}
+
+scores:
+  asrs_total:
+    label: ASRS total (18 items)
+    sum: [asrs01, asrs02, asrs03, asrs04, asrs05, asrs06, asrs07, asrs08, asrs09, asrs10, asrs11, asrs12, asrs13, asrs14, asrs15, asrs16, asrs17, asrs18]

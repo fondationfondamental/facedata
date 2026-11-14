@@ -1,0 +1,30 @@
+instrument: somatic_ent
+title: "Somatic history: ear, nose, throat and eyes, one row per disease"
+tab: antecedents
+section: history
+status: draft
+level: list
+notes: >
+  The diseases of the system reported after a yes to the question
+  history_ent: 1658 diseases for 987 visits (979 patients), up to 7 for one
+  patient. One row per patient and disease in the table treatments, where the
+  column list says "somatic_ent".
+
+  The export packs the diseases of a patient in one cell, each between brackets
+  with four fields: the code of the disease in the list of the form, a free
+  text, the age of onset in years and whether it is over (0 or 1; 9 is "not
+  known"). The list of the diseases is that of the thesaurus V2.13. Fewer than five records
+  have a dash in their free text, which the reader keeps in the text. The
+  history is that of the patient: the first visit that holds it is read, and a
+  later visit that holds another list gets patient_value_varies.
+
+  A section of the ASP cohort only.
+
+packed:
+  antorls_orla_orlag_orlrem: {fields: [ent_code, ent_text, ent_age, ent_over], text: ent_text}
+
+variables:
+  disease_code: {column: ent_code, type: category, label: "The disease, in the list of the form", codes: {"1": open_angle_glaucoma, "2": closed_angle_glaucoma, "3": cataract, "4": hypermetropia, "5": astigmatism, "6": myopia, "7": deafness_or_hearing_loss, "8": vestibular_syndrome, "9": strabismus, "10": recurrent_otitis, "11": other}}
+  disease_text: {column: ent_text, type: text, label: "Disease, free text"}
+  age_onset: {column: ent_age, type: number, label: "Age of onset, years", unit: years, range: [0, 100], winsor: false}
+  disease_over: {column: ent_over, type: item, label: "The disease is in remission now (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
