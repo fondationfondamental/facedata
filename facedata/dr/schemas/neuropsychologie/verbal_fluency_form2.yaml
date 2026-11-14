@@ -1,0 +1,41 @@
+instrument: verbal_fluency_form2
+title: Verbal fluency, second form (another letter, fruits)
+tab: NEUROPSYCHOLOGIE
+section: LANGAGE
+status: draft
+notes: >
+  The second form of the verbal fluency (another letter, fruits), used at
+  the retest: 96 visits. Not in BP. The number of words of each task is
+  filled on 95 visits, the z-score on 39; the percentile band is nearly
+  never filled.
+
+  Two forms of the test. The form used is in fv01, stored 1 or 2, with no
+  code in the dictionary, which only says "animals or fruits". Form 1 is
+  used at inclusion (388 of 394 inclusions) and form 2 at the retest of
+  the first year (81 of its 96 visits): the usual sequence of a patient is
+  1, 2, 1, 1. The words differ: the medians are 21 words for the letter
+  and 26 for the category on form 1 (24 for the letter P and 32 for
+  animals in BP), 18 and 18 on form 2. The two forms are two tests: each
+  has its own schema and its own columns, and fluency_form says which one
+  was used. That form 1 is "letter P and animals" and form 2 another
+  letter with fruits is read from these numbers and from the label, not
+  from a code (open question O23). One visit has results and no form
+  (version_unknown).
+
+version:
+  name: fluency_form
+  column: fv01
+  codes: {"1": form_1, "2": form_2}
+
+defaults: {type: item, range: [0, 30], versions: [form_2]}
+
+variables:
+  # The letter of the second form
+  fluency2_letter_words: {column: fv05, type: number, label: "Second form, letter - correct words", range: [0, 80]}
+  fluency2_letter_z: {column: fv06, type: number, label: "Second form, letter - z-score", range: [-6, 6]}
+  fluency2_letter_band: {column: fv07, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, letter - percentile band"}
+
+  # The category of the second form
+  fluency2_category_words: {column: fv02, type: number, label: "Second form, category - correct words", range: [0, 80]}
+  fluency2_category_z: {column: fv03, type: number, label: "Second form, category - z-score", range: [-6, 6]}
+  fluency2_category_band: {column: fv04, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, category - percentile band"}

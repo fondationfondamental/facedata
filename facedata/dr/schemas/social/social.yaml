@@ -1,0 +1,55 @@
+instrument: social
+title: "Social situation"
+tab: MODULE SOCIAL ET PERINATALITE
+section: MODULE SOCIAL
+status: draft
+notes: >
+  The BP schema with the questions of this extraction: marital status,
+  education, work, housing and legal protection. Filled at inclusion and at
+  the visits of 2 and 4 years: 681 visits (95% of the inclusions until
+  2014, 62% in 2021 to 2023, 74% since).
+
+  Codes are those of BP and of the dictionary. Three variables differ from
+  BP: the time in the present job is a number of months here (a class in
+  BP) and has its own name; the occupational class (empjob) is read with
+  the eight classes of the dictionary; the person with whom the patient
+  spends most time is stored as a code from 1 to 11 with no list in the
+  dictionary, and the order of the BP list does not fit the shares, so it
+  is delivered as code_N (open question O26).
+
+variables:
+  marital_status:
+    column: maristat
+    label: Marital status
+    type: category
+    codes: {"1": single, "2": couple, "3": separated, "4": divorced, "5": widowed}
+  education_level:
+    column: edulevel
+    label: Education level reached
+    type: category
+    codes: {"1": primary_1, "2": primary_2, "3": primary_3, "4": primary_4, "5": primary_5, "6": lower_secondary_1, "7": lower_secondary_2, "8": lower_secondary_3, "9": lower_secondary_4, "10": upper_secondary_1, "11": upper_secondary_2, "12": upper_secondary_3, "13": cap, "14": bep, "15": bac_plus_1, "16": bac_plus_2, "17": bac_plus_3, "18": bac_plus_4, "19": bac_plus_5, "20": doctorate}
+  work_status:
+    column: stprof
+    label: Current work status
+    type: category
+    codes: {"0": unemployed, "1": employed, "2": retired, "3": student, "4": disability_pension, "5": homemaker, "6": other}
+  job_duration_months: {column: jobdur, type: number, unit: months, range: [0, 600], winsor: false, label: "If employed: time in the present job"}
+  job_full_time: {column: jobclas, type: item, range: [0, 1], label: "The present job is full time"}
+  job_class:
+    column: empjob
+    label: Occupational class
+    type: category
+    codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_professional, "4": intermediate_occupation, "5": clerical_or_service_employee, "6": manual_worker, "7": retired, "8": no_occupation, "0": other}
+  job_class_other: {column: empjob_specifier, type: text, label: "Occupational class: other, as written"}
+  last_job_end_date: {column: stprof_scdtc, type: date, range: [1950-01-01, 2026-12-31], label: "If unemployed: date the last job ended"}
+  longest_job_years: {column: profdur, type: number, unit: years, range: [0, 60], winsor: false, label: Longest stable period of work}
+  total_work_years: {column: durtot, type: number, unit: years, range: [0, 60], winsor: false, label: Total time worked over the whole life}
+  living_arrangement:
+    column: lvsbjind
+    label: Living arrangement
+    type: category
+    codes: {"1": alone, "2": with_parents, "3": own_family_home, "4": with_children, "5": with_relatives, "6": shared_flat, "7": institution, "8": other}
+  living_arrangement_other: {column: lvsbjind_specifier, type: text, label: "Living arrangement: other, as written"}
+  household_size: {column: nbpers, type: item, range: [0, 20], label: Number of people living in the home}
+  closest_person: {column: lien, type: category, codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6, "7": code_7, "8": code_8, "9": code_9, "10": code_10, "11": code_11}, label: "Person with whom the patient spends most time (codes that the dictionary does not explain)"}
+  legal_protection: {column: protec, type: category, codes: {"0": none, "1": curatorship, "2": guardianship, "3": court_protection}, label: Legal protection measure}

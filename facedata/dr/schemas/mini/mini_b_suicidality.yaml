@@ -1,0 +1,61 @@
+instrument: mini_b_suicidality
+title: "MINI, module B: suicidality"
+tab: MINI
+section: MINI B
+status: draft
+notes: >
+  Module B: suicidality over the last month and attempts in the life.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Score. The stored score (bb) is the sum of the points of the MINI: 1 for
+  B2 and B3, 2 for B4, 6 for B5, 8 for B6 and B7, 9 for B8, 4 for B9, 9 for
+  B10 and 4 for B11; this weighted sum gives the stored value on each of
+  the 446 visits that have one. The form stores no score where no question
+  is answered yes: there mini_suicide_risk is 0, and the score is delivered
+  as 0 (asked_if). The level is 1 (low) for 1 to 8 points, 2 (moderate) for
+  9 to 16 and 3 (high) from 17: the stored level follows this on 433 of
+  442 visits.
+
+  b10a and b10b (after an attempt) are boxes written by the form.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_b01: {column: b01, label: "B1) Au cours du mois écoulé : Avez-vous eu un accident ?"}
+  mini_b01a: {column: b01a, label: "Au cours du mois écoulé : Avez-vous prévu ou eu l’intention de vous faire du mal dans cet accident, plus ou moins volontairement?"}
+  mini_b01b: {column: b01b, label: "Avez-vous eu l’intention de mourir dans cet accident ?"}
+  mini_b02: {column: b02, label: "B2) Vous est-il arrivé de vous sentir désespéré ?"}
+  mini_b03: {column: b03, label: "B3) Avez-vous pensé qu’il vaudrait mieux que vous soyez mort(e), ou souhaité être mort(e) ?"}
+  mini_b04: {column: b04, label: "B4) Avez-vous eu envie de vous faire du mal ou de vous blesser ou avez-vous eu en tête des images où vous vous faisiez du mal ?"}
+  mini_b05: {column: b05, label: "B5) Avez-vous pensé à vous suicider ?"}
+  mini_b05a: {column: b05a, range: [1, 3], label: "Si oui, Fréquence?"}
+  mini_b05b: {column: b05b, range: [1, 3], label: "Si oui, intensité?"}
+  mini_b05c: {column: b05c, label: "Si oui, Pouvez-vous dire qu’en ce qui concerne ces impulsions, vous n’allez pas passer à l’acte durant ce programme thérapeutique ?"}
+  mini_b06: {column: b06, label: "B6) Vous êtes-vous senti(e) incapable de contrôler ces impulsions ?"}
+  mini_b07: {column: b07, label: "B7) Avez-vous planifié un suicide ?"}
+  mini_b08: {column: b08, label: "B8) Avez-vous commencé à agir pour vous préparer à vous blesser ou à faire une tentative de suicide dans laquelle vous vous attendiez à mour"}
+  mini_b09: {column: b09, label: "B9) Vous êtes-vous délibérément blessé(e) sans avoir l’intention de vous donner la mort ?"}
+  mini_b10: {column: b10, label: "B10) Avez-vous tenté de vous suicider ?"}
+  mini_b10a: {column: b10a, derived_from: mini_b01, label: "Si Oui Espériez-vous être secouru(e)/survivre ? (a box: 0 is not ticked)"}
+  mini_b10b: {column: b10b, derived_from: mini_b01, label: "Si oui, Avez-vous cru/eu l’intention de mourir ? (a box: 0 is not ticked)"}
+  mini_b11: {column: b11, label: "B11) Avez-vous déjà fait une tentative de suicide ?"}
+  mini_suicide_risk: {column: ba, label: "Current suicide risk"}
+  mini_suicide_risk_score: {column: bb, type: number, range: [0, 52], winsor: false, asked_if: mini_suicide_risk, label: "Suicide risk score (0 where there is no risk)"}
+  mini_suicide_risk_level: {column: bc, range: [1, 3], label: "Suicide risk level (1 low, 2 moderate, 3 high)"}
+  mini_suicide_risk_comment: {column: bd, type: text, label: "Comment on the suicide risk, as written"}

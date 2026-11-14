@@ -1,0 +1,95 @@
+instrument: cssrs_fu
+title: "Columbia Suicide Severity Rating Scale, since the last visit (follow-up form)"
+tab: SUICIDE
+section: Idéation Suicidaire
+status: draft
+notes: >
+  The Columbia scale at the follow-up visits, since the last visit: 784 visits (79% to 93% of the visits of each kind).
+
+  Columbia Suicide Severity Rating Scale: five levels of ideation (yes or
+  no, each with a free description), the most severe level as rated, five
+  ratings of its intensity, the suicidal behaviours (actual, interrupted
+  and aborted attempts, preparatory acts, self-injury without intent) and
+  the lethality of three attempts. Not the BP schema: BP has other columns
+  and one form.
+
+  Two forms in the same columns. The inclusion visit asks about the whole
+  life; the follow-up visits use the same columns for the time since the
+  last visit. The two are never delivered in one column: visit_form says
+  which form a visit uses (inclusion for the screening and inclusion
+  visits, follow_up for the others), and each form has its own schema and
+  its own variables.
+
+  The follow-up answers are about the time since the last visit: the share
+  of "yes" to the wish to be dead goes from 77% at inclusion to 47% at
+  follow-up, and 267 of the 577 follow-up visits of patients who said yes
+  at inclusion answer no.
+
+  The form follows its skips: levels 3 to 5 are asked after a yes to level
+  2. The most severe ideation as rated (cssrs06) is the highest level
+  answered yes on 354 of 474 visits, higher on 56 and lower on 64: it is
+  delivered as rated. The intensity score is the sum of the five ratings,
+  as in BP.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [follow_up]}
+
+variables:
+  cssrs01_since_visit: {column: cssrs01, label: "Wish to be dead - since the last visit"}
+  cssrs01_since_visit_text: {column: cssrs01a, type: text, label: "Description, as written"}
+  cssrs02_since_visit: {column: cssrs02, label: "Non-specific active suicidal thoughts - since the last visit"}
+  cssrs02_since_visit_text: {column: cssrs02a, type: text, label: "Description, as written"}
+  cssrs03_since_visit: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - since the last visit"}
+  cssrs03_since_visit_text: {column: cssrs03a, type: text, label: "Description, as written"}
+  cssrs04_since_visit: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - since the last visit"}
+  cssrs04_since_visit_text: {column: cssrs04a, type: text, label: "Description, as written"}
+  cssrs05_since_visit: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - since the last visit"}
+  cssrs05_since_visit_text: {column: cssrs05a, type: text, label: "Description, as written"}
+  cssrs_most_severe_since_visit: {column: cssrs06, range: [0, 5], label: "Most severe ideation, as rated (1 to 5) - since the last visit"}
+  cssrs_ideation_since_visit_text: {column: cssrs07, type: text, label: "Description of the ideation, as written"}
+  cssrs_frequency_since_visit: {column: cssrs08, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - since the last visit"}
+  cssrs_duration_since_visit: {column: cssrs09, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - since the last visit"}
+  cssrs_control_since_visit: {column: cssrs10, range: [0, 5], label: "Intensity: controllability (1 easily to 5 unable, 0 does not try) - since the last visit"}
+  cssrs_deterrents_since_visit: {column: cssrs11, range: [0, 5], label: "Intensity: deterrents (1 definitely stopped to 5 did not stop at all, 0 does not apply) - since the last visit"}
+  cssrs_reasons_since_visit: {column: cssrs12, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - since the last visit"}
+  cssrs_attempt_since_visit: {column: cssrs13, label: "Actual suicide attempt - since the last visit"}
+  cssrs13_since_visit_text: {column: cssrs13a, type: text, label: "Description, as written"}
+  cssrs_n_attempts_since_visit: {column: cssrs14, range: [0, 50], label: "Number of actual attempts - since the last visit"}
+  cssrs_self_injury_since_visit: {column: cssrs15, label: "Non-suicidal self-injurious behaviour - since the last visit"}
+  cssrs_interrupted_since_visit: {column: cssrs16, label: "Interrupted attempt - since the last visit"}
+  cssrs16_since_visit_text: {column: cssrs16a, type: text, label: "Description, as written"}
+  cssrs_n_interrupted_since_visit: {column: cssrs17, range: [0, 50], label: "Number of interrupted attempts - since the last visit"}
+  cssrs_aborted_since_visit: {column: cssrs18, label: "Aborted attempt - since the last visit"}
+  cssrs18_since_visit_text: {column: cssrs18a, type: text, label: "Description, as written"}
+  cssrs_n_aborted_since_visit: {column: cssrs19, range: [0, 50], label: "Number of aborted attempts - since the last visit"}
+  cssrs_preparatory_since_visit: {column: cssrs20, label: "Preparatory acts or behaviour - since the last visit"}
+  cssrs20_since_visit_text: {column: cssrs20a, type: text, label: "Description, as written"}
+  cssrs_behaviour_since_visit: {column: cssrs21, label: "Suicidal behaviour present - since the last visit"}
+  cssrs_recent_attempt_date_since_visit: {column: cssrs22c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most recent attempt"}
+  cssrs_lethal_attempt_date_since_visit: {column: cssrs23c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most lethal attempt"}
+  cssrs_first_attempt_date_since_visit: {column: cssrs24c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the first attempt"}
+  cssrs_recent_lethality_since_visit: {column: cssrs22c, range: [0, 5], label: "Most recent attempt: actual lethality (0 no physical damage to 5 death)"}
+  cssrs_lethal_lethality_since_visit: {column: cssrs23c, range: [0, 5], label: "Most lethal attempt: actual lethality (0 to 5)"}
+  cssrs_first_lethality_since_visit: {column: cssrs24c, range: [0, 5], label: "First attempt: actual lethality (0 to 5)"}
+  cssrs_recent_potential_since_visit: {column: cssrs25c, range: [0, 2], label: "Most recent attempt: potential lethality (0 not likely to injure to 2 likely to kill)"}
+  cssrs_lethal_potential_since_visit: {column: cssrs27c, range: [0, 2], label: "Most lethal attempt: potential lethality (0 to 2)"}
+  cssrs_first_potential_since_visit: {column: cssrs28c, range: [0, 2], label: "First attempt: potential lethality (0 to 2)"}
+
+scores:
+  cssrs_intensity_since_visit:
+    label: "C-SSRS intensity of ideation: sum of the five ratings - since the last visit"
+    sum: [cssrs_frequency_since_visit, cssrs_duration_since_visit, cssrs_control_since_visit, cssrs_deterrents_since_visit, cssrs_reasons_since_visit]

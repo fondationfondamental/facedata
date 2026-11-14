@@ -1,0 +1,118 @@
+instrument: medications
+title: "Psychotropic treatments recorded as current, one row per treatment"
+tab: TRAITEMENTS
+section: PSYCHOTROPE ACTUEL
+status: draft
+level: list
+notes: >
+  The BP list with the columns of this extraction: the psychotropic
+  treatments recorded as current (PSYCHOTROPE ACTUEL), one row per treatment
+  in the table treatments, where the column list says "medications". 480
+  patients have a list (85% of the patients included until 2017, 58% of
+  those included since 2024; 46% to 97% by centre).
+
+  The lists are crossed by the export. In BP and SZ, item 1 of each list
+  describes the same treatment. Here the export writes every product of the
+  patient (substance, generic name, strength, unit) next to every
+  prescription line (form, daily dose, start, end): a patient with 2
+  products and 3 lines has 6 items, the products in blocks and the lines in
+  cycles, on each of the patients of the three lists. The products are in
+  alphabetical order, and nothing says which line belongs to which product.
+  The number of units a day is the daily dose of one line over the strength
+  of one product, computed for every pair: most of these numbers mean
+  nothing.
+
+  What is delivered (field crossed, SCHEMA_SPEC section 15). A patient with
+  one product keeps every line. A patient with several products keeps one
+  item per product, without form, dose or date (list_crossed on these
+  variables): the molecules are known, their dates are not. The class and
+  catalogue-code columns (cmclas, cmclascd) are lists of another length and
+  are not read (ignored.yaml). Open question O27, to send first.
+
+  The same list is on every row of a patient: it is the history, not the
+  treatment of the visit. Dates are written day/month/year.
+
+  In numbers: 1,852 items in the file; 286 patients have one product (332
+  items, with their lines) and 194 have several (485 items, one per
+  product, with no date): 817 items delivered.
+
+  Molecule and group. The generic name of the catalogue (cmdecod) is looked
+  up in the table medications.csv, shared by the cohorts; eleven generic
+  names of this cohort were added to it. Every item finds its molecule. 293
+  patients have an antidepressant in their list, 125 a benzodiazepine, 75 a
+  second-generation antipsychotic, 51 lithium; the most frequent molecules
+  are venlafaxine, clomipramine, lithium and lamotrigine. Half of the
+  patients have one molecule only, which is few for this cohort: the list
+  may not hold every current treatment (O27).
+
+crossed: [psycho_act_cmtrt, psycho_act_cmdecod, psycho_act_cmdose, psycho_act_cmdosu]
+
+names:
+  column: psycho_act_cmdecod
+  clean: medication_name
+  table: medications.csv
+  gives: [molecule, atc, treatment_group]
+
+variables:
+  medication: {column: psycho_act_cmtrt, type: text, label: "Substance, as the drug catalogue names it"}
+  generic_name: {column: psycho_act_cmdecod, type: text, label: "Generic name, as the drug catalogue writes it"}
+  molecule: {column: molecule, type: text, label: Molecule}
+  atc: {column: atc, type: text, label: ATC code of the molecule}
+  treatment_group:
+    column: treatment_group
+    label: Group of the medication
+    type: category
+    codes:
+      lithium: lithium
+      anticonvulsant: anticonvulsant
+      antipsychotic_2g: antipsychotic_2g
+      antipsychotic_1g: antipsychotic_1g
+      antidepressant: antidepressant
+      benzodiazepine: benzodiazepine
+      other_anxiolytic_hypnotic: other_anxiolytic_hypnotic
+      stimulant: stimulant
+      other_nervous_system: other_nervous_system
+      non_psychotropic: non_psychotropic
+  start_date: {column: psycho_act_cmstdtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: Start of the treatment}
+  end_date: {column: psycho_act_cmendtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: End of the treatment}
+  strength: {column: psycho_act_cmdose, type: text, label: "Strength of one unit, as written"}
+  dose_unit: {column: psycho_act_cmdosu, type: text, label: "Unit of the strength, as written"}
+  form: {column: psycho_act_cmdosfrm, type: text, label: "Form, as written"}
+  units_per_day: {column: psycho_act_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (the daily dose over the strength)"}
+  daily_dose: {column: psycho_act_cmdostot, type: number, range: [0, 10000], winsor: false, label: Total daily dose (in the unit of the strength)}
+
+at_visit:
+  title: Psychotropic treatments on the day of the visit
+  notes: >
+    For each visit, whether the patient was on a group of medications, or on
+    one of seven molecules, that day: 1 or 0, with the rule and the names of
+    BP. Computed from the rows of the list medications: 1 when a medication
+    of the group started on or before the visit date and has no end date, or
+    an end date on or after the visit.
+
+    In this cohort the dates are known for the patients who have one product
+    only (see medications.yaml): for a patient with several products the
+    answer is 0 when no product of the list is in the group, and missing when
+    one is, because its dates are lost. So "on an antidepressant" is known on
+    973 visits (yes on 286) of 1,836 that have a list. Use the table
+    treatments to know which molecules a patient has; use these columns only
+    where they are filled.
+  start: start_date
+  end: end_date
+  columns:
+    on_lithium: {where: {treatment_group: lithium}, label: On lithium at the visit}
+    on_anticonvulsant: {where: {treatment_group: anticonvulsant}, label: On an anticonvulsant mood stabiliser at the visit}
+    on_antipsychotic_2g: {where: {treatment_group: antipsychotic_2g}, label: On a second-generation antipsychotic at the visit}
+    on_antipsychotic_1g: {where: {treatment_group: antipsychotic_1g}, label: On a first-generation antipsychotic at the visit}
+    on_antidepressant: {where: {treatment_group: antidepressant}, label: On an antidepressant at the visit}
+    on_benzodiazepine: {where: {treatment_group: benzodiazepine}, label: On a benzodiazepine at the visit}
+    on_other_anxiolytic_hypnotic: {where: {treatment_group: other_anxiolytic_hypnotic}, label: On another anxiolytic or hypnotic at the visit}
+    on_stimulant: {where: {treatment_group: stimulant}, label: On a stimulant at the visit}
+    on_other_nervous_system: {where: {treatment_group: other_nervous_system}, label: On another medication of the nervous system at the visit}
+    on_valproate: {where: {molecule: valproate}, label: On valproate at the visit}
+    on_lamotrigine: {where: {molecule: lamotrigine}, label: On lamotrigine at the visit}
+    on_carbamazepine: {where: {molecule: carbamazepine}, label: On carbamazepine at the visit}
+    on_quetiapine: {where: {molecule: quetiapine}, label: On quetiapine at the visit}
+    on_aripiprazole: {where: {molecule: aripiprazole}, label: On aripiprazole at the visit}
+    on_olanzapine: {where: {molecule: olanzapine}, label: On olanzapine at the visit}
+    on_risperidone: {where: {molecule: risperidone}, label: On risperidone at the visit}

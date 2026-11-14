@@ -1,0 +1,38 @@
+instrument: ymrs
+title: "Young Mania Rating Scale (YMRS)"
+tab: HETERO-QUESTIONNAIRES
+section: YMRS (Young Mania Rating Scale, Young et al. 1978)
+status: draft
+notes: >
+  Eleven items; items 5, 6, 8 and 9 are rated 0 to 8 and the others 0 to 4.
+  The stored total equals the sum of the items on all 1,033 visits that have
+  them. Mania is rare in this cohort: the median total is 0.
+
+  Rated at the inclusion and follow-up visits. Filled at about 90% of the
+  inclusion visits until 2017 and at about half of them since 2018, like
+  thirteen other scales (open question O1 in PROGRESS.md).
+
+  Same instrument as in FACE BP and FACE SZ.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  ymrs01: {label: "Elevated mood"}
+  ymrs02: {label: "Increased motor activity and energy"}
+  ymrs03: {label: "Sexual interest"}
+  ymrs04: {label: "Sleep"}
+  ymrs05: {label: "Irritability", range: [0, 8]}
+  ymrs06: {label: "Speech (rate and amount)", range: [0, 8]}
+  ymrs07: {label: "Language and thought disorder"}
+  ymrs08: {label: "Content", range: [0, 8]}
+  ymrs09: {label: "Disruptive and aggressive behaviour", range: [0, 8]}
+  ymrs10: {label: "Appearance"}
+  ymrs11: {label: "Insight"}
+  ymrs_total_stored: {column: ymrs_, label: "Total as stored", range: [0, 60], keep: false}
+
+scores:
+  ymrs_total:
+    label: "YMRS total (11 items)"
+    sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
+          ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
+    compare: ymrs_total_stored

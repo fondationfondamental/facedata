@@ -20,8 +20,11 @@ The other BP instruments are added one by one; see
 | [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The questions that only the EMR developers, the data manager or the principal investigator can settle, sorted by recipient and priority, and the state of the norms |
 | [docs/sz/PROGRESS.md](docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
 | [docs/sz/QUESTIONS.md](docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
+| [docs/dr/PROGRESS.md](docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
+| [docs/dr/QUESTIONS.md](docs/dr/QUESTIONS.md) | The same questions for FACE DR |
 | [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
 | [schizophrenia-tutorial.ipynb](schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
+| [depression-tutorial.ipynb](depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
 
 ## Use
 
@@ -65,6 +68,13 @@ patients = pd.concat([one.patients, two.patients], ignore_index=True)
 visits = pd.concat([one.data, two.data], ignore_index=True)
 ```
 
+FACE DR, the cohort of resistant depression, is read the same way too
+(`from facedata import dr`): every one of the 2,375 columns of its extraction
+is read by one of 137 schemas or ignored with a reason, and
+`docs/dr/PROGRESS.md` logs each decision. Its screening visit is a visit of
+its own (`visit == "screening"`), where the MINI is given. Its table
+`treatments` holds three lists, named in the column `list`.
+
 The first column of every table is `cohort`. A `usubjid` is unique inside a
 cohort only (the same number can be another patient in the other cohort), so
 the key is `cohort` with `usubjid`. `patients` also holds `fondacode`, the
@@ -81,8 +91,13 @@ uv run jupyter lab bipolar-tutorial.ipynb
 uv run jupyter lab schizophrenia-tutorial.ipynb
 ```
 
+```bash
+uv run jupyter lab depression-tutorial.ipynb
+```
+
 One notebook per cohort. The second one ends with a section that loads the
-instruments shared by FACE BP and FACE SZ and stacks the two cohorts.
+instruments shared by FACE BP and FACE SZ and stacks the two cohorts; the
+third one stacks the three.
 
 A notebook opens in the web browser. Run its cells from top to bottom with
 `Shift` + `Enter`. What appears under a cell is patient data: clear it

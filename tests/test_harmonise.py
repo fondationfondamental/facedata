@@ -326,6 +326,51 @@ def test_qids_total_takes_the_highest_item_of_a_symptom():
     assert pd.isna(total[2])                           # one item is missing
 
 
+def test_qids_total_needs_one_answer_of_each_appetite_and_weight_pair():
+    items = ["qidsr1" + str(number).zfill(2) for number in range(1, 17)]
+    rows = [[1, 1, 1, 1] + [1] + [np.nan, 2, 3, np.nan] + [1, 1, 1, 1, 1] + [1, 1],     # item 7 and item 8, as the form asks
+            [1, 1, 1, 1] + [1] + [2, 1, np.nan, np.nan] + [1, 1, 1, 1, 1] + [1, 1],     # no weight item
+            [1, 1, 1, 1] + [1] + [np.nan, np.nan, 0, 0] + [1, 1, 1, 1, 1] + [1, 1]]     # no appetite item
+    total = custom.qids_total(pd.DataFrame(rows, columns=items, dtype=float))
+    assert total[0] == 1 + 1 + 3 + 5 + 1
+    assert total[1:].isna().all()
+
+
+def stai_answers(rows):
+    """Twenty stored STAI answers per visit: the two given answers, then the first one again."""
+    table = pd.DataFrame([[first, second] + [first] * 18 for first, second in rows], dtype=float)
+    table.columns = [f"staya{number:02d}_stored" for number in range(1, 21)]
+    return table
+
+
+def test_stai_shift_finds_the_coding_of_a_visit():
+    values = stai_answers([(0, 3), (1, 4), (2, 5), (1, 3), (2, 4), (2, 3), (np.nan, np.nan)])
+    keys = pd.DataFrame({"siteid": ["01", "02", "03", "01", "01", "02", "01"],
+                         "visit_date": pd.to_datetime(["2015-03-01"] * 3 + ["2015-06-01", "2015-07-01", "2016-01-01", "2015-08-01"])})
+    shift = custom.stai_shift(values, keys)
+    assert list(shift[:3]) == [1, 0, -1]               # a 0, a 1 with a 4, a 5: only one coding is possible
+    assert shift[3] == 1                               # 1 to 3 could be two codings: its centre used 0 to 3 that year
+    assert pd.isna(shift[4])                           # 2 to 4 does not fit the coding of the centre
+    assert pd.isna(shift[5])                           # no other visit of that centre in that year
+    assert pd.isna(shift[6])                           # no answer
+
+
+def test_stai_shift_is_missing_when_a_centre_used_two_codings_in_a_year():
+    values = stai_answers([(0, 3), (1, 4), (1, 3)])
+    keys = pd.DataFrame({"siteid": ["01"] * 3, "visit_date": pd.to_datetime(["2015-03-01"] * 3)})
+    assert pd.isna(custom.stai_shift(values, keys)[2])
+
+
+def test_shaps_counts_the_items_answered_disagree():
+    items = [f"shaps{number:02d}" for number in range(1, 15)]
+    rows = [[3] * 14, [0] * 14, [1, 0] + [2] * 12, [2, 2, 0, 3, 3, 0, 2, 0, 3, 0, 0, 0, 0, 0], [0] * 13 + [np.nan]]
+    values = pd.DataFrame(rows, columns=items, dtype=float)
+    assert list(custom.shaps_total(values)[:4]) == [0, 14, 2, 8]
+    assert pd.isna(custom.shaps_total(values)[4])                         # one item is missing
+    # The EMR counts "agree" on items 2, 4, 5, 7 and 9 and "disagree" on the nine others.
+    assert list(custom.shaps_total_as_stored(values)[:4]) == [5, 9, 5, 13]
+
+
 def test_psqi_latency_puts_minutes_and_item_5a_in_classes():
     values = pd.DataFrame({"psqi_latency": [10.0, 20.0, 45.0, 90.0, np.nan, 30.0],
                            "psqi05a": [0.0, 0.0, 2.0, 3.0, 1.0, np.nan]})
@@ -356,3 +401,13 @@ def test_psp_band_of_the_score():
     values = pd.DataFrame({"psp_total": [95.0, 91.0, 90.0, 55.0, 10.0, 1.0, 55.0, None],
                            "psp_band": [1.0, 1.0, 2.0, 5.0, 10.0, 10.0, 6.0, 3.0]})
     assert list(custom.psp_band_differs(values)) == [False, False, False, False, False, False, True, False]
+
+
+def test_a_custom_score_can_use_the_key_columns():
+    """custom: name(values, keys). The age at the inclusion visit is the same on every row of a patient."""
+    keys = pd.DataFrame({"usubjid": ["a", "a", "a", "b"], "visit": ["screening", "V0", "V1_an", "screening"],
+                         "age": [40.9, 41.2, 42.3, 30.0]})
+    schema = {"variables": {}, "scores": {"age_at_inclusion": {"custom": "age_at_inclusion", "keep": True}}}
+    values, flags = compute_scores(pd.DataFrame(index=keys.index), schema, keys=keys)
+    assert list(values["age_at_inclusion"][:3]) == [41, 41, 41]          # the age at V0, also on the other rows
+    assert pd.isna(values["age_at_inclusion"][3])                         # no inclusion visit

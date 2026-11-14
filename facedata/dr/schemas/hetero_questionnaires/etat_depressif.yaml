@@ -1,0 +1,83 @@
+instrument: etat_depressif
+title: Current major depressive episode (DSM-IV symptom checklist)
+tab: HETERO-QUESTIONNAIRES
+section: Episode depressif majeur actuel
+status: draft
+notes: >
+  A DSM-IV symptom checklist, filled at the inclusion visit (605 visits) and
+  at the follow-up visits (874). Nine symptoms, answered 1 (yes), 0 (no) or
+  2 ("does not know", a missing code); the extraction of BP writes Y, N and
+  U for the same form. No count of symptoms is stored here: etatd_total is
+  the number of symptoms present, when the nine are answered.
+
+  Five symptoms have a detail that says which way the change goes, asked
+  when the symptom is present. In TRD each detail is two yes/no boxes
+  (hyper- and hypo-reactivity, agitation and retardation, racing and slowed
+  thoughts), where BP has one answer.
+
+  Two forms in the same columns, for the details of weight and of sleep
+  (decision D6 in PROGRESS.md). Until 2016 the form had two boxes for each:
+  etatd03b "loss" and etatd03c "gain", etatd04b "insomnia" and etatd04c
+  "hypersomnia" (348 visits). The other form, used by a few centres from
+  2013 and by all from 2017, has one list in etatd03b and one in etatd04b,
+  with the codes 1, 2 and 3; etatd03c and etatd04c are then empty. No
+  column names the form: a visit that holds etatd03c or etatd04c has the
+  boxes, the others the list (etatd_detail_form). The dictionary describes
+  the boxes only. The codes of the list were read from the other scales of
+  the same visits: with code 1 the MADRS item "reduced appetite" has a mean
+  of 2.3 and the QIDS item "weight loss" 1.4; with code 2 they are 0.7 and
+  0.2, and the QIDS item "weight gain" is 1.7. So 1 is a loss, 2 a gain and
+  3 both; and for sleep 1 is insomnia (MADRS "reduced sleep" 3.4), 2
+  hypersomnia (1.1) and 3 both. The two forms are delivered in columns of
+  their own: the boxes as four yes/no items, the list under the BP names
+  etatd03a and etatd04a.
+
+  Same instrument as in FACE BP, with the codings and the details of the TRD
+  form.
+
+version:
+  name: etatd_detail_form
+  filled:
+    boxes: [etatd03c, etatd04c]
+    list: [etatd01, etatd02, etatd03, etatd04, etatd05, etatd06, etatd07, etatd08, etatd09]
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  etatd01: {label: "Humeur dépressive la majeure partie de la journée", missing: {"2": unknown}}
+  etatd01_hyper_reactivity: {column: etatd01b, label: "Mood: feeling of emotional hyper-reactivity (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd01_hypo_reactivity: {column: etatd01c, label: "Mood: feeling of hypo-reactivity or anaesthesia (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd02: {label: "Diminution marquée d'intérêt ou de plaisir dans toutes ou presque les activités habituelles, presque toute la journée", missing: {"2": unknown}}
+  etatd03: {label: "Perte ou gain de poids significatif, ou, diminution ou augmentation de l'appétit", missing: {"2": unknown}}
+  etatd03_loss_box: {column: etatd03b, versions: [boxes], label: "Weight or appetite: loss (form with two boxes, until 2016)", missing: {"2": unknown}}
+  etatd03_gain_box: {column: etatd03c, versions: [boxes], label: "Weight or appetite: gain (form with two boxes, until 2016)", missing: {"2": unknown}}
+  etatd03a:
+    column: etatd03b
+    versions: [list]
+    label: "Weight or appetite change (form with one list; asked when the symptom is present)"
+    type: category
+    codes: {"1": loss, "2": gain, "3": loss_and_gain}
+  etatd04: {label: "Insomnie ou hypersomnie", missing: {"2": unknown}}
+  etatd04_insomnia_box: {column: etatd04b, versions: [boxes], label: "Sleep: insomnia (form with two boxes, until 2016)", missing: {"2": unknown}}
+  etatd04_hypersomnia_box: {column: etatd04c, versions: [boxes], label: "Sleep: hypersomnia (form with two boxes, until 2016)", missing: {"2": unknown}}
+  etatd04a:
+    column: etatd04b
+    versions: [list]
+    label: "Sleep change (form with one list; asked when the symptom is present)"
+    type: category
+    codes: {"1": insomnia, "2": hypersomnia, "3": insomnia_and_hypersomnia}
+  etatd05: {label: "Agitation ou ralentissement psychomoteur", missing: {"2": unknown}}
+  etatd05_agitation: {column: etatd05b, label: "Psychomotor: agitation (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd05_retardation: {column: etatd05c, label: "Psychomotor: retardation (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd06: {label: "Fatigue ou perte d'énergie", missing: {"2": unknown}}
+  etatd07: {label: "Sentiment d'indignité, d'auto-accusation ou de culpabilité excessive ou inappropriée", missing: {"2": unknown}}
+  etatd08: {label: "Diminution de l'aptitude à penser ou se concentrer ou indécision chaque jour", missing: {"2": unknown}}
+  etatd08_racing_thoughts: {column: etatd08b, label: "Thinking: feeling of racing thoughts (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd08_slowed_thinking: {column: etatd08c, label: "Thinking: feeling of slowed thinking (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd09: {label: "Pensées récurrentes de mort, idéation suicidaire récurrente sans plan spécifique, ou tentative de suicide", missing: {"2": unknown}}
+
+scores:
+  etatd_total:
+    label: "Number of depressive symptoms present (0 to 9)"
+    sum: [etatd01, etatd02, etatd03, etatd04, etatd05, etatd06,
+          etatd07, etatd08, etatd09]

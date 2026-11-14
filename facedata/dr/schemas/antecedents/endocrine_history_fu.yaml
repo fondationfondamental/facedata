@@ -1,0 +1,58 @@
+instrument: endocrine_history_fu
+title: "Endocrine history, at follow-up"
+tab: ANTECEDENTS
+section: Pathologies endocriniennes et métaboliques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  visits of 2 and 4 years: 130 visits. The questions and what is specific
+  to this cohort are described in endocrine_history_v0.yaml.
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  diabetes_fu: {column: diabete_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes, at follow-up"}
+  diabetes_start_fu: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at follow-up"}
+  diabetes_treated_fu: {column: diabete_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: treated, at follow-up"}
+  diabetes_controlled_fu: {column: diabete_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: controlled, at follow-up"}
+  diabetes_type_fu: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, label: "Diabetes: type, at follow-up"}
+  thyroid_disorder_fu: {column: dysthyro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder, at follow-up"}
+  thyroid_disorder_type_fu: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism, "0": code_0}, label: "Thyroid disorder: type, at follow-up"}
+  thyroid_disorder_treated_fu: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: treated, at follow-up"}
+  thyroid_disorder_induced_by_fu: {column: dysthyro_mhdecod, type: category, codes: {"1": code_1, "2": code_2}, label: "Thyroid disorder: induced by a treatment, at follow-up"}
+  thyroid_disorder_controlled_fu: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: controlled, at follow-up"}
+  dyslipidaemia_fu: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia, at follow-up"}
+  dyslipidaemia_start_fu: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at follow-up"}
+  dyslipidaemia_treated_fu: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: treated, at follow-up"}
+  dyslipidaemia_controlled_fu: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: controlled, at follow-up"}
+  other_endocrine_fu: {column: autendoc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another endocrine disease, at follow-up"}
+  other_endocrine_start_fu: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at follow-up"}
+  thyroid_disorder_start_fu: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Thyroid disorder: date of onset, at follow-up"}
+  hypercholesterolaemia_fu: {column: cholester_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypercholesterolaemia, at follow-up"}
+  hypertriglyceridaemia_fu: {column: tryglicer_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypertriglyceridaemia, at follow-up"}

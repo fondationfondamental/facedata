@@ -1,0 +1,62 @@
+instrument: wais4_code_symboles_ivt
+title: WAIS-IV Coding, Symbol Search and processing speed index
+tab: NEUROPSYCHOLOGIE
+section: VITESSE DE TRAITEMENT
+status: draft
+notes: >
+  The BP schema in the columns of this extraction: WAIS-IV Coding, Symbol
+  Search and the processing speed index. 726 visits.
+
+  One edition. No column names the edition of the WAIS in this cohort. The
+  data show the WAIS-IV in every year: within an age group, a raw score has
+  one scaled score, the same before and after 2018, for the five subtests;
+  95 digit span totals are above 30, the maximum of the WAIS-III; and the
+  processing speed index follows the WAIS-IV table of BP on each of the 35
+  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest,
+  so that the column exists as in BP and SZ.
+
+  Coding, raw score. Where a box is filled incorrectly (76 visits), the
+  stored raw score is the boxes filled minus the errors on 58 visits and
+  the boxes filled on 17: the centres do not all count the same way. It is
+  delivered as stored, with the two counts next to it. The Symbol Search
+  raw score is the correct answers minus the incorrect ones on every
+  visit; 5 of them are negative and out of range.
+
+  The sum of the two scaled scores is right on all but 2 visits
+  (score_mismatch on the check score). The confidence interval of the
+  index is a text ("86-104").
+
+version:
+  name: wais_version
+  filled:
+    wais4: [similtot, similstd, nbrut, nstand, arithtot, arithstd, imt01, imt02, code01, code03, code04,
+            symbol01, symbol03, symbol04, ivt01, ivt04]
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  # Coding (Code)
+  wais4_code_filled: {column: code01, label: Coding - boxes filled,             range: [0, 135]}
+  wais4_code_errors: {column: code02, label: Coding - boxes filled incorrectly, range: [0, 135]}
+  wais4_code_raw:    {column: code03, label: Coding - raw score,                range: [0, 135]}
+  wais4_code_scaled: {column: code04, label: Coding - age-scaled score,         range: [1, 19]}
+  wais4_code_z:      {column: code05, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+
+  # Symbol search (Symboles)
+  wais4_symbol_correct: {column: symbol01, label: Symbol search - correct answers,   range: [0, 60]}
+  wais4_symbol_errors:  {column: symbol02, label: Symbol search - incorrect answers, range: [0, 60]}
+  wais4_symbol_raw:     {column: symbol03, label: Symbol search - raw score,         range: [0, 60]}
+  wais4_symbol_scaled:  {column: symbol04, label: Symbol search - age-scaled score,  range: [1, 19]}
+  wais4_symbol_z:       {column: symbol05, label: Symbol search - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+
+  # Processing speed index (IVT)
+  wais4_ivt_sum_scaled: {column: ivt04, label: Sum of the two scaled scores, range: [2, 38]}
+  wais4_ivt_index:      {column: ivt01, label: Processing speed index,      range: [50, 150]}
+  wais4_ivt_percentile: {column: ivt02, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}
+  wais4_ivt_interval:   {column: ivt03, label: 95% confidence interval of the index, type: text}
+
+scores:
+  # Consistency checks only.
+  wais4_symbol_raw_check: {sum: [wais4_symbol_correct], minus: [wais4_symbol_errors], compare: wais4_symbol_raw, keep: false, versions: [wais4]}
+  wais4_ivt_sum_check: {sum: [wais4_code_scaled, wais4_symbol_scaled], compare: wais4_ivt_sum_scaled, keep: false, versions: [wais4]}

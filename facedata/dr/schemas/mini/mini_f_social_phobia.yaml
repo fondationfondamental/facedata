@@ -1,0 +1,41 @@
+instrument: mini_f_social_phobia
+title: "MINI, module F: social phobia"
+tab: MINI
+section: MINI F
+status: draft
+notes: >
+  Module F: social phobia over the last month.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  The conclusion (f04a) is yes on 136 visits; 129 of them have F1 to F4
+  answered yes, and no visit has the four with a "no". The type (f05a) is
+  stored 1 and 0, where the dictionary says 1 and 2: it equals the answer
+  to "four situations or more" on 131 of 132 visits, so 1 is read as
+  generalised and 0 as not generalised.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_f01: {column: f01, label: "F1) Au cours du mois écoulé, avez-vous redouté ou avez-vous été gêné(e) d’être le centre de l’attention ou avez-vous eu peur d’être humilié("}
+  mini_f02: {column: f02, label: "F2) Pensez-vous que cette peur est excessive ou déraisonnable et est-elle la cause d’une anxiété quasiment permanente chez vous ?"}
+  mini_f03: {column: f03, label: "F3) Redoutez-vous tellement ces situations qu’en pratique vous les évitez ou êtes-vous extrêmement mal à l’aise lorsque vous devez les affro"}
+  mini_f04: {column: f04, label: "F4) Cette peur entraîne t’elle chez vous une certaine souffrance ou vous gêne-t-elle de manière significative dans votre travail/à l’école o"}
+  mini_social_phobia_current: {column: f04a, label: "Social phobia current: PHOBIE SOCIALE ACTUELLE"}
+  mini_f05: {column: f05, label: "Craignez-vous ou évitez-vous 4 situations sociales ou plus ?"}
+  mini_social_phobia_type: {column: f05a, type: category, codes: {"1": generalised, "0": non_generalised}, label: "Social phobia type: PHOBIE SOCIALE (Trouble anxiété sociale) ACTUELLE"}

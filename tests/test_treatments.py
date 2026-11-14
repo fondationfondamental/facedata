@@ -110,3 +110,75 @@ def test_the_names_table_of_the_package_is_coherent():
     assert (table.groupby("molecule")[["atc", "treatment_group"]].nunique() == 1).all().all()
     schema = load_schemas(package / "bp" / "schemas")["medications"]
     assert set(table["treatment_group"]) == set(schema["variables"]["treatment_group"]["codes"])
+
+
+# Made-up lists that the export crossed. Q1 has two products and three lines: six items. Q2 has one product and two lines.
+CROSSED = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tnames\tstrengths\tstarts\tper_day\tother
+Q1\tV0\t2\t1\t2020-01-10\t01\t['CALMIX', 'CALMIX', 'CALMIX', 'SEDALINE', 'SEDALINE', 'SEDALINE']\t['10 mg', '10 mg', '10 mg', '5 mg', '5 mg', '5 mg']\t['15/06/2019', '15/03/2020', '06/2018', '15/06/2019', '15/03/2020', '06/2018']\t['2', '1', '3', '4', '2', '6']\t['ASPIRIX']
+Q2\tV0\t2\t2\t2020-06-01\t01\t['SEDALINE', 'SEDALINE']\t['5 mg', '5 mg']\t['15/01/2020', '15/05/2020']\t['1', '2']\t
+"""
+
+CROSSED_SCHEMA = """
+instrument: pills
+title: Pills
+tab: TEST
+section: Pills
+status: draft
+level: list
+crossed: [names, strengths]
+names: {column: names, clean: medication_name, table: pills.csv, gives: [molecule, group]}
+variables:
+  pill: {column: names, type: text}
+  molecule: {column: molecule, type: text}
+  strength: {column: strengths, type: text}
+  start_date: {column: starts, type: date, range: [1950-01-01, 2026-12-31]}
+  units_per_day: {column: per_day, type: number, range: [0, 100], winsor: false}
+"""
+
+OTHER_SCHEMA = """
+instrument: other_pills
+title: Other pills
+tab: TEST
+section: Other pills
+status: draft
+level: list
+variables:
+  pill: {column: other, type: text}
+"""
+
+
+def write_crossed(folder, schemas):
+    (folder / "schemas" / "tab").mkdir(parents=True)
+    for name, text in schemas.items():
+        (folder / "schemas" / "tab" / f"{name}.yaml").write_text(text, encoding="utf-8")
+    (folder / "pills.csv").write_text(TABLE, encoding="utf-8")
+    (folder / "extraction.tsv").write_text(CROSSED, encoding="utf-8")
+
+
+def test_lists_crossed_by_the_export_are_put_back(tmp_path):
+    write_crossed(tmp_path, {"pills": CROSSED_SCHEMA})
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    items = result.treatments
+    # Q1: two products, the link with the three lines is lost: one item per product, no date and no dose.
+    q1 = items[items["usubjid"] == "Q1"]
+    assert list(q1["pill"]) == ["CALMIX", "SEDALINE"] and list(q1["strength"]) == ["10 mg", "5 mg"]
+    assert q1["start_date"].isna().all() and q1["units_per_day"].isna().all()
+    crossed = result.flags[result.flags["flag"] == "list_crossed"]
+    assert sorted(set(crossed["variable"])) == ["start_date", "units_per_day"] and set(crossed["usubjid"]) == {"Q1"}
+    # Q2: one product, every line is its own. The dates are written day/month/year.
+    q2 = items[items["usubjid"] == "Q2"]
+    assert list(q2["pill"]) == ["SEDALINE", "SEDALINE"] and list(q2["units_per_day"]) == [1, 2]
+    assert list(q2["start_date"].dt.strftime("%Y-%m-%d")) == ["2020-01-15", "2020-05-15"]
+    assert "list" not in items                       # one list instrument: no column list
+
+
+def test_several_list_instruments_are_stacked(tmp_path):
+    write_crossed(tmp_path, {"pills": CROSSED_SCHEMA, "other_pills": OTHER_SCHEMA})
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    items = result.treatments
+    assert list(items.columns[:3]) == ["usubjid", "list", "item"]
+    assert items["list"].value_counts().to_dict() == {"pills": 4, "other_pills": 1}
+    assert list(items.loc[items["list"] == "other_pills", "pill"]) == ["ASPIRIX"]      # the same column for the two lists
+    assert set(result.flags.loc[result.flags["flag"] == "list_crossed", "visit"]) == {"pills item 1", "pills item 2"}
+    problems = check_schema({**load_schemas(tmp_path / "schemas")["pills"], "level": "visit"}, {"names", "strengths", "starts", "per_day"})
+    assert any("crossed needs level: list" in problem for problem in problems)

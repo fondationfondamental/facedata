@@ -17,11 +17,29 @@ def list_columns(schema):
     return sorted(set(columns) - set(given))
 
 
-def open_lists(raw, keys, schema):
+def uncross(cells, product_columns):
+    """Put back the lists of one patient that the export crossed (SCHEMA_SPEC, section 15).
+
+    cells: one list per column, all of the same length. With several
+    products, one item per product is kept and the other columns are emptied.
+    Returns the lists and whether the link between products and lines is lost.
+    """
+    products = list(zip(*[cells[column] for column in product_columns]))
+    firsts = [products.index(product) for product in dict.fromkeys(products)]    # the first item of each product
+    if len(firsts) == 1:
+        return cells, False                          # one product: every line is its own
+    kept = {}
+    for column, values in cells.items():
+        kept[column] = [values[k] for k in firsts] if column in product_columns else [None] * len(firsts)
+    return kept, True
+
+
+def open_lists(raw, keys, schema, label="item "):
     """Open the list cells of an instrument: one row per patient and item.
 
-    Returns the items as a table of text (like an extraction, with one row per
-    item), the key columns of the items, and the flags.
+    label: what the flag log writes before the number of the item. Returns
+    the items as a table of text (like an extraction, with one row per item),
+    the key columns of the items, and the flags.
     """
     columns = list_columns(schema)
     has_list = (raw[columns] != "").any(axis=1)
@@ -34,15 +52,27 @@ def open_lists(raw, keys, schema):
     lists, longest = lists[longest > 0], longest[longest > 0]
     for column in columns:                           # a list shorter than the others gets empty items
         lists[column] = [cell + [None] * (n - len(cell)) for cell, n in zip(lists[column], longest)]
+    link_lost = pd.Series(False, index=lists.index)
+    if "crossed" in schema:                          # the export wrote every product next to every line
+        for row in lists.index:
+            cells, link_lost[row] = uncross(lists.loc[row].to_dict(), schema["crossed"])
+            for column in columns:
+                lists.at[row, column] = cells[column]
     opened = lists.explode(columns)
     items = opened.map(lambda value: "" if pd.isna(value) else str(value)).reset_index(drop=True)
 
     item_keys = keys.loc[opened.index, KEY_COLUMNS].reset_index(drop=True)
     item_keys["visit_order"] = item_keys.groupby("usubjid").cumcount() + 1
-    item_keys["visit"] = "item " + item_keys["visit_order"].astype(str)
+    item_keys["visit"] = label + item_keys["visit_order"].astype(str)
     item_keys["visit_month"] = np.nan
     varying = item_keys["usubjid"].isin(n_versions.index[n_versions > 1]) & (item_keys["visit_order"] == 1)
     flags = stack_flags([make_flags(varying, name, "patient_value_varies") for name in schema["variables"]])
+    if "crossed" in schema:                          # the columns of the lines were emptied: say so on each of their variables
+        crossed = pd.Series(link_lost.reindex(opened.index).to_numpy(), index=items.index)
+        lines = [name for name, variable in schema["variables"].items()
+                 if set(variable["columns"]) & (set(columns) - set(schema["crossed"]))]
+        detail = "several products: the file does not say which line belongs to which"
+        flags = stack_flags([flags] + [make_flags(crossed, name, "list_crossed", detail) for name in lines])
     if "names" in schema:
         block = schema["names"]
         found = look_up_names(items[block["column"]], block)

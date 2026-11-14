@@ -1,0 +1,35 @@
+instrument: cgi_egf
+title: Clinical Global Impression and Global Assessment of Functioning
+tab: HETERO-QUESTIONNAIRES
+section: CGI
+status: draft
+notes: >
+  Two ratings by the clinician, at the inclusion and follow-up visits: the
+  CGI severity (1,434 visits) and the GAF, called EGF in French (1,351
+  visits). The TRD form has no CGI improvement and no efficacy index, which
+  BP and SZ have.
+
+  CGI severity: 0 means "not assessed" and is a missing code (2 visits).
+
+  The GAF is typed in round numbers: 4 values in 10 end in 0 and almost as
+  many in 5.
+
+  Same instrument as in FACE BP and FACE SZ, with the two columns that the
+  TRD extraction holds.
+
+defaults: {type: item}
+
+variables:
+  cgi_severity:
+    column: cgi01
+    label: "CGI severity of illness, from 1 (normal) to 7 (among the most ill)"
+    range: [1, 7]
+    missing: {0: not_recorded}
+  gaf:
+    column: egf_
+    label: "Global Assessment of Functioning (EGF), from 1 to 100"
+    type: number
+    range: [1, 100]
+    missing: {0: not_recorded}
+    bands: middle
+    winsor: false

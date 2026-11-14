@@ -133,7 +133,7 @@ def run_instrument(raw, keys, schema, limits=None, norms=None):
             flags.append(doubt_period(values[name], keys["visit_date"], name, variable["doubt"]))
     cens = cens.where(values[cens.columns].notna(), 0)
 
-    values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens)
+    values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens, keys)
     flags.append(score_flags)
 
     for name, check in schema.get("checks", {}).items():     # custom checks: True where the row fails
@@ -191,13 +191,14 @@ def once_per_patient(result, table, keys):
     return result
 
 
-def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None):
+def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None, label="item "):
     """An instrument whose cells hold lists: one row per patient and item (SCHEMA_SPEC, section 15).
 
-    Returns the table of items, the yes/no columns of the visit table, the
-    flags and the QC tables.
+    label: what the flag log writes before the number of an item. Returns the
+    table of items, the yes/no columns of the visit table, the flags and the
+    QC tables.
     """
-    items, item_keys, list_flags = open_lists(raw, keys, schema)
+    items, item_keys, list_flags = open_lists(raw, keys, schema, label)
     result = run_instrument(items, item_keys, schema, limits, norms)
     result["flags"] = stack_flags([result["flags"], list_flags])
     front = pd.DataFrame({"usubjid": item_keys["usubjid"], "item": item_keys["visit_order"]})
@@ -288,6 +289,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
         problems = problems + check_schema(schema, set(raw.columns))
     if problems:
         raise ValueError("The schemas have problems:\n" + "\n".join(problems))
+    several_lists = sum(schema.get("level") == "list" for schema in schemas.values()) > 1
     if instruments is not None:
         unknown = [name for name in instruments if name not in schemas]
         if unknown:
@@ -302,7 +304,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
     visit_text = pd.DataFrame({"visit_date": raw["svdtc"]})
     all_flags = [finish_flags(visit_flags, keys, visit_text, keys)]
     all_qc = []
-    treatments = pd.DataFrame(columns=["usubjid", "item"])
+    lists = []                                           # the items of each list instrument
     relatives = pd.DataFrame(columns=["usubjid", "relative"])
     for schema in schemas.values():
         if "derived_from" in schema:                     # computed with the instrument it comes from
@@ -313,7 +315,11 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_qc.append(qc)
             continue
         if schema.get("level") == "list":
-            treatments, visit_columns, flags, qc = run_list_instrument(raw, keys, schema, schemas, limits, norms)
+            label = schema["instrument"] + " item " if several_lists else "item "
+            table, visit_columns, flags, qc = run_list_instrument(raw, keys, schema, schemas, limits, norms, label)
+            if several_lists:                            # the rows of several lists are stacked: say which list
+                table.insert(1, "list", schema["instrument"])
+            lists.append(table)
             data = pd.concat([data, visit_columns], axis=1)
             all_flags.append(flags)
             all_qc.extend(qc)
@@ -339,6 +345,9 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
         if "per_patient" in schema:
             patients, qc = run_per_patient(relatives, patients, keys, schema, schemas[name + "_per_patient"])
             all_qc.append(qc)
+    treatments = pd.DataFrame(columns=["usubjid", "item"])
+    if lists:
+        treatments = lists[0] if len(lists) == 1 else pd.concat(lists, ignore_index=True)
     flags = pd.concat(all_flags, ignore_index=True)
     flags = flags.drop_duplicates(subset=["usubjid", "visit", "variable", "flag"]).reset_index(drop=True)
     data = data.copy()                                   # built column by column: a copy puts it back in one piece

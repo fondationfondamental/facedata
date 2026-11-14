@@ -1,0 +1,60 @@
+instrument: mini_k_psychotic
+title: "MINI, module K: psychotic disorders"
+tab: MINI
+section: MINI K
+status: draft
+notes: >
+  Module K: psychotic symptoms, current and in the life, and the mood
+  disorder with psychotic features.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Questions K1 to K7 have a third answer, "yes, bizarre", stored 2 (on 10
+  cells). The conclusions are delivered as stored: a psychotic syndrome in
+  the life on 7 visits, a mood disorder with psychotic features in the life
+  on 14.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_k01a: {column: k01a, range: [0, 2], label: "K1 a) Avez-vous déjà eu l’impression que quelqu’un vous espionnait, ou complotait contre vous, ou bien encore que l’on essayait de vous fair (2 = yes, bizarre)"}
+  mini_k01b: {column: k01b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k02a: {column: k02a, range: [0, 2], label: "K2 a) Avez-vous déjà eu l’impression que l’on pouvait lire ou entendre vos pensées ou que vous pouviez lire ou entendre les pensées des autr (2 = yes, bizarre)"}
+  mini_k02b: {column: k02b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k03a: {column: k03a, range: [0, 2], label: "K3 a) Avez-vous déjà cru que quelqu’un ou que quelque chose d’extérieur à vous introduisait dans votre tête des pensées étranges qui n’étaie (2 = yes, bizarre)"}
+  mini_k03b: {column: k03b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k04a: {column: k04a, range: [0, 2], label: "K4 a) Avez-vous déjà eu l’impression que l’on s’adressait directement à vous à travers la télévision ou la radio ou que certaines personnes  (2 = yes, bizarre)"}
+  mini_k04b: {column: k04b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k05a: {column: k05a, range: [0, 2], label: "K5 a) Vos proches ont-ils déjà jugé certaines de vos idées comme étranges ou hors de la réalité ? (2 = yes, bizarre)"}
+  mini_k05b: {column: k05b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, CONSIDERENT-ILS VOS IDÉES COMME ÉTRANGES ? (2 = yes, bizarre)"}
+  mini_k06a: {column: k06a, range: [0, 2], label: "K6 a) Vous est-il déjà arrivé d’entendre des choses que d’autres personnes ne pouvaient pas entendre, comme des voix ? (2 = yes, bizarre)"}
+  mini_k06a1: {column: k06a1, label: "SI OUI OU HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler ent"}
+  mini_k06b: {column: k06b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE A K6a : Avez-vous entendu ces voix/autres choses au cours du mois écoulé ? (2 = yes, bizarre)"}
+  mini_k06b1: {column: k06b1, label: "SI OUI A HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler entr"}
+  mini_k07a: {column: k07a, range: [0, 2], label: "K7 a) Vous est-il déjà arrivé alors que vous étiez éveillé(e), d’avoir des visions ou de voir des choses que d’autres personnes ne pouvaient (2 = yes, bizarre)"}
+  mini_k07b: {column: k07b, range: [0, 2], label: "b) SI OUI : Cela vous est-il arrivé au cours du mois écoulé ? (2 = yes, bizarre)"}
+  mini_k08b: {column: k08b, label: "K8 b) Actuellement, le patient presente t-il un discours clairement incoherent ou desorganise, ou une perte nette des associations ?"}
+  mini_k09b: {column: k09b, label: "K9 b) Actuellement, le patient presente t-il un comportement nettement désorganisé ou catatonique ?"}
+  mini_k10b: {column: k10b, label: "K10 b) Des symptomes negatifs typiquement schizophreniques (affect abrase, pauvrete du discours/alogie, manque d’energie ou d’interet pour d"}
+  mini_k11a: {column: k11a, label: "K11)Les idées ou impressions dont nous venons de parler telles que (SYMPTÔMES COTÉS OUI DE K1a À K7a) sont-elles survenues uniquement pendan"}
+  mini_mood_disorder_psychotic_lifetime: {column: k11b, label: "Mood disorder psychotic lifetime: TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES VIE ENTIERE"}
+  mini_mood_disorder_psychotic_current: {column: k12a, label: "Mood disorder psychotic current: K12) TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES ACTUEL"}
+  mini_k13b: {column: k13b, label: "K13) y-a-t-il 1 ou plusieurs questions « b », de k1b a k6b, cotée(s) oui bizarre ? ou Y a t-il 2 ou plusieurs questions « b », de k1b a k10b"}
+  mini_psychotic_syndrome_current: {column: k13, label: "Psychotic syndrome current: SYNDROME PSYCHOTIQUE ACTUEL"}
+  mini_k14b: {column: k14b, label: "K14) k13 est-elle cotée oui ou y a-t-il 1 ou plusieurs questions ' a ', de k1a a k6a, cotées(s) oui bizarre ? ou y a-t-il 2 ou plusieurs que"}
+  mini_psychotic_syndrome_lifetime: {column: k14, label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE"}

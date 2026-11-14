@@ -1,0 +1,18 @@
+instrument: hospitalisations_v0
+title: "Hospitalisations over the whole life, at inclusion"
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: HOSPITALISATION
+status: draft
+notes: >
+  Hospitalisations over the whole life, at the inclusion visit: 327 visits,
+  about half of the inclusions (8% to 83% by centre). The SZ schema of this
+  name, with the columns that this cohort has: ever hospitalised (written Y
+  and N), the age at the first hospitalisation, their number and their
+  total length in months. An age of 0 is "not recorded" (26 visits); 6 ages
+  under 5 are out of range.
+
+variables:
+  ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Has ever been hospitalised, at inclusion"}
+  first_hospitalisation_age: {column: agedebut_hospitalisation_lt, type: number, unit: years, range: [5, 90], missing: {"0": not_recorded}, winsor: false, label: Age at the first hospitalisation}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 100], winsor: false, label: "Number of hospitalisations over the whole life, at inclusion"}
+  hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 600], winsor: false, label: "Total length of the hospitalisations over the whole life, at inclusion"}

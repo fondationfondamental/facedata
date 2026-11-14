@@ -1,0 +1,34 @@
+instrument: vitamine_d
+title: Vitamin D
+tab: BILAN BIOLOGIQUE
+section: Bilan Biologique
+status: draft
+notes: >
+  25-hydroxy vitamin D, on 1,025 visits, delivered in nmol/L.
+
+  The form has a choice of five units, exported as a code: 1 nmol/L, 2 ng/L,
+  3 µg/L, 4 mmol/L, 5 ng/mL. Codes 3 and 5 are the same scale (median 22):
+  198 results are converted to nmol/L. Code 4 is read as nmol/L: no vitamin D
+  is counted in mmol/L, and its median (62) is that of code 1 (64). Code 2,
+  ng/L, holds two kinds of values: 41 in the thousands, which are true ng/L
+  and are converted, and 80 of a size (median 35) that can be nmol/L or ng/mL
+  as well; these cannot be told apart and are removed (open question O10 in
+  PROGRESS.md). Once harmonised, the yearly median stays between 49 and 67
+  nmol/L from 2012 to 2026.
+
+  FACE SZ has the same instrument without a unit: its values are delivered as
+  written and must not be compared with these.
+
+defaults: {type: number}
+
+variables:
+  vitamin_d:
+    label: 25-hydroxy vitamin D
+    column: vitd
+    unit_column: vitd_lborresu
+    unit: nmol/L
+    units:
+      nmol/L: {factor: 1, expect: [8, 400], aliases: ["1", "4"]}
+      ng/mL: {factor: 2.496, expect: [3, 160], aliases: ["3", "5"]}
+      ng/L: {factor: 0.002496, expect: [3000, 160000], aliases: ["2"]}
+    range: [8, 400]

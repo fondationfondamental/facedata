@@ -56,6 +56,7 @@ SEVERITY = {
     "score_mismatch": "discrepancy",
     "derived_doubt": "discrepancy",
     "patient_value_varies": "discrepancy",
+    "list_crossed": "discrepancy",
     "visit_order": "discrepancy",
     "check_failed": "discrepancy",
     "period_doubt": "discrepancy",

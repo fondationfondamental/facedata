@@ -1,0 +1,18 @@
+instrument: hospitalisations_since_visit
+title: "Hospitalisations since the last visit, for depression and for another reason"
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: HOSPITALISATION
+status: draft
+notes: >
+  Hospitalisations since the last visit, counted apart for depression and
+  for another reason, with their total length in months: 800 follow-up
+  visits (83% to 96% of the visits of each kind). A hospitalisation for
+  depression on 182 of 792 visits. Not in BP or SZ in this form.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  n_hospitalisations_depression_fu: {column: nboccur_hospitalisation_dep, range: [0, 50], label: "Number of hospitalisations for depression since the last visit"}
+  hospitalisation_months_depression_fu: {column: hodur_hospitalisation_dep, unit: months, range: [0, 60], label: "Total length of the hospitalisations for depression since the last visit"}
+  n_hospitalisations_other_fu: {column: nboccur_hospitalisation_hdep, range: [0, 50], label: "Number of hospitalisations for another reason since the last visit"}
+  hospitalisation_months_other_fu: {column: hodur_hospitalisation_hdep, unit: months, range: [0, 60], label: "Total length of the hospitalisations for another reason since the last visit"}

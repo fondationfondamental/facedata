@@ -1,0 +1,75 @@
+instrument: athf
+title: Antidepressant Treatment History Form (ATHF)
+tab: HETERO-QUESTIONNAIRES
+section: ATHF Criteria for Rating Medication Trials for Antidepressant Failure (2009)
+status: draft
+notes: >
+  The Antidepressant Treatment History Form: one rating per antidepressant,
+  per biological therapy, per augmentation agent and per psychotherapy that
+  the patient received for the current episode, 42 in all. A rating of 0
+  means no prescription. For an antidepressant, 1 and 2 are trials that were
+  too short or under the adequate dose, and 3 and more an adequate trial;
+  the exact levels of each line are in the dictionary. Filled at the
+  inclusion visit (507 visits) and at the follow-up visits (526), at about
+  80% of the inclusion visits in every period.
+
+  No score is stored and none is computed here: the ratings are delivered
+  as written. The number of adequate trials is the count of the ratings of
+  3 or more among the antidepressants.
+
+  Four points that the dictionary does not settle (open question O8 in
+  PROGRESS.md). (1) Two columns are called bupropion: athf05e, filled on
+  every visit and rarely above 0, and athf05f, filled from 2019 (572 visits)
+  and rated 3 or 4 on 149 of them; athf05f is delivered under a neutral
+  name. (2) Two columns are called antipsychotics (athf10b, athf10c). (3)
+  Lithium alone (athf08a) and carbamazepine (athf08c) hold ratings of 4 to 6
+  where the dictionary lists 0 to 3; they are kept. (4) Phenelzine (athf04d)
+  is filled from 2019 only.
+
+  An instrument of the TRD cohort only.
+
+defaults: {type: item}
+
+variables:
+  athf_tricyclic_dose: {column: athfa01a, range: [0, 4], label: "ATHF, Tricyclic or related antidepressants, rated on the dose"}
+  athf_tricyclic_plasma: {column: athf01b, range: [0, 2], label: "ATHF, Tricyclic or related antidepressants, rated on the plasma level"}
+  athf_fluoxetine: {column: athf02a, range: [0, 4], label: "ATHF, SSRI: fluoxetine"}
+  athf_fluvoxamine: {column: athf02b, range: [0, 4], label: "ATHF, SSRI: fluvoxamine"}
+  athf_paroxetine: {column: athf02c, range: [0, 4], label: "ATHF, SSRI: paroxetine"}
+  athf_sertraline: {column: athf02d, range: [0, 4], label: "ATHF, SSRI: sertraline"}
+  athf_citalopram: {column: athf02e, range: [0, 4], label: "ATHF, SSRI: citalopram"}
+  athf_escitalopram: {column: athf02f, range: [0, 4], label: "ATHF, SSRI: escitalopram"}
+  athf_duloxetine: {column: athf03a, range: [0, 4], label: "ATHF, SNRI: duloxetine"}
+  athf_venlafaxine: {column: athf03b, range: [0, 4], label: "ATHF, SNRI: venlafaxine"}
+  athf_milnacipran: {column: athf03c, range: [0, 4], label: "ATHF, SNRI: milnacipran"}
+  athf_iproniazid: {column: athf04a, range: [0, 4], label: "ATHF, MAOI: iproniazid"}
+  athf_moclobemide: {column: athf04b, range: [0, 4], label: "ATHF, MAOI: moclobemide"}
+  athf_toloxatone: {column: athf04c, range: [0, 4], label: "ATHF, MAOI: toloxatone"}
+  athf_phenelzine: {column: athf04d, range: [0, 4], label: "ATHF, MAOI: phenelzine"}
+  athf_mianserin: {column: athf05a, range: [0, 4], label: "ATHF, Other antidepressants: mianserin"}
+  athf_mirtazapine: {column: athf05b, range: [0, 4], label: "ATHF, Other antidepressants: mirtazapine"}
+  athf_tianeptine: {column: athf05c, range: [0, 4], label: "ATHF, Other antidepressants: tianeptine"}
+  athf_agomelatine: {column: athf05d, range: [0, 4], label: "ATHF, Other antidepressants: agomelatine"}
+  athf_bupropion: {column: athf05e, range: [0, 4], label: "ATHF, Other antidepressants: bupropion"}
+  athf_other_antidepressant_05f: {column: athf05f, range: [0, 4], label: "ATHF, Other antidepressants: a second column that the dictionary also calls bupropion (which drug is not known)"}
+  athf_ect_unilateral: {column: athf06a, range: [0, 5], label: "ATHF, ECT: unilateral"}
+  athf_ect_bilateral: {column: athf06b, range: [0, 5], label: "ATHF, ECT: bilateral"}
+  athf_vagus_nerve_stimulation: {column: athf07a, range: [0, 4], label: "ATHF, Non-drug biological therapies: vagus nerve stimulation"}
+  athf_tms: {column: athf07b, range: [0, 4], label: "ATHF, Non-drug biological therapies: TMS"}
+  athf_tdcs: {column: athf07c, range: [0, 4], label: "ATHF, Non-drug biological therapies: tDCS"}
+  athf_lithium_alone: {column: athf08a, range: [0, 6], label: "ATHF, Augmentation: lithium alone for a unipolar depressive episode"}
+  athf_lithium_augmentation: {column: athf08b, range: [0, 5], label: "ATHF, Augmentation: lithium as an augmentation agent"}
+  athf_carbamazepine: {column: athf08c, range: [0, 6], label: "ATHF, Augmentation: carbamazepine"}
+  athf_lamotrigine: {column: athf08d, range: [0, 3], label: "ATHF, Augmentation: lamotrigine"}
+  athf_thyroid_hormones: {column: athf08e, range: [0, 4], label: "ATHF, Augmentation: thyroid hormones"}
+  athf_alprazolam: {column: athf09a, range: [0, 2], label: "ATHF, Benzodiazepines: alprazolam"}
+  athf_other_benzodiazepines: {column: athf09b, range: [0, 1], label: "ATHF, Benzodiazepines: other benzodiazepines"}
+  athf_stimulants: {column: athf10a, range: [0, 1], label: "ATHF, Others: stimulants (methylphenidate, modafinil)"}
+  athf_antipsychotics_10b: {column: athf10b, range: [0, 1], label: "ATHF, Others: antipsychotics, first column of that name"}
+  athf_antipsychotics_10c: {column: athf10c, range: [0, 1], label: "ATHF, Others: antipsychotics, second column of that name"}
+  athf_clonidine_and_others: {column: athf10d, range: [0, 1], label: "ATHF, Others: clonidine, L-tryptophan, thyroid hormones and similar"}
+  athf_anxiolytics_hypnotics: {column: athf10e, range: [0, 1], label: "ATHF, Others: anxiolytics and hypnotics (buspirone, zolpidem, lorazepam, clonazepam)"}
+  athf_phototherapy: {column: athf10f, range: [0, 1], label: "ATHF, Others: phototherapy"}
+  athf_cbt: {column: athf11a, range: [0, 4], label: "ATHF, Psychotherapy: cognitive and behavioural therapy"}
+  athf_interpersonal_therapy: {column: athf11b, range: [0, 4], label: "ATHF, Psychotherapy: interpersonal therapy"}
+  athf_behavioural_activation: {column: athf11c, range: [0, 4], label: "ATHF, Psychotherapy: behavioural activation"}

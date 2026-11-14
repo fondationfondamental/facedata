@@ -1,0 +1,33 @@
+instrument: episode_described
+title: "One depressive episode described at inclusion"
+tab: EVALUATION MEDICALE
+section: Episodes
+status: draft
+notes: >
+  One depressive episode described at the inclusion visit: its number, its
+  length, and whether it was treated, resistant, hospitalised, with
+  psychotic or mixed features, seasonal, followed by a full remission. 221
+  visits (50% of the inclusions until 2014, 22% to 31% since 2018). Not in
+  BP or SZ.
+
+  The extraction holds one episode per visit, although the form numbers
+  them (episode 1 on 102 visits, 2 on 55, 3 on 36): if the form lists
+  several, only one reaches the extraction (open question O26). 2 is "DM",
+  missing data (29 cells).
+
+defaults: {type: item}
+
+variables:
+  episode_number: {column: epi_num_epi, range: [1, 60], label: Number of the episode described}
+  episode_months: {column: epi_duree, type: number, unit: months, range: [0, 600], winsor: false, label: Length of the episode}
+  episode_hospitalised: {column: epi_hospi, range: [0, 1], missing: {"2": not_recorded}, label: Hospitalised during the episode}
+  episode_resistant: {column: epi_resist, range: [0, 1], missing: {"2": not_recorded}, label: Resistant episode}
+  episode_mixed: {column: epi_mixt, range: [0, 1], missing: {"2": not_recorded}, label: Mixed features}
+  episode_psychotic: {column: epi_car_psycho, range: [0, 1], missing: {"2": not_recorded}, label: Psychotic features}
+  episode_seasonal: {column: epi_car_sai, range: [0, 1], missing: {"2": not_recorded}, label: Seasonal pattern}
+  episode_full_remission: {column: epi_remi_comp, range: [0, 1], missing: {"2": not_recorded}, label: Full remission}
+  episode_treated: {column: epi_traite, range: [0, 1], missing: {"2": not_recorded}, label: Treated}
+  episode_treatment_months: {column: duree_glob_trt, type: number, unit: months, range: [0, 600], winsor: false, label: Total length of the treatment}
+  episode_recurrence_on_treatment: {column: epi_recur_depress, range: [0, 1], missing: {"2": not_recorded}, label: Depressive recurrence under treatment}
+  episode_antidepressant_switch: {column: epi_vir_antid, range: [0, 1], missing: {"2": not_recorded}, label: Switch under an antidepressant}
+  episode_months_since_previous: {column: epi_delais_epi_prec, type: number, unit: months, range: [0, 720], winsor: false, label: Time since the previous episode}

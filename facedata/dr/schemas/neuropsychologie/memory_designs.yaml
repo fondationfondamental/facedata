@@ -1,0 +1,34 @@
+instrument: memory_designs
+title: Memory for designs, two parts
+tab: NEUROPSYCHOLOGIE
+section: MÉMOIRE DESSIN
+status: draft
+notes: >
+  A memory test for designs in two parts, each with a raw score, an
+  age-scaled score (1 to 19) and its z-score. Not in BP or SZ. The
+  dictionary calls it "MÉMOIRE DESSIN" and does not name the test; raw
+  scores go up to 117, which fits the Designs subtest of the WMS-IV (120
+  points a part), immediate then delayed (open question O23).
+
+  Used until 2020: 47% of the inclusions until 2017, 16% in 2018 to 2020,
+  almost none since. 245 visits.
+
+  The z-score is the scaled score minus 10, over 3, except on 19 visits
+  (part 1) and 18 (part 2) of 2013 to 2015, where the stored z-score is
+  another number: score_mismatch on the check scores. Both are delivered as
+  stored.
+
+defaults: {type: item}
+
+variables:
+  designs1_raw: {column: des101, label: "Designs, part 1: raw score", range: [0, 120]}
+  designs1_scaled: {column: des102, label: "Designs, part 1: age-scaled score (mean 10 and SD 3)", range: [1, 19]}
+  designs1_z: {column: des103, type: number, label: "Designs, part 1: scaled score as a z-score", range: [-3, 3], winsor: false}
+  designs2_raw: {column: des201, label: "Designs, part 2: raw score", range: [0, 120]}
+  designs2_scaled: {column: des202, label: "Designs, part 2: age-scaled score (mean 10 and SD 3)", range: [1, 19]}
+  designs2_z: {column: des203, type: number, label: "Designs, part 2: scaled score as a z-score", range: [-3, 3], winsor: false}
+
+scores:
+  # Consistency checks only: the z-score is the scaled score minus 10, over 3.
+  designs1_z_check: {sum: [designs1_scaled], scale: [0.3333333, -3.3333333], compare: designs1_z, compare_tolerance: 0.006, keep: false}
+  designs2_z_check: {sum: [designs2_scaled], scale: [0.3333333, -3.3333333], compare: designs2_z, compare_tolerance: 0.006, keep: false}

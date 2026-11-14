@@ -1,0 +1,38 @@
+instrument: physical_activity
+title: Physical activity over the last seven days
+tab: AUTO-QUESTIONNAIRES
+section: QIAP
+status: draft
+notes: >
+  The SZ schema in the columns of this extraction (qiap01a to qiap04bm).
+  Physical activity over the last seven days: days of vigorous activity,
+  of moderate activity and of walking, the time per day, the walking pace
+  and the time spent sitting. Filled at inclusion and at the visits of 1,
+  2 and 4 years: 940 visits, 80% or more of the inclusions in every period.
+  The break of 2018 does not touch it.
+
+  Each duration has two fields, hours and minutes; both are delivered as
+  typed, as in SZ. No total is computed.
+
+  Hours above 24. The time spent sitting on a weekday is above 24 hours on
+  75 visits and on a weekend day on 28 (25 to 100: probably the hours of
+  the whole week), the walking time on 4 and the moderate activity on 1:
+  out_of_range, not delivered.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  vigorous_days: {column: qiap01a, type: item, label: Days of vigorous physical activity in the last 7 days, range: [0, 7]}
+  vigorous_hours: {column: qiap01bh, label: "Vigorous activity on such a day: the hours typed", range: [0, 24]}
+  vigorous_minutes: {column: qiap01bm, label: "Vigorous activity on such a day: the minutes typed", range: [0, 1440]}
+  moderate_days: {column: qiap02a, type: item, label: Days of moderate physical activity in the last 7 days, range: [0, 7]}
+  moderate_hours: {column: qiap02bh, label: "Moderate activity on such a day: the hours typed", range: [0, 24]}
+  moderate_minutes: {column: qiap02bm, label: "Moderate activity on such a day: the minutes typed", range: [0, 1440]}
+  walking_days: {column: qiap03a, type: item, label: Days with a walk of ten minutes or more in the last 7 days, range: [0, 7]}
+  walking_hours: {column: qiap03bh, label: "Walking on such a day: the hours typed", range: [0, 24]}
+  walking_minutes: {column: qiap03bm, label: "Walking on such a day: the minutes typed", range: [0, 1440]}
+  walking_pace: {column: qiap03c, type: item, label: "Usual walking pace (1 slow, 2 moderate, 3 brisk)", range: [1, 3]}
+  sitting_weekday_hours: {column: qiap04ah, label: "Time spent sitting on a weekday: the hours typed", range: [0, 24]}
+  sitting_weekday_minutes: {column: qiap04am, label: "Time spent sitting on a weekday: the minutes typed", range: [0, 1440]}
+  sitting_weekend_hours: {column: qiap04bh, label: "Time spent sitting on a weekend day: the hours typed", range: [0, 24]}
+  sitting_weekend_minutes: {column: qiap04bm, label: "Time spent sitting on a weekend day: the minutes typed", range: [0, 1440]}

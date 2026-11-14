@@ -1,0 +1,40 @@
+instrument: sachs
+title: SACHS score (Bipolarity Index)
+tab: HETERO-QUESTIONNAIRES
+section: SACHS
+status: draft
+notes: >
+  Five ratings and their sum, filled at the inclusion visit from 2014 (243
+  visits). The dictionary gives no label and no coding ("Items de la
+  SACHS"). The values are those of the Bipolarity Index of Sachs: five
+  dimensions (episode characteristics, age of onset, course of illness,
+  response to treatment, family history), each rated 0, 2, 5, 10, 15 or 20,
+  and a total from 0 to 100. The second column never holds a 2, as the age
+  of onset in that index. The labels below follow the published order and
+  are to be confirmed (open question O7 in PROGRESS.md).
+
+  From 2016, 104 of the 242 visits hold a value that is not one of these
+  points in at least one column: 3, 6, 7, 8, 11, 16 or 21. The stored total
+  does not count them as typed: it equals the sum of the five ratings, each
+  brought down to the point it reaches (7 counts 5, 11 counts 10), on 238
+  of 242 visits, and the plain sum on 141 only. The ratings are delivered
+  the way the stored total counts them (decision D6), so that a dimension
+  is on one scale; the 4 other visits get score_mismatch.
+
+  An instrument that FACE BP and FACE SZ do not have.
+
+defaults: {type: item, range: [0, 20]}
+
+variables:
+  sachs_episode: {column: sachs01, codes: {"3": 2, "6": 5, "7": 5, "8": 5}, label: "Bipolarity Index I: episode characteristics (to be confirmed)"}
+  sachs_age_of_onset: {column: sachs02, label: "Bipolarity Index II: age of onset (to be confirmed)"}
+  sachs_course: {column: sachs03, codes: {"6": 5, "7": 5, "8": 5, "11": 10, "16": 15, "21": 20}, label: "Bipolarity Index III: course of illness and associated features (to be confirmed)"}
+  sachs_treatment_response: {column: sachs04, codes: {"11": 10, "16": 15}, label: "Bipolarity Index IV: response to treatment (to be confirmed)"}
+  sachs_family_history: {column: sachs05, codes: {"3": 2, "6": 5, "11": 10, "16": 15}, label: "Bipolarity Index V: family history (to be confirmed)"}
+  sachs_total_stored: {column: sachs_, label: "SACHS total as stored", range: [0, 100], keep: false}
+
+scores:
+  sachs_total:
+    label: "SACHS total: sum of the five ratings (0 to 100)"
+    sum: [sachs_episode, sachs_age_of_onset, sachs_course, sachs_treatment_response, sachs_family_history]
+    compare: sachs_total_stored

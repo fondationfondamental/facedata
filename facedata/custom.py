@@ -7,8 +7,9 @@ A schema refers to a function of this file by its name:
 - `checks: {variable: name}` on an instrument: name(values) takes the table
   of the instrument's values and returns True for the rows where the
   variable fails the check.
-- `custom: name` on a score: name(values) takes the same table and returns
-  the score, when it is not a sum or a mean.
+- `custom: name` on a score: name(values, keys) takes the same table and the
+  key columns, and returns the score, when it is not a sum or a mean. Most
+  scores do not use the keys.
 - `unit_rule: name` on a variable: name(values, keys) takes the values that
   have no usable unit label and the key columns, and returns the unit of
   each value (missing where it cannot tell).
@@ -55,7 +56,7 @@ def barona_occupation_follows_diploma(values):
     return values["barona_occupation"].map(same_place) == values["barona_education"]
 
 
-def laterality_quotient(values):
+def laterality_quotient(values, keys=None):
     """Edinburgh inventory: 100 x (right - left) / (right + left) over its ten activities.
 
     The foot and the eye (lines 11 and 12) are not counted. Missing when a
@@ -68,17 +69,17 @@ def laterality_quotient(values):
     return 100 * (right - left) / crosses
 
 
-def body_mass_index(values):
+def body_mass_index(values, keys=None):
     """Weight in kg divided by the square of the height in metres."""
     return values["weight"] / (values["height"] / 100) ** 2
 
 
-def corrected_qt(values):
+def corrected_qt(values, keys=None):
     """Bazett's formula: the QT interval divided by the square root of the RR interval, in seconds."""
     return values["qt_interval"] / values["rr_interval"] ** 0.5
 
 
-def cholesterol_ratio(values):
+def cholesterol_ratio(values, keys=None):
     """Total cholesterol divided by HDL cholesterol."""
     return values["cholesterol"] / values["hdl"]
 
@@ -128,23 +129,84 @@ def prolactin_unit(values, keys):
     return unit
 
 
-def qids_total(values):
+def age_at_inclusion(values, keys):
+    """Age in whole years at the inclusion visit (V0), from the date of birth.
+
+    The same value on every row of a patient; missing for a patient with no
+    V0 or no date of birth. For an extraction whose stored age is not the age
+    at inclusion.
+    """
+    at_inclusion = keys.loc[keys["visit"] == "V0"].drop_duplicates("usubjid").set_index("usubjid")["age"]
+    return np.floor(keys["usubjid"].map(at_inclusion))
+
+
+def stai_shift(values, keys):
+    """STAI: the number to add to the answers of a visit to bring them to the coding 1 to 4.
+
+    The twenty answers have four levels. One extraction stores them from 0 to
+    3, from 1 to 4 or from 2 to 5, depending on the centre and the year, and
+    no column says which. A visit that holds a 0 is coded from 0 (add 1), a
+    visit that holds a 5 from 2 (subtract 1), and a visit that holds both a 1
+    and a 4 from 1. Any other visit could be read two ways: it takes the
+    coding of the visits of its centre in the same year when they all have
+    the same one and its answers fit it. Otherwise missing.
+    """
+    answers = values[[f"staya{number:02d}_stored" for number in range(1, 21)]]
+    low, high = answers.min(axis=1), answers.max(axis=1)
+    shift = pd.Series(np.nan, index=values.index)
+    shift[(low == 0) & (high <= 3)] = 1
+    shift[(low == 1) & (high == 4)] = 0
+    shift[(low >= 2) & (high == 5)] = -1
+    place = [keys["siteid"], keys["visit_date"].dt.year]
+    one_coding = shift.groupby(place).transform("nunique") == 1
+    of_the_place = shift.groupby(place).transform("min").where(one_coding)
+    fits = (low + of_the_place >= 1) & (high + of_the_place <= 4)
+    return shift.fillna(of_the_place.where(fits))
+
+
+def shaps_total(values, keys=None):
+    """SHAPS: the number of items answered "disagree" or "strongly disagree" (0 or 1).
+
+    From 0 to 14; a higher score is more anhedonia. Missing unless the
+    fourteen items are answered.
+    """
+    items = values[[f"shaps{number:02d}" for number in range(1, 15)]]
+    return (items <= 1).sum(axis=1).where(items.notna().all(axis=1))
+
+
+def shaps_total_as_stored(values, keys=None):
+    """SHAPS as one EMR counts it: "agree" on items 2, 4, 5, 7 and 9, "disagree" on the nine others.
+
+    Not the score of the scale: it is computed only to check the stored column.
+    """
+    items = values[[f"shaps{number:02d}" for number in range(1, 15)]]
+    counted_on_agree = ["shaps02", "shaps04", "shaps05", "shaps07", "shaps09"]
+    points = (items <= 1).astype(int)
+    points[counted_on_agree] = (items[counted_on_agree] >= 2).astype(int)
+    return points.sum(axis=1).where(items.notna().all(axis=1))
+
+
+def qids_total(values, keys=None):
     """QIDS-SR16 total: one value per symptom, 0 to 27.
 
     Sleep, appetite and weight, and psychomotor change are each asked in
     several items: the highest answer counts. The other six symptoms have one
-    item each. Missing when one of the sixteen items is missing.
+    item each. The form asks for item 6 or item 7 (appetite down or up) and
+    for item 8 or item 9 (weight down or up), so one answer of each pair is
+    enough. Missing when any other item is missing.
     """
     sleep = values[["qidsr101", "qidsr102", "qidsr103", "qidsr104"]].max(axis=1)
     appetite = values[["qidsr106", "qidsr107", "qidsr108", "qidsr109"]].max(axis=1)
     psychomotor = values[["qidsr115", "qidsr116"]].max(axis=1)
     alone = ["qidsr105", "qidsr110", "qidsr111", "qidsr112", "qidsr113", "qidsr114"]
     total = sleep + appetite + psychomotor + values[alone].sum(axis=1)
-    items = ["qidsr1" + str(number).zfill(2) for number in range(1, 17)]
-    return total.where(values[items].notna().all(axis=1))
+    always = ["qidsr101", "qidsr102", "qidsr103", "qidsr104", "qidsr115", "qidsr116"] + alone
+    appetite_answered = values[["qidsr106", "qidsr107"]].notna().any(axis=1)
+    weight_answered = values[["qidsr108", "qidsr109"]].notna().any(axis=1)
+    return total.where(values[always].notna().all(axis=1) & appetite_answered & weight_answered)
 
 
-def psqi_latency(values):
+def psqi_latency(values, keys=None):
     """PSQI component 2, sleep latency (0 to 3).
 
     The minutes to fall asleep count 0 (15 or less), 1 (16 to 30), 2 (31 to
@@ -157,7 +219,7 @@ def psqi_latency(values):
     return ((points >= 1).astype(float) + (points >= 3) + (points >= 5)).where(points.notna())
 
 
-def stroop_interference(values):
+def stroop_interference(values, keys=None):
     """Stroop interference: the colour-word score minus the score predicted from the two other plates.
 
     The prediction is words x colours / (words + colours), with the scores corrected for age.

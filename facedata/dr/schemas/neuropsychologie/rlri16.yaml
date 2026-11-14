@@ -1,0 +1,69 @@
+instrument: rlri16
+title: Free and cued recall of sixteen words (RL/RI-16)
+tab: NEUROPSYCHOLOGIE
+section: MÉMOIRE
+status: draft
+notes: >
+  Free and cued recall of sixteen words (the RL/RI-16 procedure): an
+  immediate cued recall, three trials of free then cued recall, a
+  recognition and a delayed recall. Not in BP or SZ, which use the CVLT.
+  The dictionary calls the section "MÉMOIRE" and does not name the test.
+  716 visits.
+
+  Sums. The stored sum of the three free recalls and the stored sum of the
+  three total recalls equal ours on every visit (712 and 713).
+
+  Z-scores of the free recalls: a higher z-score is a better recall, on
+  every trial.
+
+  Percentile bands of the cued recalls and of the recognition. Each band
+  is a function of the raw score alone (for the immediate recall: 16 words
+  gives 99, 15 gives 25, 14 gives "5-25", 13 gives 5), and the share of
+  each band is the same in every period. They are read as bands with the
+  limits 1, 5, 25, 50 and 99; "5-1" is the band from 1 to 5 written the
+  other way. A perfect recognition is written 100 (615 visits) or 99 (8
+  visits, until 2014): both are read as 99.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+defaults: {type: item, range: [0, 16]}
+
+variables:
+  rlri16_immediate: {column: mem01, label: Immediate cued recall (0 to 16)}
+  rlri16_immediate_band: {column: mem02, type: band, limits: [1, 5, 25, 50, 99], label: Immediate cued recall as a percentile band}
+  rlri16_free1: {column: mem03, label: "Trial 1: free recall"}
+  rlri16_free1_z: {column: mem04, type: number, range: [-6, 6], label: "Trial 1: free recall as a z-score (higher is better)"}
+  rlri16_total1: {column: mem05, label: "Trial 1: total recall, free and cued"}
+  rlri16_total1_band: {column: mem06, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 1: total recall as a percentile band"}
+  rlri16_free2: {column: mem07, label: "Trial 2: free recall"}
+  rlri16_free2_z: {column: mem08, type: number, range: [-6, 6], label: "Trial 2: free recall as a z-score (higher is better)"}
+  rlri16_total2: {column: mem09, label: "Trial 2: total recall, free and cued"}
+  rlri16_total2_band: {column: mem10, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 2: total recall as a percentile band"}
+  rlri16_free3: {column: mem11, label: "Trial 3: free recall"}
+  rlri16_free3_z: {column: mem12, type: number, range: [-6, 6], label: "Trial 3: free recall as a z-score (higher is better)"}
+  rlri16_total3: {column: mem13, label: "Trial 3: total recall, free and cued"}
+  rlri16_total3_band: {column: mem14, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 3: total recall as a percentile band"}
+  rlri16_free_sum_stored: {column: mem15, range: [0, 48], keep: false, label: Sum of the three free recalls as stored}
+  rlri16_total_sum_stored: {column: mem16, range: [0, 48], keep: false, label: Sum of the three total recalls as stored}
+  rlri16_recognition: {column: mem17, label: Recognition (0 to 16)}
+  rlri16_recognition_band: {column: mem18, type: band, limits: [1, 5, 25, 50, 99], codes: {"100": "99"}, label: Recognition as a percentile band}
+  rlri16_false_semantic: {column: mem19, label: "Recognition: semantic distractors taken for a word of the list"}
+  rlri16_false_neutral: {column: mem20, label: "Recognition: neutral distractors taken for a word of the list"}
+  rlri16_delayed_free: {column: mem21, label: Delayed free recall}
+  rlri16_delayed_free_z: {column: mem22, type: number, range: [-6, 6], label: Delayed free recall as a z-score (higher is better)}
+  rlri16_delayed_total: {column: mem23, label: "Delayed total recall, free and cued"}
+  rlri16_delayed_total_band: {column: mem24, type: band, limits: [1, 5, 25, 50, 99], label: Delayed total recall as a percentile band}
+  rlri16_intrusions: {column: mem25, range: [0, 30], label: Intrusions}
+
+scores:
+  rlri16_free_sum:
+    label: Sum of the three free recalls (0 to 48)
+    sum: [rlri16_free1, rlri16_free2, rlri16_free3]
+    compare: rlri16_free_sum_stored
+  rlri16_total_sum:
+    label: Sum of the three total recalls (0 to 48)
+    sum: [rlri16_total1, rlri16_total2, rlri16_total3]
+    compare: rlri16_total_sum_stored

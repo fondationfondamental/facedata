@@ -1,0 +1,75 @@
+instrument: mini_c_mania
+title: "MINI, module C: manic and hypomanic episodes"
+tab: MINI
+section: MINI C
+status: draft
+notes: >
+  Module C: manic and hypomanic episodes, current (actuel) and past (pe).
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Few patients of this cohort answer yes: an elated period on 27 visits, an
+  irritable one on 37. The conclusions (manic episode, hypomanic episode,
+  hypomanic symptoms) are each a yes/no and two boxes "current" and
+  "past"; the six boxes are written by the form.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_c01a: {column: c01a, label: "C1 a) Avez-vous déjà eu une période où vous vous sentiez tellement exalté(e) ou plein(e) d’énergie que cela vous a posé des problèmes?"}
+  mini_c00: {column: c00, label: "Avez-vous dans votre famille des antécédents de maladie maniaco-dépressive ou de trouble bipolaire ou avez-vous un membre de votre famille q"}
+  mini_c00a: {column: c00a, type: text, label: "si oui, veuillez preciser qui?"}
+  mini_c01b: {column: c01b, label: "b) Si oui, vous sentez-vous, en ce moment, exalté(e) ou plein(e)d’énergie ?"}
+  mini_c02a: {column: c02a, label: "C2 a) Avez-vous déjà eu une période de plusieurs jours où vous étiez tellement irritable que vous en arriviez à insulter les gens, à hurler,"}
+  mini_c02b: {column: c02b, label: "b) Vous sentez-vous excessivement irritable en ce moment ?"}
+  mini_c03_actuel: {column: c03_actuel, label: "C3 a) Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particu"}
+  mini_c03_pe: {column: c03_pe, label: "Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particulièrem"}
+  mini_c03a_actuel: {column: c03a_actuel, label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Actuel)"}
+  mini_c03a_pe: {column: c03a_pe, label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Passé)"}
+  mini_c03b_actuel: {column: c03b_actuel, label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Actue"}
+  mini_c03b_pe: {column: c03b_pe, label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Passé"}
+  mini_c03c_actuel: {column: c03c_actuel, label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Actuel)"}
+  mini_c03c_pe: {column: c03c_pe, label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Passé)"}
+  mini_c03d_actuel: {column: c03d_actuel, label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Actuel)"}
+  mini_c03d_pe: {column: c03d_pe, label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Passé)"}
+  mini_c03e_actuel: {column: c03e_actuel, label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Act"}
+  mini_c03e_pe: {column: c03e_pe, label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Pas"}
+  mini_c03f_actuel: {column: c03f_actuel, label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de"}
+  mini_c03f_pe: {column: c03f_pe, label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de"}
+  mini_c03g_actuel: {column: c03g_actuel, label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq"}
+  mini_c03g_pe: {column: c03g_pe, label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq"}
+  mini_c03rec_actuel: {column: c03rec_actuel, label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est "}
+  mini_c03rec_pe: {column: c03rec_pe, label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est "}
+  mini_c04_actuel: {column: c04_actuel, range: [1, 3], label: "C4) Qu’elle a été la durée maximale pendant laquelle ces symptômes ont persisté ? (Episode Actuel)"}
+  mini_c04_pe: {column: c04_pe, range: [1, 3], label: "C4) Qu’elle a été la durée maximale pendant laquelle ces symptômes ont persisté ? (Episode Passé)"}
+  mini_c05_actuel: {column: c05_actuel, label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Actuel)"}
+  mini_c05_pe: {column: c05_pe, label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Passé)"}
+  mini_c06_actuel: {column: c06_actuel, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio"}
+  mini_c06_pe: {column: c06_pe, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio"}
+  mini_manic_episode: {column: ceman, label: "Manic episode: ÉPISODE MANIAQUE"}
+  mini_manic_episode_current: {column: ceman1, derived_from: mini_c01a, label: "Manic episode current: actuel (a box: 0 is not ticked)"}
+  mini_manic_episode_past: {column: ceman2, derived_from: mini_c01a, label: "Manic episode past: passé (a box: 0 is not ticked)"}
+  mini_hypomanic_episode: {column: cehman, label: "Hypomanic episode: ÉPISODE HYPOMANIAQUE"}
+  mini_hypomanic_episode_current: {column: cehman1, derived_from: mini_c01a, label: "Hypomanic episode current: actuel (a box: 0 is not ticked)"}
+  mini_hypomanic_episode_past: {column: cehman2, derived_from: mini_c01a, label: "Hypomanic episode past: passé (a box: 0 is not ticked)"}
+  mini_hypomanic_symptoms: {column: cshman, label: "Hypomanic symptoms: SYMPTOMES HYPOMANIAQUES"}
+  mini_hypomanic_symptoms_current: {column: cshman1, derived_from: mini_c01a, label: "Hypomanic symptoms current: actuel (a box: 0 is not ticked)"}
+  mini_hypomanic_symptoms_past: {column: cshman2, derived_from: mini_c01a, label: "Hypomanic symptoms past: passé (a box: 0 is not ticked)"}
+  mini_c07a: {column: c07a, label: "C7 a) SI ÉPISODE MANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 épisodes maniaques (C4c) durant votre "}
+  mini_c07b: {column: c07b, label: "b) SI ÉPISODE HYPOMANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 ÉPISODES hypomaniaques (C4b) durant v"}
+  mini_c07c: {column: c07c, label: "c) SI « SYMPTÔMES HYPOMANIAQUES » PASSÉS EST POSITIF, DEMANDEZ : Avez-vous eu au moins 2 épisodes de SYMPTÔMES hypomaniaques (C4a) durant vo"}

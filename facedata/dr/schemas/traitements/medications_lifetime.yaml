@@ -1,0 +1,70 @@
+instrument: medications_lifetime
+title: "Psychotropic treatment of the past, one row per treatment"
+tab: TRAITEMENTS
+section: PSYCHOTROPE LIFETIME
+status: draft
+level: list
+notes: >
+  The psychotropic treatment of the past (PSYCHOTROPE LIFETIME), one row
+  per treatment in the table treatments, where the column list says
+  "medications_lifetime". 406 patients, and one product for 404 of them:
+  the form or the export keeps a single past treatment per patient (open
+  question O27). Most are antidepressants (venlafaxine, fluoxetine,
+  escitalopram, clomipramine, mirtazapine).
+
+  The lists are crossed by the export. In BP and SZ, item 1 of each list
+  describes the same treatment. Here the export writes every product of the
+  patient (substance, generic name, strength, unit) next to every
+  prescription line (form, daily dose, start, end): a patient with 2
+  products and 3 lines has 6 items, the products in blocks and the lines in
+  cycles, on each of the patients of the three lists. The products are in
+  alphabetical order, and nothing says which line belongs to which product.
+  The number of units a day is the daily dose of one line over the strength
+  of one product, computed for every pair: most of these numbers mean
+  nothing.
+
+  What is delivered (field crossed, SCHEMA_SPEC section 15). A patient with
+  one product keeps every line. A patient with several products keeps one
+  item per product, without form, dose or date (list_crossed on these
+  variables): the molecules are known, their dates are not. The class and
+  catalogue-code columns (cmclas, cmclascd) are lists of another length and
+  are not read (ignored.yaml). Open question O27, to send first.
+
+  The same list is on every row of a patient: it is the history, not the
+  treatment of the visit. Dates are written day/month/year.
+
+crossed: [psy_lifetime_cmtrt, psy_lifetime_cmdecod, psy_lifetime_cmdose, psy_lifetime_cmdosu]
+
+names:
+  column: psy_lifetime_cmdecod
+  clean: medication_name
+  table: medications.csv
+  gives: [molecule, atc, treatment_group]
+
+variables:
+  medication: {column: psy_lifetime_cmtrt, type: text, label: "Substance, as the drug catalogue names it"}
+  generic_name: {column: psy_lifetime_cmdecod, type: text, label: "Generic name, as the drug catalogue writes it"}
+  molecule: {column: molecule, type: text, label: Molecule}
+  atc: {column: atc, type: text, label: ATC code of the molecule}
+  treatment_group:
+    column: treatment_group
+    label: Group of the medication
+    type: category
+    codes:
+      lithium: lithium
+      anticonvulsant: anticonvulsant
+      antipsychotic_2g: antipsychotic_2g
+      antipsychotic_1g: antipsychotic_1g
+      antidepressant: antidepressant
+      benzodiazepine: benzodiazepine
+      other_anxiolytic_hypnotic: other_anxiolytic_hypnotic
+      stimulant: stimulant
+      other_nervous_system: other_nervous_system
+      non_psychotropic: non_psychotropic
+  start_date: {column: psy_lifetime_cmstdtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: Start of the treatment}
+  end_date: {column: psy_lifetime_cmendtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: End of the treatment}
+  strength: {column: psy_lifetime_cmdose, type: text, label: "Strength of one unit, as written"}
+  dose_unit: {column: psy_lifetime_cmdosu, type: text, label: "Unit of the strength, as written"}
+  form: {column: psy_lifetime_cmdosfrm, type: text, label: "Form, as written"}
+  units_per_day: {column: psy_lifetime_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (the daily dose over the strength)"}
+  daily_dose: {column: psy_lifetime_cmdostot, type: number, range: [0, 10000], winsor: false, label: Total daily dose (in the unit of the strength)}

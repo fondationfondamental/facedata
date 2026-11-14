@@ -1,0 +1,33 @@
+instrument: etat_maniaque
+title: Current manic episode (DSM-IV symptom checklist)
+tab: HETERO-QUESTIONNAIRES
+section: Episode maniaque actuel
+status: draft
+notes: >
+  A DSM-IV symptom checklist, filled at the inclusion visit (598 visits) and
+  at the follow-up visits (859). Nine symptoms, answered 1 (yes), 0 (no) or
+  2 ("does not know", a missing code); the extraction of BP writes Y, N and
+  U. No count of symptoms is stored here: etatm_total is the number of
+  symptoms present, when the nine are answered. Manic symptoms are rare in
+  this cohort, irritable mood apart (155 visits).
+
+  Same instrument as in FACE BP, with the coding of the TRD extraction.
+
+defaults: {type: item, range: [0, 1], missing: {"2": unknown}}
+
+variables:
+  etatm01: {label: "Humeur élevée, expansive"}
+  etatm02: {label: "Humeur irritable"}
+  etatm03: {label: "Augmentation de l'estime de soi ou idées de grandeur"}
+  etatm04: {label: "Réduction du besoin de sommeil"}
+  etatm05: {label: "Plus grande communicabilité que d'habitude ou désir de parler constamment"}
+  etatm06: {label: "Fuite des idées ou sensation subjective que les pensées défilent"}
+  etatm07: {label: "Distractibilité : l'attention du sujet étant trop facilement attirée par des stimuli extérieurs sans pertinence"}
+  etatm08: {label: "Activité dirigée vers un but ou impatience motrice : augmentation de l'activité ou agitation psychomotrice"}
+  etatm09: {label: "Implication excessive dans des activités qui ont un potentiel élevé de conséquences dommageables quoique non reconnues par le patient"}
+
+scores:
+  etatm_total:
+    label: "Number of manic symptoms present (0 to 9)"
+    sum: [etatm01, etatm02, etatm03, etatm04, etatm05, etatm06,
+          etatm07, etatm08, etatm09]

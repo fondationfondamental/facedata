@@ -1,0 +1,51 @@
+instrument: verbal_fluency
+title: Verbal fluency, letter P and animals (form 1)
+tab: NEUROPSYCHOLOGIE
+section: LANGAGE
+status: draft
+notes: >
+  The BP scale for the visits that use form 1 (letter P and animals): the
+  number of words, the z-score and the percentile band of each task. BP
+  also has the kinds of errors and the clusters; here only these three
+  are entered. 586 visits.
+
+  Two forms of the test. The form used is in fv01, stored 1 or 2, with no
+  code in the dictionary, which only says "animals or fruits". Form 1 is
+  used at inclusion (388 of 394 inclusions) and form 2 at the retest of
+  the first year (81 of its 96 visits): the usual sequence of a patient is
+  1, 2, 1, 1. The words differ: the medians are 21 words for the letter
+  and 26 for the category on form 1 (24 for the letter P and 32 for
+  animals in BP), 18 and 18 on form 2. The two forms are two tests: each
+  has its own schema and its own columns, and fluency_form says which one
+  was used. That form 1 is "letter P and animals" and form 2 another
+  letter with fruits is read from these numbers and from the label, not
+  from a code (open question O23). One visit has results and no form
+  (version_unknown).
+
+  Percentile band of the letter: labels cut by the export, as for the TMT
+  (tmt.yaml). Until about 2021, fv07 holds "25-5", "10-2", "50-7" and
+  "75-9" (257 cells, 13 centres of 14); each is read as its band (codes).
+  A higher z-score and a higher band are more words.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+version:
+  name: fluency_form
+  column: fv01
+  codes: {"1": form_1, "2": form_2}
+
+defaults: {type: item, range: [0, 30], versions: [form_1]}
+
+variables:
+  # Letter P
+  fluency_p_words: {column: fv05, type: number, label: "Letter P - correct words", range: [0, 80]}
+  fluency_p_z: {column: fv06, type: number, label: "Letter P - z-score", range: [-6, 6]}
+  fluency_p_band: {column: fv07, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Letter P - percentile band"}
+
+  # Animals
+  fluency_animals_words: {column: fv02, type: number, label: "Animals - correct words", range: [0, 80]}
+  fluency_animals_z: {column: fv03, type: number, label: "Animals - z-score", range: [-6, 6]}
+  fluency_animals_band: {column: fv04, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Animals - percentile band"}

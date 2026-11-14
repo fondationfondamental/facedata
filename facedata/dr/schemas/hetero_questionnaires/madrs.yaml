@@ -1,0 +1,37 @@
+instrument: madrs
+title: Montgomery-Asberg Depression Rating Scale (MADRS)
+tab: HETERO-QUESTIONNAIRES
+section: Questionnaire MADRS
+status: draft
+notes: >
+  Ten items rated 0 to 6 by the clinician; the total is their sum (0 to 60).
+  The stored total equals the sum on all 2,065 visits that have the ten items.
+
+  The scale is rated at the screening visit (561 patients, median 30) and
+  again at the inclusion visit (605 patients, median 28), then at every
+  follow-up visit. The inclusion criterion "MADRS above 20" is ticked at
+  screening: 12 screening totals and 67 inclusion totals are 20 or less.
+
+  Same instrument as in FACE BP.
+
+defaults: {type: item, range: [0, 6]}
+
+variables:
+  madrs01: {label: Tristesse apparente}
+  madrs02: {label: Tristesse exprimée}
+  madrs03: {label: Tension intérieure}
+  madrs04: {label: Réduction de sommeil}
+  madrs05: {label: Réduction de l'appétit}
+  madrs06: {label: Difficultés de concentration}
+  madrs07: {label: Lassitude}
+  madrs08: {label: Incapacité à ressentir}
+  madrs09: {label: Pensées pessimistes}
+  madrs10: {label: Idées de suicide}
+  madrs_stored: {column: madrs_, label: MADRS total as stored, range: [0, 60], keep: false}
+
+scores:
+  madrs_total:
+    label: MADRS total
+    sum: [madrs01, madrs02, madrs03, madrs04, madrs05,
+          madrs06, madrs07, madrs08, madrs09, madrs10]
+    compare: madrs_stored

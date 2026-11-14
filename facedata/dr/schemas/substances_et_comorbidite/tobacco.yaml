@@ -1,0 +1,20 @@
+instrument: tobacco
+title: "Tobacco"
+tab: SUBSTANCES
+section: TABAC
+status: draft
+notes: >
+  The BP schema with the codes of this extraction (1 non-smoker, 2
+  ex-smoker, 3 current smoker). Filled at inclusion and at every follow-up
+  visit: 1,310 visits (54% non-smokers, 32% smokers, 15% ex-smokers; BP
+  48%, 40% and 12%). One number of pack-years is above 200 (out_of_range).
+
+variables:
+  tobacco_status:
+    column: suncf_cigarettes_lt
+    type: category
+    label: Tobacco status
+    codes: {"1": non_smoker, "3": current_smoker, "2": ex_smoker}
+  pack_years: {column: sudose_cigarettes_lt, type: number, unit: pack-years, range: [0, 200], label: Pack-years}
+  smoking_start_age: {column: agedebut_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient started smoking}
+  smoking_stop_age: {column: agefin_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient stopped smoking}

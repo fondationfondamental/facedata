@@ -1,0 +1,39 @@
+instrument: fagerstrom
+title: Fagerström Test for Nicotine Dependence (6 items)
+tab: AUTO-QUESTIONNAIRES
+section: FAGERSTROM
+status: draft
+notes: >
+  The BP schema, with the code of item 3 turned into its points. Six
+  questions for smokers, filled at inclusion and at every follow-up visit
+  by the patients who smoke: 393 visits of 173 patients, about a quarter of
+  the visits. Items 1 and 4 are 0 to 3, the others 0 or 1; the total is
+  their sum (0 to 10).
+
+  Item 3 and the stored total: corrected. Item 3 ("which cigarette would
+  you hate most to give up?") has two answers: the first of the day (1
+  point) or any other (0 points). This extraction stores the code of the
+  answer, 1 for the first and 2 for any other, and the stored total
+  (fagers) adds the code as if it were the points: it is 2 points too high
+  on each of the 129 visits where the answer is "any other" (77 patients,
+  13 centres, 2013 to 2026), and equal to ours on the 263 others. Here the
+  code 2 is read as 0 points, as in BP, and the total is recomputed: the
+  129 visits carry score_mismatch, which marks the stored value as the
+  wrong one (open question O15).
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  fagers01: {label: "Combien de temps après votre réveil fumez-vous votre première cigarette", range: [0, 3]}
+  fagers02: {label: "Trouvez-vous difficile de vous abstenir de fumer dans les endroits où..."}
+  fagers03: {label: "A quelle cigarette de la journée vous serait-il le plus difficile de...", codes: {"2": 0}}
+  fagers04: {label: "Combien de cigarettes fumez-vous par jour", range: [0, 3]}
+  fagers05: {label: "Fumez-vous à un rythme plus soutenu le matin que l'après-midi"}
+  fagers06: {label: "Fumez-vous lorsque vous êtes si malade que vous devez rester au lit..."}
+  fagers_stored: {column: fagers, label: Fagerström total as stored, range: [0, 10], keep: false}
+
+scores:
+  fagerstrom_total:
+    label: Fagerström total (0 to 10)
+    sum: [fagers01, fagers02, fagers03, fagers04, fagers05, fagers06]
+    compare: fagers_stored

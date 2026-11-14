@@ -1,0 +1,58 @@
+instrument: parametres_physiques
+title: Height, weight, body mass index and waist
+tab: VITAL SIGN et ECG
+section: Paramètres Physiques
+status: draft
+notes: >
+  Height, weight and waist, measured at the inclusion and follow-up visits
+  (about 1,280 visits), and the body mass index.
+
+  Typing errors are rare: 10 weights and 3 waists were typed on another scale
+  and are brought back (unit_inferred), as in BP; one height and 4 waists are
+  impossible (out_of_range).
+
+  The body mass index is recomputed from the weight and the height. The stored
+  index differs on 59 of 1,275 visits: on 36 by less than 0.1, because from
+  2017 the stored value is cut to one decimal instead of rounded; on 9 by
+  more than 1, where a weight or a height was typed wrongly and the stored
+  index kept it.
+
+  Same instrument as in FACE BP and FACE SZ.
+
+defaults: {type: number}
+
+variables:
+  height:
+    label: Height
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [100, 230]}
+      mm: {factor: 0.1, expect: [1000, 2300]}
+      0.1 mm: {factor: 0.01, expect: [10000, 23000]}
+    range: [100, 230]
+  weight:
+    label: Weight
+    unit: kg
+    units:
+      kg: {factor: 1, expect: [25, 300]}
+      0.1 kg: {factor: 0.1, expect: [300, 2500]}
+      0.01 kg: {factor: 0.01, expect: [2500, 25000]}
+    range: [25, 300]
+  waist:
+    column: wstcir
+    label: Waist circumference
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [40, 200]}
+      mm: {factor: 0.1, expect: [400, 2000]}
+    range: [40, 200]
+  bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
+
+scores:
+  bmi:
+    label: Body mass index, from the harmonised weight and height
+    custom: body_mass_index
+    compare: bmi_stored
+    compare_tolerance: 0.051
+    range: [10, 80]
+    winsor: [0.01, 0.99]

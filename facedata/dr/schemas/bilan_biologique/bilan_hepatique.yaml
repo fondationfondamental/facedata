@@ -1,0 +1,69 @@
+instrument: bilan_hepatique
+title: Liver tests
+tab: BILAN BIOLOGIQUE
+section: Bilan Hépatique
+status: draft
+notes: >
+  Alkaline phosphatases, ASAT, ALAT, total bilirubin and gamma-GT, on about
+  1,150 visits. 7 alkaline phosphatases were typed on another scale
+  (unit_inferred) and 9 values are impossible; 6 results are given as "less
+  than" a limit and keep their mark.
+
+  The unit column of an analyte holds the default label of the form on every
+  row that has any blood result (1,254 rows, 54 of them with no result at
+  all), so it says nothing: the size of the value decides, as in BP and SZ. A
+  0 typed where nothing was measured is out of range.
+
+  Same instrument as in FACE BP.
+
+defaults: {type: number}
+
+variables:
+  alkaline_phosphatase:
+    label: Alkaline phosphatase
+    column: alp
+    unit_column: alp_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [10, 1000]}
+      µkat/L: {factor: 60, expect: [0.2, 5]}
+    range: [10, 1000]
+
+  ast:
+    label: Aspartate aminotransferase (ASAT)
+    column: ast
+    unit_column: ast_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]
+
+  alt:
+    label: Alanine aminotransferase (ALAT)
+    column: alt
+    unit_column: alt_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]
+
+  bilirubin:
+    label: Total bilirubin
+    column: bili
+    unit_column: bili_lborresu
+    unit: µmol/L
+    units:
+      µmol/L: {factor: 1, expect: [0, 500], aliases: [mmol/L]}
+      mg/L: {factor: 1.71, expect: [0, 300]}
+    range: [0, 500]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  ggt:
+    label: Gamma-glutamyl transferase (GGT)
+    column: ggt
+    unit_column: ggt_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]

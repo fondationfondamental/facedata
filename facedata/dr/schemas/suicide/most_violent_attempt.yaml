@@ -1,0 +1,31 @@
+instrument: most_violent_attempt
+title: "The most violent suicide attempt"
+tab: SUICIDE
+section: Columbia TS la plus violente
+status: draft
+notes: >
+  The BP schema, with codes instead of labels. The method of the most
+  violent attempt, its consequences by method, and what triggered it: 17
+  visits. Two columns are empty (ltsv03, ltsv04: ignored.yaml).
+
+  The dictionary gives no code for the method, the consequences and the
+  trigger, and the order of the BP lists cannot be checked on so few
+  answers: each value is delivered as code_N (open question O25). The five
+  boxes ltsv08a to ltsv08e describe the consequences when the method is
+  "another one"; what each box means is not in the dictionary.
+
+defaults: {type: category}
+
+variables:
+  violent_method: {column: ltsv01, label: "Method of the most violent attempt (codes that the dictionary does not explain)", codes: {"2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6}}
+  violent_jump_height: {column: ltsv02, label: Height of the jump (code), codes: {"2": code_2}}
+  violent_immolation_lethality: {column: ltsv05, label: Consequences of the immolation (code), codes: {"1": code_1}}
+  violent_drowning_lethality: {column: ltsv06, label: Consequences of the drowning (code), codes: {"1": code_1}}
+  violent_hanging_lethality: {column: ltsv07, label: Consequences of the hanging (code), codes: {"1": code_1, "3": code_3}}
+  violent_other_lethality_a: {column: ltsv08a, type: item, range: [0, 1], label: "Consequences when the method is another one: first box"}
+  violent_other_lethality_b: {column: ltsv08b, type: item, range: [0, 1], label: "Consequences when the method is another one: second box"}
+  violent_other_lethality_c: {column: ltsv08c, type: item, range: [0, 1], label: "Consequences when the method is another one: third box"}
+  violent_other_lethality_d: {column: ltsv08d, type: item, range: [0, 1], label: "Consequences when the method is another one: fourth box"}
+  violent_other_lethality_e: {column: ltsv08e, type: item, range: [0, 1], label: "Consequences when the method is another one: fifth box"}
+  violent_triggered: {column: ltsv09, type: item, range: [0, 1], missing: {"2": unknown}, label: A precise event seems to have triggered the attempt}
+  violent_trigger: {column: ltsv10, label: Kind of trigger (code), codes: {"1": code_1, "3": code_3, "4": code_4, "6": code_6}}

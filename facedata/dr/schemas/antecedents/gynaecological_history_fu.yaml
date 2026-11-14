@@ -1,0 +1,50 @@
+instrument: gynaecological_history_fu
+title: "Gynaecological history, at follow-up"
+tab: ANTECEDENTS
+section: Antécédents gynécologiques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  visits of 2 and 4 years: 89 visits. The questions and what is specific
+  to this cohort are described in gynaecological_history_v0.yaml.
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  n_pregnancies_fu: {column: pregnn_rporres, type: item, range: [0, 30], label: "Number of pregnancies, at follow-up"}
+  n_live_births_fu: {column: brthlvn_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of children born alive, at follow-up"}
+  n_miscarriages_fu: {column: spabortn_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of miscarriages, at follow-up"}
+  n_abortions_fu: {column: nb_ivg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of voluntary terminations of pregnancy, at follow-up"}
+  n_medical_terminations_fu: {column: nb_itg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of terminations of pregnancy for a medical reason, at follow-up"}
+  menopause_fu: {column: menostat_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Menopause, at follow-up"}
+  menopause_date_fu: {column: menostat_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: date, at follow-up"}
+  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: menopause_fu, label: "Menopause: hormone therapy, at follow-up"}
+  menopause_hormone_therapy_start_fu: {column: hormonal_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: start of the hormone therapy, at follow-up"}
+  gynaecological_disease_fu: {column: gyneco_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gynaecological disease other than a cancer, at follow-up"}
+  gynaecological_disease_text_fu: {column: gynecosp_rporres, type: text, label: "Gynaecological disease: which one, as written, at follow-up"}

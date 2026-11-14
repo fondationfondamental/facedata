@@ -1,0 +1,194 @@
+instrument: bis10
+title: Barratt Impulsiveness Scale, BIS-10 (34 items)
+tab: AUTO-QUESTIONNAIRES
+section: BIS
+status: draft
+notes: >
+  The BP scale, with eleven items turned back to the answer as asked. Only
+  the 34-item BIS-10 is in this extraction: no visit holds the twelve items
+  of the BIS-12 alone, so there is no bis12.yaml here. The version block is
+  the one BP uses, because the two cohorts share the column names; every
+  BIS visit is read as "bis10" (549 visits). Filled at inclusion and at the
+  visits of 2 and 4 years. Items are coded 1 to 4.
+
+  Eleven items are stored reversed here. The key reverses items 1, 7, 8, 9,
+  10, 12, 13, 15, 21, 33 and 34 (see the notes of the BP schema; the
+  planning sub-scale also holds items 14, 18 and 31). In BP these items are
+  stored as asked: the seven that work best (1, 8, 9, 10, 12, 13, 21) fall
+  when the 23 other items rise (r = -0.44 between the two sums). In this
+  extraction they rise with them (r = +0.28; positive in each of the 11
+  centres that have twenty visits or more, 0.08 to 0.55, in every period
+  and at every kind of visit). The 34 values as stored hold together better
+  (Cronbach's alpha 0.76) than after the reversal of the key (0.65); BP
+  shows the opposite (0.62 and 0.81). The mean of item 33 is 3.4 here
+  against 1.9 in BP. So the form of this cohort stores the eleven items
+  already reversed. They are read back to the answer as asked (5 - value,
+  written as codes), so that bis1001 to bis1034 mean the same in the two
+  cohorts and the BP key applies. After this the item means of the two
+  cohorts agree (r = 0.84 over the 34 items, 0.51 before).
+
+  Stored scores: wrong, not delivered. The EMR reverses the eleven items a
+  second time (6 - value, as it does in BP), which puts them back in the
+  wrong direction. Each stored score (bis10_imp_mot, bis10_imp_att,
+  bis10_imp_pla, bis10_score_total, bis11, bis10, bis1038) is reproduced
+  exactly by adding the items with none reversed, plus the BP offset of one
+  point per reversed item: these are the twin scores named _as_stored, read
+  to check the stored values and not delivered (no mismatch on the 530 to
+  547 visits where a twin exists). The delivered scores use the key (open
+  question O17). A stored score is also computed when an item is missing (5
+  to 19 visits); ours needs every item.
+
+  Three more columns, bis1035 to bis1037, hold the motor, attention and
+  planning items added with none reversed. They are not read
+  (ignored.yaml).
+
+  The break of 2018 (open question O1). 93% and 89% of the inclusion visits of
+  2012 to 2014 and of 2015 to 2017 hold the scale, 42% to 49% in the three
+  periods since 2018. It is the same fall in about a dozen
+  self-questionnaires, in most centres, and nobody knows its reason: an
+  empty scale after 2018 is missing data, not a scale that was not asked.
+
+version:
+  name: bis_form
+  filled:
+    bis10: [bis1002, bis1003, bis1004, bis1005, bis1007, bis1010, bis1011,
+            bis1013, bis1015, bis1016, bis1018, bis1019, bis1022, bis1024,
+            bis1026, bis1027, bis1029, bis1030, bis1031, bis1032, bis1033,
+            bis1034]
+    bis12: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017,
+            bis1020, bis1021, bis1023, bis1025, bis1028]
+  since: {bis12: 2021-01-01}
+
+defaults: {type: item, range: [1, 4], versions: [bis10]}
+
+variables:
+  bis1001: {label: "BIS-10 item 1 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1002: {label: BIS-10 item 2}
+  bis1003: {label: BIS-10 item 3}
+  bis1004: {label: BIS-10 item 4}
+  bis1005: {label: BIS-10 item 5}
+  bis1006: {label: BIS-10 item 6}
+  bis1007: {label: "BIS-10 item 7 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1008: {label: "BIS-10 item 8 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1009: {label: "BIS-10 item 9 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1010: {label: "BIS-10 item 10 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1011: {label: BIS-10 item 11}
+  bis1012: {label: "BIS-10 item 12 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1013: {label: "BIS-10 item 13 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1014: {label: BIS-10 item 14}
+  bis1015: {label: "BIS-10 item 15 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1016: {label: BIS-10 item 16}
+  bis1017: {label: BIS-10 item 17}
+  bis1018: {label: BIS-10 item 18}
+  bis1019: {label: BIS-10 item 19}
+  bis1020: {label: BIS-10 item 20}
+  bis1021: {label: "BIS-10 item 21 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1022: {label: BIS-10 item 22}
+  bis1023: {label: BIS-10 item 23}
+  bis1024: {label: BIS-10 item 24}
+  bis1025: {label: BIS-10 item 25}
+  bis1026: {label: BIS-10 item 26}
+  bis1027: {label: BIS-10 item 27}
+  bis1028: {label: BIS-10 item 28}
+  bis1029: {label: BIS-10 item 29}
+  bis1030: {label: BIS-10 item 30}
+  bis1031: {label: BIS-10 item 31}
+  bis1032: {label: BIS-10 item 32}
+  bis1033: {label: "BIS-10 item 33 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+  bis1034: {label: "BIS-10 item 34 (1 to 4 as asked and as in BP; stored reversed in this extraction)", codes: {"1": 4, "2": 3, "3": 2, "4": 1}}
+
+  # Scores as stored in the extraction. Used only to check our own scores.
+  bis10_motor_stored:       {column: bis10_imp_mot,     range: [12, 45],  keep: false}
+  bis10_attention_stored:   {column: bis10_imp_att,     range: [10, 34],  keep: false}
+  bis10_planning_stored:    {column: bis10_imp_pla,     range: [19, 52],  keep: false}
+  bis10_total_stored:       {column: bis10_score_total, range: [41, 131], keep: false}
+  bis10_score11_stored:     {column: bis11,             range: [16, 52],  keep: false}
+  bis10_sum12_stored:       {column: bis10,             range: [17, 53],  keep: false}
+  bis10_cognitive_stored:   {column: bis1038, type: number, range: [2, 5],     winsor: false, keep: false}
+  bis10_behavioural_stored: {column: bis1039, type: number, range: [1, 4],     winsor: false, keep: false}
+  bis10_general_stored:     {column: bis1040, type: number, range: [1.5, 4.5], winsor: false, keep: false}
+
+scores:
+  bis10_motor:
+    label: "Motor impulsivity (11 items)"
+    sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020, bis1022, bis1023, bis1024, bis1028,
+          bis1034]
+    reverse: [bis1034]
+  bis10_motor_as_stored:
+    label: "Motor impulsivity (11 items), with no item reversed: what the EMR stores here"
+    sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020, bis1022, bis1023, bis1024, bis1028,
+          bis1034]
+    compare: bis10_motor_stored
+    compare_offset: 1
+    keep: false
+  bis10_attention:
+    label: "Attentional impulsivity (8 items)"
+    sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
+    reverse: [bis1009, bis1021]
+  bis10_attention_as_stored:
+    label: "Attentional impulsivity (8 items), with no item reversed: what the EMR stores here"
+    sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
+    compare: bis10_attention_stored
+    compare_offset: 2
+    keep: false
+  bis10_planning:
+    label: "Planning difficulty (11 items)"
+    sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1014, bis1015, bis1018, bis1031,
+          bis1033]
+    reverse: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1015, bis1033]
+  bis10_planning_as_stored:
+    label: "Planning difficulty (11 items), with no item reversed: what the EMR stores here"
+    sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1014, bis1015, bis1018, bis1031,
+          bis1033]
+    compare: bis10_planning_stored
+    compare_offset: 8
+    keep: false
+  bis10_total:
+    label: "BIS-10 total (motor + attention + planning, 30 items)"
+    sum: [bis10_motor, bis10_attention, bis10_planning]
+  bis10_total_as_stored:
+    label: "BIS-10 total (motor + attention + planning, 30 items), with no item reversed: what the EMR stores here"
+    sum: [bis10_motor_as_stored, bis10_attention_as_stored, bis10_planning_as_stored]
+    compare: bis10_total_stored
+    compare_offset: 11
+    keep: false
+  bis10_score11:
+    label: "Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25)"
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1019, bis1020, bis1022,
+          bis1024, bis1025]
+    reverse: [bis1001, bis1008, bis1009, bis1012]
+  bis10_score11_as_stored:
+    label: "Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25), with no item reversed: what the EMR stores here"
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1019, bis1020, bis1022,
+          bis1024, bis1025]
+    compare: bis10_score11_stored
+    compare_offset: 4
+    keep: false
+  bis10_sum12:
+    label: "Total of the 12 items that the BIS-12 also has"
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1020, bis1021, bis1023,
+          bis1025, bis1028]
+    reverse: [bis1001, bis1008, bis1009, bis1012, bis1021]
+  bis10_sum12_as_stored:
+    label: "Total of the 12 items that the BIS-12 also has, with no item reversed: what the EMR stores here"
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1020, bis1021, bis1023,
+          bis1025, bis1028]
+    compare: bis10_sum12_stored
+    compare_offset: 5
+    keep: false
+  bis10_cognitive:
+    label: "Cognitive impulsivity (mean of 5 items)"
+    mean: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    reverse: [bis1001, bis1008, bis1009, bis1012, bis1021]
+  bis10_cognitive_as_stored:
+    label: "Cognitive impulsivity (mean of 5 items), with no item reversed: what the EMR stores here"
+    mean: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    compare: bis10_cognitive_stored
+    compare_offset: 1
+    keep: false
+  bis10_behavioural:
+    label: "Behavioural impulsivity (mean of 7 items)"
+    mean: [bis1006, bis1014, bis1017, bis1020, bis1023, bis1025, bis1028]
+  bis10_general:
+    label: "General impulsivity (mean of the cognitive and behavioural scores)"
+    mean: [bis10_cognitive, bis10_behavioural]

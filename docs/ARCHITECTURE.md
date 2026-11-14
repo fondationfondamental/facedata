@@ -9,7 +9,7 @@ ready for algorithms:
 4. continuous variables are winsorised,
 5. every variable gets a quality-control (QC) summary and plots.
 
-There is one module per cohort (`facedata.bp`; `facedata.sz` is being written; later `dr`, `asp`).
+There is one module per cohort (`facedata.bp`, `facedata.sz`, `facedata.dr`; later `asp`).
 Everything specific to an instrument is written in a YAML schema
 (see [SCHEMA_SPEC.md](SCHEMA_SPEC.md)). The Python code is generic and does not
 change when an instrument is added.
@@ -60,6 +60,7 @@ facedata/
     schemas/<tab>/<instrument>.yaml
   sz/             the same three functions and files for FACE SZ, and
     differences.yaml   the instruments whose schema is not the BP one, each with the reason
+  dr/             the same for FACE DR (resistant depression); its differences.yaml compares with BP, or with SZ where BP has no such schema
 tests/            small hand-written tables only
 ```
 
@@ -94,7 +95,7 @@ Key columns first, then the harmonised variables of every instrument.
 
 | Column | Content |
 |---|---|
-| `cohort` | `bp` or `sz`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
+| `cohort` | `bp`, `sz` or `dr`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
 | `usubjid` | Patient identifier (text), unique inside a cohort only |
 | `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...) |
 | `visit_order` | Rank of the visit (from `id_visit`) |
@@ -110,7 +111,8 @@ Key columns first, then the harmonised variables of every instrument.
 columns and the same names for the instruments they share, so they can be
 stacked (`pd.concat`). The key is then (`cohort`, `usubjid`, `visit`): a
 `usubjid` is a number given inside a cohort, and 824 numbers are used in both
-FACE BP and FACE SZ for different patients. Never join two cohorts on
+FACE BP and FACE SZ for different patients (199 FACE DR numbers are also BP
+numbers, and 209 are SZ numbers). Never join two cohorts on
 `usubjid` alone. `patients` also holds `fondacode`, the patient code of the
 foundation: it is unique across the cohorts, and it stays the same from one
 extraction to the next, while `usubjid` can change for a patient registered
@@ -144,6 +146,13 @@ list` opens them: one row per patient and item, with `usubjid`, `item` (1,
 and the group it belongs to, the dose, the start and end dates). The table
 is empty when no such instrument is loaded.
 
+A cohort can have several such instruments (FACE DR has three: the current
+psychotropic treatments, the past ones and the somatic ones). Their rows are
+stacked, and a column `list` after `usubjid` names the instrument of each
+row. Where the export crossed the products of a patient with the
+prescription lines, the schema says so (`crossed`), and the items are put
+back as far as the file allows (SCHEMA_SPEC, section 15).
+
 What a visit needs, whether the patient was on a treatment that day, is
 computed from the dates of the items and delivered in `data` as yes/no
 columns (SCHEMA_SPEC, section 15).
@@ -168,7 +177,7 @@ columns that are 1, 0 or missing: missing when it cannot be told
 
 | Column | Content |
 |---|---|
-| `usubjid`, `visit` | Where. For a row of `treatments`, `visit` holds `item 3`; for a row of `relatives`, the name of the relative |
+| `usubjid`, `visit` | Where. For a row of `treatments`, `visit` holds `item 3` (`medications item 3` in a cohort that has several lists); for a row of `relatives`, the name of the relative |
 | `variable` | Output variable name |
 | `raw` | The original string, untouched |
 | `value` | The value now in `data` (empty if removed). For a variable that is read but not delivered (`keep: false`), the value used for the checks |
@@ -231,6 +240,8 @@ stacks the flags.
 - `screening` is a visit of its own, before `V0`. It has no `visit_month`:
   it took place a median of 70 days before the inclusion, with a wide spread.
 - Placeholder visit dates (`1950-01-01`) become missing (`date_placeholder`).
+- `siteid` is written with two digits (`4` becomes `04`): one extraction
+  writes the centre codes as numbers, the others as two characters.
 - A patient whose visit dates do not increase with the visit order gets
   `visit_order` on the visits concerned.
 
@@ -277,11 +288,11 @@ kept. Two columns with different values on the same row give
 | `item` | Whole number | Same |
 | `band` | A percentile band (`25 - 50`), a one-sided class (`>95`) or a limit (`50`); the value is the lower limit of the band | none; a one-sided or wide band gives `censored_right` or `censored_left` (SCHEMA_SPEC.md, section 6) |
 | `category` | A key of the variable's `codes`, ignoring case and spaces | none |
-| `date` | `YYYY-MM-DD` | Partial dates `YYYY-00-00` and `YYYY-MM-00` become the middle of the period (`date_partial`) |
-| `time` | `HH:MM`, returned as hours | none |
+| `date` | `YYYY-MM-DD`, or `DD/MM/YYYY` | Partial dates `YYYY-00-00` and `YYYY-MM-00` (or `MM/YYYY` and `YYYY`) become the middle of the period (`date_partial`). With `day`, a date that kept its real day gets the day that the export writes for the others (`date_partial`) |
+| `time` | `HH:MM` or `HH:MM:SS`, returned as hours | none |
 | `text` | Anything | none |
 
-An item or a number can list `codes`: the raw text is replaced by the code's
+An item, a number or a band can list `codes`: the raw text is replaced by the code's
 number first, so that answers written `Y` and `N` become 1 and 0.
 
 A censoring mark gives the value (the limit) and `<variable>_cens`, with
@@ -440,7 +451,7 @@ QC table counts patients, not visit rows.
 |---|---|---|
 | `missing_code` | info | The cell held a missing code |
 | `date_placeholder` | info | The date was a placeholder |
-| `date_partial` | info | Day or month was unknown |
+| `date_partial` | info | Day or month was unknown, or the day was replaced by the day that the export writes (`day`) |
 | `format_repaired` | info | A number was written unusually but unambiguously |
 | `censored_left` | info | The cell was `<limit`. For a band: this band or a lower one |
 | `censored_right` | info | The cell was `>limit`. For a band: this band or a higher one |
@@ -458,6 +469,7 @@ QC table counts patients, not visit rows.
 | `score_mismatch` | discrepancy | Stored and recomputed scores differ |
 | `derived_doubt` | discrepancy | The value was computed by the EMR from a stored score that differs from the recomputed one |
 | `patient_value_varies` | discrepancy | A patient-level variable, or an answer about a relative, changes between visits |
+| `list_crossed` | discrepancy | An item of a list that the export crossed: the patient has several products, and the file does not say which dose or date belongs to which (SCHEMA_SPEC, section 15) |
 | `visit_order` | discrepancy | Visit dates are not in visit order |
 | `check_failed` | discrepancy | A custom check named in the schema failed |
 | `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |
@@ -564,7 +576,13 @@ starting point: it is checked on the cohort's own data like any other schema
 (the same column can hold another question, and the same score another
 formula). FACE SZ is written this way: all its columns are read or ignored
 (`docs/sz/PROGRESS.md`, `docs/sz/QUESTIONS.md`). 67 of its 125 schemas have the name
-of a BP schema: 9 are the same and 58 are listed in `differences.yaml`. A table that the cohorts share, such as the
+of a BP schema: 9 are the same and 58 are listed in `differences.yaml`. FACE DR
+too (`docs/dr/PROGRESS.md`, `docs/dr/QUESTIONS.md`): 79 of its 137 schemas have the
+name of a BP schema (75) or of an SZ schema (4); 11 are the same and 68 are listed.
+A stored score that follows the formula of the other cohort does not prove a copied
+schema right, because the EMR applies the same formula to the answers of another
+form: compare the answers themselves between the cohorts (the mean of each item,
+and whether each item rises with the rest of its scale) before trusting a copy. A table that the cohorts share, such as the
 medication names, sits in the package folder: a schema names its file, and
 the loader looks in the cohort folder first. ASP has no
 thesaurus and different names, so its schemas are written from the data.

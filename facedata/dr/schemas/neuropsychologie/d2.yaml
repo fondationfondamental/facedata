@@ -1,0 +1,46 @@
+instrument: d2
+title: d2 test of attention
+tab: NEUROPSYCHOLOGIE
+section: D2
+status: draft
+notes: >
+  d2 test of attention. Not in BP or SZ. Five measures: GZ (signs
+  processed), F (errors) with F% (errors over signs processed), GZ - F
+  (overall performance), KL (concentration performance) and SB (the
+  largest line minus the smallest). 631 visits.
+
+  Percentiles. GZ, GZ - F and KL have a percentile rank written as a
+  number (0.1 to 99.9); F% and SB have a band, with the limits 10, 25, 50,
+  75 and 90. Each percentile rises with its raw score, and the share of
+  each band is close in every period.
+
+  Checks. The stored GZ - F is not GZ minus F on 35 of 623 visits, in
+  every year (score_mismatch on the check score); it is delivered as
+  stored, because its percentile was read from it. F% equals F over GZ on
+  all but 3 visits.
+
+  Three SB values of three digits are out of range.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+defaults: {type: number, winsor: false}
+
+variables:
+  d2_gz: {column: d2gz01, label: "GZ, speed: number of signs processed", range: [0, 658]}
+  d2_gz_percentile: {column: d2gz02, label: "GZ as a percentile rank", range: [0, 100]}
+  d2_f: {column: d2f01, label: "F, accuracy: number of errors", range: [0, 658]}
+  d2_f_percent: {column: d2f02, label: "F%: errors as a percentage of the signs processed", range: [0, 100]}
+  d2_f_band: {column: d2f03, type: band, limits: [10, 25, 50, 75, 90], label: "F% as a percentile band (a higher band is fewer errors)"}
+  d2_gzf: {column: d2gzf01, label: "GZ - F, overall performance", range: [0, 658]}
+  d2_gzf_percentile: {column: d2gzf02, label: "GZ - F as a percentile rank", range: [0, 100]}
+  d2_kl: {column: d2kl01, label: "KL, concentration performance", range: [-100, 299]}
+  d2_kl_percentile: {column: d2kl02, label: "KL as a percentile rank", range: [0, 100]}
+  d2_sb: {column: d2sb01, label: "SB, fluctuation: largest minus smallest line", range: [0, 50]}
+  d2_sb_band: {column: d2sb02, type: band, limits: [10, 25, 50, 75, 90], label: "SB as a percentile band (a higher band is a steadier pace)"}
+
+scores:
+  # Consistency check only: the stored overall performance must be GZ minus F.
+  d2_gzf_check: {sum: [d2_gz], minus: [d2_f], compare: d2_gzf, keep: false}

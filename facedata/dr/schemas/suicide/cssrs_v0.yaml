@@ -1,0 +1,95 @@
+instrument: cssrs_v0
+title: "Columbia Suicide Severity Rating Scale, whole life (inclusion form)"
+tab: SUICIDE
+section: Idéation Suicidaire
+status: draft
+notes: >
+  The Columbia scale at the inclusion visit, over the whole life: 557 visits (75% to 98% of the inclusions in every period).
+
+  Columbia Suicide Severity Rating Scale: five levels of ideation (yes or
+  no, each with a free description), the most severe level as rated, five
+  ratings of its intensity, the suicidal behaviours (actual, interrupted
+  and aborted attempts, preparatory acts, self-injury without intent) and
+  the lethality of three attempts. Not the BP schema: BP has other columns
+  and one form.
+
+  Two forms in the same columns. The inclusion visit asks about the whole
+  life; the follow-up visits use the same columns for the time since the
+  last visit. The two are never delivered in one column: visit_form says
+  which form a visit uses (inclusion for the screening and inclusion
+  visits, follow_up for the others), and each form has its own schema and
+  its own variables.
+
+  The follow-up answers are about the time since the last visit: the share
+  of "yes" to the wish to be dead goes from 77% at inclusion to 47% at
+  follow-up, and 267 of the 577 follow-up visits of patients who said yes
+  at inclusion answer no.
+
+  The form follows its skips: levels 3 to 5 are asked after a yes to level
+  2. The most severe ideation as rated (cssrs06) is the highest level
+  answered yes on 354 of 474 visits, higher on 56 and lower on 64: it is
+  delivered as rated. The intensity score is the sum of the five ratings,
+  as in BP.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
+
+variables:
+  cssrs01_lifetime: {column: cssrs01, label: "Wish to be dead - whole life"}
+  cssrs01_lifetime_text: {column: cssrs01a, type: text, label: "Description, as written"}
+  cssrs02_lifetime: {column: cssrs02, label: "Non-specific active suicidal thoughts - whole life"}
+  cssrs02_lifetime_text: {column: cssrs02a, type: text, label: "Description, as written"}
+  cssrs03_lifetime: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - whole life"}
+  cssrs03_lifetime_text: {column: cssrs03a, type: text, label: "Description, as written"}
+  cssrs04_lifetime: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - whole life"}
+  cssrs04_lifetime_text: {column: cssrs04a, type: text, label: "Description, as written"}
+  cssrs05_lifetime: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - whole life"}
+  cssrs05_lifetime_text: {column: cssrs05a, type: text, label: "Description, as written"}
+  cssrs_most_severe_lifetime: {column: cssrs06, range: [0, 5], label: "Most severe ideation, as rated (1 to 5) - whole life"}
+  cssrs_ideation_lifetime_text: {column: cssrs07, type: text, label: "Description of the ideation, as written"}
+  cssrs_frequency_lifetime: {column: cssrs08, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - whole life"}
+  cssrs_duration_lifetime: {column: cssrs09, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - whole life"}
+  cssrs_control_lifetime: {column: cssrs10, range: [0, 5], label: "Intensity: controllability (1 easily to 5 unable, 0 does not try) - whole life"}
+  cssrs_deterrents_lifetime: {column: cssrs11, range: [0, 5], label: "Intensity: deterrents (1 definitely stopped to 5 did not stop at all, 0 does not apply) - whole life"}
+  cssrs_reasons_lifetime: {column: cssrs12, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - whole life"}
+  cssrs_attempt_lifetime: {column: cssrs13, label: "Actual suicide attempt - whole life"}
+  cssrs13_lifetime_text: {column: cssrs13a, type: text, label: "Description, as written"}
+  cssrs_n_attempts_lifetime: {column: cssrs14, range: [0, 50], label: "Number of actual attempts - whole life"}
+  cssrs_self_injury_lifetime: {column: cssrs15, label: "Non-suicidal self-injurious behaviour - whole life"}
+  cssrs_interrupted_lifetime: {column: cssrs16, label: "Interrupted attempt - whole life"}
+  cssrs16_lifetime_text: {column: cssrs16a, type: text, label: "Description, as written"}
+  cssrs_n_interrupted_lifetime: {column: cssrs17, range: [0, 50], label: "Number of interrupted attempts - whole life"}
+  cssrs_aborted_lifetime: {column: cssrs18, label: "Aborted attempt - whole life"}
+  cssrs18_lifetime_text: {column: cssrs18a, type: text, label: "Description, as written"}
+  cssrs_n_aborted_lifetime: {column: cssrs19, range: [0, 50], label: "Number of aborted attempts - whole life"}
+  cssrs_preparatory_lifetime: {column: cssrs20, label: "Preparatory acts or behaviour - whole life"}
+  cssrs20_lifetime_text: {column: cssrs20a, type: text, label: "Description, as written"}
+  cssrs_behaviour_lifetime: {column: cssrs21, label: "Suicidal behaviour present - whole life"}
+  cssrs_recent_attempt_date_lifetime: {column: cssrs22c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most recent attempt"}
+  cssrs_lethal_attempt_date_lifetime: {column: cssrs23c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most lethal attempt"}
+  cssrs_first_attempt_date_lifetime: {column: cssrs24c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the first attempt"}
+  cssrs_recent_lethality_lifetime: {column: cssrs22c, range: [0, 5], label: "Most recent attempt: actual lethality (0 no physical damage to 5 death)"}
+  cssrs_lethal_lethality_lifetime: {column: cssrs23c, range: [0, 5], label: "Most lethal attempt: actual lethality (0 to 5)"}
+  cssrs_first_lethality_lifetime: {column: cssrs24c, range: [0, 5], label: "First attempt: actual lethality (0 to 5)"}
+  cssrs_recent_potential_lifetime: {column: cssrs25c, range: [0, 2], label: "Most recent attempt: potential lethality (0 not likely to injure to 2 likely to kill)"}
+  cssrs_lethal_potential_lifetime: {column: cssrs27c, range: [0, 2], label: "Most lethal attempt: potential lethality (0 to 2)"}
+  cssrs_first_potential_lifetime: {column: cssrs28c, range: [0, 2], label: "First attempt: potential lethality (0 to 2)"}
+
+scores:
+  cssrs_intensity_lifetime:
+    label: "C-SSRS intensity of ideation: sum of the five ratings - whole life"
+    sum: [cssrs_frequency_lifetime, cssrs_duration_lifetime, cssrs_control_lifetime, cssrs_deterrents_lifetime, cssrs_reasons_lifetime]

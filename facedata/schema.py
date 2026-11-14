@@ -13,12 +13,12 @@ from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
                      "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
-                     "relatives", "per_patient"}
+                     "relatives", "per_patient", "crossed"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
-                   "doubt", "asked_if", "separator", "parse", "note"}
+                   "doubt", "asked_if", "separator", "parse", "note", "day"}
 SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
@@ -69,6 +69,8 @@ def load_schema(path):
             variable["limits"] = to_numbers(variable["limits"])
         if "z_range" in variable:
             variable["z_range"] = to_numbers(variable["z_range"])
+        if "day" in variable:
+            variable["day"] = to_numbers([variable["day"]])[0]
         if "range" in variable and variable.get("type") == "date":
             variable["range"] = to_dates(variable["range"])
         elif "range" in variable:
@@ -218,6 +220,8 @@ def check_variable(name, variable, schema, columns):
             problems.append(f"{name}: lookup and from go together, on a band; from names a variable with a range, listed before")
     if "z_range" in variable and (kind != "band" or not is_range(variable["z_range"])):
         problems.append(f"{name}: z_range must be [low, high], on a band")
+    if "day" in variable and (kind != "date" or variable["day"] not in range(1, 29)):
+        problems.append(f"{name}: day must be a whole number from 1 to 28, on a date")
     if variable.get("shared") and kind not in ("band", "number"):
         problems.append(f"{name}: only a band and a number can share a column")
     if "bands" in variable and (variable["bands"] != "middle" or kind != "number"):
@@ -383,6 +387,10 @@ def check_lists(schema):
     names, block = schema.get("names"), schema.get("at_visit")
     if (names is not None or block is not None) and schema.get("level") != "list":
         problems.append("names and at_visit need level: list")
+    if "crossed" in schema:
+        read = {column for variable in schema["variables"].values() for column in variable.get("columns", [])}
+        if schema.get("level") != "list" or not isinstance(schema["crossed"], list) or not set(schema["crossed"]) <= read:
+            problems.append("crossed needs level: list, and lists raw columns that variables of the schema read")
     if names is not None:
         if not isinstance(names, dict) or set(names) - {"path"} != {"column", "clean", "table", "gives"}:
             problems.append("names needs column, clean, table and gives, and nothing else")
@@ -475,7 +483,8 @@ def check_cohort(schemas):
             if name not in per_patient:
                 problems.append(f"{instrument}: per_patient counts with '{name}', which no patient-level schema gives")
         for name in list(schema["variables"]) + list(schema.get("scores", {})):
-            if name in seen_outputs:
+            both_lists = schema.get("level") == "list" and schemas.get(seen_outputs.get(name), {}).get("level") == "list"
+            if name in seen_outputs and not both_lists:          # list instruments fill one table: they may share names
                 problems.append(f"output '{name}' is in {seen_outputs[name]} and in {instrument}")
             seen_outputs[name] = instrument
         if "version" in schema:

@@ -1,0 +1,47 @@
+instrument: pression_arterielle
+title: Blood pressure and heart rate, lying and standing
+tab: VITAL SIGN et ECG
+section: Pression Arterielle et Fréquance Cardiaque
+status: draft
+notes: >
+  Blood pressure and heart rate, lying then standing, at the inclusion and
+  follow-up visits (1,223 visits lying, 1,187 standing).
+
+  7 lying and 3 standing pressures were typed in cmHg and are converted
+  (unit_inferred); 5 values are impossible (out_of_range).
+
+  Same instrument as in FACE BP; FACE SZ has the lying pressures only.
+
+defaults: {type: number, unit: mmHg}
+
+variables:
+  systolic_supine:
+    column: sysbpsupine
+    label: Systolic blood pressure, lying
+    units:
+      mmHg: {factor: 1, expect: [50, 260]}
+      cmHg: {factor: 10, expect: [5, 26]}
+    range: [50, 260]
+  diastolic_supine:
+    column: diabpsupine
+    label: Diastolic blood pressure, lying
+    units:
+      mmHg: {factor: 1, expect: [30, 180]}
+      cmHg: {factor: 10, expect: [3, 18]}
+    range: [30, 180]
+  systolic_standing:
+    column: sysbpstanding
+    label: Systolic blood pressure, standing
+    units:
+      mmHg: {factor: 1, expect: [50, 260]}
+      cmHg: {factor: 10, expect: [5, 26]}
+    range: [50, 260]
+  diastolic_standing:
+    column: diabpstanding
+    label: Diastolic blood pressure, standing
+    units:
+      mmHg: {factor: 1, expect: [30, 180]}
+      cmHg: {factor: 10, expect: [3, 18]}
+    range: [30, 180]
+  heart_rate_supine:   {column: hrsupine,   label: Heart rate lying (beats per minute),    unit: bpm, range: [30, 220]}
+  heart_rate_standing: {column: hrstanding, label: Heart rate standing (beats per minute), unit: bpm, range: [30, 220]}

@@ -1,0 +1,21 @@
+instrument: devices
+title: "Electronic cigarette, pacemaker, CPAP and deep brain stimulation"
+tab: TRAITEMENTS
+section: TRAITEMENTS NON PHARMACOLOGIQUES
+status: draft
+notes: >
+  Four yes/no questions asked with the non-drug treatments, at every visit
+  from 2013: electronic cigarette, pacemaker, CPAP and deep brain
+  stimulation. 997 visits (15% of the inclusions until 2014, 45% in 2015
+  to 2017, 67% to 81% since). 2 is "not known" (120 cells, missing_code).
+  Not in BP or SZ.
+
+defaults: {type: item, range: [0, 1], missing: {"2": unknown}}
+
+variables:
+  electronic_cigarette: {column: proccur_cigelec, label: Uses an electronic cigarette}
+  pacemaker: {column: proccur_pace, label: Has a pacemaker}
+  cpap: {column: proccur_cpap, label: Uses a CPAP device}
+  deep_brain_stimulation: {column: proccur_scp, label: Has deep brain stimulation}
+  deep_brain_stimulation_target: {column: prlat_scp, type: text, label: "Deep brain stimulation: target, as written"}
+  deep_brain_stimulation_indication: {column: prindc_scp, type: text, label: "Deep brain stimulation: indication, as written"}

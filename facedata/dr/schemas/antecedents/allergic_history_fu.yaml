@@ -1,0 +1,59 @@
+instrument: allergic_history_fu
+title: "Allergic history, at follow-up"
+tab: ANTECEDENTS
+section: Pathologies allergiques et inflammatoires
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  visits of 2 and 4 years: 131 visits. The questions and what is specific
+  to this cohort are described in allergic_history_v0.yaml.
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  allergic_inflammatory_fu: {column: somat_all, type: item, range: [0, 1], missing: {"2": unknown}, label: "An allergic or inflammatory disease, at follow-up"}
+  asthma_fu: {column: asthme_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: asthma, at follow-up"}
+  allergy_fu: {column: allergie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: an allergy other than asthma, at follow-up"}
+  lupus_fu: {column: lupus_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: lupus, at follow-up"}
+  rheumatoid_arthritis_fu: {column: polyarthr_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: rheumatoid arthritis, at follow-up"}
+  other_autoimmune_fu: {column: autautoim_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: another autoimmune disease, at follow-up"}
+  asthma_start_fu: {column: asthme_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Asthma: date of onset, at follow-up"}
+  asthma_treated_fu: {column: asthme_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: treated, at follow-up"}
+  asthma_controlled_fu: {column: asthme_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: controlled, at follow-up"}
+  allergy_start_fu: {column: allergie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Allergy: date of onset, at follow-up"}
+  allergy_treated_fu: {column: allergie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: treated, at follow-up"}
+  allergy_controlled_fu: {column: allergie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: controlled, at follow-up"}
+  lupus_start_fu: {column: lupus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Lupus: date of onset, at follow-up"}
+  lupus_treated_fu: {column: lupus_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: treated, at follow-up"}
+  lupus_controlled_fu: {column: lupus_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: controlled, at follow-up"}
+  rheumatoid_arthritis_start_fu: {column: polyarthr_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Rheumatoid arthritis: date of onset, at follow-up"}
+  rheumatoid_arthritis_treated_fu: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: treated, at follow-up"}
+  rheumatoid_arthritis_controlled_fu: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: controlled, at follow-up"}
+  other_autoimmune_start_fu: {column: autautoim_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another autoimmune disease: date of onset, at follow-up"}
+  other_autoimmune_text_fu: {column: autautoim_mhmodify, type: text, label: "Another autoimmune disease: which one, as written, at follow-up"}

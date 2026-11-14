@@ -1,0 +1,98 @@
+instrument: psqi
+title: Pittsburgh Sleep Quality Index (PSQI)
+tab: AUTO-QUESTIONNAIRES
+section: PSQI
+status: draft
+notes: >
+  The BP schema, plus the questions on the bed partner. Sleep over the last
+  30 days. Four questions ask for a time or a duration, the others are
+  rated 0 to 3. Seven component scores of 0 to 3 add up to the total (0 to
+  21, higher is worse). Filled at inclusion and at every follow-up visit:
+  1,084 visits.
+
+  Times. Bedtime, rising time and hours of sleep are written HH:MM:SS here
+  (HH:MM in BP) and delivered in hours (23:30:00 is 23.5). One bedtime
+  cannot be read (unparsed).
+
+  Minutes to fall asleep (psqi02): the BP rule. A value above 240 is the
+  minutes multiplied by 60 and is divided by 60 (unit_inferred, 1 visit).
+
+  Components. As in BP: quality is item 6 and medication is item 7, so
+  their copies (psqi15, psqi16) are not read (ignored.yaml); duration,
+  efficiency, disturbances and daytime dysfunction are delivered as stored;
+  the latency component is recomputed by the function psqi_latency of
+  custom.py from the corrected minutes and item 5a. The stored latency
+  component and the stored total equal ours on every visit but the one with
+  the corrected minutes (1,049 and 1,007 visits compared).
+
+  More than BP: question 10, on a bed partner or room mate (psqi10, 0 none
+  to 3 in the same bed), and what this person noticed (psqi10a to psqi10e,
+  each 0 to 3). They do not enter the total. In this extraction psqi10e is
+  the rating of "other restlessness" and psqi10f its free text; in FACE SZ
+  psqi10e is the free text and there is no psqi10f.
+
+  The break of 2018 (open question O1). 96% and 93% of the inclusion visits of
+  2012 to 2014 and of 2015 to 2017 hold the scale, 40% to 52% in the three
+  periods since 2018. It is the same fall in about a dozen
+  self-questionnaires, in most centres, and nobody knows its reason: an
+  empty scale after 2018 is missing data, not a scale that was not asked.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours)}
+  psqi_latency:
+    column: psqi02
+    type: number
+    label: Minutes to fall asleep
+    unit: min
+    units:
+      min: {factor: 1, expect: [0, 240.01]}
+      "min x 60": {factor: 0.0166667, expect: [240.01, 1260]}
+      "min x 60, long": {factor: 0.0166667, expect: [1440, 4501]}
+    range: [0, 240]
+  psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours)}
+  psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night}
+  psqi05a: {label: "Vous n’êtes pas arrivé(e) à vous endormir en 30 minutes"}
+  psqi05b: {label: "Vous vous êtes réveillé(e) au milieu de la nuit ou plus tôt que..."}
+  psqi05c: {label: "Vous avez dû vous lever pour aller aux toilettes"}
+  psqi05d: {label: "Vous avez eu du mal à respirer"}
+  psqi05e: {label: "Vous avez toussé ou ronflé bruyamment"}
+  psqi05f: {label: "Vous avez eu trop froid"}
+  psqi05g: {label: "Vous avez eu trop chaud"}
+  psqi05h: {label: "Vous avez fait des cauchemars"}
+  psqi05i: {label: "Vous avez eu des douleurs"}
+  psqi05j: {label: "Combien de fois, au cours des 30 derniers jours, avez-vous eu des..."}
+  psqi05k: {type: text, label: "Other reason for troubled sleep, as written"}
+  psqi06: {label: "Comment qualifieriez-vous la qualité de votre sommeil en général au..."}
+  psqi07: {label: "Au cours des 30 derniers jours, combien de fois avez-vous pris des..."}
+  psqi08: {label: "Au cours des 30 derniers jours, combien de fois avez-vous eu des..."}
+  psqi09: {label: "Au cours des 30 derniers jours, combien vous a-t-il été difficile..."}
+
+  # The questions about the bed partner, which the BP extraction does not hold. Not part of the score.
+  psqi10: {label: "Has a bed partner or a room mate (0 none to 3 in the same bed)"}
+  psqi10a: {label: "As seen by the partner: loud snoring"}
+  psqi10b: {label: "As seen by the partner: long pauses between breaths while asleep"}
+  psqi10c: {label: "As seen by the partner: legs twitching or jerking while asleep"}
+  psqi10d: {label: "As seen by the partner: episodes of disorientation or confusion during sleep"}
+  psqi10e: {label: "As seen by the partner: other restlessness"}
+  psqi10f: {type: text, label: "As seen by the partner: other restlessness, as written"}
+
+  # Component scores as stored, 0 to 3.
+  psqi_efficiency: {column: psqi11, label: Component 4 - habitual sleep efficiency}
+  psqi_duration: {column: psqi12, label: Component 3 - sleep duration}
+  psqi_disturbances: {column: psqi13, label: Component 5 - sleep disturbances}
+  psqi_latency_stored: {column: psqi14, label: Component 2 as stored, keep: false}
+  psqi_dysfunction: {column: psqi17, label: Component 7 - daytime dysfunction}
+  psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
+
+scores:
+  psqi_latency_component:
+    label: Component 2 - sleep latency
+    custom: psqi_latency
+    compare: psqi_latency_stored
+  psqi_total:
+    label: PSQI total (0 to 21, higher is worse)
+    sum: [psqi06, psqi_latency_component, psqi_duration, psqi_efficiency,
+          psqi_disturbances, psqi07, psqi_dysfunction]
+    compare: psqi_stored

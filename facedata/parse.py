@@ -200,8 +200,16 @@ def parse_category(text, name, variable):
     return values, make_flags(unknown, name, "unknown_code")
 
 
+def year_first(text):
+    """Dates written day/month/year in the form YYYY-MM-DD: 15/06/2018, and the partial 06/2018 and 2018."""
+    text = text.str.replace(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", lambda found: f"{found[3]}-{int(found[2]):02d}-{int(found[1]):02d}", regex=True)
+    text = text.str.replace(r"^(\d{1,2})/(\d{4})$", lambda found: f"{found[2]}-{int(found[1]):02d}-00", regex=True)
+    return text.str.replace(r"^(\d{4})$", r"\1-00-00", regex=True)
+
+
 def parse_date(text, name, variable):
-    """YYYY-MM-DD to dates. An unknown day or month becomes the middle of the period."""
+    """YYYY-MM-DD or DD/MM/YYYY to dates. An unknown day or month becomes the middle of the period."""
+    text = year_first(text)
     values = pd.to_datetime(text, format="%Y-%m-%d", errors="coerce")
     no_day = text.str.fullmatch(r"\d{4}-(0[1-9]|1[0-2])-00")
     no_month = text.str.fullmatch(r"\d{4}-00-00")
@@ -209,17 +217,24 @@ def parse_date(text, name, variable):
     mid_year = pd.to_datetime(text.str[:4] + "-07-01", format="%Y-%m-%d", errors="coerce")
     values = values.where(~no_day, mid_month)
     values = values.where(~no_month, mid_year)
+    blurred = pd.Series(False, index=text.index)
+    if "day" in variable:                              # the export writes this day in place of the real one
+        day = int(variable["day"])
+        blurred = values.notna() & ~no_day & ~no_month & (values.dt.day != day)
+        values = values.where(~blurred, pd.to_datetime(text.str[:8] + f"{day:02d}", format="%Y-%m-%d", errors="coerce"))
     flags = stack_flags([
         make_flags((no_day | no_month) & values.notna(), name, "date_partial"),
+        make_flags(blurred, name, "date_partial", "the day was replaced by the day that the export writes"),
         make_flags((text != "") & values.isna(), name, "unparsed"),
     ])
     return values, flags
 
 
 def parse_time(text, name, variable):
-    """HH:MM to hours (12:30 -> 12.5)."""
-    parts = text.str.extract(r"^(\d{1,2}):(\d{2})$")
-    values = pd.to_numeric(parts[0], errors="coerce") + pd.to_numeric(parts[1], errors="coerce") / 60
+    """HH:MM or HH:MM:SS to hours (12:30 -> 12.5)."""
+    parts = text.str.extract(r"^(\d{1,2}):(\d{2})(?::(\d{2}))?$")
+    seconds = pd.to_numeric(parts[2], errors="coerce").fillna(0)
+    values = pd.to_numeric(parts[0], errors="coerce") + pd.to_numeric(parts[1], errors="coerce") / 60 + seconds / 3600
     return values, make_flags((text != "") & values.isna(), name, "unparsed")
 
 
@@ -242,8 +257,8 @@ def parse_column(text, name, variable):
     if "separator" in variable:                        # several boxes ticked in one cell
         values, flags = parse_boxes(text, name, variable)
         return values, no_cens, flags
-    if kind in ("number", "item") and "codes" in variable:
-        text = recode(text, variable)                  # answers written as letters, counted as numbers
+    if kind in ("number", "item", "band") and "codes" in variable:
+        text = recode(text, variable)                  # answers written as letters, or a band label cut short
     if kind == "number":
         return parse_number(text, name, variable)
     if kind == "band":

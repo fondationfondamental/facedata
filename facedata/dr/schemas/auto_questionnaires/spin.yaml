@@ -1,0 +1,43 @@
+instrument: spin
+title: Social Phobia Inventory (SPIN)
+tab: AUTO-QUESTIONNAIRES
+section: SPIN
+status: draft
+notes: >
+  Social Phobia Inventory: seventeen items, each 0 (not at all) to 4
+  (extremely), on the last week. Not in BP or SZ, and not in the
+  dictionary. Filled on 147 visits, most of them inclusions (28% of the
+  inclusions of 2012 to 2014, 10% from 2018, 3% since 2024): it is filled
+  by few patients and less and less.
+
+  Total. The sum of the seventeen items (0 to 68, higher is more social
+  anxiety). The stored total (spin_) equals it on the 147 visits. Every
+  item rises with the others.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  spin01: {label: "SPIN item 1"}
+  spin02: {label: "SPIN item 2"}
+  spin03: {label: "SPIN item 3"}
+  spin04: {label: "SPIN item 4"}
+  spin05: {label: "SPIN item 5"}
+  spin06: {label: "SPIN item 6"}
+  spin07: {label: "SPIN item 7"}
+  spin08: {label: "SPIN item 8"}
+  spin09: {label: "SPIN item 9"}
+  spin10: {label: "SPIN item 10"}
+  spin11: {label: "SPIN item 11"}
+  spin12: {label: "SPIN item 12"}
+  spin13: {label: "SPIN item 13"}
+  spin14: {label: "SPIN item 14"}
+  spin15: {label: "SPIN item 15"}
+  spin16: {label: "SPIN item 16"}
+  spin17: {label: "SPIN item 17"}
+  spin_total_stored: {column: spin_, label: SPIN score as stored, range: [0, 68], keep: false}
+
+scores:
+  spin_total:
+    label: "SPIN total (0 to 68)"
+    sum: [spin01, spin02, spin03, spin04, spin05, spin06, spin07, spin08, spin09, spin10, spin11, spin12, spin13, spin14, spin15, spin16, spin17]
+    compare: spin_total_stored

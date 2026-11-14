@@ -1,0 +1,54 @@
+instrument: urinary_history_fu
+title: "Urinary history, at follow-up"
+tab: ANTECEDENTS
+section: Pathologies des voies urinaires
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  visits of 2 and 4 years: 131 visits. The questions and what is specific
+  to this cohort are described in urinary_history_v0.yaml.
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  nephropathy_fu: {column: nephropat_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy, at follow-up"}
+  nephropathy_start_fu: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Nephropathy: date of onset, at follow-up"}
+  nephropathy_treated_fu: {column: nephropat_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: treated, at follow-up"}
+  nephropathy_controlled_fu: {column: nephropat_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: controlled, at follow-up"}
+  nephropathy_treatment_related_fu: {column: nephropat_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: probably linked to a past or current treatment, at follow-up"}
+  prostate_adenoma_fu: {column: adenompro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma, at follow-up"}
+  prostate_adenoma_start_fu: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Prostate adenoma: date of onset, at follow-up"}
+  prostate_adenoma_treated_fu: {column: adenompro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma: treated, at follow-up"}
+  prostate_adenoma_controlled_fu: {column: adenompro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma: controlled, at follow-up"}
+  urinary_retention_fu: {column: returin_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Acute urinary retention, at follow-up"}
+  urinary_retention_start_fu: {column: returin_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acute urinary retention: date of onset, at follow-up"}
+  urinary_retention_under_treatment_fu: {column: returin_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Acute urinary retention: started under a treatment, at follow-up"}
+  urinary_retention_neuroleptic_fu: {column: returin_1_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: urinary_retention_fu, label: "Acute urinary retention, the treatment: a neuroleptic, at follow-up"}
+  urinary_retention_antidepressant_fu: {column: returin_2_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: urinary_retention_fu, label: "Acute urinary retention, the treatment: an antidepressant, at follow-up"}
+  urinary_retention_other_treatment_fu: {column: returin_3_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: urinary_retention_fu, label: "Acute urinary retention, the treatment: another treatment, at follow-up"}

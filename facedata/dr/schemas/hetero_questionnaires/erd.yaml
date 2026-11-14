@@ -1,0 +1,42 @@
+instrument: erd
+title: Depressive Retardation Scale (ERD, Widlöcher)
+tab: HETERO-QUESTIONNAIRES
+section: ERD (Echelle de Ralentissement Depressif, Widlöcher)
+status: draft
+notes: >
+  Fourteen items rated 0 (normal) to 4 (very severe) and a fifteenth, the
+  general appreciation of the retardation, on the same scale. The stored
+  score is the sum of items 1 to 14 (0 to 56) on all 507 visits that have
+  both; the general appreciation is not part of it. 11 visits have the
+  fourteen items and no stored score, and get the recomputed one.
+
+  The scale came into use in 2016 (195 inclusion visits, 325 follow-up
+  visits): about half of the inclusion visits hold it since.
+
+  A scale that FACE BP and FACE SZ do not have.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  erd01: {label: "ERD 1: Gait, stride"}
+  erd02: {label: "ERD 2: Slowness and paucity of movements: trunk"}
+  erd03: {label: "ERD 3: Slowness and paucity of movements of the head and neck: facial expression"}
+  erd04: {label: "ERD 4: Language and verbal flow"}
+  erd05: {label: "ERD 5: Modulation of the voice"}
+  erd06: {label: "ERD 6: Brief answers"}
+  erd07: {label: "ERD 7: Variety of themes spontaneously approached: ideational initiative"}
+  erd08: {label: "ERD 8: Fluency of ideas"}
+  erd09: {label: "ERD 9: Subjective experience of rumination"}
+  erd10: {label: "ERD 10: Fatigability"}
+  erd11: {label: "ERD 11: Interest in usual activities"}
+  erd12: {label: "ERD 12: Perception of the flow of time"}
+  erd13: {label: "ERD 13: Memory"}
+  erd14: {label: "ERD 14: Concentration"}
+  erd_general: {column: erd15, label: "ERD 15: general appreciation of the retardation (not in the score)"}
+  erd_total_stored: {column: erd_, label: "ERD score as stored", range: [0, 56], keep: false}
+
+scores:
+  erd_total:
+    label: "ERD score: sum of items 1 to 14 (0 to 56)"
+    sum: [erd01, erd02, erd03, erd04, erd05, erd06, erd07, erd08, erd09, erd10, erd11, erd12, erd13, erd14]
+    compare: erd_total_stored

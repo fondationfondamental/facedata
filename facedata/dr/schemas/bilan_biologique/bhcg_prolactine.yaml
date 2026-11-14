@@ -1,0 +1,46 @@
+instrument: bhcg_prolactine
+title: Beta-hCG and prolactin
+tab: BILAN BIOLOGIQUE
+section: BHCG
+status: draft
+notes: >
+  Beta-hCG and prolactin.
+
+  Beta-hCG: 308 results, 289 of them for women; 38 are given as "less than" a
+  limit and keep their mark.
+
+  Prolactin: the form has a choice of unit, exported as a code: 1 is ng/mL
+  (351 results), 2 µUI/mL (232), 3 µg/L, the same scale as ng/mL (79). 223
+  results are converted from mUI/L, 13 have a size that does not fit their
+  label and are read in the other unit (unit_inferred), and 38 are
+  impossible, three quarters of them in one centre. Code 4 goes with a result
+  of 0 on 7 visits.
+
+  Same instrument as in FACE BP.
+
+defaults: {type: number}
+
+variables:
+  hcg:
+    label: Beta-hCG
+    column: hcg
+    unit_column: hcg_lborresu
+    unit: UI/L
+    units:
+      UI/L: {factor: 1, expect: [0, 300000], aliases: [UI]}
+    censor_units: {inf: left, inferieur: left}
+    range: [0, 300000]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  prolactin:
+    label: Prolactin
+    column: prolctn
+    unit_column: prolctn_lborresu
+    ignore_units: [mg/L]
+    unit: ng/mL
+    units:
+      ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L, "1", "3"]}
+      mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l, "2"]}
+    unit_rule: prolactin_unit
+    range: [0.5, 500]

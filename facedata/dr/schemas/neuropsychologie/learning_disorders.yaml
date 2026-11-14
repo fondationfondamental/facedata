@@ -1,0 +1,38 @@
+instrument: learning_disorders
+title: Learning and developmental disorders
+tab: NEUROPSYCHOLOGIE
+section: Troubles des acquisitions et des apprentissages
+status: draft
+notes: >
+  The BP schema plus four questions. Ten learning and developmental
+  disorders, then ADHD in childhood, ADHD at present and seizures, which BP
+  does not have, and a free text on the cognitive complaints of the
+  patient.
+
+  The thirteen questions are filled on 61 visits only, most of them where
+  the conditions form says that a learning disorder is suspected (36 of
+  the 79 visits with that answer). The answers are 0, 1 and 2; the
+  dictionary gives no code. 2 is read as "not known" (81 cells,
+  missing_code), as in the checklists of the clinician (open question
+  O23).
+
+  The cognitive complaints (trbapp14) are written on 702 visits and
+  delivered as written.
+
+defaults: {type: item, range: [0, 1], missing: {"2": unknown}}
+
+variables:
+  trbapp01: {label: Dyslexia}
+  trbapp02: {label: Dysorthographia}
+  trbapp03: {label: Dyscalculia}
+  trbapp04: {label: Dysphasia}
+  trbapp05: {label: Dyspraxia}
+  trbapp06: {label: Delayed speech}
+  trbapp07: {label: Stuttering}
+  trbapp08: {label: Delayed walking}
+  trbapp09: {label: Febrile seizures in early childhood}
+  trbapp10: {label: Giftedness}
+  trbapp11: {label: ADHD in childhood}
+  trbapp12: {label: ADHD at present}
+  trbapp13: {label: Seizures}
+  cognitive_complaints: {column: trbapp14, type: text, label: "Subjective cognitive complaints, as written"}

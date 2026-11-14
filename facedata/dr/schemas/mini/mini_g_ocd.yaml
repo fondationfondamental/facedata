@@ -1,0 +1,37 @@
+instrument: mini_g_ocd
+title: "MINI, module G: obsessive-compulsive disorder"
+tab: MINI
+section: MINI G
+status: draft
+notes: >
+  Module G: obsessive-compulsive disorder over the last month.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  The conclusion (g) is yes on 3 visits; the items give it on 8.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_g01: {column: g01, label: "G1) Au cours du mois écoulé, avez-vous souvent été perturbé(e) par des pensées, des pulsions ou des images déplaisantes, inappropriées ou an"}
+  mini_g02: {column: g02, label: "G2) Avez-vous essayé, mais sans succès, de résister à certaines de ces idées, de les ignorer ou de vous en débarasser?"}
+  mini_g03: {column: g03, label: "G3) Pensez-vous que ces idées qui reviennent sans cesse sont le produit de votre propre pensée et qu’elles ne vous sont pas imposées de l’ex"}
+  mini_g04: {column: g04, label: "G4) Au cours du mois écoulé, avez-vous souvent éprouvé le besoin de faire certaines choses sans cesse, sans pouvoir vous en empêcher, comme "}
+  mini_g05: {column: g05, label: "G5) Avez-vous, à un moment donné, réalisé que ces idées envahissantes et/ou ces comportements répétitifs étaient irrationnels ou hors de pro"}
+  mini_g06: {column: g06, label: "G6) Au cours de mois écoulé, ces pensées ou ces pulsions envahissantes et/ou ces comportements répétitifs vous ont-ils (elles) gêné(e) vraim"}
+  mini_ocd_current: {column: g, label: "Ocd current: TROUBLE OBSESSIONNEL COMPULSIF"}

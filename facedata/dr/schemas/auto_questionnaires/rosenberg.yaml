@@ -1,0 +1,47 @@
+instrument: rosenberg
+title: Rosenberg self-esteem scale
+tab: AUTO-QUESTIONNAIRES
+section: ECHELLE DE ROSENBERG
+status: draft
+notes: >
+  Rosenberg self-esteem scale: ten items with four answers. Not in BP or
+  SZ. Filled at inclusion and at every follow-up visit: 947 visits.
+
+  Items: stored as points. Five items of the scale are worded negatively
+  and are reversed in the published key. Here every item rises with every
+  other one (the 45 correlations between two items are between 0.21 and
+  0.77), so the stored values are the points, already reversed: 1 is the
+  answer of low self-esteem and 4 the answer of high self-esteem, for every
+  item. No item is reversed here.
+
+  Total. The sum of the ten items (10 to 40, higher is a better
+  self-esteem). The stored total (rosenb) equals it on the 946 visits where
+  the ten items are filled. It falls when depression rises (r = -0.70 with
+  the QIDS).
+
+  The break of 2018 (open question O1). 95% and 83% of the inclusion visits of
+  2012 to 2014 and of 2015 to 2017 hold the scale, 40% to 50% in the three
+  periods since 2018. It is the same fall in about a dozen
+  self-questionnaires, in most centres, and nobody knows its reason: an
+  empty scale after 2018 is missing data, not a scale that was not asked.
+
+defaults: {type: item, range: [1, 4]}
+
+variables:
+  rosenb01: {label: "Je pense que j'ai autant de valeur que les autres"}
+  rosenb02: {label: "Je pense avoir beaucoup de qualités"}
+  rosenb03: {label: "Tout compte fait, j'ai tendance à me considérer comme un(e) raté(e)"}
+  rosenb04: {label: "Je suis aussi capable que la plupart des gens"}
+  rosenb05: {label: "Je pense que je n'ai pas grand-chose dont je pourrais être fier(e)"}
+  rosenb06: {label: "Je me vois de manière positive"}
+  rosenb07: {label: "Dans l'ensemble, je suis stisfait(e) de ce que je suis"}
+  rosenb08: {label: "Parfois j'ai presque la certitude d'être inutile"}
+  rosenb09: {label: "J'aimerais pouvoir m'estimer davantage"}
+  rosenb10: {label: "Parfois, je pense que je ne suis bon(ne) à rien"}
+  rosenberg_total_stored: {column: rosenb, label: Rosenberg score as stored, range: [10, 40], keep: false}
+
+scores:
+  rosenberg_total:
+    label: "Rosenberg self-esteem score (10 to 40)"
+    sum: [rosenb01, rosenb02, rosenb03, rosenb04, rosenb05, rosenb06, rosenb07, rosenb08, rosenb09, rosenb10]
+    compare: rosenberg_total_stored

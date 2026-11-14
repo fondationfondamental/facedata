@@ -335,12 +335,13 @@ def band_from_table(text, values, cens, flags, name, variable, age, others, norm
     return values, cens, flags
 
 
-def compute_scores(values, schema, version=None, age=None, norms=None, cens=None):
+def compute_scores(values, schema, version=None, age=None, norms=None, cens=None, keys=None):
     """Recompute scores from the items and compare them with the stored scores.
 
     age and norms (the norm tables) are needed only by scores read in a norm
     table. cens: the censoring table of the instrument; a band read in a norm
-    table writes its own column there.
+    table writes its own column there. keys: the key columns, for the few
+    custom scores that need the visit or the patient.
     """
     flags = []
     stored_differs = {}                # score -> rows where the stored score is not the recomputed one
@@ -353,7 +354,7 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             if cens is not None and (censoring != 0).any():
                 cens[name] = censoring
         elif "custom" in score:                        # a formula written as a function of custom.py
-            result = getattr(custom, score["custom"])(values)
+            result = getattr(custom, score["custom"])(values, keys)
         else:
             result = combine_items(values, score, schema)
         if "versions" in score:

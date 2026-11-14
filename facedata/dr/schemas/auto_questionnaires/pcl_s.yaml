@@ -1,0 +1,43 @@
+instrument: pcl_s
+title: PTSD Checklist (PCL-S)
+tab: AUTO-QUESTIONNAIRES
+section: EVENEMENTS DE VIE TRAUMATIQUES
+status: draft
+notes: >
+  PTSD Checklist, specific version: seventeen symptoms over the last month,
+  each 1 (not at all) to 5 (very often), about the events of the list that
+  precedes it in the form (traumatic_events.yaml). Not in BP or SZ. Filled
+  on 127 visits of 111 patients, at inclusion and at the visits of 2 and 4
+  years (25% of the inclusions of 2012 to 2014, 7% since 2024). On 64 of
+  the 127 visits no event of the list is answered yes.
+
+  Total. The sum of the seventeen items (17 to 85). The stored total
+  (ptsd_) equals it on the 127 visits. Every item rises with the others.
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  ptsd01: {label: "PCL-S item 1"}
+  ptsd02: {label: "PCL-S item 2"}
+  ptsd03: {label: "PCL-S item 3"}
+  ptsd04: {label: "PCL-S item 4"}
+  ptsd05: {label: "PCL-S item 5"}
+  ptsd06: {label: "PCL-S item 6"}
+  ptsd07: {label: "PCL-S item 7"}
+  ptsd08: {label: "PCL-S item 8"}
+  ptsd09: {label: "PCL-S item 9"}
+  ptsd10: {label: "PCL-S item 10"}
+  ptsd11: {label: "PCL-S item 11"}
+  ptsd12: {label: "PCL-S item 12"}
+  ptsd13: {label: "PCL-S item 13"}
+  ptsd14: {label: "PCL-S item 14"}
+  ptsd15: {label: "PCL-S item 15"}
+  ptsd16: {label: "PCL-S item 16"}
+  ptsd17: {label: "PCL-S item 17"}
+  ptsd_total_stored: {column: ptsd_, label: PCL-S score as stored, range: [17, 85], keep: false}
+
+scores:
+  ptsd_total:
+    label: "PCL-S total (17 to 85)"
+    sum: [ptsd01, ptsd02, ptsd03, ptsd04, ptsd05, ptsd06, ptsd07, ptsd08, ptsd09, ptsd10, ptsd11, ptsd12, ptsd13, ptsd14, ptsd15, ptsd16, ptsd17]
+    compare: ptsd_total_stored

@@ -1,0 +1,16 @@
+instrument: sick_leave_fu
+title: "Sick leave since the last visit"
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: DEPUIS LA DERNIERE VISITE
+status: draft
+notes: >
+  Sick leave since the last visit, at the follow-up visits: 763 visits. The
+  BP schema of this name, in other columns: yes or no (written Y and N),
+  the number of sick leaves and their total length, which is in days here
+  (in weeks in BP), so the length has another name, sick_leave_days_fu. The
+  number and the days are 0 after a no (asked_if).
+
+variables:
+  sick_leave_fu: {column: hooccur_arret_travail_spv, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Sick leave since the last visit"}
+  n_sick_leaves_fu: {column: nboccur_arret_travail_spv, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_fu, label: "Number of sick leaves since the last visit"}
+  sick_leave_days_fu: {column: hodur_arret_travail_spv, type: number, unit: days, range: [0, 1500], winsor: false, asked_if: sick_leave_fu, label: "Total duration of the sick leaves since the last visit, in days"}

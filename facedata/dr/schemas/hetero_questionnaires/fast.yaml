@@ -1,0 +1,87 @@
+instrument: fast
+title: "Functioning Assessment Short Test (FAST)"
+tab: HETERO-QUESTIONNAIRES
+section: Questionnaire FAST
+status: draft
+notes: >
+  24 items rated 0 (no difficulty) to 3 (severe difficulty); six domain scores
+  and a total (0 to 72, higher is worse). The stored total equals the sum of
+  the items on all 513 visits that have the 24 items, and each stored domain
+  score equals the sum of its items wherever both exist (454 to 510 visits).
+  A domain score is stored less often than its items are complete (21 to 115
+  visits per domain): the recomputed scores fill these.
+
+  Rated at the inclusion visit and at two and four years. Filled at about 90%
+  of the inclusion visits until 2017 and at about half of them since 2018
+  (open question O1 in PROGRESS.md).
+
+  Same instrument as in FACE BP.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  fast01: {label: "Prendre des responsabilités au sein de la maison"}
+  fast02: {label: "Vivre seul(e)"}
+  fast03: {label: "Faire les courses"}
+  fast04: {label: "Prendre soin de soi (aspect physique, hygiène...)"}
+  fast05: {label: "Avoir un emploi rémunéré"}
+  fast06: {label: "Terminer les tâches le plus rapidement possible"}
+  fast07: {label: "Travailler dans le champ correspondant à votre formation"}
+  fast08: {label: "Recevoir le salaire que vous méritez"}
+  fast09: {label: "Gérer correctement la somme de travail"}
+  fast10: {label: "Capacité à se concentrer devant un film, un livre.."}
+  fast11: {label: "Capacité au calcul mental"}
+  fast12: {label: "Capacité à résoudre des problèmes correctement"}
+  fast13: {label: "Capacité à se souvenir des noms récemment appris"}
+  fast14: {label: "Capacité à apprendre de nouvelles informations"}
+  fast15: {label: "Gérer votre propre argent"}
+  fast16: {label: "Dépenser de façon équilibrée"}
+  fast17: {label: "Conserver des amitiés"}
+  fast18: {label: "Participer à des activités sociales"}
+  fast19: {label: "Avoir de bonnes relations avec vos proches"}
+  fast20: {label: "Habiter avec votre famille"}
+  fast21: {label: "Avoir des relations sexuelles satisfaisantes"}
+  fast22: {label: "Être capable de défendre vos intérêts"}
+  fast23: {label: "Faire de l’exercice ou pratiquer un sport"}
+  fast24: {label: "Avoir des loisirs"}
+
+  fast_autonomy_stored: {column: fast25, label: "Autonomy as stored", range: [0, 12], keep: false}
+  fast_occupational_stored: {column: fast26, label: "Occupational functioning as stored", range: [0, 15], keep: false}
+  fast_cognitive_stored: {column: fast27, label: "Cognitive functioning as stored", range: [0, 15], keep: false}
+  fast_financial_stored: {column: fast28, label: "Financial issues as stored", range: [0, 6], keep: false}
+  fast_interpersonal_stored: {column: fast29, label: "Interpersonal relationships as stored", range: [0, 18], keep: false}
+  fast_leisure_stored: {column: fast30, label: "Leisure time as stored", range: [0, 6], keep: false}
+  fast_total_stored: {column: fast_, label: "Total as stored", range: [0, 72], keep: false}
+
+scores:
+  fast_autonomy:
+    label: "FAST autonomy (items 1 to 4)"
+    sum: [fast01, fast02, fast03, fast04]
+    compare: fast_autonomy_stored
+  fast_occupational:
+    label: "FAST occupational functioning (items 5 to 9)"
+    sum: [fast05, fast06, fast07, fast08, fast09]
+    compare: fast_occupational_stored
+  fast_cognitive:
+    label: "FAST cognitive functioning (items 10 to 14)"
+    sum: [fast10, fast11, fast12, fast13, fast14]
+    compare: fast_cognitive_stored
+  fast_financial:
+    label: "FAST financial issues (items 15 to 16)"
+    sum: [fast15, fast16]
+    compare: fast_financial_stored
+  fast_interpersonal:
+    label: "FAST interpersonal relationships (items 17 to 22)"
+    sum: [fast17, fast18, fast19, fast20, fast21, fast22]
+    compare: fast_interpersonal_stored
+  fast_leisure:
+    label: "FAST leisure time (items 23 to 24)"
+    sum: [fast23, fast24]
+    compare: fast_leisure_stored
+  fast_total:
+    label: "FAST total (24 items)"
+    sum: [fast01, fast02, fast03, fast04, fast05, fast06,
+          fast07, fast08, fast09, fast10, fast11, fast12,
+          fast13, fast14, fast15, fast16, fast17, fast18,
+          fast19, fast20, fast21, fast22, fast23, fast24]
+    compare: fast_total_stored

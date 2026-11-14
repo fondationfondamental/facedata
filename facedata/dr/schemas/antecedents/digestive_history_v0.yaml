@@ -1,0 +1,56 @@
+instrument: digestive_history_v0
+title: "Digestive history, at inclusion"
+tab: ANTECEDENTS
+section: Pathologies hépato-gastro-entérologiques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  inclusion visit: 572 visits (85% to 93% of the inclusions in every period).
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+  The kind of inflammatory bowel disease and the treatment behind a drug hepatitis are codes that the dictionary does not explain.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  inflammatory_bowel_disease_v0: {column: inflachro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease, at inclusion"}
+  inflammatory_bowel_disease_start_v0: {column: inflachro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic inflammatory bowel disease: date of onset, at inclusion"}
+  inflammatory_bowel_disease_treated_v0: {column: inflachro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease: treated, at inclusion"}
+  inflammatory_bowel_disease_controlled_v0: {column: inflachro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease: controlled, at inclusion"}
+  inflammatory_bowel_disease_type_v0: {column: inflachro_mhmodify, type: category, codes: {"1": code_1, "2": code_2}, label: "Chronic inflammatory bowel disease: type, at inclusion"}
+  cirrhosis_v0: {column: cirrhose_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis, at inclusion"}
+  cirrhosis_start_v0: {column: cirrhose_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cirrhosis: date of onset, at inclusion"}
+  cirrhosis_treated_v0: {column: cirrhose_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis: treated, at inclusion"}
+  cirrhosis_controlled_v0: {column: cirrhose_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis: controlled, at inclusion"}
+  peptic_ulcer_v0: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer, at inclusion"}
+  peptic_ulcer_start_v0: {column: ulcgasduo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Gastric or duodenal ulcer: date of onset, at inclusion"}
+  peptic_ulcer_treated_v0: {column: ulcgasduo_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer: treated, at inclusion"}
+  peptic_ulcer_controlled_v0: {column: ulcgasduo_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer: controlled, at inclusion"}
+  drug_hepatitis_v0: {column: hepmedic_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Drug-induced hepatitis, at inclusion"}
+  drug_hepatitis_start_v0: {column: hepmedic_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug-induced hepatitis: date of onset, at inclusion"}
+  drug_hepatitis_treatment_v0: {column: hepmedic_mhmodify, type: category, codes: {"2": code_2, "4": code_4}, label: "Drug-induced hepatitis: the treatment, at inclusion"}

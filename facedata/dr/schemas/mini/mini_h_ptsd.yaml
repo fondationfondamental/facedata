@@ -1,0 +1,50 @@
+instrument: mini_h_ptsd
+title: "MINI, module H: post-traumatic stress disorder"
+tab: MINI
+section: MINI H
+status: draft
+notes: >
+  Module H: post-traumatic stress disorder. The dictionary lists the seven
+  questions H4 under module B; they are read here.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  The conclusion (h) is yes on 24 visits; 19 of them meet the criteria as
+  the items give them (H1, H2, H3, three of H4, two of H5, H6), and no
+  visit meets them with a "no".
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_h01: {column: h01, label: "H1) Avez-vous déjà vécu, ou été le témoin de ou eu à faire face à un évènement extrêmement traumatique, au cours duquel des personnes sont m"}
+  mini_h02: {column: h02, label: "H2) Avez-vous réagi avec un sentiment de peur intense, d’impuissance ou d’horreur ?"}
+  mini_h03: {column: h03, label: "H3) Au cours du mois écoulé, avez-vous souvent pensé de façon pénible à cet événement"}
+  mini_h04a: {column: h04a, label: "H4 a) Avez-vous essayé de ne plus penser à cet événement ?"}
+  mini_h04b: {column: h04b, label: "b) Avez-vous évité les lieux, les gens ou les activités qui pouvaient vous le rappeler ?"}
+  mini_h04c: {column: h04c, label: "c) Aviez-vous du mal à vous souvenir exactement ce qu’il s’est passé ?"}
+  mini_h04d: {column: h04d, label: "d) Avez-vous perdu l’intérêt pour vos hobbies ou activités sociales ?"}
+  mini_h04e: {column: h04e, label: "e) Vous sentirez-vous détaché(e) de tout ou aviez-vous l’impression d’être devenu(e) un (une) étranger(e) vis-à-vis des autres ?"}
+  mini_h04f: {column: h04f, label: "f) Aviez-vous des difficultés à ressentir les choses, à éprouver des sentiments ?"}
+  mini_h04g: {column: h04g, label: "g) Aviez-vous l’impression que votre vie allait se terminer ou que vous alliez mourir plus tôt que prévu?"}
+  mini_h05a: {column: h05a, label: "H5 a) Avez-vous eu des difficultés à dormir ?"}
+  mini_h05b: {column: h05b, label: "b) Etiez-vous particulièrement irritable ou avez-vous eu des accès de colère ?"}
+  mini_h05c: {column: h05c, label: "c) Aviez-vous des difficultés à vous concentrer ?"}
+  mini_h05d: {column: h05d, label: "d) Etiez-vous nerveux(se) ou constamment sur vos gardes ?"}
+  mini_h05e: {column: h05e, label: "e) Un rien vous faisait-il sursauter ?"}
+  mini_h06: {column: h06, label: "H6) Au cours du mois écoulé, ces problèmes vous ont-ils causé une certaine souffrance ou vous ont-ils gênés dans votre travail/à l’école, da"}
+  mini_ptsd_current: {column: h, label: "Ptsd current: ETAT DE STRESS POST-TRAUMATIQUE ACTUEL"}
