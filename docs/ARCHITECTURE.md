@@ -53,7 +53,10 @@ facedata/
   report.py       write_report()
   thesaurus.py    read_thesaurus(), draft_schema(): a helper, never used by load()
   custom.py       the rare named functions a schema refers to
+  common.py       catalogue(), instruments_of(), baseline(): the cohorts together (never used by load())
   medications.csv the table of medication names (molecule, ATC code, group), shared by the cohorts
+  shared_names.yaml        the variables that two cohorts cannot name or fill alike, each with the reason
+  common_instruments.yaml  the instruments that two cohorts or more share: which stack, which variables, what differs
   bp/
     __init__.py   load(), report(), coverage()
     ignored.yaml  columns deliberately left out, each with a reason
@@ -89,6 +92,17 @@ bp.load(path, winsorise=False)                               # leave the tails o
 
 `result` is a named tuple of six DataFrames.
 
+Across cohorts:
+
+```python
+from facedata import bp, sz, common
+
+table = common.catalogue()                                   # the instruments that two cohorts or more share
+bp.load(path, instruments=common.instruments_of("bp", table), winsorise=False)
+first, source = common.baseline(result)                      # one row per patient: inclusion, completed by screening
+first, source = common.baseline(result, max_days=90)         # the screening visit only when it is at most 90 days away
+```
+
 ## 4. What `load()` returns
 
 ### `data`: one row per patient visit
@@ -122,6 +136,41 @@ numbers, and 209 are SZ numbers). Never join two cohorts on
 foundation: it is unique across the cohorts, and it stays the same from one
 extraction to the next, while `usubjid` can change for a patient registered
 in two centres.
+
+**The common instruments.** `facedata/common_instruments.yaml` lists the
+instruments that two cohorts or more deliver, one entry each: the name of its
+schema in each cohort (the errands test is in `executive_functions` in FACE
+ASP), a verdict `stack` (`yes`: the same form, coding and scoring; `with
+care`: read the note first; `no`: the same name or subject, not the same
+thing), the variables to `use` across cohorts and a `note` on what differs.
+It is written by hand, after the schemas were compared variable by variable
+and the values compared on the extractions: the answers of each item, the
+range of each score, the direction of each item against its score, the sign
+of each z-score, the unit of each measurement. `common.catalogue()` reads it
+as a table, `common.instruments_of(cohort, table)` gives the names to load,
+and `tests/test_common.py` fails when two cohorts share an instrument that
+the file does not list, when it names a schema that does not exist, or when a
+variable to use is not delivered by two cohorts of the entry. Across cohorts
+the tables are loaded with `winsorise=False`: the winsor limits are computed
+inside a cohort, so the same value could be clipped in one cohort and not in
+another.
+
+**One baseline row per patient.** The screening visit and the inclusion visit
+are two rows of `data`, and an instrument may be filled at the one or at the
+other (the MDQ of FACE BP at screening only; the MINI of FACE DR at
+screening). `common.baseline(result)` returns one row per patient, named
+`baseline`: each instrument is taken from the inclusion visit, and when the
+inclusion visit holds nothing of an instrument, the instrument is taken whole
+from the screening visit, so that its items and its scores always come from
+the same visit. The instrument of a column is read in `qc`; a censoring
+column goes with its variable; the first columns (date, centre, age) are
+those of the inclusion visit, and `screening_date` and `days_from_screening`
+are added. A second table gives, per patient and instrument, the visit the
+values come from. The two visits can be far apart (a median of 70 days in
+FACE BP, 34 in SZ, 10 in DR, 25 in ASP, and more than a year for 6%, 1%, 1%
+and 10% of the patients who have both): `max_days` leaves out a screening
+visit that is further than that from the inclusion. The flags keep the name
+of the real visit.
 
 Two kinds of companion column travel with the variables, because a model
 needs them:
@@ -657,6 +706,8 @@ reason, and a line that is no longer true makes the test fail.
   test that every schema passes `check_schema`.
 - A real-data test runs only when `data/bp/*.tsv` is present, and checks
   aggregates only.
+- `tests/test_common.py` checks the baseline row on a hand-written table and
+  the catalogue of the common instruments against the schemas.
 
 An instrument is done when:
 

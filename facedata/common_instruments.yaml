@@ -1,0 +1,1207 @@
+# The instruments that two FACE cohorts or more deliver, for work across cohorts.
+#
+# One entry per instrument. Written by hand after the schemas of the cohorts were
+# compared variable by variable and their values compared on the extractions
+# (answers of each item, spread of each score, direction of each item, sign of
+# each z-score, unit of each measurement). facedata.common.catalogue() reads it,
+# and tests/test_common.py checks it against the schemas.
+#
+#   title    what the instrument is
+#   domain   the chapter of the catalogue
+#   schemas  the name of its schema in each cohort that has it
+#   stack    yes        the same form, coding and scoring: put the cohorts under one another
+#            with care  the cohorts can be put together after reading the note
+#            no         the same name or the same subject, not the same thing
+#   use      the variables to analyse across cohorts (each is delivered by two cohorts at least)
+#   note     what differs between the cohorts and what to know first
+#
+# The details of each cohort are in the notes of its schema and in
+# facedata/<cohort>/differences.yaml.
+
+# ---------------------------------------------------------------- Patient and visits
+
+identite:
+  title: Patient identity
+  domain: Patient and visits
+  schemas: {bp: identite, sz: identite, dr: identite, asp: identite}
+  stack: "yes"
+  use: [sex, birth_date, age_at_inclusion, diagnosis, fondacode]
+  note: >
+    In the table patients. diagnosis holds the diagnosis of each cohort, so its
+    labels are not the same from one cohort to the next (bipolar type; kind of
+    schizophrenia; major depressive disorder; autism confirmed or not confirmed).
+    The autism cohort has children and a group that was assessed and not
+    diagnosed. fondacode is the patient code across the cohorts.
+
+visit_record:
+  title: Visit record
+  domain: Patient and visits
+  schemas: {bp: visit_record, sz: visit_record, dr: visit_record, asp: visit_record}
+  stack: "yes"
+  use: [entry_date]
+  note: The date the visit was entered. The date of the visit itself is the column visit_date of every row.
+
+inclusion:
+  title: Inclusion
+  domain: Patient and visits
+  schemas: {bp: inclusion, sz: inclusion}
+  stack: with care
+  use: [opposition_form]
+  note: >
+    One question in common (the form of non-opposition), whose two codes are not
+    documented. In the table patients.
+
+provenance:
+  title: How the patient came to the expert centre
+  domain: Patient and visits
+  schemas: {bp: provenance, sz: provenance, dr: provenance}
+  stack: with care
+  use: [referred_by, catchment, heard_of_centre_from, visit_purpose]
+  note: >
+    In the table patients. referred_by is in the three cohorts. The catchment
+    area, how the patient heard of the centre and the purpose of the visit are
+    in BP and SZ; in DR the purpose is exported as a code that the dictionary
+    does not explain (visit_purpose_code), which cannot be compared.
+
+fin_de_suivi:
+  title: End of follow-up
+  domain: Patient and visits
+  schemas: {bp: fin_de_suivi, sz: fin_de_suivi}
+  stack: with care
+  use: [followup_end_reason, death_date]
+  note: >
+    In the table patients. Filled for the few patients whose follow-up was
+    closed; an empty cell does not mean that the patient is still followed.
+
+# ---------------------------------------------------------------- Scales rated by the clinician
+
+cgi_egf:
+  title: Clinical Global Impression (CGI) and Global Assessment of Functioning (GAF)
+  domain: Scales rated by the clinician
+  schemas: {bp: cgi_egf, sz: cgi_egf, dr: cgi_egf, asp: cgi_egf}
+  stack: "yes"
+  use: [cgi_severity, gaf]
+  note: >
+    The CGI severity (1 to 7) and the GAF (1 to 100) are in the four cohorts.
+    The CGI improvement, therapeutic effect, side effects and efficacy index
+    are in BP and SZ only.
+
+madrs:
+  title: Montgomery-Asberg Depression Rating Scale (MADRS)
+  domain: Scales rated by the clinician
+  schemas: {bp: madrs, dr: madrs}
+  stack: "yes"
+  use: [madrs_total]
+  note: >
+    Ten items of 0 to 6 and their sum, the same in both cohorts. In DR the
+    scale is rated at the screening visit and again at the inclusion visit;
+    the baseline row holds the inclusion rating.
+
+ymrs:
+  title: Young Mania Rating Scale (YMRS)
+  domain: Scales rated by the clinician
+  schemas: {bp: ymrs, sz: ymrs, dr: ymrs}
+  stack: "yes"
+  use: [ymrs_total]
+  note: >
+    Eleven items; items 5, 6, 8 and 9 count double (0, 2, 4, 6, 8). The SZ form
+    stores items 5, 8 and 9 as levels (0 to 4) and its stored total counts them
+    once: the package delivers the three items in points and the published
+    total, so that the three cohorts are on one scale. A SZ total computed
+    before this correction is lower on the visits where one of these items is
+    not 0. In DR it is on about nine inclusions in ten until 2016 and about one
+    in two since 2018.
+
+fast:
+  title: Functioning Assessment Short Test (FAST)
+  domain: Scales rated by the clinician
+  schemas: {bp: fast, dr: fast}
+  stack: "yes"
+  use: [fast_total, fast_autonomy, fast_occupational, fast_cognitive, fast_financial, fast_interpersonal, fast_leisure]
+  note: >
+    Twenty-four items of 0 to 3, six domains and a total, recomputed from the
+    items in both cohorts. Higher is worse. In DR it is on about nine inclusions
+    in ten until 2016 and about one in two since 2018.
+
+etat_depressif:
+  title: Current major depressive episode, DSM-IV symptom checklist
+  domain: Scales rated by the clinician
+  schemas: {bp: etat_depressif, dr: etat_depressif}
+  stack: with care
+  use: [etatd_total]
+  note: >
+    Nine symptoms and their count. The details of a symptom (weight gain or
+    loss, insomnia or hypersomnia, agitation or retardation) are not recorded
+    the same way in the two cohorts: use the nine symptoms and the count.
+
+etat_maniaque:
+  title: Current manic episode, DSM-IV symptom checklist
+  domain: Scales rated by the clinician
+  schemas: {bp: etat_maniaque, dr: etat_maniaque}
+  stack: "yes"
+  use: [etatm_total]
+  note: Nine symptoms and their count, the same in both cohorts.
+
+# ---------------------------------------------------------------- Questionnaires filled by the patient
+
+ctq:
+  title: Childhood Trauma Questionnaire, short form (CTQ, 28 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: ctq, sz: ctq, dr: ctq, asp: ctq}
+  stack: "yes"
+  use: [ctq_total, ctq_emotional_abuse, ctq_physical_abuse, ctq_sexual_abuse, ctq_emotional_neglect, ctq_physical_neglect]
+  note: >
+    The 28 items are delivered on one coding (1 to 5, as asked) and the five
+    sub-scores and the total are recomputed from them in the four cohorts. In DR
+    seven items are stored reversed and are read back; in DR and ASP several
+    stored sub-scores are wrong and are not delivered. The severity classes are
+    in BP and SZ only. Filled by adults; in ASP from 2020.
+
+psqi:
+  title: Pittsburgh Sleep Quality Index (PSQI)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: psqi, sz: psqi, dr: psqi, asp: psqi}
+  stack: "yes"
+  use: [psqi_total, psqi06, psqi_latency_component, psqi_duration, psqi_efficiency, psqi_disturbances, psqi07, psqi_dysfunction]
+  note: >
+    Seven components of 0 to 3 and their sum, on the same rules in the four
+    cohorts; components 1 and 6 are the answers to questions 6 and 7 (psqi06,
+    psqi07). In ASP three stored components are wrong and are recomputed. One
+    rule is that of the database and not of the published sheet: exactly 7 hours
+    of sleep count 0 where the sheet counts 1. It is the same in the four
+    cohorts, so they compare; a total is one point lower than the published one
+    for these patients. In ASP the PSQI belongs to the old set of forms (2013 to
+    2021, adults). In DR it is on about nine inclusions in ten until 2016 and
+    about one in two since 2018.
+
+mars:
+  title: Medication Adherence Rating Scale (MARS, 10 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: mars, sz: mars, dr: mars, asp: mars}
+  stack: "yes"
+  use: [mars_total]
+  note: >
+    Ten yes/no items and a total of 0 to 10 (higher is better adherence). DR and
+    ASP store the answers the other way round; they are read on the BP coding
+    and the total is recomputed. In ASP it belongs to the new set of forms (from
+    2021, adults). In DR it is on about nine inclusions in ten until 2016 and
+    about one in two since 2018.
+
+eq5d:
+  title: EQ-5D-5L, health-related quality of life
+  domain: Questionnaires filled by the patient
+  schemas: {bp: eq5d, sz: eq5d, dr: eq5d, asp: eq5d}
+  stack: "yes"
+  use: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205, eq5d_vas, eq5d_index]
+  note: >
+    Five dimensions of 1 to 5 and the visual scale of 0 to 100, in the four
+    cohorts. The utility index is the one the database stores, in BP, SZ and
+    ASP: its value set is not documented, and the DR extraction has none.
+    Compare the dimensions and the visual scale; use the index with care.
+
+fagerstrom:
+  title: Fagerström Test for Nicotine Dependence (6 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: fagerstrom, sz: fagerstrom, dr: fagerstrom, asp: fagerstrom}
+  stack: "yes"
+  use: [fagerstrom_total]
+  note: Six items and a total of 0 to 10, recomputed from the items. Filled by smokers only.
+
+stai_ya:
+  title: State-Trait Anxiety Inventory, form Y-A (state anxiety, 20 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: stai_ya, dr: stai_ya, asp: stai_ya}
+  stack: with care
+  use: [staya_total]
+  note: >
+    Twenty items of 1 to 4 and a total of 20 to 80. DR stores the answers on
+    three codings (0 to 3, 1 to 4, 2 to 5) and ASP on 0 to 3: the coding of a
+    visit is read from its answers, or from the centre and the year when the
+    answers do not tell, and the items are delivered on the BP coding. The total
+    does not depend on the coding. Filled by adults; in ASP it belongs to the
+    new set of forms (from 2019). In DR it is on about nine inclusions in ten
+    until 2016 and about one in two since 2018.
+
+epworth:
+  title: Epworth Sleepiness Scale (ESS, 8 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: epworth, dr: epworth, asp: epworth}
+  stack: "yes"
+  use: [epworth_total]
+  note: >
+    Eight situations of 0 to 3 and a total of 0 to 24, the same in the three
+    cohorts. Filled by adults; in ASP from 2021. In DR it is on about nine
+    inclusions in ten until 2016 and about one in two since 2018.
+
+prisem:
+  title: PRISE-M, side effects of the treatment (32 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: prisem, dr: prisem, asp: prisem}
+  stack: "yes"
+  use: [prisem_total]
+  note: >
+    Thirty-two items and their sum, the same in the three cohorts; the total
+    needs 28 items at least. In ASP from 2021 (adults). In DR it is on about
+    nine inclusions in ten until 2016 and about one in two since 2018.
+
+asrs:
+  title: Adult ADHD Self-Report Scale (ASRS v1.1, 18 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: asrs, asp: asrs}
+  stack: "yes"
+  use: [asrs_total]
+  note: >
+    Eighteen items of 0 to 4 and their sum. Added in 2021 in BP and in 2019 in
+    ASP (adults). The screening result of the first six items is delivered in BP
+    only.
+
+altman:
+  title: Altman Self-Rating Mania Scale (ASRM, 5 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: altman, dr: altman}
+  stack: "yes"
+  use: [altman_total]
+  note: >
+    Five items of 0 to 4 and their sum. In BP it is also filled at the screening
+    visit. In DR it is on about nine inclusions in ten until 2016 and about one
+    in two since 2018.
+
+qids_sr16:
+  title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: qids_sr16, dr: qids_sr16}
+  stack: "yes"
+  use: [qids_total]
+  note: >
+    Sixteen items and a total of 0 to 27, computed by the same function in both
+    cohorts. Filled at the screening visit and at the inclusion visit in both.
+
+mdq:
+  title: Mood Disorder Questionnaire (MDQ)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: mdq, dr: mdq}
+  stack: with care
+  use: [mdq_total]
+  note: >
+    Thirteen symptoms and their count. In BP it is filled once, at the screening
+    visit, so it is in the baseline row and not in the inclusion row, for the
+    patients who had a screening visit. In DR it is filled at the inclusion
+    visit and at the yearly visits.
+
+bis10:
+  title: Barratt Impulsiveness Scale, BIS-10 (34 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: bis10, dr: bis10}
+  stack: with care
+  use: [bis10_total, bis10_motor, bis10_attention, bis10_planning]
+  note: >
+    The same key in both cohorts; in DR eleven items are stored reversed and are
+    read back. The key of the French BIS-10 could not be checked against its
+    publication (an open question of BP). BP used the BIS-10 until 2022 and the
+    BIS-12 afterwards, which is another instrument (bis12). In DR it is on about
+    nine inclusions in ten until 2016 and about one in two since 2018.
+
+csm:
+  title: Composite Scale of Morningness (CSM, 13 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: csm, dr: csm}
+  stack: "yes"
+  use: [csm_total]
+  note: >
+    Thirteen items and a total of 13 to 55, the same in both cohorts. BP fills
+    it once, at the inclusion visit. In DR it is on about nine inclusions in ten
+    until 2016 and about one in two since 2018.
+
+mathys:
+  title: Multidimensional Assessment of Thymic States (MAThyS, 20 items)
+  domain: Questionnaires filled by the patient
+  schemas: {bp: mathys, dr: mathys}
+  stack: with care
+  use: [mathys_total, mathys_emotion, mathys_motivation, mathys_perception, mathys_interaction, mathys_cognition]
+  note: >
+    Twenty visual scales of 0 to 10, five sub-scores and a total, recomputed
+    from the items with the same key in both cohorts. The grouping of the items
+    is that of the database, and one item (17) goes against the others in BP: an
+    open question of BP, which applies to both cohorts alike. In DR it is on
+    about nine inclusions in ten until 2016 and about one in two since 2018.
+
+mathys_emotions:
+  title: MAThyS, how often seven emotions were felt
+  domain: Questionnaires filled by the patient
+  schemas: {bp: mathys_emotions, dr: mathys_emotions}
+  stack: "yes"
+  use: [mathys21, mathys22, mathys23, mathys24, mathys25, mathys26, mathys27]
+  note: >
+    Seven questions, the same in both cohorts. No score. In DR it is on about
+    nine inclusions in ten until 2016 and about one in two since 2018.
+
+physical_activity:
+  title: Physical activity over the last seven days
+  domain: Questionnaires filled by the patient
+  schemas: {sz: physical_activity, dr: physical_activity}
+  stack: with care
+  use: [vigorous_days, moderate_days, walking_days]
+  note: >
+    The same fourteen questions in both cohorts (days, hours and minutes of each
+    kind of activity over the last seven days). The numbers of days compare. The
+    hours and the minutes are typed in several ways and are delivered as typed,
+    and a sitting time above 24 hours is not delivered in DR: no total is
+    computed, and the durations need a rule of your own.
+
+wurs:
+  title: Wender Utah Rating Scale
+  domain: Questionnaires filled by the patient
+  schemas: {bp: wurs25, sz: wurs}
+  stack: "no"
+  note: >
+    BP has two forms, the 61-item one until 2021 and the 25-item one after, in
+    two instruments (wurs61, wurs25). SZ reads the same 25 columns as one
+    instrument whatever the year, so a SZ column mixes the two forms, and its
+    names (wurs_NN) are not those of BP. Do not stack until the SZ forms are
+    told apart (an open question of SZ).
+
+# ---------------------------------------------------------------- Neuropsychology
+
+neuropsy_conditions:
+  title: Conditions of the neuropsychological assessment
+  domain: Neuropsychology
+  schemas: {bp: neuropsy_conditions, sz: neuropsy_conditions, dr: neuropsy_conditions, asp: puberty_and_handedness}
+  stack: with care
+  use: [neuropsy_age, education_years, handedness, neuropsy_mood_rating_delay]
+  note: >
+    The age at the testing and the years of education are in BP, SZ and DR; the
+    handedness is in BP, DR and ASP (not in SZ). In SZ the form was filled from
+    2010 to 2016 only, so the age at the testing and the years of education are
+    missing afterwards. The other questions of the form are not the same from
+    one cohort to the next.
+
+tmt:
+  title: Trail Making Test, parts A and B
+  domain: Neuropsychology
+  schemas: {bp: tmt, sz: tmt, dr: tmt}
+  stack: with care
+  use: [tmt_a_time, tmt_b_time, tmt_ba_time, tmt_a_errors, tmt_b_errors, tmt_a_time_z, tmt_b_time_z]
+  note: >
+    The times and the errors stack as they are. The z-scores follow one sign in
+    the three cohorts once delivered (a higher z is a better performance): the
+    centres did not all write them with the same sign, and the package turns the
+    ones it can tell; a visit flagged sign_doubt is left as written. The
+    z-scores come from the norm tables of the centres. The percentile bands of
+    the errors need the years of education, which SZ records until 2015 only.
+
+verbal_fluency:
+  title: Verbal fluency, letter P and animals
+  domain: Neuropsychology
+  schemas: {bp: verbal_fluency, sz: verbal_fluency, dr: verbal_fluency}
+  stack: with care
+  use: [fluency_p_words, fluency_animals_words, fluency_p_z, fluency_animals_z]
+  note: >
+    The number of words, the z-score and the percentile band of each task are in
+    the three cohorts. The errors are in BP and SZ. DR has two forms of the test
+    and no code that names them: the form with the letter P and animals is told
+    from the data, and the second form (another letter, fruits) is another
+    instrument.
+
+cvlt:
+  title: California Verbal Learning Test (CVLT)
+  domain: Neuropsychology
+  schemas: {bp: cvlt, sz: cvlt}
+  stack: with care
+  use: [cvlt_total_1_5, cvlt_short_free, cvlt_long_free, cvlt_long_cued, cvlt_hits]
+  note: >
+    The raw scores stack. The z-score of trials 1 to 5 of SZ is doubtful on the
+    visits of 2022 to 2025 (flag period_doubt): use the raw total there.
+
+errands_test:
+  title: Errands test (Test des commissions)
+  domain: Neuropsychology
+  schemas: {bp: errands_test, sz: errands_test, asp: executive_functions}
+  stack: with care
+  use: [errands_errors, errands_detours, errands_late_trips, errands_logic_errors]
+  note: >
+    The four counts of errors and their sum are in the three cohorts (from 2017
+    or 2018; in BP on inclusions from 2021). The time, the z-scores and the
+    bands are in BP and SZ, and almost only SZ fills the z-scores. In ASP the
+    test is one of several in the schema executive_functions.
+
+wais3_matrices:
+  title: WAIS-III matrix reasoning
+  domain: Neuropsychology
+  schemas: {bp: wais3_matrices, sz: wais3_matrices}
+  stack: "yes"
+  use: [wais3_mat_total, wais3_mat_scaled, wais3_mat_z]
+  note: >
+    The 26 items, the total, the scaled score and the z-score, the same in both
+    cohorts. Visits tested with the third edition only (until 2015 or 2016); a
+    few SZ visits labelled WAIS-III were given the WAIS-IV.
+
+wais3_memoire_chiffres:
+  title: WAIS-III digit span
+  domain: Neuropsychology
+  schemas: {bp: wais3_memoire_chiffres, sz: wais3_memoire_chiffres}
+  stack: "yes"
+  use: [wais3_ds_total, wais3_ds_scaled, wais3_ds_z, wais3_ds_forward_span, wais3_ds_backward_span]
+  note: The summary scores are in both cohorts; the items are in BP only.
+
+wais3_code_symboles_ivt:
+  title: WAIS-III coding
+  domain: Neuropsychology
+  schemas: {bp: wais3_code_symboles_ivt, sz: wais3_code_symboles_ivt}
+  stack: "yes"
+  use: [wais3_code_raw, wais3_code_scaled, wais3_code_z]
+  note: The coding subtest is in both cohorts; the symbol search and the processing speed index of the third edition are in BP only.
+
+wais4_matrices:
+  title: WAIS-IV matrix reasoning
+  domain: Neuropsychology
+  schemas: {bp: wais4_matrices, sz: wais4_matrices, asp: wais4_matrices}
+  stack: "yes"
+  use: [wais4_mat_total, wais4_mat_scaled, wais4_mat_z]
+  note: >
+    The total, the scaled score and the z-score are in the three cohorts. In
+    SZ items 25 and 26 are lost by the export, so its total is the stored one.
+
+wais4_similitudes:
+  title: WAIS-IV similarities
+  domain: Neuropsychology
+  schemas: {bp: wais4_similitudes, sz: wais4_similitudes, dr: wais4_similitudes, asp: wais4_similitudes}
+  stack: "yes"
+  use: [wais4_simil_total, wais4_simil_scaled, wais4_simil_z]
+  note: >
+    The total, the scaled score and the z-score are in the four cohorts. The
+    items are recorded in BP, SZ and ASP, not in DR.
+
+wais4_memoire_chiffres:
+  title: WAIS-IV digit span
+  domain: Neuropsychology
+  schemas: {bp: wais4_memoire_chiffres, sz: wais4_memoire_chiffres, dr: wais4_memoire_chiffres, asp: wais4_memoire_chiffres}
+  stack: "yes"
+  use: [wais4_ds_total, wais4_ds_scaled, wais4_ds_z, wais4_ds_forward_span, wais4_ds_backward_span, wais4_ds_sequencing_span]
+  note: >
+    The total, the scaled score and the z-score are in the four cohorts; the
+    three spans are in BP, SZ and ASP. In BP the columns of the extraction are
+    shifted and are read back in their place.
+
+wais4_code_symboles_ivt:
+  title: WAIS-IV coding, symbol search and processing speed index
+  domain: Neuropsychology
+  schemas: {bp: wais4_code_symboles_ivt, sz: wais4_code_symboles_ivt, dr: wais4_code_symboles_ivt, asp: wais4_code_symboles_ivt}
+  stack: "yes"
+  use: [wais4_code_raw, wais4_code_scaled, wais4_code_z, wais4_symbol_raw, wais4_symbol_scaled, wais4_ivt_index]
+  note: >
+    The coding subtest is in the four cohorts; the symbol search is in BP, DR
+    and ASP. The raw score of the coding is delivered as stored: the centres do
+    not all take the errors off. The processing speed index of this form is
+    wais4_ivt_index in BP, SZ and DR and wais4_ivt_index_np in ASP, where the
+    shared name holds the copy of the medical evaluation (see wais4_indices).
+
+wais4_arithmetique:
+  title: WAIS-IV arithmetic
+  domain: Neuropsychology
+  schemas: {sz: wais4_arithmetique, dr: wais4_arithmetique, asp: wais4_arithmetique}
+  stack: "yes"
+  use: [wais4_arith_total, wais4_arith_scaled, wais4_arith_z]
+  note: The total, the scaled score and the z-score are in the three cohorts; the items in SZ and ASP.
+
+wais4_vocabulaire:
+  title: WAIS-IV vocabulary
+  domain: Neuropsychology
+  schemas: {bp: wais4_vocabulaire, asp: wais4_vocabulaire}
+  stack: "yes"
+  use: [wais4_vocab_total, wais4_vocab_scaled, wais4_vocab_z]
+  note: >
+    The 30 items, the total, the scaled score and the z-score, the same in both
+    cohorts. In BP the subtest was given from 2011 to 2021, then replaced by the
+    similarities.
+
+wais4_information:
+  title: WAIS-IV information
+  domain: Neuropsychology
+  schemas: {sz: wais4_information, asp: wais4_information}
+  stack: "yes"
+  use: [wais4_info_total, wais4_info_scaled, wais4_info_z]
+  note: The items, the total, the scaled score and the z-score, the same in both cohorts.
+
+wais4_complement_images:
+  title: WAIS-IV picture completion
+  domain: Neuropsychology
+  schemas: {sz: wais4_complement_images, asp: wais4_complement_images}
+  stack: with care
+  use: [wais4_pc_total, wais4_pc_scaled]
+  note: The same schema, but ASP holds the subtest on a handful of visits only.
+
+wais4_efficience:
+  title: WAIS-IV indices of the neuropsychology form
+  domain: Neuropsychology
+  schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_efficience}
+  stack: with care
+  use: [wais4_imt_sum_scaled, wais4_imt_percentile]
+  note: >
+    The working memory index is in the three cohorts, and the three other
+    indices and the full-scale IQ in SZ and ASP. In ASP the indices of this
+    form are named with the ending _np (wais4_imt_index_np ...), because the
+    shared names hold the copy of the medical evaluation: rename them before
+    stacking, or use wais4_indices. In SZ the stored working memory index and
+    full-scale IQ are corrected.
+
+wais4_indices:
+  title: WAIS-IV indices and full-scale IQ under the shared names
+  domain: Neuropsychology
+  schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_indices}
+  stack: with care
+  use: [wais4_icv_index, wais4_irp_index, wais4_imt_index, wais4_qit]
+  note: >
+    In SZ (four indices and the IQ) and DR (working memory index) the values
+    come from the neuropsychology form. In ASP the shared names hold the values
+    that the clinician copied in the medical evaluation: they cover about five
+    times more visits than the neuropsychology form and equal it on 83% to 89%
+    of the visits that have both (72% for the IQ). The processing speed index
+    (wais4_ivt_index) follows the same rule and is also in BP.
+
+barona:
+  title: Premorbid IQ expected from occupation and education (Barona)
+  domain: Neuropsychology
+  schemas: {sz: barona, asp: barona}
+  stack: with care
+  use: [barona_expected_qit, barona_qit_difference, barona_occupation, barona_education]
+  note: >
+    The expected full-scale IQ and its difference with the measured one are in
+    both cohorts; the expected verbal and performance IQ in SZ only. In SZ the
+    occupation is not reliable (it follows the diploma on 72% of the visits) and
+    the expected IQs keep their value with the flag check_failed: read the flags
+    before comparing. One code of each list is not documented in ASP.
+
+lis:
+  title: Attribution of intentions in six film clips (LIS)
+  domain: Neuropsychology
+  schemas: {sz: lis, asp: social_cognition}
+  stack: with care
+  use: [lis_total]
+  note: >
+    The total is in both cohorts (a distance to reference ratings: lower is
+    better); the answers to each clip are in SZ only. Added in 2018 in ASP.
+
+learning_disorders:
+  title: History of learning and developmental disorders
+  domain: Neuropsychology
+  schemas: {bp: learning_disorders, dr: learning_disorders, asp: learning_disorders}
+  stack: with care
+  use: [trbapp01, trbapp02, trbapp03, trbapp04, trbapp05, trbapp06, trbapp07, trbapp08, trbapp09, trbapp10]
+  note: >
+    Ten yes/no questions under the same names. DR fills the form on a few dozen
+    visits only. In ASP 'not known' is a code read as missing.
+
+# ---------------------------------------------------------------- Diagnosis, comorbidities and substances
+
+anxiety_v0:
+  title: Anxiety disorders at inclusion
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: anxiety_v0, sz: anxiety_v0}
+  stack: with care
+  use: [anxiety_disorder_v0, agoraphobia_v0, social_phobia_v0, specific_phobia_v0, ocd_v0, ptsd_v0, gad_v0]
+  note: >
+    The diagnoses and "in the last month" are under the same names. The SZ form
+    is another one: each disorder comes after a screening question, there is no
+    age at onset, and the box of the panic disorder with agoraphobia is lost.
+    DR assesses the same disorders with the MINI at the screening visit (other
+    variables, not stacked); ASP has its own form.
+
+anxiety_fu:
+  title: Anxiety disorders since the last visit
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: anxiety_fu, sz: anxiety_fu}
+  stack: with care
+  use: [anxiety_disorder_fu]
+  note: The SZ follow-up form holds the first question only (any anxiety disorder since the last visit).
+
+substance_v0:
+  title: Substance use disorders at inclusion
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: substance_v0, sz: substance_v0}
+  stack: with care
+  use: [alcohol_disorder_v0, cannabis_disorder_v0, sedative_disorder_v0, opiate_disorder_v0, cocaine_disorder_v0]
+  note: >
+    The disorder, 'in the last month' and the age at onset of each substance are
+    under the same names. In SZ the first question (any substance use disorder)
+    is 'not known' on most inclusions and cannot be used; the boxes of each
+    substance are complete from 2015. SZ has no type of disorder (abuse or
+    dependence) and no duration, and six substances. DR uses the MINI and ASP
+    its own form (other variables, not stacked).
+
+substance_fu:
+  title: Substance use disorders since the last visit
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: substance_fu, sz: substance_fu}
+  stack: with care
+  use: [substance_disorder_fu, alcohol_disorder_fu, cannabis_disorder_fu]
+  note: As at inclusion; SZ has no type of disorder and no duration.
+
+eating_disorder_v0:
+  title: Eating disorders at inclusion
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: eating_disorder_v0, sz: eating_disorder_v0}
+  stack: "yes"
+  use: [eating_disorder_v0, eating_disorder_type_v0, eating_disorder_last_month_v0, eating_disorder_onset_age_v0]
+  note: Four questions, the same in both cohorts.
+
+tobacco:
+  title: Tobacco
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: tobacco, sz: tobacco, dr: tobacco, asp: tobacco}
+  stack: "yes"
+  use: [tobacco_status, pack_years, smoking_start_age, smoking_stop_age]
+  note: >
+    The status (non-smoker, smoker, ex-smoker), the pack-years and the two ages
+    are in the four cohorts. ASP records tobacco from 2020, and its pack-years
+    are doubtful for patients this young. SZ asks five more questions.
+
+alcohol_use:
+  title: Alcohol, age at the first use
+  domain: Diagnosis, comorbidities and substances
+  schemas: {sz: alcohol_use, asp: substance_use}
+  stack: with care
+  use: [alcohol_first_age]
+  note: One variable in common. The other questions on alcohol are not the same in the two cohorts.
+
+cannabis_use:
+  title: Cannabis, age at the first use
+  domain: Diagnosis, comorbidities and substances
+  schemas: {sz: cannabis_use, asp: substance_use}
+  stack: with care
+  use: [cannabis_first_age]
+  note: One variable in common. The other questions on cannabis are not the same in the two cohorts.
+
+drug_use:
+  title: Cocaine, age at the first use
+  domain: Diagnosis, comorbidities and substances
+  schemas: {sz: drug_use, asp: substance_use}
+  stack: with care
+  use: [cocaine_first_age]
+  note: One variable in common. The other questions on drugs are not the same in the two cohorts.
+
+first_episode_age:
+  title: Age at the first episode of the disorder
+  domain: Diagnosis, comorbidities and substances
+  schemas: {sz: psychosis_course, dr: mood_history_v0}
+  stack: with care
+  use: [first_episode_age]
+  note: >
+    The same name for the first episode of the disorder of each cohort: the
+    first psychotic episode in SZ, the first depressive episode in DR. BP holds
+    the age at the first mood episode under its own names (dsm4_premier_episode,
+    dsm5_premier_episode).
+
+# ---------------------------------------------------------------- Suicide
+
+isf_lifetime:
+  title: Suicidal thoughts and acts over the whole life (inclusion form)
+  domain: Suicide
+  schemas: {bp: isf_lifetime, sz: isf_lifetime, dr: isf_lifetime}
+  stack: "yes"
+  use: [isf01_lifetime, isf02_lifetime, isf03_lifetime, isf04_lifetime, isf05_lifetime]
+  note: >
+    Five yes/no questions and when (last week, two weeks to a year, over a
+    year), the same in the three cohorts. In DR part of the centres fill only
+    the Columbia scale from 2018.
+
+isf_since_visit:
+  title: Suicidal thoughts and acts since the last visit (follow-up form)
+  domain: Suicide
+  schemas: {bp: isf_since_visit, sz: isf_since_visit, dr: isf_since_visit}
+  stack: with care
+  use: [isf01_since_visit, isf02_since_visit, isf03_since_visit, isf04_since_visit, isf05_since_visit]
+  note: >
+    The five questions are the same. 'When' does not use the same list in the
+    three cohorts. BP flags the visits of 2022 and 2023, where the share of
+    attempts since the last visit rises, and DR flags the answers whose period
+    is not certain (period_doubt).
+
+suicide_attempts:
+  title: History of suicide attempts
+  domain: Suicide
+  schemas: {bp: suicide_attempts, sz: suicide_attempts, dr: suicide_attempts}
+  stack: "yes"
+  use: [n_attempts, first_attempt_date, violent_attempts, serious_attempts, n_violent_attempts, n_serious_attempts]
+  note: >
+    The number of attempts, the date of the first one and the violent and
+    serious attempts, the same in the three cohorts. The form is filled for the
+    patients who have attempted, mostly at the inclusion visit: the number of
+    attempts has no zero for the others.
+
+most_serious_attempt:
+  title: The most serious suicide attempt
+  domain: Suicide
+  schemas: {bp: most_serious_attempt, dr: most_serious_attempt}
+  stack: "no"
+  note: >
+    The method, the lethality and the trigger are labelled lists in BP (filled
+    until 2022) and codes that the dictionary does not explain in DR (names
+    ending in _code). Only the question 'was there a trigger'
+    (serious_triggered) is comparable.
+
+most_violent_attempt:
+  title: The most violent suicide attempt
+  domain: Suicide
+  schemas: {bp: most_violent_attempt, dr: most_violent_attempt}
+  stack: "no"
+  note: >
+    As for the most serious attempt: labelled lists in BP (filled until 2021),
+    unexplained codes in DR. Only the question 'was there a trigger'
+    (violent_triggered) is comparable.
+
+# ---------------------------------------------------------------- Physical examination and laboratory
+
+parametres_physiques:
+  title: Height, weight, body mass index and waist
+  domain: Physical examination and laboratory
+  schemas: {bp: parametres_physiques, sz: parametres_physiques, dr: parametres_physiques, asp: parametres_physiques}
+  stack: "yes"
+  use: [height, weight, bmi, waist]
+  note: Centimetres and kilograms in the four cohorts; the body mass index is recomputed. ASP has children.
+
+pression_arterielle:
+  title: Blood pressure and heart rate
+  domain: Physical examination and laboratory
+  schemas: {bp: pression_arterielle, sz: pression_arterielle, dr: pression_arterielle, asp: pression_arterielle}
+  stack: "yes"
+  use: [systolic_supine, diastolic_supine, heart_rate_supine, systolic_standing, diastolic_standing]
+  note: The lying blood pressure is in the four cohorts, the lying heart rate in BP, DR and ASP, the standing measures in BP and DR.
+
+ecg:
+  title: Electrocardiogram
+  domain: Physical examination and laboratory
+  schemas: {bp: ecg, sz: ecg, dr: ecg, asp: ecg}
+  stack: with care
+  use: [qtc_stored, qtc_bazett, qt_interval, rr_interval]
+  note: >
+    The stored corrected QT is in the four cohorts. The intervals, and the QTc
+    recomputed with the Bazett formula, are in BP, DR and ASP; SZ holds the
+    stored QTc only, with no way to check its formula. ASP has few ECGs.
+
+biochimie:
+  title: Blood biochemistry
+  domain: Physical examination and laboratory
+  schemas: {bp: biochimie, sz: biochimie, dr: biochimie, asp: biochimie}
+  stack: "yes"
+  use: [glucose, hba1c, crp, uric_acid, creatinine, sodium, potassium, urea, calcium, albumin]
+  note: >
+    Glucose, HbA1c, CRP and uric acid are in the four cohorts; the other
+    analytes in BP, DR and ASP. Each analyte is delivered in one unit. ASP has
+    no unit column: the unit is read from the size of the value. A CRP below the
+    detection limit of its laboratory keeps the limit as its value (flag
+    censored_left), and the limits differ between laboratories.
+
+bilan_lipidique:
+  title: Blood lipids
+  domain: Physical examination and laboratory
+  schemas: {bp: bilan_lipidique, sz: bilan_lipidique, dr: bilan_lipidique, asp: bilan_lipidique}
+  stack: "yes"
+  use: [cholesterol, hdl, ldl, triglycerides, cholesterol_hdl_ratio]
+  note: In mmol/L in the four cohorts; the ratio is recomputed.
+
+bilan_hepatique:
+  title: Liver tests
+  domain: Physical examination and laboratory
+  schemas: {bp: bilan_hepatique, dr: bilan_hepatique, asp: bilan_hepatique}
+  stack: "yes"
+  use: [ast, alt, ggt, alkaline_phosphatase, bilirubin]
+  note: Five analytes in the same units in the three cohorts.
+
+bilan_thyroidien:
+  title: Thyroid tests
+  domain: Physical examination and laboratory
+  schemas: {bp: bilan_thyroidien, dr: bilan_thyroidien, asp: bilan_thyroidien}
+  stack: "yes"
+  use: [tsh, free_t3, free_t4]
+  note: TSH is in the three cohorts; free T3 and free T4 in BP and DR.
+
+nfs:
+  title: Full blood count
+  domain: Physical examination and laboratory
+  schemas: {bp: nfs, sz: nfs, dr: nfs, asp: nfs}
+  stack: "yes"
+  use: [leukocytes, erythrocytes, haemoglobin, platelets, neutrophils, eosinophils, mcv, lymphocytes, monocytes]
+  note: Seven values are in the four cohorts, in the same units; lymphocytes, monocytes and basophils in BP, DR and ASP.
+
+bhcg_prolactine:
+  title: Prolactin and beta-hCG
+  domain: Physical examination and laboratory
+  schemas: {bp: bhcg_prolactine, sz: bhcg_prolactine, dr: bhcg_prolactine, asp: bhcg_prolactine}
+  stack: "yes"
+  use: [prolactin, hcg]
+  note: Prolactin is in the four cohorts, in ng/mL; beta-hCG in BP and DR.
+
+vitamine_d:
+  title: Vitamin D
+  domain: Physical examination and laboratory
+  schemas: {sz: vitamine_d, dr: vitamine_d, asp: vitamine_d}
+  stack: with care
+  use: [vitamin_d]
+  note: >
+    vitamin_d is in nmol/L in DR and ASP. SZ records no unit and its centres do
+    not write the same one, so its value is delivered under another name
+    (vitamin_d_as_written) and must not be stacked.
+
+dosage_psychotropes:
+  title: Plasma levels of psychotropic drugs
+  domain: Physical examination and laboratory
+  schemas: {bp: dosage_psychotropes, sz: dosage_psychotropes, dr: dosage_psychotropes, asp: dosage_psychotropes}
+  stack: with care
+  use: [lithium, valproate, carbamazepine, clozapine, treatment_taken_before_sampling]
+  note: >
+    Each cohort measures the drugs of its own treatments: lithium, valproate
+    and carbamazepine are in BP and DR (few values in DR), clozapine in BP and
+    SZ, and ASP has almost no level. No drug level is in the four cohorts.
+
+# ---------------------------------------------------------------- Medical and family history
+
+neurological_history_v0:
+  title: "Medical history at inclusion: neurological diseases"
+  domain: Medical and family history
+  schemas: {bp: neurological_history_v0, sz: neurological_history_v0, dr: neurological_history_v0}
+  stack: with care
+  use: [migraine_v0, epilepsy_v0, multiple_sclerosis_v0, meningitis_v0]
+  note: &history >
+    The question "has the patient had this disease" and "is it treated" are
+    under the same names in the three cohorts. The SZ form is shorter: no date
+    of onset, no "controlled", and its sections do not hold all the diseases
+    of BP and DR. A sub-question (treated, controlled, cause) is asked of the
+    patients who have the disease; in DR a box of this kind is written 0 where
+    it was not asked (flag derived_doubt): compare among the patients who have
+    the disease. From 2022 several sections are answered on a small part of the
+    inclusion visits in BP, and three in SZ: an empty section is missing, not
+    "no", and the share of "yes" of these years is not a prevalence.
+
+neurological_history_fu:
+  title: "Medical history at follow-up: neurological diseases"
+  domain: Medical and family history
+  schemas: {bp: neurological_history_fu, sz: neurological_history_fu, dr: neurological_history_fu}
+  stack: with care
+  use: [migraine_fu, epilepsy_fu, multiple_sclerosis_fu, meningitis_fu]
+  note: &history_fu >
+    The follow-up form asks the same questions as the inclusion form, about the
+    time since the last visit: it is delivered in columns of its own (_fu) and
+    is not to be added to the inclusion answers. The same reserves as at
+    inclusion apply.
+
+cardiovascular_history_v0:
+  title: "Medical history at inclusion: cardiovascular diseases"
+  domain: Medical and family history
+  schemas: {bp: cardiovascular_history_v0, sz: cardiovascular_history_v0, dr: cardiovascular_history_v0}
+  stack: with care
+  use: [hypertension_v0, coronary_disease_v0, myocardial_infarction_v0, arrhythmia_v0]
+  note: *history
+
+cardiovascular_history_fu:
+  title: "Medical history at follow-up: cardiovascular diseases"
+  domain: Medical and family history
+  schemas: {bp: cardiovascular_history_fu, sz: cardiovascular_history_fu, dr: cardiovascular_history_fu}
+  stack: with care
+  use: [hypertension_fu, coronary_disease_fu, myocardial_infarction_fu, arrhythmia_fu]
+  note: *history_fu
+
+endocrine_history_v0:
+  title: "Medical history at inclusion: endocrine and metabolic diseases"
+  domain: Medical and family history
+  schemas: {bp: endocrine_history_v0, sz: endocrine_history_v0, dr: endocrine_history_v0}
+  stack: with care
+  use: [thyroid_disorder_v0, dyslipidaemia_v0, diabetes_v0]
+  note: *history
+
+endocrine_history_fu:
+  title: "Medical history at follow-up: endocrine and metabolic diseases"
+  domain: Medical and family history
+  schemas: {bp: endocrine_history_fu, sz: endocrine_history_fu, dr: endocrine_history_fu}
+  stack: with care
+  use: [thyroid_disorder_fu, dyslipidaemia_fu, diabetes_fu]
+  note: *history_fu
+
+digestive_history_v0:
+  title: "Medical history at inclusion: liver and digestive tract"
+  domain: Medical and family history
+  schemas: {bp: digestive_history_v0, sz: digestive_history_v0, dr: digestive_history_v0}
+  stack: with care
+  use: [inflammatory_bowel_disease_v0, cirrhosis_v0, peptic_ulcer_v0, drug_hepatitis_v0]
+  note: *history
+
+digestive_history_fu:
+  title: "Medical history at follow-up: liver and digestive tract"
+  domain: Medical and family history
+  schemas: {bp: digestive_history_fu, sz: digestive_history_fu, dr: digestive_history_fu}
+  stack: with care
+  use: [inflammatory_bowel_disease_fu, cirrhosis_fu, peptic_ulcer_fu, drug_hepatitis_fu]
+  note: *history_fu
+
+allergic_history_v0:
+  title: "Medical history at inclusion: allergic and inflammatory diseases"
+  domain: Medical and family history
+  schemas: {bp: allergic_history_v0, sz: allergic_history_v0, dr: allergic_history_v0}
+  stack: with care
+  use: [allergic_inflammatory_v0, asthma_v0, allergy_v0]
+  note: *history
+
+allergic_history_fu:
+  title: "Medical history at follow-up: allergic and inflammatory diseases"
+  domain: Medical and family history
+  schemas: {bp: allergic_history_fu, sz: allergic_history_fu, dr: allergic_history_fu}
+  stack: with care
+  use: [allergic_inflammatory_fu, asthma_fu, allergy_fu]
+  note: *history_fu
+
+autoimmune_history_v0:
+  title: "Medical history at inclusion: lupus and rheumatoid arthritis"
+  domain: Medical and family history
+  schemas: {bp: allergic_history_v0, sz: autoimmune_history_v0, dr: allergic_history_v0}
+  stack: with care
+  use: [lupus_v0, rheumatoid_arthritis_v0]
+  note: >
+    Lupus and rheumatoid arthritis are in the allergic section of BP and DR and
+    in a section of auto-immune diseases in SZ, under the same names. Psoriasis
+    is in the skin section of BP and DR and in the auto-immune section of SZ.
+    The reserves of the other history sections apply.
+
+autoimmune_history_fu:
+  title: "Medical history at follow-up: lupus and rheumatoid arthritis"
+  domain: Medical and family history
+  schemas: {bp: allergic_history_fu, sz: autoimmune_history_fu, dr: allergic_history_fu}
+  stack: with care
+  use: [lupus_fu, rheumatoid_arthritis_fu]
+  note: *history_fu
+
+skin_history_v0:
+  title: "Medical history at inclusion: skin diseases"
+  domain: Medical and family history
+  schemas: {bp: skin_history_v0, sz: skin_history_v0, dr: skin_history_v0}
+  stack: with care
+  use: [acne_v0, psoriasis_v0]
+  note: *history
+
+skin_history_fu:
+  title: "Medical history at follow-up: skin diseases"
+  domain: Medical and family history
+  schemas: {bp: skin_history_fu, sz: skin_history_fu, dr: skin_history_fu}
+  stack: with care
+  use: [acne_fu, psoriasis_fu]
+  note: *history_fu
+
+gynaecological_history_v0:
+  title: "Medical history at inclusion: pregnancies, menopause and gynaecological diseases"
+  domain: Medical and family history
+  schemas: {bp: gynaecological_history_v0, sz: gynaecological_history_v0, dr: gynaecological_history_v0}
+  stack: with care
+  use: [n_pregnancies_v0, menopause_v0, menopause_hormone_therapy_v0]
+  note: >
+    The number of pregnancies, the menopause and its hormone therapy are in the
+    three cohorts; live births, miscarriages and terminations in BP and DR.
+    Asked of women.
+
+gynaecological_history_fu:
+  title: "Medical history at follow-up: pregnancies, menopause and gynaecological diseases"
+  domain: Medical and family history
+  schemas: {bp: gynaecological_history_fu, sz: gynaecological_history_fu, dr: gynaecological_history_fu}
+  stack: with care
+  use: [n_pregnancies_fu, menopause_fu, menopause_hormone_therapy_fu]
+  note: *history_fu
+
+other_history_v0:
+  title: "Medical history at inclusion: cancers, infections and other diseases"
+  domain: Medical and family history
+  schemas: {bp: other_history_v0, sz: other_history_v0, dr: other_history_v0}
+  stack: with care
+  use: [cancer_v0, hiv_v0, chronic_viral_hepatitis_v0]
+  note: *history
+
+other_history_fu:
+  title: "Medical history at follow-up: cancers, infections and other diseases"
+  domain: Medical and family history
+  schemas: {bp: other_history_fu, sz: other_history_fu, dr: other_history_fu}
+  stack: with care
+  use: [cancer_fu, hiv_fu, chronic_viral_hepatitis_fu]
+  note: *history_fu
+
+urinary_history_v0:
+  title: "Medical history at inclusion: urinary tract"
+  domain: Medical and family history
+  schemas: {bp: urinary_history_v0, dr: urinary_history_v0}
+  stack: with care
+  use: [nephropathy_v0, prostate_adenoma_v0, urinary_retention_v0]
+  note: >
+    The three diseases are under the same names. The causes of a urinary
+    retention are one list in BP and three boxes in DR, where a box is 0 for a
+    patient with no retention: compare the causes among the patients who have
+    the disease.
+
+urinary_history_fu:
+  title: "Medical history at follow-up: urinary tract"
+  domain: Medical and family history
+  schemas: {bp: urinary_history_fu, dr: urinary_history_fu}
+  stack: with care
+  use: [nephropathy_fu, prostate_adenoma_fu, urinary_retention_fu]
+  note: *history_fu
+
+perinatal:
+  title: The patient's own birth
+  domain: Medical and family history
+  schemas: {bp: perinatal, sz: perinatal, dr: perinatal, asp: perinatal}
+  stack: "yes"
+  use: [mother_age_at_birth, father_age_at_birth, gestational_age, birth_weight, neonatal_hospitalisation, birth_term, birth_type]
+  note: >
+    In the table patients. The ages of the parents, the weeks of pregnancy,
+    the birth weight (grams) and the stay in a neonatal unit are in the four
+    cohorts. The term as a class and the kind of delivery as one list are in
+    BP, SZ and DR; ASP describes the delivery with yes/no questions of its own.
+
+family_history:
+  title: Family history, one row per relative
+  domain: Medical and family history
+  schemas: {bp: family_history, sz: family_history, dr: family_history}
+  stack: with care
+  use: [kinship, degree, relative_alcohol, relative_anxiety, relative_diabetes, relative_hypertension]
+  note: >
+    In the table relatives. The relatives asked about are not the same: no
+    grandparents in SZ, and in DR the children and the siblings are each one
+    row for the group. The psychiatric disorder of a relative is one list in
+    BP and SZ (relative_disorder) and separate questions in DR. BP and DR share
+    the questions on substances, anxiety, dementia and cardiovascular risk. In
+    DR many of these boxes are written 0 where the question was not asked
+    (flag derived_doubt).
+
+family_history_per_patient:
+  title: Family history summed up per patient
+  domain: Medical and family history
+  schemas: {bp: family_history_per_patient, sz: family_history_per_patient}
+  stack: "yes"
+  use: [fdr_bipolar, fdr_depression, fdr_schizophrenia, fdr_suicide, fdr_suicide_attempt]
+  note: In the table patients. A first-degree relative with each disorder, computed the same way in BP and SZ. DR has no such summary.
+
+family_structure:
+  title: Family structure
+  domain: Medical and family history
+  schemas: {bp: family_structure, sz: family_structure, dr: family_structure}
+  stack: with care
+  use: [n_brothers, n_sisters, n_sons, n_daughters, mother_affected, father_affected]
+  note: >
+    In the table patients. The numbers of brothers, sisters, sons and daughters
+    and how many are affected are the same in BP and SZ. 'Affected' also covers
+    a substance use disorder and a cardiovascular risk factor: a yes is not a
+    psychiatric history. DR asks other questions (a psychiatric history of each
+    parent, children and siblings counted as groups) under names of its own.
+
+# ---------------------------------------------------------------- Treatments
+
+medications:
+  title: Treatments, one row per treatment
+  domain: Treatments
+  schemas: {bp: medications, sz: medications, dr: medications, asp: medications}
+  stack: with care
+  use: [medication, molecule, atc, treatment_group, start_date, end_date]
+  note: >
+    In the table treatments. The name, the molecule, the ATC code and the
+    group come from one table of names shared by the cohorts. The lists are
+    not the same thing: the treatments of the patient with their dates in BP
+    and SZ; lists that the export crossed in DR, where no dose and no date can
+    be tied to a product of a patient who has several; the treatments of each
+    visit in ASP. Doses are not comparable across cohorts.
+
+medications_at_visit:
+  title: Psychotropic treatments on the day of the visit
+  domain: Treatments
+  schemas: {bp: medications_at_visit, sz: medications_at_visit, dr: medications_at_visit}
+  stack: with care
+  use: [on_lithium, on_anticonvulsant, on_antipsychotic_2g, on_antipsychotic_1g, on_antidepressant, on_benzodiazepine]
+  note: >
+    Sixteen yes/no columns computed from the list of treatments and its dates,
+    with the same names and groups in the three cohorts. They are missing for
+    the patients who have no list (about a quarter in BP, a sixth in SZ); a
+    treatment with no end date counts at every later visit; in DR, whose lists
+    the export crossed, they are known on about half of the visits. ASP has no
+    such columns.
+
+non_drug_lifetime:
+  title: Non-drug treatments over the life
+  domain: Treatments
+  schemas: {bp: non_drug_lifetime, dr: non_drug_lifetime}
+  stack: with care
+  use: [ever_ect, ever_tms, ect_sessions, tms_sessions]
+  note: >
+    In the table patients. ECT and TMS (ever, sessions, dates) are under the
+    same names. BP asks the form of a part of its patients, from 2013.
+    Psychotherapies are asked by kind in BP and as one question in DR.
+
+non_drug_fu:
+  title: Non-drug treatments since the last visit
+  domain: Treatments
+  schemas: {bp: non_drug_fu, sz: non_drug_fu, dr: non_drug_fu}
+  stack: with care
+  use: [ect_fu, tms_fu, cbt_fu, other_therapy_fu]
+  note: >
+    ECT and TMS since the last visit are in the three cohorts. The therapies
+    asked about are not the same list in each cohort.
+
+recommendations:
+  title: Following of the recommendations of the first assessment
+  domain: Treatments
+  schemas: {bp: recommendations, sz: recommendations}
+  stack: "yes"
+  use: [drug_advice_followed, other_advice_followed]
+  note: "A follow-up form: whether the advice on drugs and the other advice were followed, and why not. SZ asks about two more kinds of advice."
+
+# ---------------------------------------------------------------- Social situation and use of care
+
+social:
+  title: Social situation
+  domain: Social situation and use of care
+  schemas: {bp: social, sz: social, dr: social, asp: work}
+  stack: with care
+  use: [education_level, work_status, living_arrangement, job_full_time, marital_status]
+  note: >
+    Education, work status and way of living are in BP, SZ and DR with the same
+    labels; a full-time job is also in ASP. In SZ the export loses answers: no
+    patient is recorded as married or living as a couple, and none with a salary
+    or a disability pension (an open question of SZ): do not compare
+    marital_status and income_source with SZ. In BP the work status never holds
+    the answer 'student'. The other questions differ.
+
+sick_leave_v0:
+  title: Sick leave at inclusion
+  domain: Social situation and use of care
+  schemas: {bp: sick_leave_v0, sz: sick_leave_v0, dr: sick_leave_v0, asp: work}
+  stack: "yes"
+  use: [sick_leave_12m, sick_leave_weeks_12m, sick_leave_current]
+  note: >
+    A sick leave in the last twelve months and its length in weeks are in the
+    four cohorts; a sick leave at the visit in BP, SZ and DR. Asked of the
+    patients who work.
+
+sick_leave_fu:
+  title: Sick leave since the last visit
+  domain: Social situation and use of care
+  schemas: {bp: sick_leave_fu, sz: sick_leave_fu, dr: sick_leave_fu}
+  stack: with care
+  use: [sick_leave_fu, n_sick_leaves_fu]
+  note: >
+    BP and DR share the question and the number of sick leaves; the length is
+    in weeks in BP and in days in DR, under two names. SZ separates the
+    psychiatric and the somatic sick leaves, under names of its own.
+
+hospitalisations_v0:
+  title: Hospitalisations before inclusion
+  domain: Social situation and use of care
+  schemas: {bp: hospitalisations_v0, sz: hospitalisations_v0, dr: hospitalisations_v0}
+  stack: with care
+  use: [n_hospitalisations_v0, hospitalisation_months_v0, first_hospitalisation_age]
+  note: >
+    The number of hospitalisations over the life, their total length in months
+    and the age at the first one are in the three cohorts. In SZ a patient who
+    was never hospitalised has no number (not a zero) and the form stops at 20
+    times and 30 months; the DR form is on about half of its inclusions.
+
+hospitalisations_12m:
+  title: Hospitalisations in the year before the visit
+  domain: Social situation and use of care
+  schemas: {bp: hospitalisations_v0, sz: hospitalisations_12m}
+  stack: with care
+  use: [n_hospitalisations_12m, hospitalisation_weeks_12m]
+  note: >
+    Asked at inclusion in BP and at every visit in SZ. In SZ the number is
+    recorded for the patients who were hospitalised (no zero), in BP for all.

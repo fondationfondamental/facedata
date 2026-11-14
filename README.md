@@ -30,6 +30,7 @@ lists the decisions taken and the questions still open
 | [schizophrenia-tutorial.ipynb](schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
 | [depression-tutorial.ipynb](depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
 | [autism-tutorial.ipynb](autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
+| [common-instruments.ipynb](common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
 
 ## Use
 
@@ -96,6 +97,21 @@ the key is `cohort` with `usubjid`. `patients` also holds `fondacode`, the
 patient code that is unique across cohorts and does not change from one
 extraction to the next.
 
+`facedata.common` is for work across cohorts. Its catalogue lists the
+instruments that two cohorts or more share, says which can be stacked as they
+are, and names the variables to use; `baseline()` puts the screening visit and
+the inclusion visit of a patient in one row:
+
+```python
+from facedata import bp, sz, common
+
+table = common.catalogue()                                  # instrument, cohorts, stack (yes / with care / no), use, note
+wanted = table[table["stack"] != "no"]
+
+bipolar = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=common.instruments_of("bp", wanted), winsorise=False)
+first, source = common.baseline(bipolar)                    # one row per patient, and the visit each instrument comes from
+```
+
 ## Tutorial
 
 ```bash
@@ -114,9 +130,15 @@ uv run jupyter lab depression-tutorial.ipynb
 uv run jupyter lab autism-tutorial.ipynb
 ```
 
+```bash
+uv run jupyter lab common-instruments.ipynb
+```
+
 One notebook per cohort. The second one ends with a section that loads the
 instruments shared by FACE BP and FACE SZ and stacks the two cohorts; the
-third one stacks the three, and the fourth one the four.
+third one stacks the three, and the fourth one the four. The fifth notebook
+is about the four cohorts together: the catalogue of the common instruments,
+one baseline row per patient, and the stacked table.
 
 A notebook opens in the web browser. Run its cells from top to bottom with
 `Shift` + `Enter`. What appears under a cell is patient data: clear it
