@@ -1,0 +1,44 @@
+instrument: child_living_conditions
+title: "Living conditions of the child"
+tab: sociodemo_medicoeco
+section: social and medico-economic
+status: draft
+notes: >
+  The housing (kind, garden, rooms, surface, own bedroom), schooling, leisure
+  and siblings: 947 inclusion visits (390 of children, 557 of adults) and 71 follow-up visits, from 2020 to 2026. Asked for children.
+
+  The section belongs to the form added in 2020 and 2021 (its first
+  questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
+  an earlier visit is "not asked", not missing.
+
+  The form was first read without a dictionary; the labels and the lists of
+  answers are now those of the thesaurus V2.13, which corrected several
+  meanings guessed from the column names (PROGRESS.md D14). The output names
+  stay the column names.
+
+  A section of the ASP cohort only.
+
+variables:
+  habitat: {column: habitat, type: category, label: "Living conditions of the child: kind of housing", codes: {"1": flat, "2": house}}
+  jardin: {column: jardin, type: item, label: "Living conditions of the child: the home has a garden (0 no, 1 yes)", range: [0, 1]}
+  nbpiece: {column: nbpiece, type: number, label: "Living conditions of the child: number of rooms of the home", range: [0, 200], winsor: false}
+  surface: {column: surface, type: number, label: "Living conditions of the child: size of the home, square metres", range: [0, 554], winsor: false}
+  chambre: {column: chambre, type: item, label: "Living conditions of the child: the child has a bedroom of their own (0 no, 1 yes)", range: [0, 1]}
+  demenag: {column: demenag, type: item, label: "Living conditions of the child: the family moved to be nearer the child's places of care (0 no, 1 yes)", range: [0, 1]}
+  scolar01: {column: scolar01, type: item, label: "Living conditions of the child: the child has been bullied at school (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  scolar02: {column: scolar02, type: category, label: "Living conditions of the child: who at school knows about the child's autism diagnosis", codes: {"1": teaching_staff, "2": teaching_staff_and_classmates, "3": nobody}, missing: {"9": unknown}}
+  scolar03: {column: scolar03, type: item, label: "Living conditions of the child: sessions held to explain autism to the child's schoolmates (0 no, 1 yes)", range: [0, 1]}
+  loisi01: {column: loisi01, type: item, label: "Living conditions of the child: the child has access to out-of-school activities (0 no, 1 yes)", range: [0, 1]}
+  loisi01a: {column: loisi01a, type: text, label: "Living conditions of the child: out-of-school activity, which, free text"}
+  loisi01b_1: {column: loisi01b_1, type: item, label: "Living conditions of the child: out-of-school activity done alone (box) (0 no, 1 yes)", range: [0, 1]}
+  loisi01b_2: {column: loisi01b_2, type: item, label: "Living conditions of the child: out-of-school activity done in a group (box) (0 no, 1 yes)", range: [0, 1]}
+  loisi01c: {column: loisi01c, type: item, label: "Living conditions of the child: out-of-school activity through an autism inclusion association (0 no, 1 yes)", range: [0, 1]}
+  loisi02: {column: loisi02, type: item, label: "Living conditions of the child: the child goes to holiday camps (0 no, 1 yes)", range: [0, 1]}
+  loisi02a: {column: loisi02a, type: item, label: "Living conditions of the child: holiday camps through an autism inclusion association (0 no, 1 yes)", range: [0, 1]}
+  fratn: {column: fratn, type: number, label: "Living conditions of the child: number of children in the sibship, half- and step-siblings included", range: [0, 200], winsor: false}
+  dsm4s: {column: dsm4s, type: item, label: "Living conditions of the child: a sibling has a DSM diagnosis or a neurological or genetic disease (0 no, 1 yes)", range: [0, 1]}
+  fratgr: {column: fratgr, type: item, label: "Living conditions of the child: a brother or sister takes part in a siblings' group (0 no, 1 yes)", range: [0, 1]}
+  nboccur_fratgr: {column: nboccur_fratgr, type: number, label: "Living conditions of the child: siblings' group, number of sessions in the last 12 months", range: [0, 200], winsor: false}
+  lieu_fratgr_1: {column: lieu_fratgr_1, type: item, label: "Living conditions of the child: siblings' group in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1]}
+  lieu_fratgr_2: {column: lieu_fratgr_2, type: item, label: "Living conditions of the child: siblings' group in a hospital or mental health centre (CMP) (box) (0 no, 1 yes)", range: [0, 1]}
+  lieu_fratgr_3: {column: lieu_fratgr_3, type: item, label: "Living conditions of the child: siblings' group in a medico-social service (box) (0 no, 1 yes)", range: [0, 1]}

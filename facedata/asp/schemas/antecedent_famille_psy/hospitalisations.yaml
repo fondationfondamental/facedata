@@ -1,0 +1,25 @@
+instrument: hospitalisations
+title: "Psychiatric hospitalisations, one row per hospitalisation"
+tab: antecedent_famille_psy
+section: history
+status: draft
+level: list
+notes: >
+  The reason, the year and the length of each hospitalisation: 588
+  hospitalisations for 392 visits (388 patients), from 2013 to 2026. One row per patient and
+  hospitalisation in the table treatments, where the column list says
+  "hospitalisations".
+
+  The export packs the hospitalisations of a patient in one cell, three
+  fields each: the reason in free text, the year and the length in days. The
+  history is that of the patient: the first visit that holds it is read.
+
+  A section of the ASP cohort only.
+
+packed:
+  motif_andebhosp_durhosp: {fields: [hosp_reason, hosp_year, hosp_days], text: hosp_reason}
+
+variables:
+  hospitalisation_reason: {column: hosp_reason, type: text, label: "Reason of the hospitalisation, free text"}
+  hospitalisation_year: {column: hosp_year, type: number, label: "Year of the hospitalisation", range: [1960, 2026], winsor: false}
+  hospitalisation_days: {column: hosp_days, type: number, label: "Length of the hospitalisation, days", unit: days, range: [0, 2000], winsor: false}

@@ -1,0 +1,33 @@
+instrument: fagerstrom
+title: "Fagerström test and two smoking questions"
+tab: autoquestionnaires
+section: adult questionnaires
+status: draft
+notes: >
+  Two questions (ever smoked: yes on 134 of 458 inclusion visits; smokes now:
+  yes on 64 of 470), then the six items of the Fagerström test and its total
+  for the smokers: 63 visits, from 2020 to 2026. It is filled by adults only.
+
+  Same instrument as in FACE BP and DR, in other columns. The stored total is
+  the sum of the six items on 64 of 64 visits: the error of FACE DR, where
+  the item 3 is exported as the code of its answer, is not here. The two
+  smoking questions are specific to ASP.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  ever_smoked: {column: q_deja_fume, label: "Has ever smoked"}
+  smokes_now: {column: q_fume_actu, label: "Smokes now"}
+  fagers01: {column: fag_1, label: "Fagerström item 1 (time to the first cigarette)", range: [0, 3]}
+  fagers02: {column: fag_2, label: "Fagerström item 2"}
+  fagers03: {column: fag_3, label: "Fagerström item 3"}
+  fagers04: {column: fag_4, label: "Fagerström item 4 (cigarettes a day)", range: [0, 3]}
+  fagers05: {column: fag_5, label: "Fagerström item 5"}
+  fagers06: {column: fag_6, label: "Fagerström item 6"}
+  fagers_stored: {column: fagerstrom_score, label: Fagerström total as stored, range: [0, 10], keep: false}
+
+scores:
+  fagerstrom_total:
+    label: Fagerström total (0 to 10)
+    sum: [fagers01, fagers02, fagers03, fagers04, fagers05, fagers06]
+    compare: fagers_stored

@@ -10,9 +10,49 @@ from facedata.flags import make_flags, stack_flags
 from facedata.tokens import EMPTY_DATE, PLACEHOLDER_VISIT_DATES
 
 
-def read_extraction(path):
-    """Read the .tsv extraction. Every cell stays text, exactly as written."""
-    return pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+def read_extraction(path, repair_accents=False):
+    """Read the .tsv extraction. Every cell stays text, exactly as written.
+
+    repair_accents: for an export that wrote its accents twice over (see
+    twice_encoded()), the cells concerned are put back.
+    """
+    table = pd.read_csv(path, sep="\t", dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    if repair_accents:
+        for column in table.columns:
+            if table[column].str.contains("Ã", regex=False).any():
+                table[column] = table[column].map(twice_encoded)
+    return table
+
+
+def twice_encoded(cell):
+    """A cell whose accents were encoded twice: "dÃ©pression" is "dépression".
+
+    The export read UTF-8 text as Latin-1 and encoded it again. The cell is
+    put back whole when the way back gives valid text. Otherwise each broken
+    letter is put back on its own (a list cell writes the second half of "à"
+    as the escape \\xa0), and what cannot be decoded stays as written.
+    """
+    for attempt in range(3):                         # some cells were encoded three times
+        if "Ã" not in cell:
+            break
+        whole = decoded_again(cell)
+        if whole is None:
+            whole = cell.replace("Ã\\xa0", "à")
+            whole = re.sub("[Â-ô][\u0080-¿]+", lambda letter: decoded_again(letter.group()) or letter.group(), whole)
+        if whole == cell:
+            break
+        cell = whole
+    return cell
+
+
+def decoded_again(text):
+    """Text encoded as Latin-1 and read as UTF-8, or None when that is not valid text."""
+    for encoding in ["cp1252", "latin-1"]:
+        try:
+            return text.encode(encoding).decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            continue
+    return None
 
 
 def read_norms(folder):
@@ -41,8 +81,11 @@ def visit_month(label):
     return number if found.group(2) == "mois" else 12 * number
 
 
-def prepare_visits(raw):
+def prepare_visits(raw, first_day=None):
     """Drop duplicated visit records and build the key columns.
+
+    first_day: the day the cohort opened (YYYY-MM-DD). A visit dated before
+    it, or after today, has an impossible date: the date becomes missing.
 
     Returns the extraction without duplicates (rows numbered from 0), the key
     columns, and the flags.
@@ -58,12 +101,17 @@ def prepare_visits(raw):
     is_placeholder = raw["svdtc"].isin(PLACEHOLDER_VISIT_DATES)
     date_text = raw["svdtc"].where(~is_placeholder & (raw["svdtc"] != EMPTY_DATE), "")
     keys["visit_date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
+    earliest = pd.Timestamp(first_day) if first_day else pd.Timestamp.min
+    impossible = (keys["visit_date"] < earliest) | (keys["visit_date"] > pd.Timestamp.today())
+    keys["visit_date"] = keys["visit_date"].mask(impossible)
     keys["siteid"] = raw["siteid"].str.zfill(2).where(raw["siteid"] != "", "")     # centre codes have two digits: "4" is "04"
     # Age at the visit, in years. The export gives the date of birth to the month only.
     keys["age"] = np.nan
     if "brthdtc" in raw.columns:
         birth = pd.to_datetime(raw["brthdtc"], format="%Y-%m-%d", errors="coerce")
         keys["age"] = (keys["visit_date"] - birth).dt.days / 365.25
+    wrong_age = (keys["age"] < 0) | (keys["age"] > 110)       # a wrong date of birth: no age is better than this one
+    keys["age"] = keys["age"].mask(wrong_age)
 
     # A visit dated before the patient's previous visit is out of order.
     dated = keys.dropna(subset=["visit_date"]).sort_values(["usubjid", "visit_order"])
@@ -73,6 +121,8 @@ def prepare_visits(raw):
     flags = stack_flags([
         make_flags(has_copy, "visit", "duplicate_row"),
         make_flags(is_placeholder, "visit_date", "date_placeholder"),
+        make_flags(impossible, "visit_date", "out_of_range", "dated before the cohort opened, or after today"),
+        make_flags(wrong_age, "age", "out_of_range", "below 0 or above 110 years"),
         make_flags(out_of_order, "visit_date", "visit_order", "dated before the previous visit"),
     ])
     return raw, keys, flags

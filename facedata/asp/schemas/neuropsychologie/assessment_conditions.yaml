@@ -1,0 +1,49 @@
+instrument: assessment_conditions
+title: "Conditions and history of the neuropsychological assessment"
+tab: neuropsychologie
+section: assessment
+status: draft
+notes: >
+  What the form asks before the tests, on about 839 inclusion visits, almost
+  all of adults: seven boxes (npsy_1 to npsy_7, the conditions of the
+  assessment: each is yes on almost every visit but npsy_5 and npsy_6, with a
+  text after npsy_5), the handedness (a code), an earlier Wechsler assessment
+  (atcd_w1, yes on 27 visits, with a code, texts and an age in years and
+  months) and an earlier neuropsychological assessment (atcd_npsy1, yes on 195,
+  with the same details), the date of the assessment and a comment.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  sufficient_french: {column: npsy_1, type: item, range: [0, 1], label: "Conditions of the assessment: sufficient command of French"}
+  clinical_state_compatible: {column: npsy_2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: clinical state compatible with the cognitive tests"}
+  no_visual_impairment: {column: npsy_3, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no colour blindness or disabling visual impairment"}
+  no_uncorrected_hearing_loss: {column: npsy_4, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no uncorrected hearing loss"}
+  suspected_learning_disorder: {column: npsy_5, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: a learning or developmental disorder is suspected"}
+  psychotropic_treatment: {column: npsy_6, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: on a psychotropic treatment"}
+  fit_for_assessment: {column: npsy_7, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: the patient can have a neuropsychological assessment"}
+  suspected_learning_disorder_text: {column: npsy_5a, type: text, label: "Suspected learning or developmental disorder, free text"}
+  handedness_np: {column: neuro_lateral, type: category, codes: {"1": left, "2": right, "3": both}, label: "Handedness, neuropsychology form"}
+  earlier_wechsler: {column: atcd_w1, type: item, range: [0, 1], label: "A WAIS-IV was done less than 6 months before the assessment at the expert centre"}
+  earlier_wechsler_setting: {column: atcd_w2, type: category, codes: {"1": other_asperger_expert_centre, "2": private_practice, "3": community_mental_health_centre, "4": other}, label: "Earlier WAIS-IV: where it was done"}
+  earlier_wechsler_setting_text: {column: atcd_w2a, type: text, label: "Earlier WAIS-IV: where it was done, other, free text"}
+  earlier_wechsler_date_text: {column: atcd_w6, type: text, label: "Earlier WAIS-IV: date, as written"}
+  earlier_wechsler_age_years: {column: atcd_w7a, type: number, range: [0, 70], winsor: false, label: "Earlier Wechsler assessment: age, years"}
+  earlier_wechsler_age_months: {column: atcd_w7m, type: number, range: [0, 11], winsor: false, label: "Earlier Wechsler assessment: age, months above the years"}
+  earlier_wechsler_results_available: {column: atcd_w8, type: item, range: [0, 1], label: "Earlier WAIS-IV: the results are available"}
+  earlier_wechsler_results_text: {column: atcd_w9, type: text, label: "Earlier WAIS-IV: the results, free text"}
+  earlier_neuropsychology: {column: atcd_npsy1, type: item, range: [0, 1], label: "A neuropsychological assessment was done before the assessment at the expert centre"}
+  earlier_neuropsychology_setting: {column: atcd_npsy2, type: category, codes: {"1": other_asperger_expert_centre, "2": private_practice, "3": community_mental_health_centre, "4": other}, label: "Earlier neuropsychological assessment: where it was done"}
+  earlier_neuropsychology_setting_text: {column: atcd_npsy2a, type: text, label: "Earlier neuropsychological assessment: where it was done, other, free text"}
+  earlier_neuropsychology_date_text: {column: atcd_npsy6, type: text, label: "Earlier neuropsychological assessment: date, as written"}
+  earlier_neuropsychology_age_years: {column: atcd_npsy7a, type: number, range: [0, 70], winsor: false, label: "Earlier neuropsychological assessment: age, years"}
+  earlier_neuropsychology_age_months: {column: atcd_npsy7m, type: number, range: [0, 11], winsor: false, label: "Earlier neuropsychological assessment: age, months above the years"}
+  earlier_neuropsychology_results_available: {column: atcd_npsy8, type: item, range: [0, 1], label: "Earlier neuropsychological assessment: the results are available"}
+  earlier_neuropsychology_results_text: {column: atcd_npsy9, type: text, label: "Earlier neuropsychological assessment: the results, free text"}
+  earlier_neuropsychology_other_centre_text: {column: atcd_npsy2ce, type: text, label: "Earlier neuropsychological assessment: which other Asperger expert centre, free text"}
+  assessment_date: {column: qsdtc, type: date, range: [2005-01-01, 2026-12-31], label: "Date of the neuropsychological assessment"}
+  assessment_comment: {column: passationcom, type: text, label: "Comment on the assessment"}

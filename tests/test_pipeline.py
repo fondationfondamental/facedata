@@ -126,6 +126,12 @@ def assert_invariant(raw, keys, schema):
         flagged_rows = result["flags"].loc[result["flags"]["variable"] == name, "row"]
         lost = filled & result["values"][name].isna() & ~raw.index.isin(flagged_rows)
         assert lost.sum() == 0, f"{name}: {int(lost.sum())} cells lost without a flag"
+    for name, score in schema.get("scores", {}).items():     # a stored score that is not delivered: a score or a flag
+        stored = schema["variables"].get(score.get("compare"), {"keep": True})
+        if score["keep"] and not stored["keep"]:
+            flagged_rows = result["flags"].loc[result["flags"]["variable"] == name, "row"]
+            lost = result["values"][score["compare"]].notna() & result["values"][name].isna() & ~raw.index.isin(flagged_rows)
+            assert lost.sum() == 0, f"{name}: {int(lost.sum())} stored scores lost without a flag"
 
 
 def test_unknown_instrument_and_reused_winsor_limits(folder):
@@ -607,3 +613,22 @@ def test_centre_codes_have_two_digits():
                         "svdtc": ["2015-01-01", "2015-01-02"], "siteid": ["4", "12"]})
     raw, keys, flags = prepare_visits(raw)
     assert list(keys["siteid"]) == ["04", "12"]
+
+
+def test_a_visit_dated_before_the_cohort_opened_has_no_date_and_no_age():
+    raw = pd.DataFrame({"usubjid": ["a", "b", "c"], "visit": ["V0", "V0", "V0"], "id_visit": ["2", "2", "2"],
+                        "visitnum": ["1", "2", "3"], "svdtc": ["2001-05-01", "2015-01-02", "2999-01-01"], "siteid": ["01", "01", "01"],
+                        "brthdtc": ["1990-06-15", "2020-06-15", "1990-06-15"]})
+    raw, keys, flags = prepare_visits(raw, first_day="2010-01-01")
+    assert list(keys["visit_date"].isna()) == [True, False, True]     # before the cohort, and in the future
+    assert keys["age"].isna().all()                                   # the second patient would be minus five years old
+    out_of_range = flags[flags["flag"] == "out_of_range"]
+    assert sorted(zip(out_of_range["row"], out_of_range["variable"])) == [(0, "visit_date"), (1, "age"), (2, "visit_date")]
+
+
+def test_winsorising_can_be_switched_off(folder):
+    clipped = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    as_is = run_cohort(folder / "extraction.tsv", folder / "schemas", winsorise_values=False)
+    assert "winsorised" not in set(as_is.flags["flag"])
+    assert as_is.qc["winsor_low"].isna().all()
+    assert as_is.data.shape == clipped.data.shape

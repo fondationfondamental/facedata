@@ -34,19 +34,55 @@ def uncross(cells, product_columns):
     return kept, True
 
 
+def unpack_cell(cell, n_fields, text_place):
+    """The records packed in one cell, "(a - b - c) | (d - e - f)": one list per field.
+
+    text_place: the place of the field of free text, which may hold " - "
+    itself. A record with fewer parts than fields has its last fields empty.
+    """
+    fields = [[] for place in range(n_fields)]
+    for record in cell.split(" | ") if cell else []:
+        parts = record.strip().removeprefix("(").removesuffix(")").split(" - ")
+        extra = len(parts) - n_fields
+        if extra > 0:                                # the separator is inside the free text
+            parts = parts[:text_place] + [" - ".join(parts[text_place:text_place + extra + 1])] + parts[text_place + extra + 1:]
+        parts = parts + [""] * (n_fields - len(parts))
+        for place, part in enumerate(parts):
+            fields[place].append(part.strip() or None)
+    return fields
+
+
+def unpack(raw, packed):
+    """Add, for each field of the packed columns, a column that holds its values as a list."""
+    added = {}
+    for column, block in packed.items():
+        names = block["fields"]
+        text_place = names.index(block["text"]) if "text" in block else 0
+        cells = raw[column].map(lambda cell: unpack_cell(cell, len(names), text_place))
+        for place, name in enumerate(names):
+            added[name] = cells.map(lambda fields: repr(fields[place]) if fields[place] else "")
+    return pd.concat([raw, pd.DataFrame(added, index=raw.index)], axis=1)
+
+
 def open_lists(raw, keys, schema, label="item "):
     """Open the list cells of an instrument: one row per patient and item.
 
     label: what the flag log writes before the number of the item. Returns
     the items as a table of text (like an extraction, with one row per item),
-    the key columns of the items, and the flags.
+    the key columns of the items, and the flags. With per_visit, the list of
+    every row is opened: one row per visit and item.
     """
+    if "packed" in schema:
+        raw = unpack(raw, schema["packed"])
     columns = list_columns(schema)
     has_list = (raw[columns] != "").any(axis=1)
-    # Every row of a patient holds the same lists: the first row is read.
-    first = keys[has_list].sort_values("visit_order").groupby("usubjid").head(1).index
-    whole = raw.loc[has_list, columns].agg("|".join, axis=1)
-    n_versions = whole.groupby(keys["usubjid"][has_list]).nunique()
+    if schema.get("per_visit"):                      # the list of the visit: every row is read
+        first = keys[has_list].index
+        n_versions = pd.Series(dtype=int)
+    else:                                            # every row of a patient holds the same lists: the first row is read
+        first = keys[has_list].sort_values("visit_order").groupby("usubjid").head(1).index
+        whole = raw.loc[has_list, columns].agg("|".join, axis=1)
+        n_versions = whole.groupby(keys["usubjid"][has_list]).nunique()
     lists = raw.loc[first, columns].map(lambda cell: ast.literal_eval(cell) if cell else [])
     longest = lists.map(len).max(axis=1)
     lists, longest = lists[longest > 0], longest[longest > 0]
@@ -62,8 +98,13 @@ def open_lists(raw, keys, schema, label="item "):
     items = opened.map(lambda value: "" if pd.isna(value) else str(value)).reset_index(drop=True)
 
     item_keys = keys.loc[opened.index, KEY_COLUMNS].reset_index(drop=True)
-    item_keys["visit_order"] = item_keys.groupby("usubjid").cumcount() + 1
-    item_keys["visit"] = label + item_keys["visit_order"].astype(str)
+    if schema.get("per_visit"):                      # numbered inside the visit, whose name is kept
+        item_keys["of_visit"] = item_keys["visit"]
+        item_keys["visit_order"] = item_keys.groupby(["usubjid", "of_visit"]).cumcount() + 1
+        item_keys["visit"] = item_keys["of_visit"] + " " + label + item_keys["visit_order"].astype(str)
+    else:
+        item_keys["visit_order"] = item_keys.groupby("usubjid").cumcount() + 1
+        item_keys["visit"] = label + item_keys["visit_order"].astype(str)
     item_keys["visit_month"] = np.nan
     varying = item_keys["usubjid"].isin(n_versions.index[n_versions > 1]) & (item_keys["visit_order"] == 1)
     flags = stack_flags([make_flags(varying, name, "patient_value_varies") for name in schema["variables"]])
@@ -76,6 +117,10 @@ def open_lists(raw, keys, schema, label="item "):
     if "names" in schema:
         block = schema["names"]
         found = look_up_names(items[block["column"]], block)
+        if "otherwise" in block:                     # a second column of names, read where the first gives nothing
+            second = look_up_names(items[block["otherwise"]], block)
+            nothing = found[block["gives"][0]] == ""
+            found[nothing] = second[nothing]
         items = pd.concat([items, found], axis=1)
         unknown = (items[block["column"]] != "") & (found[block["gives"][0]] == "")
         name = [name for name, variable in schema["variables"].items() if variable["columns"] == [block["gives"][0]]]

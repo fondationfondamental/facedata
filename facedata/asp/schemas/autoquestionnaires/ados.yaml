@@ -1,0 +1,37 @@
+instrument: ados
+title: "Autism Diagnostic Observation Schedule (ADOS): the session"
+tab: autoquestionnaires
+section: diagnostic instruments
+status: draft
+notes: >
+  What is recorded for every ADOS, whatever its module: whether it was done,
+  its date, the age, the module, the total and the conclusion. 2021 inclusion
+  visits and 161 follow-up visits, from 2011 to 2026.
+
+  The module entered is the module 3 on 800 visits (children and adolescents with
+  fluent speech), the module 4 on 1372 (adolescents and adults) and the module 2
+  on 9. The items and the algorithm scores of each module are in the
+  instruments ados_module2, ados_module3 and ados_module4: the modules do not
+  have the same items, so they are not delivered in the same columns.
+
+  ados_total_recorded is the total of the summary line: the stored total of
+  the module entered, on 796 of 796 visits of the module 3 and on 1,350 of 1,350 of
+  the module 4. It so carries the error of the stored totals of the first
+  edition (a code 3 counted 3). **Use the total of the module** (ados3_total,
+  ados4_total), which is recomputed. ados_positive is the conclusion as recorded: it is "yes" on 1672 of the
+  1685 visits classified autism or autism spectrum by the module, and "no" on
+  438 of the 445 classified non-spectrum. ados_done is 1 on 2189 visits and
+  0 on 154; the module is filled on 2182 and 0 of them: 1 is read as "done".
+
+  The name of the examiner (adosexam) is not delivered (ignored.yaml).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  ados_done: {column: adosnf, type: category, label: "ADOS done", codes: {"0": "no", "1": "yes"}}
+  ados_date: {column: ados_date, type: date, label: "Date of the ADOS"}
+  ados_age_years: {column: adosan, type: number, label: "Age at the ADOS, years", range: [2, 70], unit: years, winsor: false}
+  ados_age_months: {column: adosmois, type: number, label: "Age at the ADOS, months beyond the years", range: [0, 11], unit: months, winsor: false}
+  ados_module: {column: modsaisi, type: category, label: "ADOS module", codes: {"1": module_1, "2": module_2, "3": module_3, "4": module_4}}
+  ados_total_recorded: {column: ados_tot, type: number, label: "ADOS total of the summary line, as stored (two algorithms in one column: not delivered)", range: [0, 30], winsor: false, keep: false}
+  ados_positive: {column: ados_diag, type: category, label: "ADOS above the spectrum cut-off, as recorded", codes: {"0": "no", "1": "yes"}}

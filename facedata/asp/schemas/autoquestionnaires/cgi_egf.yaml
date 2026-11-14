@@ -1,0 +1,36 @@
+instrument: cgi_egf
+title: "CGI severity and Global Assessment of Functioning"
+tab: autoquestionnaires
+section: clinician ratings
+status: draft
+notes: >
+  The severity item of the Clinical Global Impression (1 to 7) and the Global
+  Assessment of Functioning (EGF, 1 to 100): 1252 and 1226 inclusion visits,
+  120 and 125 follow-up visits, from 2013 to 2026. Children and adults.
+
+  Same two ratings as in FACE BP, SZ and DR, in other columns (gravmdi,
+  egfval), delivered under the same names. The improvement and the efficacy
+  index of the CGI are not in this extraction.
+
+  cgi_changed and gaf_changed are the boxes "changed since the last visit" of
+  the follow-up form. At follow-up the severity is filled on 72 of the 73
+  visits where the box is "yes" and on 48 of the 138 where it is "no". The boxes
+  are also filled at the inclusion visit until 2021 (385 visits), as the other
+  boxes of this kind in the old forms (D5); they say nothing there.
+
+defaults: {type: item}
+
+variables:
+  cgi_severity:
+    column: gravmdi
+    label: "CGI severity of illness, from 1 (normal) to 7 (among the most ill)"
+    range: [1, 7]
+    missing: {"0": not_recorded}       # "not assessed" in the thesaurus
+  cgi_changed: {column: cgichang, type: category, label: "CGI changed since the last visit (box of the follow-up form)", codes: {"0": "no", "1": "yes"}}
+  gaf:
+    column: egfval
+    label: "Global Assessment of Functioning (EGF), from 1 to 100"
+    type: number
+    range: [1, 100]
+    winsor: false
+  gaf_changed: {column: egfchang, type: category, label: "GAF changed since the last visit (box of the follow-up form)", codes: {"0": "no", "1": "yes"}}

@@ -1,0 +1,84 @@
+instrument: tas20
+title: "Toronto Alexithymia Scale (TAS-20)"
+tab: autoquestionnaires_old_part2
+section: old questionnaires
+status: draft
+notes: >
+  Twenty items answered from 1 to 5, three factor scores and a total:
+  33 inclusion visits (27 of children) and 8 follow-up visits, from 2013 to 2015. It belongs to the old set of forms; the children's alexithymia questionnaire and
+  the BVAQ replace it in the new set.
+
+  Identified from its name and its twenty items as the TAS-20 (Bagby and
+  others, 1994), sure: the stored total and the externally oriented
+  factor follow the published key, with its five reversed items (4, 5, 10, 18
+  and 19). **The two other stored factors swap the items 7 and 11**: the
+  publication puts the item 7 in "identifying" and the item 11 in
+  "describing". The factors delivered follow the publication; two scores "as
+  stored" reproduce the EMR to check the stored columns, and are not delivered.
+
+  The scores, each fitted on the data:
+
+  - TAS-20 difficulty describing feelings: the sum of 5 items (2, 4, 11, 12 and 17; reversed: 4); the stored score counts the item 7 for the item 11 (38 of 38 complete visits).
+  - TAS-20 difficulty identifying feelings: the sum of 7 items (1, 3, 6, 7, 9, 13 and 14); the stored score counts the item 11 for the item 7 (38 of 38 complete visits).
+  - TAS-20 externally oriented thinking: the sum of 8 items (5, 8, 10, 15, 16, 18, 19 and 20; reversed: 5, 10, 18 and 19), equal to the stored score on 38 of 38 complete visits.
+  - TAS-20 total (20 to 100): the sum of 20 items (reversed: 4, 5, 10, 18 and 19), equal to the stored score on 38 of 38 complete visits.
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [1, 5]}
+
+variables:
+  tas01: {column: tas1, label: "TAS-20, item 1"}
+  tas02: {column: tas2, label: "TAS-20, item 2"}
+  tas03: {column: tas3, label: "TAS-20, item 3"}
+  tas04: {column: tas4, label: "TAS-20, item 4"}
+  tas05: {column: tas5, label: "TAS-20, item 5"}
+  tas06: {column: tas6, label: "TAS-20, item 6"}
+  tas07: {column: tas7, label: "TAS-20, item 7"}
+  tas08: {column: tas8, label: "TAS-20, item 8"}
+  tas09: {column: tas9, label: "TAS-20, item 9"}
+  tas10: {column: tas10, label: "TAS-20, item 10"}
+  tas11: {column: tas11, label: "TAS-20, item 11"}
+  tas12: {column: tas12, label: "TAS-20, item 12"}
+  tas13: {column: tas13, label: "TAS-20, item 13"}
+  tas14: {column: tas14, label: "TAS-20, item 14"}
+  tas15: {column: tas15, label: "TAS-20, item 15"}
+  tas16: {column: tas16, label: "TAS-20, item 16"}
+  tas17: {column: tas17, label: "TAS-20, item 17"}
+  tas18: {column: tas18, label: "TAS-20, item 18"}
+  tas19: {column: tas19, label: "TAS-20, item 19"}
+  tas20: {column: tas20, label: "TAS-20, item 20"}
+  tas_describing_stored: {column: score_tas_1, type: number, range: [5, 25], winsor: false, keep: false, label: "TAS-20 difficulty describing feelings, as stored"}
+  tas_identifying_stored: {column: score_tas_2, type: number, range: [7, 35], winsor: false, keep: false, label: "TAS-20 difficulty identifying feelings, as stored"}
+  tas_externally_oriented_stored: {column: score_tas_3, type: number, range: [8, 40], winsor: false, keep: false, label: "TAS-20 externally oriented thinking, as stored"}
+  tas_total_stored: {column: score_tas_tot, type: number, range: [20, 100], winsor: false, keep: false, label: "TAS-20 total (20 to 100), as stored"}
+
+scores:
+  tas_describing:
+    label: "TAS-20 difficulty describing feelings (items 2, 4, 11, 12 and 17)"
+    sum: [tas02, tas04, tas11, tas12, tas17]
+    reverse: [tas04]
+  tas_describing_as_stored:
+    label: "TAS-20 difficulty describing feelings as the EMR counts it (the item 7 for the item 11), to check the stored score"
+    sum: [tas02, tas04, tas07, tas12, tas17]
+    reverse: [tas04]
+    compare: tas_describing_stored
+    keep: false
+  tas_identifying:
+    label: "TAS-20 difficulty identifying feelings (items 1, 3, 6, 7, 9, 13 and 14)"
+    sum: [tas01, tas03, tas06, tas07, tas09, tas13, tas14]
+  tas_identifying_as_stored:
+    label: "TAS-20 difficulty identifying feelings as the EMR counts it (the item 11 for the item 7), to check the stored score"
+    sum: [tas01, tas03, tas06, tas09, tas11, tas13, tas14]
+    compare: tas_identifying_stored
+    keep: false
+  tas_externally_oriented:
+    label: "TAS-20 externally oriented thinking"
+    sum: [tas05, tas08, tas10, tas15, tas16, tas18, tas19, tas20]
+    reverse: [tas05, tas10, tas18, tas19]
+    compare: tas_externally_oriented_stored
+  tas_total:
+    label: "TAS-20 total (20 to 100)"
+    sum: [tas01, tas02, tas03, tas04, tas05, tas06, tas07, tas08, tas09, tas10, tas11, tas12, tas13, tas14, tas15, tas16, tas17, tas18, tas19, tas20]
+    reverse: [tas04, tas05, tas10, tas18, tas19]
+    compare: tas_total_stored

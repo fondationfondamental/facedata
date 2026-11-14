@@ -1,0 +1,34 @@
+instrument: barona
+title: "Expected IQ from occupation and education (Barona)"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  The occupation (885 inclusion visits) and the level of education (803) that
+  the form asks before the WAIS-IV, an expected full-scale IQ (qita, 241
+  visits) and a difference (qitdif, 131 visits). The Barona estimate, as in
+  FACE SZ: an IQ expected from demographic variables, which is why it holds
+  decimals (the thesaurus calls it the expected IQ of Barona). The difference
+  is the expected IQ minus the full-scale IQ of the neuropsychology form on
+  every one of the 131 visits that hold the three numbers.
+
+  The two lists are exported as numbers and named from the thesaurus; the code
+  0 of the occupation and the code 8 of the education are not in its lists
+  (O16).
+
+  In FACE SZ the occupation is most often a copy of the rank of the diploma.
+  Not here: the two codes are equal on 117 of 805 visits, which is what
+  chance gives.
+
+  qita_a is an exact copy of qita (ignored.yaml).
+
+  Same instrument as in FACE SZ, in other columns; lists as numbers.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  barona_occupation: {column: w4_profession, type: category, codes: {"0": code_0, "1": manual_worker, "2": employee, "3": farmer, "4": craft_trade, "5": retired, "6": intermediate, "7": higher_professional, "8": no_occupation}, label: "Occupation used for the Barona estimate (the code 0 is not documented)"}
+  barona_education: {column: w4_nivetude, type: category, codes: {"1": no_diploma, "2": primary_certificate, "3": vocational_certificate, "4": vocational_baccalaureate, "5": general_baccalaureate, "6": university_first_cycle, "7": university_higher, "8": code_8}, label: "Level of education used for the Barona estimate (the code 8 is not documented)"}
+  barona_expected_qit: {column: qita, range: [70, 130], label: "Expected full-scale IQ"}
+  barona_qit_difference: {column: qitdif, range: [-70, 80], label: "Expected full-scale IQ minus the measured one, as stored"}
+  barona_qit_difference_a: {column: qitdif_a, range: [-70, 80], label: "Expected full-scale IQ minus the measured IQ of the abbreviated form, as stored"}

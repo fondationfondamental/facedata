@@ -1,0 +1,98 @@
+instrument: nfs
+title: "Blood count"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  Ten values of the blood count, on about 491 inclusion visits. Same analytes,
+  names, target units and ranges as in FACE SZ and DR.
+
+  The extraction has no unit column for these analytes (open question O6):
+  the unit is read from the size of the value, and a result that only another
+  unit explains is converted and flagged unit_inferred.
+
+  What the values show: 113 haemoglobin results are in g/L and are converted
+  to g/dL. A few differential counts are percentages of the leukocytes
+  (6 lymphocyte results of 12 or more, 10 monocyte results of 2.5 or more) and are
+  converted with the leukocytes of the visit. 13 mean corpuscular volumes are
+  under 50 fL, which no unit explains (out_of_range).
+
+defaults: {type: number}
+
+variables:
+  leukocytes:
+    label: Leukocytes
+    column: wbc
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0.5, 100]}
+    range: [0.5, 100]
+  erythrocytes:
+    label: Erythrocytes
+    column: rbc
+    unit: "T/L"
+    units:
+      "T/L": {factor: 1, expect: [1.5, 8]}
+    range: [1.5, 8]
+  haemoglobin:
+    label: Haemoglobin
+    column: hgb
+    unit: "g/dL"
+    units:
+      "g/dL": {factor: 1, expect: [5, 25]}
+      "g/L": {factor: 0.1, expect: [50, 250]}
+    range: [5, 25]
+  neutrophils:
+    label: Neutrophils
+    column: neut
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0, 25]}
+      "%": {percent_of: leukocytes, expect: [25, 100]}
+    range: [0, 25]
+  basophils:
+    label: Basophils
+    column: baso
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0, 0.3]}
+      "%": {percent_of: leukocytes, expect: [0.3, 5]}
+    range: [0, 0.3]
+  eosinophils:
+    label: Eosinophils
+    column: eos
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0, 1.5]}
+      "%": {percent_of: leukocytes, expect: [1.5, 15]}
+    range: [0, 5]
+  lymphocytes:
+    label: Lymphocytes
+    column: lym
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0, 12]}
+      "%": {percent_of: leukocytes, expect: [12, 100]}
+    range: [0, 12]
+  monocytes:
+    label: Monocytes
+    column: mono
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [0, 2.5]}
+      "%": {percent_of: leukocytes, expect: [2.5, 25]}
+    range: [0, 2.5]
+  mcv:
+    label: Mean corpuscular volume
+    column: mcv
+    unit: "fL"
+    units:
+      "fL": {factor: 1, expect: [50, 130]}
+    range: [50, 130]
+  platelets:
+    label: Platelets
+    column: plat
+    unit: "G/L"
+    units:
+      "G/L": {factor: 1, expect: [10, 1500]}
+    range: [10, 1500]

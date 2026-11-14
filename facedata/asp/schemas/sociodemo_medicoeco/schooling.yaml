@@ -1,0 +1,55 @@
+instrument: schooling
+title: "Schooling"
+tab: sociodemo_medicoeco
+section: social and medico-economic
+status: draft
+notes: >
+  The school history: ordinary schooling, repeated years, support at school
+  and its kind, the highest class reached, and the time at school.
+  2134 inclusion visits (866 of children, 1268 of adults) and 266 follow-up visits, from 2011 to 2026.
+
+  The form was first read without a dictionary; the labels and the lists of
+  answers are now those of the thesaurus V2.13, which corrected several
+  meanings guessed from the column names (PROGRESS.md D14). The output names
+  stay the column names. A 9 is "not known". A support at school is reported
+  for 420 of 2018 inclusion visits with an answer; its kind (assistant,
+  specialised class, SESSAD, IME, day hospital...) is asked after a yes. The
+  highest class is free text (1904 visits, 586 different spellings): it is
+  delivered as written. The three boxes redoubc and the three boxes tempscola
+  hold a 0 or a 1 on every visit that has the form. The questions on full-time
+  schooling and on time out of school are asked from 2019. dmochang is a box of
+  the follow-up form.
+
+  A section of the ASP cohort only.
+
+variables:
+  dmochang: {column: dmochang, type: item, label: "Schooling: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  passcola: {column: passcola, type: item, label: "Schooling: never went to school (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  sconorm: {column: sconorm, type: item, label: "Schooling: ordinary schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  redoubc_1: {column: redoubc_1, type: item, label: "Schooling: repeated a year in nursery school (box) (0 no, 1 yes)", range: [0, 1]}
+  redoubc_2: {column: redoubc_2, type: item, label: "Schooling: repeated a year in primary school (box) (0 no, 1 yes)", range: [0, 1]}
+  redoubc_3: {column: redoubc_3, type: item, label: "Schooling: repeated a year in secondary school (box) (0 no, 1 yes)", range: [0, 1]}
+  tpscomp: {column: tpscomp, type: item, label: "Schooling: full-time schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  scolass: {column: scolass, type: item, label: "Schooling: assisted or specialised schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  nivas: {column: nivas, type: item, label: "Schooling: level of the assisted or specialised schooling (1 nursery, 2 primary, 3 secondary)", range: [1, 3]}
+  auxviesc_1: {column: auxviesc_1, type: number, label: "Schooling: hours a week the child receives specific help in class", range: [0, 200], winsor: false}
+  auxviesc_2: {column: auxviesc_2, type: category, label: "Schooling: status of the school assistant (AESH or AVS), public or private", codes: {"1": public, "2": private}}
+  auxviesc: {column: auxviesc, type: item, label: "Schooling: school assistant (AVS) or school life job (EVS) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  rased: {column: rased, type: item, label: "Schooling: specialised support network for pupils in difficulty (RASED) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  acspec: {column: acspec, type: item, label: "Schooling: specialised support worker (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  sessad: {column: sessad, type: item, label: "Schooling: special education and home care service (SESSAD) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  segpa: {column: segpa, type: item, label: "Schooling: adapted secondary education (SEGPA, SES, EREA) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  mfr: {column: mfr, type: item, label: "Schooling: rural family training school (MFR) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  clissupi: {column: clissupi, type: item, label: "Schooling: school inclusion class or unit for autism (CLIS or UPI) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  ime: {column: ime, type: item, label: "Schooling: medico-educational institute (IME) or other medico-social structure, e.g. IMPro (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  hopjour: {column: hopjour, type: item, label: "Schooling: day hospital or other health care structure (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  scolassc: {column: scolassc, type: item, label: "Schooling: other assisted or specialised schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  scolassa: {column: scolassa, type: text, label: "Schooling: other assisted or specialised schooling, which, free text"}
+  nivmaxc: {column: nivmaxc, type: text, label: "Schooling: highest level reached, class from first primary year (CP) to doctorate, free text"}
+  sd_edulevel: {column: edulevel, type: number, label: "Schooling: number of years of education, as stored (adults and children seem to count on two scales: open question O17)", range: [0, 200], winsor: false}
+  tempscola_1: {column: tempscola_1, type: item, label: "Schooling: time at school when schooled outside the home, full time (box) (0 no, 1 yes)", range: [0, 1]}
+  tempscola_2: {column: tempscola_2, type: item, label: "Schooling: time at school when schooled outside the home, half days (box) (0 no, 1 yes)", range: [0, 1]}
+  tempscola_3: {column: tempscola_3, type: item, label: "Schooling: time at school when schooled outside the home, other (box) (0 no, 1 yes)", range: [0, 1]}
+  tempscolaa: {column: tempscolaa, type: text, label: "Schooling: time at school when schooled outside the home, other, which, free text"}
+  descola: {column: descola, type: item, label: "Schooling: the child has ever been out of school (0 no, 1 yes)", range: [0, 1]}
+  descola_1: {column: descola_1, type: number, label: "Schooling: time out of school, weeks", range: [0, 200], winsor: false}

@@ -1,0 +1,30 @@
+instrument: work
+title: "Work and living situation"
+tab: sociodemo_medicoeco
+section: social and medico-economic
+status: draft
+notes: >
+  The professional status, the length and the class of the job, sick leaves
+  and the living situation: 875 inclusion visits (369 of children, 506 of adults) and 64 follow-up visits, from 2020 to 2026.
+
+  The section belongs to the form added in 2020 and 2021 (its first
+  questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
+  an earlier visit is "not asked", not missing.
+
+  The form was first read without a dictionary; the labels and the lists of
+  answers are now those of the thesaurus V2.13, which corrected several
+  meanings guessed from the column names (PROGRESS.md D14). The output names
+  stay the column names.
+
+  A section of the ASP cohort only.
+
+variables:
+  stpro1: {column: stpro1, type: item, label: "Work and living situation: had one or more work contracts in the last 12 months (0 no, 1 yes)", range: [0, 1]}
+  paral1: {column: paral1, type: item, label: "Work and living situation: the work was alongside studies (0 no, 1 yes)", range: [0, 1]}
+  paral2: {column: paral2, type: item, label: "Work and living situation: the work was part of an apprenticeship (0 no, 1 yes)", range: [0, 1]}
+  jobdur: {column: jobdur, type: number, label: "Work and living situation: total length of the work contracts in the last 12 months, sick leave included", range: [0, 200], winsor: false}
+  job_full_time: {column: jobclas, type: item, range: [0, 1], codes: {"1": 1, "2": 0}, label: "Work and living situation: the work contract is full time (1) or part time (0)"}
+  sick_leave_12m: {column: hoocur_arret_travail, type: item, range: [0, 1], codes: {"1": 1, "2": 0, "0": 0}, label: "Work and living situation: off work during the work contracts of the last 12 months (the extraction writes no as 2, rarely 0)"}
+  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, label: "Work and living situation: sick leave during these work contracts, weeks"}
+  stpro2: {column: stpro2, type: category, label: "Work and living situation: situation when there was no work contract in the last 12 months", codes: {"8": minor_under_18, "3": student, "5": homemaker, "7": disability_because_of_illness, "0": without_employment}}
+  sd_lvsbjind: {column: lvsbjind, type: category, label: "Work and living situation: main kind of housing", codes: {"1": own_home, "2": family_home, "6": with_a_third_party, "9": supervised_therapeutic_flat, "7": medico_social_establishment, "10": boarding_school, "11": hostel, "8": other}}

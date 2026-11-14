@@ -54,6 +54,7 @@ SEVERITY = {
     "band_middle": "discrepancy",
     "column_conflict": "discrepancy",
     "score_mismatch": "discrepancy",
+    "score_as_stored": "discrepancy",
     "derived_doubt": "discrepancy",
     "patient_value_varies": "discrepancy",
     "list_crossed": "discrepancy",
@@ -66,6 +67,7 @@ SEVERITY = {
     "unit_unknown": "danger",
     "version_unknown": "danger",
     "norm_missing": "danger",
+    "score_not_recomputed": "danger",
 }
 
 FLAG_COLUMNS = ["usubjid", "visit", "variable", "raw", "value", "flag", "severity", "detail"]

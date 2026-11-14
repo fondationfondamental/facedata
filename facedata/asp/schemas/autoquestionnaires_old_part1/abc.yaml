@@ -1,0 +1,113 @@
+instrument: abc
+title: "Aberrant Behavior Checklist (ABC)"
+tab: autoquestionnaires_old_part1
+section: old questionnaires
+status: draft
+notes: >
+  Fifty-eight items answered from 0 to 3 and five sub-scale scores: 192 inclusion visits (50 of children) and 71 follow-up visits,
+  from 2013 to 2018. It belongs to the old set of forms.
+
+  Identified from its name, its fifty-eight items and its five sub-scales as
+  the Aberrant Behavior Checklist (Aman and others, 1985), sure: the five
+  stored scores have the items of the published sub-scales (irritability 15
+  items, lethargy and social withdrawal 16, stereotypy 7, hyperactivity 16,
+  inappropriate speech 4).
+
+  The scores, each fitted on the data:
+
+  - ABC irritability: the sum of 15 items, equal to the stored score on 227 of 227 complete visits.
+  - ABC lethargy and social withdrawal: the sum of 16 items, equal to the stored score on 227 of 227 complete visits.
+  - ABC stereotypy: the sum of 7 items (6, 11, 17, 27, 35, 45 and 49), equal to the stored score on 227 of 227 complete visits.
+  - ABC hyperactivity: the sum of 16 items, equal to the stored score on 227 of 227 complete visits.
+  - ABC inappropriate speech: the sum of 4 items (9, 22, 33 and 46), equal to the stored score on 227 of 227 complete visits.
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  abc01: {column: abc1, label: "ABC, item 1"}
+  abc02: {column: abc2, label: "ABC, item 2"}
+  abc03: {column: abc3, label: "ABC, item 3"}
+  abc04: {column: abc4, label: "ABC, item 4"}
+  abc05: {column: abc5, label: "ABC, item 5"}
+  abc06: {column: abc6, label: "ABC, item 6"}
+  abc07: {column: abc7, label: "ABC, item 7"}
+  abc08: {column: abc8, label: "ABC, item 8"}
+  abc09: {column: abc9, label: "ABC, item 9"}
+  abc10: {column: abc10, label: "ABC, item 10"}
+  abc11: {column: abc11, label: "ABC, item 11"}
+  abc12: {column: abc12, label: "ABC, item 12"}
+  abc13: {column: abc13, label: "ABC, item 13"}
+  abc14: {column: abc14, label: "ABC, item 14"}
+  abc15: {column: abc15, label: "ABC, item 15"}
+  abc16: {column: abc16, label: "ABC, item 16"}
+  abc17: {column: abc17, label: "ABC, item 17"}
+  abc18: {column: abc18, label: "ABC, item 18"}
+  abc19: {column: abc19, label: "ABC, item 19"}
+  abc20: {column: abc20, label: "ABC, item 20"}
+  abc21: {column: abc21, label: "ABC, item 21"}
+  abc22: {column: abc22, label: "ABC, item 22"}
+  abc23: {column: abc23, label: "ABC, item 23"}
+  abc24: {column: abc24, label: "ABC, item 24"}
+  abc25: {column: abc25, label: "ABC, item 25"}
+  abc26: {column: abc26, label: "ABC, item 26"}
+  abc27: {column: abc27, label: "ABC, item 27"}
+  abc28: {column: abc28, label: "ABC, item 28"}
+  abc29: {column: abc29, label: "ABC, item 29"}
+  abc30: {column: abc30, label: "ABC, item 30"}
+  abc31: {column: abc31, label: "ABC, item 31"}
+  abc32: {column: abc32, label: "ABC, item 32"}
+  abc33: {column: abc33, label: "ABC, item 33"}
+  abc34: {column: abc34, label: "ABC, item 34"}
+  abc35: {column: abc35, label: "ABC, item 35"}
+  abc36: {column: abc36, label: "ABC, item 36"}
+  abc37: {column: abc37, label: "ABC, item 37"}
+  abc38: {column: abc38, label: "ABC, item 38"}
+  abc39: {column: abc39, label: "ABC, item 39"}
+  abc40: {column: abc40, label: "ABC, item 40"}
+  abc41: {column: abc41, label: "ABC, item 41"}
+  abc42: {column: abc42, label: "ABC, item 42"}
+  abc43: {column: abc43, label: "ABC, item 43"}
+  abc44: {column: abc44, label: "ABC, item 44"}
+  abc45: {column: abc45, label: "ABC, item 45"}
+  abc46: {column: abc46, label: "ABC, item 46"}
+  abc47: {column: abc47, label: "ABC, item 47"}
+  abc48: {column: abc48, label: "ABC, item 48"}
+  abc49: {column: abc49, label: "ABC, item 49"}
+  abc50: {column: abc50, label: "ABC, item 50"}
+  abc51: {column: abc51, label: "ABC, item 51"}
+  abc52: {column: abc52, label: "ABC, item 52"}
+  abc53: {column: abc53, label: "ABC, item 53"}
+  abc54: {column: abc54, label: "ABC, item 54"}
+  abc55: {column: abc55, label: "ABC, item 55"}
+  abc56: {column: abc56, label: "ABC, item 56"}
+  abc57: {column: abc57, label: "ABC, item 57"}
+  abc58: {column: abc58, label: "ABC, item 58"}
+  abc_irritability_stored: {column: abc_irrit, type: number, range: [0, 45], winsor: false, keep: false, label: "ABC irritability, as stored"}
+  abc_lethargy_stored: {column: abc_leth, type: number, range: [0, 48], winsor: false, keep: false, label: "ABC lethargy and social withdrawal, as stored"}
+  abc_stereotypy_stored: {column: abc_stereo, type: number, range: [0, 21], winsor: false, keep: false, label: "ABC stereotypy, as stored"}
+  abc_hyperactivity_stored: {column: abc_hyact, type: number, range: [0, 48], winsor: false, keep: false, label: "ABC hyperactivity, as stored"}
+  abc_inappropriate_speech_stored: {column: abc_ispeech, type: number, range: [0, 12], winsor: false, keep: false, label: "ABC inappropriate speech, as stored"}
+
+scores:
+  abc_irritability:
+    label: "ABC irritability"
+    sum: [abc02, abc04, abc08, abc10, abc14, abc19, abc25, abc29, abc34, abc36, abc41, abc47, abc50, abc52, abc57]
+    compare: abc_irritability_stored
+  abc_lethargy:
+    label: "ABC lethargy and social withdrawal"
+    sum: [abc03, abc05, abc12, abc16, abc20, abc23, abc26, abc30, abc32, abc37, abc40, abc42, abc43, abc53, abc55, abc58]
+    compare: abc_lethargy_stored
+  abc_stereotypy:
+    label: "ABC stereotypy"
+    sum: [abc06, abc11, abc17, abc27, abc35, abc45, abc49]
+    compare: abc_stereotypy_stored
+  abc_hyperactivity:
+    label: "ABC hyperactivity"
+    sum: [abc01, abc07, abc13, abc15, abc18, abc21, abc24, abc28, abc31, abc38, abc39, abc44, abc48, abc51, abc54, abc56]
+    compare: abc_hyperactivity_stored
+  abc_inappropriate_speech:
+    label: "ABC inappropriate speech"
+    sum: [abc09, abc22, abc33, abc46]
+    compare: abc_inappropriate_speech_stored

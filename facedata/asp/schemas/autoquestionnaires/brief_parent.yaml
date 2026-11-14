@@ -1,0 +1,177 @@
+instrument: brief_parent
+title: "BRIEF"
+tab: autoquestionnaires
+section: child and parent questionnaires
+status: draft
+notes: >
+  The Behavior Rating Inventory of Executive Function filled by a parent for a
+  child (Gioia and others, 2000): 86 items answered from 1 to 3, eight scale
+  scores, two indexes and the composite, two validity scores and the rater.
+  704 inclusion visits and 129 follow-up visits, from 2013 to 2026.
+
+  **Two forms in the same columns, found in the data.** A visit holds either
+  86 items or 75: 581 visits hold an item beyond the 75th (580 of them are
+  children) and 591 hold the first 75 only (584 are adults). The first is the
+  form filled by a parent for a child (BRIEF, 86 items, eight scales), the
+  second the form of adults (BRIEF-A, 75 items, nine scales): the scale
+  self-monitor (brief_score4) and the infrequency score (brief_if) exist on the
+  visits of adults only. The two forms are two instruments (brief_parent and
+  brief_adult) with their own columns, and brief_form says which one a visit
+  holds. A visit is read as the form of adults when it holds one of the two
+  scores that only that form has, and as the form of children otherwise;
+  9 visits hold the first 75 items and no such score and are read as the
+  form of children.
+
+  The scores, each fitted on the data of this form (raw sums of answers from 1
+  to 3; no T-score is stored):
+
+  - inhibit: 10 items (38, 41, 43, 44, 49, 54, 55, 56, 59 and 65), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - shift: 8 items (5, 6, 8, 12, 13, 23, 30 and 39), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - emotional control: 10 items (1, 7, 20, 25, 26, 45, 50, 62, 64 and 70), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - initiate: 8 items (3, 10, 16, 47, 48, 61, 66 and 71), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - working memory: 10 items (2, 9, 17, 19, 24, 27, 32, 33, 37 and 57), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - plan and organize: 12 items (11, 15, 18, 22, 28, 35, 36, 40, 46, 51, 53 and 58), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - monitor: 8 items (14, 21, 31, 34, 42, 52, 60 and 63), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - organization of materials: 6 items (4, 29, 67, 68, 69 and 72), equal to the stored score on 545 of 545 complete visits; typed without the items on 265 visits.
+  - Behavioral Regulation Index: the sum of 3 scales (28 items), equal to the stored score on 545 of 545 complete visits.
+  - Metacognition Index: the sum of 5 scales (44 items), equal to the stored score on 545 of 545 complete visits.
+  - Global Executive Composite: the sum of 8 scales (72 items), equal to the stored score on 545 of 545 complete visits.
+
+  The names of the scales are those of the published profile, matched by the
+  number of items of each scale and their order: likely, to be confirmed with
+  the form (O12). A scale score typed without the items is kept as stored; a
+  few typed values are above the highest possible sum (a T-score typed in
+  place of the raw score) and are out_of_range. The validity scores do not
+  come from a plain sum and are delivered as stored.
+
+  An instrument of the ASP cohort only.
+
+version:
+  name: brief_form
+  filled:                            # tested top to bottom, first match wins
+    brief_adult: [brief_score4, brief_if]
+    brief_parent: [brief1, brief2, brief3, brief4, brief5, brief6, brief7, brief8, brief9, brief10, brief11, brief12, brief13, brief14, brief15, brief16, brief17, brief18, brief19, brief20, brief21, brief22, brief23, brief24, brief25, brief26, brief27, brief28, brief29, brief30, brief31, brief32, brief33, brief34, brief35, brief36, brief37, brief38, brief39, brief40, brief41, brief42, brief43, brief44, brief45, brief46, brief47, brief48, brief49, brief50, brief51, brief52, brief53, brief54, brief55, brief56, brief57, brief58, brief59, brief60, brief61, brief62, brief63, brief64, brief65, brief66, brief67, brief68, brief69, brief70, brief71, brief72, brief73, brief74, brief75, brief76, brief77, brief78, brief79, brief80, brief81, brief82, brief83, brief84, brief85, brief86, brief_rel, brief_rela, brief_cone, brief_cona, brief_bri, brief_mi, brief_gec, brief_is, brief_ns, brief_score1, brief_score2, brief_score3, brief_score5, brief_score6, brief_score7, brief_score8, brief_score9]
+
+defaults: {type: item, range: [1, 3], versions: [brief_parent]}
+
+variables:
+  briefp01: {column: brief1, label: "BRIEF, item 1"}
+  briefp02: {column: brief2, label: "BRIEF, item 2"}
+  briefp03: {column: brief3, label: "BRIEF, item 3"}
+  briefp04: {column: brief4, label: "BRIEF, item 4"}
+  briefp05: {column: brief5, label: "BRIEF, item 5"}
+  briefp06: {column: brief6, label: "BRIEF, item 6"}
+  briefp07: {column: brief7, label: "BRIEF, item 7"}
+  briefp08: {column: brief8, label: "BRIEF, item 8"}
+  briefp09: {column: brief9, label: "BRIEF, item 9"}
+  briefp10: {column: brief10, label: "BRIEF, item 10"}
+  briefp11: {column: brief11, label: "BRIEF, item 11"}
+  briefp12: {column: brief12, label: "BRIEF, item 12"}
+  briefp13: {column: brief13, label: "BRIEF, item 13"}
+  briefp14: {column: brief14, label: "BRIEF, item 14"}
+  briefp15: {column: brief15, label: "BRIEF, item 15"}
+  briefp16: {column: brief16, label: "BRIEF, item 16"}
+  briefp17: {column: brief17, label: "BRIEF, item 17"}
+  briefp18: {column: brief18, label: "BRIEF, item 18"}
+  briefp19: {column: brief19, label: "BRIEF, item 19"}
+  briefp20: {column: brief20, label: "BRIEF, item 20"}
+  briefp21: {column: brief21, label: "BRIEF, item 21"}
+  briefp22: {column: brief22, label: "BRIEF, item 22"}
+  briefp23: {column: brief23, label: "BRIEF, item 23"}
+  briefp24: {column: brief24, label: "BRIEF, item 24"}
+  briefp25: {column: brief25, label: "BRIEF, item 25"}
+  briefp26: {column: brief26, label: "BRIEF, item 26"}
+  briefp27: {column: brief27, label: "BRIEF, item 27"}
+  briefp28: {column: brief28, label: "BRIEF, item 28"}
+  briefp29: {column: brief29, label: "BRIEF, item 29"}
+  briefp30: {column: brief30, label: "BRIEF, item 30"}
+  briefp31: {column: brief31, label: "BRIEF, item 31"}
+  briefp32: {column: brief32, label: "BRIEF, item 32"}
+  briefp33: {column: brief33, label: "BRIEF, item 33"}
+  briefp34: {column: brief34, label: "BRIEF, item 34"}
+  briefp35: {column: brief35, label: "BRIEF, item 35"}
+  briefp36: {column: brief36, label: "BRIEF, item 36"}
+  briefp37: {column: brief37, label: "BRIEF, item 37"}
+  briefp38: {column: brief38, label: "BRIEF, item 38"}
+  briefp39: {column: brief39, label: "BRIEF, item 39"}
+  briefp40: {column: brief40, label: "BRIEF, item 40"}
+  briefp41: {column: brief41, label: "BRIEF, item 41"}
+  briefp42: {column: brief42, label: "BRIEF, item 42"}
+  briefp43: {column: brief43, label: "BRIEF, item 43"}
+  briefp44: {column: brief44, label: "BRIEF, item 44"}
+  briefp45: {column: brief45, label: "BRIEF, item 45"}
+  briefp46: {column: brief46, label: "BRIEF, item 46"}
+  briefp47: {column: brief47, label: "BRIEF, item 47"}
+  briefp48: {column: brief48, label: "BRIEF, item 48"}
+  briefp49: {column: brief49, label: "BRIEF, item 49"}
+  briefp50: {column: brief50, label: "BRIEF, item 50"}
+  briefp51: {column: brief51, label: "BRIEF, item 51"}
+  briefp52: {column: brief52, label: "BRIEF, item 52"}
+  briefp53: {column: brief53, label: "BRIEF, item 53"}
+  briefp54: {column: brief54, label: "BRIEF, item 54"}
+  briefp55: {column: brief55, label: "BRIEF, item 55"}
+  briefp56: {column: brief56, label: "BRIEF, item 56"}
+  briefp57: {column: brief57, label: "BRIEF, item 57"}
+  briefp58: {column: brief58, label: "BRIEF, item 58"}
+  briefp59: {column: brief59, label: "BRIEF, item 59"}
+  briefp60: {column: brief60, label: "BRIEF, item 60"}
+  briefp61: {column: brief61, label: "BRIEF, item 61"}
+  briefp62: {column: brief62, label: "BRIEF, item 62"}
+  briefp63: {column: brief63, label: "BRIEF, item 63"}
+  briefp64: {column: brief64, label: "BRIEF, item 64"}
+  briefp65: {column: brief65, label: "BRIEF, item 65"}
+  briefp66: {column: brief66, label: "BRIEF, item 66"}
+  briefp67: {column: brief67, label: "BRIEF, item 67"}
+  briefp68: {column: brief68, label: "BRIEF, item 68"}
+  briefp69: {column: brief69, label: "BRIEF, item 69"}
+  briefp70: {column: brief70, label: "BRIEF, item 70"}
+  briefp71: {column: brief71, label: "BRIEF, item 71"}
+  briefp72: {column: brief72, label: "BRIEF, item 72"}
+  briefp73: {column: brief73, label: "BRIEF, item 73"}
+  briefp74: {column: brief74, label: "BRIEF, item 74"}
+  briefp75: {column: brief75, label: "BRIEF, item 75"}
+  briefp76: {column: brief76, label: "BRIEF, item 76"}
+  briefp77: {column: brief77, label: "BRIEF, item 77"}
+  briefp78: {column: brief78, label: "BRIEF, item 78"}
+  briefp79: {column: brief79, label: "BRIEF, item 79"}
+  briefp80: {column: brief80, label: "BRIEF, item 80"}
+  briefp81: {column: brief81, label: "BRIEF, item 81"}
+  briefp82: {column: brief82, label: "BRIEF, item 82"}
+  briefp83: {column: brief83, label: "BRIEF, item 83"}
+  briefp84: {column: brief84, label: "BRIEF, item 84"}
+  briefp85: {column: brief85, label: "BRIEF, item 85"}
+  briefp86: {column: brief86, label: "BRIEF, item 86"}
+
+  # The scores as stored. Used to check our own scores, and kept where the items are not recorded.
+  briefp_inhibit_stored: {column: brief_score1, type: number, label: "BRIEF inhibit, as stored", range: [10, 30], winsor: false, keep: false}
+  briefp_shift_stored: {column: brief_score2, type: number, label: "BRIEF shift, as stored", range: [8, 24], winsor: false, keep: false}
+  briefp_emotional_control_stored: {column: brief_score3, type: number, label: "BRIEF emotional control, as stored", range: [10, 30], winsor: false, keep: false}
+  briefp_initiate_stored: {column: brief_score5, type: number, label: "BRIEF initiate, as stored", range: [8, 24], winsor: false, keep: false}
+  briefp_working_memory_stored: {column: brief_score6, type: number, label: "BRIEF working memory, as stored", range: [10, 30], winsor: false, keep: false}
+  briefp_plan_organize_stored: {column: brief_score7, type: number, label: "BRIEF plan and organize, as stored", range: [12, 36], winsor: false, keep: false}
+  briefp_monitor_stored: {column: brief_score8, type: number, label: "BRIEF monitor, as stored", range: [8, 24], winsor: false, keep: false}
+  briefp_organization_materials_stored: {column: brief_score9, type: number, label: "BRIEF organization of materials, as stored", range: [6, 18], winsor: false, keep: false}
+  briefp_bri_stored: {column: brief_bri, type: number, label: "BRIEF Behavioral Regulation Index, as stored", range: [28, 84], winsor: false, keep: false}
+  briefp_mi_stored: {column: brief_mi, type: number, label: "BRIEF Metacognition Index, as stored", range: [44, 132], winsor: false, keep: false}
+  briefp_gec_stored: {column: brief_gec, type: number, label: "BRIEF Global Executive Composite, as stored", range: [72, 216], winsor: false, keep: false}
+
+  # The rater and the validity scores, as stored.
+  briefp_rater: {column: brief_rel, type: category, label: "Relation of the rater to the child", codes: {"1": parent, "2": spouse, "3": sibling, "4": friend, "5": other}}
+  briefp_rater_other: {column: brief_rela, type: text, label: "Relation of the rater, free text"}
+  briefp_knows_child: {column: brief_cone, type: category, label: "How well the rater knows the child", codes: {"1": not_very_well, "2": well, "3": very_well}}
+  briefp_known_for: {column: brief_cona, type: number, label: "For how long the rater has known the child, years", range: [0, 300], winsor: false}
+  briefp_negativity: {column: brief_ns, type: number, label: "BRIEF negativity score, as stored", range: [0, 20], winsor: false}
+  briefp_inconsistency: {column: brief_is, type: number, label: "BRIEF inconsistency score, as stored", range: [0, 30], winsor: false}
+
+scores:
+  briefp_inhibit: {label: "BRIEF inhibit (10 to 30)", sum: [briefp38, briefp41, briefp43, briefp44, briefp49, briefp54, briefp55, briefp56, briefp59, briefp65], compare: briefp_inhibit_stored, otherwise: briefp_inhibit_stored}
+  briefp_shift: {label: "BRIEF shift (8 to 24)", sum: [briefp05, briefp06, briefp08, briefp12, briefp13, briefp23, briefp30, briefp39], compare: briefp_shift_stored, otherwise: briefp_shift_stored}
+  briefp_emotional_control: {label: "BRIEF emotional control (10 to 30)", sum: [briefp01, briefp07, briefp20, briefp25, briefp26, briefp45, briefp50, briefp62, briefp64, briefp70], compare: briefp_emotional_control_stored, otherwise: briefp_emotional_control_stored}
+  briefp_initiate: {label: "BRIEF initiate (8 to 24)", sum: [briefp03, briefp10, briefp16, briefp47, briefp48, briefp61, briefp66, briefp71], compare: briefp_initiate_stored, otherwise: briefp_initiate_stored}
+  briefp_working_memory: {label: "BRIEF working memory (10 to 30)", sum: [briefp02, briefp09, briefp17, briefp19, briefp24, briefp27, briefp32, briefp33, briefp37, briefp57], compare: briefp_working_memory_stored, otherwise: briefp_working_memory_stored}
+  briefp_plan_organize: {label: "BRIEF plan and organize (12 to 36)", sum: [briefp11, briefp15, briefp18, briefp22, briefp28, briefp35, briefp36, briefp40, briefp46, briefp51, briefp53, briefp58], compare: briefp_plan_organize_stored, otherwise: briefp_plan_organize_stored}
+  briefp_monitor: {label: "BRIEF monitor (8 to 24)", sum: [briefp14, briefp21, briefp31, briefp34, briefp42, briefp52, briefp60, briefp63], compare: briefp_monitor_stored, otherwise: briefp_monitor_stored}
+  briefp_organization_materials: {label: "BRIEF organization of materials (6 to 18)", sum: [briefp04, briefp29, briefp67, briefp68, briefp69, briefp72], compare: briefp_organization_materials_stored, otherwise: briefp_organization_materials_stored}
+  briefp_bri: {label: "BRIEF Behavioral Regulation Index (28 to 84)", sum: [briefp_inhibit, briefp_shift, briefp_emotional_control], compare: briefp_bri_stored}
+  briefp_mi: {label: "BRIEF Metacognition Index (44 to 132)", sum: [briefp_initiate, briefp_working_memory, briefp_plan_organize, briefp_monitor, briefp_organization_materials], compare: briefp_mi_stored}
+  briefp_gec: {label: "BRIEF Global Executive Composite (72 to 216)", sum: [briefp_inhibit, briefp_shift, briefp_emotional_control, briefp_initiate, briefp_working_memory, briefp_plan_organize, briefp_monitor, briefp_organization_materials], compare: briefp_gec_stored}

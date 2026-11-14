@@ -1,0 +1,53 @@
+# Instruments that FACE BP, FACE SZ or FACE DR also has and whose ASP schema is not the same, each with the reason.
+# tests/test_cohorts.py compares an ASP schema with the BP schema of the same name, with the SZ one when BP
+# has none, and with the DR one when neither has it (defaults, variables, scores, version), and fails on a
+# difference that is not listed here.
+
+# patient
+identite: the diagnosis is that of the ASP cohort (confirmed or not confirmed, from the codes 1 and 0); the cohort holds children, so the ranges of the age and of the date of birth are wider; the age at inclusion is computed and compared with the stored one, as in DR
+
+# clinique
+parametres_physiques: other columns (c1extail, c1expoid); ranges that accept children; a height written in metres is converted; the head circumference and the box of the follow-up form are specific to ASP
+pression_arterielle: one lying blood pressure and one lying pulse (the thesaurus says couché), where BP also has a standing measure
+ecg: no heart rate of the ECG in this extraction, one more box (ecgcard), and no zero written for a missing interval
+tobacco: the status, the dose and the two ages only, in other columns; BP has more questions
+
+# bilan_biologique
+biochimie: no unit column, so the unit is read from the size of the value and the ranges of two units do not overlap; fifteen of the analytes of the other cohorts
+vitamine_d: the unit column holds catalogue numbers, read as nmol/L and ng/mL; the number of mmol/L is ignored
+bilan_lipidique: the unit column of cholesterol and triglycerides holds catalogue numbers; HDL and LDL have no unit column and are read as mmol/L; no stored ratio to compare
+bilan_hepatique: no unit column; five analytes
+bilan_thyroidien: TSH only, with a unit column that holds catalogue numbers
+nfs: no unit column, so a differential count is read as a percentage of the leukocytes from the size of its value; ten values
+bhcg_prolactine: prolactin only, with a unit column that holds catalogue numbers
+dosage_psychotropes: eight boxes that name the drug whose level is measured (thesaurus), a box that says whether the treatment was taken that morning, and the lamotrigine level; the other level columns are empty
+
+# neuropsychologie
+wais4_matrices: other columns; the 26 items of the subtest are recorded and their sum is compared with the stored total; no edition to choose, the WAIS-IV is the only one of the table
+wais4_similitudes: other columns; the 18 items are recorded and their sum is compared with the stored total; no edition to choose
+wais4_arithmetique: other columns; no edition to choose
+wais4_information: other columns; no edition to choose
+wais4_complement_images: other columns; no edition to choose; on six visits only
+wais4_memoire_chiffres: other columns; the two trials and the score of each forward and backward item are recorded; no edition to choose
+wais4_code_symboles_ivt: other columns; the symbol search is recorded too; the index is named wais4_ivt_index_np because the medical evaluation holds a copy under the shared name; a second set of numbers (_a)
+wais4_efficience: other columns; the indices are named with the ending _np because the medical evaluation holds a copy under the shared names; no correction of the working memory index and of the full-scale IQ is needed; a second set of numbers (_a); no two-subtest IQ
+barona: the occupation and the education are exported as numbers, named from the thesaurus (one code of each list is not in it); one expected IQ and its difference; no edition to choose
+learning_disorders: other columns, named after each disorder; the first ten questions of DR; 9 is read as not known
+wais4_vocabulaire: other columns; no edition to choose, the WAIS-IV is the only one of the table; the scaled score and the z-score are not marked as derived from the total, which equals the sum of the items on every visit
+
+# autoquestionnaires
+stai_ya: the answers are stored from 0 to 3 on every visit; they are read as stored, not delivered, and delivered on the BP coding once the coding of the visit is known, as in DR
+epworth: the eight situations are in ess01 to ess08, the time of day in ess09 and the stored total in ess, as in DR
+mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence and is checked by a twin score; no mars11 (as in DR)
+asrs: other columns (asrs1 to asrs18); the screening result of BP is not extracted and the column of the stored total is empty
+fagerstrom: other columns (fag_1 to fag_6, fagerstrom_score); two questions before the test (has ever smoked, smokes now)
+eq5d: other columns; a stored index, which the other extractions do not hold
+ctq: the stored sub-scores are in other columns (ctq30 to ctq38) and there is no severity class; two stored sub-scores leave out an item, so they and the stored total are checked by twin scores
+cgi_egf: the severity of the CGI and the GAF only, in other columns (gravmdi, egfval); two boxes of the follow-up form (changed since the last visit)
+
+# autoquestionnaires_old_part2
+psqi: other columns; the seven components are stored, and the components 4, 5 and 7 are wrong (the hours in bed do not cross midnight, a 3 as soon as one disturbance is reported), so they are recomputed with the published rules and the stored ones are only compared; the hours of sleep are a number, not a clock time
+
+# antecedents, antecedent_famille_psy
+perinatal: other columns; the delivery is described by yes/no questions (natural, induced, caesarean, forceps, vacuum) and not by one list; the term is not asked as a class; the birth weight is typed in grams or in kilograms; more questions on the newborn
+medications: the list is that of the visit, not the history of the patient (per_visit); other columns; the molecule is looked up from the name, then from the generic name; a dose with no unit, the indication and whether the treatment is still taken; no strength, unit or form

@@ -9,7 +9,7 @@ ready for algorithms:
 4. continuous variables are winsorised,
 5. every variable gets a quality-control (QC) summary and plots.
 
-There is one module per cohort (`facedata.bp`, `facedata.sz`, `facedata.dr`; later `asp`).
+There is one module per cohort (`facedata.bp`, `facedata.sz`, `facedata.dr`, `facedata.asp`).
 Everything specific to an instrument is written in a YAML schema
 (see [SCHEMA_SPEC.md](SCHEMA_SPEC.md)). The Python code is generic and does not
 change when an instrument is added.
@@ -46,7 +46,7 @@ facedata/
   harmonise.py    detect_version(), convert_units(), fix_sign(), check_range(),
                   compute_scores(), collapse_patient_level(), winsorise()
   pipeline.py     read_variable(), run_instrument(), run_cohort(): the ordered steps, nothing else
-  treatments.py   open_lists(), look_up_names(), at_visit(): cells that hold lists (treatments)
+  treatments.py   open_lists(), unpack(), look_up_names(), at_visit(): cells that hold lists (treatments) or several records
   relatives.py    stack_relatives(), summarise_relatives(): the same questions asked for each relative
   qc.py           qc_table(), coverage()
   plots.py        plot_variable(), plot_instrument()
@@ -61,6 +61,7 @@ facedata/
   sz/             the same three functions and files for FACE SZ, and
     differences.yaml   the instruments whose schema is not the BP one, each with the reason
   dr/             the same for FACE DR (resistant depression); its differences.yaml compares with BP, or with SZ where BP has no such schema
+  asp/            the same for FACE ASP (autism spectrum); the dictionary arrived after the module, so a schema folder is a source table of the export; differences.yaml compares with BP, then SZ, then DR
 tests/            small hand-written tables only
 ```
 
@@ -83,6 +84,7 @@ result.relatives  # one row per patient and relative
 bp.report(result, "reports/bp")                              # HTML report and plots
 bp.coverage(path, "thesauri/FACEBP_thesaurus_V4.34.xlsx")    # which columns have a schema
 bp.load(new_path, winsor_limits=result.qc)                   # reuse winsor limits on new data
+bp.load(path, winsorise=False)                               # leave the tails of the continuous variables as they are
 ```
 
 `result` is a named tuple of six DataFrames.
@@ -95,7 +97,7 @@ Key columns first, then the harmonised variables of every instrument.
 
 | Column | Content |
 |---|---|
-| `cohort` | `bp`, `sz` or `dr`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
+| `cohort` | `bp`, `sz`, `dr` or `asp`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
 | `usubjid` | Patient identifier (text), unique inside a cohort only |
 | `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...) |
 | `visit_order` | Rank of the visit (from `id_visit`) |
@@ -109,7 +111,10 @@ Key columns first, then the harmonised variables of every instrument.
 
 **Putting two cohorts together.** The tables of two cohorts have the same key
 columns and the same names for the instruments they share, so they can be
-stacked (`pd.concat`). The key is then (`cohort`, `usubjid`, `visit`): a
+stacked (`pd.concat`). A name holds the same thing in every cohort (the same
+kind of value, unit, table and labels), and a raw column that the cohorts
+share has one name; the few exceptions are written, each with its reason, in
+`facedata/shared_names.yaml`, and `tests/test_cohorts.py` fails on any other. The key is then (`cohort`, `usubjid`, `visit`): a
 `usubjid` is a number given inside a cohort, and 824 numbers are used in both
 FACE BP and FACE SZ for different patients (199 FACE DR numbers are also BP
 numbers, and 209 are SZ numbers). Never join two cohorts on
@@ -157,6 +162,14 @@ What a visit needs, whether the patient was on a treatment that day, is
 computed from the dates of the items and delivered in `data` as yes/no
 columns (SCHEMA_SPEC, section 15).
 
+Two other shapes go through the same machinery (SCHEMA_SPEC, section 15).
+In FACE ASP the treatment list belongs to a visit, not to the patient
+(`per_visit`): every row that holds a list is opened, and the table has a
+column `visit`. And one export packs several records in a cell,
+`(a - b - c) | (a - b - c)`: the diseases of a body system, the relatives,
+the hospitalisations. `packed` opens them into one row per record, in lists
+of their own (FACE ASP has eleven lists).
+
 ### `relatives`: one row per patient and relative
 
 The family history asks the same questions for the mother, the father, each
@@ -196,7 +209,10 @@ See section 7.
 > Every non-empty raw cell of a schema variable ends either as a value in
 > `data` / `patients`, or as a row in `flags`.
 
-Nothing disappears silently. A test checks this for each instrument.
+Nothing disappears silently. A test checks this for each instrument. A
+stored score that is read only to be compared (`keep: false`) follows the
+same rule: where the score cannot be recomputed, the row is flagged
+`score_not_recomputed` and the flag log holds what was stored.
 "Empty" means the empty string and `0000-00-00` (the export's empty date),
 once the text repairs of step 3 are done: a cell that holds only an escaped
 line break is empty (two cells of the BP extraction).
@@ -231,6 +247,15 @@ Steps 3, 5 to 7 and 9 run once per variable. Each returns the cleaned values
 and a small table of flags. `run_instrument()` only calls them in order and
 stacks the flags.
 
+### Step 1: reading
+
+Every cell is read as text. One export (FACE ASP) wrote its accents twice
+over: "dÃ©pression" is "dépression" read as Latin-1 and encoded again. The
+loader of that cohort asks the reader to put these cells back
+(`repair_accents`); a cell that the way back cannot decode stays as written.
+The SZ and DR extractions hold the same defect in a few hundred cells of
+free text, which are not repaired.
+
 ### Step 2: visits
 
 - Rows with the same `visitnum` are exact duplicates; one is kept
@@ -240,6 +265,10 @@ stacks the flags.
 - `screening` is a visit of its own, before `V0`. It has no `visit_month`:
   it took place a median of 70 days before the inclusion, with a wide spread.
 - Placeholder visit dates (`1950-01-01`) become missing (`date_placeholder`).
+- A visit dated before the cohort opened (each cohort module gives the day)
+  or after today has an impossible date: it becomes missing (`out_of_range`
+  on `visit_date`), and so does the age at that visit. An age below 0 or
+  above 110 years is missing too (`out_of_range` on `age`).
 - `siteid` is written with two digits (`4` becomes `04`): one extraction
   writes the centre codes as numbers, the others as two characters.
 - A patient whose visit dates do not increase with the visit order gets
@@ -341,7 +370,9 @@ A schema says how to recognise its visits: from a version column
 (`wais_version`), from which items are filled (BIS), or from a column that is
 filled once per patient (the DSM criteria, recorded at inclusion). The items
 may be those of another questionnaire of the same visit, when the
-instrument's own columns do not tell its form (ALS, WURS, AIM).
+instrument's own columns do not tell its form (ALS, WURS, AIM). A child form
+and an adult form with the same items are told apart by the age at the visit
+(the SRS filled by a relative, in ASP).
 `detect_version` gives every visit its edition; each variable is then read
 only on the visits of its schema's edition and is missing elsewhere, without
 a flag.
@@ -374,8 +405,11 @@ For one centre:
    before it by −1 and compute the same average. Keep the month that brings
    the average closest to the wanted relation.
 3. Accept the switch only if at least 10 visits lie before it and, before
-   it, the scores as written really move the wrong way. Otherwise nothing is
-   changed in that centre.
+   it, the scores as written clearly move the wrong way: a mean rank
+   correlation of 0.5 or more in the wrong direction. Where they move the
+   wrong way less clearly, the early scores of the centre are a mixture of
+   the two conventions: nothing is flipped, and they get `sign_doubt`.
+   Otherwise nothing is changed in that centre.
 4. Standard scores dated before the switch are multiplied by −1 and get
    `sign_flipped`. Those dated within 90 days of it, before or after, also
    get `sign_doubt`, because a centre does not change on a single day. A
@@ -398,10 +432,21 @@ kept, but they get `period_doubt`: the analyst decides.
 
 ### Step 10: scores
 
-Scores are recomputed from the harmonised items (sum or mean, with reverse
-items; a sum can subtract other values and have a floor). A score that is a
+Scores are recomputed from the harmonised items (sum, mean or highest item,
+with reverse items; an answer can count other points than its code; a sum
+can subtract other values and have a floor). A score that is a
 formula, such as a body mass index, is a small function in `custom.py`. When the extraction also stores the score, the two are compared; a
 difference above 0.01 gives `score_mismatch` and the recomputed value is kept.
+Where the stored score exists and the score cannot be recomputed (an item is
+missing), neither is delivered and the row gets `score_not_recomputed`, with
+the stored value in `detail`. A check that is not delivered (`keep: false`)
+files its `score_mismatch` under the stored value it checks, which is the
+column the analyst sees.
+
+A form can let the clinician type a total without its items. Where the schema
+says so (`otherwise`), a score with no item recorded is delivered as stored
+and gets `score_as_stored`. So does every total built on such a score: the
+rule that produced a typed value cannot be checked.
 
 A score can also be read in a norm table, from a raw score and the age at
 the visit (a scaled score), and if the table says so from a second variable
@@ -434,6 +479,10 @@ QC table counts patients, not visit rows.
   nearest one to the percentile). A schema can give other percentiles, fixed
   limits, or switch it off.
 - Each clipped cell gets `winsorised`; `raw` keeps the original.
+- `load(..., winsorise=False)` skips the step: the values are delivered as
+  harmonised, with their true tails. Use it when the tails are the subject
+  (a glucose above the 99th percentile, a very low z-score), or when two
+  cohorts are compared: each cohort has its own limits.
 - The limits used are stored in `qc` (`winsor_low`, `winsor_high`). Passing a
   previous `qc` table to `load(..., winsor_limits=...)` applies those limits
   instead of computing new ones. Do this when a model is validated on data
@@ -463,10 +512,11 @@ QC table counts patients, not visit rows.
 | `duplicate_row` | info | A duplicated visit record was dropped |
 | `winsorised` | info | The value was clipped |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |
-| `sign_doubt` | discrepancy | The standard score is dated within 90 days of the centre's change of sign convention, or has no date |
+| `sign_doubt` | discrepancy | The standard score is dated within 90 days of the centre's change of sign convention, or has no date; or the early scores of the centre mix the two conventions and were not flipped |
 | `band_middle` | discrepancy | The cell held a band of values (`60-51`); the value is the middle of the band |
 | `column_conflict` | discrepancy | Two raw columns of one variable hold different values; the first one listed is kept |
 | `score_mismatch` | discrepancy | Stored and recomputed scores differ |
+| `score_as_stored` | discrepancy | None of the items of the score is recorded: the score typed in the extraction is delivered, unchecked. Also a total built on such a score |
 | `derived_doubt` | discrepancy | The value was computed by the EMR from a stored score that differs from the recomputed one |
 | `patient_value_varies` | discrepancy | A patient-level variable, or an answer about a relative, changes between visits |
 | `list_crossed` | discrepancy | An item of a list that the export crossed: the patient has several products, and the file does not say which dose or date belongs to which (SCHEMA_SPEC, section 15) |
@@ -475,10 +525,11 @@ QC table counts patients, not visit rows.
 | `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |
 | `unparsed` | danger | The cell could not be read as its type |
 | `unknown_code` | danger | A category value is not in the code list |
-| `out_of_range` | danger | The value is outside the hard range |
+| `out_of_range` | danger | The value is outside the hard range. Also a visit date before the cohort opened or after today, and an impossible age |
 | `unit_unknown` | danger | No usable unit label and the magnitude fits several units; or a percentage of a value that is missing |
 | `version_unknown` | danger | Data present but version not recognisable |
 | `norm_missing` | danger | No standard score could be read: the norm table was not found, or it has nothing for this age, raw score and second variable |
+| `score_not_recomputed` | danger | The extraction stores the score but an item is missing: the score is not delivered; `detail` holds the stored value |
 
 ## 7. QC and report
 
@@ -579,13 +630,23 @@ formula). FACE SZ is written this way: all its columns are read or ignored
 of a BP schema: 9 are the same and 58 are listed in `differences.yaml`. FACE DR
 too (`docs/dr/PROGRESS.md`, `docs/dr/QUESTIONS.md`): 79 of its 137 schemas have the
 name of a BP schema (75) or of an SZ schema (4); 11 are the same and 68 are listed.
+FACE ASP was written before its dictionary arrived, then checked against it, and has few shared instruments (`docs/asp/PROGRESS.md`, `docs/asp/QUESTIONS.md`): 37 of its 138
+schemas have the name of a schema of another cohort; 2 are the same and 35 are listed in its `differences.yaml`.
 A stored score that follows the formula of the other cohort does not prove a copied
 schema right, because the EMR applies the same formula to the answers of another
 form: compare the answers themselves between the cohorts (the mean of each item,
 and whether each item rises with the rest of its scale) before trusting a copy. A table that the cohorts share, such as the
 medication names, sits in the package folder: a schema names its file, and
-the loader looks in the cohort folder first. ASP has no
-thesaurus and different names, so its schemas are written from the data.
+the loader looks in the cohort folder first. ASP has other column names, and
+its thesaurus arrived after the module: its schemas were written from the data
+and then checked against it.
+
+`tests/test_cohorts.py` also compares the cohorts variable by variable, in
+every pair: a raw column that two cohorts read has the same output name, and
+an output name is the same kind of value, in the same unit, in the same table
+and with the same labels (one list of labels may hold more boxes than the
+other). What cannot be so is listed in `facedata/shared_names.yaml` with its
+reason, and a line that is no longer true makes the test fail.
 
 ## 10. Tests and definition of done
 

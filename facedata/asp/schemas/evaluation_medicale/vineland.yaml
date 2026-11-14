@@ -1,0 +1,71 @@
+instrument: vineland
+title: "Vineland Adaptive Behavior Scales"
+tab: evaluation_medicale
+section: adaptive behaviour
+status: draft
+notes: >
+  The scores of the Vineland scales, as copied into the medical evaluation:
+  a box "done" (yes on 964 of 1,613 inclusion visits; 9 is read as "not known"),
+  the date, the age in months, then for each of eleven sub-domains a score and
+  an age equivalent in months, the standard score of the four domains
+  (communication, daily living skills, socialisation, motor skills), their sum
+  and the adaptive behaviour composite. The scores are on about 948
+  inclusion visits (739 children) and 161 follow-up visits; the age equivalents
+  on about 348; the motor domain, meant for young children, on fewer than
+  ten.
+
+  Identified as the second edition (Vineland-II): the largest score found in
+  each of the nine sub-domains (40, 108, 50; 82, 48, 88; 76, 62, 60) is the
+  number of points of its items in that edition. The sub-domain scores are
+  therefore raw scores, and each range stops at that number. Standard scores, age equivalents and
+  the composite need the norm tables of the test, which are not available:
+  they are delivered as stored. One rule can be checked: the stored sum of
+  the standard scores is the sum of the communication, daily living and
+  socialisation domains on 902 of the 943 visits that hold the four numbers;
+  the others are flagged (vineland_sum_check).
+
+  The same 42 columns exist a second time in the extraction, without the
+  ending _med, in the table autoquestionnaires: exact copies on every row,
+  not loaded (ignored.yaml).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  vineland_done: {column: vine_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "A Vineland was done"}
+  vineland_date: {column: vine_date_med, type: date, range: [1990-01-01, 2026-12-31], label: "Date of the Vineland"}
+  vineland_age_months: {column: vineagm_med, type: number, range: [0, 900], winsor: false, label: "Age at the Vineland, in months"}
+  vineland_receptive_raw: {column: comprsc_med, type: number, range: [0, 40], winsor: false, label: "Vineland, communication, receptive: raw score of the sub-domain"}
+  vineland_receptive_age: {column: comprag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, communication, receptive: age equivalent, in months"}
+  vineland_expressive_raw: {column: prodsc_med, type: number, range: [0, 108], winsor: false, label: "Vineland, communication, expressive: raw score of the sub-domain"}
+  vineland_expressive_age: {column: prodag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, communication, expressive: age equivalent, in months"}
+  vineland_written_raw: {column: ecrisc_med, type: number, range: [0, 50], winsor: false, label: "Vineland, communication, written: raw score of the sub-domain"}
+  vineland_written_age: {column: ecriag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, communication, written: age equivalent, in months"}
+  vineland_personal_raw: {column: persosc_med, type: number, range: [0, 82], winsor: false, label: "Vineland, daily living skills, personal: raw score of the sub-domain"}
+  vineland_personal_age: {column: persoag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, daily living skills, personal: age equivalent, in months"}
+  vineland_domestic_raw: {column: domesc_med, type: number, range: [0, 48], winsor: false, label: "Vineland, daily living skills, domestic: raw score of the sub-domain"}
+  vineland_domestic_age: {column: domeag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, daily living skills, domestic: age equivalent, in months"}
+  vineland_community_raw: {column: commusc_med, type: number, range: [0, 88], winsor: false, label: "Vineland, daily living skills, community: raw score of the sub-domain"}
+  vineland_community_age: {column: commuag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, daily living skills, community: age equivalent, in months"}
+  vineland_interpersonal_raw: {column: relimpsc_med, type: number, range: [0, 76], winsor: false, label: "Vineland, socialisation, interpersonal relationships: raw score of the sub-domain"}
+  vineland_interpersonal_age: {column: relimpag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, socialisation, interpersonal relationships: age equivalent, in months"}
+  vineland_play_raw: {column: jeuxsc_med, type: number, range: [0, 62], winsor: false, label: "Vineland, socialisation, play and leisure: raw score of the sub-domain"}
+  vineland_play_age: {column: jeuxag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, socialisation, play and leisure: age equivalent, in months"}
+  vineland_coping_raw: {column: adapsc_med, type: number, range: [0, 60], winsor: false, label: "Vineland, socialisation, coping skills: raw score of the sub-domain"}
+  vineland_coping_age: {column: adapag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, socialisation, coping skills: age equivalent, in months"}
+  vineland_gross_motor_raw: {column: motglsc_med, type: number, range: [0, 80], winsor: false, label: "Vineland, motor skills, gross: raw score of the sub-domain"}
+  vineland_gross_motor_age: {column: motglag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, motor skills, gross: age equivalent, in months"}
+  vineland_fine_motor_raw: {column: motfinsc_med, type: number, range: [0, 72], winsor: false, label: "Vineland, motor skills, fine: raw score of the sub-domain"}
+  vineland_fine_motor_age: {column: motfinag_med, type: number, range: [0, 300], winsor: false, label: "Vineland, motor skills, fine: age equivalent, in months"}
+  vineland_communication_standard: {column: totcomsc_med, type: number, range: [20, 160], winsor: false, label: "Vineland, communication: standard score of the domain"}
+  vineland_daily_living_standard: {column: totviesc_med, type: number, range: [20, 160], winsor: false, label: "Vineland, daily living skills: standard score of the domain"}
+  vineland_socialisation_standard: {column: totsocsc_med, type: number, range: [20, 160], winsor: false, label: "Vineland, socialisation: standard score of the domain"}
+  vineland_motor_standard: {column: totmotsc_med, type: number, range: [20, 160], winsor: false, label: "Vineland, motor skills: standard score of the domain"}
+  vineland_sum_standard: {column: scglob_med, type: number, range: [60, 640], winsor: false, label: "Vineland: sum of the standard scores of the domains"}
+  vineland_composite: {column: ncca_med, type: number, range: [20, 160], winsor: false, label: "Vineland: adaptive behaviour composite"}
+
+scores:
+  vineland_sum_check:
+    label: "Sum of the standard scores of the communication, daily living and socialisation domains, to compare with the stored sum"
+    sum: [vineland_communication_standard, vineland_daily_living_standard, vineland_socialisation_standard]
+    compare: vineland_sum_standard
+    keep: false

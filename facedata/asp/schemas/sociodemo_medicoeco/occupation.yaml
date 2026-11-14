@@ -1,0 +1,20 @@
+instrument: occupation
+title: "Occupation and activity"
+tab: sociodemo_medicoeco
+section: social and medico-economic
+status: draft
+notes: >
+  The occupation (a code from 2 to 10) and the current activity (a code from 1
+  to 5): 1646 inclusion visits (446 of children, 1200 of adults) and 144 follow-up visits, from 2011 to 2026.
+
+  The form was first read without a dictionary; the labels and the lists of
+  answers are now those of the thesaurus V2.13, which corrected several
+  meanings guessed from the column names (PROGRESS.md D14). The output names
+  stay the column names. prochang is a box of the follow-up form.
+
+  A section of the ASP cohort only.
+
+variables:
+  prochang: {column: prochang, type: item, label: "Occupation and activity: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  profes: {column: profes, type: category, label: "Occupation and activity: socio-professional category", codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_higher_professional, "4": intermediate_profession, "5": employee, "6": manual_worker, "7": retired, "8": other_without_occupation, "9": student}, missing: {"10": not_applicable}}
+  activite: {column: activite, type: category, label: "Occupation and activity: kind of activity", codes: {"1": permanent_contract, "2": fixed_term_contract, "3": unemployed, "5": apprenticeship}, missing: {"4": not_applicable}}

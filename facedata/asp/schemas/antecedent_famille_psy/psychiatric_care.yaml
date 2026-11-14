@@ -1,0 +1,30 @@
+instrument: psychiatric_care
+title: "Family history and psychiatric care: the questions"
+tab: antecedent_famille_psy
+section: history
+status: draft
+notes: >
+  Whether a relative has a neurodevelopmental disorder, the first contact with
+  psychiatry and its age, hospitalisations and a current treatment:
+  1927 inclusion visits (689 of children) and 235 follow-up visits, from 2011 to 2026.
+
+  Named from the column names and checked against the thesaurus V2.13
+  (PROGRESS.md D14). The family question (atcdfam) is on 795 inclusion visits,
+  from 2019: yes for 110, not known (9) for 70. The relatives are described in
+  the instrument family_neurodevelopment, the hospitalisations in
+  hospitalisations and the treatments in medications, one row each in the table
+  treatments. A hospitalisation is reported on 422 visits and a current
+  treatment on 715 inclusion visits.
+
+  genchang is a box of the follow-up form.
+
+  A section of the ASP cohort only.
+
+variables:
+  genchang: {column: genchang, type: item, label: "Family history: change since the last visit, follow-up visits only (0 no, 1 yes)", range: [0, 1]}
+  family_neurodevelopmental_history: {column: atcdfam, type: item, label: "A relative with a neurodevelopmental disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  psychiatric_contact: {column: contpsy, type: item, label: "Earlier contact with psychiatry (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  age_first_psychiatric_contact: {column: agecons, type: number, label: "Age at the first contact with psychiatry, years", unit: years, range: [0, 70], winsor: false}
+  age_first_psychiatric_contact_months: {column: ageconsm, type: number, label: "Age at the first contact with psychiatry, months (as stored)", range: [0, 99], winsor: false}
+  psychiatric_hospitalisation: {column: hospicour, type: item, label: "Psychiatric hospitalisation (0 no, 1 yes)", range: [0, 1]}
+  current_treatment: {column: trtcour, type: item, label: "A current treatment (0 no, 1 yes)", range: [0, 1]}

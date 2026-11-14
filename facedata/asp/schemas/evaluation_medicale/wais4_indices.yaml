@@ -1,0 +1,30 @@
+instrument: wais4_indices
+title: "WAIS-IV: the four indices and the full-scale IQ"
+tab: evaluation_medicale
+section: intellectual assessment
+status: draft
+notes: >
+  The indices of the Wechsler Adult Intelligence Scale, fourth edition: verbal comprehension, perceptual reasoning, working memory, processing speed and the full-scale IQ, as the clinician copied them into the medical
+  evaluation. A box says that this edition was used (wai4: yes on 1043 of
+  1,750 inclusion visits); the indices are filled only after a yes. The first
+  index is on 987 inclusion visits (75 children, 912 adults), from 2013
+  to 2026; the full-scale IQ on 785: it is not computed when the
+  indices differ too much.
+
+  One schema per edition: an index of one edition is never delivered in the
+  column of another. The indices need the norm tables of the test, which are
+  not available: they are delivered as stored, between 40 and 160.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  wais4_done: {column: wai4, type: item, range: [0, 1], label: "This edition was used (WAIS-IV)"}
+  wais4_icv_index: {column: wai4icv, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, verbal comprehension index"}
+  wais4_irp_index: {column: wai4irp, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, perceptual reasoning index"}
+  wais4_imt_index: {column: wai4imt, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, working memory index"}
+  wais4_ivt_index: {column: wai4ivt, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, processing speed index"}
+  wais4_qit: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale iq"}

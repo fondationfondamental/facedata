@@ -1,0 +1,43 @@
+instrument: early_development
+title: "Early development"
+tab: antecedents
+section: history
+status: draft
+notes: >
+  The milestones (sitting, walking, first words, first sentences), a delay or
+  a loss of language, eating and sleep problems in childhood, and seizures:
+  2020 inclusion visits (843 of children) and 116 follow-up visits, from 2011 to 2026; asked once, at the inclusion visit.
+
+  Named from the column names and checked against the thesaurus V2.13
+  (PROGRESS.md D14). The ages are in months. A psychomotor delay is reported
+  for 216 of the 1804 patients with an answer and a language delay for 415 of
+  1804. The age of the first words is 99 on fewer than five visits and the age of the first
+  sentences on 4: 99 is read as "not known". The ADI-R asks the same two ages
+  (items 9 and 10) to the parent; this section is the clinician's record.
+
+  esichang is a box of the follow-up form.
+
+  A section of the ASP cohort only.
+
+variables:
+  psychomotor_delay: {column: retpsy, type: item, label: "Psychomotor delay (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  age_sitting: {column: ageassis, type: number, label: "Age when sitting, months", unit: months, range: [2, 36], winsor: false}
+  age_walking: {column: agepas, type: number, label: "Age when walking, months", unit: months, range: [6, 60], winsor: false}
+  language_delay: {column: retlang, type: item, label: "Language delay (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  age_first_words: {column: agemots, type: number, label: "Age of the first words, months", unit: months, range: [3, 98], winsor: false, missing: {"99": unknown}}
+  age_first_sentences: {column: agephras, type: number, label: "Age of the first sentences, months", unit: months, range: [3, 98], winsor: false, missing: {"99": unknown}}
+  sudden_complex_language: {column: langx, type: item, label: "Sudden appearance of a complex language (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  sudden_complex_language_age: {column: langxag, type: number, label: "Sudden appearance of a complex language, age in months", unit: months, range: [0, 120], winsor: false}
+  langact: {column: langact, type: item, label: "Current language (1 none or fewer than 5 words, 2 a few words or sentences, 3 functional, 4 normal)", range: [1, 4]}
+  eating_problems: {column: tralim, type: item, label: "Eating disorder before the age of one year (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  repponde: {column: repponde, type: item, label: "Eating problems, effect on the weight (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  sleep_problems_first_year: {column: trsomm, type: item, label: "Sleep disorder before the age of one year (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  insmaj: {column: insmaj, type: item, label: "Sleep problems, insomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  hypsmaj: {column: hypsmaj, type: item, label: "Sleep problems, hypersomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  derytmaj: {column: derytmaj, type: item, label: "Sleep problems, rhythm disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  revnmaj: {column: revnmaj, type: item, label: "Sleep problems, night awakenings (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  esichang: {column: esichang, type: item, label: "History of seizures: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  seizures: {column: crisconv, type: item, label: "Seizures, febrile convulsions left out (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  crisage: {column: crisage, type: number, label: "Seizures, age at the first one, months", range: [0, 642], winsor: false}
+  crisact: {column: crisact, type: item, label: "Seizures, still active (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  crisfreq: {column: crisfreq, type: item, label: "Seizures: highest lifetime frequency (1 several a day, 2 several a week, 3 several a month, 4 several a year)", range: [1, 4]}

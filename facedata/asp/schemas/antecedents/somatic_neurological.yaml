@@ -1,0 +1,30 @@
+instrument: somatic_neurological
+title: "Somatic history: nervous system, one row per disease"
+tab: antecedents
+section: history
+status: draft
+level: list
+notes: >
+  The diseases of the system reported after a yes to the question
+  history_neurological: 329 diseases for 277 visits (276 patients), up to 5 for one
+  patient. One row per patient and disease in the table treatments, where the
+  column list says "somatic_neurological".
+
+  The export packs the diseases of a patient in one cell, each between brackets
+  with four fields: the code of the disease in the list of the form, a free
+  text, the age of onset in years and whether it is over (0 or 1; 9 is "not
+  known"). The list of the diseases is that of the thesaurus V2.13. Fewer than five records
+  have a dash in their free text, which the reader keeps in the text. The
+  history is that of the patient: the first visit that holds it is read, and a
+  later visit that holds another list gets patient_value_varies.
+
+  A section of the ASP cohort only.
+
+packed:
+  antneuros_antneuroa_antneuroag_antneurorem: {fields: [neurological_code, neurological_text, neurological_age, neurological_over], text: neurological_text}
+
+variables:
+  disease_code: {column: neurological_code, type: category, label: "The disease, in the list of the form", codes: {"1": distal_neuropathy, "2": multiple_sclerosis, "3": parkinson_disease, "4": meningitis, "5": myasthenia, "6": myopathy, "7": neurofibromatosis, "8": migraine, "9": head_injury_with_loss_of_consciousness, "10": other}}
+  disease_text: {column: neurological_text, type: text, label: "Disease, free text"}
+  age_onset: {column: neurological_age, type: number, label: "Age of onset, years", unit: years, range: [0, 100], winsor: false}
+  disease_over: {column: neurological_over, type: item, label: "The disease is in remission now (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}

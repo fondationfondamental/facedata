@@ -1,0 +1,190 @@
+instrument: srs_relative_adult
+title: "Social Responsiveness Scale, adult form filled by a relative"
+tab: autoquestionnaires
+section: screening questionnaires
+status: draft
+notes: >
+  The adult form of the Social Responsiveness Scale (Constantino and Gruber)
+  filled by a relative: sixty-five items answered from 1 to 4 about a patient
+  of 18 or over. 985 visits of 922 patients: 743 screening visits, 232
+  inclusion visits and 10 follow-up visits.
+
+  **Two forms in the same columns.** The summary sheet of the thesaurus lists
+  a form for a child and a form for an adult, both filled by a relative. They
+  have the same sixty-five item numbers and are stored in the same columns
+  (recsoc1 to recsoc65), and no column says which was filled: the age at the
+  visit tells it, under 18 for srs_relative_child, 18 and over for
+  srs_relative_adult (PROGRESS.md D14). The norms of the two forms are not the
+  same. A visit with answers and no age has no form (version_unknown, fewer
+  than five visits).
+
+  Identified from its sixty-five items and its five sub-scales, sure: the
+  five stored sub-scales have exactly the items of the published ones
+  (awareness 8 items, cognition 12, communication 22, motivation 11,
+  restricted interests and repetitive behaviour 12). The thesaurus names the
+  scale and its total raw score only; it gives the answers: 1 not true, 2
+  sometimes true, 3 often true, 4 almost always true, and 9 "does not apply",
+  read as missing (not_applicable). It writes the scale for the screening
+  visit only.
+
+  **The stored raw scores are wrong on every visit.** The published score
+  counts each answer from 0 to 3 and reverses seventeen items (3, 7, 11, 12,
+  15, 17, 21, 22, 26, 32, 38, 40, 43, 45, 48, 52 and 55). The stored scores
+  are plain sums of the answers from 1 to 4, with no item reversed: the total
+  is the sum of the sixty-five answers on 830 of 830 complete visits of this
+  form. The answers themselves show that the seventeen items must be
+  reversed: in this form too they are the only items that fall when the rest
+  of the scale rises (17 items with a negative item-rest correlation, the
+  published seventeen). A stored total is from 20 to 114 points above the
+  published one (median 64).
+
+  The seven scores are therefore computed with the published key and
+  delivered (the total on 830 visits, median 98). The stored ones are read
+  to be checked (formulas "as stored") and are not delivered.
+
+  **The stored T-scores are not delivered.** A T-score is read by the EMR in
+  the table of the manual from the stored raw score, which is wrong; and the
+  two total T-scores are sums of the sub-scale T-scores, not T-scores. The
+  norm table is not available, so no T-score is delivered; one can be read
+  in the manual from the corrected raw score, the sex and the form.
+
+  srsr_filled_by says who filled the form (father, mother, other).
+
+  An instrument of the ASP cohort only. The form of a child is srs_relative_child; the self-report of adults is srs_adult.
+
+version:
+  name: srs_relative_form
+  age:                               # years at the visit: from the first number, below the second
+    srs_relative_child: [0, 18]
+    srs_relative_adult: [18, 130]
+
+defaults: {type: item, range: [1, 4], missing: {"9": not_applicable}, versions: [srs_relative_adult]}
+
+variables:
+  srsr_filled_by: {column: recscocremp, type: category, label: "Who filled the questionnaire", codes: {"1": father, "2": mother, "3": other}, missing: {}}
+  srsr01: {column: recsoc1, label: "SRS adult relative form, item 1"}
+  srsr02: {column: recsoc2, label: "SRS adult relative form, item 2"}
+  srsr03: {column: recsoc3, label: "SRS adult relative form, item 3"}
+  srsr04: {column: recsoc4, label: "SRS adult relative form, item 4"}
+  srsr05: {column: recsoc5, label: "SRS adult relative form, item 5"}
+  srsr06: {column: recsoc6, label: "SRS adult relative form, item 6"}
+  srsr07: {column: recsoc7, label: "SRS adult relative form, item 7"}
+  srsr08: {column: recsoc8, label: "SRS adult relative form, item 8"}
+  srsr09: {column: recsoc9, label: "SRS adult relative form, item 9"}
+  srsr10: {column: recsoc10, label: "SRS adult relative form, item 10"}
+  srsr11: {column: recsoc11, label: "SRS adult relative form, item 11"}
+  srsr12: {column: recsoc12, label: "SRS adult relative form, item 12"}
+  srsr13: {column: recsoc13, label: "SRS adult relative form, item 13"}
+  srsr14: {column: recsoc14, label: "SRS adult relative form, item 14"}
+  srsr15: {column: recsoc15, label: "SRS adult relative form, item 15"}
+  srsr16: {column: recsoc16, label: "SRS adult relative form, item 16"}
+  srsr17: {column: recsoc17, label: "SRS adult relative form, item 17"}
+  srsr18: {column: recsoc18, label: "SRS adult relative form, item 18"}
+  srsr19: {column: recsoc19, label: "SRS adult relative form, item 19"}
+  srsr20: {column: recsoc20, label: "SRS adult relative form, item 20"}
+  srsr21: {column: recsoc21, label: "SRS adult relative form, item 21"}
+  srsr22: {column: recsoc22, label: "SRS adult relative form, item 22"}
+  srsr23: {column: recsoc23, label: "SRS adult relative form, item 23"}
+  srsr24: {column: recsoc24, label: "SRS adult relative form, item 24"}
+  srsr25: {column: recsoc25, label: "SRS adult relative form, item 25"}
+  srsr26: {column: recsoc26, label: "SRS adult relative form, item 26"}
+  srsr27: {column: recsoc27, label: "SRS adult relative form, item 27"}
+  srsr28: {column: recsoc28, label: "SRS adult relative form, item 28"}
+  srsr29: {column: recsoc29, label: "SRS adult relative form, item 29"}
+  srsr30: {column: recsoc30, label: "SRS adult relative form, item 30"}
+  srsr31: {column: recsoc31, label: "SRS adult relative form, item 31"}
+  srsr32: {column: recsoc32, label: "SRS adult relative form, item 32"}
+  srsr33: {column: recsoc33, label: "SRS adult relative form, item 33"}
+  srsr34: {column: recsoc34, label: "SRS adult relative form, item 34"}
+  srsr35: {column: recsoc35, label: "SRS adult relative form, item 35"}
+  srsr36: {column: recsoc36, label: "SRS adult relative form, item 36"}
+  srsr37: {column: recsoc37, label: "SRS adult relative form, item 37"}
+  srsr38: {column: recsoc38, label: "SRS adult relative form, item 38"}
+  srsr39: {column: recsoc39, label: "SRS adult relative form, item 39"}
+  srsr40: {column: recsoc40, label: "SRS adult relative form, item 40"}
+  srsr41: {column: recsoc41, label: "SRS adult relative form, item 41"}
+  srsr42: {column: recsoc42, label: "SRS adult relative form, item 42"}
+  srsr43: {column: recsoc43, label: "SRS adult relative form, item 43"}
+  srsr44: {column: recsoc44, label: "SRS adult relative form, item 44"}
+  srsr45: {column: recsoc45, label: "SRS adult relative form, item 45"}
+  srsr46: {column: recsoc46, label: "SRS adult relative form, item 46"}
+  srsr47: {column: recsoc47, label: "SRS adult relative form, item 47"}
+  srsr48: {column: recsoc48, label: "SRS adult relative form, item 48"}
+  srsr49: {column: recsoc49, label: "SRS adult relative form, item 49"}
+  srsr50: {column: recsoc50, label: "SRS adult relative form, item 50"}
+  srsr51: {column: recsoc51, label: "SRS adult relative form, item 51"}
+  srsr52: {column: recsoc52, label: "SRS adult relative form, item 52"}
+  srsr53: {column: recsoc53, label: "SRS adult relative form, item 53"}
+  srsr54: {column: recsoc54, label: "SRS adult relative form, item 54"}
+  srsr55: {column: recsoc55, label: "SRS adult relative form, item 55"}
+  srsr56: {column: recsoc56, label: "SRS adult relative form, item 56"}
+  srsr57: {column: recsoc57, label: "SRS adult relative form, item 57"}
+  srsr58: {column: recsoc58, label: "SRS adult relative form, item 58"}
+  srsr59: {column: recsoc59, label: "SRS adult relative form, item 59"}
+  srsr60: {column: recsoc60, label: "SRS adult relative form, item 60"}
+  srsr61: {column: recsoc61, label: "SRS adult relative form, item 61"}
+  srsr62: {column: recsoc62, label: "SRS adult relative form, item 62"}
+  srsr63: {column: recsoc63, label: "SRS adult relative form, item 63"}
+  srsr64: {column: recsoc64, label: "SRS adult relative form, item 64"}
+  srsr65: {column: recsoc65, label: "SRS adult relative form, item 65"}
+
+  # The scores as stored: plain sums of the answers. Used only to check that reading.
+  srsr_awareness_stored: {column: recsoc_awr, type: number, label: "SRS adult relative form, social awareness, as stored (no item reversed)", range: [8, 32], winsor: false, keep: false, missing: {}}
+  srsr_cognition_stored: {column: recsoc_cog, type: number, label: "SRS adult relative form, social cognition, as stored (no item reversed)", range: [12, 48], winsor: false, keep: false, missing: {}}
+  srsr_communication_stored: {column: recsoc_com, type: number, label: "SRS adult relative form, social communication, as stored (no item reversed)", range: [22, 88], winsor: false, keep: false, missing: {}}
+  srsr_motivation_stored: {column: recsoc_mot, type: number, label: "SRS adult relative form, social motivation, as stored (no item reversed)", range: [11, 44], winsor: false, keep: false, missing: {}}
+  srsr_restricted_repetitive_stored: {column: recsoc_rrb, type: number, label: "SRS adult relative form, restricted interests and repetitive behaviour, as stored (no item reversed)", range: [12, 48], winsor: false, keep: false, missing: {}}
+  srsr_sci_stored: {column: recsoc_sci, type: number, label: "SRS adult relative form, social communication and interaction, as stored", range: [53, 212], winsor: false, keep: false, missing: {}}
+  srsr_total_stored: {column: recsoc_score, type: number, label: "SRS adult relative form, total, as stored (no item reversed)", range: [65, 260], winsor: false, keep: false, missing: {}}
+
+  # The T-scores as stored: read from wrong raw scores, or sums of T-scores. Not delivered.
+  srsr_awr_t_stored: {column: recsoc_tawr, type: number, label: "SRS adult relative form, social awareness, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsr_cog_t_stored: {column: recsoc_tcog, type: number, label: "SRS adult relative form, social cognition, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsr_com_t_stored: {column: recsoc_tcom, type: number, label: "SRS adult relative form, social communication, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsr_mot_t_stored: {column: recsoc_tmot, type: number, label: "SRS adult relative form, social motivation, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsr_rrb_t_stored: {column: recsoc_trrb, type: number, label: "SRS adult relative form, restricted interests and repetitive behaviour, T-score as stored (from a wrong raw score)", range: [30, 130], winsor: false, keep: false, missing: {}}
+  srsr_sci_t_stored: {column: recsoc_tsci, type: number, label: "Sum of four T-scores, as stored", range: [120, 520], winsor: false, keep: false, missing: {}}
+  srsr_total_t_stored: {column: recsoc_tscore, type: number, label: "Sum of five T-scores, as stored", range: [150, 650], winsor: false, keep: false, missing: {}}
+
+scores:
+  srsr_awareness:
+    label: "SRS adult relative form, social awareness (0 to 24)"
+    sum: [srsr02, srsr07, srsr25, srsr32, srsr45, srsr52, srsr54, srsr56]
+    reverse: [srsr07, srsr32, srsr45, srsr52]
+    scale: [1, -8]
+  srsr_cognition:
+    label: "SRS adult relative form, social cognition (0 to 36)"
+    sum: [srsr05, srsr10, srsr15, srsr17, srsr30, srsr40, srsr42, srsr44, srsr48, srsr58, srsr59, srsr62]
+    reverse: [srsr15, srsr17, srsr40, srsr48]
+    scale: [1, -12]
+  srsr_communication:
+    label: "SRS adult relative form, social communication (0 to 66)"
+    sum: [srsr12, srsr13, srsr16, srsr18, srsr19, srsr21, srsr22, srsr26, srsr33, srsr35, srsr36, srsr37, srsr38, srsr41, srsr46, srsr47, srsr51, srsr53, srsr55, srsr57, srsr60, srsr61]
+    reverse: [srsr12, srsr21, srsr22, srsr26, srsr38, srsr55]
+    scale: [1, -22]
+  srsr_motivation:
+    label: "SRS adult relative form, social motivation (0 to 33)"
+    sum: [srsr01, srsr03, srsr06, srsr09, srsr11, srsr23, srsr27, srsr34, srsr43, srsr64, srsr65]
+    reverse: [srsr03, srsr11, srsr43]
+    scale: [1, -11]
+  srsr_restricted_repetitive:
+    label: "SRS adult relative form, restricted interests and repetitive behaviour (0 to 36)"
+    sum: [srsr04, srsr08, srsr14, srsr20, srsr24, srsr28, srsr29, srsr31, srsr39, srsr49, srsr50, srsr63]
+    scale: [1, -12]
+  srsr_sci:
+    label: "SRS adult relative form, social communication and interaction (four sub-scales) (0 to 159)"
+    sum: [srsr01, srsr02, srsr03, srsr05, srsr06, srsr07, srsr09, srsr10, srsr11, srsr12, srsr13, srsr15, srsr16, srsr17, srsr18, srsr19, srsr21, srsr22, srsr23, srsr25, srsr26, srsr27, srsr30, srsr32, srsr33, srsr34, srsr35, srsr36, srsr37, srsr38, srsr40, srsr41, srsr42, srsr43, srsr44, srsr45, srsr46, srsr47, srsr48, srsr51, srsr52, srsr53, srsr54, srsr55, srsr56, srsr57, srsr58, srsr59, srsr60, srsr61, srsr62, srsr64, srsr65]
+    reverse: [srsr03, srsr07, srsr11, srsr12, srsr15, srsr17, srsr21, srsr22, srsr26, srsr32, srsr38, srsr40, srsr43, srsr45, srsr48, srsr52, srsr55]
+    scale: [1, -53]
+  srsr_total:
+    label: "SRS adult relative form, total raw score (0 to 195)"
+    sum: [srsr01, srsr02, srsr03, srsr04, srsr05, srsr06, srsr07, srsr08, srsr09, srsr10, srsr11, srsr12, srsr13, srsr14, srsr15, srsr16, srsr17, srsr18, srsr19, srsr20, srsr21, srsr22, srsr23, srsr24, srsr25, srsr26, srsr27, srsr28, srsr29, srsr30, srsr31, srsr32, srsr33, srsr34, srsr35, srsr36, srsr37, srsr38, srsr39, srsr40, srsr41, srsr42, srsr43, srsr44, srsr45, srsr46, srsr47, srsr48, srsr49, srsr50, srsr51, srsr52, srsr53, srsr54, srsr55, srsr56, srsr57, srsr58, srsr59, srsr60, srsr61, srsr62, srsr63, srsr64, srsr65]
+    reverse: [srsr03, srsr07, srsr11, srsr12, srsr15, srsr17, srsr21, srsr22, srsr26, srsr32, srsr38, srsr40, srsr43, srsr45, srsr48, srsr52, srsr55]
+    scale: [1, -65]
+  srsr_awareness_as_stored: {label: "SRS adult relative form, social awareness as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr02, srsr07, srsr25, srsr32, srsr45, srsr52, srsr54, srsr56], compare: srsr_awareness_stored, keep: false}
+  srsr_cognition_as_stored: {label: "SRS adult relative form, social cognition as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr05, srsr10, srsr15, srsr17, srsr30, srsr40, srsr42, srsr44, srsr48, srsr58, srsr59, srsr62], compare: srsr_cognition_stored, keep: false}
+  srsr_communication_as_stored: {label: "SRS adult relative form, social communication as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr12, srsr13, srsr16, srsr18, srsr19, srsr21, srsr22, srsr26, srsr33, srsr35, srsr36, srsr37, srsr38, srsr41, srsr46, srsr47, srsr51, srsr53, srsr55, srsr57, srsr60, srsr61], compare: srsr_communication_stored, keep: false}
+  srsr_motivation_as_stored: {label: "SRS adult relative form, social motivation as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr01, srsr03, srsr06, srsr09, srsr11, srsr23, srsr27, srsr34, srsr43, srsr64, srsr65], compare: srsr_motivation_stored, keep: false}
+  srsr_restricted_repetitive_as_stored: {label: "SRS adult relative form, restricted interests and repetitive behaviour as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr04, srsr08, srsr14, srsr20, srsr24, srsr28, srsr29, srsr31, srsr39, srsr49, srsr50, srsr63], compare: srsr_restricted_repetitive_stored, keep: false}
+  srsr_sci_as_stored: {label: "SRS adult relative form, social communication and interaction as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr01, srsr02, srsr03, srsr05, srsr06, srsr07, srsr09, srsr10, srsr11, srsr12, srsr13, srsr15, srsr16, srsr17, srsr18, srsr19, srsr21, srsr22, srsr23, srsr25, srsr26, srsr27, srsr30, srsr32, srsr33, srsr34, srsr35, srsr36, srsr37, srsr38, srsr40, srsr41, srsr42, srsr43, srsr44, srsr45, srsr46, srsr47, srsr48, srsr51, srsr52, srsr53, srsr54, srsr55, srsr56, srsr57, srsr58, srsr59, srsr60, srsr61, srsr62, srsr64, srsr65], compare: srsr_sci_stored, keep: false}
+  srsr_total_as_stored: {label: "SRS adult relative form, total as the EMR computes it (answers 1 to 4, no item reversed), to check the stored score", sum: [srsr01, srsr02, srsr03, srsr04, srsr05, srsr06, srsr07, srsr08, srsr09, srsr10, srsr11, srsr12, srsr13, srsr14, srsr15, srsr16, srsr17, srsr18, srsr19, srsr20, srsr21, srsr22, srsr23, srsr24, srsr25, srsr26, srsr27, srsr28, srsr29, srsr30, srsr31, srsr32, srsr33, srsr34, srsr35, srsr36, srsr37, srsr38, srsr39, srsr40, srsr41, srsr42, srsr43, srsr44, srsr45, srsr46, srsr47, srsr48, srsr49, srsr50, srsr51, srsr52, srsr53, srsr54, srsr55, srsr56, srsr57, srsr58, srsr59, srsr60, srsr61, srsr62, srsr63, srsr64, srsr65], compare: srsr_total_stored, keep: false}

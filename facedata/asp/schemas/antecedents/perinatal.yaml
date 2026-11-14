@@ -1,0 +1,65 @@
+instrument: perinatal
+title: "Birth"
+tab: antecedents
+section: history
+status: draft
+level: patient
+notes: >
+  The term, the age of the parents, the delivery, the newborn's first days and
+  the measures at birth: 2071 inclusion visits (878 of children) and 0 follow-up visits, from 2011 to 2026; asked once, at the
+  inclusion visit.
+
+  Same questions as the instrument perinatal of FACE BP, SZ and DR where they
+  exist there: the term, the age of the parents, the weight, the length and
+  the head circumference at birth and the two Apgar scores are delivered under
+  the same names. The delivery is described here by yes/no questions (natural,
+  induced, caesarean, forceps, vacuum) where the other cohorts have one list.
+
+  The term is known for 1710 patients: under 37 weeks for 163 of them. The birth
+  weight is written in grams (1256 values) or in kilograms (fewer than five values under
+  10, converted); fewer than five values between 10 and 400 fit neither and are not
+  delivered. A caesarean is reported for 326 of the 475 patients for whom the
+  question is answered; the question is asked when the delivery is not
+  natural (511 patients).
+
+  A section of the ASP cohort only.
+
+variables:
+  gestational_age: {column: semameno, type: number, label: "Gestational age at birth, in weeks of amenorrhoea", unit: weeks, range: [20, 45], winsor: false}
+  mother_age_at_birth: {column: agemere, type: item, label: "Age of the mother when the patient was born, in years", range: [12, 60]}
+  father_age_at_birth: {column: agepere, type: item, label: "Age of the father when the patient was born, in years", range: [12, 90]}
+  natural_delivery: {column: accnat, type: item, label: "Natural delivery (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  induced_delivery: {column: prov, type: item, label: "Induced delivery (0 no, 1 yes)", range: [0, 1]}
+  provpla: {column: provpla, type: item, label: "Induced delivery, planned (0 no, 1 yes)", range: [0, 1]}
+  provurg: {column: provurg, type: item, label: "Induced delivery, in emergency (0 no, 1 yes)", range: [0, 1]}
+  caesarean: {column: cesa, type: item, label: "Caesarean (0 no, 1 yes)", range: [0, 1]}
+  cesapla: {column: cesapla, type: item, label: "Caesarean, planned (0 no, 1 yes)", range: [0, 1]}
+  cesaurg: {column: cesaurg, type: item, label: "Caesarean, in emergency (0 no, 1 yes)", range: [0, 1]}
+  forceps: {column: forc, type: item, label: "Forceps (0 no, 1 yes)", range: [0, 1]}
+  vacuum_extraction: {column: vent, type: item, label: "Vacuum extraction (0 no, 1 yes)", range: [0, 1]}
+  accautre: {column: accautre, type: text, label: "Delivery, other, free text"}
+  foetal_distress: {column: souffet, type: item, label: "Foetal distress (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  souffets: {column: souffets, type: category, label: "Foetal distress at delivery: kind", codes: {"1": anoxia, "2": severe_jaundice, "3": cerebral_haemorrhage, "4": infection, "5": other}}
+  souffetc: {column: souffetc, type: text, label: "Foetal distress, comment, free text"}
+  neonatal_resuscitation: {column: reanim, type: item, label: "Resuscitation at birth (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  neonatal_hospitalisation: {column: neonat, type: item, label: "Was admitted to a neonatal unit (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  neonatc: {column: neonatc, type: text, label: "Neonatal unit, reason, free text"}
+  neonatd: {column: neonatd, type: number, label: "Neonatal unit, days", range: [0, 360], winsor: false}
+  newborn_disease: {column: affecbb, type: item, label: "Disease of the newborn (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  affecbbc: {column: affecbbc, type: text, label: "Disease of the newborn, which, free text"}
+  twin_birth: {column: gemel, type: item, label: "Twin birth (0 no, 1 yes)", range: [0, 1]}
+  gemels: {column: gemels, type: category, label: "Twin birth: zygosity", codes: {"1": monozygotic, "2": dizygotic}, missing: {"3": unknown}}
+  birth_weight:
+    column: naispoid
+    label: Birth weight
+    type: number
+    unit: g
+    units:
+      g: {factor: 1, expect: [400, 6500]}
+      kg: {factor: 1000, expect: [0.4, 6.5]}
+    range: [400, 6500]
+    winsor: false
+  birth_length: {column: naistail, type: number, label: Birth length, unit: cm, range: [25, 60], winsor: false}
+  birth_head_circumference: {column: naispc, type: number, label: Head circumference at birth, unit: cm, range: [20, 42], winsor: false}
+  apgar_1min: {column: apgar1, type: item, label: Apgar score at 1 minute, range: [0, 10]}
+  apgar_5min: {column: apgar5, type: item, label: Apgar score at 5 minutes, range: [0, 10]}

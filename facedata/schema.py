@@ -13,16 +13,16 @@ from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
                      "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
-                     "relatives", "per_patient", "crossed"}
+                     "relatives", "per_patient", "crossed", "per_visit", "packed"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
                    "doubt", "asked_if", "separator", "parse", "note", "day"}
-SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "scale", "reverse", "min_items",
-                "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
+SCORE_FIELDS = {"sum", "mean", "max", "lookup", "from", "by", "custom", "minus", "floor", "scale", "reverse", "min_items",
+                "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
-VERSION_FIELDS = {"name", "column", "codes", "filled", "level", "follow_up", "by_inclusion_date", "since"}
+VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since"}
 TYPES = {"number", "item", "band", "category", "date", "time", "text"}
 
 
@@ -102,10 +102,14 @@ def load_schema(path):
                 score[field] = to_number(score[field])
         if isinstance(score.get("winsor"), list):
             score["winsor"] = to_numbers(score["winsor"])
+        if isinstance(score.get("points"), dict):        # {answer: points}, both numbers
+            score["points"] = {to_number(answer): to_number(points) for answer, points in score["points"].items()}
         if isinstance(score.get("scale"), list):
             score["scale"] = to_numbers(score["scale"])
         if "range" in score:
             score["range"] = to_numbers(score["range"])
+    if "per_visit" in schema:                        # a list of the visit, not of the patient
+        schema["per_visit"] = schema["per_visit"] == "true"
     if isinstance(schema.get("names"), dict):        # the names table: in the cohort folder, or shared in the package folder
         cohort_folder = Path(path).parents[2]
         table = schema["names"].get("table", "")
@@ -165,6 +169,9 @@ def given_columns(schema):
     if isinstance(schema.get("relatives"), dict):
         for who in schema["relatives"].values():
             given = given | set(who if isinstance(who, dict) else [])
+    if isinstance(schema.get("packed"), dict):       # the fields of the records packed in a cell
+        for block in schema["packed"].values():
+            given = given | set(block.get("fields", []) if isinstance(block, dict) else [])
     return given
 
 
@@ -192,7 +199,7 @@ def is_range(value):
 def version_names(schema):
     """The edition names that the schema's version block can give."""
     version = schema.get("version", {})
-    return set(version.get("codes", {}).values()) | set(version.get("filled", {}))
+    return set(version.get("codes", {}).values()) | set(version.get("filled", {})) | set(version.get("age", {}))
 
 
 def check_variable(name, variable, schema, columns):
@@ -287,8 +294,14 @@ def check_scores(schema):
         for field in score:
             if field not in SCORE_FIELDS:
                 problems.append(f"{name}: unknown field '{field}'")
-        if len([kind for kind in ["sum", "mean", "lookup", "custom"] if kind in score]) != 1:
-            problems.append(f"{name}: a score has exactly one of sum, mean, lookup and custom")
+        if len([kind for kind in ["sum", "mean", "max", "lookup", "custom"] if kind in score]) != 1:
+            problems.append(f"{name}: a score has exactly one of sum, mean, max, lookup and custom")
+        combines = "sum" in score or "mean" in score or "max" in score
+        if ("points" in score or "otherwise" in score) and not combines:
+            problems.append(f"{name}: points and otherwise go with sum, mean or max")
+        points = score.get("points", {})
+        if not isinstance(points, dict) or not all(isinstance(number, float) for pair in points.items() for number in pair):
+            problems.append(f"{name}: points is a mapping {{answer: points}} of numbers")
         if "custom" in score and not hasattr(custom, score["custom"]):
             problems.append(f"{name}: there is no function '{score['custom']}' in facedata/custom.py")
         if "winsor" in score and not is_range(score["winsor"]):
@@ -304,8 +317,8 @@ def check_scores(schema):
                 problems.append(f"{name}: scale is [factor, offset], on a score that has sum or mean")
         if "by" in score and "lookup" not in score:
             problems.append(f"{name}: by goes with lookup")
-        used = score.get("sum", []) + score.get("mean", []) + score.get("reverse", []) + score.get("minus", [])
-        for field in ["compare", "from", "by"]:
+        used = score.get("sum", []) + score.get("mean", []) + score.get("max", []) + score.get("reverse", []) + score.get("minus", [])
+        for field in ["compare", "from", "by", "otherwise"]:
             if field in score:
                 used = used + [score[field]]
         for item in used:
@@ -328,8 +341,13 @@ def check_version(schema, columns):
     for field in version:
         if field not in VERSION_FIELDS:
             problems.append(f"version: unknown field '{field}'")
-    if "name" not in version or ("column" in version) == ("filled" in version):
-        problems.append("version: needs a name, and either column with codes or filled")
+    ways = [way for way in ("column", "filled", "age") if way in version]
+    if "name" not in version or len(ways) != 1:
+        problems.append("version: needs a name, and one of column with codes, filled and age")
+    for name, band in version.get("age", {}).items():
+        numbers = pd.to_numeric(pd.Series(band if isinstance(band, list) else []), errors="coerce")
+        if len(numbers) != 2 or numbers.isna().any() or not numbers[0] < numbers[1]:
+            problems.append(f"version: age '{name}' needs two numbers, the first below the second")
     if "column" in version and "codes" not in version:
         problems.append("version: column needs codes")
     if version.get("level", "patient") != "patient" or ("level" in version and "column" not in version):
@@ -391,9 +409,17 @@ def check_lists(schema):
         read = {column for variable in schema["variables"].values() for column in variable.get("columns", [])}
         if schema.get("level") != "list" or not isinstance(schema["crossed"], list) or not set(schema["crossed"]) <= read:
             problems.append("crossed needs level: list, and lists raw columns that variables of the schema read")
+    if "per_visit" in schema and (schema.get("level") != "list" or block is not None or "crossed" in schema):
+        problems.append("per_visit needs level: list, and goes with neither at_visit nor crossed")
+    if "packed" in schema:
+        packed = schema["packed"]
+        well_formed = isinstance(packed, dict) and all(isinstance(fields, dict) and isinstance(fields.get("fields"), list)
+                                                       and fields.get("text", fields["fields"][0]) in fields["fields"] for fields in packed.values())
+        if schema.get("level") != "list" or not well_formed:
+            problems.append("packed needs level: list, and for each raw column its fields (and text, one of the fields)")
     if names is not None:
-        if not isinstance(names, dict) or set(names) - {"path"} != {"column", "clean", "table", "gives"}:
-            problems.append("names needs column, clean, table and gives, and nothing else")
+        if not isinstance(names, dict) or set(names) - {"path", "otherwise"} != {"column", "clean", "table", "gives"}:
+            problems.append("names needs column, clean, table and gives, and nothing else but otherwise")
         elif not hasattr(custom, names["clean"]):
             problems.append(f"names: there is no function '{names['clean']}' in facedata/custom.py")
         elif not Path(names["path"]).exists():
@@ -456,6 +482,10 @@ def check_schema(schema, columns=None):
         problems.append("level is visit, patient, list or relatives")
     for name, variable in schema.get("variables", {}).items():
         problems = problems + check_variable(name, variable, schema, columns)
+    if columns is not None and isinstance(schema.get("packed"), dict):
+        for column in schema["packed"]:
+            if column not in columns:
+                problems.append(f"packed: column '{column}' is not in the extraction")
     problems = problems + check_scores(schema) + check_version(schema, columns) + check_sign(schema)
     outputs = set(schema.get("variables", {})) | set(schema.get("scores", {}))
     for name, function in (schema.get("checks") or {}).items():

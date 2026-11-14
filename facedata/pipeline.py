@@ -82,10 +82,11 @@ def read_variable(raw, version, name, variable, keys=None, wholes=None, norms=No
     return values, cens, stack_flags(flags), is_read, filled
 
 
-def run_instrument(raw, keys, schema, limits=None, norms=None):
+def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True):
     """Run every step for one instrument.
 
     limits: winsor limits of an earlier load. norms: the norm tables.
+    winsorise_values: False leaves the tails of the continuous variables as they are.
 
     Returns a dict: values (one column per variable and score), cens, version,
     flags, limits (winsor limits used), n_rows (cells read), n_filled (cells
@@ -142,12 +143,12 @@ def run_instrument(raw, keys, schema, limits=None, norms=None):
 
     used_limits = {}
     for name, variable in schema["variables"].items():
-        if variable["type"] == "number":
+        if variable["type"] == "number" and winsorise_values:
             values[name], winsor_flags, used_limits[name] = winsorise(
                 values[name], name, variable, limits.get(name))
             flags.append(winsor_flags)
     for name, score in schema.get("scores", {}).items():
-        if "winsor" in score:                        # a continuous score that asks for it (a body mass index)
+        if "winsor" in score and winsorise_values:   # a continuous score that asks for it (a body mass index)
             values[name], winsor_flags, used_limits[name] = winsorise(values[name], name, score, limits.get(name))
             flags.append(winsor_flags)
 
@@ -191,7 +192,7 @@ def once_per_patient(result, table, keys):
     return result
 
 
-def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None, label="item "):
+def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None, label="item ", winsorise_values=True):
     """An instrument whose cells hold lists: one row per patient and item (SCHEMA_SPEC, section 15).
 
     label: what the flag log writes before the number of an item. Returns the
@@ -199,9 +200,11 @@ def run_list_instrument(raw, keys, schema, schemas, limits=None, norms=None, lab
     QC tables.
     """
     items, item_keys, list_flags = open_lists(raw, keys, schema, label)
-    result = run_instrument(items, item_keys, schema, limits, norms)
+    result = run_instrument(items, item_keys, schema, limits, norms, winsorise_values)
     result["flags"] = stack_flags([result["flags"], list_flags])
     front = pd.DataFrame({"usubjid": item_keys["usubjid"], "item": item_keys["visit_order"]})
+    if schema.get("per_visit"):                          # a list of the visit: say which visit
+        front.insert(1, "visit", item_keys["of_visit"])
     table = pd.concat([front, delivered_columns(schema, result)], axis=1)
     flags = finish_flags(result["flags"], item_keys, raw_strings(items, schema), result["values"])
     qc = [qc_table(schema, result, item_keys)]
@@ -218,13 +221,13 @@ def computed(values, n_rows=None):
             "limits": {}, "n_rows": n_rows or {}, "n_filled": {}, "version": None}
 
 
-def run_relatives_instrument(raw, keys, schema, limits=None, norms=None):
+def run_relatives_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True):
     """The same questions asked for each relative: one row per patient and relative (SCHEMA_SPEC, section 16).
 
     Returns the table of relatives, the flags and the QC table.
     """
     rows, row_keys, varying_flags = stack_relatives(raw, keys, schema)
-    result = run_instrument(rows, row_keys, schema, limits, norms)
+    result = run_instrument(rows, row_keys, schema, limits, norms, winsorise_values)
     result["flags"] = stack_flags([result["flags"], varying_flags])
     flags = finish_flags(result["flags"], row_keys, raw_strings(rows, schema), result["values"])
     asked = [name for name, variable in schema["variables"].items() if raw_columns(schema, variable)]
@@ -276,13 +279,16 @@ def with_cohort(table, cohort):
     return table
 
 
-def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms", cohort=None):
+def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms", cohort=None, repair_accents=False,
+               first_visit=None, winsorise_values=True):
     """Load an extraction with every schema of the folder (or only some instruments).
 
     cohort: the name written in the column `cohort` of the tables ("bp", "sz"). A usubjid is
-    unique inside a cohort only.
+    unique inside a cohort only. repair_accents: the export wrote its accents twice over.
+    first_visit: the day the cohort opened; an earlier visit date is impossible.
+    winsorise_values: False leaves the tails of the continuous variables as they are.
     """
-    raw, keys, visit_flags = prepare_visits(read_extraction(path))
+    raw, keys, visit_flags = prepare_visits(read_extraction(path, repair_accents), first_visit)
     schemas = load_schemas(schema_folder)
     problems = check_cohort(schemas)
     for schema in schemas.values():
@@ -310,13 +316,13 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
         if "derived_from" in schema:                     # computed with the instrument it comes from
             continue
         if schema.get("level") == "relatives":
-            relatives, flags, qc = run_relatives_instrument(raw, keys, schema, limits, norms)
+            relatives, flags, qc = run_relatives_instrument(raw, keys, schema, limits, norms, winsorise_values)
             all_flags.append(flags)
             all_qc.append(qc)
             continue
         if schema.get("level") == "list":
             label = schema["instrument"] + " item " if several_lists else "item "
-            table, visit_columns, flags, qc = run_list_instrument(raw, keys, schema, schemas, limits, norms, label)
+            table, visit_columns, flags, qc = run_list_instrument(raw, keys, schema, schemas, limits, norms, label, winsorise_values)
             if several_lists:                            # the rows of several lists are stacked: say which list
                 table.insert(1, "list", schema["instrument"])
             lists.append(table)
@@ -324,7 +330,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_flags.append(flags)
             all_qc.extend(qc)
             continue
-        result = run_instrument(raw, keys, schema, limits, norms)
+        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values)
         table = delivered_columns(schema, result)
         for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
             data[column] = data[column].fillna(table[column])

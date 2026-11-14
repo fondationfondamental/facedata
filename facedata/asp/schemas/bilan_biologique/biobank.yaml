@@ -1,0 +1,22 @@
+instrument: biobank
+title: "Samples for the biobank"
+tab: bilan_biologique
+section: examinations
+status: draft
+notes: >
+  Two questions on a sample for the biobank: banqpre (yes on 387 of 656
+  inclusion visits; 9 is read as "not known") with its date, filled only after
+  a yes, and banqrpr (a second sample, yes on fewer than five visits) with its
+  date.
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  biobank_sample: {column: banqpre, type: item, range: [0, 1], missing: {"9": unknown}, label: "A sample was taken for the biobank"}
+  biobank_sample_date: {column: banqpr_date, type: date, range: [2000-01-01, 2026-12-31], label: "Date of the biobank sample"}
+  biobank_second_sample: {column: banqrpr, type: item, range: [0, 1], missing: {"9": unknown}, label: "A second sample was taken for the biobank"}
+  biobank_second_sample_date: {column: banqrpr_date, type: date, range: [2000-01-01, 2026-12-31], label: "Date of the second sample"}

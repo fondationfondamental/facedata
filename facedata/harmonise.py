@@ -26,6 +26,11 @@ def detect_version(raw, keys, schema):
         for name, items in reversed(list(version["filled"].items())):   # the first one listed wins
             result = result.mask((raw[items] != "").any(axis=1), name)
         result = result.where(has_data)                  # the instrument was not administered: no version
+    elif "age" in version:                               # a child form and an adult form in the same columns
+        result = pd.Series(np.nan, index=raw.index, dtype=object)
+        for name, (youngest, oldest) in version["age"].items():
+            result = result.mask((keys["age"] >= float(youngest)) & (keys["age"] < float(oldest)), name)
+        result = result.where(has_data)
     else:
         codes = {code.lower(): name for code, name in version["codes"].items()}
         result = clean_text(raw[version["column"]]).str.lower().map(codes)
@@ -177,11 +182,16 @@ def mean_correlation(table, scores, flip_before=None):
     return np.mean(results) if results else np.nan
 
 
+# A centre is flipped only if, before the switch, its scores follow the wrong sign this strongly (mean rank correlation).
+CLEAR_SIGN = 0.5
+
+
 def find_switch_date(table, scores, wanted):
     """The month before which the standard scores of one centre move the wrong way.
 
-    wanted is -1 or +1: the sign the correlation must have. Returns None when
-    the centre never changed convention.
+    wanted is -1 or +1: the sign the correlation must have. Returns the month
+    (None when the centre never changed convention) and whether the scores
+    before it clearly follow the other convention.
     """
     best_date = None
     best = wanted * mean_correlation(table, scores)
@@ -195,10 +205,12 @@ def find_switch_date(table, scores, wanted):
         if np.isnan(best) or agreement > best + 1e-9:
             best_date, best = month, agreement
     if best_date is None:
-        return None
+        return None, False
     before = table[table["date"] < best_date]
-    moved_the_wrong_way = wanted * mean_correlation(before, scores) < 0
-    return best_date if moved_the_wrong_way else None
+    agreement_before = wanted * mean_correlation(before, scores)
+    if not agreement_before < 0:                       # the scores before it do not move the wrong way
+        return None, False
+    return best_date, agreement_before <= -CLEAR_SIGN
 
 
 def fix_sign(values, keys, schema):
@@ -216,12 +228,15 @@ def fix_sign(values, keys, schema):
         table["raw of " + score] = values[raw_names].sum(axis=1, min_count=len(raw_names))
 
     usable = table[table[scores].notna().any(axis=1) & table["date"].notna()]
-    switch = {}
+    switch, unsure = {}, {}
     for group, rows in usable.groupby("group"):
-        date = find_switch_date(rows, scores, wanted)
-        if date is not None:
+        date, is_clear = find_switch_date(rows, scores, wanted)
+        if date is not None and is_clear:
             switch[group] = date
+        elif date is not None:                         # a mixture of the two conventions: nothing is flipped
+            unsure[group] = date
     switch_date = pd.to_datetime(table["group"].map(switch))     # missing where nothing changed
+    unsure_date = pd.to_datetime(table["group"].map(unsure))
 
     flags = []
     days_apart = (table["date"] - switch_date).dt.days.abs()
@@ -232,6 +247,8 @@ def fix_sign(values, keys, schema):
         values[score] = values[score].where(~before, -values[score])
         flags.append(make_flags(before, score, "sign_flipped"))
         flags.append(make_flags(doubtful, score, "sign_doubt", "close to the centre's change of convention"))
+        maybe_old = present & (table["date"] < unsure_date)
+        flags.append(make_flags(maybe_old, score, "sign_doubt", "the early scores of the centre may follow the other convention"))
     return values, stack_flags(flags), switch
 
 
@@ -262,18 +279,24 @@ def doubt_period(values, dates, name, doubt):
 # ---------------------------------------------------------------- step 10: scores
 
 def combine_items(values, score, schema):
-    """A score that is the sum or the mean of its items, some of them reversed first.
+    """A score that is the sum, the mean or the highest of its items, some of them reversed first.
 
-    minus: variables subtracted from a sum. scale: [factor, offset], applied to the
-    sum or the mean. floor: the lowest value the score can take.
+    points: {answer: points}, the answers that count other points than their own
+    value. minus: variables subtracted from a sum. scale: [factor, offset],
+    applied to the sum or the mean. floor: the lowest value the score can take.
     """
-    items = score.get("sum") or score.get("mean")
+    items = items_of(score)
     table = values[items].copy()
     for item in score.get("reverse", []):
         low, high = schema["variables"][item]["range"]
         table[item] = low + high - table[item]
+    if "points" in score:
+        table = table.replace(score["points"])
     enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
-    result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
+    if "max" in score:
+        result = table.max(axis=1)
+    else:
+        result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
     if "minus" in score:
         taken_off = values[score["minus"]]
         enough = enough & taken_off.notna().all(axis=1)
@@ -284,6 +307,23 @@ def combine_items(values, score, schema):
     if "floor" in score:
         result = result.clip(lower=score["floor"])
     return result.where(enough)
+
+
+def items_of(score):
+    """The variables that a score adds up, averages or takes the highest of (none for a table or a function)."""
+    return score.get("sum") or score.get("mean") or score.get("max") or []
+
+
+def keep_stored_score(result, values, score):
+    """Where none of the items of a score is recorded, the score as stored is delivered.
+
+    The form lets a clinician type a total alone. Where only some items are
+    missing the score stays missing: the stored total may be a partial sum.
+    Returns the score and the rows where it is the stored one.
+    """
+    stored = values[score["otherwise"]]
+    typed_alone = values[items_of(score)].isna().all(axis=1) & stored.notna()
+    return result.where(~typed_alone, stored), typed_alone
 
 
 def look_up(raw, age, table, name, by=None):
@@ -345,6 +385,8 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
     """
     flags = []
     stored_differs = {}                # score -> rows where the stored score is not the recomputed one
+    as_stored = {}                     # score -> rows where it is the stored score, or is built on one
+    specs = {**schema["variables"], **schema.get("scores", {})}
     for name, score in schema.get("scores", {}).items():
         if "lookup" in score:
             by = values[score["by"]] if "by" in score else None
@@ -362,6 +404,14 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
         if "range" in score:
             result, range_flags = check_range(result, name, score)
             flags.append(range_flags)
+        parts = [part for part in items_of(score) if part in as_stored]
+        if parts:                                      # built on scores, some of them delivered as stored
+            as_stored[name] = pd.concat([as_stored[part] for part in parts], axis=1).any(axis=1) & result.notna()
+            flags.append(make_flags(as_stored[name], name, "score_as_stored", "built on a score delivered as stored"))
+        if "otherwise" in score:                       # a score typed without any of its items
+            result, typed_alone = keep_stored_score(result, values, score)
+            as_stored[name] = typed_alone | as_stored.get(name, False)
+            flags.append(make_flags(typed_alone, name, "score_as_stored", "none of its items is recorded"))
         values[name] = result
         if "compare" in score:
             stored = values[score["compare"]]
@@ -370,7 +420,16 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             stored_differs[name] = both & ((stored - result).abs() > tolerance)
             unexplained = both & ((stored - result - score["compare_offset"]).abs() > tolerance)
             detail = "stored " + stored.astype(str) + ", computed " + result.astype(str)
-            flags.append(make_flags(unexplained, name, "score_mismatch", detail))
+            stored_is_delivered = specs[score["compare"]].get("keep", True)
+            is_check = not score.get("keep", True)
+            # A check that is not delivered speaks about the stored value: the flag goes where the analyst looks,
+            # unless that value is derived from the check and gets derived_doubt below.
+            doubted_below = specs[score["compare"]].get("derived_from") == name
+            where = score["compare"] if stored_is_delivered and is_check and not doubted_below else name
+            flags.append(make_flags(unexplained, where, "score_mismatch", detail))
+            if not is_check and not stored_is_delivered:     # neither is delivered on these rows: say what was stored
+                alone = stored.notna() & result.isna()
+                flags.append(make_flags(alone, name, "score_not_recomputed", "stored " + stored.astype(str)))
     for name, variable in schema["variables"].items():
         if "derived_from" in variable:
             source = variable["derived_from"]

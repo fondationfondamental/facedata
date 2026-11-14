@@ -1,0 +1,63 @@
+instrument: anxiety_disorders
+title: "Anxiety disorders"
+tab: evaluation_medicale
+section: comorbidities
+status: draft
+notes: >
+  The clinician's list of psychiatric comorbidities, anxiety part. A first
+  question (tranxi, yes on 899 of 1,547 inclusion visits; 9 is read as "not
+  known") opens the disorders, each with its age at onset and its remission:
+  panic disorder with agoraphobia (panag, 77 yes) and without (pansa, 104),
+  agoraphobia without panic (agspa, 79), social phobia (phso, 429), specific
+  phobia (phsp, 187, with five kinds), obsessive-compulsive disorder (toc, 146,
+  with an insight box and a code), a disorder named soc (187, with two ages),
+  generalised anxiety (anxge, 431). Two more were added in 2020: separation
+  anxiety (anxsep, 73) and post-traumatic stress (spt, 40).
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14). A sub-disorder is delivered as 0 where the first question is no.
+
+  The follow-up visits answer the same questions (72 visits).
+
+  An instrument of the ASP cohort only.
+
+variables:
+  anxiety_disorder: {column: tranxi, type: item, range: [0, 1], missing: {"9": unknown}, label: "Any anxiety disorder"}
+  panic_with_agoraphobia: {column: panag, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Panic disorder with agoraphobia"}
+  panic_with_agoraphobia_onset_age: {column: panagag, type: number, range: [0, 70], winsor: false, label: "Panic disorder with agoraphobia: age at onset"}
+  panic_with_agoraphobia_remission: {column: panagrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Panic disorder with agoraphobia: in remission"}
+  panic_without_agoraphobia: {column: pansa, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Panic disorder without agoraphobia"}
+  panic_without_agoraphobia_onset_age: {column: pansag, type: number, range: [0, 70], winsor: false, label: "Panic disorder without agoraphobia: age at onset"}
+  panic_without_agoraphobia_remission: {column: pansarem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Panic disorder without agoraphobia: in remission"}
+  agoraphobia_without_panic: {column: agspa, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Agoraphobia without panic disorder"}
+  agoraphobia_without_panic_onset_age: {column: agspaag, type: number, range: [0, 70], winsor: false, label: "Agoraphobia without panic disorder: age at onset"}
+  agoraphobia_without_panic_remission: {column: agsparem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Agoraphobia without panic disorder: in remission"}
+  social_phobia: {column: phso, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Social phobia"}
+  social_phobia_onset_age: {column: phsoag, type: number, range: [0, 70], winsor: false, label: "Social phobia: age at onset"}
+  social_phobia_remission: {column: phsorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social phobia: in remission"}
+  specific_phobia: {column: phsp, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Specific phobia"}
+  specific_phobia_onset_age: {column: phspag, type: number, range: [0, 70], winsor: false, label: "Specific phobia: age at onset"}
+  specific_phobia_animal: {column: phsptani, type: item, range: [0, 1], label: "Specific phobia: animal type"}
+  specific_phobia_natural_environment: {column: phsptenv, type: item, range: [0, 1], label: "Specific phobia: natural environment type"}
+  specific_phobia_blood_injection: {column: phsptsan, type: item, range: [0, 1], label: "Specific phobia: blood, injection and injury type"}
+  specific_phobia_situational: {column: phsptsit, type: item, range: [0, 1], label: "Specific phobia: situational type"}
+  specific_phobia_other: {column: phsptaut, type: item, range: [0, 1], label: "Specific phobia: other type"}
+  specific_phobia_remission: {column: phsprem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific phobia: in remission"}
+  separation_anxiety: {column: ceoccur_anxsep, type: item, range: [0, 1], missing: {"9": unknown}, label: "Separation anxiety (from 2020)"}
+  separation_anxiety_onset_age: {column: agedebut_anxsep, type: number, range: [0, 70], winsor: false, label: "Separation anxiety: age at onset"}
+  separation_anxiety_remission: {column: remi_anxsep, type: item, range: [0, 1], label: "Separation anxiety: in remission"}
+  ocd: {column: toc, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Obsessive-compulsive disorder"}
+  ocd_onset_age: {column: tocag, type: number, range: [0, 70], winsor: false, label: "Obsessive-compulsive disorder: age at onset"}
+  ocd_remission: {column: tocrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Obsessive-compulsive disorder: in remission"}
+  ocd_ssri_treatment: {column: tocirs, type: item, range: [0, 1], label: "Obsessive-compulsive disorder: treated with an SSRI"}
+  ocd_ssri_response: {column: tocirst, type: category, codes: {"1": responder, "2": partial_responder, "3": non_responder}, label: "Obsessive-compulsive disorder: response to the SSRI"}
+  obsessive_compulsive_symptoms: {column: soc, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Obsessive-compulsive symptoms"}
+  compulsions_onset_age: {column: socagcom, type: number, range: [0, 70], winsor: false, label: "Obsessive-compulsive symptoms: age when the compulsions began"}
+  obsessions_onset_age: {column: socagobs, type: number, range: [0, 70], winsor: false, label: "Obsessive-compulsive symptoms: age when the obsessions began"}
+  generalised_anxiety: {column: anxge, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder, label: "Generalised anxiety disorder"}
+  generalised_anxiety_onset_age: {column: anxgeag, type: number, range: [0, 70], winsor: false, label: "Generalised anxiety disorder: age at onset"}
+  generalised_anxiety_remission: {column: anxgerem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Generalised anxiety disorder: in remission"}
+  ptsd: {column: ceoccur_spt, type: item, range: [0, 1], missing: {"9": unknown}, label: "Post-traumatic stress disorder (from 2020)"}
+  ptsd_onset_age: {column: agedebut_spt, type: number, range: [0, 70], winsor: false, label: "Post-traumatic stress disorder: age at onset"}
+  ptsd_remission: {column: remi_spt, type: item, range: [0, 1], missing: {"9": unknown}, label: "Post-traumatic stress disorder: in remission"}

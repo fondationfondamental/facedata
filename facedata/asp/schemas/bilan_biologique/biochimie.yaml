@@ -1,0 +1,138 @@
+instrument: biochimie
+title: "Biochemistry"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  Fifteen analytes of the blood chemistry. Same analytes, names, target units and ranges as in FACE DR
+  (and SZ for the uric acid, the CRP, the glucose and the HbA1c).
+
+  Biology starts late in this cohort: no result until 2016, then 39% of the
+  inclusions of 2021 and 26% to 44% since. 520 inclusion visits and 56 follow-up visits
+  hold at least one result.
+
+  The extraction has no unit column for these analytes (open question O6):
+  the unit is read from the size of the value, and a result that only another
+  unit explains is converted and flagged unit_inferred.
+
+  What the values show: 8 glucose results in g/L, 13 phosphate results in mg/L,
+  4 creatinine results in mg/L and 5 uric acid results in mg/L or mg/dL are
+  converted. One CRP is given as "less than" a limit and keeps its mark.
+
+defaults: {type: number}
+
+variables:
+  sodium:
+    label: Sodium
+    column: sodium
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [110, 170]}
+    range: [110, 170]
+  potassium:
+    label: Potassium
+    column: k
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [2, 8]}
+    range: [2, 8]
+  chloride:
+    label: Chloride
+    column: cl
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [70, 130]}
+    range: [70, 130]
+  total_protein:
+    label: Total protein
+    column: prot
+    unit: "g/L"
+    units:
+      "g/L": {factor: 1, expect: [40, 110]}
+    range: [40, 110]
+  albumin:
+    label: Albumin
+    column: alb
+    unit: "g/L"
+    units:
+      "g/L": {factor: 1, expect: [15, 65]}
+    range: [15, 65]
+  urea:
+    label: Urea
+    column: urea
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [1, 40]}
+      "g/L": {factor: 16.65, expect: [0.1, 1]}
+    range: [1, 40]
+  uric_acid:
+    label: Uric acid
+    column: urate
+    unit: "µmol/L"
+    units:
+      "µmol/L": {factor: 1, expect: [100, 1000]}
+      "mg/L": {factor: 5.948, expect: [15, 100]}
+      "mg/dL": {factor: 59.48, expect: [1, 10]}
+    range: [50, 1000]
+  creatinine:
+    label: Creatinine
+    column: creat
+    unit: "µmol/L"
+    units:
+      "µmol/L": {factor: 1, expect: [20, 1000]}
+      "mg/L": {factor: 8.84, expect: [2, 20]}
+    range: [20, 1000]
+  creatinine_clearance:
+    label: Creatinine clearance
+    column: creatclr
+    unit: "mL/min"
+    units:
+      "mL/min": {factor: 1, expect: [5, 250]}
+    range: [5, 250]
+  phosphate:
+    label: Phosphate
+    column: phos
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [0.3, 3]}
+      "mg/L": {factor: 0.03229, expect: [10, 100]}
+    range: [0.3, 3]
+  ferritin:
+    label: Ferritin
+    column: ferritin
+    unit: "µg/L"
+    units:
+      "µg/L": {factor: 1, expect: [1, 3000]}
+    range: [1, 3000]
+  calcium:
+    label: Calcium
+    column: ca
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [1.5, 3.5]}
+      "mg/L": {factor: 0.02495, expect: [60, 140]}
+    range: [1.5, 3.5]
+  crp:
+    label: C-reactive protein
+    column: crp
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+    unit: "mg/L"
+    units:
+      "mg/L": {factor: 1, expect: [0, 400]}
+    range: [0, 400]
+  glucose:
+    label: Fasting glucose
+    column: gluc
+    unit: "mmol/L"
+    units:
+      "mmol/L": {factor: 1, expect: [2.5, 40]}
+      "g/L": {factor: 5.551, expect: [0.3, 2.5]}
+    range: [1.5, 40]
+  hba1c:
+    label: Glycated haemoglobin (HbA1c)
+    column: hba1c
+    unit: "%"
+    units:
+      "%": {factor: 1, expect: [3, 18]}
+    range: [3, 18]

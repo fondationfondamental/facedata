@@ -1,0 +1,30 @@
+instrument: vitamine_d
+title: "Vitamin D"
+tab: bilan_biologique
+section: biology
+status: draft
+notes: >
+  25-hydroxy vitamin D, on 255 inclusion visits. Same analyte, name and target
+  unit (nmol/L) as in FACE DR.
+
+  Vitamin D is one of the five analytes that have a unit column. It holds a
+  catalogue number, not a label: 67432 on 252 results (read as nmol/L),
+  67306 on 19 (ng/mL: their median is 17.1), 64387 on 26 and 67327 on a few.
+  64387 is the number that the cholesterol column uses for mmol/L, a unit that
+  no vitamin D result can be in, as in FACE DR: it is read as no label, and the
+  size of the value decides. The reading of the numbers is to confirm (open
+  question O6).
+
+defaults: {type: number}
+
+variables:
+  vitamin_d:
+    label: 25-hydroxy vitamin D
+    column: vitd
+    unit_column: vitd_orresu
+    ignore_units: ["64387"]
+    unit: "nmol/L"
+    units:
+      "nmol/L": {factor: 1, expect: [8, 400], aliases: ["67432"]}
+      "ng/mL": {factor: 2.496, expect: [3, 160], aliases: ["67306"]}
+    range: [8, 400]

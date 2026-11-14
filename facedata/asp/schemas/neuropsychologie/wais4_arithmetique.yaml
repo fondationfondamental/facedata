@@ -1,0 +1,59 @@
+instrument: wais4_arithmetique
+title: "WAIS-IV, arithmetic"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Arithmetic: 22 items scored from 0 to 1, their total, the scaled score and its z-score,
+  on 209 inclusion visits.
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Checked on every visit: the stored total is the sum of the items, and the
+  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
+  tables of the test, which are not available: it is delivered as stored.
+
+  The stored total equals the sum of the items on 209 of the 209 visits that
+  hold every item.
+
+  Same instrument and output names as in FACE SZ, in other columns.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  wais4_arith01: {column: wais_arit1, label: "WAIS-IV arithmetic, item 1"}
+  wais4_arith02: {column: wais_arit2, label: "WAIS-IV arithmetic, item 2"}
+  wais4_arith03: {column: wais_arit3, label: "WAIS-IV arithmetic, item 3"}
+  wais4_arith04: {column: wais_arit4, label: "WAIS-IV arithmetic, item 4"}
+  wais4_arith05: {column: wais_arit5, label: "WAIS-IV arithmetic, item 5"}
+  wais4_arith06: {column: wais_arit6, label: "WAIS-IV arithmetic, item 6"}
+  wais4_arith07: {column: wais_arit7, label: "WAIS-IV arithmetic, item 7"}
+  wais4_arith08: {column: wais_arit8, label: "WAIS-IV arithmetic, item 8"}
+  wais4_arith09: {column: wais_arit9, label: "WAIS-IV arithmetic, item 9"}
+  wais4_arith10: {column: wais_arit10, label: "WAIS-IV arithmetic, item 10"}
+  wais4_arith11: {column: wais_arit11, label: "WAIS-IV arithmetic, item 11"}
+  wais4_arith12: {column: wais_arit12, label: "WAIS-IV arithmetic, item 12"}
+  wais4_arith13: {column: wais_arit13, label: "WAIS-IV arithmetic, item 13"}
+  wais4_arith14: {column: wais_arit14, label: "WAIS-IV arithmetic, item 14"}
+  wais4_arith15: {column: wais_arit15, label: "WAIS-IV arithmetic, item 15"}
+  wais4_arith16: {column: wais_arit16, label: "WAIS-IV arithmetic, item 16"}
+  wais4_arith17: {column: wais_arit17, label: "WAIS-IV arithmetic, item 17"}
+  wais4_arith18: {column: wais_arit18, label: "WAIS-IV arithmetic, item 18"}
+  wais4_arith19: {column: wais_arit19, label: "WAIS-IV arithmetic, item 19"}
+  wais4_arith20: {column: wais_arit20, label: "WAIS-IV arithmetic, item 20"}
+  wais4_arith21: {column: wais_arit21, label: "WAIS-IV arithmetic, item 21"}
+  wais4_arith22: {column: wais_arit22, label: "WAIS-IV arithmetic, item 22"}
+  wais4_arith_total_stored: {column: wais_arittot, range: [0, 22], keep: false, label: "WAIS-IV arithmetic, total as stored"}
+  wais4_arith_scaled: {column: wais_arit_std, range: [1, 19], label: "WAIS-IV arithmetic, scaled score"}
+  wais4_arith_z: {column: wais_arit_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV arithmetic, z-score of the scaled score"}
+
+scores:
+  wais4_arith_total:
+    label: "WAIS-IV arithmetic, total of the items"
+    sum: [wais4_arith01, wais4_arith02, wais4_arith03, wais4_arith04, wais4_arith05, wais4_arith06, wais4_arith07, wais4_arith08, wais4_arith09, wais4_arith10, wais4_arith11, wais4_arith12, wais4_arith13, wais4_arith14, wais4_arith15, wais4_arith16, wais4_arith17, wais4_arith18, wais4_arith19, wais4_arith20, wais4_arith21, wais4_arith22]
+    compare: wais4_arith_total_stored

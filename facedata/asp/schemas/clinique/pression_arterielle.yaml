@@ -1,0 +1,33 @@
+instrument: pression_arterielle
+title: "Blood pressure and pulse"
+tab: clinique
+section: clinical examination
+status: draft
+notes: >
+  One blood pressure and one pulse per visit (819 inclusion visits). The
+  thesaurus says that the patient is lying (couché), so the variables have the
+  names of the lying measures of FACE BP, SZ and DR.
+
+  7 systolic and 7 diastolic pressures are written in cmHg and are
+  converted to mmHg (unit_inferred), as in the other cohorts.
+
+defaults: {type: number}
+
+variables:
+  systolic_supine:
+    label: Systolic blood pressure, lying
+    column: c1tasys
+    unit: "mmHg"
+    units:
+      "mmHg": {factor: 1, expect: [50, 260]}
+      "cmHg": {factor: 10, expect: [5, 26]}
+    range: [50, 260]
+  diastolic_supine:
+    label: Diastolic blood pressure, lying
+    column: c1tadias
+    unit: "mmHg"
+    units:
+      "mmHg": {factor: 1, expect: [30, 180]}
+      "cmHg": {factor: 10, expect: [3, 18]}
+    range: [30, 180]
+  heart_rate_supine: {column: c1pouls, label: "Pulse, lying (beats per minute)", unit: bpm, range: [30, 220]}

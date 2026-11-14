@@ -1,0 +1,292 @@
+instrument: adi_r
+title: "Autism Diagnostic Interview-Revised (ADI-R)"
+tab: autoquestionnaires
+section: diagnostic instruments
+status: draft
+notes: >
+  The parent interview of the diagnosis of autism, at the inclusion visit:
+  1587 visits hold its conclusion, 1618 its first algorithm score and 1217 the
+  items, from 2013 to 2026. It is filled for children and adults (806 and
+  812 inclusion visits). Never at follow-up.
+
+  Identified as the ADI-R (Lord, Rutter and Le Couteur, 1994), sure: the item
+  numbers run from 1 to 93, the answers are its codes (0 to 3, then 7, 8 and 9),
+  and the published diagnostic algorithm reproduces the stored sub-scores.
+
+  **The columns.** adi2 to adi28, adi86 and adi87 are the early-development
+  items, coded once (ages in months, and codes). The items 29 to 93 have two
+  columns: _a, the current behaviour, and _p, the past one (ever, or the most
+  abnormal between four and five years), which the algorithm reads. The items
+  are delivered as recorded. **The codes 7, 8 and 9 are not levels**: 7 is an
+  abnormality of another kind, 8 is "not applicable", 9 is "not known". Do not
+  average the items. The algorithm counts a code 3 as 2 and the codes 7, 8 and
+  9 as 0 (the field points of the scores). The codes of an age in months from
+  991 to 999 are read as missing, each with its code. The two items of free
+  text (1 and 3) are delivered as text.
+
+  **The algorithm sub-scores, each checked against its items** (visits where
+  the stored value equals the published rule, of the visits that hold the
+  items): A1 1,169 of 1,183; A2 1,094 of 1,128; A3 1,163 of 1,176; A4 1,124 of 1,141;
+  B1 1,081 of 1,097; B2 1,083 of 1,111; B3 951 of 1,090; B4 1,075 of 1,100;
+  C1 1,147 of 1,161; C2 1,090 of 1,105; C3 1,137 of 1,147; C4 1,125 of 1,140.
+  A2 follows the age rule of the publication: group play with peers (item 64)
+  under ten years at the interview, friendships (item 65) from ten years (the
+  function adi_peer_item). C3 and C4 are the higher of two items.
+
+  **B3 leaves out an item between 2016 and 2020.** On the visits of those years
+  where the item 38 counts, the stored B3 is the sum of its four items on
+  16 of 117 and the sum without the item 38 on 99 of 117; from 2021 it is the
+  four-item sum on 143 of 154. The B3 delivered is the four-item sum
+  where the items are recorded; a B3 typed without its items is delivered as typed (score_as_stored).
+
+  **The stored domain totals A and C are not the published ones.** The stored
+  total A is the sum of every item of the domain, the items 64 and 65 both
+  (951 of 951 visits), where the algorithm counts one of the two: it
+  equals the sum of its four sub-scores on 449 of 1,136 visits only. The stored
+  total C adds the two items of C3 and of C4 instead of the higher one
+  (1,109 of 1,109): it equals the sum of its sub-scores on 653 of 1,082. A stored
+  total is so up to 2 points (A) or 4 points (C) above the published one. The
+  totals A and C delivered are the sums of the sub-scores; the stored ones are
+  read to be checked (formulas "as stored") and are not delivered. The stored
+  verbal total B is the published one (1,087 of 1,087).
+
+  **Sub-scores typed without the items.** On 423 visits the sub-scores are
+  recorded and no item is: they are kept as stored (score_as_stored), and the
+  domain totals are their sums.
+
+  D (abnormality evident before 36 months) needs thresholds on ages and is
+  delivered as stored. The published rule (first noticed before 36 months,
+  first words after 24, first phrases after 33, item 86 coded 3 or 4, the
+  interviewer's judgement before 36 months) reproduces it on 751 of 752 visits.
+  The non-verbal total B is delivered as stored (226 visits).
+
+  adi_positive is the conclusion as recorded. It agrees with the four cut-offs
+  of the publication (A 10, verbal B 8, C 3, D 1) applied to the stored totals
+  on 1,008 of 1,053 visits. adi_done is 1 on 1745 visits and 0 on 270; the
+  conclusion is filled on 1571 and 8 of them: 1 is read as "done". The
+  informant (mother, father, another guardian, several interviews) and the
+  version of the interview (ADI of 1988, ADI-R of 1995 or of 2003) are named
+  from the thesaurus. The thesaurus writes "Total A = A1 + A2 + A3 + A4" and
+  "Total C = C1 + C2 + C3 + C4": the stored totals do not follow its own
+  formulas. The name of the examiner (adiexam) is not delivered (ignored.yaml).
+
+  An instrument of the ASP cohort only.
+
+defaults: {type: item}
+
+variables:
+  adi_done: {column: adinf, type: category, label: "ADI-R done", codes: {"0": "no", "1": "yes"}}
+  adi_date: {column: adir_date, type: date, label: "Date of the ADI-R"}
+  adi_age_years: {column: adiagea, type: number, label: "Age at the ADI-R, years", range: [2, 70], unit: years, winsor: false}
+  adi_age_months: {column: adiagem, type: number, label: "Age at the ADI-R, months beyond the years", range: [0, 11], unit: months, winsor: false}
+  adi_informant: {column: adirelp, type: category, label: "Informant of the ADI-R", codes: {"0": mother, "1": father, "2": other_guardian, "3": several_interviews}}
+  adi_version: {column: adiver, type: category, label: "Version of the ADI", codes: {"1": adi_1988, "2": adi_r_1995, "3": adi_r_2003}}
+  adi_positive: {column: adi_diag, type: category, label: "ADI-R above the diagnostic thresholds, as recorded", codes: {"0": "no", "1": "yes"}}
+
+  # Early development: coded once.
+  adi01_text: {column: adi1_a, type: text, label: "ADI-R item 1, free text"}
+  adi02: {column: adi2, type: number, label: "ADI-R item 2, age when first noticed, months", range: [0, 600], unit: months, winsor: false, missing: {"991": code_991, "992": code_992, "994": code_994, "996": code_996, "997": code_997, "998": not_applicable, "999": unknown}}
+  adi03_text: {column: adi3_a, type: text, label: "ADI-R item 3, free text"}
+  adi04: {column: adi4, label: "ADI-R item 4 (codes 0 to 9)", range: [0, 9]}
+  adi05: {column: adi5, type: number, label: "ADI-R item 5, age in months", range: [0, 90], unit: months, winsor: false, missing: {"99": unknown}}
+  adi06: {column: adi6, type: number, label: "ADI-R item 6, months", range: [0, 400], unit: months, winsor: false, missing: {"994": code_994, "995": code_995, "996": code_996, "997": code_997, "998": not_applicable, "999": unknown}}
+  adi07: {column: adi7, type: number, label: "ADI-R item 7, months", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "994": code_994, "995": code_995, "996": code_996, "997": code_997, "998": not_applicable, "999": unknown}}
+  adi08: {column: adi8, type: number, label: "ADI-R item 8, months", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "994": code_994, "996": code_996, "997": code_997, "999": unknown}}
+  adi09: {column: adi9, type: number, label: "ADI-R item 9, age of the first single words, months", range: [0, 400], unit: months, winsor: false, missing: {"994": code_994, "996": code_996, "997": code_997, "999": unknown}}
+  adi10: {column: adi10, type: number, label: "ADI-R item 10, age of the first phrases, months", range: [0, 400], unit: months, winsor: false, missing: {"990": code_990, "993": code_993, "994": code_994, "996": code_996, "997": code_997, "999": unknown}}
+  adi11: {column: adi11, label: "ADI-R item 11 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi12: {column: adi12, label: "ADI-R item 12 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi13: {column: adi13, label: "ADI-R item 13 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi14: {column: adi14, label: "ADI-R item 14 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi15: {column: adi15, label: "ADI-R item 15 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi16: {column: adi16, label: "ADI-R item 16 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi17: {column: adi17, type: number, label: "ADI-R item 17, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"996": code_996, "998": not_applicable, "999": unknown}}
+  adi18: {column: adi18, label: "ADI-R item 18 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi19: {column: adi19, type: number, label: "ADI-R item 19, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
+  adi20: {column: adi20, label: "ADI-R item 20 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi21: {column: adi21, label: "ADI-R item 21 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi22: {column: adi22, label: "ADI-R item 22 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi23: {column: adi23, label: "ADI-R item 23 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi24: {column: adi24, label: "ADI-R item 24 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi25: {column: adi25, label: "ADI-R item 25 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi26: {column: adi26, type: number, label: "ADI-R item 26, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"998": not_applicable, "999": unknown}}
+  adi27: {column: adi27, label: "ADI-R item 27 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi28: {column: adi28, type: number, label: "ADI-R item 28, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
+  adi86: {column: adi86, label: "ADI-R item 86, age when the abnormality was first evident (codes 0 to 4)", range: [0, 4], missing: {"9": unknown}}
+  adi87: {column: adi87, type: number, label: "ADI-R item 87, the interviewer's judgement of the age of the first abnormality, months", range: [0, 90], unit: months, winsor: false, missing: {"99": unknown}}
+
+  # Items 29 to 93: the current behaviour (_a) and the past one (_p), the codes as recorded.
+  adi30_current: {column: adi30_a, label: "ADI-R item 30, overall level of language", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi29_current: {column: adi29_a, label: "ADI-R item 29, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi29_past: {column: adi29_p, label: "ADI-R item 29, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi31_current: {column: adi31_a, label: "ADI-R item 31, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi31_past: {column: adi31_p, label: "ADI-R item 31, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi32_current: {column: adi32_a, label: "ADI-R item 32, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi32_past: {column: adi32_p, label: "ADI-R item 32, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi33_current: {column: adi33_a, label: "ADI-R item 33, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi33_past: {column: adi33_p, label: "ADI-R item 33, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi34_current: {column: adi34_a, label: "ADI-R item 34, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi34_past: {column: adi34_p, label: "ADI-R item 34, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi35_current: {column: adi35_a, label: "ADI-R item 35, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi35_past: {column: adi35_p, label: "ADI-R item 35, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi36_current: {column: adi36_a, label: "ADI-R item 36, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi36_past: {column: adi36_p, label: "ADI-R item 36, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi37_current: {column: adi37_a, label: "ADI-R item 37, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi37_past: {column: adi37_p, label: "ADI-R item 37, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi38_current: {column: adi38_a, label: "ADI-R item 38, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi38_past: {column: adi38_p, label: "ADI-R item 38, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi39_current: {column: adi39_a, label: "ADI-R item 39, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi39_past: {column: adi39_p, label: "ADI-R item 39, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi40_current: {column: adi40_a, label: "ADI-R item 40, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi40_past: {column: adi40_p, label: "ADI-R item 40, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi41_current: {column: adi41_a, label: "ADI-R item 41, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi41_past: {column: adi41_p, label: "ADI-R item 41, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi42_current: {column: adi42_a, label: "ADI-R item 42, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi42_past: {column: adi42_p, label: "ADI-R item 42, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi43_current: {column: adi43_a, label: "ADI-R item 43, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi43_past: {column: adi43_p, label: "ADI-R item 43, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi44_current: {column: adi44_a, label: "ADI-R item 44, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi44_past: {column: adi44_p, label: "ADI-R item 44, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi45_current: {column: adi45_a, label: "ADI-R item 45, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi45_past: {column: adi45_p, label: "ADI-R item 45, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi46_current: {column: adi46_a, label: "ADI-R item 46, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi46_past: {column: adi46_p, label: "ADI-R item 46, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi47_current: {column: adi47_a, label: "ADI-R item 47, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi47_past: {column: adi47_p, label: "ADI-R item 47, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi48_current: {column: adi48_a, label: "ADI-R item 48, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi48_past: {column: adi48_p, label: "ADI-R item 48, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi49_current: {column: adi49_a, label: "ADI-R item 49, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi49_past: {column: adi49_p, label: "ADI-R item 49, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi50_current: {column: adi50_a, label: "ADI-R item 50, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi50_past: {column: adi50_p, label: "ADI-R item 50, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi51_current: {column: adi51_a, label: "ADI-R item 51, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi51_past: {column: adi51_p, label: "ADI-R item 51, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi52_current: {column: adi52_a, label: "ADI-R item 52, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi52_past: {column: adi52_p, label: "ADI-R item 52, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi53_current: {column: adi53_a, label: "ADI-R item 53, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi53_past: {column: adi53_p, label: "ADI-R item 53, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi54_current: {column: adi54_a, label: "ADI-R item 54, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi54_past: {column: adi54_p, label: "ADI-R item 54, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi55_current: {column: adi55_a, label: "ADI-R item 55, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi55_past: {column: adi55_p, label: "ADI-R item 55, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi56_current: {column: adi56_a, label: "ADI-R item 56, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi56_past: {column: adi56_p, label: "ADI-R item 56, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi57_current: {column: adi57_a, label: "ADI-R item 57, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi57_past: {column: adi57_p, label: "ADI-R item 57, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi58_current: {column: adi58_a, label: "ADI-R item 58, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi58_past: {column: adi58_p, label: "ADI-R item 58, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi59_current: {column: adi59_a, label: "ADI-R item 59, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi59_past: {column: adi59_p, label: "ADI-R item 59, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi60_current: {column: adi60_a, label: "ADI-R item 60, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi60_past: {column: adi60_p, label: "ADI-R item 60, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi61_current: {column: adi61_a, label: "ADI-R item 61, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi61_past: {column: adi61_p, label: "ADI-R item 61, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi62_current: {column: adi62_a, label: "ADI-R item 62, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi62_past: {column: adi62_p, label: "ADI-R item 62, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi63_current: {column: adi63_a, label: "ADI-R item 63, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi63_past: {column: adi63_p, label: "ADI-R item 63, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi64_current: {column: adi64_a, label: "ADI-R item 64, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi64_past: {column: adi64_p, label: "ADI-R item 64, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi65_current: {column: adi65_a, label: "ADI-R item 65, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi65_past: {column: adi65_p, label: "ADI-R item 65, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi66_current: {column: adi66_a, label: "ADI-R item 66, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi66_past: {column: adi66_p, label: "ADI-R item 66, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi67_current: {column: adi67_a, label: "ADI-R item 67, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi67_past: {column: adi67_p, label: "ADI-R item 67, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi68_current: {column: adi68_a, label: "ADI-R item 68, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi68_past: {column: adi68_p, label: "ADI-R item 68, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi69_current: {column: adi69_a, label: "ADI-R item 69, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi69_past: {column: adi69_p, label: "ADI-R item 69, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi70_current: {column: adi70_a, label: "ADI-R item 70, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi70_past: {column: adi70_p, label: "ADI-R item 70, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi71_current: {column: adi71_a, label: "ADI-R item 71, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi71_past: {column: adi71_p, label: "ADI-R item 71, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi72_current: {column: adi72_a, label: "ADI-R item 72, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi72_past: {column: adi72_p, label: "ADI-R item 72, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi73_current: {column: adi73_a, label: "ADI-R item 73, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi73_past: {column: adi73_p, label: "ADI-R item 73, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi74_current: {column: adi74_a, label: "ADI-R item 74, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi74_past: {column: adi74_p, label: "ADI-R item 74, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi75_current: {column: adi75_a, label: "ADI-R item 75, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi75_past: {column: adi75_p, label: "ADI-R item 75, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi76_current: {column: adi76_a, label: "ADI-R item 76, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi76_past: {column: adi76_p, label: "ADI-R item 76, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi77_current: {column: adi77_a, label: "ADI-R item 77, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi77_past: {column: adi77_p, label: "ADI-R item 77, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi78_current: {column: adi78_a, label: "ADI-R item 78, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi78_past: {column: adi78_p, label: "ADI-R item 78, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi79_current: {column: adi79_a, label: "ADI-R item 79, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi79_past: {column: adi79_p, label: "ADI-R item 79, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi80_current: {column: adi80_a, label: "ADI-R item 80, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi80_past: {column: adi80_p, label: "ADI-R item 80, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi81_current: {column: adi81_a, label: "ADI-R item 81, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi81_past: {column: adi81_p, label: "ADI-R item 81, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi82_current: {column: adi82_a, label: "ADI-R item 82, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi82_past: {column: adi82_p, label: "ADI-R item 82, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi83_current: {column: adi83_a, label: "ADI-R item 83, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi83_past: {column: adi83_p, label: "ADI-R item 83, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi84_current: {column: adi84_a, label: "ADI-R item 84, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi84_past: {column: adi84_p, label: "ADI-R item 84, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi85_current: {column: adi85_a, label: "ADI-R item 85, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi85_past: {column: adi85_p, label: "ADI-R item 85, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi88_current: {column: adi88_a, label: "ADI-R item 88, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi88_past: {column: adi88_p, label: "ADI-R item 88, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi89_current: {column: adi89_a, label: "ADI-R item 89, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi89_past: {column: adi89_p, label: "ADI-R item 89, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi90_current: {column: adi90_a, label: "ADI-R item 90, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi90_past: {column: adi90_p, label: "ADI-R item 90, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi91_current: {column: adi91_a, label: "ADI-R item 91, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi91_past: {column: adi91_p, label: "ADI-R item 91, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi92_current: {column: adi92_a, label: "ADI-R item 92, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi92_past: {column: adi92_p, label: "ADI-R item 92, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi93_current: {column: adi93_a, label: "ADI-R item 93, current", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+  adi93_past: {column: adi93_p, label: "ADI-R item 93, past (ever, or most abnormal at 4 to 5 years)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
+
+  # The algorithm as stored. Used to check our own scores, and kept where the items are not recorded.
+  adi_a1_stored: {column: adialg_tota1, type: number, label: "ADI-R A1, non-verbal behaviours that regulate social interaction, as stored", range: [0, 6], winsor: false, keep: false}
+  adi_a2_stored: {column: adialg_tota2, type: number, label: "ADI-R A2, peer relationships, as stored", range: [0, 8], winsor: false, keep: false}
+  adi_a3_stored: {column: adialg_tota3, type: number, label: "ADI-R A3, shared enjoyment, as stored", range: [0, 6], winsor: false, keep: false}
+  adi_a4_stored: {column: adialg_tota4, type: number, label: "ADI-R A4, socio-emotional reciprocity, as stored", range: [0, 10], winsor: false, keep: false}
+  adi_b1_stored: {column: adialg_totb1, type: number, label: "ADI-R B1, gestures, as stored", range: [0, 8], winsor: false, keep: false}
+  adi_b2_stored: {column: adialg_totb2, type: number, label: "ADI-R B2, conversation (verbal subjects), as stored", range: [0, 4], winsor: false, keep: false}
+  adi_b3_stored: {column: adialg_totb3, type: number, label: "ADI-R B3, stereotyped and idiosyncratic speech (verbal subjects), as stored", range: [0, 8], winsor: false, keep: false}
+  adi_b4_stored: {column: adialg_totb4, type: number, label: "ADI-R B4, make-believe and imitative play, as stored", range: [0, 6], winsor: false, keep: false}
+  adi_c1_stored: {column: adialg_totc1, type: number, label: "ADI-R C1, preoccupations and circumscribed interests, as stored", range: [0, 4], winsor: false, keep: false}
+  adi_c2_stored: {column: adialg_totc2, type: number, label: "ADI-R C2, routines and rituals, as stored", range: [0, 4], winsor: false, keep: false}
+  adi_c3_stored: {column: adialg_totc3, type: number, label: "ADI-R C3, motor mannerisms (the higher of two items), as stored", range: [0, 2], winsor: false, keep: false}
+  adi_c4_stored: {column: adialg_totc4, type: number, label: "ADI-R C4, parts of objects and sensory interests (the higher of two items), as stored", range: [0, 2], winsor: false, keep: false}
+  adi_social_total_stored: {column: adialg_tota, type: number, label: "ADI-R total A as stored (items 64 and 65 both counted)", range: [0, 32], winsor: false, keep: false}
+  adi_communication_verbal_stored: {column: adialg_totb, type: number, label: "ADI-R verbal total B as stored", range: [0, 26], winsor: false, keep: false}
+  adi_repetitive_total_stored: {column: adialg_totc, type: number, label: "ADI-R total C as stored (every item counted)", range: [0, 16], winsor: false, keep: false}
+  adi_communication_nonverbal_total: {column: adialg_totbnv, type: number, label: "ADI-R B total of non-verbal subjects (0 to 14), as stored", range: [0, 14], winsor: false}
+  adi_onset_total: {column: adialg_totd, type: number, label: "ADI-R D, abnormality of development evident before 36 months (0 to 5), as stored", range: [0, 5], winsor: false}
+
+scores:
+  adi_a1: {label: "ADI-R A1, non-verbal behaviours that regulate social interaction", sum: [adi50_past, adi51_past, adi57_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_a1_stored, otherwise: adi_a1_stored}
+  adi_peer_item: {label: "ADI-R peer item that counts at the age of the subject (64 under ten years, 65 from ten)", custom: adi_peer_item, keep: false}
+  adi_a2: {label: "ADI-R A2, peer relationships", sum: [adi49_past, adi62_past, adi63_past, adi_peer_item], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_a2_stored, otherwise: adi_a2_stored}
+  adi_a3: {label: "ADI-R A3, shared enjoyment", sum: [adi52_past, adi53_past, adi54_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_a3_stored, otherwise: adi_a3_stored}
+  adi_a4: {label: "ADI-R A4, socio-emotional reciprocity", sum: [adi31_past, adi55_past, adi56_past, adi58_past, adi59_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_a4_stored, otherwise: adi_a4_stored}
+  adi_b1: {label: "ADI-R B1, gestures", sum: [adi42_past, adi43_past, adi44_past, adi45_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_b1_stored, otherwise: adi_b1_stored}
+  adi_b2: {label: "ADI-R B2, conversation (verbal subjects)", sum: [adi34_past, adi35_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_b2_stored, otherwise: adi_b2_stored}
+  adi_b3: {label: "ADI-R B3, stereotyped and idiosyncratic speech (verbal subjects)", sum: [adi33_past, adi36_past, adi37_past, adi38_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_b3_stored, otherwise: adi_b3_stored}
+  adi_b4: {label: "ADI-R B4, make-believe and imitative play", sum: [adi47_past, adi48_past, adi61_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_b4_stored, otherwise: adi_b4_stored}
+  adi_c1: {label: "ADI-R C1, preoccupations and circumscribed interests", sum: [adi67_past, adi68_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_c1_stored, otherwise: adi_c1_stored}
+  adi_c2: {label: "ADI-R C2, routines and rituals", sum: [adi39_past, adi70_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_c2_stored, otherwise: adi_c2_stored}
+  adi_c3: {label: "ADI-R C3, motor mannerisms (the higher of two items)", max: [adi77_past, adi78_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_c3_stored, otherwise: adi_c3_stored}
+  adi_c4: {label: "ADI-R C4, parts of objects and sensory interests (the higher of two items)", max: [adi69_past, adi71_past], points: {"3": 2, "7": 0, "8": 0, "9": 0}, compare: adi_c4_stored, otherwise: adi_c4_stored}
+  adi_social_total: {label: "ADI-R A, reciprocal social interaction (0 to 30; cut-off 10)", sum: [adi_a1, adi_a2, adi_a3, adi_a4]}
+  adi_communication_verbal_total: {label: "ADI-R B, communication of verbal subjects (0 to 26; cut-off 8)", sum: [adi_b1, adi_b2, adi_b3, adi_b4], compare: adi_communication_verbal_stored}
+  adi_repetitive_total: {label: "ADI-R C, restricted and repetitive behaviours (0 to 12; cut-off 3)", sum: [adi_c1, adi_c2, adi_c3, adi_c4]}
+  adi_social_total_as_stored:
+    label: "Total A as the EMR computes it (the sixteen items, 64 and 65 both), to check the stored total"
+    sum: [adi50_past, adi51_past, adi57_past, adi49_past, adi62_past, adi63_past, adi64_past, adi65_past, adi52_past, adi53_past, adi54_past, adi31_past, adi55_past, adi56_past, adi58_past, adi59_past]
+    points: {"3": 2, "7": 0, "8": 0, "9": 0}
+    compare: adi_social_total_stored
+    keep: false
+  adi_repetitive_total_as_stored:
+    label: "Total C as the EMR computes it (the eight items, no higher-of-two), to check the stored total"
+    sum: [adi67_past, adi68_past, adi39_past, adi70_past, adi77_past, adi78_past, adi69_past, adi71_past]
+    points: {"3": 2, "7": 0, "8": 0, "9": 0}
+    compare: adi_repetitive_total_stored
+    keep: false

@@ -713,3 +713,9 @@ under an early visit date. Can the visit dates of these 9 visits be
 checked in the EMR? Their identifiers can be given on request. If the date
 is wrong and is corrected, the questionnaires come back by themselves.
 - Today: not delivered, flagged `version_unknown`.
+
+## Added by the audit of 2026-11-14
+
+**PSQI at 7 hours (O44).** The EMR counts 0 for exactly 7 hours of sleep; the published sheet counts 1. Which rule do you want, for the four cohorts?
+
+**MAThyS and BIS-10 (O45).** Can we have the forms and the scoring sheets that the EMR follows? The item 17 of the MAThyS falls when the rest rises, and the BIS-10 scores 30 of its 34 items.

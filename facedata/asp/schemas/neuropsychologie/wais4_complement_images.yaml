@@ -1,0 +1,61 @@
+instrument: wais4_complement_images
+title: "WAIS-IV, picture completion"
+tab: neuropsychologie
+section: WAIS-IV
+status: draft
+notes: >
+  Picture completion: 24 items scored from 0 to 1, their total, the scaled score and its z-score,
+  on 5 inclusion visits.
+
+  The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
+  inclusion visits depending on the subtest, almost all of adults, from 2013 to
+  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
+  It is the fourth edition: the visual puzzles and the sequencing part of the
+  digit span exist only in it. No other edition of the scale is recorded in
+  this table.
+
+  Checked on every visit: the stored total is the sum of the items, and the
+  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
+  tables of the test, which are not available: it is delivered as stored.
+
+  The stored total equals the sum of the items on 5 of the 5 visits that
+  hold every item. This subtest is on six visits only: too few to verify anything else.
+
+  Same instrument and output names as in FACE SZ, in other columns.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  wais4_pc01: {column: wais_img1, label: "WAIS-IV picture completion, item 1"}
+  wais4_pc02: {column: wais_img2, label: "WAIS-IV picture completion, item 2"}
+  wais4_pc03: {column: wais_img3, label: "WAIS-IV picture completion, item 3"}
+  wais4_pc04: {column: wais_img4, label: "WAIS-IV picture completion, item 4"}
+  wais4_pc05: {column: wais_img5, label: "WAIS-IV picture completion, item 5"}
+  wais4_pc06: {column: wais_img6, label: "WAIS-IV picture completion, item 6"}
+  wais4_pc07: {column: wais_img7, label: "WAIS-IV picture completion, item 7"}
+  wais4_pc08: {column: wais_img8, label: "WAIS-IV picture completion, item 8"}
+  wais4_pc09: {column: wais_img9, label: "WAIS-IV picture completion, item 9"}
+  wais4_pc10: {column: wais_img10, label: "WAIS-IV picture completion, item 10"}
+  wais4_pc11: {column: wais_img11, label: "WAIS-IV picture completion, item 11"}
+  wais4_pc12: {column: wais_img12, label: "WAIS-IV picture completion, item 12"}
+  wais4_pc13: {column: wais_img13, label: "WAIS-IV picture completion, item 13"}
+  wais4_pc14: {column: wais_img14, label: "WAIS-IV picture completion, item 14"}
+  wais4_pc15: {column: wais_img15, label: "WAIS-IV picture completion, item 15"}
+  wais4_pc16: {column: wais_img16, label: "WAIS-IV picture completion, item 16"}
+  wais4_pc17: {column: wais_img17, label: "WAIS-IV picture completion, item 17"}
+  wais4_pc18: {column: wais_img18, label: "WAIS-IV picture completion, item 18"}
+  wais4_pc19: {column: wais_img19, label: "WAIS-IV picture completion, item 19"}
+  wais4_pc20: {column: wais_img20, label: "WAIS-IV picture completion, item 20"}
+  wais4_pc21: {column: wais_img21, label: "WAIS-IV picture completion, item 21"}
+  wais4_pc22: {column: wais_img22, label: "WAIS-IV picture completion, item 22"}
+  wais4_pc23: {column: wais_img23, label: "WAIS-IV picture completion, item 23"}
+  wais4_pc24: {column: wais_img24, label: "WAIS-IV picture completion, item 24"}
+  wais4_pc_total_stored: {column: wais_imgtot, range: [0, 24], keep: false, label: "WAIS-IV picture completion, total as stored"}
+  wais4_pc_scaled: {column: wais_img_std, range: [1, 19], label: "WAIS-IV picture completion, scaled score"}
+  wais4_pc_z: {column: wais_img_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV picture completion, z-score of the scaled score"}
+
+scores:
+  wais4_pc_total:
+    label: "WAIS-IV picture completion, total of the items"
+    sum: [wais4_pc01, wais4_pc02, wais4_pc03, wais4_pc04, wais4_pc05, wais4_pc06, wais4_pc07, wais4_pc08, wais4_pc09, wais4_pc10, wais4_pc11, wais4_pc12, wais4_pc13, wais4_pc14, wais4_pc15, wais4_pc16, wais4_pc17, wais4_pc18, wais4_pc19, wais4_pc20, wais4_pc21, wais4_pc22, wais4_pc23, wais4_pc24]
+    compare: wais4_pc_total_stored
