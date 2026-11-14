@@ -1,0 +1,37 @@
+instrument: neuropsy_substances
+title: Coffee, tea and tobacco before and during the testing
+tab: NEUROPSYCHOLOGIE
+section: CONSOMMATIONS SUBSTANCES
+status: draft
+notes: >
+  Coffee, tea and tobacco before the appointment and during the break of
+  the testing. Not in BP or SZ. Filled with the assessment: 723 visits.
+
+  Each "how many" is asked only after a yes: where the answer is no and the
+  cell is empty, the number is 0 (asked_if). "How long before" is stored 1,
+  2 or 3; the dictionary gives no code, so the three values are delivered
+  as code_1 to code_3 (open question O23).
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  coffee_before: {column: conso01, label: Drank coffee before coming}
+  coffee_before_cups: {column: conso01a, type: number, range: [0, 10], winsor: false, asked_if: coffee_before, label: "Coffee before coming: how many cups"}
+  coffee_before_delay: {column: conso01b, type: category, label: "Coffee before coming: how long before (three codes that the dictionary does not explain)", codes: {"1": code_1, "2": code_2, "3": code_3}}
+  tea_before: {column: conso02, label: Drank tea before coming}
+  tea_before_cups: {column: conso02a, type: number, range: [0, 10], winsor: false, asked_if: tea_before, label: "Tea before coming: how many cups"}
+  tea_before_delay: {column: conso02b, type: category, label: "Tea before coming: how long before (three codes that the dictionary does not explain)", codes: {"1": code_1, "2": code_2, "3": code_3}}
+  smoker: {column: conso03, label: Is a smoker}
+  smoked_before: {column: conso03a, asked_if: smoker, label: Smoked before the appointment}
+  smoked_before_delay: {column: conso03b, type: category, label: "Smoked before the appointment: how long before (three codes that the dictionary does not explain)", codes: {"1": code_1, "2": code_2, "3": code_3}}
+  coffee_break: {column: conso04, label: Drank coffee during the break}
+  coffee_break_cups: {column: conso04a, type: number, range: [0, 10], winsor: false, asked_if: coffee_break, label: "Coffee during the break: how many cups"}
+  tea_break: {column: conso05, label: Drank tea during the break}
+  tea_break_cups: {column: conso05a, type: number, range: [0, 10], winsor: false, asked_if: tea_break, label: "Tea during the break: how many cups"}
+  smoked_break: {column: conso06, label: Smoked during the break}
+  smoked_break_cigarettes: {column: conso06a, type: number, range: [0, 20], winsor: false, asked_if: smoked_break, label: "Smoked during the break: how many cigarettes"}

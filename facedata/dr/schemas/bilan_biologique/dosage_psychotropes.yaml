@@ -1,0 +1,137 @@
+instrument: dosage_psychotropes
+title: Psychotropic drug levels
+tab: BILAN BIOLOGIQUE
+section: Dosage de Psychotropes
+status: draft
+notes: >
+  Drug levels measured with the blood sample: whether the treatment was taken
+  that morning (992 answers, 144 yes), the hours since the last intake (626,
+  median 12), twelve boxes that say which level was asked for, and the levels.
+  The boxes are filled on every row that has a blood result.
+
+  Lithium (157 levels, median 0.72 mmol/L; mEq/L and mmol/L are the same
+  scale), valproate (17), carbamazepine (1) and oxcarbazepine (13) keep the
+  BP names and units. Valproate: 7 levels are in mmol/L and are converted to
+  mg/L. No box is ever ticked for oxcarbazepine, although 13 levels exist.
+
+  Five antidepressant levels are TRD only: amitriptyline, clomipramine,
+  imipramine, fluoxetine and venlafaxine. The dictionary says mg/L, but each
+  holds two groups of values a thousand times apart: clomipramine has 89
+  levels of the size of mg/L and 47 of the size of µg/L. They are delivered
+  in µg/L, and those typed in mg/L are converted (unit_inferred: 209 in all).
+
+  A level of 0 means that nothing was measured and is a missing code (36
+  cells). A level is given without its box on 6 to 22 visits per drug, and a
+  box is ticked without a level on 18 to 25 visits for the antidepressants.
+
+  Same instrument as in FACE BP for the levels that BP has; the columns, the
+  boxes and the antidepressants are those of the TRD form.
+
+defaults: {type: number}
+
+variables:
+  treatment_taken_before_sampling:
+    label: Treatment taken on the morning of the blood sample
+    column: prisetraitement
+    type: category
+    codes: {"1": yes, "0": no}
+  hours_since_last_intake:
+    label: Time since the last intake
+    column: dospsy_delai
+    unit: hours
+    range: [0, 72]
+    winsor: false
+  assay_lithium: {column: dospsy_1, type: item, range: [0, 1], label: "Level asked for: lithium"}
+  assay_carbamazepine: {column: dospsy_3, type: item, range: [0, 1], label: "Level asked for: carbamazepine"}
+  assay_oxcarbazepine: {column: dospsy_4, type: item, range: [0, 1], label: "Level asked for: oxcarbazepine"}
+  assay_valproate: {column: dospsy_5, type: item, range: [0, 1], label: "Level asked for: valproate"}
+  assay_divalproate: {column: dospsy_6, type: item, range: [0, 1], label: "Level asked for: divalproate"}
+  assay_valpromide: {column: dospsy_7, type: item, range: [0, 1], label: "Level asked for: valpromide"}
+  assay_fluoxetine: {column: dospsy_8, type: item, range: [0, 1], label: "Level asked for: fluoxetine"}
+  assay_venlafaxine: {column: dospsy_9, type: item, range: [0, 1], label: "Level asked for: venlafaxine"}
+  assay_clomipramine: {column: dospsy_10, type: item, range: [0, 1], label: "Level asked for: clomipramine"}
+  assay_imipramine: {column: dospsy_11, type: item, range: [0, 1], label: "Level asked for: imipramine"}
+  assay_amitriptyline: {column: dospsy_12, type: item, range: [0, 1], label: "Level asked for: amitriptyline"}
+  assay_other: {column: dospsy_13, type: item, range: [0, 1], label: "Level asked for: another psychotropic drug"}
+
+  lithium:
+    label: Lithium plasma level
+    column: lithemie
+    unit_column: lithemie_unit
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0, 3], aliases: ["1", "2"]}
+    range: [0, 3]
+    winsor: [0, 0.99]
+  valproate:
+    label: Valproate plasma level
+    column: valprate
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [2, 200]}
+      mmol/L: {factor: 144.2, expect: [0.05, 1.5]}
+    missing: {"0": not_recorded}
+    range: [0, 250]
+    winsor: [0, 0.99]
+  carbamazepine:
+    label: Carbamazepine plasma level
+    column: crbmzpn
+    unit: mg/L
+    range: [0, 25]
+    winsor: [0, 0.99]
+  oxcarbazepine:
+    label: Oxcarbazepine plasma level
+    column: oxcarbaz
+    unit: mg/L
+    range: [0, 60]
+    winsor: [0, 0.99]
+  amitriptyline:
+    label: Amitriptyline plasma level
+    column: amitrptl
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [5, 2500]}
+      mg/L: {factor: 1000, expect: [0.005, 2.5]}
+    missing: {"0": not_recorded}
+    range: [5, 2500]
+    winsor: [0, 0.99]
+  clomipramine:
+    label: Clomipramine plasma level
+    column: dosclomi
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [5, 2500]}
+      mg/L: {factor: 1000, expect: [0.005, 2.5]}
+    missing: {"0": not_recorded}
+    range: [5, 2500]
+    winsor: [0, 0.99]
+  imipramine:
+    label: Imipramine plasma level
+    column: imiprmn
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [5, 2500]}
+      mg/L: {factor: 1000, expect: [0.005, 2.5]}
+    missing: {"0": not_recorded}
+    range: [5, 2500]
+    winsor: [0, 0.99]
+  fluoxetine:
+    label: Fluoxetine plasma level
+    column: fluoxtn
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [5, 2500]}
+      mg/L: {factor: 1000, expect: [0.005, 2.5]}
+    missing: {"0": not_recorded}
+    range: [5, 2500]
+    winsor: [0, 0.99]
+  venlafaxine:
+    label: Venlafaxine plasma level
+    column: venlafax
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [5, 2500]}
+      mg/L: {factor: 1000, expect: [0.005, 2.5]}
+    missing: {"0": not_recorded}
+    range: [5, 2500]
+    winsor: [0, 0.99]

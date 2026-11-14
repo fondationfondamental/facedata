@@ -1,0 +1,33 @@
+instrument: mini_o_organic
+title: "MINI, module O: medical, organic or drug causes ruled out"
+tab: MINI
+section: MINI O
+status: draft
+notes: >
+  Module O: were a medication, a drug or a physical illness present just
+  before the symptoms, and has an organic cause been ruled out. Three
+  answers: yes, no and uncertain.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_o01a: {column: o01a, type: category, codes: {"1": "yes", "0": "no", "2": uncertain}, label: "O1 a) Juste avant que ces symptômes n’aient débuté : Preniez-vous un médicament ou des remèdes quels qu’ils soient ?"}
+  mini_o01b: {column: o01b, type: category, codes: {"1": "yes", "0": "no", "2": uncertain}, label: "b) Aviez-vous une maladie physique quelle qu’elle soit ?"}
+  mini_o02: {column: o02, type: category, codes: {"1": "yes", "0": "no", "2": uncertain}, label: "O2) FINALEMENT : UNE CAUSE ORGANIQUE A-T-ELLE ÉTÉ ÉCARTÉE ?"}

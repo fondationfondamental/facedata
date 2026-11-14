@@ -1,0 +1,48 @@
+instrument: wais4_efficience
+title: WAIS-IV working memory index
+tab: NEUROPSYCHOLOGIE
+section: IMT
+status: draft
+notes: >
+  WAIS-IV working memory index: the sum of the scaled scores of Digit Span
+  and Arithmetic, the index and its percentile rank. SZ has the other
+  indices of the WAIS-IV in the schema of this name; this cohort has the
+  working memory index only. 615 visits.
+
+  One edition. No column names the edition of the WAIS in this cohort. The
+  data show the WAIS-IV in every year: within an age group, a raw score has
+  one scaled score, the same before and after 2018, for the five subtests;
+  95 digit span totals are above 30, the maximum of the WAIS-III; and the
+  processing speed index follows the WAIS-IV table of BP on each of the 35
+  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest,
+  so that the column exists as in BP and SZ.
+
+  The index is right here. In SZ the stored index is 0.7 too low and is
+  corrected. Here the stored index is a whole number and equals the
+  corrected SZ value on each of the 25 sums seen in both cohorts: it is
+  delivered as stored.
+
+  The sum is the two scaled scores added, except on 2 visits (score_mismatch
+  on the check score); 2 other sums are above 38, the highest possible:
+  out_of_range.
+
+version:
+  name: wais_version
+  filled:
+    wais4: [similtot, similstd, nbrut, nstand, arithtot, arithstd, imt01, imt02, code01, code03, code04,
+            symbol01, symbol03, symbol04, ivt01, ivt04]
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  wais4_imt_sum_scaled: {column: imt01, label: "Working memory sum of scaled scores (digit span + arithmetic)", range: [2, 38]}
+  wais4_imt_index: {column: imt02, label: Working memory index, type: number, range: [45, 155], winsor: false}
+  wais4_imt_percentile: {column: imt03, label: Percentile rank of the working memory index, type: number, range: [0, 100], winsor: false}
+  # The two scaled scores, read again to check the sum; delivered by their own schemas.
+  wais4_imt_ds_scaled: {column: nstand, label: Digit span scaled score (for the check), range: [1, 19], keep: false}
+  wais4_imt_arith_scaled: {column: arithstd, label: Arithmetic scaled score (for the check), range: [1, 19], keep: false}
+
+scores:
+  # Consistency check only.
+  wais4_imt_sum_check: {sum: [wais4_imt_ds_scaled, wais4_imt_arith_scaled], compare: wais4_imt_sum_scaled, keep: false, versions: [wais4]}

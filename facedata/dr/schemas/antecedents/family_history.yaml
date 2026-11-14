@@ -1,0 +1,78 @@
+instrument: family_history
+title: "Family history, one row per relative"
+tab: ANTECEDENTS
+section: Mère
+status: draft
+level: relatives
+notes: >
+  One row per patient and relative, in the table relatives: the mother, the
+  father, the four grandparents, and one row for the children and one for
+  the brothers and sisters, each described as a group (BP has a row per
+  sister, brother, daughter and son). 3,748 rows of 577 patients.
+
+  Who has a row. The questions on the disorders are asked when the
+  relative has a psychiatric history (family_structure.yaml): a mood
+  disorder and its kind, a schizophrenic disorder, a suicide or an attempt,
+  a substance, an anxiety disorder, a dementia. The cardiovascular risk
+  factors are asked for every relative. But the boxes (alcohol, cannabis,
+  another substance; diabetes, obesity, hyperlipidaemia, hypertension) are
+  set to 0 by the form on every row that has the family form, so each
+  parent and grandparent of 577 patients has a row, most of them with
+  boxes at 0 only. A box is flagged derived_doubt where its question is
+  empty (14,335 cells). A row does not say that the relative has a
+  disorder.
+
+  Codes. 2 is "not known" in the yes/no questions (1,661 cells,
+  missing_code). The kind of mood disorder (0, 1, 2) and the suicide (0 to
+  3) are lists that the dictionary does not give: delivered as code_N. The
+  type of diabetes is read 1 type 1, 2 type 2 and 0 "not known", as for
+  the patient. Open question O29.
+
+  A mood disorder is reported for 536 of the 737 relatives who are
+  described, in the families of 343 patients. No per-patient summary is
+  computed here (BP has fdr_ and gp_ columns): the questions are not those
+  of BP.
+
+relatives:
+  mere: {relative: mother, kinship: mother, degree: 1}
+  pere: {relative: father, kinship: father, degree: 1}
+  enfant: {relative: children, kinship: children, degree: 1}
+  fratrie: {relative: siblings, kinship: siblings, degree: 1}
+  gmmaternel: {relative: maternal_grandmother, kinship: maternal_grandmother, degree: 2}
+  gpmaternel: {relative: maternal_grandfather, kinship: maternal_grandfather, degree: 2}
+  gmpaternel: {relative: paternal_grandmother, kinship: paternal_grandmother, degree: 2}
+  gppaternel: {relative: paternal_grandfather, kinship: paternal_grandfather, degree: 2}
+
+defaults: {type: item}
+
+variables:
+  kinship:
+    column: kinship
+    label: Who the relative is (the children and the siblings are each described as one group)
+    type: category
+    codes:
+      mother: mother
+      father: father
+      children: children
+      siblings: siblings
+      maternal_grandmother: maternal_grandmother
+      maternal_grandfather: maternal_grandfather
+      paternal_grandmother: paternal_grandmother
+      paternal_grandfather: paternal_grandfather
+  degree: {column: degree, range: [1, 2], label: "Degree of kinship (1: parent, sibling, child; 2: grandparent)"}
+  relative_mood_disorder: {column: thy, range: [0, 1], missing: {"2": unknown}, label: Mood disorder of the relative}
+  relative_mood_disorder_kind: {column: trouble, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Kind of mood disorder (codes that the dictionary does not explain)"}
+  relative_schizophrenia: {column: schi, range: [0, 1], missing: {"2": unknown}, label: Schizophrenic disorder of the relative}
+  relative_suicide: {column: suicide, type: category, codes: {"0": code_0, "1": code_1, "2": code_2, "3": code_3}, label: "Suicide or suicide attempt of the relative (codes that the dictionary does not explain)"}
+  relative_substance: {column: substance, range: [0, 1], missing: {"2": unknown}, label: Abuse of or dependence on a substance}
+  relative_alcohol: {column: alcool, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on alcohol (a box)}
+  relative_cannabis: {column: cannabis, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on cannabis (a box)}
+  relative_other_substance: {column: autre, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on another substance (a box)}
+  relative_anxiety: {column: anx, range: [0, 1], missing: {"2": unknown}, label: Anxiety disorder of the relative}
+  relative_dementia: {column: dem, range: [0, 1], missing: {"2": unknown}, label: Dementia of the relative}
+  relative_cardiovascular_risk: {column: atcdfamcv, range: [0, 1], missing: {"2": unknown}, label: The relative has cardiovascular risk factors}
+  relative_diabetes: {column: diabete, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: diabetes (a box)"}
+  relative_obesity: {column: obesite, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: obesity (a box)"}
+  relative_hyperlipidaemia: {column: hyperlimidemie, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: hyperlipidaemia (a box)"}
+  relative_hypertension: {column: hypertension, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: hypertension (a box)"}
+  relative_diabetes_type: {column: typdiab, type: category, codes: {"1": type_1, "2": type_2}, missing: {"0": unknown}, label: Type of diabetes of the relative}

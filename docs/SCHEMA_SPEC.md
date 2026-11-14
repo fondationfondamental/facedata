@@ -68,7 +68,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `label` | all | Short label for the report |
 | `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
 | `range` | number, item, date | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD` |
-| `codes` | category, item, number | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). Matching ignores case and surrounding spaces |
+| `codes` | category, item, number, band | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). For a band: `{raw: band}`, a label that the export cut short is written out in full before parsing (`{"25-5": "25-50"}`, section 6). Matching ignores case and surrounding spaces |
 | `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded` |
 | `unit` | number | Target unit of the output |
 | `unit_column` | number | Raw column holding the unit label. A list when two columns hold it: the first one that is filled is read |
@@ -88,6 +88,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
 | `asked_if` | item, number | Name of a yes/no variable or of a count listed before. The question is asked only after a yes to it (or a count above 0): where that answer is 0 and the cell is empty, the value is 0 (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
+| `day` | date | The day of the month that the export writes in place of the real one (15 for a date of birth). A cell that holds another day is delivered with this day and flagged `date_partial` |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ...}`: the cells of the visits dated in the period keep their value and get `period_doubt` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
 | `note` | all | Free text |
@@ -100,8 +101,8 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `item` | Questionnaire items and bounded whole-number scores | float holding whole numbers | never |
 | `band` | Percentile bands (`25 - 50`, `>95`) | lower limit of the band, as a float | never |
 | `category` | Coded answers | harmonised label | never |
-| `date` | Dates | date | never |
-| `time` | Clock times and durations written `HH:MM` | hours as float | never |
+| `date` | Dates, written `YYYY-MM-DD` or `DD/MM/YYYY`; a part that is not known is `00` or left out (`06/2018`, `2018`) | date | never |
+| `time` | Clock times and durations written `HH:MM` or `HH:MM:SS` | hours as float | never |
 | `text` | Free text | cleaned string | never |
 
 More types are added only when an instrument needs one (lists for
@@ -354,6 +355,22 @@ limit, then 5, 10, 25 and so on, up to 95 for the band of 95 and more.
 The two ends of a band must be limits (0 and 100 are accepted as ends). The
 value says where the patient stands among the norms at the least; a cell
 with `_cens` = −1 may stand lower than its value.
+
+A label cut by the export. A column can hold the first characters of a band
+only: `25-5` where the form says `25-50`. Read as it stands it would be the
+band from 5 to 25, which is another one. List such labels in `codes`, each
+with the band it stands for; the cell is then read as that band:
+
+```yaml
+tmt_ba_time_band:
+  column: tmtba01a
+  type: band
+  limits: [5, 10, 25, 50, 75, 90, 95]
+  codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90"}
+```
+
+Check first that a cut label and the full label stand for the same band (the
+z-score of the same measure has the same level under both).
 
 Before delivering a band, compare the share of each band from one period to
 the next (the report draws it per year). The EMR changed more than once
@@ -742,8 +759,10 @@ Rules:
   `check_failed`, with the function name in `detail`. An empty cell is never
   flagged, so one function can be named for several variables that depend
   on the same fact.
-- `custom: name` on a score: `name(values)` takes the same table and returns
-  the score.
+- `custom: name` on a score: `name(values, keys)` takes the same table and
+  the key columns, and returns the score. Most functions do not use the keys;
+  one that does needs the visit or the patient (the age at the inclusion
+  visit, the same on every row of a patient).
 - `unit_rule: name` on a variable: `name(values, keys)` takes the values
   that have no usable unit label (the others are missing) and the key
   columns. It returns, for each value, the name of a unit listed in `units`,
@@ -809,6 +828,7 @@ the list is not empty.
   Every unit has an `expect` range and either a `factor` or `percent_of`.
   `percent_of` names a number listed before the variable in the same schema.
 - `unit_rule` names a function that exists in `facedata/custom.py`.
+- `day` is a whole number from 1 to 28, on a date.
 - `doubt` has a `period` of two dates, first day ≤ last day, and no field
   other than `period`, `values` and `note`.
 - `asked_if` names an item whose range starts at 0 (a yes/no item or a
@@ -840,7 +860,7 @@ the list is not empty.
   name in `pairs` is a variable of the schema, and the standard scores are of
   type `number`.
 - Every raw column named exists in the extraction.
-- Output names are unique within the cohort.
+- Output names are unique within the cohort. The list instruments of a cohort may share names: they fill one table (section 15).
 
 ## 13. The first schemas
 
@@ -945,10 +965,42 @@ have no start date. These columns are delivered in `data` and described as
 an instrument of their own, named `<instrument>_at_visit`, with a page in
 the report.
 
-`check_schema` verifies that `names` and `at_visit` come with `level: list`,
-that `clean` is a function of `custom.py`, that `start`, `end` and the
-variables named in `where` are variables of the schema, and that every
-column has a `where` and a `label`.
+**Several lists.** A cohort can have several list instruments (the current
+psychotropic treatments, the past ones, the somatic treatments). Their items
+are stacked in `treatments`, which then has a column `list` after `usubjid`:
+the instrument of each row. The items are numbered from 1 in each list, and
+the flag log writes `<instrument> item 3` in its column `visit`. The list
+instruments of a cohort may give the same variable names (`medication`,
+`molecule`): they are columns of one table. With one list instrument there
+is no column `list`, and the flag log writes `item 3`.
+
+**Lists crossed by the export.** One export writes, for a patient, every
+product next to every prescription line. With two products and three lines
+the lists hold six items: the products in blocks (A, A, A, B, B, B) and the
+lines in cycles (1, 2, 3, 1, 2, 3). Which line belongs to which product is
+not in the file. `crossed` lists the raw columns that describe the product:
+
+```yaml
+level: list
+crossed: [psycho_act_cmtrt, psycho_act_cmdecod, psycho_act_cmdose, psycho_act_cmdosu]
+```
+
+The items are put back as far as the file allows. A patient with one
+product keeps every item: each line is a line of that product. A patient
+with several products keeps one item per product; the columns that are not
+in `crossed` (the lines: doses a day, dates) are emptied, and each variable
+that reads one of them gets `list_crossed` on these items. Nothing is
+guessed: the molecules of the patient are known, their dates are not.
+
+Check first that the lists have this shape: the number of items is the
+number of distinct products times the number of distinct lines, for every
+patient.
+
+`check_schema` verifies that `names`, `at_visit` and `crossed` come with
+`level: list`, that `clean` is a function of `custom.py`, that `start`,
+`end` and the variables named in `where` are variables of the schema, that
+every column has a `where` and a `label`, and that `crossed` names raw
+columns that variables of the schema read.
 
 ## 16. Relatives: one row per relative
 

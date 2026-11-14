@@ -1,0 +1,49 @@
+instrument: bilan_thyroidien
+title: Thyroid tests
+tab: BILAN BIOLOGIQUE
+section: Bilan Thyroïdie
+status: draft
+notes: >
+  TSH, free T3 and free T4, on about 1,150 visits. 36 free T4 were typed on
+  another scale and are brought back (unit_inferred); 21 free T3 and 15 free
+  T4 are impossible.
+
+  The unit column of an analyte holds the default label of the form on every
+  row that has any blood result (1,254 rows, 54 of them with no result at
+  all), so it says nothing: the size of the value decides, as in BP and SZ. A
+  0 typed where nothing was measured is out of range.
+
+  Same instrument as in FACE BP.
+
+defaults: {type: number}
+
+variables:
+  tsh:
+    label: Thyroid-stimulating hormone (TSH)
+    column: tsh
+    unit_column: tsh_lborresu
+    unit: mUI/L
+    units:
+      mUI/L: {factor: 1, expect: [0, 150], aliases: [µUI/L, microUI/ml, µUI/mL]}
+    range: [0, 150]
+
+  free_t3:
+    label: Free T3
+    column: t3fr
+    unit_column: t3fr_lborresu
+    unit: pmol/L
+    units:
+      pmol/L: {factor: 1, expect: [1.5, 30]}
+      pg/mL: {factor: 1.536, expect: [1, 20], aliases: [ng/L]}
+    range: [1.5, 30]
+
+  free_t4:
+    label: Free T4
+    column: t4fr
+    unit_column: t4fr_lborresu
+    unit: pmol/L
+    units:
+      pmol/L: {factor: 1, expect: [4, 80]}
+      ng/dL: {factor: 12.87, expect: [0.3, 4]}
+      pg/mL: {factor: 1.287, expect: [3, 60]}
+    range: [3, 100]

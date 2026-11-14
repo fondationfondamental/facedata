@@ -1,0 +1,40 @@
+instrument: family_structure
+title: "Family: who has a psychiatric history, children and siblings"
+tab: ANTECEDENTS
+section: Mère
+status: draft
+level: patient
+notes: >
+  One value per patient, in the table patients: for the mother, the father
+  and each grandparent, whether the relative has a history of psychiatric
+  illness (1 yes, 0 no, 2 "not known": 808 cells, missing_code); whether
+  the patient has children and brothers or sisters, how many of them have
+  such a history, and how many have cardiovascular risk factors. Asked
+  once, at the inclusion visit: 553 patients.
+
+  Not the BP question. BP asks one question per relative, "a psychiatric
+  disorder, a substance, a suicide attempt or a cardiovascular risk
+  factor". Here the psychiatric history and the cardiovascular risk factors
+  are two questions, so the variables have other names
+  (mother_psychiatric_history, where BP has mother_affected). The mother
+  has a psychiatric history for 220 of 532 patients, the father for 153 of
+  523. The numbers about the children and the siblings are 0 when the
+  patient has none (asked_if). The four dates of birth of the form are
+  empty in the extraction (ignored.yaml).
+
+defaults: {type: item}
+
+variables:
+  mother_psychiatric_history: {column: mere_structure, range: [0, 1], missing: {"2": unknown}, label: "The mother has a history of psychiatric illness"}
+  father_psychiatric_history: {column: pere_structure, range: [0, 1], missing: {"2": unknown}, label: "The father has a history of psychiatric illness"}
+  maternal_grandmother_psychiatric_history: {column: gmmaternel_structure, range: [0, 1], missing: {"2": unknown}, label: "The maternal grandmother has a history of psychiatric illness"}
+  maternal_grandfather_psychiatric_history: {column: gpmaternel_structure, range: [0, 1], missing: {"2": unknown}, label: "The maternal grandfather has a history of psychiatric illness"}
+  paternal_grandmother_psychiatric_history: {column: gmpaternel_structure, range: [0, 1], missing: {"2": unknown}, label: "The paternal grandmother has a history of psychiatric illness"}
+  paternal_grandfather_psychiatric_history: {column: gppaternel_structure, range: [0, 1], missing: {"2": unknown}, label: "The paternal grandfather has a history of psychiatric illness"}
+  has_children: {column: enfants_structure, range: [0, 1], label: Has children}
+  n_children_psychiatric_history: {column: enfants_structureatteint, range: [0, 20], asked_if: has_children, label: Children with a history of psychiatric illness}
+  n_children_cardiovascular_risk: {column: enfants_structureatteintrcv, range: [0, 20], asked_if: has_children, label: Children with cardiovascular risk factors}
+  has_siblings: {column: structure_fratrie, range: [0, 1], label: Has brothers or sisters}
+  n_siblings: {column: fraterie_structure, range: [0, 20], asked_if: has_siblings, label: Number of brothers and sisters}
+  n_siblings_psychiatric_history: {column: fraterie_structureatteint, range: [0, 20], asked_if: has_siblings, label: Brothers and sisters with a history of psychiatric illness}
+  n_siblings_cardiovascular_risk: {column: fraterie_structureatteintrcv, range: [0, 20], asked_if: has_siblings, label: Brothers and sisters with cardiovascular risk factors}

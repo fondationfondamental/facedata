@@ -1,0 +1,59 @@
+instrument: vitamines_cortisol
+title: Vitamin B12, folates and morning cortisol
+tab: BILAN BIOLOGIQUE
+section: Bilan Biologique
+status: draft
+notes: >
+  Vitamin B12, folates and morning cortisol, on about 1,050 visits each. For
+  each the form has a choice of unit, exported as a code.
+
+  Vitamin B12, delivered in pmol/L: code 2 (pg/mL) and code 3 (ng/L) are the
+  same scale, 685 results converted; code 4 is pmol/L. Code 1, "pg/L", has a
+  median of 272, which fits both scales: 27 results have no unit
+  (unit_unknown). 24 values are impossible, 21 of them in one centre.
+
+  Folates, delivered in nmol/L: code 2 is ng/mL, and code 1, "ng/L", is read
+  as ng/mL too (a folate level of 6 ng/L does not exist; its median, 6.5, is
+  that of code 2, 6.2): 580 results converted. Code 3 is nmol/L and code 4,
+  "mmol/L", is read as nmol/L (median 12.7 against 13.8). 16 results of one
+  centre have no usable code (unit_unknown) and 28 values are impossible.
+
+  Cortisol, delivered in nmol/L: code 1 nmol/L, code 4 "mmol/L" read as
+  nmol/L (median 362 against 392), code 2 nmol/dL, code 3 ng/mL, code 5
+  µg/dL: 143 results converted, 15 read in another unit than their label,
+  27 impossible (open question O10 in PROGRESS.md).
+
+  Analytes that FACE BP and FACE SZ do not have.
+
+defaults: {type: number}
+
+variables:
+  vitamin_b12:
+    label: Vitamin B12
+    column: vitb12
+    unit_column: vitb12_lborresu
+    unit: pmol/L
+    units:
+      pmol/L: {factor: 1, expect: [50, 1500], aliases: ["4"]}
+      pg/mL: {factor: 0.7378, expect: [70, 2000], aliases: ["2", "3"]}
+    range: [50, 1500]
+  folates:
+    label: Folates (vitamin B9)
+    column: vitb9
+    unit_column: vitb9_lborresu
+    unit: nmol/L
+    units:
+      nmol/L: {factor: 1, expect: [2, 100], aliases: ["3", "4"]}
+      ng/mL: {factor: 2.266, expect: [1, 45], aliases: ["2", "1"]}
+    range: [2, 100]
+  cortisol:
+    label: Morning cortisol
+    column: cortisol
+    unit_column: cortisol_lborresu
+    unit: nmol/L
+    units:
+      nmol/L: {factor: 1, expect: [30, 1500], aliases: ["1", "4"]}
+      nmol/dL: {factor: 10, expect: [3, 150], aliases: ["2"]}
+      ng/mL: {factor: 2.759, expect: [10, 550], aliases: ["3"]}
+      µg/dL: {factor: 27.59, expect: [1, 55], aliases: ["5"]}
+    range: [30, 1500]

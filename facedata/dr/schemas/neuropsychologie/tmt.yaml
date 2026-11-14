@@ -1,0 +1,149 @@
+instrument: tmt
+title: Trail Making Test, parts A and B
+tab: NEUROPSYCHOLOGIE
+section: TMT
+status: draft
+notes: >
+  The BP scale in the columns of this extraction, which keeps the kinds of
+  errors apart. Times and errors, their z-scores and their percentile
+  bands, for part A, part B and the difference B minus A. 718 visits.
+
+  Errors. The form counts, for part A, errors of inattention and of
+  impulsivity, and for part B, errors of inattention and perseverative
+  errors, each corrected or not: eight columns, delivered under their own
+  names. The BP columns are their sums (corrected, uncorrected,
+  perseverative). The total of each part (tmta02, tmtb02) is delivered as
+  stored, as tmt_a_errors and tmt_b_errors: it is the sum of the four
+  kinds on all but 9 visits for part A and 31 for part B (score_mismatch
+  on the check scores). The stored B minus A difference of errors is not
+  part B minus part A on 22 visits.
+
+  Z-scores: three are turned. In BP a higher z-score is a better
+  performance. Here that holds for the times of parts A and B (the z-score
+  falls when the time rises, in every period and centre). The z-scores of
+  the errors of part A, of the errors of part B and of the B minus A time
+  have the other sign, in every period and every centre (they rise with
+  the raw value; a visit with no error has a negative z-score). They are
+  multiplied by -1, so that the five z-scores read as in BP; their medians
+  are then those of BP (0.14 and 0.30 for the errors in both cohorts).
+
+  Percentile bands of the times: labels cut by the export. Until about
+  2021 the band of the B minus A time is cut after four characters in 13
+  centres of 14: "25-5" for "25-50", "10-2", "50-7", "75-9", "90-9" (394
+  cells); a few cells hold "<" or "5-1". Read as they stand, "25-5" would
+  be another band. The z-score of the same measure has the same level
+  under a cut label and under its full label (median 0.05 under "25-5"
+  and 0.03 under "25-50"; 0.81 and 0.71 for "10-2" and "10-25"), so each
+  cut label is read as its band (codes). The share of each band is then
+  close to BP.
+
+  Percentile bands of the errors: read again in the norm tables, as in BP.
+  The two error percentile columns of the extraction (tmta02a, tmtb02a)
+  are not read (ignored.yaml). The four bands come from the number of
+  errors, the age at the visit and the years of education (cclin08, read
+  here a second time and not delivered), in the tables of the norms
+  folder; without them the bands are missing with norm_missing. Most
+  people make no error, so most bands carry <variable>_cens = +1: this
+  band or a higher one.
+
+  Times are in seconds; 2 times of part A and 3 of part B are out of
+  range.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+defaults: {type: item}
+
+variables:
+  # Part A
+  tmt_a_time: {column: tmta01, label: Part A - time, type: number, unit: s, range: [10, 300]}
+  tmt_a_errors: {column: tmta02, label: "Part A - errors, corrected and uncorrected, as stored", range: [0, 20]}
+  tmt_a_inattention_corrected: {column: tmta03a, label: Part A - errors of inattention that the patient corrected, range: [0, 10]}
+  tmt_a_impulsivity_corrected: {column: tmta03b, label: Part A - errors of impulsivity that the patient corrected, range: [0, 10]}
+  tmt_a_inattention_uncorrected: {column: tmta04a, label: Part A - errors of inattention left uncorrected, range: [0, 10]}
+  tmt_a_impulsivity_uncorrected: {column: tmta04b, label: Part A - errors of impulsivity left uncorrected, range: [0, 10]}
+  tmt_a_time_z: {column: tmta01b, label: Part A - time as a z-score (higher is better), type: number, range: [-20, 10]}
+  tmt_a_errors_z_stored: {column: tmta02b, label: "Part A - errors as a z-score, as stored (higher is worse)", type: number, range: [-20, 80], keep: false}
+
+  # Part B
+  tmt_b_time: {column: tmtb01, label: Part B - time, type: number, unit: s, range: [15, 600]}
+  tmt_b_errors: {column: tmtb02, label: "Part B - errors, corrected and uncorrected, as stored", range: [0, 40]}
+  tmt_b_inattention_corrected: {column: tmtb03a, label: Part B - errors of inattention that the patient corrected, range: [0, 25]}
+  tmt_b_perseverative_corrected: {column: tmtb03b, label: Part B - perseverative errors that the patient corrected, range: [0, 25]}
+  tmt_b_inattention_uncorrected: {column: tmtb04a, label: Part B - errors of inattention left uncorrected, range: [0, 25]}
+  tmt_b_perseverative_uncorrected: {column: tmtb04b, label: Part B - perseverative errors left uncorrected, range: [0, 25]}
+  tmt_b_time_z: {column: tmtb01b, label: Part B - time as a z-score (higher is better), type: number, range: [-20, 10]}
+  tmt_b_errors_z_stored: {column: tmtb02b, label: "Part B - errors as a z-score, as stored (higher is worse)", type: number, range: [-20, 130], keep: false}
+
+  # Part B minus part A
+  tmt_ba_time: {column: tmtba01, label: B minus A - time as stored, type: number, unit: s, range: [-100, 700]}
+  tmt_ba_errors: {column: tmtba02, label: B minus A - errors as stored, range: [-10, 25]}
+  tmt_ba_time_z_stored: {column: tmtba01b, label: "B minus A - time as a z-score, as stored (higher is worse)", type: number, range: [-10, 20], keep: false}
+
+  # Percentile bands of the times: the lower limit of the band, 0 to 95 (higher is better)
+  tmt_a_time_band: {column: tmta01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: Part A - time as a percentile band}
+  tmt_b_time_band: {column: tmtb01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: Part B - time as a percentile band}
+  tmt_ba_time_band: {column: tmtba01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: B minus A - time as a percentile band}
+
+  # Years of education, read again from the conditions form: the norms of the errors depend on them.
+  tmt_education: {column: cclin08, type: number, label: Years of education (for the norms), range: [0, 30], winsor: false, keep: false}
+
+scores:
+  # The names of BP: errors corrected and uncorrected, and the perseverative errors of part B.
+  tmt_a_errors_corrected:
+    label: Part A - corrected errors
+    sum: [tmt_a_inattention_corrected, tmt_a_impulsivity_corrected]
+  tmt_a_errors_uncorrected:
+    label: Part A - uncorrected errors
+    sum: [tmt_a_inattention_uncorrected, tmt_a_impulsivity_uncorrected]
+  tmt_b_errors_corrected:
+    label: Part B - corrected errors
+    sum: [tmt_b_inattention_corrected, tmt_b_perseverative_corrected]
+  tmt_b_errors_uncorrected:
+    label: Part B - uncorrected errors
+    sum: [tmt_b_inattention_uncorrected, tmt_b_perseverative_uncorrected]
+  tmt_b_errors_perseverative:
+    label: Part B - perseverative errors
+    sum: [tmt_b_perseverative_corrected, tmt_b_perseverative_uncorrected]
+  # Three z-scores are stored with the other sign: they are turned, so that a higher z-score is always a better performance.
+  tmt_a_errors_z:
+    label: Part A - errors as a z-score (higher is better)
+    sum: [tmt_a_errors_z_stored]
+    scale: [-1, 0]
+  tmt_b_errors_z:
+    label: Part B - errors as a z-score (higher is better)
+    sum: [tmt_b_errors_z_stored]
+    scale: [-1, 0]
+  tmt_ba_time_z:
+    label: B minus A - time as a z-score (higher is better)
+    sum: [tmt_ba_time_z_stored]
+    scale: [-1, 0]
+  # Percentile bands of the errors, read in the norm tables (norms/tmt_*.csv) from the number of
+  # errors, the age at the visit and the years of education. The value is the lower limit of the band.
+  tmt_a_errors_band:
+    label: Part A - errors as a percentile band
+    lookup: tmt_a_errors
+    from: tmt_a_errors
+    by: tmt_education
+  tmt_b_errors_band:
+    label: Part B - errors as a percentile band
+    lookup: tmt_b_errors
+    from: tmt_b_errors
+    by: tmt_education
+  tmt_b_perseverative_band:
+    label: Part B - perseverative errors as a percentile band
+    lookup: tmt_b_perseverative
+    from: tmt_b_errors_perseverative
+    by: tmt_education
+  tmt_ba_errors_band:
+    label: B minus A - errors as a percentile band
+    lookup: tmt_ba_errors
+    from: tmt_ba_errors
+    by: tmt_education
+  # Consistency checks only.
+  tmt_a_errors_check: {sum: [tmt_a_errors_corrected, tmt_a_errors_uncorrected], compare: tmt_a_errors, keep: false}
+  tmt_b_errors_check: {sum: [tmt_b_errors_corrected, tmt_b_errors_uncorrected], compare: tmt_b_errors, keep: false}
+  tmt_ba_time_check: {sum: [tmt_b_time], minus: [tmt_a_time], compare: tmt_ba_time, keep: false}
+  tmt_ba_errors_check: {sum: [tmt_b_errors], minus: [tmt_a_errors], compare: tmt_ba_errors, keep: false}

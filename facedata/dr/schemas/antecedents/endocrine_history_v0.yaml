@@ -1,0 +1,68 @@
+instrument: endocrine_history_v0
+title: "Endocrine history, at inclusion"
+tab: ANTECEDENTS
+section: Pathologies endocriniennes et métaboliques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  inclusion visit: 573 visits (86% to 93% of the inclusions in every period).
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+  The thyroid disorder has one date of onset (BP has one for
+  hyperthyroidism and one for hypothyroidism). Its kind is stored 1 and 2,
+  read as hypothyroidism (54 at inclusion) and hyperthyroidism (8) in the
+  order of the BP list, and 0 on 7 visits, kept as code_0. The type of
+  diabetes is stored 1 and 2, read as type 1 and type 2 (4 and 29; one
+  other value is unknown_code). "Induced by a treatment" is a code that the
+  dictionary does not explain. The kind of dyslipidaemia is two yes/no
+  questions here (hypercholesterolaemia, hypertriglyceridaemia). Of the 22
+  follow-up visits of patients with dyslipidaemia at inclusion, 13 answer
+  no.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  diabetes_v0: {column: diabete_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes, at inclusion"}
+  diabetes_start_v0: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at inclusion"}
+  diabetes_treated_v0: {column: diabete_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: treated, at inclusion"}
+  diabetes_controlled_v0: {column: diabete_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: controlled, at inclusion"}
+  diabetes_type_v0: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, label: "Diabetes: type, at inclusion"}
+  thyroid_disorder_v0: {column: dysthyro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder, at inclusion"}
+  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism, "0": code_0}, label: "Thyroid disorder: type, at inclusion"}
+  thyroid_disorder_treated_v0: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: treated, at inclusion"}
+  thyroid_disorder_induced_by_v0: {column: dysthyro_mhdecod, type: category, codes: {"1": code_1, "2": code_2}, label: "Thyroid disorder: induced by a treatment, at inclusion"}
+  thyroid_disorder_controlled_v0: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: controlled, at inclusion"}
+  dyslipidaemia_v0: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia, at inclusion"}
+  dyslipidaemia_start_v0: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at inclusion"}
+  dyslipidaemia_treated_v0: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: treated, at inclusion"}
+  dyslipidaemia_controlled_v0: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: controlled, at inclusion"}
+  other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another endocrine disease, at inclusion"}
+  other_endocrine_start_v0: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at inclusion"}
+  thyroid_disorder_start_v0: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Thyroid disorder: date of onset, at inclusion"}
+  hypercholesterolaemia_v0: {column: cholester_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypercholesterolaemia, at inclusion"}
+  hypertriglyceridaemia_v0: {column: tryglicer_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypertriglyceridaemia, at inclusion"}

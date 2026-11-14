@@ -1,0 +1,56 @@
+instrument: shaps
+title: Snaith-Hamilton Pleasure Scale (SHAPS)
+tab: AUTO-QUESTIONNAIRES
+section: SHAPS
+status: draft
+notes: >
+  Snaith-Hamilton Pleasure Scale: fourteen situations that usually give
+  pleasure, each answered on four levels, stored 0 (strongly disagree) to 3
+  (strongly agree). Not in BP or SZ, and not in the dictionary. In the
+  extraction from 2015 (42% of the inclusions of 2015 to 2017, about 80%
+  since) and at every follow-up visit: 948 visits.
+
+  Score: the stored one is wrong; ours is delivered. The published score
+  gives one point for each item answered "disagree" or "strongly disagree"
+  (0 to 14, higher is more anhedonia). The fourteen stored items all point
+  the same way: each falls when the MADRS rises (r = -0.35 to -0.55), so a
+  low value is the answer of anhedonia for every item. The stored score
+  (shaps_) counts "disagree" on nine items and "agree" on the five others
+  (2, 4, 5, 7 and 9): this rule gives the stored value on each of the 943
+  visits where the fourteen items are filled. It looks like the scoring of
+  a form on which five items are printed with their answers in the other
+  order, applied to answers that are not stored in that order. Counting
+  "disagree" on the fourteen items gives a score that follows depression
+  better (r = 0.61 with the MADRS against 0.42 for the stored one; median 5
+  against 7). The function shaps_total of custom.py computes it; the twin
+  shaps_total_as_stored reproduces the EMR rule, to check the stored value,
+  and is not delivered. Open question O18.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  shaps01: {label: "SHAPS item 1 (0 strongly disagree to 3 strongly agree)"}
+  shaps02: {label: "SHAPS item 2 (0 strongly disagree to 3 strongly agree)"}
+  shaps03: {label: "SHAPS item 3 (0 strongly disagree to 3 strongly agree)"}
+  shaps04: {label: "SHAPS item 4 (0 strongly disagree to 3 strongly agree)"}
+  shaps05: {label: "SHAPS item 5 (0 strongly disagree to 3 strongly agree)"}
+  shaps06: {label: "SHAPS item 6 (0 strongly disagree to 3 strongly agree)"}
+  shaps07: {label: "SHAPS item 7 (0 strongly disagree to 3 strongly agree)"}
+  shaps08: {label: "SHAPS item 8 (0 strongly disagree to 3 strongly agree)"}
+  shaps09: {label: "SHAPS item 9 (0 strongly disagree to 3 strongly agree)"}
+  shaps10: {label: "SHAPS item 10 (0 strongly disagree to 3 strongly agree)"}
+  shaps11: {label: "SHAPS item 11 (0 strongly disagree to 3 strongly agree)"}
+  shaps12: {label: "SHAPS item 12 (0 strongly disagree to 3 strongly agree)"}
+  shaps13: {label: "SHAPS item 13 (0 strongly disagree to 3 strongly agree)"}
+  shaps14: {label: "SHAPS item 14 (0 strongly disagree to 3 strongly agree)"}
+  shaps_total_stored: {column: shaps_, label: SHAPS score as stored, range: [0, 14], keep: false}
+
+scores:
+  shaps_total:
+    label: "SHAPS score: number of items answered disagree or strongly disagree (0 to 14, higher is more anhedonia)"
+    custom: shaps_total
+  shaps_total_as_stored:
+    label: "SHAPS counted as the EMR does, to check the stored score"
+    custom: shaps_total_as_stored
+    compare: shaps_total_stored
+    keep: false

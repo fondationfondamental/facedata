@@ -1,0 +1,67 @@
+instrument: neuropsy_conditions
+title: Conditions of the neuropsychological testing
+tab: NEUROPSYCHOLOGIE
+section: Critères cliniques
+status: draft
+notes: >
+  The BP and SZ schema in the columns of this extraction (cclin01 to
+  cclin16), for the questions that this cohort has. The form that opens the
+  neuropsychological assessment: age, handedness, years of education, and
+  what could disturb the tests.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
+  four hold it until 2020 and about one in two since 2021 (open question
+  O22).
+
+  The dictionary gives no code for this tab. Handedness is stored 1, 2, 3
+  and read as right, left and both, the order of the BP list (92%, 5% and
+  3% here; 89%, 9% and 2% in BP). The time since the last rating of the
+  patient's state is stored 1 and 2 and read as under and over a week, the
+  order of the BP list (73% and 27% here, 85% and 15% in BP): an
+  assumption. The psychotropic treatment has three codes that nothing
+  explains (0 on 125 visits, 1 on 415, 2 on 176) and is delivered as a
+  category of its own, not as the yes/no of SZ. The suspicion of a learning
+  disorder holds 0, 1 and 2: 2 is read as "not known" (28 visits). Open
+  question O23.
+
+  Not the same question as BP: cclin03 asks here whether French is the
+  mother tongue (BP: a sufficient command of French), so it has another
+  name. cclin14 is the "state compatible with the tests" of SZ.
+
+  Age. The age entered on the form is the age at the testing. The column
+  age of the extraction is not (see identite.yaml): the two agree on 326 of
+  741 visits.
+
+  Years of education are entered again at each assessment: 176 patients
+  have them twice or more, 52 with different values. They are delivered
+  as entered, per visit.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  neuropsy_age: {column: cclin01, type: number, label: "Age at the testing, as entered (years)", range: [15, 100], winsor: false}
+  handedness:
+    column: cclin02
+    type: category
+    label: Handedness
+    codes: {"1": right, "2": left, "3": both}
+  neuropsy_french_native: {column: cclin03, label: French is the mother tongue}
+  neuropsy_mood_rating_delay:
+    column: cclin04
+    type: category
+    label: Time since the last rating of the patient's state
+    codes: {"1": under_a_week, "2": over_a_week}
+  education_years: {column: cclin08, type: number, label: Years of education, range: [0, 30], winsor: false}
+  neuropsy_no_visual_disorder: {column: cclin09, label: No colour blindness or disabling visual disorder}
+  neuropsy_no_hearing_disorder: {column: cclin10, label: No uncorrected hearing disorder}
+  neuropsy_no_recent_ect: {column: cclin11, label: No electroconvulsive therapy in the past year}
+  neuropsy_psychotropic_treatment_code:
+    column: cclin12
+    type: category
+    label: "Psychotropic treatment (three codes that the dictionary does not explain)"
+    codes: {"0": code_0, "1": code_1, "2": code_2}
+  neuropsy_testing_days: {column: cclin13, label: Number of days over which the tests were given, range: [1, 5]}
+  neuropsy_state_compatible: {column: cclin14, label: Clinical state compatible with the cognitive tests}
+  neuropsy_literate: {column: cclin15, label: No illiteracy}
+  neuropsy_learning_disorder: {column: cclin16, label: A learning disorder is suspected, missing: {"2": unknown}}

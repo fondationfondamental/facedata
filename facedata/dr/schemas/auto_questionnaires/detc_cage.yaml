@@ -1,0 +1,27 @@
+instrument: detc_cage
+title: DETC-CAGE cannabis
+tab: AUTO-QUESTIONNAIRES
+section: DETC CAGE CANNABIS
+status: draft
+notes: >
+  DETC-CAGE for cannabis: four yes/no questions (need to cut down, remarks
+  of the family, feeling of smoking too much, cannabis in the morning). Not
+  in BP or SZ. Filled on 100 visits of 95 patients, nearly all inclusions:
+  45% of the inclusions of 2012 to 2014, 19% in 2015 to 2017, 2% to 5%
+  since.
+
+  The number of yes (0 to 4) is computed; the extraction stores none. The
+  median is 0: most of the patients who fill it answer no four times.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  detc_cage1: {column: dcc1, label: "Avez-vous déjà ressenti le besoin de diminuer votre consommation de cannabis ?"}
+  detc_cage2: {column: dcc2, label: "Votre entourage vous a-t-il déjà fait des remarques au sujet de votre consommation ?"}
+  detc_cage3: {column: dcc3, label: "Avez-vous déjà eu l’impression que vous fumiez trop de cannabis ?"}
+  detc_cage4: {column: dcc4, label: "Avez-vous déjà eu besoin de fumer du cannabis dès le matin pour vous sentir en forme ?"}
+
+scores:
+  detc_cage_total:
+    label: "DETC-CAGE cannabis: number of yes (0 to 4)"
+    sum: [detc_cage1, detc_cage2, detc_cage3, detc_cage4]

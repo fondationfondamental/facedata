@@ -1,0 +1,39 @@
+instrument: mini_m_bulimia
+title: "MINI, module M: bulimia nervosa"
+tab: MINI
+section: MINI M
+status: draft
+notes: >
+  Module M: bulimia nervosa over the last three months.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Binge eating (M1) is answered yes on 65 visits; the conclusion is yes on
+  5. M7 is empty in the extraction (ignored.yaml).
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_m01: {column: m01, label: "M1) Au cours de ces trois derniers mois, vous est-il arrivé d’avoir des crises de boulimie durant lesquelles vous mangiez de très grandes qu"}
+  mini_m02: {column: m02, label: "M2) Avez-vous eu de telles crises de boulimie au moins deux fois par semaine au cours de ces 3 derniers mois ?"}
+  mini_m03: {column: m03, label: "M3) Durant ces crises de boulimie, aviez-vous l’impression de ne pas pouvoir vous arrêter de manger ou de ne pas pouvoir contrôler la quanti"}
+  mini_m04: {column: m04, label: "M4) De façon à éviter une prise de poids après ces crises de boulimie, faisiez-vous certaines choses comme vous faire vomir, vous astreindre"}
+  mini_m05: {column: m05, label: "M5) L’opinion ou l’estime que vous avez de vous-même sont-elles largement influencées par votre poids ou vos formes corporelles ?"}
+  mini_m06: {column: m06, label: "M6) LE PATIENT PRÉSENTE-T-IL UNE ANOREXIE MENTALE?"}
+  mini_bulimia_current: {column: m08, label: "Bulimia current: M8) BOULIMIE ACTUELLE"}
+  mini_anorexia_binge_purge_current: {column: m08a, label: "Anorexia binge purge current: ANOREXIE MENTALE Boulimie/ Type avec vomissements ou prise de purgatifs ACTUELLE"}

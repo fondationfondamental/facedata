@@ -1,0 +1,51 @@
+instrument: mdq
+title: Mood Disorder Questionnaire (MDQ)
+tab: AUTO-QUESTIONNAIRES
+section: MDQ
+status: draft
+notes: >
+  The BP schema without a stored total. Thirteen yes/no questions on past
+  periods of elation (1 = yes), then two questions: did several of these
+  happen during the same period (mdq14), and how much of a problem they
+  were (mdq15, 0 none to 3 serious). In BP the questionnaire is filled once,
+  at screening; here it is filled at inclusion (90%) and again at the visits
+  of 1, 2 and 4 years (84% to 90%): 985 visits. The break of 2018 does not
+  touch it.
+
+  The number of symptoms (mdq_total) is the count of yes among the thirteen
+  questions; this extraction stores none to compare with (BP has mdqtot).
+
+  The screening result (mdq_) is delivered as stored. It is positive when
+  the count is 7 or more, mdq14 is yes and mdq15 is 2 or more: this rule
+  gives the stored result on the 982 visits where the thirteen questions
+  are answered (60 positive, 922 negative).
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mdq01: {label: "Vous vous sentiez si bien et si remonté que d’autres personnes..."}
+  mdq02: {label: "Vous étiez si irritable que vous criiez après les gens ou que vous..."}
+  mdq03: {label: "Vous vous sentiez beaucoup plus sûr(e) de vous que d’habitude"}
+  mdq04: {label: "Vous dormiez beaucoup moins que d'habitude et trouviez que cela ne vous..."}
+  mdq05: {label: "Vous étiez beaucoup plus bavard(e) et parliez beaucoup plus vite que..."}
+  mdq06: {label: "Des pensées traversaient rapidement votre tête et vous ne pouviez pas..."}
+  mdq07: {label: "Vous étiez si facilement distrait(e) par ce qui vous entourait que vous..."}
+  mdq08: {label: "Vous aviez beaucoup plus d’énergie que d’habitude"}
+  mdq09: {label: "Vous étiez beaucoup plus actif(ve) ou que vous faisiez beaucoup plus de..."}
+  mdq10: {label: "Vous étiez beaucoup plus sociable ou extraverti(e) que d’habitude, par..."}
+  mdq11: {label: "Vous étiez beaucoup plus intéressé(e) par le sexe que d’habitude"}
+  mdq12: {label: "Vous faisiez des choses inhabituelles pour vous ou que d’autres gens..."}
+  mdq13: {label: "Vous dépensiez de l’argent de manière si inadaptée que cela vous..."}
+  mdq14: {label: "Si vous avez coché « oui » à plus d'une des questions précédentes,..."}
+  mdq15: {label: "A quel point, une de ces questions a été pour vous un problème au point...", range: [0, 3]}
+  mdq_screen:
+    column: mdq_
+    type: category
+    label: MDQ screening result
+    codes: {Positif: positive, Négatif: negative}
+
+scores:
+  mdq_total:
+    label: MDQ number of symptoms (13 items)
+    sum: [mdq01, mdq02, mdq03, mdq04, mdq05, mdq06, mdq07, mdq08, mdq09, mdq10,
+          mdq11, mdq12, mdq13]

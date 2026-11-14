@@ -1,0 +1,51 @@
+instrument: mini_n_gad
+title: "MINI, module N: generalised anxiety disorder"
+tab: MINI
+section: MINI N
+status: draft
+notes: >
+  Module N: generalised anxiety disorder over the last six months.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  mini_gad_symptoms counts the six symptoms of N3.
+
+  The conclusion (n) is yes on 175 visits; 152 of them meet the criteria as
+  the items give them (N1a, N1b, N2 and three symptoms), 23 do not, and 6
+  visits meet them with a "no".
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_n01a: {column: n01a, label: "N1 a) Au cours des six derniers mois, vous êtes-vous senti(e), excessivement préoccupé(e), inquiet(e) ou anxieux(se), pour des problèmes de "}
+  mini_n01b: {column: n01b, label: "b) Avez-vous ce type de préoccupations presque tous les jours ?"}
+  mini_n01c: {column: n01c, label: "c) Est-ce que l’anxiete et les inquietudes du patient sont uniquement restreintes a, ou mieux expliquees par, un des troubles explores prece"}
+  mini_n02: {column: n02, label: "N2) Vous-est-il difficile de contrôler ces préoccupations ?"}
+  mini_n03a: {column: n03a, label: "N3 a) De vous sentir agité(e), tendu(e), les nerfs à fleur de peau ?"}
+  mini_n03b: {column: n03b, label: "b) D’avoir les muscles tendus ?"}
+  mini_n03c: {column: n03c, label: "c) De vous sentir fatigué(e), faible, ou facilement épuisé(e) ?"}
+  mini_n03d: {column: n03d, label: "d) D’avoir des difficultés à vous concentrer ou des passages à vide ?"}
+  mini_n03e: {column: n03e, label: "e) D’être particulièrement irritable ?"}
+  mini_n03f: {column: n03f, label: "f) D’avoir des problèmes de sommeil(difficultés d’endormissement, réveils au milieu de la nuit, réveils précoces ou dormir trop) ?"}
+  mini_n04: {column: n04, label: "N4) Cette anxiété et ces inquiétudes entraînent-elles chez vous une souffrance importante ou vous perturbent-elles au travail/ à l’école ou "}
+  mini_gad_current: {column: n, label: "Gad current: ANXIETE GENERALISEE ACTUELLE"}
+
+scores:
+  mini_gad_symptoms:
+    label: "Number of the six symptoms of generalised anxiety, last six months"
+    sum: [mini_n03a, mini_n03b, mini_n03c, mini_n03d, mini_n03e, mini_n03f]

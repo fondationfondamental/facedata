@@ -1,0 +1,53 @@
+instrument: isf_lifetime
+title: "Suicidal ideation and attempts over the whole life (inclusion form)"
+tab: SUICIDE
+section: Intentionnalité suicidaire actuelle
+status: draft
+notes: >
+  The BP schema with the codes of this extraction. Five questions on
+  suicidal ideation and attempts over the whole life, each with "when
+  last", at the inclusion visit: 452 visits. 96% and 92% of the inclusions
+  hold it until 2017, 48% to 62% since: from 2018 part of the centres only
+  fill the Columbia scale (cssrs_v0.yaml), which stays at 75% to 98% (open
+  question O25).
+
+  Two forms in the same columns. The inclusion visit asks about the whole
+  life; the follow-up visits use the same columns for the time since the
+  last visit. The two are never delivered in one column: visit_form says
+  which form a visit uses (inclusion for the screening and inclusion
+  visits, follow_up for the others), and each form has its own schema and
+  its own variables.
+
+  "When last" is stored 0, 1 and 2, as the dictionary says: last week,
+  between two weeks and a year ago, more than a year ago. The answers of
+  the two cohorts have the same profile (the share of yes on the five
+  questions follows BP).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
+
+variables:
+  isf01_lifetime: {column: isf01, label: "Felt that life is not worth living - ever"}
+  isf01_lifetime_when: {column: isf01a, type: category, label: "Felt that life is not worth living - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf02_lifetime: {column: isf02, label: "Wished to be dead - ever"}
+  isf02_lifetime_when: {column: isf02a, type: category, label: "Wished to be dead - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf03_lifetime: {column: isf03, label: "Thought of taking own life - ever"}
+  isf03_lifetime_when: {column: isf03a, type: category, label: "Thought of taking own life - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf04_lifetime: {column: isf04, label: "Seriously considered or planned suicide - ever"}
+  isf04_lifetime_when: {column: isf04a, type: category, label: "Seriously considered or planned suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf05_lifetime: {column: isf05, label: "Attempted suicide - ever"}
+  isf05_lifetime_when: {column: isf05a, type: category, label: "Attempted suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}

@@ -1,0 +1,101 @@
+instrument: mini_j_substances
+title: "MINI, module J: dependence on and abuse of other substances"
+tab: MINI
+section: MINI J
+status: draft
+notes: >
+  Module J: dependence on and abuse of substances other than alcohol, over
+  the last twelve months.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  The 39 substances of the list (j01a01 to j01a39) are boxes written by
+  the form: 0 on every row that has the form. Cannabis is ticked on 17
+  visits, the benzodiazepines on 5 to 10 each; most substances are never
+  ticked. mini_substance_dependence_criteria counts the seven criteria of
+  J2, asked for the substance that the patient uses most (free texts).
+
+  Conclusions against the criteria: dependence agrees on 551 of 556 visits,
+  abuse on 540 of 541.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_j01a: {column: j01a, label: "J1 a) Au cours des 12 derniers mois, vous est-il arrivé à plus d’une occasion de prendre l’un de ces produits dans le but de planer, de chan"}
+  mini_j01a01: {column: j01a01, derived_from: mini_j01a, label: "amphétamines (a box: 0 is not ticked)"}
+  mini_j01a02: {column: j01a02, derived_from: mini_j01a, label: "« speed » (a box: 0 is not ticked)"}
+  mini_j01a03: {column: j01a03, derived_from: mini_j01a, label: "Ritaline (a box: 0 is not ticked)"}
+  mini_j01a04: {column: j01a04, derived_from: mini_j01a, label: "pilules coupe-faim (a box: 0 is not ticked)"}
+  mini_j01a05: {column: j01a05, derived_from: mini_j01a, label: "cocaine (a box: 0 is not ticked)"}
+  mini_j01a06: {column: j01a06, derived_from: mini_j01a, label: "« coke » (a box: 0 is not ticked)"}
+  mini_j01a07: {column: j01a07, derived_from: mini_j01a, label: "crack (a box: 0 is not ticked)"}
+  mini_j01a08: {column: j01a08, derived_from: mini_j01a, label: "« speedball » (a box: 0 is not ticked)"}
+  mini_j01a09: {column: j01a09, derived_from: mini_j01a, label: "héroïne (a box: 0 is not ticked)"}
+  mini_j01a10: {column: j01a10, derived_from: mini_j01a, label: "morphine (a box: 0 is not ticked)"}
+  mini_j01a11: {column: j01a11, derived_from: mini_j01a, label: "opium (a box: 0 is not ticked)"}
+  mini_j01a12: {column: j01a12, derived_from: mini_j01a, label: "méthadone (a box: 0 is not ticked)"}
+  mini_j01a13: {column: j01a13, derived_from: mini_j01a, label: "codéine (a box: 0 is not ticked)"}
+  mini_j01a14: {column: j01a14, derived_from: mini_j01a, label: "mépéridine (a box: 0 is not ticked)"}
+  mini_j01a15: {column: j01a15, derived_from: mini_j01a, label: "fentanyl (a box: 0 is not ticked)"}
+  mini_j01a16: {column: j01a16, derived_from: mini_j01a, label: "LSD (a box: 0 is not ticked)"}
+  mini_j01a17: {column: j01a17, derived_from: mini_j01a, label: "« acide » (a box: 0 is not ticked)"}
+  mini_j01a18: {column: j01a18, derived_from: mini_j01a, label: "mescaline (a box: 0 is not ticked)"}
+  mini_j01a19: {column: j01a19, derived_from: mini_j01a, label: "« champignons » (a box: 0 is not ticked)"}
+  mini_j01a20: {column: j01a20, derived_from: mini_j01a, label: "ecstasy (a box: 0 is not ticked)"}
+  mini_j01a21: {column: j01a21, derived_from: mini_j01a, label: "PCP (« angel dust ») ou ketamine (a box: 0 is not ticked)"}
+  mini_j01a22: {column: j01a22, derived_from: mini_j01a, label: "« colle » (a box: 0 is not ticked)"}
+  mini_j01a23: {column: j01a23, derived_from: mini_j01a, label: "éther (a box: 0 is not ticked)"}
+  mini_j01a24: {column: j01a24, derived_from: mini_j01a, label: "haschisch (a box: 0 is not ticked)"}
+  mini_j01a25: {column: j01a25, derived_from: mini_j01a, label: "« hasch » (a box: 0 is not ticked)"}
+  mini_j01a26: {column: j01a26, derived_from: mini_j01a, label: "THC (a box: 0 is not ticked)"}
+  mini_j01a27: {column: j01a27, derived_from: mini_j01a, label: "cannabis (a box: 0 is not ticked)"}
+  mini_j01a28: {column: j01a28, derived_from: mini_j01a, label: "herbe (a box: 0 is not ticked)"}
+  mini_j01a29: {column: j01a29, derived_from: mini_j01a, label: "shit (a box: 0 is not ticked)"}
+  mini_j01a30: {column: j01a30, derived_from: mini_j01a, label: "Valium (a box: 0 is not ticked)"}
+  mini_j01a31: {column: j01a31, derived_from: mini_j01a, label: "Xanax (a box: 0 is not ticked)"}
+  mini_j01a32: {column: j01a32, derived_from: mini_j01a, label: "Témesta (a box: 0 is not ticked)"}
+  mini_j01a33: {column: j01a33, derived_from: mini_j01a, label: "Halcion (a box: 0 is not ticked)"}
+  mini_j01a34: {column: j01a34, derived_from: mini_j01a, label: "Lexomil (a box: 0 is not ticked)"}
+  mini_j01a35: {column: j01a35, derived_from: mini_j01a, label: "secobarbital (a box: 0 is not ticked)"}
+  mini_j01a36: {column: j01a36, derived_from: mini_j01a, label: "« barbis » (a box: 0 is not ticked)"}
+  mini_j01a37: {column: j01a37, derived_from: mini_j01a, label: "anabolisants (a box: 0 is not ticked)"}
+  mini_j01a38: {column: j01a38, derived_from: mini_j01a, label: "stéroïdes (a box: 0 is not ticked)"}
+  mini_j01a39: {column: j01a39, derived_from: mini_j01a, label: "« popers » (a box: 0 is not ticked)"}
+  mini_j01a40: {column: j01a40, label: "Prenez-vous des médicaments contre la toux ou d’autres substances ?"}
+  mini_j01a40a: {column: j01a40a, type: text, label: "specifier la(ou les) substances les plus consomme(s)"}
+  mini_j01a40b: {column: j01a40b, type: text, label: "quelle(s) substance(s) a (ont) occasionné le plus de problemes ?"}
+  mini_j02a: {column: j02a, label: "J2 a) Avez-vous constaté que vous deviez prendre de plus grandes quantités de X pour obtenir le même effet qu’auparavant ?"}
+  mini_j02b: {column: j02b, label: "b) Lorsque vous preniez moins de X ou arrêtiez d’en prendre, aviez-vous des symptômes de sevrage Ou vous arrivait-il de prendre quelque chos"}
+  mini_j02c: {column: j02c, label: "c) Vous arrivait-il souvent lorsque vous commenciez à en prendre plus que vous n’en aviez l’intention ?"}
+  mini_j02d: {column: j02d, label: "d) Avez-vous essayé, sans y arriver, de réduire votre consommation ou d’arrêter d’en prendre ?"}
+  mini_j02e: {column: j02e, label: "e) Les jours où vous preniez X, passiez-vous beaucoup de temps (sup à 2 heures) à essayer de vous en procurer, à en consommer, à vous remett"}
+  mini_j02f: {column: j02f, label: "f) Avez-vous réduit vos activités quotidiennes (loisirs, travail) ou avez-vous passé moins de temps avec les autres à cause de votre consomm"}
+  mini_j02g: {column: j02g, label: "g) Avez-vous continué à prendre X tout en sachant que cela entraînait chez vous des problèmes de santé ou des problèmes psychologiques ?"}
+  mini_j2ga: {column: j2ga, type: text, label: "Spécifier la (les) substance(s)"}
+  mini_substance_dependence_current: {column: j02, label: "Substance dependence current: DÉPENDANCE à une (des) substance(s) ACTUELLE"}
+  mini_j03a: {column: j03a, label: "J3 a) Avez-vous été plus d’une fois intoxiqué(e) par X ou « défoncé(e) alors que vous aviez des choses à faire au travail/à l’école ou à la "}
+  mini_j03b: {column: j03b, label: "b) Vous est-il arrivé d’être plus d’une fois sous l’effet de X dans une situation où cela était physiquement risqué comme conduire, utiliser"}
+  mini_j03c: {column: j03c, label: "c) Avez-vous plus d’une fois eu des problèmes légaux parce que vous aviez pris X par exemple une interpellation ou une condamnation ?"}
+  mini_j03d: {column: j03d, label: "d) Avez-vous continué à prendre X, tout en sachant que cela entraînait des problèmes avec votre famille ou d’autres personnes ?"}
+  mini_substance_abuse_current: {column: j03, label: "Substance abuse current: ABUS DE SUBSTANCE(S) ACTUEL"}
+  mini_j03e: {column: j03e, type: text, label: "Specifier la (les) substance(s)"}
+
+scores:
+  mini_substance_dependence_criteria:
+    label: "Number of the seven criteria of substance dependence, last twelve months"
+    sum: [mini_j02a, mini_j02b, mini_j02c, mini_j02d, mini_j02e, mini_j02f, mini_j02g]

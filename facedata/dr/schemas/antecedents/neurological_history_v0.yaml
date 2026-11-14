@@ -1,0 +1,61 @@
+instrument: neurological_history_v0
+title: "Neurological history, at inclusion"
+tab: ANTECEDENTS
+section: Pathologies neurologiques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  inclusion visit: 575 visits (86% to 93% of the inclusions in every period).
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+  Every question of BP is here. Of the 25 follow-up visits of patients with migraine at inclusion, 16 answer no.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  migraine_v0: {column: migraine_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine, at inclusion"}
+  migraine_start_v0: {column: migraine_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Migraine: date of onset, at inclusion"}
+  migraine_treated_v0: {column: migraine_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine: treated, at inclusion"}
+  migraine_controlled_v0: {column: migraine_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine: controlled, at inclusion"}
+  multiple_sclerosis_v0: {column: sep_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis, at inclusion"}
+  multiple_sclerosis_start_v0: {column: sep_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Multiple sclerosis: date of onset, at inclusion"}
+  multiple_sclerosis_treated_v0: {column: sep_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis: treated, at inclusion"}
+  multiple_sclerosis_controlled_v0: {column: sep_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis: controlled, at inclusion"}
+  epilepsy_v0: {column: epilepsie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy, at inclusion"}
+  epilepsy_start_v0: {column: epilepsie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Epilepsy: date of onset, at inclusion"}
+  epilepsy_treated_v0: {column: epilepsie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy: treated, at inclusion"}
+  epilepsy_controlled_v0: {column: epilepsie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy: controlled, at inclusion"}
+  meningitis_v0: {column: meningite_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Meningitis, at inclusion"}
+  meningitis_date_v0: {column: meningite_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Meningitis: date of the event, at inclusion"}
+  head_injury_v0: {column: traumacra_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Head injury, at inclusion"}
+  head_injury_date_v0: {column: traumacra_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Head injury: date of the event, at inclusion"}
+  stroke_v0: {column: avc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Stroke, at inclusion"}
+  stroke_date_v0: {column: avc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Stroke: date of the event, at inclusion"}
+  other_neurological_v0: {column: autneuro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another neurological disease, at inclusion"}
+  other_neurological_date_v0: {column: autneuro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another neurological disease: date of the event, at inclusion"}
+  other_neurological_text_v0: {column: autneuro_mhmodify, type: text, label: "Another neurological disease: which one, as written, at inclusion"}

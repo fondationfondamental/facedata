@@ -1,0 +1,62 @@
+instrument: isf_since_visit
+title: "Suicidal ideation and attempts, asked again at follow-up"
+tab: SUICIDE
+section: Intentionnalité suicidaire actuelle
+status: draft
+notes: >
+  The five questions of isf_lifetime.yaml asked again at the visits of 2
+  and 4 years: 140 visits, most of them from 2015 to 2019. The BP schema of
+  this name reads the follow-up form.
+
+  Two forms in the same columns. The inclusion visit asks about the whole
+  life; the follow-up visits use the same columns for the time since the
+  last visit. The two are never delivered in one column: visit_form says
+  which form a visit uses (inclusion for the screening and inclusion
+  visits, follow_up for the others), and each form has its own schema and
+  its own variables.
+
+  What period the answers cover is not certain. The dictionary gives the
+  question about the whole life and the three "when" of the inclusion form.
+  But 26 of the 44 follow-up visits of patients who said at inclusion that
+  they had attempted suicide answer "no": for them the question was about
+  the time since the last visit. And 29 of the 91 "yes" to the first
+  question are dated "more than a year ago", which is an answer about the
+  whole life. The answers are delivered as they are, in the BP columns for
+  "since the last visit"; a "when" of more than a year is flagged
+  period_doubt (136 cells). Open question O25.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults:
+  type: item
+  range: [0, 1]
+  versions: [follow_up]
+  doubt:
+    period: [2012-01-01, 2026-12-31]
+    values: [over_a_year]
+    note: an answer about the whole life at a follow-up visit
+
+variables:
+  isf01_since_visit: {column: isf01, label: "Felt that life is not worth living - asked again at a follow-up visit"}
+  isf01_since_visit_when: {column: isf01a, type: category, label: "Felt that life is not worth living - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf02_since_visit: {column: isf02, label: "Wished to be dead - asked again at a follow-up visit"}
+  isf02_since_visit_when: {column: isf02a, type: category, label: "Wished to be dead - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf03_since_visit: {column: isf03, label: "Thought of taking own life - asked again at a follow-up visit"}
+  isf03_since_visit_when: {column: isf03a, type: category, label: "Thought of taking own life - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf04_since_visit: {column: isf04, label: "Seriously considered or planned suicide - asked again at a follow-up visit"}
+  isf04_since_visit_when: {column: isf04a, type: category, label: "Seriously considered or planned suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf05_since_visit: {column: isf05, label: "Attempted suicide - asked again at a follow-up visit"}
+  isf05_since_visit_when: {column: isf05a, type: category, label: "Attempted suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}

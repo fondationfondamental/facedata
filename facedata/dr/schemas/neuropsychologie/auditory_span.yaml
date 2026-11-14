@@ -1,0 +1,27 @@
+instrument: auditory_span
+title: Auditory verbal span, forward and backward
+tab: NEUROPSYCHOLOGIE
+section: EMPAN AUDITIVO-VERBAL
+status: draft
+notes: >
+  Auditory verbal span, forward and backward, with a z-score for each and
+  their difference. Not in BP or SZ. 434 visits; it fades (56% and 68% of
+  the inclusions until 2017, 30% in 2018 to 2020, 12% to 14% since).
+
+  The z-scores hold "NaN" (123 cells) and "PA" (15) where no z-score was
+  computed: missing_code. The stored difference is the forward span minus
+  the backward span on every visit (425). Eight forward spans are written
+  with two digits and are out of range.
+
+defaults: {type: item}
+
+variables:
+  auditory_span_forward: {column: empan01, label: Forward span, range: [0, 10]}
+  auditory_span_forward_z: {column: empan02, type: number, range: [-5, 5], missing: {nan: not_recorded, pa: not_applicable}, label: Forward span as a z-score (higher is better)}
+  auditory_span_backward: {column: empan03, label: Backward span, range: [0, 10]}
+  auditory_span_backward_z: {column: empan04, type: number, range: [-5, 5], missing: {nan: not_recorded, pa: not_applicable}, label: Backward span as a z-score (higher is better)}
+  auditory_span_difference: {column: empan05, label: Forward span minus backward span, range: [-10, 10]}
+
+scores:
+  # Consistency check only.
+  auditory_span_difference_check: {sum: [auditory_span_forward], minus: [auditory_span_backward], compare: auditory_span_difference, keep: false}

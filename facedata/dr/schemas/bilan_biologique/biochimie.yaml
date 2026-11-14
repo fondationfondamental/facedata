@@ -1,0 +1,212 @@
+instrument: biochimie
+title: Blood biochemistry
+tab: BILAN BIOLOGIQUE
+section: Bilan Biologique
+status: draft
+notes: >
+  The sixteen analytes of the BP schema, with two more that the TRD form has:
+  ferritin (from 2017) and the kind of CRP assay. Blood results exist at the
+  inclusion and follow-up visits (about 1,150 visits).
+
+  The unit column of an analyte holds the default label of the form on every
+  row that has any blood result (1,254 rows, 54 of them with no result at
+  all), so it says nothing: the size of the value decides, as in BP and SZ. A
+  0 typed where nothing was measured is out of range.
+
+  59 results were typed on another scale and are brought back (unit_inferred):
+  17 phosphates, 10 glucoses in g/L, 7 creatinines, 7 calciums and others; 10
+  are kept with a doubt.
+
+  CRP: 80 results are given as "less than" a limit; they keep the limit and
+  the mark (crp_cens). The kind of assay is a code, 1 on 766 results and 2 on
+  379; the dictionary names the two kinds (CRP, high-sensitivity CRP) without
+  saying which code is which (open question O11 in PROGRESS.md).
+
+  HbA1c: 22 values are out of range, 18 of them in one centre; they have the
+  size of a result in mmol/mol, which a factor cannot bring back to a
+  percentage, so they are removed (O11).
+
+  Same instrument as in FACE BP, with ferritin and the kind of CRP.
+
+defaults: {type: number}
+
+variables:
+  sodium:
+    label: Sodium
+    column: sodium
+    unit_column: sodium_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [110, 170], aliases: [mEq/l]}
+    range: [110, 170]
+
+  potassium:
+    label: Potassium
+    column: k
+    unit_column: k_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2, 8], aliases: [mEq/l]}
+    range: [2, 8]
+
+  chloride:
+    label: Chloride
+    column: cl
+    unit_column: cl_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [70, 130], aliases: [mEq/l]}
+    range: [70, 130]
+
+  bicarbonate:
+    label: Bicarbonate
+    column: bicarb
+    unit_column: bicarb_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [5, 50]}
+    range: [5, 50]
+
+  total_protein:
+    label: Total protein
+    column: prot
+    unit_column: prot_lborresu
+    unit: g/L
+    units:
+      g/L: {factor: 1, expect: [40, 110]}
+    range: [40, 110]
+
+  albumin:
+    label: Albumin
+    column: alb
+    unit_column: alb_lborresu
+    unit: g/L
+    units:
+      g/L: {factor: 1, expect: [15, 65]}
+      g/dL: {factor: 10, expect: [2.5, 6.5]}
+      "0.1 g/L": {factor: 0.1, expect: [250, 650]}
+    range: [15, 65]
+
+  urea:
+    label: Urea
+    column: urea
+    unit_column: urea_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [1, 40]}
+      g/L: {factor: 16.65, expect: [0.1, 0.9]}
+    range: [1, 40]
+
+  uric_acid:
+    label: Uric acid
+    column: urate
+    unit_column: urate_lborresu
+    unit: µmol/L
+    units:
+      µmol/L: {factor: 1, expect: [100, 1000]}
+      mg/L: {factor: 5.948, expect: [15, 100]}
+      mg/dL: {factor: 59.48, expect: [1, 10]}
+      mmol/L: {factor: 1000, expect: [0.1, 1]}
+    range: [50, 1000]
+
+  creatinine:
+    label: Creatinine
+    column: creat
+    unit_column: creat_lborresu
+    unit: µmol/L
+    units:
+      µmol/L: {factor: 1, expect: [25, 1000]}
+      mg/L: {factor: 8.84, expect: [3, 20]}
+      mg/dL: {factor: 88.4, expect: [0.3, 2.5]}
+    range: [20, 1000]
+
+  creatinine_clearance:
+    label: Creatinine clearance
+    column: creatclr
+    unit_column: creatclr_lborresu
+    unit: mL/min
+    units:
+      mL/min: {factor: 1, expect: [5, 250], aliases: [cdk, ckd, ck, ml/mi]}
+    range: [5, 250]
+    missing: {0: not_recorded}
+    winsor: [0.01, 1]
+    note: Results above the laboratory's ceiling are right-censored, so only the lower tail is winsorised.
+
+  phosphate:
+    label: Phosphate
+    column: phos
+    unit_column: phos_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.3, 2.5]}
+      mg/L: {factor: 0.0323, expect: [15, 80]}
+      mg/dL: {factor: 0.323, expect: [2.5, 8]}
+    range: [0.3, 3]
+
+  iron:
+    label: Serum iron
+    column: iron
+    unit_column: iron_lborresu
+    unit: µmol/L
+    units:
+      µmol/L: {factor: 1, expect: [2, 50]}
+      µg/dL: {factor: 0.1791, expect: [50, 250]}
+      µg/L: {factor: 0.01791, expect: [250, 3000], aliases: [ug/l]}
+      mg/L: {factor: 17.91, expect: [0.2, 2]}
+    range: [1, 60]
+
+  calcium:
+    label: Calcium
+    column: ca
+    unit_column: ca_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [1.5, 3.5]}
+      mg/L: {factor: 0.02495, expect: [70, 130]}
+      mg/dL: {factor: 0.2495, expect: [7, 13]}
+      mEq/L: {factor: 0.5, expect: [3.6, 6.5]}
+    range: [1.5, 3.5]
+
+  crp:
+    label: C-reactive protein
+    column: crp
+    unit_column: crp_lborresu
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 400]}
+    censor_units: {inf: left, inferieur: left}
+    range: [0, 400]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  glucose:
+    label: Fasting glucose
+    column: gluc
+    unit_column: gluc_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2.5, 40]}
+      g/L: {factor: 5.551, expect: [0.3, 2.5]}
+    range: [1.5, 40]
+
+  ferritin:
+    label: Ferritin
+    column: ferritin
+    unit_column: ferritin_lborresu
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [1, 3000], aliases: [ug/L]}
+    range: [1, 3000]
+  crp_type:
+    label: Kind of CRP assay, as a code whose meaning is not documented (CRP or high-sensitivity CRP)
+    column: crp_choix
+    type: category
+    codes: {"1": code_1, "2": code_2}
+  hba1c:
+    label: Glycated haemoglobin (HbA1c)
+    column: hba1c
+    unit_column: hba1c_lborresu
+    unit: "%"
+    units:
+      "%": {factor: 1, expect: [3, 18]}
+    range: [3, 18]

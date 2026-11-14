@@ -1,0 +1,82 @@
+instrument: mini_a_depression
+title: "MINI, module A: major depressive episode"
+tab: MINI
+section: MINI A
+status: draft
+notes: >
+  Module A: the symptoms of a major depressive episode, over the last two
+  weeks (the columns that end in p2w) and in a past episode (pe).
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Counts. mini_mde_symptoms_2_weeks and mini_mde_symptoms_past count the
+  nine symptoms (A1, A2 and the seven of A3) in each period; they need the
+  nine answers.
+
+  The three boxes "current", "past" and "recurrent" do not give the
+  diagnosis. With the criteria of the interview (five symptoms of which A1
+  or A2, and A4), 402 visits have a current episode; the box "current" is
+  ticked on 244 of them and left at 0 on 158, and it is ticked on 64 visits
+  that do not meet the criteria. 175 visits have the box "recurrent" alone.
+  The box "recurrent" follows question A5 (350 of 353). To know whether a
+  patient is in an episode, use the symptoms and A4, not the boxes (open
+  question O24). mini_mde_criteria (a05a), which the interviewer answers
+  after the symptoms, agrees with them on 480 of 526 visits.
+
+  The number of episodes of the life (a06a) holds 99 on 6 visits, read as
+  "not known".
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_a01a: {column: a01a, label: "A1 a) Vous est-il déjà arrivé de vous sentir particulièrement triste ou déprimé(e), la plupart du temps au cours de la journée, et ce, presq"}
+  mini_a01b: {column: a01b, label: "b) Au cours des deux dernières semaines, vous êtes-vous senti(e) particulièrement triste, cafardeux(se), déprimé(e), la plupart du temps au "}
+  mini_a02a: {column: a02a, label: "A2 a) Vous êtes-vous déjà senti(e), pendant une période de deux semaines, nettement moins intéressé(e) par la plupart des choses, ou netteme"}
+  mini_a02b: {column: a02b, label: "b) Au cours des deux dernières semaines, aviez-vous presque tout le temps le sentiment de n’avoir plus goût à rien, d’avoir perdu l’intérêt "}
+  mini_a03a_p2w: {column: a03a_p2w, label: "A3 a)Votre appétit a-t-il notablement changé? (2 dernières semaines)"}
+  mini_a03a_pe: {column: a03a_pe, label: "a) Votre appétit a-t-il notablement changé? (Episode passé)"}
+  mini_a03b_p2w: {column: a03b_p2w, label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (2 dernières semaines)"}
+  mini_a03b_pe: {column: a03b_pe, label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (Episode passé)"}
+  mini_a03c_p2w: {column: a03c_p2w, label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest"}
+  mini_a03c_pe: {column: a03c_pe, label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest"}
+  mini_a03d_p2w: {column: a03d_p2w, label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (2 dermières semaines)"}
+  mini_a03d_pe: {column: a03d_pe, label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03e_p2w: {column: a03e_p2w, label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (2 dermières semaines)"}
+  mini_a03e_pe: {column: a03e_pe, label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03ea_actuel: {column: a03ea_actuel, label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode actuel"}
+  mini_a03ea_pe: {column: a03ea_pe, label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode passé"}
+  mini_a03f_p2w: {column: a03f_p2w, label: "f ) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (2 dermières semaines)"}
+  mini_a03f_pe: {column: a03f_pe, label: "f) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03g_p2w: {column: a03g_p2w, label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (2 dermière"}
+  mini_a03g_pe: {column: a03g_pe, label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (Episode pa"}
+  mini_a04_p2w: {column: a04_p2w, label: "A4) Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos r"}
+  mini_a04_pe: {column: a04_pe, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos relat"}
+  mini_a05_pe: {column: a05_pe, label: "A5) Entre 2 épisodes de dépression ou de perte d’intérêt pour la plupart des choses, vous êtes-vous senti(e) bien pendant au moins deux mois"}
+  mini_mde_criteria: {column: a05a, label: "Criteria of a major depressive episode met (5 symptoms and A4)"}
+  mini_mde_current: {column: aedm1, derived_from: mini_a01a, label: "Box: the episode is current (a box: 0 is not ticked)"}
+  mini_mde_past: {column: aedm2, derived_from: mini_a01a, label: "Box: the episode is past (a box: 0 is not ticked)"}
+  mini_mde_recurrent: {column: aedm3, derived_from: mini_a01a, label: "Box: the episode is recurrent (a box: 0 is not ticked)"}
+  mini_mde_episodes: {column: a06a, type: number, range: [0, 60], winsor: false, missing: {"99": unknown}, label: "Number of depressive episodes in the life"}
+
+scores:
+  mini_mde_symptoms_2_weeks:
+    label: "Number of the nine symptoms of a depressive episode present in the last two weeks"
+    sum: [mini_a01b, mini_a02b, mini_a03a_p2w, mini_a03b_p2w, mini_a03c_p2w, mini_a03d_p2w, mini_a03e_p2w, mini_a03f_p2w, mini_a03g_p2w]
+  mini_mde_symptoms_past:
+    label: "Number of the nine symptoms present in the past episode"
+    sum: [mini_a01a, mini_a02a, mini_a03a_pe, mini_a03b_pe, mini_a03c_pe, mini_a03d_pe, mini_a03e_pe, mini_a03f_pe, mini_a03g_pe]

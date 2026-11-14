@@ -1,0 +1,32 @@
+instrument: altman
+title: Altman Self-Rating Mania Scale (ASRM, 5 items)
+tab: AUTO-QUESTIONNAIRES
+section: ALTMAN
+status: draft
+notes: >
+  The BP schema as it is. Five items, 0 to 4, on the last week; the total is
+  their sum (0 to 20). Filled at inclusion and at every follow-up visit, not
+  at screening: 1,071 visits. The stored total (altman_) equals the sum on
+  the 1,067 visits where the five items are filled.
+
+  The break of 2018 (open question O1). 95% and 90% of the inclusion visits of
+  2012 to 2014 and of 2015 to 2017 hold the scale, 42% to 47% in the three
+  periods since 2018. It is the same fall in about a dozen
+  self-questionnaires, in most centres, and nobody knows its reason: an
+  empty scale after 2018 is missing data, not a scale that was not asked.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  altman01: {label: Cheerfulness}
+  altman02: {label: Self-confidence}
+  altman03: {label: Reduced need for sleep}
+  altman04: {label: Talkativeness}
+  altman05: {label: Activity}
+  altman_stored: {column: altman_, label: ASRM total as stored, range: [0, 20], keep: false}
+
+scores:
+  altman_total:
+    label: ASRM total
+    sum: [altman01, altman02, altman03, altman04, altman05]
+    compare: altman_stored

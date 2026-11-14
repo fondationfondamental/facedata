@@ -1,0 +1,89 @@
+# Instruments that FACE BP or FACE SZ also has and whose DR schema is not the same, each with the reason.
+# tests/test_cohorts.py compares a DR schema with the BP schema of the same name, or with the SZ one
+# when BP has none (defaults, variables, scores, version), and fails on a difference that is not listed here.
+
+# PATIENT
+identite: the diagnosis is that of the DR cohort; the day of birth is set to the 15th for the patients who keep another one; the stored age is not the age at inclusion, which is computed
+provenance: two of the BP questions only; the referrer has other texts and the purpose of the visit is exported as a code that the dictionary does not explain
+
+# HETERO-QUESTIONNAIRES
+cgi_egf: the TRD form has the CGI severity and the GAF only, and the GAF is in the column egf_
+etat_depressif: the answers are 1, 0 and 2 where BP writes Y, N and U; no stored count; each detail is two yes/no boxes, and the weight and sleep details have a second form with one list
+etat_maniaque: the answers are 1, 0 and 2 where BP writes Y, N and U; no stored count
+
+# VITAL SIGN et ECG
+ecg: the TRD extraction has no "ECG done" question
+
+# BILAN BIOLOGIQUE
+biochimie: the results are in columns named for the analyte; ferritin and the kind of CRP assay are added
+bilan_lipidique: the results are in columns named for the analyte; the unit of HDL and LDL is exported as a code; no stored ratio
+bilan_hepatique: the results are in columns named for the analyte
+bilan_thyroidien: the results are in columns named for the analyte
+nfs: the results are in columns named for the analyte; the unit of the haematocrit and of the MCHC is exported as a code
+bhcg_prolactine: the results are in columns named for the analyte; the unit of prolactin is exported as a code
+dosage_psychotropes: the columns and the boxes of the TRD form; five antidepressant levels that BP does not have; no clozapine, lamotrigine or red-cell lithium
+vitamine_d: the unit is recorded and the result is delivered in nmol/L, where SZ has no unit; the questions on sun exposure and supplements are not in the TRD extraction
+
+# AUTO-QUESTIONNAIRES
+bis10: eleven reverse-keyed items are stored already reversed and are read back to the answer as asked; the stored scores reverse them twice and are checked by twin scores that are not delivered
+ctq: seven reverse-keyed items are stored already reversed and are read back to the answer as asked; the stored neglect scores and total reverse them twice and are checked by twin scores; no severity classes in the extraction
+epworth: the eight situations are in ess01 to ess08, the time of day in ess09 and the stored total in ess
+eq5d: the extraction has no utility index
+fagerstrom: item 3 is stored as the code of the answer (1 the first cigarette, 2 any other), read as 1 and 0 points
+mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence and is checked by a twin score; no mars11
+mathys_emotions: one free text more, "other emotions" (mathys28)
+mdq: the extraction stores no count of symptoms to compare with
+physical_activity: the columns are named qiap01a to qiap04bm
+psqi: the questions on the bed partner (psqi10, psqi10a to psqi10f) are in this extraction and not in BP
+stai_ya: the answers are stored on three codings (0 to 3, 1 to 4, 2 to 5); they are read as stored, not delivered, and delivered on the BP coding once the coding of the visit is known
+
+# NEUROPSYCHOLOGIE
+neuropsy_conditions: the columns are named cclin01 to cclin16 and hold codes; some questions are other ones (French as mother tongue, state compatible with the tests, number of testing days, a three-code psychotropic treatment)
+learning_disorders: the answers are 0, 1 and 2 (not known); three more questions and the free text of the cognitive complaints
+tmt: the kinds of errors are in eight columns and the totals are stored; three z-scores are stored with the other sign and are turned; band labels cut by the export are written out; no B minus A z-score of the errors
+verbal_fluency: two forms of the test, read from fv01; only the words, the z-score and the band of each task are entered
+wais4_similitudes: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
+wais4_memoire_chiffres: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
+wais4_arithmetique: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
+wais4_efficience: the working memory index only, and it is stored right (in SZ it is 0.7 too low); no column names the edition
+wais4_code_symboles_ivt: the columns are named code01 to ivt04; no column names the edition, which is read from the columns that are filled
+
+# SUICIDE, SUBSTANCES, PERINATALITE, SOIN SUIVI, MODULE SOCIAL
+isf_lifetime: the answers are numbers (1 and 0; 0, 1, 2 for "when") and the visits of this cohort name the two forms
+isf_since_visit: the follow-up visits use the three "when" of the inclusion form; a "when" of more than a year is flagged
+suicide_attempts: the answers are numbers, with 2 for "not known"; two more dates (most violent, most serious attempt)
+most_violent_attempt: the lists are stored as codes that the dictionary does not explain; two columns are empty; five boxes for the consequences of another method
+most_serious_attempt: the lists are stored as codes that the dictionary does not explain
+tobacco: the status is stored 1, 2 and 3
+perinatal: the answers are stored as numbers, with 0 or 2 for "not known"
+sick_leave_v0: the answers are 0, 1 and 2 (not applicable); the number of sick leaves is not in the extraction
+sick_leave_fu: other columns; the answers are Y and N; the length is in days
+hospitalisations_v0: the columns of this cohort (ever hospitalised, age at the first one, number, months), with no question on the first psychotic episode
+social: the time in the job is a number of months; the occupational class and the legal protection are added; the closest person is stored as a code that the dictionary does not explain; no questions on income and debts
+
+# TRAITEMENTS
+medications: the lists of this extraction are crossed by the export and are put back with the field crossed; the generic name of the catalogue is looked up; no liquid strength; the form is added
+non_drug_lifetime: the columns and the questions of this cohort (ECT and TMS with their settings, psychotherapy as one question); the answers are numbers with 2 for "not known"
+non_drug_fu: the columns and the questions of this cohort (ECT and TMS with their settings, psychotherapy as one question); the answers are numbers with 2 for "not known"
+
+# ANTECEDENTS
+neurological_history_v0: the answers are numbers; 'treated' and 'controlled' are in columns named _tr_mhdecod and _eq_mhdecod
+neurological_history_fu: the answers are numbers; 'treated' and 'controlled' are in columns named _tr_mhdecod and _eq_mhdecod
+cardiovascular_history_v0: the answers are numbers; no date for another cardiovascular disease
+cardiovascular_history_fu: the answers are numbers; no date for another cardiovascular disease
+endocrine_history_v0: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions; codes for the types
+endocrine_history_fu: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions; codes for the types
+skin_history_v0: the answers are numbers; the causes of a drug eruption are four boxes; codes for the type of eruption
+skin_history_fu: the answers are numbers; the causes of a drug eruption are four boxes; codes for the type of eruption
+urinary_history_v0: the answers are numbers; the causes of a urinary retention are three boxes
+urinary_history_fu: the answers are numbers; the causes of a urinary retention are three boxes
+gynaecological_history_v0: the answers are numbers
+gynaecological_history_fu: the answers are numbers
+digestive_history_v0: the answers are numbers; codes for the kind of bowel disease and of treatment
+digestive_history_fu: the answers are numbers; codes for the kind of bowel disease and of treatment
+allergic_history_v0: the answers are numbers; the five diseases are boxes in columns of their own
+allergic_history_fu: the answers are numbers; the five diseases are boxes in columns of their own
+other_history_v0: the answers are numbers; the cancers are boxes in columns of their own, with two more kinds; the virus is coded 1, 2, 3
+other_history_fu: the answers are numbers; the cancers are boxes in columns of their own, with two more kinds; the virus is coded 1, 2, 3
+family_structure: the psychiatric history and the cardiovascular risk factors are two questions; children and siblings are counted as groups
+family_history: the children and the siblings are each one row; the disorders are separate yes/no questions and coded lists; no per-patient summary

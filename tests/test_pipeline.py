@@ -599,3 +599,11 @@ def test_a_question_asked_only_after_a_yes(tmp_path):
     assert data["panic_onset_age"][1:].isna().all()              # a detail has no value after a "no"
     assert flags_of(result, "panic") == []                       # nothing was changed, nothing is flagged
     assert (qc.loc["panic", "n_filled"], qc.loc["panic", "n_valid"]) == (3, 3)
+
+
+def test_centre_codes_have_two_digits():
+    """One extraction writes the centre codes as numbers ("4"), the others as two characters ("04")."""
+    raw = pd.DataFrame({"usubjid": ["a", "b"], "visit": ["V0", "V0"], "id_visit": ["2", "2"], "visitnum": ["1", "2"],
+                        "svdtc": ["2015-01-01", "2015-01-02"], "siteid": ["4", "12"]})
+    raw, keys, flags = prepare_visits(raw)
+    assert list(keys["siteid"]) == ["04", "12"]

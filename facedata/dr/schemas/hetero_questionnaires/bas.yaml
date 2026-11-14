@@ -1,0 +1,36 @@
+instrument: bas
+title: Brief Anxiety Scale (Tyrer)
+tab: HETERO-QUESTIONNAIRES
+section: BAS (Tyrer Brief Anxiety Scale, Tyrer P et al. 1984)
+status: draft
+notes: >
+  Ten items rated 0 to 6 by the clinician; the total is their sum (0 to 60).
+  The stored total equals the sum on all 1,034 visits that have both; 4
+  visits have the ten items and no stored total, and get the recomputed one.
+
+  Rated at the inclusion and follow-up visits. Filled at about 90% of the
+  inclusion visits until 2017 and at about half of them since 2018 (open
+  question O1 in PROGRESS.md).
+
+  A scale that FACE BP and FACE SZ do not have.
+
+defaults: {type: item, range: [0, 6]}
+
+variables:
+  bas01: {label: "BAS 1: Inner tension"}
+  bas02: {label: "BAS 2: Hostile feelings"}
+  bas03: {label: "BAS 3: Hypochondriasis"}
+  bas04: {label: "BAS 4: Phobias"}
+  bas05: {label: "BAS 5: Worrying over trifles"}
+  bas06: {label: "BAS 6: Reduced sleep"}
+  bas07: {label: "BAS 7: Autonomic disturbances (reported)"}
+  bas08: {label: "BAS 8: Aches and pains"}
+  bas09: {label: "BAS 9: Autonomic disturbances (observed)"}
+  bas10: {label: "BAS 10: Muscular tension"}
+  bas_total_stored: {column: bas_, label: "BAS total as stored", range: [0, 60], keep: false}
+
+scores:
+  bas_total:
+    label: "BAS total (0 to 60)"
+    sum: [bas01, bas02, bas03, bas04, bas05, bas06, bas07, bas08, bas09, bas10]
+    compare: bas_total_stored

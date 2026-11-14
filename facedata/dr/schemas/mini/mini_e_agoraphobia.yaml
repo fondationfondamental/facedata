@@ -1,0 +1,40 @@
+instrument: mini_e_agoraphobia
+title: "MINI, module E: agoraphobia"
+tab: MINI
+section: MINI E
+status: draft
+notes: >
+  Module E: agoraphobia, and its three conclusions with or without panic
+  disorder.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  Conclusions against the criteria (E1 and E2, with the panic disorder of
+  module D): agoraphobia without panic disorder agrees on 524 of 534
+  visits, panic disorder with agoraphobia on 514 of 529, panic disorder
+  without agoraphobia on 497 of 516. Most differences are a conclusion
+  "yes" that the items do not give.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_e01: {column: e01, label: "E1) Etes- vous anxieux(se) ou particulièrement mal à l’aise dans les endroits ou dans des situations dont il est difficile ou gênant de s’éc"}
+  mini_e02: {column: e02, label: "E2) Redoutez-vous tellement ces situations qu’en pratique vous les évitez ou bien êtes-vous extrêmement mal à l’aise lorsque vous les affron"}
+  mini_panic_with_agoraphobia_current: {column: ea, label: "Panic with agoraphobia current: TROUBLE PANIQUE avec Agoraphobie ACTUEL"}
+  mini_panic_without_agoraphobia_current: {column: eb, label: "Panic without agoraphobia current: TROUBLE PANIQUE sans Agoraphobie ACTUEL"}
+  mini_agoraphobia_current: {column: ec, label: "Agoraphobia current: AGORAPHOBIE ACTUELLE sans antécédents de Trouble panique"}

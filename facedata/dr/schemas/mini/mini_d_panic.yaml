@@ -1,0 +1,62 @@
+instrument: mini_d_panic
+title: "MINI, module D: panic disorder"
+tab: MINI
+section: MINI D
+status: draft
+notes: >
+  Module D: panic disorder.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  mini_panic_symptoms counts the thirteen symptoms of the worst attack.
+
+  Conclusions against the criteria. Lifetime panic disorder (d05) is yes on
+  125 visits; 113 of them meet the criteria as the items give them (D1a,
+  D1b, D2, D3 and four symptoms), 12 do not, and no visit meets them with a
+  "no". Current panic disorder (d04) is the lifetime disorder with attacks
+  in the last month on 526 of 531 visits.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_d01a: {column: d01a, label: "D1 a)Avez-vous, à plus d’une occasion, eu des périodes ou des crises durant lesquelles vous vous êtes senti(e) subitement très anxieux(se), "}
+  mini_d01b: {column: d01b, label: "b) Ces crises atteignaient-elles leur intensité maximale en moins de 10 minutes ?"}
+  mini_d02: {column: d02, label: "D2) Certaines de ces crises, même il y a longtemps, ont-elles été imprévisibles, ou sont-elles survenues sans que rien ne les provoque ?"}
+  mini_d03: {column: d03, label: "D3) A la suite de l'une ou plusieurs de ces crises, avez-vous déjà eu une période d'au moins un mois durant laquelle vous redoutiez d'avoir "}
+  mini_d04a: {column: d04a, label: "a) Aviez-vous des palpitations votre coeur battait-il très fort ou de façon irrégulière ?"}
+  mini_d04b: {column: d04b, label: "b) Transpiriez-vous ou aviez-vous les mains moites ?"}
+  mini_d04c: {column: d04c, label: "c) Aviez-vous des tremblements ou des secousses musculaires ?"}
+  mini_d04d: {column: d04d, label: "d) Aviez-vous du mal à respirer ou l'impression d'étouffer ?"}
+  mini_d04e: {column: d04e, label: "e) Aviez-vous l'impression de suffoquer ou d'avoir une boule dans la gorge ?"}
+  mini_d04f: {column: d04f, label: "f) Ressentiez-vous une douleur, une pression ou une gêne au niveau du thorax ?"}
+  mini_d04g: {column: d04g, label: "g) Aviez-vous la nausée, une gêne au niveau de l'estomac ou une diarrhée soudaine ?"}
+  mini_d04h: {column: d04h, label: "h) Vous sentiez-vous étourdi(e), pris(e) de vertige, ou sur le point de vous évanouir ?"}
+  mini_d04i: {column: d04i, label: "i) Aviez-vous l'impression que les choses qui vous entouraient étaient étranges ou irréelles où vous sentiez-vous détaché(e) de tout ou d'un"}
+  mini_d04j: {column: d04j, label: "j) Aviez-vous peur de perdre le contrôle ou de devenir fou (folle) ?"}
+  mini_d04k: {column: d04k, label: "k) Aviez-vous peur de mourir ?"}
+  mini_d04l: {column: d04l, label: "l) Aviez-vous des engourdissements des picotements ?"}
+  mini_d04m: {column: d04m, label: "m) Aviez-vous des bouffées de chaleur ou des frissons ?"}
+  mini_panic_lifetime: {column: d05, label: "Panic lifetime: D5) TROUBLE PANIQUE VIE ENTIÈRE"}
+  mini_limited_symptom_attacks_lifetime: {column: d06, label: "Limited symptom attacks lifetime: D6) SYMPÔMES ANXIEUX PAROXYSTIQUES LIMITES VIE ENTIERE"}
+  mini_d07: {column: d07, label: "Au cours du mois écoulé, avez-vous eu de telles crises à plusieurs reprises (au moins 2 fois) en ayant constamment peur d’en avoir une autre"}
+  mini_panic_current: {column: d04, label: "Panic current: TROUBLE PANIQUE ACTUEL"}
+
+scores:
+  mini_panic_symptoms:
+    label: "Number of the thirteen symptoms of the worst panic attack"
+    sum: [mini_d04a, mini_d04b, mini_d04c, mini_d04d, mini_d04e, mini_d04f, mini_d04g, mini_d04h, mini_d04i, mini_d04j, mini_d04k, mini_d04l, mini_d04m]

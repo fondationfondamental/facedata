@@ -1,0 +1,40 @@
+instrument: provenance
+title: How the patient came to the expert centre
+tab: PATIENT
+section: Provenance
+status: draft
+level: patient
+notes: >
+  One value per patient; no value changes between the visits of a patient.
+  The TRD extraction holds two of the questions of the BP form.
+
+  The referrer is known for 111 of the 634 patients, 63 of them included in
+  2025 and 2026: the field came into use late, or the export loses it for the
+  earlier years (open question O4 in PROGRESS.md). Its texts are not those of
+  BP and two of them end with a stray quotation mark; they are read as the
+  same answers.
+
+  The purpose of the visit is exported as a code, 1, 2 or 3, where BP and SZ
+  hold the words. The dictionary gives no coding, so the three codes are
+  delivered as code_1, code_2 and code_3 and not as the BP labels (open
+  question O4). Filled for 593 patients, at about 90% in every year.
+
+  Not loaded: adresseur_precis, the free text of the referrer, which is empty
+  in the extraction (ignored.yaml).
+
+variables:
+  referred_by:
+    column: adresseur
+    label: Referred by
+    type: category
+    codes:
+      Psychiatre libéral: private_psychiatrist
+      Psychiatre hospitalier du secteur centre: hospital_psychiatrist_inside
+      'Psychiatre hospitalier hors secteur"': hospital_psychiatrist_outside
+      Generaliste: general_practitioner
+      'Patient lui-même"': self
+  visit_purpose:
+    column: objet_visite
+    label: Purpose of the visit, as a code whose meaning is not documented
+    type: category
+    codes: {"1": code_1, "2": code_2, "3": code_3}

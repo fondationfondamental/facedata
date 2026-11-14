@@ -1,0 +1,59 @@
+instrument: ecg
+title: Electrocardiogram
+tab: VITAL SIGN et ECG
+section: ECG
+status: draft
+notes: >
+  Heart rate, QT and RR intervals and the corrected QT that the EMR stores,
+  at the inclusion and follow-up visits (about 1,050 visits). The TRD
+  extraction has no "ECG done" question.
+
+  The form asks for seconds. The QT was typed in milliseconds or centiseconds
+  on 87 visits and the RR in milliseconds on 61, most of them from 2012 to
+  2016 and two thirds in one centre: they are converted (unit_inferred).
+  Impossible values are removed (out_of_range): 24 heart rates, 12 QT, 38 RR
+  and 15 stored QTc, among them heart rates of 1 and RR intervals of 0.
+
+  The corrected QT is recomputed with Bazett's formula on the harmonised QT
+  and RR. The stored one equals it within 0.006 s on 96% of the visits from
+  2017 and on 76% of those until 2016 (113 score_mismatch, 110 of them until
+  2016); the formulas of Fridericia and Framingham fit worse in both periods.
+
+  Same instrument as in FACE BP, without the question "ECG done".
+
+defaults: {type: number, unit: s, missing: {0: not_recorded}}
+
+variables:
+  ecg_heart_rate: {column: eghrmn, label: Heart rate on the ECG (beats per minute), unit: bpm, range: [30, 220]}
+  qt_interval:
+    column: qt
+    label: QT interval
+    units:
+      s: {factor: 1, expect: [0.2, 0.7]}
+      cs: {factor: 0.01, expect: [20, 70]}
+      ms: {factor: 0.001, expect: [200, 700]}
+    range: [0.2, 0.7]
+  rr_interval:
+    column: rr
+    label: RR interval
+    units:
+      s: {factor: 1, expect: [0.3, 2.0]}
+      ms: {factor: 0.001, expect: [300, 2000]}
+    range: [0.3, 2.0]
+  qtc_stored:
+    column: qtc
+    label: Corrected QT interval as stored by the EMR
+    units:
+      s: {factor: 1, expect: [0.2, 0.7]}
+      cs: {factor: 0.01, expect: [20, 70]}
+      ms: {factor: 0.001, expect: [200, 700]}
+    range: [0.2, 0.7]
+
+scores:
+  qtc_bazett:
+    label: Corrected QT interval, Bazett's formula on the harmonised QT and RR
+    custom: corrected_qt
+    compare: qtc_stored
+    compare_tolerance: 0.005
+    range: [0.2, 0.7]
+    winsor: [0.01, 0.99]

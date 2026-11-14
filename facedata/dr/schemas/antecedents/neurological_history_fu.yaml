@@ -1,0 +1,60 @@
+instrument: neurological_history_fu
+title: "Neurological history, at follow-up"
+tab: ANTECEDENTS
+section: Pathologies neurologiques
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  visits of 2 and 4 years: 131 visits. The questions and what is specific
+  to this cohort are described in neurological_history_v0.yaml.
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  migraine_fu: {column: migraine_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine, at follow-up"}
+  migraine_start_fu: {column: migraine_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Migraine: date of onset, at follow-up"}
+  migraine_treated_fu: {column: migraine_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine: treated, at follow-up"}
+  migraine_controlled_fu: {column: migraine_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Migraine: controlled, at follow-up"}
+  multiple_sclerosis_fu: {column: sep_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis, at follow-up"}
+  multiple_sclerosis_start_fu: {column: sep_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Multiple sclerosis: date of onset, at follow-up"}
+  multiple_sclerosis_treated_fu: {column: sep_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis: treated, at follow-up"}
+  multiple_sclerosis_controlled_fu: {column: sep_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Multiple sclerosis: controlled, at follow-up"}
+  epilepsy_fu: {column: epilepsie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy, at follow-up"}
+  epilepsy_start_fu: {column: epilepsie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Epilepsy: date of onset, at follow-up"}
+  epilepsy_treated_fu: {column: epilepsie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy: treated, at follow-up"}
+  epilepsy_controlled_fu: {column: epilepsie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Epilepsy: controlled, at follow-up"}
+  meningitis_fu: {column: meningite_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Meningitis, at follow-up"}
+  meningitis_date_fu: {column: meningite_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Meningitis: date of the event, at follow-up"}
+  head_injury_fu: {column: traumacra_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Head injury, at follow-up"}
+  head_injury_date_fu: {column: traumacra_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Head injury: date of the event, at follow-up"}
+  stroke_fu: {column: avc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Stroke, at follow-up"}
+  stroke_date_fu: {column: avc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Stroke: date of the event, at follow-up"}
+  other_neurological_fu: {column: autneuro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another neurological disease, at follow-up"}
+  other_neurological_date_fu: {column: autneuro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another neurological disease: date of the event, at follow-up"}
+  other_neurological_text_fu: {column: autneuro_mhmodify, type: text, label: "Another neurological disease: which one, as written, at follow-up"}

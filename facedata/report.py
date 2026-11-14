@@ -133,15 +133,19 @@ def write_report(result, schemas, folder):
     flags = result.flags.merge(rows, on=["usubjid", "visit"], how="left")
     contents = []
     per_patient = patient_frame(result)
-    frames = {"list": rows_frame(result, result.treatments, "item " + result.treatments["item"].astype(str)),
-              "relatives": rows_frame(result, result.relatives, result.relatives["relative"])}
+    frames = {"relatives": rows_frame(result, result.relatives, result.relatives["relative"])}
     for name, schema in schemas.items():
         qc = result.qc[result.qc["instrument"] == name]
         if len(qc) == 0:                             # this instrument was not loaded
             continue
         data = per_patient if schema.get("level") == "patient" else result.data
-        if schema.get("level") in frames:                # several rows per patient: items or relatives
-            frame = frames[schema["level"]]
+        if schema.get("level") in ("list", "relatives"):     # several rows per patient: items or relatives
+            frame = frames.get(schema["level"])
+            if schema["level"] == "list":                # the items of this list, named as the flag log names them
+                items, label = result.treatments, "item "
+                if "list" in items:
+                    items, label = items[items["list"] == name], name + " item "
+                frame = rows_frame(result, items, label + items["item"].astype(str))
             own = result.flags.merge(frame[["usubjid", "visit"]].assign(row=frame.index), on=["usubjid", "visit"])
             link = instrument_page(schema, frame, qc, own, folder)
         else:

@@ -1,0 +1,27 @@
+instrument: suicide_attempts
+title: "History of suicide attempts"
+tab: SUICIDE
+section: Histoire des conduites suicidaires
+status: draft
+notes: >
+  The BP schema plus two dates. The history of suicide attempts: the date
+  of the first one, their number, whether some were violent or serious
+  (intensive care), how many, and the dates of the most violent and of the
+  most serious one, which BP does not have. Filled where the patient has
+  attempted suicide: 177 visits, most of them inclusions (35% of the
+  inclusions until 2014, 11% to 19% since 2021).
+
+  "Violent" and "serious" have a third answer, 2 for "not known": missing
+  (9 cells). The dates are whole dates.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  first_attempt_date: {column: isf05_qsdtc, type: date, label: Date of the first suicide attempt, range: [1920-01-01, 2026-12-31]}
+  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
+  violent_attempts: {column: isf08, label: Has made violent suicide attempts, missing: {"2": unknown}}
+  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}
+  most_violent_attempt_date: {column: isf08_qsdtc, type: date, label: Date of the most violent suicide attempt, range: [1920-01-01, 2026-12-31]}
+  serious_attempts: {column: isf09, label: Has made serious suicide attempts (intensive care), missing: {"2": unknown}}
+  n_serious_attempts: {column: isf09a, label: Number of serious suicide attempts, range: [0, 20]}
+  most_serious_attempt_date: {column: isf09_qsdtc, type: date, label: Date of the most serious suicide attempt, range: [1920-01-01, 2026-12-31]}

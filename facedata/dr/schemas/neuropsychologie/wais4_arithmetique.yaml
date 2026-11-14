@@ -1,0 +1,37 @@
+instrument: wais4_arithmetique
+title: WAIS-IV Arithmetic
+tab: NEUROPSYCHOLOGIE
+section: ARITHMETIQUE
+status: draft
+notes: >
+  WAIS-IV Arithmetic: the raw total, the age-scaled score and its z-score.
+  SZ also has the 22 items; here only the totals are entered. 621 visits.
+
+  One edition. No column names the edition of the WAIS in this cohort. The
+  data show the WAIS-IV in every year: within an age group, a raw score has
+  one scaled score, the same before and after 2018, for the five subtests;
+  95 digit span totals are above 30, the maximum of the WAIS-III; and the
+  processing speed index follows the WAIS-IV table of BP on each of the 35
+  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest,
+  so that the column exists as in BP and SZ.
+
+  The z-score is the scaled score minus 10, over 3, except on 14 visits of
+  2013 to 2015 (score_mismatch on the check score).
+
+version:
+  name: wais_version
+  filled:
+    wais4: [similtot, similstd, nbrut, nstand, arithtot, arithstd, imt01, imt02, code01, code03, code04,
+            symbol01, symbol03, symbol04, ivt01, ivt04]
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  wais4_arith_total: {column: arithtot, label: Arithmetic raw total (22 items), range: [0, 22]}
+  wais4_arith_scaled: {column: arithstd, label: Age-scaled score (mean 10 and SD 3), range: [1, 19]}
+  wais4_arith_z: {column: arithcr, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+
+scores:
+  # Consistency check only: the z-score is the scaled score minus 10, over 3.
+  wais4_arith_z_check: {sum: [wais4_arith_scaled], scale: [0.3333333, -3.3333333], compare: wais4_arith_z, compare_tolerance: 0.006, keep: false, versions: [wais4]}

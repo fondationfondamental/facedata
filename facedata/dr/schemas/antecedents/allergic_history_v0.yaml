@@ -1,0 +1,63 @@
+instrument: allergic_history_v0
+title: "Allergic history, at inclusion"
+tab: ANTECEDENTS
+section: Pathologies allergiques et inflammatoires
+status: draft
+notes: >
+  The BP schema with the columns and the codes of this extraction, at the
+  inclusion visit: 589 visits (88% to 96% of the inclusions in every period).
+
+  Two forms in the same columns, as in BP: the inclusion visit, and the
+  visits of 2 and 4 years, where the same questions are asked again.
+  visit_form says which form a visit uses, and each form has its own schema
+  and its own variables (_v0 and _fu). Whether the follow-up answers are
+  about the whole life or about the time since the last visit is not
+  written anywhere; they are never mixed with the inclusion answers.
+
+  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
+  where BP has words. "Treated" and "controlled" are in columns named
+  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+
+  Asthma, allergy, lupus, rheumatoid arthritis and other autoimmune
+  diseases are five boxes that the form sets to 0 on every row (BP has one
+  list): flagged derived_doubt where the question "an allergic or
+  inflammatory disease" is empty.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  allergic_inflammatory_v0: {column: somat_all, type: item, range: [0, 1], missing: {"2": unknown}, label: "An allergic or inflammatory disease, at inclusion"}
+  asthma_v0: {column: asthme_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: asthma, at inclusion"}
+  allergy_v0: {column: allergie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: an allergy other than asthma, at inclusion"}
+  lupus_v0: {column: lupus_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: lupus, at inclusion"}
+  rheumatoid_arthritis_v0: {column: polyarthr_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: rheumatoid arthritis, at inclusion"}
+  other_autoimmune_v0: {column: autautoim_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: another autoimmune disease, at inclusion"}
+  asthma_start_v0: {column: asthme_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Asthma: date of onset, at inclusion"}
+  asthma_treated_v0: {column: asthme_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: treated, at inclusion"}
+  asthma_controlled_v0: {column: asthme_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: controlled, at inclusion"}
+  allergy_start_v0: {column: allergie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Allergy: date of onset, at inclusion"}
+  allergy_treated_v0: {column: allergie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: treated, at inclusion"}
+  allergy_controlled_v0: {column: allergie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: controlled, at inclusion"}
+  lupus_start_v0: {column: lupus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Lupus: date of onset, at inclusion"}
+  lupus_treated_v0: {column: lupus_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: treated, at inclusion"}
+  lupus_controlled_v0: {column: lupus_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: controlled, at inclusion"}
+  rheumatoid_arthritis_start_v0: {column: polyarthr_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Rheumatoid arthritis: date of onset, at inclusion"}
+  rheumatoid_arthritis_treated_v0: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: treated, at inclusion"}
+  rheumatoid_arthritis_controlled_v0: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: controlled, at inclusion"}
+  other_autoimmune_start_v0: {column: autautoim_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another autoimmune disease: date of onset, at inclusion"}
+  other_autoimmune_text_v0: {column: autautoim_mhmodify, type: text, label: "Another autoimmune disease: which one, as written, at inclusion"}

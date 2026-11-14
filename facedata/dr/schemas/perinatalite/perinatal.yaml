@@ -1,0 +1,95 @@
+instrument: perinatal
+title: "Birth and perinatal history"
+tab: PERINATALITE
+section: PERINATALITE
+status: draft
+notes: >
+  The BP schema with the codes of this extraction. Asked once, at
+  inclusion: 532 patients.
+
+  Codes, from the dictionary: the term is 1 preterm, 2 at term, 3
+  post-term; the type of birth is 1 vaginal, 2 caesarean; 0 is "not known"
+  in both (missing_code). The neonatal hospitalisation is 0, 1 and 2, with
+  no code in the dictionary; the shares are those of BP's no, yes and "not
+  known" (84%, 4% and 12% here; 87%, 8% and 6% there), so 2 is read as "not
+  known". A 0 in a measure (ages of the parents, weight, length, head
+  circumference, Apgar scores) is "not recorded", as in BP.
+
+variables:
+  mother_age_at_birth:
+    column: agemere
+    label: Age of the mother when the patient was born, in years
+    type: item
+    range: [12, 60]
+    missing: {0: not_recorded, 99: unknown}
+  father_age_at_birth:
+    column: agepere
+    label: Age of the father when the patient was born, in years
+    type: item
+    range: [12, 90]
+    missing: {0: not_recorded, 99: unknown}
+  birth_term:
+    column: prembrth
+    label: Term of the birth
+    type: category
+    codes: {"2": term, "1": preterm, "3": post_term}
+    missing: {"0": unknown}
+  gestational_age:
+    column: gstabrth
+    label: Gestational age at birth, in weeks of amenorrhoea
+    type: number
+    unit: weeks
+    units:
+      weeks: {factor: 1, expect: [20, 45]}
+      months: {factor: 4.345, expect: [5, 10]}
+    range: [20, 45]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_type:
+    column: naisstyp
+    label: Type of birth
+    type: category
+    codes: {"1": vaginal, "2": caesarean}
+    missing: {"0": unknown}
+  neonatal_hospitalisation:
+    column: honeonat
+    label: Was admitted to a neonatal unit
+    type: item
+    range: [0, 1]
+    missing: {"2": unknown}
+  birth_weight:
+    column: brthwt
+    label: Birth weight
+    type: number
+    unit: g
+    range: [400, 6500]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_length:
+    column: brthht
+    label: Birth length
+    type: number
+    unit: cm
+    range: [25, 60]
+    missing: {0: not_recorded}
+    winsor: false
+  birth_head_circumference:
+    column: brthcirc
+    label: Head circumference at birth
+    type: number
+    unit: cm
+    range: [20, 42]
+    missing: {0: not_recorded}
+    winsor: false
+  apgar_1min:
+    column: apgr0106_1min
+    label: Apgar score at 1 minute
+    type: item
+    range: [1, 10]
+    missing: {0: not_recorded}
+  apgar_5min:
+    column: apgr0106_5min
+    label: Apgar score at 5 minutes
+    type: item
+    range: [1, 10]
+    missing: {0: not_recorded}

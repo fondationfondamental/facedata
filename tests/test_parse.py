@@ -64,16 +64,17 @@ def test_parse_category_ignores_case_and_flags_unknown_codes():
 
 
 def test_parse_date_puts_partial_dates_in_the_middle_of_the_period():
-    column = texts(["2015-03-21", "2015-03-00", "2015-00-00", "21/03/2015"])
+    column = texts(["2015-03-21", "2015-03-00", "2015-00-00", "21 mars 2015"])
     values, flags = parse_date(column, "x", {})
     assert list(values[:3]) == list(pd.to_datetime(["2015-03-21", "2015-03-15", "2015-07-01"]))
     assert flagged(flags, "date_partial") == [1, 2]
-    assert flagged(flags, "unparsed") == [3]
+    assert flagged(flags, "unparsed") == [3]              # a date in words is not read
 
 
 def test_parse_time_returns_hours():
-    values, flags = parse_time(texts(["12:30", "7:15", "midi"]), "x", {})
+    values, flags = parse_time(texts(["12:30", "7:15", "midi", "07:30:00"]), "x", {})
     assert list(values[:2]) == [12.5, 7.25]
+    assert values[3] == 7.5                              # one extraction writes the seconds too
     assert flagged(flags, "unparsed") == [2]
 
 
@@ -124,6 +125,14 @@ def test_parse_band_gives_the_lower_limit_of_the_band():
     assert flagged(flags, "unparsed") == [10, 11]            # 12 is no limit, 30 - 40 is no band
 
 
+def test_a_band_label_cut_by_the_export_is_written_out_with_codes():
+    variable = {"type": "band", "limits": [5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0], "codes": {"25-5": "25-50", "<": "<5"}}
+    values, cens, flags = parse_column(texts(["25-5", "25-50", "<", "10-2", "5-25"]), "band", variable)
+    assert list(values[:3]) == [25, 25, 0]              # the cut labels are the bands that the codes name
+    assert pd.isna(values[3]) and list(flags["flag"]) == ["censored_right", "unparsed"]    # a label that no code names
+    assert (values[4], cens[4]) == (5, 1)               # a real "5 to 25", wider than one band
+
+
 def test_parse_band_turns_a_z_score_into_its_band():
     """With z_range, a z-score gets the band it has under the normal law."""
     variable = {"limits": [1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0], "z_range": [-5.0, 5.0]}
@@ -134,3 +143,20 @@ def test_parse_band_turns_a_z_score_into_its_band():
     assert flagged(flags, "band_from_z") == [0, 1, 2, 3, 4, 7]
     assert flagged(flags, "out_of_range") == [6]
     assert list(cens) == [0] * 8
+
+
+def test_parse_date_reads_dates_written_day_month_year():
+    column = texts(["15/06/2018", "5/6/2018", "06/2018", "2018", "/", "31/02/2018"])
+    values, flags = parse_date(column, "x", {})
+    assert list(values[:4].dt.strftime("%Y-%m-%d")) == ["2018-06-15", "2018-06-05", "2018-06-15", "2018-07-01"]
+    assert flagged(flags, "date_partial") == [2, 3]         # no day, no month: the middle of the period
+    assert flagged(flags, "unparsed") == [4, 5]             # a slash alone, a day that does not exist
+
+
+def test_parse_date_gives_the_day_that_the_export_writes():
+    """day: 15. The export blurs a date of birth to the 15th; a cell that kept its day is blurred here."""
+    column = texts(["1970-03-15", "1970-03-27", "1970-03-00", ""])
+    values, flags = parse_date(column, "x", {"day": 15.0})
+    assert list(values[:3]) == list(pd.to_datetime(["1970-03-15", "1970-03-15", "1970-03-15"]))
+    assert flagged(flags, "date_partial") == [1, 2]
+    assert pd.isna(values[3])

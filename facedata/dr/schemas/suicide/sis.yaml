@@ -1,0 +1,38 @@
+instrument: sis
+title: "Suicide Intent Scale (SIS)"
+tab: SUICIDE
+section: SIS Echelle d'intention suicidaire
+status: draft
+notes: >
+  Suicide Intent Scale: fifteen items rated 0 to 2 on the circumstances of
+  an attempt and on what the patient expected. Not in BP or SZ. 140 visits,
+  most of them inclusions.
+
+  The stored score (sisv16) is the sum of the fifteen items on every visit
+  (139).
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  sis01: {column: sisv01, label: "Isolation"}
+  sis02: {column: sisv02, label: "Timing"}
+  sis03: {column: sisv03, label: "Precautions against discovery"}
+  sis04: {column: sisv04, label: "Acting to get help during or after the attempt"}
+  sis05: {column: sisv05, label: "Final acts in anticipation of death"}
+  sis06: {column: sisv06, label: "Active preparation of the attempt"}
+  sis07: {column: sisv07, label: "Suicide note"}
+  sis08: {column: sisv08, label: "Overt communication of intent before the attempt"}
+  sis09: {column: sisv09, label: "Alleged purpose of the attempt"}
+  sis10: {column: sisv10, label: "Expectations of fatality"}
+  sis11: {column: sisv11, label: "Conception of the lethality of the method"}
+  sis12: {column: sisv12, label: "Seriousness of the attempt"}
+  sis13: {column: sisv13, label: "Attitude toward living or dying"}
+  sis14: {column: sisv14, label: "Conception of medical rescuability"}
+  sis15: {column: sisv15, label: "Degree of premeditation"}
+  sis_total_stored: {column: sisv16, label: SIS score as stored, range: [0, 30], keep: false}
+
+scores:
+  sis_total:
+    label: "Suicide Intent Scale: sum of the fifteen items (0 to 30)"
+    sum: [sis01, sis02, sis03, sis04, sis05, sis06, sis07, sis08, sis09, sis10, sis11, sis12, sis13, sis14, sis15]
+    compare: sis_total_stored

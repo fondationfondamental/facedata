@@ -1,0 +1,32 @@
+instrument: mathys_emotions
+title: MAThyS, how often seven emotions were felt
+tab: AUTO-QUESTIONNAIRES
+section: MATHYS
+status: draft
+notes: >
+  The BP schema, plus the free text that follows it. The second part of the
+  MAThyS form: how often each of seven emotions was felt during the last
+  week, from 0 (never) to 4 (constantly). Filled with the MAThyS: 1,033
+  visits. The items are not part of the MAThyS total and have no score.
+
+  One column more than BP: mathys28, "other emotions", a free text, read as
+  mathys_other_emotion. 59 of its cells hold NA, NC or a dot: read as no
+  answer (missing_code).
+
+  The break of 2018 (open question O1). 91% and 86% of the inclusion visits of
+  2012 to 2014 and of 2015 to 2017 hold the scale, 40% to 48% in the three
+  periods since 2018. It is the same fall in about a dozen
+  self-questionnaires, in most centres, and nobody knows its reason: an
+  empty scale after 2018 is missing data, not a scale that was not asked.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  mathys21: {label: "Tristesse"}
+  mathys22: {label: "Joie"}
+  mathys23: {label: "Irritabilité"}
+  mathys24: {label: "Panique"}
+  mathys25: {label: "Anxiété"}
+  mathys26: {label: "Colère"}
+  mathys27: {label: "Exaltation"}
+  mathys_other_emotion: {column: mathys28, type: text, label: "Other emotions felt, as written"}

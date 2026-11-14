@@ -1,0 +1,56 @@
+# Columns of the DR extraction that are deliberately not loaded, each with the reason.
+# coverage() lists them with the status "ignored".
+
+# PATIENT
+armcd: the code of the diagnosis, 7 on every row; the diagnosis is delivered from arm
+lost_to_followup_stopsuivi: empty in the extraction; the whole end-of-follow-up section is empty
+rfpendtc_stopsuivi: empty in the extraction; the whole end-of-follow-up section is empty
+lost_to_follow_up_chgdiag_stopsuivi: empty in the extraction; the whole end-of-follow-up section is empty
+lost_to_follow_up_demenag_stopsuivi: empty in the extraction; the whole end-of-follow-up section is empty
+change_centre: empty in the extraction; the whole end-of-follow-up section is empty
+dthdtc_stopsuivi: empty in the extraction; the whole end-of-follow-up section is empty
+adresseur_precis: empty in the extraction
+
+# AUTO-QUESTIONNAIRES
+bis1035: the sum of the motor items of the BIS-10 with no item reversed; the sub-score is recomputed and checked against bis10_imp_mot
+bis1036: the sum of the attention items of the BIS-10 with no item reversed; the sub-score is recomputed and checked against bis10_imp_att
+bis1037: the sum of the planning items of the BIS-10 with no item reversed; the sub-score is recomputed and checked against bis10_imp_pla
+psqi15: PSQI component 1, a copy of item 6 (psqi06)
+psqi16: PSQI component 6, a copy of item 7 (psqi07)
+
+# NEUROPSYCHOLOGIE
+tmta02a: percentile of the errors of part A as the EMR wrote it; the band is read again in the norm table (tmt_a_errors_band), as in BP
+tmtb02a: percentile of the errors of part B as the EMR wrote it; the band is read again in the norm table (tmt_b_errors_band), as in BP
+
+# MINI
+m07: empty in the extraction (MINI M7, a criterion that the interviewer rates)
+qbp1r: empty in the extraction (most recent episode of a bipolar I disorder)
+
+# SUICIDE
+ltsv03: empty in the extraction (consequences of a jump)
+ltsv04: empty in the extraction (consequences of a firearm attempt)
+
+# EVALUATION MEDICALE
+mhmodify_type_trouble_ttd: empty in the extraction
+mhmodify_type_trouble_ta: empty in the extraction
+mhmodify_type_trouble_taa: empty in the extraction
+etat_epi_maj: the field of the follow-up form for the number of major depressive episodes; a copy of evnum_edm on the 809 follow-up visits
+fetat_epi_edm: the field of the follow-up form for the episodes with psychotic features; a copy of evnum_edm_psy on the 792 follow-up visits
+etat_epi_depress: the field of the follow-up form for the resistant episodes; a copy of evnum_edr on the 796 follow-up visits
+etat_sui_nb: the field of the follow-up form for the suicide attempts; a copy of evnum_suicid on the 796 follow-up visits
+
+# TRAITEMENTS
+psycho_act_cmclas: the classes of the current psychotropic products, a list shorter than the lists of the products and not in their order; the molecule gives the group
+psycho_act_cmclascd: the catalogue codes of the current psychotropic products, a list that does not follow the other lists
+psy_lifetime_cmclas: the classes of the past psychotropic products, a list that does not follow the other lists; the molecule gives the group
+psy_lifetime_cmclascd: the catalogue codes of the past psychotropic products, a list that does not follow the other lists
+psycho_som_cmclas: the classes of the somatic products, a list that does not follow the other lists
+psycho_som_cmclascd: the catalogue codes of the somatic products, a list that does not follow the other lists
+
+# ANTECEDENTS
+mere_brthdtc: empty in the extraction (date of birth of the mother)
+pere_brthdtc: empty in the extraction (date of birth of the father)
+enfant_brtdtc: empty in the extraction (date of birth of the children)
+fraterie_brtdtc: empty in the extraction (date of birth of the siblings)
+glaucomef_tttyp_mhmodify: empty in the extraction (kind of treatment under which the glaucoma occurred)
+glaucomef_ttautr_mhmodify: empty in the extraction (other treatment under which the glaucoma occurred)

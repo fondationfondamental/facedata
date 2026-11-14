@@ -1,0 +1,56 @@
+instrument: qids_sr16
+title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
+tab: AUTO-QUESTIONNAIRES
+section: QIDS
+status: draft
+notes: >
+  The BP schema as it is. Sixteen items, each 0 to 3, on the last seven
+  days. Filled at the screening visit (72% of them), at inclusion (91%) and
+  at every follow-up visit (92% to 96%): 1,902 visits, and still 83% of the
+  inclusions of 2024 to 2026.
+
+  Total. The sixteen items cover nine symptoms, and the total adds one value
+  per symptom (0 to 27): the highest of the four sleep items (1 to 4), item
+  5, the highest of the four appetite and weight items (6 to 9), items 10 to
+  14, and the highest of the two psychomotor items (15 and 16). The function
+  qids_total of custom.py computes it. The stored total (qidsr120) is
+  exactly this on the 1,643 visits where it exists: the visits with the
+  sixteen items filled.
+
+  One answer of each pair is enough. The form asks for item 6 or item 7
+  (appetite down or up) and for item 8 or item 9 (weight down or up), not
+  for both. Until 2021 nearly every visit answers the four (1% to 3% of the
+  visits answer one of each pair, 7% in 2017). From 2022 the patients do as
+  the form asks: 26% of the QIDS visits of 2022, 47% in 2023, 64% in 2024,
+  58% in 2025 and 74% in 2026, in 8 of the 10 centres that have ten QIDS
+  visits or more since 2022. On these 227 visits the EMR stores no total.
+  Ours is computed there (1,870 totals): the twelve other items must be
+  filled, and each pair must have one answer. Without this the total would
+  be missing for most recent visits (open question O13).
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  qidsr101: {label: "Endormissement"}
+  qidsr102: {label: "Sommeil pendant la nuit"}
+  qidsr103: {label: "Réveil avant l'heure prévue"}
+  qidsr104: {label: "Sommeil excessif"}
+  qidsr105: {label: "Tristesse"}
+  qidsr106: {label: "Diminution de l'appétit"}
+  qidsr107: {label: "Augmentation de l'appétit"}
+  qidsr108: {label: "Perte de poids (au cours des 15 derniers jours)"}
+  qidsr109: {label: "Prise de poids (au cours des 15 derniers jours)"}
+  qidsr110: {label: "Concentration/Prise de décisions"}
+  qidsr111: {label: "Opinion de moi-même"}
+  qidsr112: {label: "Idées de mort ou de suicide"}
+  qidsr113: {label: "Enthousiasme général"}
+  qidsr114: {label: "Énergie"}
+  qidsr115: {label: "Impression de ralentissement"}
+  qidsr116: {label: "Impression d'agitation"}
+  qids_stored: {column: qidsr120, label: QIDS-SR16 total as stored, range: [0, 27], keep: false}
+
+scores:
+  qids_total:
+    label: QIDS-SR16 total
+    custom: qids_total
+    compare: qids_stored

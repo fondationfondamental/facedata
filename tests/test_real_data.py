@@ -167,7 +167,7 @@ def test_auto_questionnaires(result, qc):
                  "ctq_total", "als54_total18", "als18_total", "aim40_score20", "aim20_score", "wurs61_sum25",
                  "wurs25_total", "csm_total", "bdhi_assault", "epworth_total"]:
         assert qc.loc[name, "score_mismatch"] == 0, name
-    assert (qc.loc["qids_total", "n_valid"], qc.loc["staya_total", "n_valid"]) == (19331, 16678)
+    assert (qc.loc["qids_total", "n_valid"], qc.loc["staya_total", "n_valid"]) == (19430, 16678)
     # Epworth, Fagerström item 3 and CSM item 7: the answers that the export lost until November 2026 are back.
     assert (qc.loc["epworth_total", "n_valid"], qc.loc["fagerstrom_total", "n_valid"], qc.loc["csm_total", "n_valid"]) == (16648, 5738, 6076)
     assert (int((result.data["fagers03"] == 0).sum()), int((result.data["csm07"] == 5).sum())) == (2119, 451)

@@ -1,0 +1,70 @@
+instrument: bilan_lipidique
+title: Blood lipids
+tab: BILAN BIOLOGIQUE
+section: Bilan Lipidique
+status: draft
+notes: >
+  HDL, LDL, total cholesterol and triglycerides, and the ratio of total to HDL
+  cholesterol computed from the harmonised values; the TRD extraction stores
+  no ratio.
+
+  For HDL and LDL the form has a choice of unit, exported as a code: 1 is g/L
+  and 2 mmol/L (the median HDL is 0.54 with code 1 and 1.39 with code 2). 207
+  HDL and 270 LDL results are converted from g/L (unit_converted). 27 HDL and
+  24 LDL values are impossible, almost all in one centre. Total cholesterol
+  has the default label only: 29 results fit g/L better than mmol/L and are
+  kept with a doubt (unit_doubt), 6 are converted.
+
+  Same instrument as in FACE BP, without the stored ratio.
+
+defaults: {type: number}
+
+variables:
+  hdl:
+    label: HDL cholesterol
+    column: hdl
+    unit_column: hdl_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.4, 4], aliases: ["2"]}
+      g/L: {factor: 2.586, expect: [0.15, 1.3], aliases: ["1"]}
+    range: [0.2, 4]
+
+  ldl:
+    label: LDL cholesterol
+    column: ldl
+    unit_column: ldl_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.8, 10], aliases: ["2"]}
+      g/L: {factor: 2.586, expect: [0.3, 2.6], aliases: ["1"]}
+    range: [0.3, 12]
+
+  cholesterol:
+    label: Total cholesterol
+    column: chol
+    unit_column: chol_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2.6, 15]}
+      g/L: {factor: 2.586, expect: [1.0, 3.5]}
+    range: [1.5, 15]
+
+  triglycerides:
+    label: Triglycerides
+    column: trig
+    unit_column: trig_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [0.1, 40]}
+      g/L: {factor: 1.129, expect: [0.1, 40]}
+    range: [0.1, 40]
+
+
+scores:
+  cholesterol_hdl_ratio:
+    label: Total cholesterol divided by HDL cholesterol, from the harmonised values
+    custom: cholesterol_ratio
+    compare_tolerance: 0.051
+    range: [1, 30]
+    winsor: [0.01, 0.99]

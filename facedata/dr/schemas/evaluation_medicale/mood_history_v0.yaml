@@ -1,0 +1,89 @@
+instrument: mood_history_v0
+title: "Mood disorder over the whole life and current episode (inclusion form)"
+tab: EVALUATION MEDICALE
+section: HUMEUR VIE ENTIERE
+status: draft
+notes: >
+  The mood disorder over the whole life and the current episode, at the
+  inclusion visit: 635 visits. Not the BP schemas, which are split by DSM
+  version; this cohort has one form and no column for the version.
+
+  Two forms in the same columns. The inclusion visit asks about the whole
+  life; the follow-up visits use the same columns for the time since the
+  last visit. The two are never delivered in one column: visit_form says
+  which form a visit uses (inclusion for the screening and inclusion
+  visits, follow_up for the others), and each form has its own schema and
+  its own variables.
+
+  The numbers of episodes (evnum_edm and the others) are counts over the
+  whole life here: median 3 major depressive episodes, of which 1 resistant
+  to two treatments or more. The same columns hold the counts since the
+  last visit at follow-up (mood_course_fu.yaml).
+
+  Codes are those of the dictionary. The type of the first episode has two
+  odd answers, "resistant" and "not resistant" (21 visits), kept as they
+  are. "Not known" is a missing code (62 cells). The current episode is
+  severe on 235 of 343 visits and lasts for more than two years on 238 of
+  344. "Delay (weeks)" has no other label in the dictionary.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, versions: [inclusion]}
+
+variables:
+  mdd_course: {column: mhmodify_type_trouble_tdm, type: category, label: Major depressive disorder - single episode or recurrent, codes: {"0": single_episode, "1": recurrent}}
+  mood_disorder_type:
+    column: mhdecod_type_trouble_tts
+    type: category
+    label: Kind of mood disorder
+    codes: {"1": major_depression_like, "2": depressive_features, "3": manic_features, "4": mixed_features, "5": substance_induced}
+    missing: {"6": unknown}
+  first_episode_type:
+    column: cetermpremier_episode
+    type: category
+    label: Type of the first episode
+    codes: {"0": mde, "1": mde_psychotic, "2": hypomania, "3": mania, "4": mania_psychotic, "5": mixed, "6": mixed_psychotic, "8": resistant, "9": not_resistant}
+    missing: {"7": unknown}
+  first_episode_age: {column: agedebutpremier_episode, range: [0, 90], label: Age at the first episode}
+  first_treated_episode_age: {column: agediagpremier_episode, range: [0, 90], label: Age at the first episode treated or diagnosed}
+  first_episode_postpartum: {column: ppartpremier_episode, range: [0, 1], codes: {"1": 1, "2": 0}, missing: {"3": unknown}, label: First episode in the six months after a birth}
+  n_mde_lifetime: {column: evnum_edm, type: number, range: [0, 60], winsor: false, label: Number of major depressive episodes over the whole life}
+  n_mde_psychotic_lifetime: {column: evnum_edm_psy, type: number, range: [0, 60], winsor: false, label: Number of major depressive episodes with psychotic features over the whole life}
+  n_resistant_episodes_lifetime: {column: evnum_edr, type: number, range: [0, 60], winsor: false, label: Number of depressive episodes resistant to two treatments or more over the whole life}
+  n_hypomanic_lifetime: {column: evnum_ehman, type: number, range: [0, 60], winsor: false, label: Number of hypomanic episodes over the whole life}
+  n_manic_lifetime: {column: evnum_eman, type: number, range: [0, 60], winsor: false, label: Number of manic episodes over the whole life}
+  n_manic_psychotic_lifetime: {column: evnum_eman_psy, type: number, range: [0, 60], winsor: false, label: Number of manic episodes with psychotic features over the whole life}
+  n_mixed_lifetime: {column: evnum_emixt, type: number, range: [0, 60], winsor: false, label: Number of mixed episodes over the whole life}
+  n_mixed_psychotic_lifetime: {column: evnum_emixt_psy, type: number, range: [0, 60], winsor: false, label: Number of mixed episodes with psychotic features over the whole life}
+  n_induced_lifetime: {column: evnum_eind, type: number, range: [0, 60], winsor: false, label: Number of induced episodes over the whole life}
+  full_remission_between_episodes: {column: remisc, range: [0, 1], missing: {"2": unknown}, label: Full remission between the episodes}
+  partial_remission_between_episodes: {column: remisinc, range: [0, 1], missing: {"2": unknown}, label: Partial remission between the episodes}
+  seasonal_pattern: {column: saison, range: [0, 1], missing: {"2": unknown}, label: Seasonal pattern}
+  first_psychotropic_age: {column: agetrt, range: [0, 90], label: Age at the first psychotropic treatment}
+  treatment_delay_weeks: {column: delai, type: number, unit: weeks, range: [0, 520], winsor: false, label: "Delay, in weeks (the dictionary does not say of what)"}
+  current_episode_untreated_weeks: {column: dureetrouble_humeur_actuel, type: number, unit: weeks, range: [0, 1040], winsor: false, label: Length of the current episode before a treatment was started}
+  current_episode_features:
+    column: cedecodtrouble_humeur_actuel
+    type: category
+    label: Features of the current major depressive episode
+    codes: {"0": none, "1": melancholic, "2": atypical, "3": catatonic}
+  current_episode_severity:
+    column: cesevtrouble_humeur_actuel
+    type: category
+    label: Severity of the current episode (DSM-IV)
+    codes: {"0": mild, "1": moderate, "2": severe, "3": severe_psychotic_congruent, "4": severe_psychotic_incongruent}
+  current_episode_chronic: {column: chrontrouble_humeur_actuel, range: [0, 1], missing: {"2": unknown}, label: Current episode longer than two years}
+  current_episode_postpartum: {column: pparttrouble_humeur_actuel, range: [0, 1], missing: {"2": unknown}, label: Current episode in the six months after a birth}

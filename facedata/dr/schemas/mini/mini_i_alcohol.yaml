@@ -1,0 +1,53 @@
+instrument: mini_i_alcohol
+title: "MINI, module I: alcohol dependence and abuse"
+tab: MINI
+section: MINI I
+status: draft
+notes: >
+  Module I: alcohol dependence and abuse over the last twelve months.
+
+  The MINI is a structured diagnostic interview; the modules and the
+  points of the suicidality score are those of version 6. It is given at
+  the screening visit and again at the visits of 2 and 4 years: 583 visits
+  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
+  question O24). Not in BP or SZ. The variables keep the number of the
+  question (mini_a01a is question A1a); the conclusions have a name that
+  says what they are. Answers are 1 for yes and 0 for no. The form follows
+  the skips of the interview: a question that comes after a "no" is empty.
+
+  Boxes written by the form. Some columns are boxes that the form sets to 0
+  as soon as the interview is opened: they hold 0 on every one of the 630
+  rows that have the form, including 47 rows where no question is
+  answered. An unticked box is not an answer "no". Such a box is declared
+  derived_from the first question of its module, and its 0 is flagged
+  derived_doubt where that question is empty.
+
+  mini_alcohol_dependence_criteria counts the seven criteria of I2.
+
+  Conclusions against the criteria: dependence (three criteria of seven)
+  agrees on 555 of 565 visits (8 visits with three criteria and a "no"),
+  abuse (one of four) on 544 of 547.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  mini_i01: {column: i01, label: "I1) Au cours des 12 derniers mois, vous est-il arrivé à au moins trois reprises de boire, en moins de trois heures, plus de trois verres d’a"}
+  mini_i02a: {column: i02a, label: "I2 a) Aviez-vous besoin de plus grandes quantités d’alcool pour obtenir le même effet que quand vous avez commencé à boire ou la même quanti"}
+  mini_i02b: {column: i02b, label: "b) Lorsque vous buviez moins, vos mains tremblaient-elles, transpirez-vous ou vous entiez-vous agité(e) ? Ou, vous arrivait-il de prendre un"}
+  mini_i02c: {column: i02c, label: "c) Lorsque vous buviez, vous arrivait-il souvent de boire plus que vous n’en aviez l’intention au départ ?"}
+  mini_i02d: {column: i02d, label: "d) Avez-vous essayé, sans pouvoir y arriver, de réduire votre consommation ou de ne plus boire ?"}
+  mini_i02e: {column: i02e, label: "e) Les jours où vous buviez, passiez-vous beaucoup de temps à vous procurer de l’alcool, à boire ou à vous remettre des effets de l’alcool ?"}
+  mini_i02f: {column: i02f, label: "f) Avez-vous réduit vos activités quotidiennes (loisirs, travail) ou avez-vous des problèmes de santé ou des problèmes psychologiques ?"}
+  mini_i02g: {column: i02g, label: "g) Avez-vous continué à boire tout en sachant que cela entraînait chez vous des problèmes de santé ou des problèmes psychologiques ?"}
+  mini_alcohol_dependence_current: {column: i02, label: "Alcohol dependence current: DEPENDANCE ALCOOLIQUE ACTUELLE"}
+  mini_i03a: {column: i03a, label: "I3 a) Avez-vous été plus d’une fois, grisé ou avec la « gueule de bois » alors que vous aviez des choses à faire au travail/à l’école ou à l"}
+  mini_i03b: {column: i03b, label: "b) Vous est-il arrivé d’être plus fois sous l’effet de l’alcool dans une situation où cela était physiquement risqué comme conduire, utilise"}
+  mini_i03c: {column: i03c, label: "c) Avez-vous eu plus d’une fois des problèmes légaux parce que vous aviez b, par exemple une interpellation ou une condamnation ?"}
+  mini_i03d: {column: i03d, label: "d) Avez-vous continué à boire tout en sachant que cela entraînait des problèmes avec votre famille ou d’autres personnes ?"}
+  mini_alcohol_abuse_current: {column: i03, label: "Alcohol abuse current: ABUS D'ALCOOL ACTUEL"}
+
+scores:
+  mini_alcohol_dependence_criteria:
+    label: "Number of the seven criteria of alcohol dependence, last twelve months"
+    sum: [mini_i02a, mini_i02b, mini_i02c, mini_i02d, mini_i02e, mini_i02f, mini_i02g]

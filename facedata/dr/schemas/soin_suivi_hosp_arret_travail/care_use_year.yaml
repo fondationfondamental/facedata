@@ -1,0 +1,78 @@
+instrument: care_use_year
+title: "Use of care and help over the year"
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: HOSPITALISATION COMPLETE
+status: draft
+notes: >
+  Use of care and help over the year, by kind: full-time and day
+  hospitalisation, specialists, emergency department, help received at
+  home and from whom, general practitioner, psychologist, physiotherapist,
+  nurse and other professionals, each with a number of times. Not the BP
+  schema care_use, which is another questionnaire. Filled at inclusion and
+  at the visits of 1, 2 and 4 years: 997 visits (85% to 96% of the
+  inclusions in every period).
+
+  Answers are 1 and 0, or Y and N for the general practitioner. A number of
+  visits is 0 after a no (asked_if). The place of a hospitalisation or of a
+  consultation is stored as a code that the dictionary does not explain
+  (open question O26). The specialties are free texts.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  # Full-time hospitalisation
+  hospitalised_year: {column: hospit, label: "Over the year: hospitalised full time"}
+  hospitalised_year_specialty: {column: hospit_hoterm, type: text, label: "Full-time hospitalisation: specialty, as written"}
+  hospitalised_year_days: {column: hospit_hodur, type: number, unit: days, range: [0, 366], winsor: false, label: "Full-time hospitalisation: duration"}
+  hospitalised_year_place: {column: hospit_lieu, type: category, codes: {"1": code_1, "2": code_2}, label: "Full-time hospitalisation: place (code that the dictionary does not explain)"}
+  # Day hospital
+  day_hospital_year: {column: hospitj, label: "Over the year: day hospital"}
+  day_hospital_year_specialty: {column: hospitj_hoterm, type: text, label: "Day hospital: specialty, as written"}
+  day_hospital_year_days: {column: hospitj_hodur, type: number, unit: days, range: [0, 366], winsor: false, label: "Day hospital: duration"}
+  day_hospital_year_place: {column: hospitj_lieu, type: category, codes: {"1": code_1, "2": code_2}, label: "Day hospital: place (code that the dictionary does not explain)"}
+  # Specialists
+  saw_specialist: {column: medspe, label: "Over the year: saw one or several specialists"}
+  specialist_specialty: {column: medspe_hoterm, type: text, label: "Specialist: specialty, as written"}
+  n_specialist: {column: medspe_nboccur, type: number, range: [0, 365], winsor: false, label: "Specialist: number of consultations"}
+  specialist_place: {column: medspe_lieu, type: category, codes: {"1": code_1, "2": code_2, "3": code_3}, label: "Specialist: place (code that the dictionary does not explain)"}
+  # Emergency department
+  emergency_year: {column: hooccur_csri_urg, label: "Over the year: went to an emergency department"}
+  n_emergency: {column: nboccur_csri_urg, type: number, range: [0, 365], winsor: false, asked_if: emergency_year, label: "Emergency department: number of times"}
+  emergency_which: {column: qui_csri_urg, type: text, label: "Emergency department: which ones, as written"}
+  emergency_ambulance: {column: amb_csri_urg, label: "Emergency department: taken there by ambulance"}
+  # Help received
+  help_personal_care: {column: hooccur_csri_aide_soin, label: "Received help: personal care (dressing, washing)"}
+  help_personal_care_from: {column: qui_csri_aide_soin, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with personal care (dressing, washing): from whom"}
+  help_childcare: {column: hooccur_csri_aide_garde, label: "Received help: childcare"}
+  help_childcare_from: {column: qui_csri_aide_garde, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with childcare: from whom"}
+  help_dependant_care: {column: hooccur_csri_aide_pers, label: "Received help: care of a dependent person"}
+  help_dependant_care_from: {column: qui_csri_aide_pers, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with care of a dependent person: from whom"}
+  help_housework: {column: hooccur_csri_aide_maison, label: "Received help: help in the home (cooking, cleaning)"}
+  help_housework_from: {column: qui_csri_aide_maison, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with help in the home (cooking, cleaning): from whom"}
+  help_outside: {column: hooccur_csri_aide_ext, label: "Received help: help outside (shopping, transport)"}
+  help_outside_from: {column: qui_csri_aide_ext, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with help outside (shopping, transport): from whom"}
+  help_company: {column: hooccur_csri_aide_tenir, label: "Received help: keeping company"}
+  help_company_from: {column: qui_csri_aide_tenir, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Help with keeping company: from whom"}
+  help_other: {column: hooccur_csri_aide_autres, label: "Received another help"}
+  help_other_text: {column: csri_aide_autres_spe, type: text, label: "Other help, as written"}
+  help_other_from: {column: qui_csri_aide_autres, type: category, codes: {"1": mother, "2": father, "3": sibling, "4": child, "5": other_relative, "6": friend, "7": spouse, "8": other}, label: "Other help: from whom"}
+  help_reason: {column: csri_aide_raison, type: category, codes: {"1": physical, "2": psychological, "3": both}, label: "Reason for the help received"}
+  # General practitioner
+  saw_gp: {column: hooccur_csri_med_gen, codes: {Y: 1, N: 0}, label: "Over the year: saw a general practitioner"}
+  n_gp: {column: nboccur_csri_med_gen, type: number, range: [0, 365], winsor: false, label: "General practitioner: number of consultations"}
+  n_different_gp: {column: nbmediff_csri_med_gen, type: number, range: [0, 20], winsor: false, label: "General practitioner: number of different practices"}
+  # Other professionals
+  saw_psychologist: {column: hooccur_csri_psy, label: "Over the year: saw a psychologist or psychotherapist outside the hospital"}
+  n_psychologist: {column: nboccur_csri_psy, type: number, range: [0, 365], winsor: false, asked_if: saw_psychologist, label: "Over the year: number of visits to a psychologist or psychotherapist outside the hospital"}
+  saw_osteopath: {column: hooccur_csri_osteo, label: "Over the year: saw an osteopath"}
+  n_osteopath: {column: nboccur_csri_osteo, type: number, range: [0, 365], winsor: false, asked_if: saw_osteopath, label: "Over the year: number of visits to an osteopath"}
+  saw_physiotherapist: {column: hooccur_csri_kine, label: "Over the year: saw a physiotherapist"}
+  n_physiotherapist: {column: nboccur_csri_kine, type: number, range: [0, 365], winsor: false, asked_if: saw_physiotherapist, label: "Over the year: number of visits to a physiotherapist"}
+  saw_nurse: {column: hooccur_csri_ide, label: "Over the year: saw a nurse in private practice"}
+  n_nurse: {column: nboccur_csri_ide, type: number, range: [0, 365], winsor: false, asked_if: saw_nurse, label: "Over the year: number of visits to a nurse in private practice"}
+  saw_herbalist: {column: hooccur_csri_phyto, label: "Over the year: saw a herbalist"}
+  n_herbalist: {column: nboccur_csri_phyto, type: number, range: [0, 365], winsor: false, asked_if: saw_herbalist, label: "Over the year: number of visits to a herbalist"}
+  saw_social_worker: {column: hooccur_csri_ass_soc, label: "Over the year: saw a social worker"}
+  n_social_worker: {column: nboccur_ass_soc, type: number, range: [0, 365], winsor: false, asked_if: saw_social_worker, label: "Over the year: number of visits to a social worker"}
+  saw_support_group: {column: hooccur_csri_aso_aide, label: "Over the year: saw a support association"}
+  n_support_group: {column: nboccur_aso_aide, type: number, range: [0, 365], winsor: false, asked_if: saw_support_group, label: "Over the year: number of visits to a support association"}

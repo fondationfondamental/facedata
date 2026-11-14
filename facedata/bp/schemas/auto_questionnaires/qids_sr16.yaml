@@ -12,7 +12,15 @@ notes: >
   14, and the highest of the two psychomotor items (15 and 16). This is not
   a sum, so the function qids_total of custom.py computes it. The stored
   total (qidsr120) is exactly this in every row where it exists (19,235); it
-  is stored only when the sixteen items are filled, and so is ours.
+  is stored only when the sixteen items are filled.
+
+  One answer of each pair is enough. The form asks for item 6 or item 7
+  (appetite down or up) and for item 8 or item 9 (weight down or up), not
+  for both. On 99 visits, spread over all the years, the patient did so,
+  and the EMR stores no total. Ours is computed there (19,430 totals
+  against 19,331): the highest of the appetite and weight items that are
+  answered. The other twelve items must all be filled. The rule was found
+  in FACE DR, where the form is filled this way on most visits from 2022.
 
 defaults: {type: item, range: [0, 3]}
 

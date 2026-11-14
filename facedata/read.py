@@ -58,7 +58,7 @@ def prepare_visits(raw):
     is_placeholder = raw["svdtc"].isin(PLACEHOLDER_VISIT_DATES)
     date_text = raw["svdtc"].where(~is_placeholder & (raw["svdtc"] != EMPTY_DATE), "")
     keys["visit_date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
-    keys["siteid"] = raw["siteid"]
+    keys["siteid"] = raw["siteid"].str.zfill(2).where(raw["siteid"] != "", "")     # centre codes have two digits: "4" is "04"
     # Age at the visit, in years. The export gives the date of birth to the month only.
     keys["age"] = np.nan
     if "brthdtc" in raw.columns:

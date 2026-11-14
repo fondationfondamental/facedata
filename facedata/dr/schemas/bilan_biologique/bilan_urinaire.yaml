@@ -1,0 +1,25 @@
+instrument: bilan_urinaire
+title: Urine drug screen
+tab: BILAN BIOLOGIQUE
+section: Bilan Urinaire
+status: draft
+notes: >
+  A urine drug screen: done on 250 of the 831 visits where the question is
+  answered, then four results, 1 for positive and 0 for negative: cannabis
+  (9 positive), benzodiazepines (60), psychostimulants (5) and opiates (7).
+
+  The columns of the psychostimulants and of the opiates hold a number that is
+  not 0 or 1 on 20 and 22 visits (5.1 on five of them): it looks like another
+  urine result typed in these fields. These cells are removed (unparsed or
+  out_of_range; open question O12 in PROGRESS.md).
+
+  A section of the TRD dictionary only.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  urine_test_done: {column: bilan_u, label: "Urine test done"}
+  urine_cannabis: {column: cannab, label: "Urine test: cannabis"}
+  urine_benzodiazepines: {column: bnzdzpn, label: "Urine test: benzodiazepines"}
+  urine_psychostimulants: {column: psychost, label: "Urine test: psychostimulants"}
+  urine_opiates: {column: opiate, label: "Urine test: opiates"}

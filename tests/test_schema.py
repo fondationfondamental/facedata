@@ -32,7 +32,7 @@ def write(folder, name, text):
 
 
 def test_every_schema_of_the_package_is_correct():
-    for cohort in ["bp", "sz"]:
+    for cohort in ["bp", "sz", "dr"]:
         schemas = load_schemas(PACKAGE / cohort / "schemas")
         assert len(schemas) > 0
         problems = check_cohort(schemas)

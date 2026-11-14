@@ -1,0 +1,20 @@
+instrument: baddeley_dual_task
+title: Baddeley dual task
+tab: NEUROPSYCHOLOGIE
+section: DOUBLE TACHE DE BADDELEY
+status: draft
+notes: >
+  Baddeley dual task: the score mu (the performance kept when two tasks
+  are done together, in percent), its z-score and its percentile band. Not
+  in BP or SZ. 353 visits; it fades (56% and 60% of the inclusions until
+  2017, 19% in 2018 to 2020, 2% since).
+
+  22 values of mu are below 0 or above 200 and 15 z-scores are beyond 10:
+  out_of_range. A higher z-score is a better performance.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  dual_task_mu: {column: dtachres, label: "Mu: performance kept in the dual task, in percent of the single tasks", range: [0, 200]}
+  dual_task_mu_z: {column: dtacheca, label: Mu as a z-score (higher is better), range: [-10, 10]}
+  dual_task_mu_band: {column: dtachper, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: Mu as a percentile band}

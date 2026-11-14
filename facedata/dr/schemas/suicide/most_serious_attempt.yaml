@@ -1,0 +1,27 @@
+instrument: most_serious_attempt
+title: "The most serious suicide attempt"
+tab: SUICIDE
+section: Columbia TS la plus grave
+status: draft
+notes: >
+  The BP schema, with codes instead of labels. The method of the most
+  serious attempt, the drugs taken, the consequences and the trigger: 70
+  visits.
+
+  The dictionary gives no code. The method is 1 on 61 visits, 2 on 7 (in
+  BP, sedative drugs 80%, other drugs 13%, cutting 7%), which fits the
+  order of the BP list; the kind of drug and the trigger do not fit it (the
+  second trigger of the BP list, 21% there, is rare here). Each value is
+  delivered as code_N until the lists are known (open question O25).
+
+defaults: {type: category}
+
+variables:
+  serious_method: {column: ltsg01, label: "Method of the most serious attempt (codes that the dictionary does not explain)", codes: {"1": code_1, "2": code_2, "3": code_3}}
+  serious_sedative_type: {column: ltsg02, label: Kind of drug with a sedative effect (code), codes: {"1": code_1, "2": code_2, "3": code_3, "7": code_7, "9": code_9, "10": code_10}}
+  serious_non_sedative_type: {column: ltsg03, label: Kind of drug or substance without a sedative effect (code), codes: {"1": code_1, "2": code_2, "3": code_3, "8": code_8}}
+  serious_sedative_lethality: {column: ltsg04, label: Consequences of the attempt with sedative drugs (code), codes: {"2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6, "7": code_7, "8": code_8}}
+  serious_non_sedative_lethality: {column: ltsg05, label: Consequences of the attempt with other drugs or substances (code), codes: {"1": code_1, "3": code_3, "4": code_4}}
+  serious_cutting_lethality: {column: ltsg06, label: Consequences of the cutting (code), codes: {"1": code_1, "4": code_4}}
+  serious_triggered: {column: ltsg07, type: item, range: [0, 1], missing: {"2": unknown}, label: A precise event seems to have triggered the attempt}
+  serious_trigger: {column: ltsg08, label: Kind of trigger (code), codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "6": code_6, "8": code_8, "10": code_10}}
