@@ -1,0 +1,70 @@
+instrument: wais4_information
+title: WAIS-IV information
+tab: NEUROPSYCHOLOGIE
+section: Information (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  information columns on the WAIS-IV visits (458 visits, from 2014 to
+  2025): 26 items scored 0 or 1. wais3_information.yaml reads the WAIS-III
+  visits. The dictionary files the columns under the WAIS-III.
+
+  The stored raw total is the sum of the 26 items on 452 of 458 visits; it
+  is one point higher on the 6 others (score_mismatch). The first two
+  items are 1 on every visit: the test starts further on and credits them.
+  The z-score is (scaled score - 10) / 3 on every visit.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP does not have this subtest.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais4]}
+
+variables:
+  wais4_info01: {column: infor01_w, label: Information item 1}
+  wais4_info02: {column: infor02_w, label: Information item 2}
+  wais4_info03: {column: infor03_w, label: Information item 3}
+  wais4_info04: {column: infor04_w, label: Information item 4}
+  wais4_info05: {column: infor05_w, label: Information item 5}
+  wais4_info06: {column: infor06_w, label: Information item 6}
+  wais4_info07: {column: infor07_w, label: Information item 7}
+  wais4_info08: {column: infor08_w, label: Information item 8}
+  wais4_info09: {column: infor09_w, label: Information item 9}
+  wais4_info10: {column: infor10_w, label: Information item 10}
+  wais4_info11: {column: infor11_w, label: Information item 11}
+  wais4_info12: {column: infor12_w, label: Information item 12}
+  wais4_info13: {column: infor13_w, label: Information item 13}
+  wais4_info14: {column: infor14_w, label: Information item 14}
+  wais4_info15: {column: infor15_w, label: Information item 15}
+  wais4_info16: {column: infor16_w, label: Information item 16}
+  wais4_info17: {column: infor17_w, label: Information item 17}
+  wais4_info18: {column: infor18_w, label: Information item 18}
+  wais4_info19: {column: infor19_w, label: Information item 19}
+  wais4_info20: {column: infor20_w, label: Information item 20}
+  wais4_info21: {column: infor21_w, label: Information item 21}
+  wais4_info22: {column: infor22_w, label: Information item 22}
+  wais4_info23: {column: infor23_w, label: Information item 23}
+  wais4_info24: {column: infor24_w, label: Information item 24}
+  wais4_info25: {column: infor25_w, label: Information item 25}
+  wais4_info26: {column: infor26_w, label: Information item 26}
+  wais4_info_total_stored: {column: infortot_w, label: Raw total as stored, range: [0, 26], keep: false}
+  wais4_info_scaled: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_info_total}
+  wais4_info_z: {column: inforcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_info_total}
+
+scores:
+  wais4_info_total:
+    label: Information raw total (26 items)
+    sum: [wais4_info01, wais4_info02, wais4_info03, wais4_info04, wais4_info05, wais4_info06,
+          wais4_info07, wais4_info08, wais4_info09, wais4_info10, wais4_info11, wais4_info12,
+          wais4_info13, wais4_info14, wais4_info15, wais4_info16, wais4_info17, wais4_info18,
+          wais4_info19, wais4_info20, wais4_info21, wais4_info22, wais4_info23, wais4_info24,
+          wais4_info25, wais4_info26]
+    min_items: 1
+    compare: wais4_info_total_stored

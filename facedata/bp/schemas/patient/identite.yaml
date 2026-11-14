@@ -16,11 +16,22 @@ notes: >
   The type of disorder holds three values, plus the abbreviations BPNOS and
   TBNOS (one patient each), read as "not otherwise specified".
 
-  Not loaded: subjid (a second patient identifier) and nom_centre (empty);
-  both are in ignored.yaml. usubjid and siteid are key columns. The
-  dictionary also lists armcd and ageu, which are not in the extraction.
+  fondacode (the column subjid) is the patient code of the foundation. A
+  usubjid is a number given inside the cohort: it can change from one
+  extraction to the next for a patient registered in two centres, and 824
+  numbers are also used in FACE SZ for other patients. The fondacode does
+  neither: it is the key to join two extractions or two cohorts (decision
+  D76 in PROGRESS.md). It is a text and never appears in the report.
+
+  Not loaded: nom_centre (empty; in ignored.yaml). usubjid and siteid are
+  key columns. The dictionary also lists armcd and ageu, which are not in
+  the extraction.
 
 variables:
+  fondacode:
+    column: subjid
+    label: Patient code of the foundation, the same in every extraction and unique across the cohorts
+    type: text
   sex:
     label: Sex
     type: category

@@ -19,7 +19,7 @@ VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
                    "doubt", "asked_if", "separator", "parse", "note"}
-SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "reverse", "min_items",
+SCORE_FIELDS = {"sum", "mean", "lookup", "from", "by", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
 VERSION_FIELDS = {"name", "column", "codes", "filled", "level", "follow_up", "by_inclusion_date", "since"}
@@ -100,10 +100,15 @@ def load_schema(path):
                 score[field] = to_number(score[field])
         if isinstance(score.get("winsor"), list):
             score["winsor"] = to_numbers(score["winsor"])
+        if isinstance(score.get("scale"), list):
+            score["scale"] = to_numbers(score["scale"])
         if "range" in score:
             score["range"] = to_numbers(score["range"])
-    if isinstance(schema.get("names"), dict):        # the names table is a file of the cohort folder
-        schema["names"]["path"] = Path(path).parents[2] / schema["names"].get("table", "")
+    if isinstance(schema.get("names"), dict):        # the names table: in the cohort folder, or shared in the package folder
+        cohort_folder = Path(path).parents[2]
+        table = schema["names"].get("table", "")
+        in_cohort = cohort_folder / table
+        schema["names"]["path"] = in_cohort if in_cohort.exists() else cohort_folder.parent / table
     block = schema.get("per_patient")
     if isinstance(block, dict) and isinstance(block.get("columns"), dict):
         for column in block["columns"].values():     # where: each variable with the list of values that fit
@@ -259,9 +264,11 @@ def check_variable(name, variable, schema, columns):
         if version not in version_names(schema):
             problems.append(f"{name}: version '{version}' is not in the version block")
     if "derived_from" in variable:
-        score = schema.get("scores", {}).get(variable["derived_from"], {})
-        if "compare" not in score:
-            problems.append(f"{name}: derived_from must name a score that has compare")
+        source = variable["derived_from"]
+        is_checked_score = "compare" in schema.get("scores", {}).get(source, {})
+        is_other_variable = source in schema["variables"] and source != name
+        if not is_checked_score and not is_other_variable:
+            problems.append(f"{name}: derived_from must name a score that has compare, or another variable")
     if columns is not None:
         for column in raw_columns(schema, variable) + variable.get("unit_columns", []):
             if column not in columns:
@@ -286,6 +293,11 @@ def check_scores(schema):
             problems.append(f"{name}: lookup needs from, the raw score to look up")
         if "minus" in score and "sum" not in score:
             problems.append(f"{name}: minus goes with sum")
+        if "scale" in score:
+            scale = score["scale"]
+            two_numbers = isinstance(scale, list) and len(scale) == 2 and all(isinstance(number, float) for number in scale)
+            if not two_numbers or ("sum" not in score and "mean" not in score):
+                problems.append(f"{name}: scale is [factor, offset], on a score that has sum or mean")
         if "by" in score and "lookup" not in score:
             problems.append(f"{name}: by goes with lookup")
         used = score.get("sum", []) + score.get("mean", []) + score.get("reverse", []) + score.get("minus", [])

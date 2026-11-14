@@ -1,0 +1,36 @@
+instrument: psp
+title: Personal and Social Performance scale (PSP)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire PSP
+status: draft
+notes: >
+  Rated by the clinician at every visit, from 2012 on. Four domains from 0
+  (absent) to 5 (very severe): socially useful activities, personal and
+  social relationships, self-care, disturbing and aggressive behaviours.
+  From them the clinician chooses a band of ten points, then a score from
+  1 to 100 inside it (higher is better).
+
+  The band is coded 1 (100 to 91) to 10 (10 to 1). It is the band of the
+  stored score on 3,047 of 3,262 visits; the custom check psp_band_differs
+  flags the others (check_failed). The values are kept: the cell does not
+  tell which of the two the clinician meant.
+
+  Three scores are outside 1 to 100 (one above 300) and end out_of_range.
+
+defaults: {type: item, range: [0, 5]}
+
+variables:
+  psp_activities: {column: psp01, label: "PSP a: socially useful activities, work and study included (0 absent to 5 very severe)"}
+  psp_relationships: {column: psp02, label: "PSP b: personal and social relationships (0 absent to 5 very severe)"}
+  psp_self_care: {column: psp03, label: "PSP c: self-care (0 absent to 5 very severe)"}
+  psp_aggression: {column: psp04, label: "PSP d: disturbing and aggressive behaviours (0 absent to 5 very severe)"}
+  psp_band: {column: psp05, label: "PSP ten-point band, from 1 (100 to 91) to 10 (10 to 1)", range: [1, 10]}
+  psp_total:
+    column: psp_
+    label: PSP score, from 1 to 100 (higher is better)
+    type: number
+    range: [1, 100]
+    winsor: false
+
+checks:
+  psp_band: psp_band_differs

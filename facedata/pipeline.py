@@ -137,7 +137,7 @@ def run_instrument(raw, keys, schema, limits=None, norms=None):
     flags.append(score_flags)
 
     for name, check in schema.get("checks", {}).items():     # custom checks: True where the row fails
-        failed = getattr(custom, check)(values)
+        failed = getattr(custom, check)(values) & values[name].notna()     # an empty cell is never flagged
         flags.append(make_flags(failed, name, "check_failed", check))
 
     used_limits = {}
@@ -268,8 +268,19 @@ def read_limits(qc):
     return {row["variable"]: (row["winsor_low"], row["winsor_high"]) for index, row in with_limits.iterrows()}
 
 
-def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms"):
-    """Load an extraction with every schema of the folder (or only some instruments)."""
+def with_cohort(table, cohort):
+    """The table with the cohort as its first column, so that the tables of two cohorts can be stacked."""
+    table = table.copy()
+    table.insert(0, "cohort", cohort)
+    return table
+
+
+def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_folder="norms", cohort=None):
+    """Load an extraction with every schema of the folder (or only some instruments).
+
+    cohort: the name written in the column `cohort` of the tables ("bp", "sz"). A usubjid is
+    unique inside a cohort only.
+    """
     raw, keys, visit_flags = prepare_visits(read_extraction(path))
     schemas = load_schemas(schema_folder)
     problems = check_cohort(schemas)
@@ -331,4 +342,8 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
     flags = pd.concat(all_flags, ignore_index=True)
     flags = flags.drop_duplicates(subset=["usubjid", "visit", "variable", "flag"]).reset_index(drop=True)
     data = data.copy()                                   # built column by column: a copy puts it back in one piece
-    return Result(data, patients, flags, pd.concat(all_qc, ignore_index=True), treatments, relatives)
+    qc = pd.concat(all_qc, ignore_index=True)
+    if cohort is not None:
+        data, patients, flags = with_cohort(data, cohort), with_cohort(patients, cohort), with_cohort(flags, cohort)
+        treatments, relatives = with_cohort(treatments, cohort), with_cohort(relatives, cohort)
+    return Result(data, patients, flags, qc, treatments, relatives)

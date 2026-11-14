@@ -1,0 +1,24 @@
+instrument: care_changes
+title: Changes in the non-drug care
+tab: TRAITEMENTS
+section: Modification de la prise en charge non médicamenteuse
+status: draft
+notes: >
+  Asked at inclusion and at follow-up (3,156 visits, 648 yes): did the
+  non-drug care change, and for four approaches whether it started, ended,
+  or both (the cell lists the boxes ticked: one yes/no for "started" and
+  one for "ended"). "Ne sais pas" is a missing code. The details are
+  filled after a yes. The last column is free text and never appears in
+  the report.
+
+variables:
+  care_change: {column: rad_tbpsychoan_modpec_nonmed, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Change in the non-drug care}
+  cbt_started: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Cognitive behavioural approach: started"}
+  cbt_ended: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Cognitive behavioural approach: ended"}
+  cognitive_remediation_started: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Cognitive remediation: started"}
+  cognitive_remediation_ended: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Cognitive remediation: ended"}
+  psychodynamic_started: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Psychodynamic approach: started"}
+  psychodynamic_ended: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Psychodynamic approach: ended"}
+  family_approach_started: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Family approach: started"}
+  family_approach_ended: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Family approach: ended"}
+  care_change_other: {column: prdecod_modpec_autre, type: text, label: "Another change in the non-drug care, as written"}

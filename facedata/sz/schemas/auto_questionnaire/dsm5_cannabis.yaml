@@ -1,0 +1,46 @@
+instrument: dsm5_cannabis
+title: "DSM-5 criteria of a use disorder: cannabis"
+tab: AUTO-QUESTIONNAIRE
+section: "Critères DSM5 de troubles lié à l'usage de: CANNABIS"
+status: draft
+notes: >
+  Twelve criteria of a use disorder for cannabis, answered from 2012 on
+  1,257 visits (863 with one criterion or more). Each criterion is
+  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
+  "do not know", read as a missing code.
+
+  The second question is asked after a yes to the first (asked_if): where
+  it is empty after a "no" it is 0. The extraction mostly writes it.
+
+  The same twelve questions are asked for seven substances, in seven
+  schemas with the same variables (dsm5_alcohol.yaml and the others). The
+  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
+  DSM-IV criterion. No count of criteria is stored, and none is computed.
+
+defaults: {type: item, range: [0, 1], missing: {2: unknown}}
+
+variables:
+  cannabis_larger_amounts: {column: cannaba1, label: "Cannabis, criterion a: took larger amounts than intended, ever"}
+  cannabis_larger_amounts_12m: {column: cannaba2, label: "Cannabis, criterion a: took larger amounts than intended, in the last 12 months", asked_if: cannabis_larger_amounts}
+  cannabis_cut_down: {column: cannabb1, label: "Cannabis, criterion b: tried to cut down or stop, ever"}
+  cannabis_cut_down_12m: {column: cannabb2, label: "Cannabis, criterion b: tried to cut down or stop, in the last 12 months", asked_if: cannabis_cut_down}
+  cannabis_time_spent: {column: cannabc1, label: "Cannabis, criterion c: spends time obtaining, using or recovering, ever"}
+  cannabis_time_spent_12m: {column: cannabc2, label: "Cannabis, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: cannabis_time_spent}
+  cannabis_craving: {column: cannabd1, label: "Cannabis, criterion d: craving, ever"}
+  cannabis_craving_12m: {column: cannabd2, label: "Cannabis, criterion d: craving, in the last 12 months", asked_if: cannabis_craving}
+  cannabis_obligations: {column: cannabe1, label: "Cannabis, criterion e: failed major obligations at work, at home or at school, ever"}
+  cannabis_obligations_12m: {column: cannabe2, label: "Cannabis, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: cannabis_obligations}
+  cannabis_interpersonal: {column: cannabf1, label: "Cannabis, criterion f: went on using in spite of interpersonal consequences, ever"}
+  cannabis_interpersonal_12m: {column: cannabf2, label: "Cannabis, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: cannabis_interpersonal}
+  cannabis_activities_given_up: {column: cannabg1, label: "Cannabis, criterion g: gave up social, occupational or leisure activities, ever"}
+  cannabis_activities_given_up_12m: {column: cannabg2, label: "Cannabis, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: cannabis_activities_given_up}
+  cannabis_hazardous_use: {column: cannabh1, label: "Cannabis, criterion h: repeated use when it can be dangerous, ever"}
+  cannabis_hazardous_use_12m: {column: cannabh2, label: "Cannabis, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: cannabis_hazardous_use}
+  cannabis_despite_problems: {column: cannabi1, label: "Cannabis, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  cannabis_despite_problems_12m: {column: cannabi2, label: "Cannabis, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: cannabis_despite_problems}
+  cannabis_tolerance: {column: cannabj1, label: "Cannabis, criterion j: tolerance, ever"}
+  cannabis_tolerance_12m: {column: cannabj2, label: "Cannabis, criterion j: tolerance, in the last 12 months", asked_if: cannabis_tolerance}
+  cannabis_withdrawal: {column: cannabk1, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  cannabis_withdrawal_12m: {column: cannabk2, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: cannabis_withdrawal}
+  cannabis_legal_problems: {column: cannabl1, label: "Cannabis, criterion l: legal problems linked to the use, ever"}
+  cannabis_legal_problems_12m: {column: cannabl2, label: "Cannabis, criterion l: legal problems linked to the use, in the last 12 months", asked_if: cannabis_legal_problems}

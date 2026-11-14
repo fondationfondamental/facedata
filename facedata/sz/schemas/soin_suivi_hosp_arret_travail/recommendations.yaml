@@ -1,0 +1,22 @@
+instrument: recommendations
+title: Whether the recommendations of the first evaluation were followed
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: Suivi des Recommandations
+status: draft
+notes: >
+  At the follow-up visits (about 2,270): were the recommendations of the
+  first evaluation followed (fully, partly, not), and if not fully, why.
+  Four kinds of recommendation: the drug treatment and the other
+  treatments, as in FACE BP, and two that the SZ form adds, the
+  medico-social and the somatic recommendations. The reason is filled after
+  "partly" or "not followed" (797 of 797 for the drug treatment).
+
+variables:
+  drug_advice_followed: {column: trtmed_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Recommendations on the drug treatment: followed"}
+  drug_advice_reason: {column: trtmed_reason, type: category, codes: {"Refus du patient": patient_refusal, "Désaccord du médecin pratiquant le suivi": physician_disagreement, "Problème de tolérance": tolerance, "Problème de rechute": relapse, "Autres": other}, label: "Drug recommendations not followed: why"}
+  other_advice_followed: {column: trtnmed_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Recommendations on the other treatments: followed"}
+  other_advice_reason: {column: trtnmed_reason, type: category, codes: {"Impossible à mettre en place": not_feasible, "Refus du patient": patient_refusal, "Désaccord avec le médecin pratiquant le suivi": physician_disagreement, "Autres": other}, label: "Other recommendations not followed: why"}
+  medicosocial_advice_followed: {column: medicoso_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Medico-social recommendations: followed"}
+  medicosocial_advice_reason: {column: medicoso_reason, type: category, codes: {"Impossible à mettre en place": not_feasible, "Refus du patient": patient_refusal, "Désaccord avec le médecin pratiquant le suivi": physician_disagreement, "Autres": other}, label: "Medico-social recommendations not followed: why"}
+  somatic_advice_followed: {column: somat_daorres, type: category, codes: {"Complètement suivi": fully, "Partiellement suivi": partly, "Non suivi": not_followed}, label: "Somatic recommendations: followed"}
+  somatic_advice_reason: {column: somat_reason, type: category, codes: {"Refus du patient": patient_refusal, "Désaccord du médecin pratiquant le suivi": physician_disagreement, "Problème de tolérance": tolerance, "Problème de rechute": relapse, "Autres": other}, label: "Somatic recommendations not followed: why"}

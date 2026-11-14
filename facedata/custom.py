@@ -30,6 +30,44 @@ def cgi_index_differs(values):
     return stored.notna() & expected.notna() & (stored != expected)
 
 
+def psp_band_differs(values):
+    """PSP: the ten-point band of the score, from 1 (100 to 91) to 10 (10 to 1).
+
+    True where the stored band is another one.
+    """
+    expected = 11 - np.ceil(values["psp_total"] / 10)
+    stored = values["psp_band"]
+    return stored.notna() & expected.notna() & (stored != expected)
+
+
+def barona_occupation_follows_diploma(values):
+    """Barona estimate: the occupation holds the same place in its list as the diploma.
+
+    The form lists seven occupations and seven diplomas. An occupation that
+    mirrors the diploma (a farmer with a vocational certificate, a retired
+    patient with a general baccalaureate) cannot be told from a copy. True
+    where that is the case.
+    """
+    same_place = {"manual_worker": "no_diploma", "employee": "primary_certificate",
+                  "farmer": "vocational_certificate", "craft_trade": "vocational_baccalaureate",
+                  "retired": "general_baccalaureate", "intermediate": "university_first_cycle",
+                  "higher_professional": "university_higher"}
+    return values["barona_occupation"].map(same_place) == values["barona_education"]
+
+
+def laterality_quotient(values):
+    """Edinburgh inventory: 100 x (right - left) / (right + left) over its ten activities.
+
+    The foot and the eye (lines 11 and 12) are not counted. Missing when a
+    line is missing or when there is no cross at all.
+    """
+    numbers = [str(number).zfill(2) for number in range(1, 11)]
+    right = values[["laterality_" + number + "_right" for number in numbers]].sum(axis=1, min_count=10)
+    left = values[["laterality_" + number + "_left" for number in numbers]].sum(axis=1, min_count=10)
+    crosses = (right + left).where(right + left > 0)
+    return 100 * (right - left) / crosses
+
+
 def body_mass_index(values):
     """Weight in kg divided by the square of the height in metres."""
     return values["weight"] / (values["height"] / 100) ** 2

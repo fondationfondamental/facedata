@@ -1,0 +1,48 @@
+instrument: eating_disorder_v0
+title: Eating disorder at inclusion
+tab: SUBSTANCES ET COMORBIDITE
+section: Trouble du comportement alimentaire
+status: draft
+notes: >
+  Asked at the inclusion visit only (2,147 visits, 219 yes): whether the
+  patient has an eating disorder, which one, whether symptoms were present
+  in the past month and the age at onset. "U" is a missing code.
+
+  The BP schema; the age at onset is in the column agedebutca here. The SZ
+  extraction has no answer at the follow-up visits, so there is no
+  eating_disorder_fu.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  eating_disorder_v0: {column: ceoccurtca, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has an eating disorder, at inclusion"}
+  eating_disorder_type_v0: {column: cedecodtca, type: category, codes: {"Anorexie type restrictive": anorexia_restricting, "Anorexie type boulimie": anorexia_binge_purge, "Boulimie seule": bulimia, "Hyperphagie boulimique": binge_eating, "Night eating syndrome": night_eating, "Trouble des conduites alimentaires non spécifié": unspecified}, label: "Eating disorder: which one, at inclusion"}
+  eating_disorder_last_month_v0: {column: occurtca, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eating disorder: symptoms in the past month, at inclusion"}
+  eating_disorder_onset_age_v0: {column: agedebutca, type: item, range: [0, 90], label: "Eating disorder: age at onset, at inclusion"}

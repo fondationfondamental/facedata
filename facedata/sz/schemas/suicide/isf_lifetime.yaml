@@ -1,0 +1,101 @@
+instrument: isf_lifetime
+title: Suicidal thoughts and acts over the whole life (inclusion visit)
+tab: SUICIDE
+section: Intentionnalité suicidaire (VIE ENTIERE ou depuis la DERNIERE VISITE)
+status: draft
+notes: >
+  Five yes/no questions of rising severity, each followed by "when did it
+  last happen?". Delivered as 1 (yes) and 0 (no). 2,231 inclusion visits.
+
+  Two forms in the same columns, as in FACE BP (BP decision D46; checked on
+  the SZ data, decision D16 in PROGRESS.md). At the inclusion visit the five
+  questions are about the whole life: 64% answer yes to the first and 30%
+  say they have attempted suicide. At the follow-up visits the same columns
+  hold the answers for the time since the last visit: 31% and 2%, and 631
+  of the 665 answers given later by patients who said yes at inclusion are
+  no. The answers to "when did it last happen" differ too: last week, two
+  weeks to a year ago or more than a year ago at inclusion; last week or
+  since the last visit at follow-up. The two forms are two instruments,
+  isf_lifetime and isf_since_visit. visit_form says which form a visit
+  used; it is read from the visit label. The screening rows hold none of
+  these columns.
+
+  27 to 58 "yes" answers per question have no "when".
+
+  The BP schema, unchanged.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, versions: [inclusion]}
+
+variables:
+  isf01_lifetime: {column: isf01, label: "Felt that life is not worth living - ever"}
+  isf01_lifetime_when:
+    column: isf01a
+    type: category
+    label: "Felt that life is not worth living - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre deux semaines et douze mois": two_weeks_to_a_year
+      "Il y a plus d'un an": over_a_year
+  isf02_lifetime: {column: isf02, label: "Wished to be dead - ever"}
+  isf02_lifetime_when:
+    column: isf02a
+    type: category
+    label: "Wished to be dead - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre deux semaines et douze mois": two_weeks_to_a_year
+      "Il y a plus d'un an": over_a_year
+  isf03_lifetime: {column: isf03, label: "Thought of taking own life - ever"}
+  isf03_lifetime_when:
+    column: isf03a
+    type: category
+    label: "Thought of taking own life - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre deux semaines et douze mois": two_weeks_to_a_year
+      "Il y a plus d'un an": over_a_year
+  isf04_lifetime: {column: isf04, label: "Seriously considered or planned suicide - ever"}
+  isf04_lifetime_when:
+    column: isf04a
+    type: category
+    label: "Seriously considered or planned suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre deux semaines et douze mois": two_weeks_to_a_year
+      "Il y a plus d'un an": over_a_year
+  isf05_lifetime: {column: isf05, label: "Attempted suicide - ever"}
+  isf05_lifetime_when:
+    column: isf05a
+    type: category
+    label: "Attempted suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre deux semaines et douze mois": two_weeks_to_a_year
+      "Il y a plus d'un an": over_a_year

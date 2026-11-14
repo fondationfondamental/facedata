@@ -1,0 +1,78 @@
+instrument: substance_fu
+title: Substance use disorders, at follow-up
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles lié à une SUBSTANCE AU COURS DE LA VIE / VISITE
+status: draft
+notes: >
+  The questions of substance_v0 at the follow-up visits, where they are
+  about the time since the last visit (see substance_v0.yaml): 2,311
+  visits, 744 yes to the first question, 55 "Ne sais pas" (missing codes).
+  Eight substances have a box here; the stimulants and the other
+  substances exist at follow-up only.
+
+  The age at onset still describes the whole life, as in BP.
+
+  Three columns are not loaded. chk_substances_type lists the substances
+  in one cell on 540 visits: every one of them is also a yes in its box,
+  and the boxes hold more. sutrt_autre, the name of the other substance,
+  is a copy of sutrt_autre_produit (drug_use.yaml) on every row.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  substance_disorder_fu: {column: rad_tb_subst, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has or has had a substance use disorder, at follow-up"}
+
+  alcohol_disorder_fu: {column: suoccur_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Alcohol: abuse or dependence, at follow-up"}
+  alcohol_last_month_fu: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: symptoms in the past month, at follow-up"}
+  alcohol_onset_age_fu: {column: agedebut_alcool, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Alcohol: age at onset, at follow-up"}
+
+  sedative_disorder_fu: {column: suoccur_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, at follow-up"}
+  sedative_last_month_fu: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: symptoms in the past month, at follow-up"}
+  sedative_onset_age_fu: {column: agedebut_sedatif, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Sedatives, hypnotics, anxiolytics: age at onset, at follow-up"}
+
+  cannabis_disorder_fu: {column: suoccur_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: abuse or dependence, at follow-up"}
+  cannabis_last_month_fu: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: symptoms in the past month, at follow-up"}
+  cannabis_onset_age_fu: {column: agedebut_cannabis, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at onset, at follow-up"}
+
+  stimulant_disorder_fu: {column: suoccur_stimulants, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Stimulants: abuse or dependence, at follow-up"}
+  stimulant_onset_age_fu: {column: agedebut_stimulants, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Stimulants: age at onset, at follow-up"}
+
+  opiate_disorder_fu: {column: suoccur_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Opiates: abuse or dependence, at follow-up"}
+  opiate_last_month_fu: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: symptoms in the past month, at follow-up"}
+  opiate_onset_age_fu: {column: agedebut_opiaces, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Opiates: age at onset, at follow-up"}
+
+  cocaine_disorder_fu: {column: suoccur_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cocaine: abuse or dependence, at follow-up"}
+  cocaine_last_month_fu: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: symptoms in the past month, at follow-up"}
+  cocaine_onset_age_fu: {column: agedebut_cocaine, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cocaine: age at onset, at follow-up"}
+
+  hallucinogen_disorder_fu: {column: suoccur_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Hallucinogens: abuse or dependence, at follow-up"}
+  hallucinogen_onset_age_fu: {column: agedebut_hallucinogenes, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Hallucinogens: age at onset, at follow-up"}
+
+  other_substance_disorder_fu: {column: suoccur_autre, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Another substance: abuse or dependence, at follow-up"}

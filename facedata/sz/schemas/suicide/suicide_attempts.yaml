@@ -1,0 +1,37 @@
+instrument: suicide_attempts
+title: History of suicide attempts
+tab: SUICIDE
+section: Histoire des conduites suicidaires (VIE ENTIERE ou depuis la DERNIERE VISITE)
+status: draft
+notes: >
+  Date of the first attempt, number of attempts, and whether some were
+  violent (firearm, hanging, jump...) or serious (intensive care). Filled
+  mostly at the inclusion visit (641 numbers of attempts at inclusion, 53
+  at follow-up, where the question is about the time since the last visit).
+  Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+
+  Date of the first attempt, at inclusion only: 737 cells. 114 hold the
+  placeholder 1000-01-01, none the 2011-11-11 that BP has (the missing code
+  of the BP schema is kept, it matches nothing). 90 dates are a first of
+  January: only the year was known. 8 dates are after the visit.
+
+  Number of attempts. 67 patients who say they attempted suicide have no
+  number, 5 have the number 0, and one "no" has a number above 0. One
+  number of violent attempts is above the number of attempts.
+
+  The BP schema, unchanged.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  first_attempt_date:
+    column: isf05_qsdtc
+    type: date
+    label: Date of the first suicide attempt
+    range: [1920-01-01, 2026-12-31]
+    missing: {"2011-11-11": not_recorded}
+  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
+  violent_attempts: {column: isf08, label: Has made violent suicide attempts, codes: {Oui: 1, Non: 0}}
+  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}
+  serious_attempts: {column: isf09, label: Has made serious suicide attempts (intensive care), codes: {Oui: 1, Non: 0}}
+  n_serious_attempts: {column: isf09a, label: Number of serious suicide attempts, range: [0, 20]}

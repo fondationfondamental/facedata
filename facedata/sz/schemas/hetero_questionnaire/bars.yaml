@@ -1,0 +1,31 @@
+instrument: bars
+title: Brief Adherence Rating Scale (BARS)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire Brief Adherence Rating Scale BARS
+status: draft
+notes: >
+  Adherence to the treatment over the 30 days before the visit, rated by
+  the clinician at every visit: three questions and a percentage.
+
+  Doses per day. Most answers are 1 to 10. 250 cells hold a number above
+  20 (100 on 193 cells, 50, 999...), two thirds of them in one centre and
+  5% to 15% of the answers of each year since 2018: not a number of doses a
+  day. They end out_of_range.
+
+  The percentage is the clinician's own estimate, as the dictionary says:
+  three values in four are multiples of ten, and it is not a formula of the
+  two numbers of days (it equals the share of days with the treatment
+  taken on 2,675 of 4,283 visits). It is delivered as stored.
+
+defaults: {type: item}
+
+variables:
+  bars_doses_per_day: {column: bars01, label: "Number of prescribed doses per day, as the patient knows it", range: [0, 20]}
+  bars_days_missed: {column: bars02, label: "Days of the last month without the prescribed treatment", range: [0, 31]}
+  bars_days_reduced: {column: bars03, label: "Days of the last month with less than the prescribed dose", range: [0, 31]}
+  bars_adherence:
+    column: bars_
+    label: Adherence over the last month, in percent, as estimated by the clinician
+    type: number
+    range: [0, 100]
+    winsor: false

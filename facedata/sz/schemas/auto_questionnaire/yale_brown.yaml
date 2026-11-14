@@ -1,0 +1,49 @@
+instrument: yale_brown
+title: Yale-Brown Obsessive Compulsive Scale (Y-BOCS)
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire YALEBROWN
+status: draft
+notes: >
+  Y-BOCS, filled from 2015 by the patients with obsessions or
+  compulsions (290 visits): five items for the obsessions and five for the
+  compulsions, each 0 to 4. The dictionary does not name the items; the
+  labels are those of the published scale in its order.
+
+  The stored sub-totals are the sums of the five items on nine visits in
+  ten: 25 and 26 score_mismatch, and 28 on the total.
+
+  Not loaded: ybobse1 to ybobse5 and ybcomp1 to ybcomp5, which the
+  dictionary calls "scores, level" of the same ten items. They equal the
+  item on about 60% of the visits only, and the sub-totals follow the
+  items, not them (ignored.yaml; open question O10 in PROGRESS.md).
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  ybocs_obsessions1: {column: ybobse01, label: "Y-BOCS obsessions, item 1: time occupied (0 none to 4 extreme)"}
+  ybocs_obsessions2: {column: ybobse02, label: "Y-BOCS obsessions, item 2: interference (0 none to 4 extreme)"}
+  ybocs_obsessions3: {column: ybobse03, label: "Y-BOCS obsessions, item 3: distress (0 none to 4 extreme)"}
+  ybocs_obsessions4: {column: ybobse04, label: "Y-BOCS obsessions, item 4: resistance (0 none to 4 extreme)"}
+  ybocs_obsessions5: {column: ybobse05, label: "Y-BOCS obsessions, item 5: control (0 none to 4 extreme)"}
+  ybocs_compulsions1: {column: ybcomp01, label: "Y-BOCS compulsions, item 1: time occupied (0 none to 4 extreme)"}
+  ybocs_compulsions2: {column: ybcomp02, label: "Y-BOCS compulsions, item 2: interference (0 none to 4 extreme)"}
+  ybocs_compulsions3: {column: ybcomp03, label: "Y-BOCS compulsions, item 3: distress (0 none to 4 extreme)"}
+  ybocs_compulsions4: {column: ybcomp04, label: "Y-BOCS compulsions, item 4: resistance (0 none to 4 extreme)"}
+  ybocs_compulsions5: {column: ybcomp05, label: "Y-BOCS compulsions, item 5: control (0 none to 4 extreme)"}
+  ybocs_obsessions_stored: {column: ybobse, label: Obsessions sub-total as stored, range: [0, 20], keep: false}
+  ybocs_compulsions_stored: {column: ybcomp, label: Compulsions sub-total as stored, range: [0, 20], keep: false}
+  ybocs_total_stored: {column: yb, label: Total as stored, range: [0, 40], keep: false}
+
+scores:
+  ybocs_obsessions_total:
+    label: Y-BOCS obsessions sub-total (0 to 20)
+    sum: [ybocs_obsessions1, ybocs_obsessions2, ybocs_obsessions3, ybocs_obsessions4, ybocs_obsessions5]
+    compare: ybocs_obsessions_stored
+  ybocs_compulsions_total:
+    label: Y-BOCS compulsions sub-total (0 to 20)
+    sum: [ybocs_compulsions1, ybocs_compulsions2, ybocs_compulsions3, ybocs_compulsions4, ybocs_compulsions5]
+    compare: ybocs_compulsions_stored
+  ybocs_total:
+    label: Y-BOCS total (0 to 40)
+    sum: [ybocs_obsessions_total, ybocs_compulsions_total]
+    compare: ybocs_total_stored

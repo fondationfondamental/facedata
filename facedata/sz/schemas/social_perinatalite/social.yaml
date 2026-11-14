@@ -1,0 +1,129 @@
+instrument: social
+title: Social situation
+tab: SOCIAL - PERINATALITE
+section: MODULE SOCIAL
+status: draft
+notes: >
+  Marital status, children, education, work, housing and income, at the
+  inclusion visit (about 1,970 visits for the housing).
+
+  Same instrument as in FACE BP with the columns that SZ holds. Three BP
+  names are read otherwise here: the way of living is in the column vie
+  (BP: lvsbjind), with the same list written in words; the age at the
+  first job holds "Jamais travaillé" (149, a missing code: not applicable)
+  and values under a limit (11, censored_left); "-1 an" is "less than a
+  year" in the time in work. The number of children, the months in the
+  present job and the income level are SZ questions.
+
+  Answers are lost (open question O22, to send first). The marital status
+  never holds code 2 (married or living as a couple): it is 1 on 1,652
+  visits, 3 or 4 on 72, and empty on 12% to 20% of the visits of every
+  year, where patients who live in their own family home and have
+  children are found. The source of income never holds code 1 (salary) or
+  code 4 (disability pension): most employed patients have no source. So
+  an empty cell is often a lost answer, and the shares computed from these
+  two variables are wrong.
+
+  A period without data (open question O23). The work status and the
+  source of income are empty on almost every visit from mid-2015 to 2018
+  (137 of 148 visits in 2016, 149 of 153 in 2017) and filled before and
+  after, while the housing and the income level are filled all along.
+
+  empjob, the class of the job, holds one code on 41 rows and is ignored
+  (O2). The education level mixes years and words, as in BP.
+
+variables:
+  marital_status:
+    column: maristat
+    label: Marital status
+    type: category
+    codes: {1: single, 2: couple, 3: separated, 4: divorced, 5: widowed}
+  n_children: {column: biochin, label: Number of children, type: item, range: [0, 10]}
+  education_level:
+    column: edulevel
+    label: Education level reached
+    type: category
+    codes:
+      1: primary_1
+      2: primary_2
+      3: primary_3
+      4: primary_4
+      5: primary_5
+      "Certificat d'études": primary_certificate
+      6: lower_secondary_1
+      7: lower_secondary_2
+      8: lower_secondary_3
+      9: lower_secondary_4
+      10: upper_secondary_1
+      11: upper_secondary_2
+      12: upper_secondary_3
+      13: cap
+      14: bep
+      BAC: bac
+      15: bac_plus_1
+      16: bac_plus_2
+      17: bac_plus_3
+      18: bac_plus_4
+      19: bac_plus_5
+      20: doctorate
+
+  work_status:
+    column: stprof
+    label: Work status
+    type: category
+    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: other, 7: homemaker}
+  job_duration:
+    column: jobdur
+    label: Time in work without a break of more than six months (the employed)
+    type: category
+    codes:
+      "<1 an": under_1_year
+      "-1 an": under_1_year
+      "1 an": 1_year
+      "2 ans": 2_years
+      "3 ans": 3_years
+      "4 ans": 4_years
+      "5 ans": 5_years
+      "6 ans": 6_years
+      "7 ans": 7_years
+      "8 ans": 8_years
+      "9 ans": 9_years
+      "10 ans": 10_years
+      "entre 10 et 20 ans": 10_to_20_years
+      "entre 20 et 30 ans": 20_to_30_years
+  job_full_time: {column: jobclas, label: Full-time job (the employed), type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  job_months: {column: actiftps, label: Months in the present job (the employed), type: number, unit: months, range: [0, 600], winsor: false}
+  first_job_age: {column: profage, label: Age at the first job, type: number, unit: years, range: [10, 70], missing: {"jamais travaillé": not_applicable}, winsor: false}
+
+  living_arrangement:
+    column: vie
+    label: Way of living
+    type: category
+    codes:
+      Seul: alone
+      Chez ses parents: with_parents
+      Dans son propre foyer familial: own_family_home
+      Chez les enfants: with_children
+      Chez de la famille: with_relatives
+      Colocation: shared_flat
+      Collectivité: institution
+      Autres: other
+
+  income_level:
+    column: incmlvl
+    label: Monthly income, all sources
+    type: category
+    codes: {"0-500 euros": 0_to_500, "500-1000 euros": 500_to_1000, "1000-1500 euros": 1000_to_1500, "1500-2000 euros": 1500_to_2000, ">2000 euros": over_2000}
+  income_source:
+    column: saltyp
+    label: Main source of income
+    type: category
+    codes:
+      1: salary
+      2: minimum_income
+      3: disability_allowance
+      4: disability_pension
+      5: unemployment_benefit
+      6: housing_benefit
+      7: none_or_other
+      8: other

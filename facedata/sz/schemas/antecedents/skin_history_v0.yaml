@@ -1,0 +1,70 @@
+instrument: skin_history_v0
+title: Skin history, at inclusion
+tab: ANTECEDENTS
+section: Pathologies dermatologiques
+status: draft
+notes: >
+  Psoriasis is with the auto-immune diseases in the SZ form.
+
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+
+  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
+  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
+  questions are about the whole life. At the follow-up visits a disease
+  answered yes at inclusion is most often answered no (39 of 47 for a head
+  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
+  time since the last visit. The two are delivered as separate columns
+  ending in _v0 and _fu; visit_form says which form a visit used.
+
+  The section is answered at 85% to 95% of the inclusion visits in every
+  year: the fall that BP shows from 2022 is not seen here.
+
+  The SZ form is shorter than the BP one: one question "treated" per
+  disease, and no date of onset and no "controlled". The names are those of
+  BP where the question is the same.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  acne_v0: {column: acne_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne, at inclusion"}
+  acne_treated_v0: {column: acne_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: treated, at inclusion"}
+  acne_lithium_v0: {column: acne_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: triggered or worsened by lithium, at inclusion"}
+  eczema_v0: {column: eczema_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema, at inclusion"}
+  eczema_treated_v0: {column: eczema_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: treated, at inclusion"}
+  drug_eruption_v0: {column: toxidermi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug eruption, at inclusion"}
+  drug_eruption_type_v0: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens Johnson": stevens_johnson}, label: "Drug eruption: kind, at inclusion"}
+  drug_eruption_antibiotic_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 1, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption: caused by an antibiotic, at inclusion"}
+  drug_eruption_nsaid_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 1, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption: caused by an anti-inflammatory drug, at inclusion"}
+  drug_eruption_anticonvulsant_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 1, "Autres médicaments": 0}, label: "Drug eruption: caused by an anticonvulsant, at inclusion"}
+  drug_eruption_other_drug_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 1}, label: "Drug eruption: caused by another drug, at inclusion"}
+  hair_loss_v0: {column: cheveux_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss, at inclusion"}
+  hair_loss_treated_v0: {column: cheveux_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: treated, at inclusion"}
+  hair_loss_valproate_v0: {column: cheveux_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: triggered or worsened by valproate, at inclusion"}

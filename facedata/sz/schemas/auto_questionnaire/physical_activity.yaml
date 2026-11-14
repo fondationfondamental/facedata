@@ -1,0 +1,39 @@
+instrument: physical_activity
+title: Physical activity over the last seven days
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire ACTIVITE PHYSIQUE (ACTPHYS)
+status: draft
+notes: >
+  Physical activity over the last seven days, filled from 2012 (3,247
+  visits): days of vigorous activity, of moderate activity and of walking,
+  the time per day, the walking pace and the time spent sitting.
+
+  Each duration has two fields, hours and minutes, and patients use them
+  in three ways: both (1,575 visits for walking), hours only (615) or
+  minutes only (662), and 25 to 42 cells per field hold 60 minutes or
+  more, a whole duration typed in the minutes. The two fields are
+  delivered as typed; a duration is hours + minutes / 60 where both are
+  read as parts, which the analyst decides. Four values are out of range.
+
+  The dictionary gives the labels of the moderate activity to the two
+  walking durations (ipa0106a, ipa0106b); their fields are those of the
+  walking question. The walking pace (ipa0106c) was empty until the
+  extraction of 13 November 2026 (decision D1 in PROGRESS.md).
+
+defaults: {type: number, winsor: false}
+
+variables:
+  vigorous_days: {column: ipa0101, type: item, label: Days of vigorous physical activity in the last 7 days, range: [0, 7]}
+  vigorous_hours: {column: ipa0102a, label: "Vigorous activity on such a day: the hours typed", range: [0, 24]}
+  vigorous_minutes: {column: ipa0102b, label: "Vigorous activity on such a day: the minutes typed", range: [0, 1440]}
+  moderate_days: {column: ipa0103, type: item, label: Days of moderate physical activity in the last 7 days, range: [0, 7]}
+  moderate_hours: {column: ipa0104a, label: "Moderate activity on such a day: the hours typed", range: [0, 24]}
+  moderate_minutes: {column: ipa0104b, label: "Moderate activity on such a day: the minutes typed", range: [0, 1440]}
+  walking_days: {column: ipa0105, type: item, label: Days with a walk of ten minutes or more in the last 7 days, range: [0, 7]}
+  walking_hours: {column: ipa0106a, label: "Walking on such a day: the hours typed", range: [0, 24]}
+  walking_minutes: {column: ipa0106b, label: "Walking on such a day: the minutes typed", range: [0, 1440]}
+  walking_pace: {column: ipa0106c, type: item, label: "Usual walking pace (1 slow, 2 moderate, 3 brisk)", range: [1, 3]}
+  sitting_weekday_hours: {column: ipa0107a, label: "Time spent sitting on a weekday: the hours typed", range: [0, 24]}
+  sitting_weekday_minutes: {column: ipa0107b, label: "Time spent sitting on a weekday: the minutes typed", range: [0, 1440]}
+  sitting_weekend_hours: {column: ipa0108a, label: "Time spent sitting on a weekend day: the hours typed", range: [0, 24]}
+  sitting_weekend_minutes: {column: ipa0108b, label: "Time spent sitting on a weekend day: the minutes typed", range: [0, 1440]}

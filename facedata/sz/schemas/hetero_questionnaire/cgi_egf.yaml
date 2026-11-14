@@ -1,0 +1,61 @@
+instrument: cgi_egf
+title: "Clinical Global Impression (CGI) and Global Assessment of Functioning (EGF)"
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire CGI-EGF
+status: draft
+notes: >
+  The code 0 means "not assessed" for the severity, the improvement, the
+  therapeutic effect and the efficacy index. It is read as a missing code.
+
+  The efficacy index is (therapeutic effect - 1) x 4 + side effects. A schema
+  cannot write a product, so the custom check cgi_index_differs compares the
+  stored index with that formula: it holds on 2,644 of 2,676 rows, and the
+  32 others get check_failed.
+
+  The EGF is a number from 1 to 100 in every cell: no band of ten points, as
+  some BP cells hold.
+
+  The severity is rated at every visit. The improvement, the therapeutic
+  effect and the side effects are mostly rated at the follow-up visits.
+
+  Same instrument as in FACE BP; the SZ columns are named cgi0101 to
+  cgi0103 where BP has cgi01 to cgi03.
+
+defaults: {type: item}
+
+variables:
+  cgi_severity:
+    column: cgi0101
+    label: "CGI severity of illness, from 1 (normal) to 7 (among the most ill)"
+    range: [1, 7]
+    missing: {0: not_recorded}
+  cgi_improvement:
+    column: cgi0102
+    label: "CGI global improvement, from 1 (very much improved) to 7 (very much worse)"
+    range: [1, 7]
+    missing: {0: not_recorded}
+  cgi_therapeutic_effect:
+    column: cgi0103a
+    label: "CGI therapeutic effect, from 1 (marked) to 4 (unchanged or worse)"
+    range: [1, 4]
+    missing: {0: not_recorded}
+  cgi_side_effects:
+    column: cgi0103b
+    label: "CGI side effects, from 1 (none) to 4 (outweigh the therapeutic effect)"
+    range: [1, 4]
+  cgi_efficacy_index:
+    column: cgi0103
+    label: "CGI efficacy index, from 1 to 16"
+    range: [1, 16]
+    missing: {0: not_recorded}
+  gaf:
+    column: egf
+    label: "Global Assessment of Functioning (EGF), from 1 to 100"
+    type: number
+    range: [1, 100]
+    missing: {0: not_recorded}
+    bands: middle
+    winsor: false
+
+checks:
+  cgi_efficacy_index: cgi_index_differs

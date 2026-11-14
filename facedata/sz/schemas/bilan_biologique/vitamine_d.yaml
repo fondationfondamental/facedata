@@ -1,0 +1,46 @@
+instrument: vitamine_d
+title: Vitamin D
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  25-hydroxyvitamin D, measured from 2013, and three questions that go
+  with it: the time spent outdoors, the skin phototype and a supplement in
+  the last twelve months. The three answers change between the visits of
+  many patients, so they are kept per visit.
+
+  The unit is not recorded: the dictionary gives none, and the unit column
+  (vitd_lborresu) holds one cell. Most centres have a median of 38 to 65,
+  the size of results in nmol/L. One centre has a median of 24 and a third
+  of its results under 30 (2% to 12% elsewhere), the size of results in
+  ng/mL. The value is delivered as written, with no unit: the results of
+  two centres may not be on the same scale (open question O7 in
+  PROGRESS.md).
+
+  11 results are written with "<" (censored_left). Two results of 0 are
+  out of range.
+
+variables:
+  vitamin_d:
+    column: vitd
+    label: 25-hydroxyvitamin D, as written (the unit is not recorded, see the notes)
+    type: number
+    range: [1, 400]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+  time_outdoors:
+    column: vitdext
+    label: "Average time spent outdoors (1 under an hour a week, 2 several hours a week, 3 an hour a day or more, 4 over four hours a day)"
+    type: item
+    range: [1, 4]
+  skin_phototype:
+    column: skinclas
+    label: Skin phototype, from 1 to 6
+    type: item
+    range: [1, 6]
+  vitamin_d_supplement:
+    column: vitdsupp
+    label: Vitamin D supplement in the twelve months before the visit
+    type: item
+    range: [0, 1]
+    codes: {Oui: 1, Non: 0}

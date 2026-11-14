@@ -1,0 +1,102 @@
+instrument: anxiety_v0
+title: Anxiety disorders at inclusion
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles ANXIEUX
+status: draft
+notes: >
+  One yes/no question (does the patient have an anxiety disorder; 2,168
+  inclusion visits, 826 yes), then, from 2012, a tree of questions for the
+  patients answered yes (about 640 visits). Yes/no answers are delivered as
+  1 and 0; "U" is a missing code.
+
+  Another form than in FACE BP (decision D17 in PROGRESS.md). BP ticks one
+  box per disorder. Here each disorder comes after a screening question, in
+  columns that the dictionary does not list (rad_attaq_paniq, rad_peur_*):
+  panic attacks, then panic disorder; fear of agoraphobic situations, then
+  agoraphobia; a social fear, then social phobia; a specific fear, then
+  specific phobia; obsessions, then obsessive-compulsive disorder;
+  compulsions, then a compulsive disorder. The data show the tree: a
+  disorder is filled only after a yes to its screening question (295 of
+  299, 265 of 271, 228 of 231, 152 of 156, 166 of 173, 169 of 172 cells).
+  The labels of the screening questions are read from the column names.
+  Post-traumatic stress, generalised anxiety, anxiety due to a medical
+  condition and the unspecified disorder have no screening question.
+
+  A question that the form did not show after a "no" is delivered as 0
+  (asked_if): no anxiety disorder means none of them, and a "no" to a
+  screening question means no such disorder. The inclusion visits of 2010
+  and 2011 answered yes have no detail: the tree did not exist yet.
+
+  One answer is lost (open question O19). The box "panic disorder with
+  agoraphobia" (ceoccurtroubpanago) holds, on all its 634 rows, the answer
+  to the screening question on agoraphobic fear (rad_peur_agoraphobie),
+  and it is that answer which opens the agoraphobia question. It is
+  ignored. rad_trouble_panique is a copy of the panic disorder without
+  agoraphobia and is ignored too. The two "past month" columns of the panic
+  disorder are read as one, as in BP.
+
+  The ages at onset, which BP has, are not extracted. The same first
+  question at the follow-up visits is in anxiety_fu.yaml.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  anxiety_disorder_v0: {column: rad_tb_anx, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has an anxiety disorder, at inclusion"}
+
+  # Each disorder is asked after a screening question, itself asked after a yes to the first question.
+  panic_attacks_v0: {column: rad_attaq_paniq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: panic attacks, at inclusion"}
+  panic_without_agora_v0: {column: ceoccurtroubpansago, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: panic_attacks_v0, label: "Panic disorder without agoraphobia, at inclusion"}
+  panic_last_month_v0: {column: [occurtroubpansago, occurtroubpanago], type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Panic disorder: symptoms in the past month, at inclusion"}
+  agoraphobic_fear_v0: {column: rad_peur_agoraphobie, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: fear of agoraphobic situations, at inclusion"}
+  agoraphobia_v0: {column: ceoccuragostroubpan, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: agoraphobic_fear_v0, label: "Agoraphobia without panic disorder, at inclusion"}
+  agoraphobia_last_month_v0: {column: occuragostroubpan, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Agoraphobia: symptoms in the past month, at inclusion"}
+  social_fear_v0: {column: rad_peur_sociale, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: fear of social situations, at inclusion"}
+  social_phobia_v0: {column: ceoccurphobiesoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: social_fear_v0, label: "Social phobia, at inclusion"}
+  social_phobia_last_month_v0: {column: occurphobiesoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Social phobia: symptoms in the past month, at inclusion"}
+  specific_fear_v0: {column: rad_peur_specifique, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: a specific fear, at inclusion"}
+  specific_phobia_v0: {column: ceoccurphobie_sp_cifi, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: specific_fear_v0, label: "Specific phobia, at inclusion"}
+  specific_phobia_last_month_v0: {column: occurphobie_sp_cifi, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Specific phobia: symptoms in the past month, at inclusion"}
+  obsessions_v0: {column: rad_peur_obsessionnel, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: obsessions, at inclusion"}
+  ocd_v0: {column: ceoccurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: obsessions_v0, label: "Obsessive-compulsive disorder (asked after the obsessions), at inclusion"}
+  compulsions_v0: {column: rad_peur_compulsif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: compulsions, at inclusion"}
+  compulsive_disorder_v0: {column: rad_trouble_compulsif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: compulsions_v0, label: "Compulsive disorder (asked after the compulsions), at inclusion"}
+  ocd_last_month_v0: {column: occurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Obsessive-compulsive disorder: symptoms in the past month, at inclusion"}
+  ptsd_v0: {column: ceoccurspt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Post-traumatic stress disorder, at inclusion"}
+  ptsd_last_month_v0: {column: occurspt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Post-traumatic stress disorder: symptoms in the past month, at inclusion"}
+  gad_v0: {column: ceoccuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Generalised anxiety disorder (current episode only), at inclusion"}
+  gad_last_month_v0: {column: occuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Generalised anxiety disorder: symptoms in the past month, at inclusion"}
+  anxiety_medical_v0: {column: ceoccurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Anxiety disorder due to a general medical condition, at inclusion"}
+  anxiety_medical_condition_v0: {column: cedecodtroubanxaffmed, type: text, label: "Anxiety due to a medical condition: the condition, as written, at inclusion"}
+  anxiety_medical_last_month_v0: {column: occurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety due to a medical condition: symptoms in the past month, at inclusion"}
+  anxiety_unspecified_v0: {column: ceoccurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Anxiety disorder not otherwise specified, at inclusion"}
+  anxiety_unspecified_last_month_v0: {column: occurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety disorder not otherwise specified: symptoms in the past month, at inclusion"}
+
+  # Asked of every patient, whatever the first answer.
+  adhd_symptoms_v0: {column: ceoccurtdah, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Symptoms of an attention deficit hyperactivity disorder, at inclusion"}

@@ -1,0 +1,212 @@
+instrument: panss
+title: Positive and Negative Syndrome Scale (PANSS)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire Positive and negative Syndrome Scale for Schizophrenia PANSS
+status: draft
+notes: >
+  Rated by the clinician at every visit: 30 items from 1 (absent) to 7
+  (extreme). The columns panss101 to panss107 are P1 to P7, panss108 to
+  panss114 are N1 to N7 and panss115 to panss130 are G1 to G16, as the
+  dictionary says. It gives no label to the items; the labels are those of
+  the published scale. The level 7 is rare on some items and all the other
+  levels occur on every item: no answer is lost.
+
+  The three scales and the total. Each stored score is exactly the sum of
+  its items, on every visit that has it (4,646 to 4,670), in every year. A
+  sum needs all its items.
+
+  The five-factor scores. The extraction stores fifteen of them, five for
+  each of three published models (Wallwork 2012, Lançon 1998, van der Gaag
+  2006). Each stored score was fitted on the 30 items: all fifteen are
+  plain sums of items, exact on the 4,646 complete visits, in every year
+  from 2010. A program computes them (they exist exactly where the items
+  of their formula are filled, also for visits older than the
+  publications); they are not typed. The formulas were then compared with
+  the publications (decision D10 in PROGRESS.md).
+
+  Three stored scores sum a wrong item. They are corrected here: the score
+  delivered follows the publication, and a second score, not delivered,
+  repeats the stored formula so that the stored column is still checked.
+
+  - Wallwork, positive factor. Published: P1, P3, P5, G9 (the table of the
+    paper). Stored: P1, P3, P5, N2. G9 is the 23rd of the 30 items; the
+    formula takes the 9th, which is N2. The two differ on 3,282 of 4,667
+    visits.
+  - Wallwork, negative factor. Published: N1, N2, N3, N4, N6, G7. Stored:
+    N1, N2, N3, N4, N5, G7: N5 in place of N6, one item off. They differ on
+    2,973 of 4,656 visits. With these two slips the stored model counts N2
+    and N5 twice and has 18 items, where the paper has 20, each in one
+    factor.
+  - Lançon, negative factor. Stored: N1, N2, N3, N4, N6, N7, G16. The paper
+    left six items out of its analysis, N7 among them, and kept 24. The
+    stored formulas use 24 items, each once: the 23 others that the paper
+    kept, and N7. The one kept item that they do not use is G7. So the
+    published factor is N1, N2, N3, N4, N6, G7, G16, with G7 where the
+    formula has N7: the letter was mistaken. The two differ on 2,830 of
+    4,660 visits. This rests on the abstract of
+    the paper and on the number of items of each factor, not on its table,
+    which we could not read (open question O5).
+
+  The Wallwork paper reports each factor as the mean of its items; the
+  extraction stores sums, and so does this schema, for the three models
+  alike. A mean is the sum divided by the number of items.
+
+  The twelve other stored scores are delivered with the stored formula.
+  For Wallwork (disorganised, excited, depressed) it is the published one.
+  For Lançon the four other factors fit the paper's count of items per
+  factor; their items could not be read in the paper either. For van der
+  Gaag the stored scores are shorter than the published formula as two
+  later papers quote it: that formula uses the 30 items, some in two or
+  three factors, and subtracts N5 from the positive factor and P2 from the
+  negative one. The stored scores keep 29 of its 45 terms and no
+  subtraction. This is a simpler version of the model, not a slip, and it
+  is delivered as stored; its labels name its items (open question O5).
+  The positive factors of Lançon and van der Gaag are the same sum, and so
+  are the excited factors of Wallwork and van der Gaag.
+
+defaults: {type: item, range: [1, 7]}
+
+variables:
+  panss_p1: {column: panss101, label: "PANSS P1: Delusions"}
+  panss_p2: {column: panss102, label: "PANSS P2: Conceptual disorganisation"}
+  panss_p3: {column: panss103, label: "PANSS P3: Hallucinatory behaviour"}
+  panss_p4: {column: panss104, label: "PANSS P4: Excitement"}
+  panss_p5: {column: panss105, label: "PANSS P5: Grandiosity"}
+  panss_p6: {column: panss106, label: "PANSS P6: Suspiciousness, persecution"}
+  panss_p7: {column: panss107, label: "PANSS P7: Hostility"}
+  panss_n1: {column: panss108, label: "PANSS N1: Blunted affect"}
+  panss_n2: {column: panss109, label: "PANSS N2: Emotional withdrawal"}
+  panss_n3: {column: panss110, label: "PANSS N3: Poor rapport"}
+  panss_n4: {column: panss111, label: "PANSS N4: Passive, apathetic social withdrawal"}
+  panss_n5: {column: panss112, label: "PANSS N5: Difficulty in abstract thinking"}
+  panss_n6: {column: panss113, label: "PANSS N6: Lack of spontaneity and flow of conversation"}
+  panss_n7: {column: panss114, label: "PANSS N7: Stereotyped thinking"}
+  panss_g1: {column: panss115, label: "PANSS G1: Somatic concern"}
+  panss_g2: {column: panss116, label: "PANSS G2: Anxiety"}
+  panss_g3: {column: panss117, label: "PANSS G3: Guilt feelings"}
+  panss_g4: {column: panss118, label: "PANSS G4: Tension"}
+  panss_g5: {column: panss119, label: "PANSS G5: Mannerisms and posturing"}
+  panss_g6: {column: panss120, label: "PANSS G6: Depression"}
+  panss_g7: {column: panss121, label: "PANSS G7: Motor retardation"}
+  panss_g8: {column: panss122, label: "PANSS G8: Uncooperativeness"}
+  panss_g9: {column: panss123, label: "PANSS G9: Unusual thought content"}
+  panss_g10: {column: panss124, label: "PANSS G10: Disorientation"}
+  panss_g11: {column: panss125, label: "PANSS G11: Poor attention"}
+  panss_g12: {column: panss126, label: "PANSS G12: Lack of judgement and insight"}
+  panss_g13: {column: panss127, label: "PANSS G13: Disturbance of volition"}
+  panss_g14: {column: panss128, label: "PANSS G14: Poor impulse control"}
+  panss_g15: {column: panss129, label: "PANSS G15: Preoccupation"}
+  panss_g16: {column: panss130, label: "PANSS G16: Active social avoidance"}
+  panss_positive_stored: {column: panssp, label: "PANSS positive scale, as stored", range: [7, 49], keep: false}
+  panss_negative_stored: {column: panssn, label: "PANSS negative scale, as stored", range: [7, 49], keep: false}
+  panss_general_stored: {column: panssg, label: "PANSS general psychopathology scale, as stored", range: [16, 112], keep: false}
+  panss_total_stored: {column: panss_, label: "PANSS total, as stored", range: [30, 210], keep: false}
+  panss_wallwork_positive_stored: {column: pansspow, label: "Positive factor, Wallwork 2012, as stored", range: [4, 28], keep: false}
+  panss_wallwork_negative_stored: {column: panssnew, label: "Negative factor, Wallwork 2012, as stored", range: [6, 42], keep: false}
+  panss_wallwork_disorganised_stored: {column: panssdiw, label: "Disorganised (concrete) factor, Wallwork 2012, as stored", range: [3, 21], keep: false}
+  panss_wallwork_excited_stored: {column: panssexw, label: "Excited factor, Wallwork 2012, as stored", range: [4, 28], keep: false}
+  panss_wallwork_depressed_stored: {column: panssdew, label: "Depressed factor, Wallwork 2012, as stored", range: [3, 21], keep: false}
+  panss_lancon_positive_stored: {column: pansspol, label: "Positive factor, Lançon 1998, as stored", range: [5, 35], keep: false}
+  panss_lancon_negative_stored: {column: panssnel, label: "Negative factor, Lançon 1998, as stored", range: [7, 49], keep: false}
+  panss_lancon_disorganised_stored: {column: panssdil, label: "Disorganised (cognitive) factor, Lançon 1998, as stored", range: [3, 21], keep: false}
+  panss_lancon_excited_stored: {column: panssexl, label: "Excited factor, Lançon 1998, as stored", range: [5, 35], keep: false}
+  panss_lancon_depressed_stored: {column: panssdel, label: "Depressed factor, Lançon 1998, as stored", range: [4, 28], keep: false}
+  panss_vandergaag_positive_stored: {column: pansspov, label: "Positive factor, van der Gaag 2006, as stored", range: [5, 35], keep: false}
+  panss_vandergaag_negative_stored: {column: panssnev, label: "Negative factor, van der Gaag 2006, as stored", range: [8, 56], keep: false}
+  panss_vandergaag_disorganised_stored: {column: panssdiv, label: "Disorganised factor, van der Gaag 2006, as stored", range: [8, 56], keep: false}
+  panss_vandergaag_excited_stored: {column: panssexv, label: "Excited factor, van der Gaag 2006, as stored", range: [4, 28], keep: false}
+  panss_vandergaag_depressed_stored: {column: panssdev, label: "Emotional distress factor, van der Gaag 2006, as stored", range: [4, 28], keep: false}
+
+scores:
+  panss_positive:
+    label: "PANSS positive scale (P1 to P7, 7 to 49)"
+    sum: [panss_p1, panss_p2, panss_p3, panss_p4, panss_p5, panss_p6, panss_p7]
+    compare: panss_positive_stored
+  panss_negative:
+    label: "PANSS negative scale (N1 to N7, 7 to 49)"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n5, panss_n6, panss_n7]
+    compare: panss_negative_stored
+  panss_general:
+    label: "PANSS general psychopathology scale (G1 to G16, 16 to 112)"
+    sum: [panss_g1, panss_g2, panss_g3, panss_g4, panss_g5, panss_g6, panss_g7, panss_g8,
+          panss_g9, panss_g10, panss_g11, panss_g12, panss_g13, panss_g14, panss_g15, panss_g16]
+    compare: panss_general_stored
+  panss_total:
+    label: "PANSS total (30 items, 30 to 210)"
+    sum: [panss_p1, panss_p2, panss_p3, panss_p4, panss_p5, panss_p6, panss_p7, panss_n1,
+          panss_n2, panss_n3, panss_n4, panss_n5, panss_n6, panss_n7, panss_g1, panss_g2,
+          panss_g3, panss_g4, panss_g5, panss_g6, panss_g7, panss_g8, panss_g9, panss_g10,
+          panss_g11, panss_g12, panss_g13, panss_g14, panss_g15, panss_g16]
+    compare: panss_total_stored
+  panss_wallwork_positive:
+    label: "Positive factor, Wallwork 2012, as published: P1, P3, P5, G9"
+    sum: [panss_p1, panss_p3, panss_p5, panss_g9]
+  panss_wallwork_positive_as_stored:
+    label: "Positive factor, Wallwork 2012, with the items that the extraction sums: P1, P3, P5, N2"
+    sum: [panss_p1, panss_p3, panss_p5, panss_n2]
+    compare: panss_wallwork_positive_stored
+    keep: false
+  panss_wallwork_negative:
+    label: "Negative factor, Wallwork 2012, as published: N1, N2, N3, N4, N6, G7"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n6, panss_g7]
+  panss_wallwork_negative_as_stored:
+    label: "Negative factor, Wallwork 2012, with the items that the extraction sums: N1, N2, N3, N4, N5, G7"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n5, panss_g7]
+    compare: panss_wallwork_negative_stored
+    keep: false
+  panss_wallwork_disorganised:
+    label: "Disorganised (concrete) factor, Wallwork 2012: P2, N5, G11"
+    sum: [panss_p2, panss_n5, panss_g11]
+    compare: panss_wallwork_disorganised_stored
+  panss_wallwork_excited:
+    label: "Excited factor, Wallwork 2012: P4, P7, G8, G14"
+    sum: [panss_p4, panss_p7, panss_g8, panss_g14]
+    compare: panss_wallwork_excited_stored
+  panss_wallwork_depressed:
+    label: "Depressed factor, Wallwork 2012: G2, G3, G6"
+    sum: [panss_g2, panss_g3, panss_g6]
+    compare: panss_wallwork_depressed_stored
+  panss_lancon_positive:
+    label: "Positive factor, Lançon 1998: P1, P3, P5, P6, G9"
+    sum: [panss_p1, panss_p3, panss_p5, panss_p6, panss_g9]
+    compare: panss_lancon_positive_stored
+  panss_lancon_negative:
+    label: "Negative factor, Lançon 1998, as published: N1, N2, N3, N4, N6, G7, G16"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n6, panss_g7, panss_g16]
+  panss_lancon_negative_as_stored:
+    label: "Negative factor, Lançon 1998, with the items that the extraction sums: N1, N2, N3, N4, N6, N7, G16"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n6, panss_n7, panss_g16]
+    compare: panss_lancon_negative_stored
+    keep: false
+  panss_lancon_disorganised:
+    label: "Disorganised (cognitive) factor, Lançon 1998: P2, N5, G10"
+    sum: [panss_p2, panss_n5, panss_g10]
+    compare: panss_lancon_disorganised_stored
+  panss_lancon_excited:
+    label: "Excited factor, Lançon 1998: P4, P7, G4, G8, G14"
+    sum: [panss_p4, panss_p7, panss_g4, panss_g8, panss_g14]
+    compare: panss_lancon_excited_stored
+  panss_lancon_depressed:
+    label: "Depressed factor, Lançon 1998: G1, G2, G3, G6"
+    sum: [panss_g1, panss_g2, panss_g3, panss_g6]
+    compare: panss_lancon_depressed_stored
+  panss_vandergaag_positive:
+    label: "Positive factor, van der Gaag 2006: P1, P3, P5, P6, G9"
+    sum: [panss_p1, panss_p3, panss_p5, panss_p6, panss_g9]
+    compare: panss_vandergaag_positive_stored
+  panss_vandergaag_negative:
+    label: "Negative factor, van der Gaag 2006: N1, N2, N3, N4, N6, G7, G8, G16"
+    sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n6, panss_g7, panss_g8, panss_g16]
+    compare: panss_vandergaag_negative_stored
+  panss_vandergaag_disorganised:
+    label: "Disorganised factor, van der Gaag 2006: P2, N5, N7, G5, G10, G11, G12, G13"
+    sum: [panss_p2, panss_n5, panss_n7, panss_g5, panss_g10, panss_g11, panss_g12, panss_g13]
+    compare: panss_vandergaag_disorganised_stored
+  panss_vandergaag_excited:
+    label: "Excited factor, van der Gaag 2006: P4, P7, G8, G14"
+    sum: [panss_p4, panss_p7, panss_g8, panss_g14]
+    compare: panss_vandergaag_excited_stored
+  panss_vandergaag_depressed:
+    label: "Emotional distress factor, van der Gaag 2006: G2, G3, G4, G6"
+    sum: [panss_g2, panss_g3, panss_g4, panss_g6]
+    compare: panss_vandergaag_depressed_stored

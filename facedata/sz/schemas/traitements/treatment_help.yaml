@@ -1,0 +1,18 @@
+instrument: treatment_help
+title: Help with taking the treatment
+tab: TRAITEMENTS
+section: TRAITEMENTS
+status: draft
+notes: >
+  Who helps the patient take the treatment: nobody, the family, the
+  outpatient clinic or the hospital, a nurse at home. Several boxes can be
+  ticked, so each is one yes/no (4,222 visits, inclusion and follow-up;
+  2,977 alone). The frequency is asked when the clinic or the hospital
+  helps (517 visits).
+
+variables:
+  treatment_help_alone: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 1, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 0}, label: "Taking the treatment: takes the treatment alone"}
+  treatment_help_family: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 1, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 0}, label: "Taking the treatment: helped by the family"}
+  treatment_help_clinic: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 1, "IDE au domicile": 0}, label: "Taking the treatment: helped at the outpatient clinic or the hospital"}
+  treatment_help_nurse: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 1}, label: "Taking the treatment: helped by a nurse at home"}
+  treatment_help_frequency: {column: rad_aide_prise_tt_hospi, type: category, codes: {Quotidienne: daily, Hebdomadaire: weekly, Bimensuelle: fortnightly, Mensuelle: monthly}, label: "Help at the clinic or the hospital: how often"}

@@ -1,0 +1,62 @@
+instrument: wais3_similitudes
+title: WAIS-III similarities
+tab: NEUROPSYCHOLOGIE
+section: Similitudes (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  similarities columns on the WAIS-III visits (569 visits, from 2010 to
+  2016): 19 items scored 0 to 2. wais4_similitudes.yaml reads the WAIS-IV
+  visits. The 19 item columns are not in the dictionary.
+
+  The stored raw total is the sum of the 19 items on 557 of 569 visits; the
+  12 others get score_mismatch. The z-score is (scaled score - 10) / 3 on
+  every visit.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP has no WAIS-III similarities: its WAIS-III battery has the
+  vocabulary test instead.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 2], versions: [wais3]}
+
+variables:
+  wais3_simil01: {column: simil01_w, label: Similarities item 1}
+  wais3_simil02: {column: simil02_w, label: Similarities item 2}
+  wais3_simil03: {column: simil03_w, label: Similarities item 3}
+  wais3_simil04: {column: simil04_w, label: Similarities item 4}
+  wais3_simil05: {column: simil05_w, label: Similarities item 5}
+  wais3_simil06: {column: simil06_w, label: Similarities item 6}
+  wais3_simil07: {column: simil07_w, label: Similarities item 7}
+  wais3_simil08: {column: simil08_w, label: Similarities item 8}
+  wais3_simil09: {column: simil09_w, label: Similarities item 9}
+  wais3_simil10: {column: simil10_w, label: Similarities item 10}
+  wais3_simil11: {column: simil11_w, label: Similarities item 11}
+  wais3_simil12: {column: simil12_w, label: Similarities item 12}
+  wais3_simil13: {column: simil13_w, label: Similarities item 13}
+  wais3_simil14: {column: simil14_w, label: Similarities item 14}
+  wais3_simil15: {column: simil15_w, label: Similarities item 15}
+  wais3_simil16: {column: simil16_w, label: Similarities item 16}
+  wais3_simil17: {column: simil17_w, label: Similarities item 17}
+  wais3_simil18: {column: simil18_w, label: Similarities item 18}
+  wais3_simil19: {column: simil19_w, label: Similarities item 19}
+  wais3_simil_total_stored: {column: similtot_w, label: Raw total as stored, range: [0, 33], keep: false}
+  wais3_simil_scaled: {column: similstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_simil_total}
+  wais3_simil_z: {column: similcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_simil_total}
+
+scores:
+  wais3_simil_total:
+    label: Similarities raw total (19 items)
+    sum: [wais3_simil01, wais3_simil02, wais3_simil03, wais3_simil04, wais3_simil05,
+          wais3_simil06, wais3_simil07, wais3_simil08, wais3_simil09, wais3_simil10,
+          wais3_simil11, wais3_simil12, wais3_simil13, wais3_simil14, wais3_simil15,
+          wais3_simil16, wais3_simil17, wais3_simil18, wais3_simil19]
+    min_items: 1
+    compare: wais3_simil_total_stored

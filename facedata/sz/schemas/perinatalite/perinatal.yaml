@@ -1,0 +1,88 @@
+instrument: perinatal
+title: Birth and perinatal period
+tab: PERINATALITE
+section: PERINATALITE
+status: draft
+notes: >
+  Ages of the parents at the birth of the patient, term, gestational age,
+  type of birth, neonatal admission and birth weight (the BP questions),
+  and four questions that the SZ form adds from 2017: born in a town or in
+  the country, obstetric complications, a viral infection of the mother
+  during the pregnancy, and the events of the pregnancy. Filled at
+  inclusion (about 1,800 visits for the term, 1,048 for the weight, 430 to
+  620 for the questions of 2017).
+
+  Same instrument as in FACE BP, without the birth length, the head
+  circumference and the Apgar scores, which SZ does not have. The birth
+  weight is in the column poidsna, which the dictionary files under the tab
+  SOCIAL - PERINATALITE.
+
+  Missing codes: 999 and 9999 ("does not know") in the ages of the parents,
+  the gestational age and the weight, 0 as in BP, "Ne sais pas", "NC",
+  "NSP" and "DCM". 7 weights under 400 g are out of range (typed in kg or
+  cut). The gestational age holds no value in months here.
+
+  The events of the pregnancy are a list of nine boxes and "none", several
+  of which can be ticked: one yes/no per event. 348 of 469 answers are
+  "none".
+
+variables:
+  mother_age_at_birth:
+    column: agemere
+    label: Age of the mother when the patient was born, in years
+    type: item
+    range: [12, 60]
+    missing: {0: not_recorded, 99: unknown, 999: unknown}
+  father_age_at_birth:
+    column: agepere
+    label: Age of the father when the patient was born, in years
+    type: item
+    range: [12, 90]
+    missing: {0: not_recorded, 99: unknown, 999: unknown}
+  birth_term:
+    column: prembrth
+    label: Term of the birth
+    type: category
+    codes: {"Né à terme": term, "Prématurité": preterm, "Post-maturité": post_term}
+  gestational_age:
+    column: gstabrth
+    label: Gestational age at birth, in weeks of amenorrhoea
+    type: number
+    unit: weeks
+    units:
+      weeks: {factor: 1, expect: [20, 45]}
+      months: {factor: 4.345, expect: [5, 10]}
+    range: [20, 45]
+    missing: {0: not_recorded, 999: unknown, dcm: not_recorded}
+    winsor: false
+  birth_type:
+    column: naisstyp
+    label: Type of birth
+    type: category
+    codes: {"Voie basse": vaginal, "Césarienne": caesarean}
+  neonatal_hospitalisation:
+    column: honeonat
+    label: Was admitted to a neonatal unit
+    type: item
+    range: [0, 1]
+    codes: {Oui: 1, Non: 0}
+  birth_weight:
+    column: poidsna
+    label: Birth weight
+    type: number
+    unit: g
+    range: [400, 6500]
+    missing: {0: not_recorded, 999: unknown, 9999: unknown}
+    winsor: false
+  birth_setting: {column: milieu, label: Born in a town or in the country, type: category, codes: {Urbain: urban, Rural: rural}}
+  obstetric_complications: {column: compnce, label: Obstetric complications at birth, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  maternal_viral_infection: {column: infviral, label: Viral infection of the mother during the pregnancy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  pregnancy_event_death: {column: gesteven, label: "Event during the pregnancy: death of a close person", type: item, range: [0, 1], separator: ",", codes: {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_job_loss: {column: gesteven, label: "Event during the pregnancy: loss of her job", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 1, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_partner_job_loss: {column: gesteven, label: "Event during the pregnancy: loss of the partner's job", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 1, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_separation: {column: gesteven, label: "Event during the pregnancy: separation or divorce", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 1, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_couple: {column: gesteven, label: "Event during the pregnancy: problems in the couple", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 0, 5: 1, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_children: {column: gesteven, label: "Event during the pregnancy: difficulties with her children", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 1, 7: 0, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_money: {column: gesteven, label: "Event during the pregnancy: money problems", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 1, 8: 0, 9: 0, 10: 0}}
+  pregnancy_event_pregnancy: {column: gesteven, label: "Event during the pregnancy: a problem with the pregnancy", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0}}
+  pregnancy_event_move: {column: gesteven, label: "Event during the pregnancy: moving house", type: item, range: [0, 1], separator: ",", codes: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 1, 10: 0}}

@@ -1,0 +1,50 @@
+instrument: cardiovascular_history_fu
+title: Cardiovascular history, at follow-up
+tab: ANTECEDENTS
+section: Pathologies cardio-vasculaires
+status: draft
+notes: >
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  hypertension_fu: {column: hta_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "High blood pressure, at follow-up"}
+  hypertension_treated_fu: {column: hta_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "High blood pressure: treated, at follow-up"}
+  coronary_disease_fu: {column: coronar_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coronary disease, at follow-up"}
+  coronary_disease_treated_fu: {column: coronar_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coronary disease: treated, at follow-up"}
+  myocardial_infarction_fu: {column: infarctus_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Myocardial infarction, at follow-up"}
+  arrhythmia_fu: {column: trbrycard_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Heart rhythm disorder, at follow-up"}
+  arrhythmia_treated_fu: {column: trbrycard_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Heart rhythm disorder: treated, at follow-up"}
+  other_cardiovascular_fu: {column: autcardv_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another cardiovascular disease, at follow-up"}
+  other_cardiovascular_text_fu: {column: autcardv_mhmodify, type: text, label: "Another cardiovascular disease: which one, as written, at follow-up"}

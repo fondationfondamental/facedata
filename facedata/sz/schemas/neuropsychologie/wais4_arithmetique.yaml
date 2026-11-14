@@ -1,0 +1,65 @@
+instrument: wais4_arithmetique
+title: WAIS-IV arithmetic
+tab: NEUROPSYCHOLOGIE
+section: Arithmétique (WAIS-4) nouvelle version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  arithmetic columns on the WAIS-IV visits (451 visits, from 2014 to
+  2025): 22 items scored 0 or 1. wais3_arithmetique.yaml reads the WAIS-III
+  visits.
+
+  The stored raw total is the sum of the 22 items on every visit. The first
+  four items are 1 on every visit: the test starts further on and credits
+  them. The z-score is (scaled score - 10) / 3 on every visit.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP does not have this subtest.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais4]}
+
+variables:
+  wais4_arith01: {column: arith01_w, label: Arithmetic item 1}
+  wais4_arith02: {column: arith02_w, label: Arithmetic item 2}
+  wais4_arith03: {column: arith03_w, label: Arithmetic item 3}
+  wais4_arith04: {column: arith04_w, label: Arithmetic item 4}
+  wais4_arith05: {column: arith05_w, label: Arithmetic item 5}
+  wais4_arith06: {column: arith06_w, label: Arithmetic item 6}
+  wais4_arith07: {column: arith07_w, label: Arithmetic item 7}
+  wais4_arith08: {column: arith08_w, label: Arithmetic item 8}
+  wais4_arith09: {column: arith09_w, label: Arithmetic item 9}
+  wais4_arith10: {column: arith10_w, label: Arithmetic item 10}
+  wais4_arith11: {column: arith11_w, label: Arithmetic item 11}
+  wais4_arith12: {column: arith12_w, label: Arithmetic item 12}
+  wais4_arith13: {column: arith13_w, label: Arithmetic item 13}
+  wais4_arith14: {column: arith14_w, label: Arithmetic item 14}
+  wais4_arith15: {column: arith15_w, label: Arithmetic item 15}
+  wais4_arith16: {column: arith16_w, label: Arithmetic item 16}
+  wais4_arith17: {column: arith17_w, label: Arithmetic item 17}
+  wais4_arith18: {column: arith18_w, label: Arithmetic item 18}
+  wais4_arith19: {column: arith19_w, label: Arithmetic item 19}
+  wais4_arith20: {column: arith20_w, label: Arithmetic item 20}
+  wais4_arith21: {column: arith21_w, label: Arithmetic item 21}
+  wais4_arith22: {column: arith22_w, label: Arithmetic item 22}
+  wais4_arith_total_stored: {column: arithtot_w, label: Raw total as stored, range: [0, 22], keep: false}
+  wais4_arith_scaled: {column: arithstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_arith_total}
+  wais4_arith_z: {column: arithcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_arith_total}
+
+scores:
+  wais4_arith_total:
+    label: Arithmetic raw total (22 items)
+    sum: [wais4_arith01, wais4_arith02, wais4_arith03, wais4_arith04, wais4_arith05,
+          wais4_arith06, wais4_arith07, wais4_arith08, wais4_arith09, wais4_arith10,
+          wais4_arith11, wais4_arith12, wais4_arith13, wais4_arith14, wais4_arith15,
+          wais4_arith16, wais4_arith17, wais4_arith18, wais4_arith19, wais4_arith20,
+          wais4_arith21, wais4_arith22]
+    min_items: 1
+    compare: wais4_arith_total_stored

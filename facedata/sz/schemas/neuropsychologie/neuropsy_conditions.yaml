@@ -1,0 +1,50 @@
+instrument: neuropsy_conditions
+title: Conditions of the neuropsychological assessment
+tab: NEUROPSYCHOLOGIE
+section: Critères cliniques (nouvelle version)
+status: draft
+notes: >
+  The first lines of the neuropsychology form: who the patient is on the day
+  of the testing, and whether the tests can be given.
+
+  Filled from 2010 to 2016 only (781 visits), although the tests themselves
+  go on to 2026 (about 3,400 visits). From 2017 the age and the years of
+  education entered by the psychologist are therefore missing; the norms of
+  the tests were read with them. Education is counted in years from the
+  first year of primary school.
+
+  The yes/no criteria are delivered as 1 (yes) and 0 (no). "Ne sais pas" is
+  a missing code.
+
+  Same instrument as in FACE BP, but not the same form. Two questions sit
+  in the columns of two other BP questions and have names of their own
+  here: cclin05_ is "clinical state compatible with the testing" (in BP:
+  patient euthymic) and cclin11_ is "no electroconvulsive therapy in the
+  last six months" (in BP: in the past year). Three questions exist here
+  only: a psychotropic treatment, a suspected learning disorder and its
+  kind (43 visits, mostly dyslexia). The handedness, the hour of the
+  testing and the entry date of the form, which BP has, are not in the SZ
+  extraction; the laterality has its own questionnaire here.
+
+defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+
+variables:
+  neuropsy_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years)", range: [15, 100], winsor: false}
+  neuropsy_french_fluent: {column: cclin03_, label: Sufficient command of French}
+  neuropsy_mood_rating_delay:
+    column: cclin04_
+    type: category
+    label: Time since the last rating of the mood state
+    codes: {"Moins d'une semaine": under_a_week, "Plus d'une semaine": over_a_week}
+  neuropsy_state_compatible: {column: cclin05_, label: Clinical state compatible with the cognitive tests}
+  education_years: {column: cclin08_, type: number, label: Years of education, range: [0, 30], winsor: false}
+  neuropsy_no_visual_disorder: {column: cclin09_, label: No colour blindness or disabling visual disorder}
+  neuropsy_no_hearing_disorder: {column: cclin10_, label: No uncorrected hearing disorder}
+  neuropsy_no_ect_6_months: {column: cclin11_, label: No electroconvulsive therapy in the last six months}
+  neuropsy_psychotropic_treatment: {column: cclin12_, label: Takes a psychotropic treatment}
+  neuropsy_learning_disorder: {column: cclin16_, label: A learning disorder is suspected}
+  neuropsy_learning_disorder_kind:
+    column: cclin16a_
+    type: category
+    label: Kind of learning disorder
+    codes: {Dyslexie: dyslexia, Dysphasie: dysphasia, Dyspraxie: dyspraxia, Dysgraphie: dysgraphia}

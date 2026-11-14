@@ -3,7 +3,8 @@
 Python package that loads, harmonises and quality-checks FACE cohort
 extractions. One module per cohort; FACE BP first, tab by tab, instrument by
 instrument. Specs live in `docs/` and are the source of truth:
-`docs/ARCHITECTURE.md`, `docs/SCHEMA_SPEC.md`, `docs/bp/PROGRESS.md`.
+`docs/ARCHITECTURE.md`, `docs/SCHEMA_SPEC.md`, `docs/bp/PROGRESS.md`,
+`docs/sz/PROGRESS.md`.
 
 ## Code style
 
@@ -44,4 +45,5 @@ instrument. Specs live in `docs/` and are the source of truth:
   the extraction stores them in the same raw columns.
 - The thesaurus only seeds a schema. Its labels and formulas can be wrong;
   check every scoring formula and column meaning against the data.
-- Log each decision and each open question in `docs/bp/PROGRESS.md`.
+- Log each decision and each open question in the progress file of the
+  cohort (`docs/bp/PROGRESS.md`, `docs/sz/PROGRESS.md`).

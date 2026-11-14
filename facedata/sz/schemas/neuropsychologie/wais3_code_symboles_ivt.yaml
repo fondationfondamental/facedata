@@ -1,0 +1,31 @@
+instrument: wais3_code_symboles_ivt
+title: WAIS-III coding
+tab: NEUROPSYCHOLOGIE
+section: Code (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  coding columns on the WAIS-III visits (572 visits, from 2010 to 2016);
+  wais4_code_symboles_ivt.yaml reads the WAIS-IV visits.
+
+  The raw score is the boxes filled minus the boxes filled incorrectly on
+  every visit, and the z-score is (scaled score - 10) / 3 on 570 of 572.
+
+  Same instrument as in FACE BP, reduced to the coding subtest, in columns
+  named sdmt01... The symbol search and the processing speed index of the
+  WAIS-III are not in the SZ extraction.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais3]}
+
+variables:
+  wais3_code_filled: {column: sdmt0104_w, label: Coding - boxes filled, range: [0, 133]}
+  wais3_code_errors: {column: sdmt0102_w, label: Coding - boxes filled incorrectly, range: [0, 133]}
+  wais3_code_raw: {column: sdmt0103_w, label: Coding - raw score, range: [0, 133]}
+  wais3_code_scaled: {column: sdmt0101_w, label: Coding - age-scaled score, range: [1, 19]}
+  wais3_code_z: {column: sdmt0105_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}

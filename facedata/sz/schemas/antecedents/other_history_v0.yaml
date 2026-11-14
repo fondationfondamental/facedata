@@ -1,0 +1,62 @@
+instrument: other_history_v0
+title: Other medical history, at inclusion
+tab: ANTECEDENTS
+section: Autres pathologies
+status: draft
+notes: >
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+
+  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
+  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
+  questions are about the whole life. At the follow-up visits a disease
+  answered yes at inclusion is most often answered no (39 of 47 for a head
+  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
+  time since the last visit. The two are delivered as separate columns
+  ending in _v0 and _fu; visit_form says which form a visit used.
+
+  The section is answered at 85% to 95% of the inclusion visits in every
+  year: the fall that BP shows from 2022 is not seen here.
+
+  The SZ form is shorter than the BP one: one question "treated" per
+  disease, and no date of onset and no "controlled". The names are those of
+  BP where the question is the same.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  cancer_v0: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at inclusion"}
+  hiv_v0: {column: vih_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection, at inclusion"}
+  hiv_treated_v0: {column: vih_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: treated, at inclusion"}
+  chronic_viral_hepatitis_v0: {column: hvc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis, at inclusion"}
+  chronic_viral_hepatitis_virus_v0: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite D": hepatitis_d, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: which virus, at inclusion"}
+  chronic_viral_hepatitis_treated_v0: {column: hvc_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: treated, at inclusion"}
+  genetic_disease_v0: {column: genetique_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Genetic disease, at inclusion"}
+  genetic_disease_text_v0: {column: genetique_mhmodify, type: text, label: "Genetic disease: which one, as written, at inclusion"}

@@ -96,6 +96,15 @@ def test_the_tiny_extraction_end_to_end(folder):
     assert qc.loc["glucose", "n_cens_left"] == 1 and qc.loc["glucose", "out_of_range"] == 1
 
 
+def test_the_cohort_is_the_first_column_of_every_table(folder):
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas", cohort="demo")
+    for table in [result.data, result.patients, result.flags, result.treatments, result.relatives]:
+        assert table.columns[0] == "cohort" and set(table["cohort"]) <= {"demo"}
+    assert "cohort" not in result.qc.columns                      # the QC table has one line per variable
+    without = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    assert "cohort" not in without.data.columns
+
+
 def test_nothing_disappears_silently(folder):
     """The invariant: every filled raw cell ends as a value or as a flag."""
     raw, keys, visit_flags = prepare_visits(read_extraction(folder / "extraction.tsv"))
@@ -263,6 +272,12 @@ def test_a_custom_check_flags_its_variable(folder, monkeypatch):
     result = run_cohort(folder / "extraction.tsv", folder / "schemas")
     assert ("P1", "V6_mois", "check_failed") in flags_of(result, "it1")
     assert result.data["it1"][1] == 4                        # the value is kept
+
+    # The same function named for another variable: its cell is empty on that row, so no flag.
+    path.write_text(SCHEMA + "checks:\n  it1: first_item_above_two\n  it2: first_item_above_two\n", encoding="utf-8")
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    assert ("P1", "V6_mois", "check_failed") in flags_of(result, "it1")
+    assert ("P1", "V6_mois", "check_failed") not in flags_of(result, "it2")
 
     path.write_text(SCHEMA + "checks:\n  it1: no_such_function\n", encoding="utf-8")
     with pytest.raises(ValueError, match="no function 'no_such_function'"):

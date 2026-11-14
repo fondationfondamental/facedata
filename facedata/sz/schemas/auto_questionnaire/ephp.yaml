@@ -1,0 +1,60 @@
+instrument: ephp
+title: EPHP, assessment of the processes of psychic handicap
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire EPHP
+status: draft
+notes: >
+  EPHP, filled from 2013 (1,798 visits): 13 items from 0 (great
+  difficulty) to 6 (no difficulty), in four domains.
+
+  The code 7 is "cannot be assessed": 377 cells, read as a missing code.
+
+  Scores. The four stored sub-scores are the sums of their items (1 to 4,
+  5 to 8, 9 to 11, 12 and 13), and the total is their sum: 1 to 4
+  score_mismatch each. A sum needs all its items. On the 225 visits with a
+  7 the EMR still stores a total, computed in a way that the data do not
+  show; no score is delivered there.
+
+defaults: {type: item, range: [0, 6], missing: {7: not_applicable}}
+
+variables:
+  ephp01: {label: "EPHP item 1 (0 great difficulty to 6 no difficulty)"}
+  ephp02: {label: "EPHP item 2 (0 great difficulty to 6 no difficulty)"}
+  ephp03: {label: "EPHP item 3 (0 great difficulty to 6 no difficulty)"}
+  ephp04: {label: "EPHP item 4 (0 great difficulty to 6 no difficulty)"}
+  ephp05: {label: "EPHP item 5 (0 great difficulty to 6 no difficulty)"}
+  ephp06: {label: "EPHP item 6 (0 great difficulty to 6 no difficulty)"}
+  ephp07: {label: "EPHP item 7 (0 great difficulty to 6 no difficulty)"}
+  ephp08: {label: "EPHP item 8 (0 great difficulty to 6 no difficulty)"}
+  ephp09: {label: "EPHP item 9 (0 great difficulty to 6 no difficulty)"}
+  ephp10: {label: "EPHP item 10 (0 great difficulty to 6 no difficulty)"}
+  ephp11: {label: "EPHP item 11 (0 great difficulty to 6 no difficulty)"}
+  ephp12: {label: "EPHP item 12 (0 great difficulty to 6 no difficulty)"}
+  ephp13: {label: "EPHP item 13 (0 great difficulty to 6 no difficulty)"}
+  ephp_cognition_stored: {column: ephp14, type: number, label: EPHP cognitive abilities as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
+  ephp_motivation_stored: {column: ephp15, type: number, label: EPHP motivation as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
+  ephp_social_cognition_stored: {column: ephp16, type: number, label: EPHP communication and understanding of others as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
+  ephp_self_assessment_stored: {column: ephp17, type: number, label: EPHP self-assessment of abilities and asking for help as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
+  ephp_total_stored: {column: ephp_, type: number, label: EPHP total as stored, range: [0, 100], winsor: false, keep: false, missing: {}}
+
+scores:
+  ephp_cognition:
+    label: "EPHP cognitive abilities (items 1 to 4, 0 to 24)"
+    sum: [ephp01, ephp02, ephp03, ephp04]
+    compare: ephp_cognition_stored
+  ephp_motivation:
+    label: "EPHP motivation (items 5 to 8, 0 to 24)"
+    sum: [ephp05, ephp06, ephp07, ephp08]
+    compare: ephp_motivation_stored
+  ephp_social_cognition:
+    label: "EPHP communication and understanding of others (items 9 to 11, 0 to 18)"
+    sum: [ephp09, ephp10, ephp11]
+    compare: ephp_social_cognition_stored
+  ephp_self_assessment:
+    label: "EPHP self-assessment of abilities and asking for help (items 12 to 13, 0 to 12)"
+    sum: [ephp12, ephp13]
+    compare: ephp_self_assessment_stored
+  ephp_total:
+    label: "EPHP total (13 items, 0 to 78, higher is less handicap)"
+    sum: [ephp_cognition, ephp_motivation, ephp_social_cognition, ephp_self_assessment]
+    compare: ephp_total_stored

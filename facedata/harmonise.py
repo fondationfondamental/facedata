@@ -264,7 +264,8 @@ def doubt_period(values, dates, name, doubt):
 def combine_items(values, score, schema):
     """A score that is the sum or the mean of its items, some of them reversed first.
 
-    minus: variables subtracted from a sum. floor: the lowest value the score can take.
+    minus: variables subtracted from a sum. scale: [factor, offset], applied to the
+    sum or the mean. floor: the lowest value the score can take.
     """
     items = score.get("sum") or score.get("mean")
     table = values[items].copy()
@@ -277,6 +278,9 @@ def combine_items(values, score, schema):
         taken_off = values[score["minus"]]
         enough = enough & taken_off.notna().all(axis=1)
         result = result - taken_off.sum(axis=1)
+    if "scale" in score:
+        factor, offset = score["scale"]
+        result = result * factor + offset
     if "floor" in score:
         result = result.clip(lower=score["floor"])
     return result.where(enough)
@@ -369,8 +373,13 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
     for name, variable in schema["variables"].items():
         if "derived_from" in variable:
             source = variable["derived_from"]
-            doubtful = values[name].notna() & stored_differs[source]
-            flags.append(make_flags(doubtful, name, "derived_doubt", "the stored score it comes from differs from " + source))
+            if source in stored_differs:                 # a score: its stored value is wrong
+                doubtful = values[name].notna() & stored_differs[source]
+                detail = "the stored score it comes from differs from " + source
+            else:                                        # a variable: it is empty
+                doubtful = values[name].notna() & values[source].isna()
+                detail = "the value it comes from, " + source + ", is empty"
+            flags.append(make_flags(doubtful, name, "derived_doubt", detail))
     return values, stack_flags(flags)
 
 

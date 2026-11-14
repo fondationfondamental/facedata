@@ -1,0 +1,75 @@
+instrument: fnart
+title: French National Adult Reading Test (fNART)
+tab: NEUROPSYCHOLOGIE
+section: fNART
+status: draft
+notes: >
+  Reading aloud of 40 irregular French words, each scored correct or
+  incorrect: an estimate of the premorbid IQ. 686 visits from 2010 to 2016,
+  all with the old neuropsychological form; the test is not in the form
+  that replaced it.
+
+  The total is the number of words read correctly: recomputed here, it
+  equals the stored total on the 684 visits that have the 40 words. The
+  three estimated IQs (full scale, verbal, performance) are each an exact
+  straight line of the total, on all 685 visits; they are delivered as
+  stored, and doubted where the stored total is not the number of correct
+  words. The dictionary does not give the three equations.
+
+defaults: {type: item, range: [0, 1], codes: {Correct: 1, Incorrect: 0}}
+
+variables:
+  fnart_01: {column: fnart01_, label: fNART word 1 read correctly}
+  fnart_02: {column: fnart02_, label: fNART word 2 read correctly}
+  fnart_03: {column: fnart03_, label: fNART word 3 read correctly}
+  fnart_04: {column: fnart04_, label: fNART word 4 read correctly}
+  fnart_05: {column: fnart05_, label: fNART word 5 read correctly}
+  fnart_06: {column: fnart06_, label: fNART word 6 read correctly}
+  fnart_07: {column: fnart07_, label: fNART word 7 read correctly}
+  fnart_08: {column: fnart08_, label: fNART word 8 read correctly}
+  fnart_09: {column: fnart09_, label: fNART word 9 read correctly}
+  fnart_10: {column: fnart10_, label: fNART word 10 read correctly}
+  fnart_11: {column: fnart11_, label: fNART word 11 read correctly}
+  fnart_12: {column: fnart12_, label: fNART word 12 read correctly}
+  fnart_13: {column: fnart13_, label: fNART word 13 read correctly}
+  fnart_14: {column: fnart14_, label: fNART word 14 read correctly}
+  fnart_15: {column: fnart15_, label: fNART word 15 read correctly}
+  fnart_16: {column: fnart16_, label: fNART word 16 read correctly}
+  fnart_17: {column: fnart17_, label: fNART word 17 read correctly}
+  fnart_18: {column: fnart18_, label: fNART word 18 read correctly}
+  fnart_19: {column: fnart19_, label: fNART word 19 read correctly}
+  fnart_20: {column: fnart20_, label: fNART word 20 read correctly}
+  fnart_21: {column: fnart21_, label: fNART word 21 read correctly}
+  fnart_22: {column: fnart22_, label: fNART word 22 read correctly}
+  fnart_23: {column: fnart23_, label: fNART word 23 read correctly}
+  fnart_24: {column: fnart24_, label: fNART word 24 read correctly}
+  fnart_25: {column: fnart25_, label: fNART word 25 read correctly}
+  fnart_26: {column: fnart26_, label: fNART word 26 read correctly}
+  fnart_27: {column: fnart27_, label: fNART word 27 read correctly}
+  fnart_28: {column: fnart28_, label: fNART word 28 read correctly}
+  fnart_29: {column: fnart29_, label: fNART word 29 read correctly}
+  fnart_30: {column: fnart30_, label: fNART word 30 read correctly}
+  fnart_31: {column: fnart31_, label: fNART word 31 read correctly}
+  fnart_32: {column: fnart32_, label: fNART word 32 read correctly}
+  fnart_33: {column: fnart33_, label: fNART word 33 read correctly}
+  fnart_34: {column: fnart34_, label: fNART word 34 read correctly}
+  fnart_35: {column: fnart35_, label: fNART word 35 read correctly}
+  fnart_36: {column: fnart36_, label: fNART word 36 read correctly}
+  fnart_37: {column: fnart37_, label: fNART word 37 read correctly}
+  fnart_38: {column: fnart38_, label: fNART word 38 read correctly}
+  fnart_39: {column: fnart39_, label: fNART word 39 read correctly}
+  fnart_40: {column: fnart40_, label: fNART word 40 read correctly}
+  fnart_total_stored: {column: fnartot_, label: "Number of words read correctly, as stored", range: [0, 40], keep: false}
+  fnart_qit: {column: fnarqit_, label: Full-scale IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
+  fnart_qiv: {column: fnarqiv_, label: Verbal IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
+  fnart_qip: {column: fnarqip_, label: Performance IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
+
+scores:
+  fnart_total:
+    label: Number of words read correctly (0 to 40)
+    sum: [fnart_01, fnart_02, fnart_03, fnart_04, fnart_05, fnart_06, fnart_07, fnart_08,
+          fnart_09, fnart_10, fnart_11, fnart_12, fnart_13, fnart_14, fnart_15, fnart_16,
+          fnart_17, fnart_18, fnart_19, fnart_20, fnart_21, fnart_22, fnart_23, fnart_24,
+          fnart_25, fnart_26, fnart_27, fnart_28, fnart_29, fnart_30, fnart_31, fnart_32,
+          fnart_33, fnart_34, fnart_35, fnart_36, fnart_37, fnart_38, fnart_39, fnart_40]
+    compare: fnart_total_stored

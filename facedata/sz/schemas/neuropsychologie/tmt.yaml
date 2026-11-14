@@ -1,0 +1,121 @@
+instrument: tmt
+title: Trail Making Test, parts A and B
+tab: NEUROPSYCHOLOGIE
+section: TMT
+status: draft
+notes: >
+  Times and errors, their z-scores and their percentile bands, for part A,
+  part B and the difference B minus A. The BP schema, where the notes give
+  the rules and their evidence (decisions D13, D38, D42 and D43 of the BP
+  file); what follows is what the SZ data show.
+
+  Columns. The two times are in tmt0101_ and tmt0102_ (tmta01_ and tmtb01_
+  in BP); the other columns have the BP names.
+
+  Percentile bands of the times. As in BP the three columns mix plain
+  numbers, bands and one-sided classes; they are read as bands.
+
+  Percentile bands of the errors. The four error percentile columns are not
+  read (ignored.yaml): they were written with three rules over the years,
+  as in BP (">95", then ">5", ">10" or ">25", then "<5" for the same
+  result). The bands are read again in the norm tables, from the number of
+  errors, the age and the years of education. But the years of education
+  (cclin08_) are recorded until 2015 only: the form that holds them stops
+  then. So the four bands exist on about 700 visits, almost all before
+  2016, and about 2,300 visits per band get norm_missing (open question O11
+  in PROGRESS.md). The tables are files of the norms folder, which is not
+  in the repository.
+
+  Z-scores. One centre wrote five z-scores with the opposite sign in 2011
+  and 2012 (23 visits each; sign_flipped, and 11 sign_doubt). After that the
+  rank correlation between a time and its z-score is -0.93 to -0.97 in
+  every year from 2013 (-0.78 and -0.85 in 2011 and 2012).
+
+  Missing codes. "DCM" is written in 27 cells of part B (a missing-data
+  code of this cohort), and "Non applicable" in about 100 to 200 cells of
+  each z-score: missing codes. A few cells hold text ("5'30", "x") and stay
+  unparsed.
+
+  The stored B-A time and B-A error difference are delivered as stored. The
+  two check scores differ on 8 and 5 visits (score_mismatch).
+
+sign:
+  relation: negative
+  by: siteid
+  pairs:
+    tmt_a_time_z: tmt_a_time
+    tmt_b_time_z: tmt_b_time
+    tmt_ba_time_z: tmt_ba_time
+    tmt_a_errors_z: [tmt_a_errors_corrected, tmt_a_errors_uncorrected]
+    tmt_b_errors_z: [tmt_b_errors_corrected, tmt_b_errors_uncorrected]
+
+defaults: {type: item}
+
+variables:
+  # Part A
+  tmt_a_time:               {column: tmt0101_, label: Part A - time, type: number, unit: s, range: [10, 300]}
+  tmt_a_errors_corrected:   {column: tmta03_,  label: Part A - corrected errors,   range: [0, 10]}
+  tmt_a_errors_uncorrected: {column: tmta04_,  label: Part A - uncorrected errors, range: [0, 10]}
+  tmt_a_time_z:             {column: tmta01b_, label: Part A - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_a_errors_z:           {column: tmta02b_, label: Part A - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+  # Part B
+  tmt_b_time:
+    column: tmt0102_
+    label: Part B - time
+    type: number
+    unit: s
+    range: [15, 600]
+    missing: {impossible: not_applicable, arret: not_applicable, arrêt: not_applicable, dcm: not_recorded}
+  tmt_b_errors_corrected:     {column: tmtb03_,  label: Part B - corrected errors,     range: [0, 25], missing: {dcm: not_recorded}}
+  tmt_b_errors_uncorrected:   {column: tmtb04_,  label: Part B - uncorrected errors,   range: [0, 25], missing: {dcm: not_recorded}}
+  tmt_b_errors_perseverative: {column: tmtb05_,  label: Part B - perseverative errors, range: [0, 25], missing: {dcm: not_recorded}}
+  tmt_b_time_z:               {column: tmtb01b_, label: Part B - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_b_errors_z:             {column: tmtb02b_, label: Part B - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+  # Part B minus part A
+  tmt_ba_time:     {column: tmtba01_,  label: B minus A - time as stored, type: number, unit: s, range: [-100, 600]}
+  tmt_ba_errors:   {column: tmtba02_,  label: B minus A - errors as stored, range: [-10, 25]}
+  tmt_ba_time_z:   {column: tmtba01b_, label: B minus A - time as a z-score (higher is better),   type: number, range: [-20, 10]}
+  tmt_ba_errors_z: {column: tmtba02b_, label: B minus A - errors as a z-score (higher is better), type: number, range: [-50, 20]}
+
+  # Percentile bands: the lower limit of the band, 0 to 95 (higher is better)
+  tmt_a_time_band:          {column: tmta01a_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], missing: {undefined: not_recorded},  label: Part A - time as a percentile band}
+  tmt_b_time_band:          {column: tmtb01a_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], missing: {undefined: not_recorded},  label: Part B - time as a percentile band}
+  tmt_ba_time_band:         {column: tmtba01a_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], missing: {undefined: not_recorded}, label: B minus A - time as a percentile band}
+
+  # Years of education, read again from the neuropsychology form: the norms of the errors depend on them.
+  tmt_education: {column: cclin08_, type: number, label: Years of education (for the norms), range: [0, 30], winsor: false, keep: false}
+
+scores:
+  tmt_a_errors:
+    label: Part A - errors, corrected and uncorrected
+    sum: [tmt_a_errors_corrected, tmt_a_errors_uncorrected]
+  tmt_b_errors:
+    label: Part B - errors, corrected and uncorrected
+    sum: [tmt_b_errors_corrected, tmt_b_errors_uncorrected]
+  # Percentile bands of the errors, read in the norm tables (norms/tmt_*.csv) from the number of
+  # errors, the age at the visit and the years of education. The value is the lower limit of the band.
+  tmt_a_errors_band:
+    label: Part A - errors as a percentile band
+    lookup: tmt_a_errors
+    from: tmt_a_errors
+    by: tmt_education
+  tmt_b_errors_band:
+    label: Part B - errors as a percentile band
+    lookup: tmt_b_errors
+    from: tmt_b_errors
+    by: tmt_education
+  tmt_b_perseverative_band:
+    label: Part B - perseverative errors as a percentile band
+    lookup: tmt_b_perseverative
+    from: tmt_b_errors_perseverative
+    by: tmt_education
+  tmt_ba_errors_band:
+    label: B minus A - errors as a percentile band
+    lookup: tmt_ba_errors
+    from: tmt_ba_errors
+    by: tmt_education
+  # Consistency checks only: the stored differences must be part B minus part A.
+  tmt_ba_time_check: {sum: [tmt_b_time], minus: [tmt_a_time], compare: tmt_ba_time, keep: false}
+  tmt_ba_errors_check: {sum: [tmt_b_errors], minus: [tmt_a_errors], compare: tmt_ba_errors, keep: false}

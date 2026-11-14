@@ -95,6 +95,15 @@ def test_a_documented_offset_is_not_a_mismatch_but_still_doubts_derived_values()
     assert flagged(flags, "derived_doubt") == [0, 1]     # the stored score is wrong on both rows
 
 
+def test_a_value_derived_from_an_empty_variable_is_doubted():
+    """derived_from may name a variable: a percentile computed from an empty score is kept and flagged."""
+    schema = {"variables": {"score": {}, "percentile": {"derived_from": "score"}}}
+    values = pd.DataFrame({"score": [5.0, np.nan, np.nan], "percentile": [25.0, 0.0, np.nan]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["percentile"][:2]) == [25.0, 0.0]
+    assert flagged(flags, "derived_doubt") == [1]
+
+
 def test_winsorise_clips_at_percentiles_and_reports_the_limits():
     values = pd.Series(list(range(1, 100)) + [5000.0])
     clipped, flags, limits = winsorise(values, "x", {})
@@ -221,6 +230,18 @@ def test_a_score_can_subtract_and_have_a_floor():
     assert flagged(flags, "score_mismatch") == [2]
 
 
+def test_a_score_can_be_scaled():
+    schema = {"variables": {"a": {"range": [1.0, 5.0]}, "b": {"range": [1.0, 5.0]}, "stored": {}},
+              "scores": {"percent": {"mean": ["a", "b"], "scale": [25.0, -25.0], "compare": "stored", "compare_offset": 0.0},
+                         "half": {"sum": ["a", "b"], "reverse": ["b"], "scale": [0.5, 0.0], "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [1.0, 5.0, 3.0, 4.0], "b": [1.0, 5.0, 4.0, np.nan], "stored": [0.0, 100.0, 50.0, 75.0]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["percent"][:3]) == [0.0, 100.0, 62.5]     # (mean - 1) x 25
+    assert list(values["half"][:3]) == [3.0, 3.0, 2.5]           # (a + 6 - b) / 2
+    assert values[["percent", "half"]].iloc[3].isna().all()      # an item is missing
+    assert flagged(flags, "score_mismatch") == [2]
+
+
 def test_units_without_a_unit_column_are_read_from_the_size_of_the_value():
     height = {"unit": "cm", "range": [100.0, 230.0],
               "units": {"cm": {"factor": 1.0, "expect": [100.0, 230.0]}, "mm": {"factor": 0.1, "expect": [1000.0, 2300.0]}}}
@@ -329,3 +350,9 @@ def test_look_up_with_a_second_variable_and_open_bands():
     assert values[4:].isna().all()                           # no education, or no age
     assert flagged(flags, "censored_right") == [1, 3]
     assert flagged(flags, "norm_missing") == [4, 5]
+
+
+def test_psp_band_of_the_score():
+    values = pd.DataFrame({"psp_total": [95.0, 91.0, 90.0, 55.0, 10.0, 1.0, 55.0, None],
+                           "psp_band": [1.0, 1.0, 2.0, 5.0, 10.0, 10.0, 6.0, 3.0]})
+    assert list(custom.psp_band_differs(values)) == [False, False, False, False, False, False, True, False]

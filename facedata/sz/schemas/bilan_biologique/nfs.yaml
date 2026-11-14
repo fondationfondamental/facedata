@@ -1,0 +1,96 @@
+instrument: nfs
+title: Blood count
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  Seven of the thirteen values of the BP blood count, with the same units
+  and limits: leukocytes, erythrocytes, haemoglobin, neutrophils,
+  eosinophils, mean cell volume and platelets.
+
+  Haemoglobin: 32 results are in g/L under the label g/dL (148 for 14.8).
+  Leukocytes (5) and platelets (3) per mm3. Neutrophils: 20 results typed
+  as a percentage of the leukocytes and 3 per mm3. Eosinophils: 37 results
+  could be a percentage (unit_doubt). Mean cell volume: 16 results ten
+  times too small, 9 out of range.
+
+  Same instrument as in FACE BP, without the six values that the SZ
+  extraction does not hold (haematocrit, basophils, lymphocytes, monocytes,
+  MCH, MCHC). The BP check that the five kinds of white cells add up to the
+  leukocytes cannot be made with two kinds.
+
+defaults: {type: number}
+
+variables:
+  leukocytes:
+    label: Leukocytes
+    column: wbc
+    unit_column: wbc_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0.5, 100], aliases: [Giga/L]}
+      "/mm3": {factor: 0.001, expect: [500, 100000], aliases: ["/mm"]}
+    range: [0.5, 100]
+
+  erythrocytes:
+    label: Erythrocytes
+    column: rbc
+    unit_column: rbc_lborresu
+    unit: T/L
+    units:
+      T/L: {factor: 1, expect: [1.5, 8], aliases: [Tera/L]}
+      G/L: {factor: 0.001, expect: [1500, 8000]}
+      "/mm3": {factor: 1e-06, expect: [1500000, 8000000], aliases: ["/mm"]}
+    range: [1.5, 8]
+
+  haemoglobin:
+    label: Haemoglobin
+    column: hgb
+    unit_column: hgb_lborresu
+    unit: g/dL
+    units:
+      g/dL: {factor: 1, expect: [5, 25]}
+      g/L: {factor: 0.1, expect: [50, 250]}
+    range: [5, 25]
+
+  neutrophils:
+    label: Neutrophils
+    column: neut
+    unit_column: neut_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 25]}
+      "/mm3": {factor: 0.001, expect: [100, 25000], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 100], aliases: [pour]}
+    range: [0, 25]
+
+  eosinophils:
+    label: Eosinophils
+    column: eos
+    unit_column: eos_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [0, 1.5]}
+      "/mm3": {factor: 0.001, expect: [10, 5000], aliases: ["/mm"]}
+      "%": {percent_of: leukocytes, expect: [0, 10], aliases: [pour]}
+    range: [0, 5]
+
+  mcv:
+    label: Mean corpuscular volume (VGM)
+    column: mcv
+    unit_column: mcv_lborresu
+    unit: fL
+    units:
+      fL: {factor: 1, expect: [50, 130], aliases: [microns, u, µ]}
+      "10 fL": {factor: 10, expect: [5, 13]}
+    range: [50, 130]
+
+  platelets:
+    label: Platelets
+    column: plat
+    unit_column: plat_lborresu
+    unit: G/L
+    units:
+      G/L: {factor: 1, expect: [10, 1500], aliases: [Giga/L]}
+      "/mm3": {factor: 0.001, expect: [10000, 1500000], aliases: ["/mm"]}
+    range: [10, 1500]

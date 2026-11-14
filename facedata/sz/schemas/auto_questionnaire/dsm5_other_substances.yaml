@@ -1,0 +1,46 @@
+instrument: dsm5_other_substances
+title: "DSM-5 criteria of a use disorder: other substances"
+tab: AUTO-QUESTIONNAIRE
+section: "Critères DSM5 de troubles lié à l'usage de: AUTRES SUBSTANCES"
+status: draft
+notes: >
+  Twelve criteria of a use disorder for other substances, answered from 2015 on
+  84 visits (41 with one criterion or more). Each criterion is
+  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
+  "do not know", read as a missing code.
+
+  The second question is asked after a yes to the first (asked_if): where
+  it is empty after a "no" it is 0. The extraction mostly writes it.
+
+  The same twelve questions are asked for seven substances, in seven
+  schemas with the same variables (dsm5_alcohol.yaml and the others). The
+  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
+  DSM-IV criterion. No count of criteria is stored, and none is computed.
+
+defaults: {type: item, range: [0, 1], missing: {2: unknown}}
+
+variables:
+  other_larger_amounts: {column: autrea1, label: "Other substances, criterion a: took larger amounts than intended, ever"}
+  other_larger_amounts_12m: {column: autrea2, label: "Other substances, criterion a: took larger amounts than intended, in the last 12 months", asked_if: other_larger_amounts}
+  other_cut_down: {column: autreb1, label: "Other substances, criterion b: tried to cut down or stop, ever"}
+  other_cut_down_12m: {column: autreb2, label: "Other substances, criterion b: tried to cut down or stop, in the last 12 months", asked_if: other_cut_down}
+  other_time_spent: {column: autrec1, label: "Other substances, criterion c: spends time obtaining, using or recovering, ever"}
+  other_time_spent_12m: {column: autrec2, label: "Other substances, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: other_time_spent}
+  other_craving: {column: autred1, label: "Other substances, criterion d: craving, ever"}
+  other_craving_12m: {column: autred2, label: "Other substances, criterion d: craving, in the last 12 months", asked_if: other_craving}
+  other_obligations: {column: autree1, label: "Other substances, criterion e: failed major obligations at work, at home or at school, ever"}
+  other_obligations_12m: {column: autree2, label: "Other substances, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: other_obligations}
+  other_interpersonal: {column: autref1, label: "Other substances, criterion f: went on using in spite of interpersonal consequences, ever"}
+  other_interpersonal_12m: {column: autref2, label: "Other substances, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: other_interpersonal}
+  other_activities_given_up: {column: autreg1, label: "Other substances, criterion g: gave up social, occupational or leisure activities, ever"}
+  other_activities_given_up_12m: {column: autreg2, label: "Other substances, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: other_activities_given_up}
+  other_hazardous_use: {column: autreh1, label: "Other substances, criterion h: repeated use when it can be dangerous, ever"}
+  other_hazardous_use_12m: {column: autreh2, label: "Other substances, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: other_hazardous_use}
+  other_despite_problems: {column: autrei1, label: "Other substances, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  other_despite_problems_12m: {column: autrei2, label: "Other substances, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: other_despite_problems}
+  other_tolerance: {column: autrej1, label: "Other substances, criterion j: tolerance, ever"}
+  other_tolerance_12m: {column: autrej2, label: "Other substances, criterion j: tolerance, in the last 12 months", asked_if: other_tolerance}
+  other_withdrawal: {column: autrek1, label: "Other substances, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  other_withdrawal_12m: {column: autrek2, label: "Other substances, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: other_withdrawal}
+  other_legal_problems: {column: autrel1, label: "Other substances, criterion l: legal problems linked to the use, ever"}
+  other_legal_problems_12m: {column: autrel2, label: "Other substances, criterion l: legal problems linked to the use, in the last 12 months", asked_if: other_legal_problems}

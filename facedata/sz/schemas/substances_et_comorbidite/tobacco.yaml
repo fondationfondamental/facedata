@@ -1,0 +1,34 @@
+instrument: tobacco
+title: Tobacco
+tab: SUBSTANCES ET COMORBIDITE
+section: Tabac
+status: draft
+notes: >
+  Smoking status, pack-years and the ages at which daily smoking started
+  and stopped (the BP schema), and five questions that the SZ form adds
+  from 2012: cigarettes per day in the last 12 months, age at the first
+  cigarette, longest abstinence in months, a first-degree relative with a
+  tobacco use disorder, and a craving score from 0 to 10. Asked at
+  inclusion and at follow-up (4,439 visits with a status: 2,087 current
+  smokers, 614 ex-smokers, 1,728 non-smokers, 10 unknown).
+
+  999 and 9999 mean "does not know" in the pack-years and in the
+  abstinence (21 cells), 99 in an age. Five pack-years of 365 and a few
+  other values above 200 are out of range. The Fagerström test is in
+  auto_questionnaire/fagerstrom.yaml.
+
+variables:
+  tobacco_status:
+    column: suncf_cigarettes_lt
+    type: category
+    label: Tobacco status
+    codes: {"Non fumeur": non_smoker, "Fumeur actuel": current_smoker, "Ex-fumeur": ex_smoker}
+    missing: {"Statut inconnu": unknown}
+  pack_years: {column: sudose_cigarettes_lt, type: number, unit: pack-years, range: [0, 200], missing: {999: unknown, 9999: unknown}, label: Pack-years}
+  smoking_start_age: {column: agedebut_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient started smoking}
+  smoking_stop_age: {column: agefin_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient stopped smoking}
+  cigarettes_per_day: {column: sudose_cigarettes_ly, type: number, range: [0, 100], label: Cigarettes smoked per day on average in the last 12 months}
+  first_cigarette_age: {column: agedebut_cigarettes_ly, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: Age at the first cigarette}
+  smoking_max_abstinence: {column: durabsti_cigarettes_lt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: Longest abstinence from tobacco over the whole life}
+  tobacco_family_history: {column: atcd1deg_cigarettes_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: First-degree relative with a tobacco use disorder}
+  tobacco_craving: {column: craving_cigarettes_lt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: Craving for tobacco (0 never to 10 all the time)}

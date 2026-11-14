@@ -1,0 +1,45 @@
+instrument: sumd
+title: Scale to assess Unawareness of Mental Disorder (SUMD, abbreviated)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire Self-Unawareness of Mental Disorder SUMD
+status: draft
+notes: >
+  Rated by the clinician at every visit. Three general items (awareness of
+  having a mental disorder, of its consequences, of the effects of the
+  medication), then six symptoms, each rated twice: awareness of the
+  symptom (columns ending in c) and attribution of the symptom to the
+  disorder (columns ending in a). 1 is aware or correct, 2 partial, 3
+  unaware or incorrect.
+
+  The code 0 is "cannot be rated": 29 to 148 visits for the general items,
+  and 34% to 59% of the visits for a symptom, where it mostly means that
+  the patient does not have the symptom. It is read as a missing code
+  (not_applicable).
+
+  The dictionary. It lists SUMD01 to SUMD09 as one range; the extraction
+  holds sumd01 to sumd03 and twelve columns sumd04c to sumd09c and sumd04a
+  to sumd09a, which the dictionary does not list. It does not name the six
+  symptoms, so they stay numbered here.
+
+  Stored scores. sumd1, sumd2 and sumd3 are the three general items again
+  (equal on 4,534 to 4,539 of about 4,540 visits). They are not loaded
+  (ignored.yaml). The scale has no total.
+
+defaults: {type: item, range: [1, 3], missing: {0: not_applicable}}
+
+variables:
+  sumd01: {label: "SUMD 1: awareness of having a mental disorder (1 aware, 3 unaware)"}
+  sumd02: {label: "SUMD 2: awareness of the consequences of the disorder (1 aware, 3 unaware)"}
+  sumd03: {label: "SUMD 3: awareness of the effects of the medication (1 aware, 3 unaware)"}
+  sumd04_awareness: {column: sumd04c, label: "SUMD symptom 4: awareness of the symptom"}
+  sumd05_awareness: {column: sumd05c, label: "SUMD symptom 5: awareness of the symptom"}
+  sumd06_awareness: {column: sumd06c, label: "SUMD symptom 6: awareness of the symptom"}
+  sumd07_awareness: {column: sumd07c, label: "SUMD symptom 7: awareness of the symptom"}
+  sumd08_awareness: {column: sumd08c, label: "SUMD symptom 8: awareness of the symptom"}
+  sumd09_awareness: {column: sumd09c, label: "SUMD symptom 9: awareness of the symptom"}
+  sumd04_attribution: {column: sumd04a, label: "SUMD symptom 4: attribution of the symptom to the disorder"}
+  sumd05_attribution: {column: sumd05a, label: "SUMD symptom 5: attribution of the symptom to the disorder"}
+  sumd06_attribution: {column: sumd06a, label: "SUMD symptom 6: attribution of the symptom to the disorder"}
+  sumd07_attribution: {column: sumd07a, label: "SUMD symptom 7: attribution of the symptom to the disorder"}
+  sumd08_attribution: {column: sumd08a, label: "SUMD symptom 8: attribution of the symptom to the disorder"}
+  sumd09_attribution: {column: sumd09a, label: "SUMD symptom 9: attribution of the symptom to the disorder"}

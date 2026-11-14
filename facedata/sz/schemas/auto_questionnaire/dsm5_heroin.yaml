@@ -1,0 +1,46 @@
+instrument: dsm5_heroin
+title: "DSM-5 criteria of a use disorder: heroin"
+tab: AUTO-QUESTIONNAIRE
+section: "Critères DSM5 de troubles lié à l'usage de: HEROINE"
+status: draft
+notes: >
+  Twelve criteria of a use disorder for heroin, answered from 2015 on
+  38 visits (24 with one criterion or more). Each criterion is
+  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
+  "do not know", read as a missing code.
+
+  The second question is asked after a yes to the first (asked_if): where
+  it is empty after a "no" it is 0. The extraction mostly writes it.
+
+  The same twelve questions are asked for seven substances, in seven
+  schemas with the same variables (dsm5_alcohol.yaml and the others). The
+  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
+  DSM-IV criterion. No count of criteria is stored, and none is computed.
+
+defaults: {type: item, range: [0, 1], missing: {2: unknown}}
+
+variables:
+  heroin_larger_amounts: {column: heroina1, label: "Heroin, criterion a: took larger amounts than intended, ever"}
+  heroin_larger_amounts_12m: {column: heroina2, label: "Heroin, criterion a: took larger amounts than intended, in the last 12 months", asked_if: heroin_larger_amounts}
+  heroin_cut_down: {column: heroinb1, label: "Heroin, criterion b: tried to cut down or stop, ever"}
+  heroin_cut_down_12m: {column: heroinb2, label: "Heroin, criterion b: tried to cut down or stop, in the last 12 months", asked_if: heroin_cut_down}
+  heroin_time_spent: {column: heroinc1, label: "Heroin, criterion c: spends time obtaining, using or recovering, ever"}
+  heroin_time_spent_12m: {column: heroinc2, label: "Heroin, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: heroin_time_spent}
+  heroin_craving: {column: heroind1, label: "Heroin, criterion d: craving, ever"}
+  heroin_craving_12m: {column: heroind2, label: "Heroin, criterion d: craving, in the last 12 months", asked_if: heroin_craving}
+  heroin_obligations: {column: heroine1, label: "Heroin, criterion e: failed major obligations at work, at home or at school, ever"}
+  heroin_obligations_12m: {column: heroine2, label: "Heroin, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: heroin_obligations}
+  heroin_interpersonal: {column: heroinf1, label: "Heroin, criterion f: went on using in spite of interpersonal consequences, ever"}
+  heroin_interpersonal_12m: {column: heroinf2, label: "Heroin, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: heroin_interpersonal}
+  heroin_activities_given_up: {column: heroing1, label: "Heroin, criterion g: gave up social, occupational or leisure activities, ever"}
+  heroin_activities_given_up_12m: {column: heroing2, label: "Heroin, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: heroin_activities_given_up}
+  heroin_hazardous_use: {column: heroinh1, label: "Heroin, criterion h: repeated use when it can be dangerous, ever"}
+  heroin_hazardous_use_12m: {column: heroinh2, label: "Heroin, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: heroin_hazardous_use}
+  heroin_despite_problems: {column: heroini1, label: "Heroin, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  heroin_despite_problems_12m: {column: heroini2, label: "Heroin, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: heroin_despite_problems}
+  heroin_tolerance: {column: heroinj1, label: "Heroin, criterion j: tolerance, ever"}
+  heroin_tolerance_12m: {column: heroinj2, label: "Heroin, criterion j: tolerance, in the last 12 months", asked_if: heroin_tolerance}
+  heroin_withdrawal: {column: heroink1, label: "Heroin, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  heroin_withdrawal_12m: {column: heroink2, label: "Heroin, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: heroin_withdrawal}
+  heroin_legal_problems: {column: heroinl1, label: "Heroin, criterion l: legal problems linked to the use, ever"}
+  heroin_legal_problems_12m: {column: heroinl2, label: "Heroin, criterion l: legal problems linked to the use, in the last 12 months", asked_if: heroin_legal_problems}

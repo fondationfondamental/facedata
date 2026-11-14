@@ -1,0 +1,80 @@
+instrument: six_elements
+title: Six elements test
+tab: NEUROPSYCHOLOGIE
+section: Test des 6 éléments
+status: draft
+notes: >
+  Planning and self-organisation: six tasks (two routes, two series of
+  pictures to name, two series of sums) to share out in a limited time,
+  without doing two tasks of the same kind in a row. About 865 visits from
+  2010 to 2018 (one in 2025).
+
+  Three stored scores are sums, recomputed here. The points score is the sum
+  of the six task scores (865 of 866 visits). The total of rule breaks is
+  time + alternation (862 of 862). The total error score is inefficiency +
+  rule breaks + errors of interpretation + errors of execution (850 of 853).
+
+  Five z-scores are delivered as stored; the dictionary labels one and
+  leaves four without a label (elem616_, elem620_, elem623_, elem625_). In
+  the data each is a straight line of the score before it, one value per
+  score: points (rising), inefficiency, rule breaks, errors of execution
+  and total error score (falling: a negative z-score is a worse result).
+  They are doubted where their score is not the sum of its parts.
+
+  A few cells hold impossible values (a route score of 1010, a z-score of
+  -637) and are out of range.
+
+  The total time is in minutes. 83 of 854 cells hold minutes and seconds
+  in words ("12min 30sec", "12'30"): they are unparsed and missing.
+
+  The two last columns are free text (how much the patient relied on the
+  examiner, and a description of what the patient did). They are delivered
+  as text and never appear in the report.
+
+defaults: {type: item, range: [0, 185]}
+
+variables:
+  six_elements_time: {column: elem601_, label: Total time (minutes), type: number, range: [0, 30], winsor: false}
+  six_elements_time_exceeded: {column: elem602_, label: Went over the time, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  six_elements_stopped_alone: {column: elem603_, label: Stopped without being told, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  six_elements_strategy_stated: {column: elem604_, label: States the most efficient strategy, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  six_elements_strategy_used: {column: elem605_, label: Uses the most efficient strategy, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  six_elements_strategy_afterwards: {column: elem606_, label: States the most efficient strategy afterwards, range: [0, 1], codes: {Oui: 1, Non: 0}}
+  six_elements_route_a: {column: elem607_, label: Score of route A}
+  six_elements_route_b: {column: elem608_, label: Score of route B}
+  six_elements_naming_a: {column: elem609_, label: Score of naming A}
+  six_elements_naming_b: {column: elem610_, label: Score of naming B}
+  six_elements_sums_a: {column: elem611_, label: Score of sums A}
+  six_elements_sums_b: {column: elem612_, label: Score of sums B}
+  six_elements_points_stored: {column: elem613_, label: "Points score, as stored", range: [0, 1110], keep: false}
+  six_elements_points_z: {column: elem614_, label: Points score as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_points}
+  six_elements_inefficiency: {column: elem615_, label: Inefficiency score, range: [0, 20]}
+  six_elements_inefficiency_z: {column: elem616_, label: Inefficiency score as a z-score, type: number, range: [-10, 10], winsor: false}
+  six_elements_breaks_time: {column: elem617_, label: Rule breaks - time, range: [0, 5]}
+  six_elements_breaks_alternation: {column: elem618_, label: Rule breaks - alternation, range: [0, 10]}
+  six_elements_breaks_stored: {column: elem619_, label: "Rule breaks - total, as stored", range: [0, 15], keep: false}
+  six_elements_breaks_z: {column: elem620_, label: Total of rule breaks as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_breaks}
+  six_elements_errors_interpretation: {column: elem621_, label: Errors of interpretation, range: [0, 9]}
+  six_elements_errors_execution: {column: elem622_, label: Errors of execution, range: [0, 9]}
+  six_elements_errors_execution_z: {column: elem623_, label: Errors of execution as a z-score, type: number, range: [-10, 10], winsor: false}
+  six_elements_error_score_stored: {column: elem624_, label: "Total error score, as stored", range: [0, 53], keep: false}
+  six_elements_error_score_z: {column: elem625_, label: Total error score as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_error_score}
+  six_elements_instructions: {column: elem626_, label: Number of times the instructions were looked at, range: [0, 10]}
+  six_elements_dependence: {column: elem627_, label: Dependence on the examiner (free text), type: text}
+  six_elements_description: {column: elem628_, label: What the patient did (free text), type: text}
+
+scores:
+  six_elements_points:
+    label: Points score (sum of the six task scores, 0 to 1110)
+    sum: [six_elements_route_a, six_elements_route_b, six_elements_naming_a, six_elements_naming_b,
+          six_elements_sums_a, six_elements_sums_b]
+    compare: six_elements_points_stored
+  six_elements_breaks:
+    label: Rule breaks - total (time + alternation)
+    sum: [six_elements_breaks_time, six_elements_breaks_alternation]
+    compare: six_elements_breaks_stored
+  six_elements_error_score:
+    label: Total error score (inefficiency + rule breaks + errors of interpretation + errors of execution)
+    sum: [six_elements_inefficiency, six_elements_breaks, six_elements_errors_interpretation,
+          six_elements_errors_execution]
+    compare: six_elements_error_score_stored

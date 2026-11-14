@@ -1,0 +1,54 @@
+instrument: verbal_fluency
+title: Verbal fluency, letter P and animals
+tab: NEUROPSYCHOLOGIE
+section: Fluences Verbales
+status: draft
+notes: >
+  Two tasks of two minutes: words that begin with P, and names of animals.
+  1,401 visits, from 2010 to 2025. For each task: the number of correct
+  words, its z-score and percentile band, and the errors.
+
+  Percentile bands. The column holds plain numbers, bands ("25 - 50") and
+  the two end classes (">95", "<5"); every cell is one full band. The value
+  is the lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95.
+
+  Rule breaks. The stored number is the sum of the derived words, the
+  intrusions and the proper names on every visit; it is recomputed and
+  compared. "DCM" is written in the error columns of one visit and stays
+  unparsed.
+
+  The z-scores and the bands come from norms that are not in the project;
+  they are delivered as stored.
+
+  Same instrument as in FACE BP, without the clusters and the switches,
+  which the SZ extraction does not hold.
+
+defaults: {type: item, range: [0, 30]}
+
+variables:
+  # Letter P
+  fluency_p_words: {column: fv01_, type: number, label: "Letter P - correct words", range: [0, 80]}
+  fluency_p_z: {column: fv02_, type: number, label: "Letter P - z-score", range: [-6, 6]}
+  fluency_p_band: {column: fv03_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Letter P - percentile band"}
+  fluency_p_perseverations: {column: fv04_, label: "Letter P - perseverations"}
+  fluency_p_derived: {column: fv05_, label: "Letter P - derived words"}
+  fluency_p_intrusions: {column: fv06_, label: "Letter P - intrusions"}
+  fluency_p_proper_names: {column: fv07_, label: "Letter P - proper names"}
+  fluency_p_rule_breaks_stored: {column: fv08_, label: "Letter P - rule breaks as stored", keep: false}
+  fluency_animals_words: {column: fv12_, type: number, label: "Animals - correct words", range: [0, 80]}
+  fluency_animals_z: {column: fv13_, type: number, label: "Animals - z-score", range: [-6, 6]}
+  fluency_animals_band: {column: fv14_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Animals - percentile band"}
+  fluency_animals_perseverations: {column: fv15_, label: "Animals - perseverations"}
+  fluency_animals_derived: {column: fv16_, label: "Animals - derived words"}
+  fluency_animals_intrusions: {column: fv17_, label: "Animals - intrusions"}
+  fluency_animals_proper_names: {column: fv18_, label: "Animals - proper names"}
+  fluency_animals_rule_breaks_stored: {column: fv19_, label: "Animals - rule breaks as stored", keep: false}
+scores:
+  fluency_p_rule_breaks:
+    label: Letter P - rule breaks
+    sum: [fluency_p_derived, fluency_p_intrusions, fluency_p_proper_names]
+    compare: fluency_p_rule_breaks_stored
+  fluency_animals_rule_breaks:
+    label: Animals - rule breaks
+    sum: [fluency_animals_derived, fluency_animals_intrusions, fluency_animals_proper_names]
+    compare: fluency_animals_rule_breaks_stored

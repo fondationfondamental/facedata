@@ -32,7 +32,7 @@ def write(folder, name, text):
 
 
 def test_every_schema_of_the_package_is_correct():
-    for cohort in ["bp"]:
+    for cohort in ["bp", "sz"]:
         schemas = load_schemas(PACKAGE / cohort / "schemas")
         assert len(schemas) > 0
         problems = check_cohort(schemas)
@@ -178,6 +178,15 @@ variables:
   it1: {versions: [short]}
   it2: {versions: [long]}
 """
+
+
+def test_scale_is_two_numbers_on_a_sum_or_a_mean(tmp_path):
+    good = GOOD.replace("total: {sum: [it1, it2], compare: tot_stored}", "total: {sum: [it1, it2], scale: [0.5, 0], compare: tot_stored}")
+    schema = load_schema(write(tmp_path, "demo", good))
+    assert check_schema(schema) == [] and schema["scores"]["total"]["scale"] == [0.5, 0.0]
+    bad = GOOD.replace("total: {sum: [it1, it2], compare: tot_stored}", "total: {sum: [it1, it2], scale: 25, compare: tot_stored}")
+    problems = " | ".join(check_schema(load_schema(write(tmp_path, "demo", bad))))
+    assert "total: scale is [factor, offset], on a score that has sum or mean" in problems
 
 
 def test_since_names_a_version_and_a_date(tmp_path):

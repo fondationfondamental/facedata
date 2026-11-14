@@ -1,0 +1,72 @@
+# Columns of the SZ extraction that are deliberately not loaded, each with the reason.
+# coverage() lists them with the status "ignored".
+
+# PATIENT
+siteid_heteroquestionnaires: a copy of siteid, written without its leading zero
+siteid_neuropsychologie: a copy of siteid, written without its leading zero
+siteid_suicide: a copy of siteid, written without its leading zero
+siteid_substances_comorbidites: a copy of siteid, written without its leading zero
+siteid_constantes_et_ecg: a copy of siteid, written without its leading zero
+siteid_bilan_biologique: a copy of siteid, written without its leading zero
+siteid_evaluation_medicale: a copy of siteid, written without its leading zero
+siteid_soin_suivi_hosp_arret_travail: a copy of siteid, written without its leading zero
+siteid_traitements: a copy of siteid, written without its leading zero
+siteid_social_perinatalite: a copy of siteid, written without its leading zero
+siteid_antecedents: a copy of siteid, written without its leading zero
+
+# HETERO-QUESTIONNAIRE
+bars0106: the global item of the Barnes scale again (equal to bars0104 on 4,359 of 4,360 visits)
+calgar08: a copy of calgar07 on every row; the true item 8 of the Calgary scale (suicide) is not in the extraction (decision D5, open question O4)
+calgar: the stored Calgary total counts item 7 twice and holds no item 8 (decision D5)
+sumd1: the general item sumd01 again (equal on 4,539 of 4,541 visits)
+sumd2: the general item sumd02 again (equal on 4,534 of 4,540 visits)
+sumd3: the general item sumd03 again (equal on every visit that has both)
+
+# BILAN BIOLOGIQUE
+vitd_lborresu: the unit of the vitamin D, filled in one cell
+tgnigmab_lborresu: the unit of the toxoplasmosis IgG titre, empty on every row
+
+# AUTO-QUESTIONNAIRE
+ctq41: CTQ risk of denial, yes or no; it is "denial score above 0" (ctq40) on every row
+psqi15: PSQI component 1, a copy of item 6 (psqi06)
+psqi16: PSQI component 6, a copy of item 7 (psqi07)
+ybobse1: Y-BOCS obsessions, a second 'level' of item 1; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybobse2: Y-BOCS obsessions, a second 'level' of item 2; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybobse3: Y-BOCS obsessions, a second 'level' of item 3; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybobse4: Y-BOCS obsessions, a second 'level' of item 4; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybobse5: Y-BOCS obsessions, a second 'level' of item 5; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybcomp1: Y-BOCS compulsions, a second 'level' of item 1; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybcomp2: Y-BOCS compulsions, a second 'level' of item 2; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybcomp3: Y-BOCS compulsions, a second 'level' of item 3; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybcomp4: Y-BOCS compulsions, a second 'level' of item 4; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+ybcomp5: Y-BOCS compulsions, a second 'level' of item 5; equal to the item on about 60% of the visits, and the sub-total follows the item (open question O10)
+
+# NEUROPSYCHOLOGIE
+tmta02a_: TMT part A, percentile of the errors; three rules over the years (as in BP)
+tmtb02a_: TMT part B, percentile of the errors; three rules over the years (as in BP)
+tmtb05a_: TMT part B, percentile of the perseverative errors; three rules over the years (as in BP)
+tmtba02a_: TMT B minus A, percentile of the errors; three rules over the years (as in BP)
+
+# SUBSTANCES ET COMORBIDITE
+ceoccurtroubpanago: named for the panic disorder with agoraphobia, it holds on all its 634 rows the answer to the screening question rad_peur_agoraphobie, which is read
+rad_trouble_panique: a copy of ceoccurtroubpansago (panic disorder without agoraphobia) on every row
+sutrt_autre: a copy of sutrt_autre_produit (the name of the other product) on every row
+chk_substances_type: the substances of the follow-up form in one cell; each of them is also a yes in its box suoccur_*, and the boxes hold more
+rad_add_heroin7a: 38 cells, a yes/no question after heroin that the dictionary does not have
+
+# EVALUATION MEDICALE, SOCIAL - PERINATALITE
+rad_ecv_vp5: 603 cells (yes on 8), a yes/no question of the physical violence that the dictionary does not have
+rad_tbpsychovie: the answer is Oui for every patient but one; the name says a psychotic disorder over the whole life, an inclusion criterion
+empjob: the class of the job holds one code, 5, on 41 rows; the list is looked up in the wrong classes, as in BP (open question O2)
+
+# TRAITEMENTS
+psychotic: 1 where the count psychotic_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+depress: 1 where the count depress_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+anxiolyt: 1 where the count anxiolyt_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+antichol: 1 where the count antichol_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+thymoreg: 1 where the count thymoreg_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+hypnot: 1 where the count hypnot_nb is above 0, on every row that has a medication list, and 0 on the rows that have none, where nothing is known
+
+# ANTECEDENTS
+asthme_mhoccur: the box "asthma" of chk_somat_all_specifier, written in a column of its own; the list is read
+allergie_mhoccur: the box "allergy other than asthma" of chk_somat_all_specifier, written in a column of its own; the list is read

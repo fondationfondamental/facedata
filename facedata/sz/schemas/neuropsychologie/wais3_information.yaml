@@ -1,0 +1,70 @@
+instrument: wais3_information
+title: WAIS-III information
+tab: NEUROPSYCHOLOGIE
+section: Information (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  information columns on the WAIS-III visits (563 visits, from 2010 to
+  2016): 28 items scored 0 or 1. wais4_information.yaml reads the WAIS-IV
+  visits.
+
+  The stored raw total is the sum of the 28 items on every visit. The
+  z-score is (scaled score - 10) / 3 on every visit.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP does not have this subtest.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais3]}
+
+variables:
+  wais3_info01: {column: infor01_w, label: Information item 1}
+  wais3_info02: {column: infor02_w, label: Information item 2}
+  wais3_info03: {column: infor03_w, label: Information item 3}
+  wais3_info04: {column: infor04_w, label: Information item 4}
+  wais3_info05: {column: infor05_w, label: Information item 5}
+  wais3_info06: {column: infor06_w, label: Information item 6}
+  wais3_info07: {column: infor07_w, label: Information item 7}
+  wais3_info08: {column: infor08_w, label: Information item 8}
+  wais3_info09: {column: infor09_w, label: Information item 9}
+  wais3_info10: {column: infor10_w, label: Information item 10}
+  wais3_info11: {column: infor11_w, label: Information item 11}
+  wais3_info12: {column: infor12_w, label: Information item 12}
+  wais3_info13: {column: infor13_w, label: Information item 13}
+  wais3_info14: {column: infor14_w, label: Information item 14}
+  wais3_info15: {column: infor15_w, label: Information item 15}
+  wais3_info16: {column: infor16_w, label: Information item 16}
+  wais3_info17: {column: infor17_w, label: Information item 17}
+  wais3_info18: {column: infor18_w, label: Information item 18}
+  wais3_info19: {column: infor19_w, label: Information item 19}
+  wais3_info20: {column: infor20_w, label: Information item 20}
+  wais3_info21: {column: infor21_w, label: Information item 21}
+  wais3_info22: {column: infor22_w, label: Information item 22}
+  wais3_info23: {column: infor23_w, label: Information item 23}
+  wais3_info24: {column: infor24_w, label: Information item 24}
+  wais3_info25: {column: infor25_w, label: Information item 25}
+  wais3_info26: {column: infor26_w, label: Information item 26}
+  wais3_info27: {column: infor27_w, label: Information item 27}
+  wais3_info28: {column: infor28_w, label: Information item 28}
+  wais3_info_total_stored: {column: infortot_w, label: Raw total as stored, range: [0, 28], keep: false}
+  wais3_info_scaled: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_info_total}
+  wais3_info_z: {column: inforcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_info_total}
+
+scores:
+  wais3_info_total:
+    label: Information raw total (28 items)
+    sum: [wais3_info01, wais3_info02, wais3_info03, wais3_info04, wais3_info05, wais3_info06,
+          wais3_info07, wais3_info08, wais3_info09, wais3_info10, wais3_info11, wais3_info12,
+          wais3_info13, wais3_info14, wais3_info15, wais3_info16, wais3_info17, wais3_info18,
+          wais3_info19, wais3_info20, wais3_info21, wais3_info22, wais3_info23, wais3_info24,
+          wais3_info25, wais3_info26, wais3_info27, wais3_info28]
+    min_items: 1
+    compare: wais3_info_total_stored

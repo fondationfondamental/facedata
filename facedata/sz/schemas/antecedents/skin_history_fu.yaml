@@ -1,0 +1,57 @@
+instrument: skin_history_fu
+title: Skin history, at follow-up
+tab: ANTECEDENTS
+section: Pathologies dermatologiques
+status: draft
+notes: >
+  Psoriasis is with the auto-immune diseases in the SZ form.
+
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  acne_fu: {column: acne_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne, at follow-up"}
+  acne_treated_fu: {column: acne_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: treated, at follow-up"}
+  acne_lithium_fu: {column: acne_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: triggered or worsened by lithium, at follow-up"}
+  eczema_fu: {column: eczema_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema, at follow-up"}
+  eczema_treated_fu: {column: eczema_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: treated, at follow-up"}
+  drug_eruption_fu: {column: toxidermi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug eruption, at follow-up"}
+  drug_eruption_type_fu: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens Johnson": stevens_johnson}, label: "Drug eruption: kind, at follow-up"}
+  drug_eruption_antibiotic_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 1, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption: caused by an antibiotic, at follow-up"}
+  drug_eruption_nsaid_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 1, "Anticonvulsivants": 0, "Autres médicaments": 0}, label: "Drug eruption: caused by an anti-inflammatory drug, at follow-up"}
+  drug_eruption_anticonvulsant_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 1, "Autres médicaments": 0}, label: "Drug eruption: caused by an anticonvulsant, at follow-up"}
+  drug_eruption_other_drug_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 1}, label: "Drug eruption: caused by another drug, at follow-up"}
+  hair_loss_fu: {column: cheveux_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss, at follow-up"}
+  hair_loss_treated_fu: {column: cheveux_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: treated, at follow-up"}
+  hair_loss_valproate_fu: {column: cheveux_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: triggered or worsened by valproate, at follow-up"}

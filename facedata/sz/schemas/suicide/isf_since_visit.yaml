@@ -1,0 +1,89 @@
+instrument: isf_since_visit
+title: Suicidal thoughts and acts since the last visit (follow-up visits)
+tab: SUICIDE
+section: Intentionnalité suicidaire (VIE ENTIERE ou depuis la DERNIERE VISITE)
+status: draft
+notes: >
+  The five yes/no questions of isf_lifetime, asked at the follow-up visits
+  about the time since the last visit, each followed by "when did it last
+  happen?". Delivered as 1 (yes) and 0 (no). About 2,360 follow-up visits.
+
+  Two forms in the same columns: see isf_lifetime.yaml.
+
+  No doubtful period here. In FACE BP the share of follow-up visits with an
+  attempt since the last visit rises to 16% in 2022 and 9% in 2023 (BP
+  decision D48). In SZ it stays between 0% and 8% in every year from 2011
+  to 2026 (4 of 210 visits in 2022, 5 of 182 in 2023), and the first
+  question stays between 24% and 37%. So the BP schema is used without its
+  doubt block.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, versions: [follow_up]}
+
+variables:
+  isf01_since_visit: {column: isf01, label: "Felt that life is not worth living - since the last visit"}
+  isf01_since_visit_when:
+    column: isf01a
+    type: category
+    label: "Felt that life is not worth living - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf02_since_visit: {column: isf02, label: "Wished to be dead - since the last visit"}
+  isf02_since_visit_when:
+    column: isf02a
+    type: category
+    label: "Wished to be dead - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf03_since_visit: {column: isf03, label: "Thought of taking own life - since the last visit"}
+  isf03_since_visit_when:
+    column: isf03a
+    type: category
+    label: "Thought of taking own life - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf04_since_visit: {column: isf04, label: "Seriously considered or planned suicide - since the last visit"}
+  isf04_since_visit_when:
+    column: isf04a
+    type: category
+    label: "Seriously considered or planned suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit
+  isf05_since_visit: {column: isf05, label: "Attempted suicide - since the last visit"}
+  isf05_since_visit_when:
+    column: isf05a
+    type: category
+    label: "Attempted suicide - when last"
+    codes:
+      "La semaine dernière": last_week
+      "Il y a entre une semaine et la dernière visite": since_last_visit

@@ -1,0 +1,29 @@
+instrument: presenteeism
+title: Absenteeism and presenteeism at work (questions B3 to B11)
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire PRESENTEISM
+status: draft
+notes: >
+  Questions B3 to B11 of a questionnaire on work, filled from 2012 by
+  the patients who work (415 visits): hours worked and expected, days of
+  work missed in the last 28 days, and three ratings of performance from 0
+  to 10.
+
+  Numbers typed freely: 13 are impossible (more than 28 days in 28 days,
+  more than 168 hours in a week, more than 672 hours in 28 days) and end
+  out_of_range.
+
+defaults: {type: number, winsor: false}
+
+variables:
+  work_hours_7_days: {column: presb03, label: "B3: hours worked in the last 7 days", range: [0, 168]}
+  work_hours_expected: {column: presb04, label: "B4: hours the employer expects in a typical week of 7 days", range: [0, 168]}
+  work_days_missed_health: {column: presb05a, label: "B5a: whole days of work missed for a physical or mental health problem, in the last 28 days", range: [0, 28]}
+  work_days_missed_other: {column: presb05b, label: "B5b: whole days of work missed for any other reason, in the last 28 days", range: [0, 28]}
+  work_days_part_missed_health: {column: presb05c, label: "B5c: days of work missed in part for a physical or mental health problem, in the last 28 days", range: [0, 28]}
+  work_days_part_missed_other: {column: presb05d, label: "B5d: days of work missed in part for any other reason, in the last 28 days", range: [0, 28]}
+  work_days_extra: {column: presb05e, label: "B5e: days of coming early, leaving late or working on a day off, in the last 28 days", range: [0, 28]}
+  work_hours_28_days: {column: presb06, label: "B6: hours worked in the last 28 days", range: [0, 672]}
+  work_performance_others: {column: presb09, type: item, label: "B9: usual performance of most workers in a similar job (0 worst to 10 best)", range: [0, 10]}
+  work_performance_usual: {column: presb10, type: item, label: "B10: own usual performance over the last year or two (0 worst to 10 best)", range: [0, 10]}
+  work_performance_28_days: {column: presb11, type: item, label: "B11: own performance on the days worked in the last 28 days (0 worst to 10 best)", range: [0, 10]}

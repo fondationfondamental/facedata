@@ -1,0 +1,42 @@
+instrument: psychosis_course
+title: Course of the psychotic disorder
+tab: EVALUATION MEDICALE
+section: Caractéristiques du trouble vie entière
+status: draft
+notes: >
+  At the inclusion visit: the age at the first psychotic episode and at the
+  first antipsychotic treatment, the duration of untreated psychosis in
+  months, the number of psychotic episodes and the course of the symptoms
+  (about 2,200 visits). At every visit: a psychotic episode in the past
+  year, a suicide attempt in the past year and their number (4,461 visits).
+
+  "Ne sais pas" is a missing code (41 and 44 ages, 163 answers on the
+  episode of the past year); so is 999 in the duration (14). The number of
+  episodes holds "Aucun" on 37 visits, read as 0, and "more than 20" on 21
+  (censored_right). The number of attempts is filled after a yes.
+
+  The duration of untreated psychosis is delivered as typed. It is not the
+  difference between the two ages, which are in whole years.
+
+variables:
+  first_episode_age: {column: agepisod, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotic episode}
+  first_antipsychotic_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first antipsychotic treatment}
+  untreated_psychosis_months: {column: duree, type: number, unit: months, range: [0, 600], missing: {999: unknown}, label: Duration of untreated psychosis}
+  n_psychotic_episodes: {column: evnum_tbpsy_lt, type: number, range: [0, 20], codes: {Aucun: 0}, winsor: false, label: Number of psychotic episodes}
+  symptom_course:
+    column: modesymptomeevo
+    label: Course of the symptoms
+    type: category
+    codes:
+      Episode isolé en rémission complète: single_episode_full_remission
+      Episode isolé en rémission partielle: single_episode_partial_remission
+      Episode isolé avec symptômes négatifs prononcés: single_episode_negative_symptoms
+      Episodique sans symptômes résiduels entre les épisodes: episodic_no_residual
+      Episodique avec symptômes résiduels entre les épisodes et sans symptômes négatifs: episodic_residual
+      Episodique avec symptômes résiduels entre les épisodes et avec présence de symptômes négatifs: episodic_residual_negative_symptoms
+      Continu: continuous
+      Continu avec symptômes négatifs prononcés: continuous_negative_symptoms
+      Autre cours évolutif: other
+  psychotic_episode_12m: {column: mhoccur_tbpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: At least one psychotic episode in the past year}
+  suicide_attempt_12m: {column: mhoccur_suicid_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Suicide attempt in the past year}
+  n_suicide_attempts_12m: {column: evnum_suicid_ly, type: item, range: [0, 50], label: Number of suicide attempts in the past year}

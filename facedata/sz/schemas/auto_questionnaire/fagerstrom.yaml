@@ -1,0 +1,28 @@
+instrument: fagerstrom
+title: Fagerström Test for Nicotine Dependence (6 items)
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire FAGERSTROM
+status: draft
+notes: >
+  Fagerström test for nicotine dependence, filled by the smokers (2,037
+  visits). Same instrument and same schema as in FACE BP. Item 3 lost its
+  answer "any other cigarette" until the extraction of 13 November 2026
+  (decision D1 in PROGRESS.md); it is back, and the stored total equals the
+  sum of the six items on the 1,981 visits that have it.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  fagers01: {label: "Combien de temps après votre réveil fumez-vous votre première cigarette", range: [0, 3]}
+  fagers02: {label: "Trouvez-vous difficile de vous abstenir de fumer dans les endroits où..."}
+  fagers03: {label: "A quelle cigarette de la journée vous serait-il le plus difficile de..."}
+  fagers04: {label: "Combien de cigarettes fumez-vous par jour", range: [0, 3]}
+  fagers05: {label: "Fumez-vous à un rythme plus soutenu le matin que l'après-midi"}
+  fagers06: {label: "Fumez-vous lorsque vous êtes si malade que vous devez rester au lit..."}
+  fagers_stored: {column: fagers, label: Fagerström total as stored, range: [0, 10], keep: false}
+
+scores:
+  fagerstrom_total:
+    label: Fagerström total (0 to 10)
+    sum: [fagers01, fagers02, fagers03, fagers04, fagers05, fagers06]
+    compare: fagers_stored

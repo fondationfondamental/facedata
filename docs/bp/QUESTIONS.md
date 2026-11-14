@@ -469,7 +469,7 @@ D48)
   one needed?
 
 **PI-5. The table of medications needs a clinical review.** (O36, D56)
-- `facedata/bp/medications.csv` gives, for 223 names, the molecule, its ATC
+- `facedata/medications.csv` gives, for 250 names (27 added on 2026-11-13 with the FACE SZ lists), the molecule, its ATC
   code and one of ten groups. It was written from general knowledge of the
   pharmacopoeia. 229 medications of 159 patients have a name that is not in
   it.
@@ -687,8 +687,11 @@ managers.
   another in the comparisons between centres.
 - Can the export always keep the same record (the first registration, or
   the centre of each visit)?
-- Can it hold an identifier that does not change from one run to the next,
-  a pseudonym of the patient code?
+- The extraction seems to hold an identifier that does not change already:
+  `subjid`. The SZ dictionary calls it the patient code of the foundation,
+  and it is the same in the two BP files for the 18 patients who changed
+  `usubjid`. Can you confirm that it is the patient code, and that two
+  extractions can be joined on it?
 - How many patients are registered in two centres? Are the visits made in
   both centres exported under the record that is kept?
 - 19 patients left and, by your count, 18 came back under another

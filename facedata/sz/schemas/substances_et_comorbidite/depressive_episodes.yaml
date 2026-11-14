@@ -1,0 +1,15 @@
+instrument: depressive_episodes
+title: Major depressive episodes outside the psychotic episodes
+tab: SUBSTANCES ET COMORBIDITE
+section: Trouble thymique (survenant en dehors des épisodes psychotiques)
+status: draft
+notes: >
+  Asked at the inclusion visit only (2,149 visits): has the patient had major
+  depressive episodes, the age at the first one and their number over the
+  whole life. "U" is a missing code (167 answers). 999 means "does not
+  know" (the dictionary says so): 58 ages and 215 numbers.
+
+variables:
+  mde_ever: {column: ceoccurthy, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: Has had major depressive episodes}
+  mde_first_age: {column: agedebutthy, type: item, range: [0, 90], missing: {999: unknown}, label: Age at the first major depressive episode}
+  mde_count: {column: nboccurthy, type: item, range: [0, 100], missing: {999: unknown}, label: Number of major depressive episodes over the whole life}

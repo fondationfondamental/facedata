@@ -1,0 +1,72 @@
+instrument: autoimmune_history_fu
+title: Auto-immune diseases, at follow-up
+tab: ANTECEDENTS
+section: Pathologies auto-immunes
+status: draft
+notes: >
+  A section that BP does not have, asked from 2012 (about 1,415 visits):
+  thirteen diseases, each with "treated at present". Nearly every answer is
+  no; "Nc" is a missing code (about 28 answers per disease). Five of the
+  "treated" columns are empty in the extraction.
+
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  diabetes_type1_fu: {column: diabete1_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 1 diabetes, at follow-up"}
+  diabetes_type1_treated_fu: {column: diabete1_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 1 diabetes: treated at present, at follow-up"}
+  rheumatoid_arthritis_fu: {column: polyarthr_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis, at follow-up"}
+  rheumatoid_arthritis_treated_fu: {column: polyarthr_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis: treated at present, at follow-up"}
+  lupus_fu: {column: lupus_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus, at follow-up"}
+  lupus_treated_fu: {column: lupus_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus: treated at present, at follow-up"}
+  sjogren_fu: {column: gougerot_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sjögren's disease, at follow-up"}
+  sjogren_treated_fu: {column: gougerot_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sjögren's disease: treated at present, at follow-up"}
+  ankylosing_spondylitis_fu: {column: spondylar_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ankylosing spondylitis, at follow-up"}
+  ankylosing_spondylitis_treated_fu: {column: spondylar_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ankylosing spondylitis: treated at present, at follow-up"}
+  psoriasis_fu: {column: psoriasis_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis, at follow-up"}
+  psoriasis_treated_fu: {column: psoriasis_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: treated at present, at follow-up"}
+  rheumatic_fever_fu: {column: rhumart_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute rheumatic fever, at follow-up"}
+  rheumatic_fever_treated_fu: {column: rhumart_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute rheumatic fever: treated at present, at follow-up"}
+  giant_cell_arteritis_fu: {column: horton_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Giant cell arteritis, at follow-up"}
+  giant_cell_arteritis_treated_fu: {column: horton_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Giant cell arteritis: treated at present, at follow-up"}
+  scleroderma_fu: {column: scleroder_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Scleroderma, at follow-up"}
+  scleroderma_treated_fu: {column: scleroder_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Scleroderma: treated at present, at follow-up"}
+  crohn_fu: {column: crohn_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Crohn's disease, at follow-up"}
+  crohn_treated_fu: {column: crohn_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Crohn's disease: treated at present, at follow-up"}
+  ulcerative_colitis_fu: {column: rectocoli_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ulcerative colitis, at follow-up"}
+  ulcerative_colitis_treated_fu: {column: rectocoli_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ulcerative colitis: treated at present, at follow-up"}
+  sarcoidosis_fu: {column: sarcoido_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sarcoidosis, at follow-up"}
+  sarcoidosis_treated_fu: {column: sarcoido_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sarcoidosis: treated at present, at follow-up"}
+  coeliac_disease_fu: {column: coeliaque_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coeliac disease, at follow-up"}
+  coeliac_disease_treated_fu: {column: coeliaque_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coeliac disease: treated at present, at follow-up"}

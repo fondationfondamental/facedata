@@ -1,0 +1,34 @@
+instrument: toxoplasmose
+title: Toxoplasmosis serology
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  Asked from 2012. Was a toxoplasmosis serology done (2,159 "yes" of
+  2,828 answers), and if so: are the IgM positive (91 of 2,123), are the
+  IgG positive (704 of 2,122), and the IgG titre of the positive patients
+  (632 results). Where no serology was done the two results are empty, not
+  "no".
+
+  The titre depends on the centre: its median goes from 14 to 137 UI/mL
+  between the six centres that have 30 results or more, ten times more in
+  one than in another. The laboratories do not use the same assay, so the
+  titres of two centres should not be compared. 16 results are written
+  with ">" (censored_right) and 5 with "<"; one is out of range.
+
+  The unit column of the titre (tgnigmab_lborresu) is empty.
+
+defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
+
+variables:
+  toxo_serology: {column: rad_toxo, label: A toxoplasmosis serology was done}
+  toxo_igm_positive: {column: rad_igm_statut, label: "IgM positive (recent infection)"}
+  toxo_igg_positive: {column: rad_igg_statut, label: "IgG positive (past infection)"}
+  toxo_igg_titre:
+    column: tgnigmab_lbstresc
+    label: IgG titre of the patients with a positive serology
+    type: number
+    unit: UI/mL
+    range: [0, 10000]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.

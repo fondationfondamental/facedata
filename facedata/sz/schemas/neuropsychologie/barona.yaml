@@ -1,0 +1,87 @@
+instrument: barona
+title: Premorbid IQ expected from occupation and diploma (Barona)
+tab: NEUROPSYCHOLOGIE
+section: wais_version
+status: draft
+notes: >
+  The IQ that the occupation, the diploma, the age and the sex of the patient
+  let expect, and its difference with the IQ estimated from the WAIS. Filled
+  with the WAIS of both editions (1,541 visits with an expected full-scale
+  IQ, 2010 to 2026); the expected verbal and performance IQs exist on the
+  WAIS-III visits only (577). The dictionary gives no formula and the
+  expected IQs are delivered as stored.
+
+  The occupation is not reliable (decision D13, open question O17, to send
+  first). The form lists seven occupations and seven diplomas. On 1,111 of
+  the 1,546 visits that have both (72%, against 15% if the two were
+  independent), the occupation holds the same place in its list as the
+  diploma in its own: 221 of the 225 farmers have a vocational certificate
+  (CAP BEP), 218 of the 237 retired patients a general baccalaureate, in a
+  cohort whose median age is about 30. It happens in every year and in
+  every centre (27% to 91% of the visits). The diploma agrees with the
+  education level of the patient tab, so the diploma is the answer and the
+  occupation is, on most of these visits, a copy of its place in the list.
+  The cell does not tell a copy from a true coincidence (a higher
+  professional with a university degree). The expected IQ depends on the
+  occupation, so it carries the error. On these visits the occupation, the
+  expected IQs and the differences keep their value and get check_failed.
+
+  The differences are the expected IQ minus the IQ estimated from the WAIS.
+  WAIS-III: verbal on 508 of 508 visits and performance on 516 of 516; the
+  estimated full-scale IQ is not in the extraction. WAIS-IV: the full-scale
+  difference uses the seven-subtest IQ where it exists (292 of 293, with
+  the IQ corrected as in wais4_efficience.yaml) and the two-subtest IQ
+  otherwise (154 of 161). tests/test_real_data_sz.py checks them.
+
+  The highest diploma is written in two ways (until 2016 and from 2015);
+  both give university_higher. The occupation and the diploma differ
+  between two visits for 108 and 69 of the 266 patients seen twice.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: number, winsor: false}
+
+variables:
+  barona_occupation:
+    column: barona01_w
+    label: Occupation category
+    type: category
+    codes:
+      Ouvriers: manual_worker
+      Employés: employee
+      Agriculteurs: farmer
+      "Artisans, commerçants": craft_trade
+      Retraités: retired
+      Professions intermédiaires: intermediate
+      Professions intellectuelles supérieures: higher_professional
+  barona_education:
+    column: barona02_w
+    label: Highest diploma
+    type: category
+    codes:
+      Sans diplôme: no_diploma
+      CEP: primary_certificate
+      CAP BEP: vocational_certificate
+      "BAC technologique, pro et brevet professionnel": vocational_baccalaureate
+      BAC général: general_baccalaureate
+      "Diplôme universitaire 1er cycle, BTS, DUT, diplômes des professions sociales et de la santé": university_first_cycle
+      "Diplôme universitaire 2e et 3e cycle, ingenieur grande école": university_higher
+      "Diplôme universitaire 2e et 3e cycle,d ingenieur d une grande école": university_higher
+  barona_expected_qit: {column: barona03_w, label: Expected full-scale IQ, range: [70, 130]}
+  barona_qit_difference: {column: barona04_w, label: Expected minus estimated full-scale IQ, range: [-70, 80]}
+  barona_expected_qiv: {column: barona05_wais3, label: Expected verbal IQ (WAIS-III visits), range: [70, 130], versions: [wais3]}
+  barona_qiv_difference: {column: barona06_wais3, label: Expected minus estimated verbal IQ (WAIS-III visits), range: [-70, 80], versions: [wais3]}
+  barona_expected_qip: {column: barona07_wais3, label: Expected performance IQ (WAIS-III visits), range: [70, 130], versions: [wais3]}
+  barona_qip_difference: {column: barona08_wais3, label: Expected minus estimated performance IQ (WAIS-III visits), range: [-70, 80], versions: [wais3]}
+
+checks:
+  barona_occupation: barona_occupation_follows_diploma
+  barona_expected_qit: barona_occupation_follows_diploma
+  barona_qit_difference: barona_occupation_follows_diploma
+  barona_expected_qiv: barona_occupation_follows_diploma
+  barona_qiv_difference: barona_occupation_follows_diploma
+  barona_expected_qip: barona_occupation_follows_diploma
+  barona_qip_difference: barona_occupation_follows_diploma

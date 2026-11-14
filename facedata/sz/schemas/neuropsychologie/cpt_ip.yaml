@@ -1,0 +1,52 @@
+instrument: cpt_ip
+title: Continuous Performance Test, Identical Pairs (CPT-IP)
+tab: NEUROPSYCHOLOGIE
+section: CPT-IP
+status: draft
+notes: >
+  Sustained attention: numbers of 2, 3 and 4 digits flash on the screen and
+  the patient answers when the same number comes twice in a row. Each of the
+  three parts has 30 targets, 30 near-targets (an answer there is a false
+  alarm) and 90 other numbers. About 1,000 visits from 2010 to 2018 (one in
+  2025).
+
+  The numbers are those of the test software, typed by the rater. d-prime
+  (the ability to tell a target from a near-target) is delivered as typed:
+  it is the normal deviate of the hit rate minus that of the false-alarm
+  rate, rates kept away from 0 and 1, on 90% to 94% of the visits of each
+  part; the others, from 2011 to 2017, hold another value and nothing tells
+  which number was mistyped. A few counts are impossible (34 hits out of
+  30, 90 hits) and are out of range.
+
+  The mean d-prime is recomputed here as the mean of the three parts; it
+  equals the stored one on all 956 visits that have the four numbers.
+
+  The percentile was typed by hand from 2013 to 2017 (420 visits, 8
+  centres), against norms that the dictionary does not name. 335 cells hold
+  a number, 16 a value under a limit ("<1": censored_left) and 68 a band
+  ("10-25"), read as its middle and flagged band_middle. One value is above
+  100.
+
+defaults: {type: item, range: [0, 30]}
+
+variables:
+  cptip_2_hits: {column: cptip201_, label: "2 digits: hits (0 to 30)"}
+  cptip_2_false_alarms: {column: cptip202_, label: "2 digits: false alarms (0 to 30)"}
+  cptip_2_random: {column: cptip203_, label: "2 digits: answers to other numbers (0 to 90)", range: [0, 90]}
+  cptip_2_dprime: {column: cptip204_, label: "2 digits: d-prime", type: number, range: [-1.5, 4.5], winsor: false}
+  cptip_3_hits: {column: cptip301_, label: "3 digits: hits (0 to 30)"}
+  cptip_3_false_alarms: {column: cptip302_, label: "3 digits: false alarms (0 to 30)"}
+  cptip_3_random: {column: cptip303_, label: "3 digits: answers to other numbers (0 to 90)", range: [0, 90]}
+  cptip_3_dprime: {column: cptip304_, label: "3 digits: d-prime", type: number, range: [-1.5, 4.5], winsor: false}
+  cptip_4_hits: {column: cptip401_, label: "4 digits: hits (0 to 30)"}
+  cptip_4_false_alarms: {column: cptip402_, label: "4 digits: false alarms (0 to 30)"}
+  cptip_4_random: {column: cptip403_, label: "4 digits: answers to other numbers (0 to 90)", range: [0, 90]}
+  cptip_4_dprime: {column: cptip404_, label: "4 digits: d-prime", type: number, range: [-1.5, 4.5], winsor: false}
+  cptip_dprime_mean_stored: {column: cptip1_, label: "Mean d-prime of the three parts, as stored", type: number, range: [-1.5, 4.5], winsor: false, keep: false}
+  cptip_percentile: {column: cptip2_, label: Percentile of the mean d-prime (typed by hand), type: number, range: [0, 100], bands: middle, winsor: false}
+
+scores:
+  cptip_dprime_mean:
+    label: Mean d-prime of the three parts
+    mean: [cptip_2_dprime, cptip_3_dprime, cptip_4_dprime]
+    compare: cptip_dprime_mean_stored

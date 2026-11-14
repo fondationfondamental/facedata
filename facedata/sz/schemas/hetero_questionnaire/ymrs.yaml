@@ -1,0 +1,39 @@
+instrument: ymrs
+title: "Young Mania Rating Scale (YMRS)"
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire YMRS
+status: draft
+notes: >
+  Eleven items. Items 5, 6, 8 and 9 count double and are scored 0, 2, 4, 6 or
+  8; the others are scored 0 to 4. The total goes up to 60.
+
+  The stored total equals the sum of the 11 items on all 4,538 rows that have
+  one. A total needs all its items.
+
+  The dictionary gives no label for the items; the labels here are those of
+  the published scale.
+
+  Same instrument and same schema as in FACE BP.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  ymrs01: {label: "Elevated mood"}
+  ymrs02: {label: "Increased motor activity and energy"}
+  ymrs03: {label: "Sexual interest"}
+  ymrs04: {label: "Sleep"}
+  ymrs05: {label: "Irritability", range: [0, 8]}
+  ymrs06: {label: "Speech (rate and amount)", range: [0, 8]}
+  ymrs07: {label: "Language and thought disorder"}
+  ymrs08: {label: "Content", range: [0, 8]}
+  ymrs09: {label: "Disruptive and aggressive behaviour", range: [0, 8]}
+  ymrs10: {label: "Appearance"}
+  ymrs11: {label: "Insight"}
+  ymrs_total_stored: {column: ymrs_, label: "Total as stored", range: [0, 60], keep: false}
+
+scores:
+  ymrs_total:
+    label: "YMRS total (11 items)"
+    sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
+          ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
+    compare: ymrs_total_stored

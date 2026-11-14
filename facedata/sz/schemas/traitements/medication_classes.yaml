@@ -1,0 +1,35 @@
+instrument: medication_classes
+title: Number of medications of each class in the list of the patient
+tab: TRAITEMENTS
+section: Nombre de traitements psychotropes présents AU MOMENT DE LA VISITE
+status: draft
+level: patient
+notes: >
+  Six counts that the export computes from the medication list: how many
+  antipsychotics, antidepressants, anxiolytics, anticholinergic
+  correctors, mood stabilisers and hypnotics it holds.
+
+  One value per patient, not per visit (decision D19 in PROGRESS.md). The
+  dictionary calls them the treatments "at the time of the visit", but each
+  count is the same on every row of a patient, like the lists: it counts
+  the whole history. What a patient takes at a visit is in
+  medications_at_visit (medications.yaml). The counts are empty for the
+  378 patients who have no list.
+
+  The classes are those of the export, whose rule is not in the dictionary:
+  the number of antipsychotics equals the number of medications that
+  facedata/medications.csv puts in the two antipsychotic groups for 1,391
+  of 1,975 patients.
+
+  The six yes/no columns of the same classes (psychotic, depress, anxiolyt,
+  antichol, thymoreg, hypnot) are ignored: each is 1 where the count is
+  above 0, on every row that has a list, and 0 on the rows that have none,
+  where nothing is known.
+
+variables:
+  n_listed_antipsychotics: {column: psychotic_nb, type: item, range: [0, 30], label: "Number of antipsychotics of the first or second generation in the medication list of the patient"}
+  n_listed_antidepressants: {column: depress_nb, type: item, range: [0, 30], label: "Number of antidepressants in the medication list of the patient"}
+  n_listed_anxiolytics: {column: anxiolyt_nb, type: item, range: [0, 30], label: "Number of anxiolytics in the medication list of the patient"}
+  n_listed_anticholinergics: {column: antichol_nb, type: item, range: [0, 30], label: "Number of anticholinergic correctors in the medication list of the patient"}
+  n_listed_mood_stabilisers: {column: thymoreg_nb, type: item, range: [0, 30], label: "Number of mood stabilisers in the medication list of the patient"}
+  n_listed_hypnotics: {column: hypnot_nb, type: item, range: [0, 30], label: "Number of hypnotics in the medication list of the patient"}

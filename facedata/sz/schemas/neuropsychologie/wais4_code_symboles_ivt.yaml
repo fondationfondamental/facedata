@@ -1,0 +1,39 @@
+instrument: wais4_code_symboles_ivt
+title: WAIS-IV coding and processing speed index
+tab: NEUROPSYCHOLOGIE
+section: Code (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  coding columns on the WAIS-IV visits (504 visits, from 2014 to 2025);
+  wais3_code_symboles_ivt.yaml reads the WAIS-III visits. The dictionary
+  files the coding columns under the WAIS-III.
+
+  The raw score is the boxes filled minus the boxes filled incorrectly, and
+  the z-score is (scaled score - 10) / 3, on every visit.
+
+  The processing speed index, its percentile rank and the sum of scaled
+  scores it comes from are in the WAIS-IV index columns (ivt04_wais4,
+  ivt01_wais4, ivt02_wais4). "NaN" in the sum is a missing code: the index
+  could not be computed.
+
+  Same instrument as in FACE BP, without the symbol search, which the SZ
+  extraction does not hold, and without the confidence interval.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  wais4_code_filled: {column: sdmt0104_w, label: Coding - boxes filled, range: [0, 135]}
+  wais4_code_errors: {column: sdmt0102_w, label: Coding - boxes filled incorrectly, range: [0, 135]}
+  wais4_code_raw: {column: sdmt0103_w, label: Coding - raw score, range: [0, 135]}
+  wais4_code_scaled: {column: sdmt0101_w, label: Coding - age-scaled score, range: [1, 19]}
+  wais4_code_z: {column: sdmt0105_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_ivt_sum_scaled: {column: ivt04_wais4, label: Sum of the two scaled scores, range: [2, 38]}
+  wais4_ivt_index: {column: ivt01_wais4, label: Processing speed index, range: [50, 150]}
+  wais4_ivt_percentile: {column: ivt02_wais4, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}

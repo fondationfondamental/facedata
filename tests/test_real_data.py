@@ -37,6 +37,14 @@ def test_visits(result):
     assert result.data["usubjid"].nunique() == 6498 == len(result.patients)
 
 
+def test_tables_say_their_cohort_and_patients_have_the_stable_code(result):
+    for table in [result.data, result.patients, result.flags, result.treatments, result.relatives]:
+        assert table.columns[0] == "cohort" and set(table["cohort"]) == {"bp"}
+    # The patient code of the foundation: one per patient, the key between two extractions and two cohorts.
+    assert list(result.patients.columns[:2]) == ["cohort", "usubjid"] and "fondacode" in result.patients.columns
+    assert result.patients["fondacode"].notna().all() and result.patients["fondacode"].is_unique
+
+
 def test_versions(result):
     data = result.data
     assert data["bis_form"].value_counts().to_dict() == {"bis10": 4689, "bis12": 1451}
@@ -99,8 +107,8 @@ def test_patient_tab(result, qc):
     # One row per patient: the key, 23 columns of the PATIENT tab, 11 of the perinatal schema,
     # 52 of the two lifetime treatment forms (45 variables and 7 censoring columns),
     # 14 counts of the family and 12 columns that sum up the relatives.
-    assert patients.shape == (6498, 113)
-    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 23
+    assert patients.shape == (6498, 115)
+    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 24
     assert patients["sex"].value_counts().to_dict() == {"female": 4108, "male": 2389}
     assert patients["diagnosis"].value_counts().to_dict() == {"bp2": 3111, "bp1": 2718, "bp_nos": 669}
     assert (patients["age_at_inclusion"].min(), patients["age_at_inclusion"].max()) == (17, 86)
@@ -321,10 +329,10 @@ def test_care_and_sick_leave(result, qc):
 def test_treatments(result, qc):
     items, data = result.treatments, result.data
     # One row per patient and medication: the lists of a patient are the same on every row.
-    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (22758, 4779, 103)
+    assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (22758, 4779, 116)
     assert qc.loc["medication", "patient_value_varies"] == 0
     # 99% of the names are found in the table; the others keep what was written and are flagged.
-    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22528, 230)
+    assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22569, 189)
     groups = items["treatment_group"].value_counts()
     assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5002, 4807, 10)
     assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22630, 10903, 3117)
@@ -424,7 +432,7 @@ def test_suicide(result, qc):
 def test_family_history(result, qc):
     relatives, patients = result.relatives, result.patients
     # One row per patient and relative about whom something is known.
-    assert (len(relatives), relatives["usubjid"].nunique(), relatives.shape[1]) == (29849, 5555, 20)
+    assert (len(relatives), relatives["usubjid"].nunique(), relatives.shape[1]) == (29849, 5555, 21)
     kinship = relatives["kinship"].value_counts()
     assert (kinship["mother"], kinship["father"], kinship["sister"], len(kinship)) == (5250, 5124, 1721, 10)
     assert not relatives.duplicated(["usubjid", "relative"]).any()

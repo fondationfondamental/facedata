@@ -1,0 +1,47 @@
+instrument: aims
+title: Abnormal Involuntary Movement Scale (AIMS)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire AIMS
+status: draft
+notes: >
+  Rated by the clinician at every visit. Seven items on the movements
+  (face, lips, jaw, tongue, upper limbs, lower limbs, trunk), then the
+  overall severity, the incapacitation and the patient's awareness, each
+  from 0 to 4, and two yes/no items on the teeth. The dictionary gives the
+  body parts of items 1 to 9.
+
+  Total. The extraction stores no AIMS score. aims_movements is the usual
+  one, the sum of the seven movement items (0 to 28); it needs its seven
+  items and cannot be compared with a stored value.
+
+  Teeth. aims0111 and aims0112 are in the extraction but not in the
+  dictionary's list of columns, which names them in one line with two
+  orders: "11: portprothese, 12: pbactu" for the labels, and "rad_pbactu et
+  rad_portprothese" for the fields. In the published scale item 11 is
+  "current problems with teeth or dentures" and item 12 "usually wears
+  dentures". The first is "yes" on 13% of the visits and the second on 6%,
+  which fits the published order, used here (open question O6 in
+  PROGRESS.md).
+
+  No item loses an answer: the levels 0 to 4 all occur, the highest rarely.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  aims01: {column: aims0101, label: "AIMS 1: muscles of facial expression"}
+  aims02: {column: aims0102, label: "AIMS 2: lips and perioral area"}
+  aims03: {column: aims0103, label: "AIMS 3: jaw"}
+  aims04: {column: aims0104, label: "AIMS 4: tongue"}
+  aims05: {column: aims0105, label: "AIMS 5: upper limbs"}
+  aims06: {column: aims0106, label: "AIMS 6: lower limbs"}
+  aims07: {column: aims0107, label: "AIMS 7: neck, shoulders and hips"}
+  aims_severity: {column: aims0108, label: "AIMS 8: overall severity of the abnormal movements"}
+  aims_incapacitation: {column: aims0109, label: "AIMS 9: incapacitation due to the abnormal movements"}
+  aims_awareness: {column: aims0110, label: "AIMS 10: patient's awareness of the abnormal movements (0 none, 4 severe distress)"}
+  aims_dental_problems: {column: aims0111, label: "AIMS 11: current problems with teeth or dentures (see the notes)", range: [0, 1]}
+  aims_dentures: {column: aims0112, label: "AIMS 12: usually wears dentures (see the notes)", range: [0, 1]}
+
+scores:
+  aims_movements:
+    label: AIMS, sum of the seven movement items (0 to 28)
+    sum: [aims01, aims02, aims03, aims04, aims05, aims06, aims07]

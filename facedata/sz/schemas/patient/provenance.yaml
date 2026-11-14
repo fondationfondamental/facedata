@@ -1,0 +1,85 @@
+instrument: provenance
+title: How the patient came to the expert centre
+tab: PATIENT
+section: Provenance
+status: draft
+level: patient
+notes: >
+  One value per patient; no value changes between the visits of a patient.
+  Filled for about two patients in three (1,591 have a referrer).
+
+  Same instrument as in FACE BP, read in the columns of the SZ extraction:
+  the free text of the referrer is adresseur_autres, the date of the
+  referral letter is dsstdtc, the free text of "how did you hear of the
+  centre" is connaissance_autre. The date at which the information was
+  collected (dmdtc in BP) is not in the SZ extraction.
+
+  The purpose of the visit is a multiple choice, exported as a list in one
+  cell; only three combinations occur.
+
+  The date of the referral letter holds the placeholder 1000-01-01 for 10
+  patients (date_placeholder). Four letters are dated before 2005 and 14 a
+  year or more after the visit of the row; they are inside the hard range
+  and are delivered as written.
+
+  The referring association is known for 4 patients.
+
+  The two free-text details may hold names of people or places; they are
+  delivered as text and never appear in the report.
+
+variables:
+  catchment:
+    column: secteur
+    label: Patient lives inside the centre's catchment area
+    type: category
+    codes: {Secteur du centre: inside, Hors secteur du centre: outside}
+  referred_by:
+    column: adresseur
+    label: Referred by
+    type: category
+    codes:
+      Psychiatre libéral: private_psychiatrist
+      Psychiatre hospitalier du secteur du centre: hospital_psychiatrist_inside
+      Psychiatre hospitalier hors du secteur: hospital_psychiatrist_outside
+      Généraliste: general_practitioner
+      Psychologue ou Psychothérapeute: psychologist
+      Patient lui-même: self
+      Entourage: relatives
+      Association: association
+      Autres: other
+  referred_by_association:
+    column: adresseur_association
+    label: Referring association
+    type: category
+    codes: {Argos: argos, Unafam: unafam, Autres: other}
+  referred_by_detail:
+    column: adresseur_autres
+    label: Referred by, free text
+    type: text
+  referral_letter_date:
+    column: dsstdtc
+    label: Date of the referring doctor's letter
+    type: date
+    range: [1990-01-01, 2030-12-31]
+  visit_purpose:
+    column: objet_visite
+    label: Purpose of the visit
+    type: category
+    codes:
+      "Avis diagnostic,Avis thérapeutique": diagnosis_and_treatment
+      Avis diagnostic: diagnosis
+      Avis thérapeutique: treatment
+  heard_of_centre_from:
+    column: connaissance_centre_expert
+    label: How the patient heard of the expert centre
+    type: category
+    codes:
+      Psychiatre: psychiatrist
+      Médecin généraliste: general_practitioner
+      Internet: internet
+      Association: association
+      Autre: other
+  heard_of_centre_detail:
+    column: connaissance_autre
+    label: How the patient heard of the expert centre, free text
+    type: text

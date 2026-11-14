@@ -1,0 +1,71 @@
+instrument: digestive_history_v0
+title: Liver and digestive history, at inclusion
+tab: ANTECEDENTS
+section: Pathologies hépato-gastro-entérologiques
+status: draft
+notes: >
+  Diarrhoea and constipation are SZ questions, asked from 2012 with their
+  details from 2015.
+
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+
+  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
+  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
+  questions are about the whole life. At the follow-up visits a disease
+  answered yes at inclusion is most often answered no (39 of 47 for a head
+  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
+  time since the last visit. The two are delivered as separate columns
+  ending in _v0 and _fu; visit_form says which form a visit used.
+
+  The section is answered at 85% to 95% of the inclusion visits in every
+  year: the fall that BP shows from 2022 is not seen here.
+
+  The SZ form is shorter than the BP one: one question "treated" per
+  disease, and no date of onset and no "controlled". The names are those of
+  BP where the question is the same.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  inflammatory_bowel_disease_v0: {column: inflachro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease, at inclusion"}
+  inflammatory_bowel_disease_type_v0: {column: inflachro_mhmodify, type: category, codes: {"Maladie de Crohn": crohn, "Rectocolite hémorragique": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: which, at inclusion"}
+  inflammatory_bowel_disease_treated_v0: {column: inflachro_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease: treated, at inclusion"}
+  cirrhosis_v0: {column: cirrhose_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis, at inclusion"}
+  cirrhosis_treated_v0: {column: cirrhose_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis: treated, at inclusion"}
+  peptic_ulcer_v0: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer, at inclusion"}
+  peptic_ulcer_treated_v0: {column: ulcgasduo_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer: treated, at inclusion"}
+  drug_hepatitis_v0: {column: hepmedic_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug-induced hepatitis, at inclusion"}
+  diarrhoea_v0: {column: diarrhee_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea, at inclusion"}
+  diarrhoea_treated_v0: {column: diarrhee_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea: treated, at inclusion"}
+  diarrhoea_antipsychotic_v0: {column: diarrhee_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea: triggered by an antipsychotic, at inclusion"}
+  constipation_v0: {column: constipat_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation, at inclusion"}
+  constipation_treated_v0: {column: constipat_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation: treated, at inclusion"}
+  constipation_antipsychotic_v0: {column: constipat_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation: triggered by an antipsychotic, at inclusion"}

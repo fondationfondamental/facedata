@@ -1,0 +1,46 @@
+instrument: dsm5_alcohol
+title: "DSM-5 criteria of a use disorder: alcohol"
+tab: AUTO-QUESTIONNAIRE
+section: "Critères DSM5 de troubles lié à l'usage de: ALCOOL"
+status: draft
+notes: >
+  Twelve criteria of a use disorder for alcohol, answered from 2012 on
+  2,042 visits (589 with one criterion or more). Each criterion is
+  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
+  "do not know", read as a missing code.
+
+  The second question is asked after a yes to the first (asked_if): where
+  it is empty after a "no" it is 0. The extraction mostly writes it.
+
+  The same twelve questions are asked for seven substances, in seven
+  schemas with the same variables (dsm5_alcohol.yaml and the others). The
+  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
+  DSM-IV criterion. No count of criteria is stored, and none is computed.
+
+defaults: {type: item, range: [0, 1], missing: {2: unknown}}
+
+variables:
+  alcohol_larger_amounts: {column: alcoola1, label: "Alcohol, criterion a: took larger amounts than intended, ever"}
+  alcohol_larger_amounts_12m: {column: alcoola2, label: "Alcohol, criterion a: took larger amounts than intended, in the last 12 months", asked_if: alcohol_larger_amounts}
+  alcohol_cut_down: {column: alcoolb1, label: "Alcohol, criterion b: tried to cut down or stop, ever"}
+  alcohol_cut_down_12m: {column: alcoolb2, label: "Alcohol, criterion b: tried to cut down or stop, in the last 12 months", asked_if: alcohol_cut_down}
+  alcohol_time_spent: {column: alcoolc1, label: "Alcohol, criterion c: spends time obtaining, using or recovering, ever"}
+  alcohol_time_spent_12m: {column: alcoolc2, label: "Alcohol, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: alcohol_time_spent}
+  alcohol_craving: {column: alcoold1, label: "Alcohol, criterion d: craving, ever"}
+  alcohol_craving_12m: {column: alcoold2, label: "Alcohol, criterion d: craving, in the last 12 months", asked_if: alcohol_craving}
+  alcohol_obligations: {column: alcoole1, label: "Alcohol, criterion e: failed major obligations at work, at home or at school, ever"}
+  alcohol_obligations_12m: {column: alcoole2, label: "Alcohol, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: alcohol_obligations}
+  alcohol_interpersonal: {column: alcoolf1, label: "Alcohol, criterion f: went on using in spite of interpersonal consequences, ever"}
+  alcohol_interpersonal_12m: {column: alcoolf2, label: "Alcohol, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: alcohol_interpersonal}
+  alcohol_activities_given_up: {column: alcoolg1, label: "Alcohol, criterion g: gave up social, occupational or leisure activities, ever"}
+  alcohol_activities_given_up_12m: {column: alcoolg2, label: "Alcohol, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: alcohol_activities_given_up}
+  alcohol_hazardous_use: {column: alcoolh1, label: "Alcohol, criterion h: repeated use when it can be dangerous, ever"}
+  alcohol_hazardous_use_12m: {column: alcoolh2, label: "Alcohol, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: alcohol_hazardous_use}
+  alcohol_despite_problems: {column: alcooli1, label: "Alcohol, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  alcohol_despite_problems_12m: {column: alcooli2, label: "Alcohol, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: alcohol_despite_problems}
+  alcohol_tolerance: {column: alcoolj1, label: "Alcohol, criterion j: tolerance, ever"}
+  alcohol_tolerance_12m: {column: alcoolj2, label: "Alcohol, criterion j: tolerance, in the last 12 months", asked_if: alcohol_tolerance}
+  alcohol_withdrawal: {column: alcoolk1, label: "Alcohol, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  alcohol_withdrawal_12m: {column: alcoolk2, label: "Alcohol, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: alcohol_withdrawal}
+  alcohol_legal_problems: {column: alcooll1, label: "Alcohol, criterion l: legal problems linked to the use, ever"}
+  alcohol_legal_problems_12m: {column: alcooll2, label: "Alcohol, criterion l: legal problems linked to the use, in the last 12 months", asked_if: alcohol_legal_problems}

@@ -1,0 +1,58 @@
+instrument: digestive_history_fu
+title: Liver and digestive history, at follow-up
+tab: ANTECEDENTS
+section: Pathologies hépato-gastro-entérologiques
+status: draft
+notes: >
+  Diarrhoea and constipation are SZ questions, asked from 2012 with their
+  details from 2015.
+
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  inflammatory_bowel_disease_fu: {column: inflachro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease, at follow-up"}
+  inflammatory_bowel_disease_type_fu: {column: inflachro_mhmodify, type: category, codes: {"Maladie de Crohn": crohn, "Rectocolite hémorragique": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: which, at follow-up"}
+  inflammatory_bowel_disease_treated_fu: {column: inflachro_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease: treated, at follow-up"}
+  cirrhosis_fu: {column: cirrhose_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis, at follow-up"}
+  cirrhosis_treated_fu: {column: cirrhose_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis: treated, at follow-up"}
+  peptic_ulcer_fu: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer, at follow-up"}
+  peptic_ulcer_treated_fu: {column: ulcgasduo_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer: treated, at follow-up"}
+  drug_hepatitis_fu: {column: hepmedic_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug-induced hepatitis, at follow-up"}
+  diarrhoea_fu: {column: diarrhee_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea, at follow-up"}
+  diarrhoea_treated_fu: {column: diarrhee_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea: treated, at follow-up"}
+  diarrhoea_antipsychotic_fu: {column: diarrhee_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea: triggered by an antipsychotic, at follow-up"}
+  constipation_fu: {column: constipat_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation, at follow-up"}
+  constipation_treated_fu: {column: constipat_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation: treated, at follow-up"}
+  constipation_antipsychotic_fu: {column: constipat_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Constipation: triggered by an antipsychotic, at follow-up"}

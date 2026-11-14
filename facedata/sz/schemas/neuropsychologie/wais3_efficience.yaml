@@ -1,0 +1,65 @@
+instrument: wais3_efficience
+title: WAIS-III intellectual efficiency (seven-subtest short form)
+tab: NEUROPSYCHOLOGIE
+section: Efficience intellectuelle (WAIS-3) - ancienne version
+status: draft
+notes: >
+  The IQs and the working memory index that the EMR estimated from the seven
+  WAIS-III subtests of the battery, on the WAIS-III visits (2010 to 2015, 528
+  with a verbal sum). The WAIS-IV visits are read by wais4_efficience.yaml.
+
+  The dictionary gives no formula. In the data the sums are those of a
+  seven-subtest short form, on every visit where the scaled scores are there:
+  verbal sum = 2 x similarities + 2 x information + arithmetic + digit span
+  (528 of 528), performance sum = 2 x picture completion + 2 x matrices +
+  coding (539 of 539), working memory sum = digit span + arithmetic +
+  letter-number sequencing (472 of 472). The scaled scores are in other
+  schemas, so these three sums are delivered as stored;
+  tests/test_real_data_sz.py checks the three formulas. The total sum is
+  recomputed here as verbal + performance and equals the stored one on
+  every visit.
+
+  Each sum gives one IQ or index, and each percentile rank is the one of the
+  normal curve (mean 100, SD 15) for its IQ, within 0.5 (one working memory
+  percentile is not). A percentile written "<0.1" is read as 0.1 and
+  flagged censored_left.
+
+  The estimated full-scale IQ (ei06_wais3 in the dictionary) is not in the
+  extraction, although its percentile rank and its confidence interval are
+  (open question O14). Where the Barona difference is filled, the
+  expected IQ minus that difference gives it back: a whole number on 522 of
+  525 visits, inside the stored interval on every one.
+
+  The confidence intervals are texts ("85-95"). The verbal interval does not
+  hold the verbal IQ on 14 of 527 visits.
+
+  The Barona expected verbal and performance IQs are in barona.yaml.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais3]}
+
+variables:
+  wais3_qiv_sum_scaled: {column: ei01_wais3, label: "Verbal sum of scaled scores (2 x similarities + 2 x information + arithmetic + digit span)", range: [6, 114]}
+  wais3_qip_sum_scaled: {column: ei02_wais3, label: "Performance sum of scaled scores (2 x picture completion + 2 x matrices + coding)", range: [5, 95]}
+  wais3_qit_sum_scaled_stored: {column: ei03_wais3, label: "Total sum of scaled scores, as stored", range: [11, 209], keep: false}
+  wais3_qiv: {column: ei04_wais3, label: Estimated verbal IQ, range: [45, 155]}
+  wais3_qiv_percentile: {column: ei10_wais3, label: Percentile rank of the verbal IQ, type: number, range: [0, 100], winsor: false}
+  wais3_qiv_interval: {column: ei11_wais3, label: 95% confidence interval of the verbal IQ, type: text}
+  wais3_qip: {column: ei05_wais3, label: Estimated performance IQ, range: [45, 155]}
+  wais3_qip_percentile: {column: ei12_wais3, label: Percentile rank of the performance IQ, type: number, range: [0, 100], winsor: false}
+  wais3_qip_interval: {column: ei13_wais3, label: 95% confidence interval of the performance IQ, type: text}
+  wais3_qit_percentile: {column: ei14_wais3, label: Percentile rank of the full-scale IQ, type: number, range: [0, 100], winsor: false}
+  wais3_qit_interval: {column: ei15_wais3, label: 95% confidence interval of the full-scale IQ, type: text}
+  wais3_imt_sum_scaled: {column: ei07_wais3, label: "Working memory sum of scaled scores (digit span + arithmetic + letter-number sequencing)", range: [3, 57]}
+  wais3_imt_index: {column: mem_travail_indice_wais3, label: Working memory index, range: [45, 155]}
+  wais3_imt_percentile: {column: ei09_wais3, label: Percentile rank of the working memory index, type: number, range: [0, 100], winsor: false}
+
+scores:
+  wais3_qit_sum_scaled:
+    label: Total sum of scaled scores (verbal + performance)
+    sum: [wais3_qiv_sum_scaled, wais3_qip_sum_scaled]
+    compare: wais3_qit_sum_scaled_stored

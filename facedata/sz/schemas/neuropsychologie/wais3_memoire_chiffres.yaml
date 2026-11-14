@@ -1,0 +1,55 @@
+instrument: wais3_memoire_chiffres
+title: WAIS-III digit span
+tab: NEUROPSYCHOLOGIE
+section: Mémoire des chiffres (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the digit-span columns
+  on the WAIS-III visits (739 visits, from 2010 to 2016);
+  wais4_memoire_chiffres.yaml reads the WAIS-IV visits.
+
+  The SZ extraction holds the summary scores only: the items of the two
+  tasks, which BP has, are not extracted. So the two raw scores cannot be
+  recomputed; the raw total is checked against their sum.
+
+  The raw total is forward + backward on 707 of the 739 visits. On the 32
+  others it also counts a sequencing score (mcoc_w), a task that only the
+  WAIS-IV has: these visits were most likely given the WAIS-IV digit span
+  under the label WAIS3. 30 of them get score_mismatch, with derived_doubt
+  on their scaled score and its z-score; on the 2 others the total is above
+  30 and out of range.
+
+  The span difference is forward span minus backward span on every visit,
+  and the z-score of the scaled score is (scaled score - 10) / 3 on every
+  visit. "Infinity" in a z-score of a span is a missing code.
+
+  Same instrument as in FACE BP, reduced to the summary scores; the z-scores
+  of the spans are in the columns mcodempz_w and mcoiempz_w here.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais3]}
+
+variables:
+  wais3_ds_forward_raw:     {column: mcod_w,    label: Forward raw score (8 items of 2 trials),  range: [0, 16]}
+  wais3_ds_backward_raw:    {column: mcoi_w,    label: Backward raw score (7 items of 2 trials), range: [0, 14]}
+  wais3_ds_total:           {column: nbrut_w,   label: Raw total (forward + backward),           range: [0, 30]}
+  wais3_ds_forward_span:    {column: mcodemp_w, label: Longest forward span,                     range: [0, 9]}
+  wais3_ds_backward_span:   {column: mcoiemp_w, label: Longest backward span,                    range: [0, 8]}
+  wais3_ds_span_difference: {column: empdid_w,  label: Forward span minus backward span,         range: [-8, 9]}
+  wais3_ds_scaled:          {column: nstand_w,  label: Age-scaled score (mean 10 and SD 3),      range: [1, 19], derived_from: wais3_ds_total_check}
+  wais3_ds_z:               {column: vstand_w,  label: Scaled score as a z-score, type: number,  range: [-3, 3], winsor: false, derived_from: wais3_ds_total_check}
+  wais3_ds_forward_span_z: {column: mcodempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest forward span as a z-score}
+  wais3_ds_backward_span_z: {column: mcoiempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest backward span as a z-score}
+
+scores:
+  # A consistency check only: the stored total must be forward + backward.
+  wais3_ds_total_check:
+    label: Forward + backward raw scores
+    sum: [wais3_ds_forward_raw, wais3_ds_backward_raw]
+    compare: wais3_ds_total
+    keep: false

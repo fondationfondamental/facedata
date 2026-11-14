@@ -1,0 +1,19 @@
+instrument: sick_leave_v0
+title: Sick leave at inclusion
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: ACTUEL
+status: draft
+notes: >
+  At the inclusion visit (about 1,880): is the patient on sick leave now,
+  was the patient on sick leave in the past year, and for how many weeks.
+  "Non applicable" (the patient has no job: 992 answers) is a missing
+  code. The weeks are filled after a yes; 9 values above 52 weeks are out
+  of range.
+
+  FACE BP also asks the number of sick leaves and whether the current one
+  is a long one; SZ does not.
+
+variables:
+  sick_leave_current: {column: hooccur_arret_travail_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: On sick leave now}
+  sick_leave_12m: {column: hooccur_arret_travail_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: On sick leave in the past year}
+  sick_leave_weeks_12m: {column: hodur_arret_travail_ly, type: number, unit: weeks, range: [0, 52], winsor: false, label: Weeks of sick leave in the past year}

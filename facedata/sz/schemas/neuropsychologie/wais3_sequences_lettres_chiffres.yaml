@@ -1,0 +1,67 @@
+instrument: wais3_sequences_lettres_chiffres
+title: WAIS-III letter-number sequencing
+tab: NEUROPSYCHOLOGIE
+section: Séquences Lettres-Chiffres (WAIS-3) ancienne version
+status: draft
+notes: >
+  A WAIS-III subtest, filled from 2010 to 2015 (477 visits): seven items
+  of three trials each. A trial is 0 or 1 and an item is the number of its
+  trials passed, 0 to 3. The 28 trial and item columns are not in the
+  dictionary.
+
+  The stored raw total is the sum of the seven items on every visit. The
+  z-score is (scaled score - 10) / 3 on every visit. No WAIS-IV visit holds
+  a value here.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP does not have this subtest.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais3]}
+
+variables:
+  wais3_lns01a: {column: slc01a_wais3, label: "Letter-number sequencing item 1, trial a"}
+  wais3_lns01b: {column: slc01b_wais3, label: "Letter-number sequencing item 1, trial b"}
+  wais3_lns01c: {column: slc01c_wais3, label: "Letter-number sequencing item 1, trial c"}
+  wais3_lns02a: {column: slc02a_wais3, label: "Letter-number sequencing item 2, trial a"}
+  wais3_lns02b: {column: slc02b_wais3, label: "Letter-number sequencing item 2, trial b"}
+  wais3_lns02c: {column: slc02c_wais3, label: "Letter-number sequencing item 2, trial c"}
+  wais3_lns03a: {column: slc03a_wais3, label: "Letter-number sequencing item 3, trial a"}
+  wais3_lns03b: {column: slc03b_wais3, label: "Letter-number sequencing item 3, trial b"}
+  wais3_lns03c: {column: slc03c_wais3, label: "Letter-number sequencing item 3, trial c"}
+  wais3_lns04a: {column: slc04a_wais3, label: "Letter-number sequencing item 4, trial a"}
+  wais3_lns04b: {column: slc04b_wais3, label: "Letter-number sequencing item 4, trial b"}
+  wais3_lns04c: {column: slc04c_wais3, label: "Letter-number sequencing item 4, trial c"}
+  wais3_lns05a: {column: slc05a_wais3, label: "Letter-number sequencing item 5, trial a"}
+  wais3_lns05b: {column: slc05b_wais3, label: "Letter-number sequencing item 5, trial b"}
+  wais3_lns05c: {column: slc05c_wais3, label: "Letter-number sequencing item 5, trial c"}
+  wais3_lns06a: {column: slc06a_wais3, label: "Letter-number sequencing item 6, trial a"}
+  wais3_lns06b: {column: slc06b_wais3, label: "Letter-number sequencing item 6, trial b"}
+  wais3_lns06c: {column: slc06c_wais3, label: "Letter-number sequencing item 6, trial c"}
+  wais3_lns07a: {column: slc07a_wais3, label: "Letter-number sequencing item 7, trial a"}
+  wais3_lns07b: {column: slc07b_wais3, label: "Letter-number sequencing item 7, trial b"}
+  wais3_lns07c: {column: slc07c_wais3, label: "Letter-number sequencing item 7, trial c"}
+  wais3_lns01: {column: slc01_wais3, label: "Letter-number sequencing item 1 (trials passed)", range: [0, 3]}
+  wais3_lns02: {column: slc02_wais3, label: "Letter-number sequencing item 2 (trials passed)", range: [0, 3]}
+  wais3_lns03: {column: slc03_wais3, label: "Letter-number sequencing item 3 (trials passed)", range: [0, 3]}
+  wais3_lns04: {column: slc04_wais3, label: "Letter-number sequencing item 4 (trials passed)", range: [0, 3]}
+  wais3_lns05: {column: slc05_wais3, label: "Letter-number sequencing item 5 (trials passed)", range: [0, 3]}
+  wais3_lns06: {column: slc06_wais3, label: "Letter-number sequencing item 6 (trials passed)", range: [0, 3]}
+  wais3_lns07: {column: slc07_wais3, label: "Letter-number sequencing item 7 (trials passed)", range: [0, 3]}
+  wais3_lns_total_stored: {column: slctot_wais3, label: Raw total as stored, range: [0, 21], keep: false}
+  wais3_lns_scaled: {column: slcstd_wais3, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_lns_total}
+  wais3_lns_z: {column: slccr_wais3, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_lns_total}
+
+scores:
+  wais3_lns_total:
+    label: Letter-number sequencing raw total (7 items)
+    sum: [wais3_lns01, wais3_lns02, wais3_lns03, wais3_lns04, wais3_lns05, wais3_lns06,
+          wais3_lns07]
+    min_items: 1
+    compare: wais3_lns_total_stored

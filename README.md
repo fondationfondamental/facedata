@@ -45,6 +45,29 @@ bp.coverage("data/bp/BPALL_20261113_2.tsv", "thesauri/FACEBP_thesaurus_V4.34.xls
 Loading everything takes about a minute and a half (a few seconds when you
 name the instruments you need), the report about ten minutes.
 
+FACE SZ is read the same way (`from facedata import sz`): every column of its
+extraction is read by a schema or ignored with a reason, in 127 instruments.
+Its schemas are drafts until the questions of `docs/sz/QUESTIONS.md` are
+answered; `docs/sz/PROGRESS.md` logs each decision. The tables of the two
+cohorts have the same key columns and the same names for the instruments
+they share, so they can be stacked:
+
+```python
+import pandas as pd
+from facedata import bp, sz
+
+one = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
+two = sz.load("data/sz/SZALL_20261113.tsv", instruments=["identite", "ymrs"])
+patients = pd.concat([one.patients, two.patients], ignore_index=True)
+visits = pd.concat([one.data, two.data], ignore_index=True)
+```
+
+The first column of every table is `cohort`. A `usubjid` is unique inside a
+cohort only (the same number can be another patient in the other cohort), so
+the key is `cohort` with `usubjid`. `patients` also holds `fondacode`, the
+patient code that is unique across cohorts and does not change from one
+extraction to the next.
+
 ## Tutorial
 
 ```bash

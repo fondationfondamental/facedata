@@ -1,0 +1,42 @@
+instrument: calgary
+title: Calgary Depression Scale for Schizophrenia (CDSS)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire CALGARY depression scale for schizophrenia
+status: draft
+notes: >
+  Rated by the clinician at every visit: nine items from 0 (absent) to 3
+  (severe). The dictionary does not name them; the labels are those of the
+  published scale.
+
+  Item 8 is lost. In the extraction calgar08 is a copy of calgar07 on every
+  row, and the stored total (calgar) is the sum of the nine columns as
+  extracted, so it counts item 7 twice and never holds item 8. The column
+  behaves like item 7, early wakening: its closest neighbours are the sleep
+  questions of the PSQI (waking in the night or too early, the PSQI total)
+  and not the suicide questions of the same visit. Item 8 is the suicide
+  item. The export fills calgar08 from the wrong field, the kind of error
+  found in BP for the death of the mother (decision D5 and open question O4
+  in PROGRESS.md).
+
+  What is delivered: the eight items that the extraction really holds, and
+  calgary_sum8, their sum (0 to 24). It is not the CDSS total (0 to 27),
+  and the usual threshold of 6 does not apply to it. calgar08 and the
+  stored total are not loaded (ignored.yaml). When the export is corrected,
+  item 8 and the total come back with one line each.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  calgary01: {column: calgar01, label: "CDSS 1: depression"}
+  calgary02: {column: calgar02, label: "CDSS 2: hopelessness"}
+  calgary03: {column: calgar03, label: "CDSS 3: self-depreciation"}
+  calgary04: {column: calgar04, label: "CDSS 4: guilty ideas of reference"}
+  calgary05: {column: calgar05, label: "CDSS 5: pathological guilt"}
+  calgary06: {column: calgar06, label: "CDSS 6: morning depression"}
+  calgary07: {column: calgar07, label: "CDSS 7: early wakening"}
+  calgary09: {column: calgar09, label: "CDSS 9: observed depression"}
+
+scores:
+  calgary_sum8:
+    label: Sum of the eight CDSS items that the extraction holds (item 8, suicide, is missing; 0 to 24)
+    sum: [calgary01, calgary02, calgary03, calgary04, calgary05, calgary06, calgary07, calgary09]

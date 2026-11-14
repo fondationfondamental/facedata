@@ -1,0 +1,58 @@
+instrument: sogs
+title: South Oaks Gambling Screen (SOGS)
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire SOGS
+status: draft
+notes: >
+  South Oaks Gambling Screen, filled from 2014 by few patients (145
+  visits; the questions on borrowed money, 16a to 16k, on 13). Until the
+  extraction of 13 November 2026 nine items were empty (decision D1 in
+  PROGRESS.md).
+
+  The dictionary gives the wording of questions 2, 4, 5 and 6 only; the
+  yes/no items keep their number. 22 of the columns are not in its list.
+
+  The total is delivered as stored. With 122 totals the scoring key
+  cannot be recovered from the data.
+
+defaults: {type: item, range: [0, 1]}
+
+variables:
+  sogs01a: {label: "SOGS 1a: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01b: {label: "SOGS 1b: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01c: {label: "SOGS 1c: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01d: {label: "SOGS 1d: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01e: {label: "SOGS 1e: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01f: {label: "SOGS 1f: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01g: {label: "SOGS 1g: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs_largest_amount: {column: sogs02, type: number, label: "SOGS 2: largest amount gambled in one day", range: [0, 1000000], winsor: false}
+  sogs03: {label: "SOGS 3: a relative has or had a gambling problem"}
+  sogs_relatives: {column: sogs03a, type: text, label: "SOGS 3a: the relatives with a gambling problem, as written"}
+  sogs04: {label: "SOGS 4: went back another day to win back the money lost (0 never to 3 every time)", range: [0, 3]}
+  sogs05: {label: "SOGS 5: claimed to be winning while losing (0 never to 2 most of the time)", range: [0, 2]}
+  sogs06: {label: "SOGS 6: had a gambling problem in the last 12 months (0 no, 1 in the past but not now, 2 yes)", range: [0, 2]}
+  sogs07: {label: "SOGS item 7 (1 yes, 0 no)"}
+  sogs08: {label: "SOGS item 8 (1 yes, 0 no)"}
+  sogs09: {label: "SOGS item 9 (1 yes, 0 no)"}
+  sogs10: {label: "SOGS item 10 (1 yes, 0 no)"}
+  sogs11: {label: "SOGS item 11 (1 yes, 0 no)"}
+  sogs12: {label: "SOGS item 12 (1 yes, 0 no)"}
+  sogs13: {label: "SOGS item 13 (1 yes, 0 no)"}
+  sogs14: {label: "SOGS item 14 (1 yes, 0 no)"}
+  sogs15: {label: "SOGS item 15 (1 yes, 0 no)"}
+  sogs16: {label: "SOGS item 16 (1 yes, 0 no)"}
+  sogs16a: {label: "SOGS 16a: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16b: {label: "SOGS 16b: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16c: {label: "SOGS 16c: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16d: {label: "SOGS 16d: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16e: {label: "SOGS 16e: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16f: {label: "SOGS 16f: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16g: {label: "SOGS 16g: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16h: {label: "SOGS 16h: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16i: {label: "SOGS 16i: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16j: {label: "SOGS 16j: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16k: {label: "SOGS 16k: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs_total:
+    column: sogs_
+    label: SOGS total as stored (0 to 20)
+    range: [0, 20]

@@ -1,0 +1,37 @@
+instrument: cannabis_use
+title: Cannabis use
+tab: SUBSTANCES ET COMORBIDITE
+section: Cannabis
+status: draft
+notes: >
+  Has the patient ever used cannabis, the amounts (joints per day of use)
+  and frequencies over the whole life and in the last 12 months, the age
+  at the first use, the longest abstinence, the family history and a
+  craving score. 3,451 visits; 50% have ever used at inclusion and 46% at
+  follow-up (80 of 725 later answers of patients who said yes at inclusion
+  are no).
+
+  Asked at inclusion and at follow-up, from 2012. The questions about the
+  whole life keep that meaning at follow-up: the share of patients who
+  have ever used is the same at the two (see the notes below), unlike the
+  questions on a use disorder (substance_v0.yaml). The details are filled
+  after a yes. 999 and 9999 mean "does not know" in an amount or a
+  duration, 99 in an age. "Ne sais pas" is a missing code. The number of
+  times per week is filled when the frequency is "1 to 7 times a week".
+
+  The twelve criteria of a cannabis use disorder are in
+  auto_questionnaire/dsm5_cannabis.yaml.
+
+variables:
+  cannabis_ever: {column: suoccur_cannabislt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: has ever used"}
+  cannabis_never_once: {column: suncf_cannabislt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Cannabis: not one use in the whole life (asked after a no)"}
+  cannabis_dose_lifetime: {column: sudose_cannabislt, type: number, unit: joints per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Cannabis: amount per day of use, in the periods of use over the whole life"}
+  cannabis_frequency_lifetime: {column: sudosfrq_cannabislt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Cannabis: frequency in the periods of use over the whole life"}
+  cannabis_times_per_week_lifetime: {column: sudosfrq_cannabisltnb, type: item, range: [1, 7], label: "Cannabis: times per week in the periods of use"}
+  cannabis_dose_12m: {column: sudose_cannabisly, type: number, unit: joints per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Cannabis: amount per day of use in the last 12 months"}
+  cannabis_frequency_12m: {column: sudosfrq_cannabisly, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Cannabis: frequency in the last 12 months"}
+  cannabis_times_per_week_12m: {column: sudosfrq_cannabislynb, type: item, range: [1, 7], label: "Cannabis: times per week in the last 12 months"}
+  cannabis_first_age: {column: agedebut_cannabislt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at the first use"}
+  cannabis_max_abstinence: {column: durabsti_cannabislt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Cannabis: longest abstinence"}
+  cannabis_family_history: {column: atcd1deg_cannabislt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Cannabis: first-degree relative with a use disorder"}
+  cannabis_craving_score: {column: craving_cannabislt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Cannabis: craving (0 never to 10 all the time)"}

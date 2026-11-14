@@ -1,0 +1,88 @@
+instrument: substance_v0
+title: Substance use disorders, at inclusion
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles lié à une SUBSTANCE AU COURS DE LA VIE / VISITE
+status: draft
+notes: >
+  One yes/no question (does the patient have, or have they had, a substance
+  use disorder), then for each of six substances a yes/no, whether symptoms
+  were present in the past month and the age at onset. Yes/no answers are
+  delivered as 1 and 0. The boxes are filled from 2015 at inclusion (50
+  visits before).
+
+  Two periods in the same columns, as in FACE BP (BP decisions D49 and D50;
+  checked on the SZ data, decision D17 in PROGRESS.md). At inclusion the
+  questions are about the whole life; at the yearly visits they are about
+  the time since the last visit: of the patients with an alcohol disorder
+  at inclusion, 147 of 319 later answers are no (175 of 487 for cannabis).
+  The two are delivered as separate columns ending in _v0 and _fu;
+  visit_form says which form a visit used.
+
+  The first question is not usable at inclusion (open question O20, to
+  send first). It holds "Ne sais pas" on 975 of 1,583 inclusion visits
+  (45% to 75% in every year), "Non" on 18 and "Oui" on 590, against 2%
+  "Ne sais pas" at follow-up. On every one of the 1,022 visits that hold
+  "Ne sais pas" with the boxes filled, all the boxes say no: "Ne sais pas"
+  stands where "no" is expected. It is read as a missing code, as
+  everywhere, and nothing is guessed: the boxes of the six substances are
+  complete and say the same thing (a box is yes on 1,326 of the 1,328
+  visits answered "Oui", and on none of the others).
+
+  Age 99 is "does not know". The type of disorder (abuse or dependence)
+  and its cumulated duration, which BP has, are not extracted; neither are
+  the boxes of the stimulants and of the other substances at inclusion.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  substance_disorder_v0: {column: rad_tb_subst, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has or has had a substance use disorder, at inclusion"}
+
+  alcohol_disorder_v0: {column: suoccur_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Alcohol: abuse or dependence, at inclusion"}
+  alcohol_last_month_v0: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: symptoms in the past month, at inclusion"}
+  alcohol_onset_age_v0: {column: agedebut_alcool, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Alcohol: age at onset, at inclusion"}
+
+  sedative_disorder_v0: {column: suoccur_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, at inclusion"}
+  sedative_last_month_v0: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: symptoms in the past month, at inclusion"}
+  sedative_onset_age_v0: {column: agedebut_sedatif, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Sedatives, hypnotics, anxiolytics: age at onset, at inclusion"}
+
+  cannabis_disorder_v0: {column: suoccur_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: abuse or dependence, at inclusion"}
+  cannabis_last_month_v0: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: symptoms in the past month, at inclusion"}
+  cannabis_onset_age_v0: {column: agedebut_cannabis, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at onset, at inclusion"}
+
+  opiate_disorder_v0: {column: suoccur_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Opiates: abuse or dependence, at inclusion"}
+  opiate_last_month_v0: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: symptoms in the past month, at inclusion"}
+  opiate_onset_age_v0: {column: agedebut_opiaces, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Opiates: age at onset, at inclusion"}
+
+  cocaine_disorder_v0: {column: suoccur_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cocaine: abuse or dependence, at inclusion"}
+  cocaine_last_month_v0: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: symptoms in the past month, at inclusion"}
+  cocaine_onset_age_v0: {column: agedebut_cocaine, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cocaine: age at onset, at inclusion"}
+
+  hallucinogen_disorder_v0: {column: suoccur_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Hallucinogens: abuse or dependence, at inclusion"}
+  hallucinogen_onset_age_v0: {column: agedebut_hallucinogenes, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Hallucinogens: age at onset, at inclusion"}

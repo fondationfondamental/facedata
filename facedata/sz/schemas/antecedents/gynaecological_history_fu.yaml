@@ -1,0 +1,47 @@
+instrument: gynaecological_history_fu
+title: Gynaecological history, at follow-up
+tab: ANTECEDENTS
+section: Antécédents gynécologiques
+status: draft
+notes: >
+  Answered for the women (about 760 visits). The SZ form has three of the
+  nine BP questions.
+
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  n_pregnancies_fu: {column: pregnn_rporres, type: item, range: [0, 20], label: "Number of pregnancies, at follow-up"}
+  menopause_fu: {column: menostat_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Menopause, at follow-up"}
+  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Hormonal treatment of the menopause, at follow-up"}

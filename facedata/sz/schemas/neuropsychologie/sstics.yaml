@@ -1,0 +1,88 @@
+instrument: sstics
+title: Subjective Scale to Investigate Cognition in Schizophrenia (SSTICS)
+tab: NEUROPSYCHOLOGIE
+section: SSTICS (WAIS-4)
+status: draft
+notes: >
+  Self-rated cognitive complaints: 21 items from 0 (never) to 4 (very often).
+  2,354 visits from 2013 to 2026, 2,338 of them with the 21 items. The
+  columns carry the suffix _wais4 but the scale is not a WAIS test; it came
+  with the new neuropsychological form and is read on every visit.
+
+  The six factor scores and the total are the sums of the publication (Stip
+  2003): working memory items 1 and 2, explicit memory 3 to 11, attention
+  12 to 16, executive functions 17 to 19, language 20, praxia 21. Recomputed
+  from the items, they equal the stored scores on all but 3 visits. A score
+  needs all its items. Where an item is missing the EMR writes "Qu" or
+  "Ques" (questionnaire incomplete) in the score: a missing code here.
+
+  The z-score is delivered as stored. It is a decreasing straight line of the
+  total, one value per total, written with one decimal on most visits: a
+  negative z-score is more complaints than the reference group. The
+  dictionary does not give the reference mean and SD.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  sstics_01: {column: sstics01_wais4, label: SSTICS item 1}
+  sstics_02: {column: sstics02_wais4, label: SSTICS item 2}
+  sstics_03: {column: sstics03_wais4, label: SSTICS item 3}
+  sstics_04: {column: sstics04_wais4, label: SSTICS item 4}
+  sstics_05: {column: sstics05_wais4, label: SSTICS item 5}
+  sstics_06: {column: sstics06_wais4, label: SSTICS item 6}
+  sstics_07: {column: sstics07_wais4, label: SSTICS item 7}
+  sstics_08: {column: sstics08_wais4, label: SSTICS item 8}
+  sstics_09: {column: sstics09_wais4, label: SSTICS item 9}
+  sstics_10: {column: sstics10_wais4, label: SSTICS item 10}
+  sstics_11: {column: sstics11_wais4, label: SSTICS item 11}
+  sstics_12: {column: sstics12_wais4, label: SSTICS item 12}
+  sstics_13: {column: sstics13_wais4, label: SSTICS item 13}
+  sstics_14: {column: sstics14_wais4, label: SSTICS item 14}
+  sstics_15: {column: sstics15_wais4, label: SSTICS item 15}
+  sstics_16: {column: sstics16_wais4, label: SSTICS item 16}
+  sstics_17: {column: sstics17_wais4, label: SSTICS item 17}
+  sstics_18: {column: sstics18_wais4, label: SSTICS item 18}
+  sstics_19: {column: sstics19_wais4, label: SSTICS item 19}
+  sstics_20: {column: sstics20_wais4, label: SSTICS item 20}
+  sstics_21: {column: sstics21_wais4, label: SSTICS item 21}
+  sstics_working_memory_stored: {column: sstics1_wais4, label: "Working memory, as stored", range: [0, 8], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_explicit_memory_stored: {column: sstics2_wais4, label: "Explicit memory, as stored", range: [0, 36], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_attention_stored: {column: sstics3_wais4, label: "Attention, as stored", range: [0, 20], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_executive_stored: {column: sstics4_wais4, label: "Executive functions, as stored", range: [0, 12], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_language_stored: {column: sstics5_wais4, label: "Language, as stored", range: [0, 4], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_praxia_stored: {column: sstics6_wais4, label: "Praxia, as stored", range: [0, 4], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_total_stored: {column: sstics7_wais4, label: "SSTICS total, as stored", range: [0, 84], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
+  sstics_z: {column: ssticsz_wais4, label: "Total as a z-score (negative: more complaints than the reference group)", type: number, range: [-12, 3], winsor: false, missing: {qu: not_recorded, ques: not_recorded}, derived_from: sstics_total}
+
+scores:
+  sstics_working_memory:
+    label: "Working memory (items 1 and 2, 0 to 8)"
+    sum: [sstics_01, sstics_02]
+    compare: sstics_working_memory_stored
+  sstics_explicit_memory:
+    label: "Explicit memory (items 3 to 11, 0 to 36)"
+    sum: [sstics_03, sstics_04, sstics_05, sstics_06, sstics_07, sstics_08, sstics_09, sstics_10,
+          sstics_11]
+    compare: sstics_explicit_memory_stored
+  sstics_attention:
+    label: "Attention (items 12 to 16, 0 to 20)"
+    sum: [sstics_12, sstics_13, sstics_14, sstics_15, sstics_16]
+    compare: sstics_attention_stored
+  sstics_executive:
+    label: "Executive functions (items 17 to 19, 0 to 12)"
+    sum: [sstics_17, sstics_18, sstics_19]
+    compare: sstics_executive_stored
+  sstics_language:
+    label: "Language (item 20, 0 to 4)"
+    sum: [sstics_20]
+    compare: sstics_language_stored
+  sstics_praxia:
+    label: "Praxia (item 21, 0 to 4)"
+    sum: [sstics_21]
+    compare: sstics_praxia_stored
+  sstics_total:
+    label: "SSTICS total (21 items, 0 to 84)"
+    sum: [sstics_01, sstics_02, sstics_03, sstics_04, sstics_05, sstics_06, sstics_07, sstics_08,
+          sstics_09, sstics_10, sstics_11, sstics_12, sstics_13, sstics_14, sstics_15, sstics_16,
+          sstics_17, sstics_18, sstics_19, sstics_20, sstics_21]
+    compare: sstics_total_stored

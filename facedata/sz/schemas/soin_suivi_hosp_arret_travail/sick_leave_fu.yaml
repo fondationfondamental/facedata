@@ -1,0 +1,22 @@
+instrument: sick_leave_fu
+title: Sick leave at follow-up
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: LES 12 DERNIERS MOIS // DEPUIS LA DERNIERE VISITE
+status: draft
+notes: >
+  At the follow-up visits (about 2,250): sick leave for a psychiatric
+  disorder since the last visit, and for a somatic disorder in the past 12
+  months, each with the number of leaves and their total length in weeks.
+  "Non applicable" (no job: 941 answers) and "Ne sais pas" (287 for the
+  somatic leaves) are missing codes; so is 999 in a number or a length.
+
+  FACE BP asks one question for all sick leaves at follow-up; the SZ form
+  separates the psychiatric and the somatic ones, so the names differ.
+
+variables:
+  sick_leave_psychiatric_fu: {column: hooccur_arret_travailpsy_spv, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Sick leave for a psychiatric disorder since the last visit}
+  n_sick_leaves_psychiatric_fu: {column: nboccur_arret_travailpsy_spv, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, label: Number of sick leaves for a psychiatric disorder since the last visit}
+  sick_leave_psychiatric_weeks_fu: {column: hodur_arret_travailpsy_spv, type: number, unit: weeks, range: [0, 160], missing: {999: unknown}, winsor: false, label: Total length of the sick leaves for a psychiatric disorder since the last visit}
+  sick_leave_somatic_12m: {column: hooccur_arret_travailsom_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave for a somatic disorder in the past 12 months, at follow-up"}
+  n_sick_leaves_somatic_12m: {column: nboccur_arret_travailsom_ly, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, label: Number of sick leaves for a somatic disorder in the past 12 months}
+  sick_leave_somatic_weeks_12m: {column: hodur_arret_travailsom_ly, type: number, unit: weeks, range: [0, 52], missing: {999: unknown}, winsor: false, label: Total length of the sick leaves for a somatic disorder in the past 12 months}

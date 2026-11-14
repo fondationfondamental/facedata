@@ -1,0 +1,66 @@
+instrument: wais3_complement_images
+title: WAIS-III picture completion
+tab: NEUROPSYCHOLOGIE
+section: Complètement d'images (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  picture completion columns on the WAIS-III visits (571 visits, from 2010
+  to 2016): 25 items scored 0 or 1. wais4_complement_images.yaml reads the
+  WAIS-IV visits.
+
+  The stored raw total is the sum of the 25 items on 570 of 571 visits.
+  The z-score is (scaled score - 10) / 3 on every visit.
+
+  A total counts the items that were given: after the stopping rule the
+  remaining items are left empty.
+
+  FACE BP does not have this subtest.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 1], versions: [wais3]}
+
+variables:
+  wais3_pc01: {column: compl01_w, label: Picture completion item 1}
+  wais3_pc02: {column: compl02_w, label: Picture completion item 2}
+  wais3_pc03: {column: compl03_w, label: Picture completion item 3}
+  wais3_pc04: {column: compl04_w, label: Picture completion item 4}
+  wais3_pc05: {column: compl05_w, label: Picture completion item 5}
+  wais3_pc06: {column: compl06_w, label: Picture completion item 6}
+  wais3_pc07: {column: compl07_w, label: Picture completion item 7}
+  wais3_pc08: {column: compl08_w, label: Picture completion item 8}
+  wais3_pc09: {column: compl09_w, label: Picture completion item 9}
+  wais3_pc10: {column: compl10_w, label: Picture completion item 10}
+  wais3_pc11: {column: compl11_w, label: Picture completion item 11}
+  wais3_pc12: {column: compl12_w, label: Picture completion item 12}
+  wais3_pc13: {column: compl13_w, label: Picture completion item 13}
+  wais3_pc14: {column: compl14_w, label: Picture completion item 14}
+  wais3_pc15: {column: compl15_w, label: Picture completion item 15}
+  wais3_pc16: {column: compl16_w, label: Picture completion item 16}
+  wais3_pc17: {column: compl17_w, label: Picture completion item 17}
+  wais3_pc18: {column: compl18_w, label: Picture completion item 18}
+  wais3_pc19: {column: compl19_w, label: Picture completion item 19}
+  wais3_pc20: {column: compl20_w, label: Picture completion item 20}
+  wais3_pc21: {column: compl21_w, label: Picture completion item 21}
+  wais3_pc22: {column: compl22_w, label: Picture completion item 22}
+  wais3_pc23: {column: compl23_w, label: Picture completion item 23}
+  wais3_pc24: {column: compl24_w, label: Picture completion item 24}
+  wais3_pc25: {column: compl25_w, label: Picture completion item 25}
+  wais3_pc_total_stored: {column: compltot_w, label: Raw total as stored, range: [0, 25], keep: false}
+  wais3_pc_scaled: {column: complstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_pc_total}
+  wais3_pc_z: {column: complcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_pc_total}
+
+scores:
+  wais3_pc_total:
+    label: Picture completion raw total (25 items)
+    sum: [wais3_pc01, wais3_pc02, wais3_pc03, wais3_pc04, wais3_pc05, wais3_pc06, wais3_pc07,
+          wais3_pc08, wais3_pc09, wais3_pc10, wais3_pc11, wais3_pc12, wais3_pc13, wais3_pc14,
+          wais3_pc15, wais3_pc16, wais3_pc17, wais3_pc18, wais3_pc19, wais3_pc20, wais3_pc21,
+          wais3_pc22, wais3_pc23, wais3_pc24, wais3_pc25]
+    min_items: 1
+    compare: wais3_pc_total_stored

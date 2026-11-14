@@ -1,0 +1,81 @@
+instrument: wais4_efficience
+title: WAIS-IV intellectual efficiency (estimated indices)
+tab: NEUROPSYCHOLOGIE
+section: Efficience intellectuelle (WAIS-4) - nouvelle version (données à partir de juin 2015)
+status: draft
+notes: >
+  The indices that the EMR estimated from the seven WAIS-IV subtests of the
+  battery, on the WAIS-IV visits. Two periods. From 2015 to 2018 the seven
+  subtests were given and the four indices and the full-scale IQ are filled
+  (about 450 visits). From 2019 the battery keeps similarities, matrices and
+  digit span, and the only estimate is the two-subtest IQ that the
+  dictionary calls "Denney 2015" (538 visits, 2016 to 2026).
+
+  The dictionary gives no formula. In the data, on the visits where the
+  scaled scores are there: verbal comprehension sum = 1.5 x (similarities +
+  information) (455 of 456), perceptual reasoning sum = 1.5 x (matrices +
+  picture completion) (451 of 451), working memory sum = digit span +
+  arithmetic (445 of 447), full-scale sum = 10/7 x the sum of the seven
+  scaled scores (428 of 430). The scaled scores are in other schemas, so
+  the sums are delivered as stored; tests/test_real_data_sz.py checks the
+  formulas. "NaN" in a sum is a missing code: a subtest was not given.
+
+  Two stored indices are wrong by a constant (decision D12, open question
+  O15). The stored working memory index always ends in .3 and the stored
+  full-scale IQ in .1, while an index is a whole number. Three facts say
+  that the working memory index is 0.7 too low and the full-scale IQ 2.9
+  too low, on every visit, in every year and centre: (1) at the centre of
+  the sum, where every index is 100, they are 99.3 and 97.1; (2) their
+  percentile ranks are those of the normal curve for the stored value plus
+  0.7 and plus 2.9, as the percentile ranks of the two other indices are
+  for their stored value; (3) the Barona difference of the same visit is
+  the expected IQ minus the stored IQ plus 2.9 (292 of 293 visits). So
+  wais4_imt_index is the stored value plus 0.7 and wais4_qit the stored
+  value plus 2.9. The verbal comprehension and perceptual reasoning indices
+  are right as stored.
+
+  The two-subtest IQ follows the sum of the scaled scores of similarities
+  and matrices (about 47.6 + 2.38 x the sum, rounded) on 504 of 536 visits;
+  the 32 others, from 2022 to 2026, hold another value. "undefined" is a
+  missing code: one of the two subtests was not given. One value of 10 is
+  out of range. The cell is empty on 1,293 WAIS-IV visits that have both
+  scaled scores.
+
+  The processing speed index is in wais4_code_symboles_ivt.yaml.
+
+  25 visits of 2013 to 2016 labelled WAIS-III hold WAIS-IV indices; they are
+  not read here (open question O16).
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, versions: [wais4]}
+
+variables:
+  wais4_icv_sum_scaled: {column: ei16_wais4, label: "Verbal comprehension sum of scaled scores, 1.5 x (similarities + information)", type: number, range: [3, 57], winsor: false}
+  wais4_icv_index: {column: ei17_wais4, label: Verbal comprehension index, range: [45, 155]}
+  wais4_icv_percentile: {column: ei18_wais4, label: Percentile rank of the verbal comprehension index, type: number, range: [0, 100], winsor: false}
+  wais4_irp_sum_scaled: {column: ei19_wais4, label: "Perceptual reasoning sum of scaled scores, 1.5 x (matrices + picture completion)", type: number, range: [3, 57], winsor: false}
+  wais4_irp_index: {column: ei20_wais4, label: Perceptual reasoning index, range: [45, 155]}
+  wais4_irp_percentile: {column: ei21_wais4, label: Percentile rank of the perceptual reasoning index, type: number, range: [0, 100], winsor: false}
+  wais4_imt_sum_scaled: {column: imt01_wais4, label: "Working memory sum of scaled scores (digit span + arithmetic)", range: [2, 38]}
+  wais4_imt_index_stored: {column: imt02_wais4, label: "Working memory index, as stored (0.7 too low)", type: number, range: [44.3, 154.3], winsor: false, keep: false}
+  wais4_imt_percentile: {column: imt03_wais4, label: Percentile rank of the working memory index, type: number, range: [0, 100], winsor: false}
+  wais4_qit_sum_scaled: {column: ei22_wais4, label: "Full-scale sum of scaled scores, 10/7 x the seven subtests", type: number, range: [10, 190], winsor: false}
+  wais4_qit_stored: {column: ei23_wais4, label: "Estimated full-scale IQ, as stored (2.9 too low)", type: number, range: [37.1, 157.1], winsor: false, keep: false}
+  wais4_qit_percentile: {column: ei24_wais4, label: Percentile rank of the full-scale IQ, type: number, range: [0, 100], winsor: false}
+  wais4_qi_two_subtests: {column: qi_w, label: "IQ estimated from similarities and matrices (Denney 2015)", range: [40, 160], missing: {undefined: not_recorded}}
+
+scores:
+  wais4_imt_index:
+    label: Working memory index (the stored value plus 0.7)
+    sum: [wais4_imt_index_stored]
+    scale: [1, 0.7]
+    versions: [wais4]
+  wais4_qit:
+    label: Estimated full-scale IQ (the stored value plus 2.9)
+    sum: [wais4_qit_stored]
+    scale: [1, 2.9]
+    versions: [wais4]

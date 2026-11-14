@@ -1,0 +1,49 @@
+instrument: other_history_fu
+title: Other medical history, at follow-up
+tab: ANTECEDENTS
+section: Autres pathologies
+status: draft
+notes: >
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  cancer_fu: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at follow-up"}
+  hiv_fu: {column: vih_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection, at follow-up"}
+  hiv_treated_fu: {column: vih_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: treated, at follow-up"}
+  chronic_viral_hepatitis_fu: {column: hvc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis, at follow-up"}
+  chronic_viral_hepatitis_virus_fu: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite D": hepatitis_d, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: which virus, at follow-up"}
+  chronic_viral_hepatitis_treated_fu: {column: hvc_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: treated, at follow-up"}
+  genetic_disease_fu: {column: genetique_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Genetic disease, at follow-up"}
+  genetic_disease_text_fu: {column: genetique_mhmodify, type: text, label: "Genetic disease: which one, as written, at follow-up"}

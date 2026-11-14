@@ -1,0 +1,61 @@
+instrument: errands_test
+title: Errands test (Test des commissions)
+tab: NEUROPSYCHOLOGIE
+section: Test des commissions
+status: draft
+notes: >
+  A planning test: the patient orders a list of errands under constraints of
+  time and place. In the extraction from 2017 (1,034 visits).
+
+  Raw scores: the time taken in minutes, the useless detours, the trips that
+  miss an opening hour, the logical errors, and the total of the three kinds
+  of errors. The stored total equals their sum on every visit; it is
+  recomputed and compared. A few times are written as a duration ("5:30")
+  and stay unparsed.
+
+  Percentiles. They are typed by hand from the norms, with limits that
+  differ from one measure to the next. They are read as bands on one list
+  of limits; the value is the lower limit of the band, and a band wider
+  than one step has <variable>_cens = +1 (450 to 540 cells for the three
+  kinds of errors, where most patients sit in the widest band). A dozen
+  cells are a number that is no limit and stay unparsed.
+
+  z-scores are filled on about 520 visits; "." is a missing code.
+
+  The level of education used for the norms (below or from the
+  baccalauréat) is in the column rad_nsc_, on 816 visits. errands_order is
+  the order in which the patient ran the errands, as typed.
+
+  Same instrument as in FACE BP, read in the SZ column of the education
+  level; the box "test not done" is not extracted.
+
+defaults: {type: item, range: [0, 10]}
+
+variables:
+  errands_education:
+    column: rad_nsc_
+    type: category
+    label: Level of education used for the norms
+    codes: {">= baccalaureat": baccalaureat_or_more, "< baccalaureat": below_baccalaureat}
+  errands_minutes: {column: com01_, type: number, label: Time taken (minutes), range: [0, 60]}
+  errands_minutes_band: {column: com01s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Time taken - percentile band}
+  errands_minutes_z: {column: com01s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, label: Time taken - z-score}
+  errands_detours: {column: com02_, label: Useless detours}
+  errands_detours_band: {column: com02s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Useless detours - percentile band}
+  errands_detours_z: {column: com02s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, label: Useless detours - z-score}
+  errands_late_trips: {column: com03_, label: Trips that miss an opening hour}
+  errands_late_trips_band: {column: com03s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Trips that miss an opening hour - percentile band}
+  errands_late_trips_z: {column: com03s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, label: Trips that miss an opening hour - z-score}
+  errands_logic_errors: {column: com04_, label: Logical errors}
+  errands_logic_errors_band: {column: com04s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Logical errors - percentile band}
+  errands_logic_errors_z: {column: com04s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, label: Logical errors - z-score}
+  errands_errors_stored: {column: com04s3_, label: Total errors as stored, range: [0, 30], keep: false}
+  errands_errors_band: {column: com04s4_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Total errors - percentile band}
+  errands_errors_z: {column: com04s5_, type: number, range: [-10, 10], missing: {".": not_recorded}, label: Total errors - z-score}
+  errands_order: {column: com05_, type: text, label: "Order of the errands, as typed"}
+
+scores:
+  errands_errors:
+    label: Total errors (detours, late trips and logical errors)
+    sum: [errands_detours, errands_late_trips, errands_logic_errors]
+    compare: errands_errors_stored

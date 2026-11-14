@@ -1,0 +1,56 @@
+instrument: birchwood
+title: Birchwood Insight Scale
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire BIRCHWOOD
+status: draft
+notes: >
+  Birchwood Insight Scale, filled at every visit (4,305 visits): eight
+  statements, each 0 (disagree), 1 (unsure) or 2 (agree). The dictionary
+  does not give the statements.
+
+  Until the extraction of 13 November 2026 the eight items were empty: the
+  export lost them (decision D1 in PROGRESS.md).
+
+  Scores. Each stored score was fitted on the items. Awareness of symptoms
+  is item 1 + item 8. Awareness of illness is item 7 + item 2 reversed.
+  Need for treatment is items 4 and 5 plus items 3 and 6 reversed, halved.
+  Each goes from 0 to 4 and the total from 0 to 12. They equal the stored
+  ones but for 2 to 5 visits (score_mismatch). About 60 to 90 visits have a
+  stored score with an item missing; ours needs all its items.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  birchwood01: {column: birchw01, label: "Birchwood item 1 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood02: {column: birchw02, label: "Birchwood item 2 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood03: {column: birchw03, label: "Birchwood item 3 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood04: {column: birchw04, label: "Birchwood item 4 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood05: {column: birchw05, label: "Birchwood item 5 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood06: {column: birchw06, label: "Birchwood item 6 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood07: {column: birchw07, label: "Birchwood item 7 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood08: {column: birchw08, label: "Birchwood item 8 (0 disagree, 1 unsure, 2 agree)"}
+  birchwood_symptoms_stored: {column: birchw1, type: number, label: Awareness of symptoms as stored, range: [0, 4], winsor: false, keep: false}
+  birchwood_illness_stored: {column: birchw2, type: number, label: Awareness of illness as stored, range: [0, 4], winsor: false, keep: false}
+  birchwood_treatment_stored: {column: birchw3, type: number, label: Need for treatment as stored, range: [0, 4], winsor: false, keep: false}
+  birchwood_total_stored: {column: birchw, type: number, label: Total as stored, range: [0, 12], winsor: false, keep: false}
+
+scores:
+  birchwood_symptoms:
+    label: "Birchwood: awareness of symptoms (items 1 and 8, 0 to 4)"
+    sum: [birchwood01, birchwood08]
+    compare: birchwood_symptoms_stored
+  birchwood_illness:
+    label: "Birchwood: awareness of illness (item 7 and item 2 reversed, 0 to 4)"
+    sum: [birchwood02, birchwood07]
+    reverse: [birchwood02]
+    compare: birchwood_illness_stored
+  birchwood_treatment:
+    label: "Birchwood: need for treatment (items 4 and 5, items 3 and 6 reversed, halved: 0 to 4)"
+    sum: [birchwood03, birchwood04, birchwood05, birchwood06]
+    reverse: [birchwood03, birchwood06]
+    scale: [0.5, 0]
+    compare: birchwood_treatment_stored
+  birchwood_total:
+    label: "Birchwood total (0 to 12, higher is better insight)"
+    sum: [birchwood_symptoms, birchwood_illness, birchwood_treatment]
+    compare: birchwood_total_stored

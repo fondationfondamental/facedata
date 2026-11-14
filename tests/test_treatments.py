@@ -103,10 +103,10 @@ def test_check_schema_checks_the_fields_of_a_list(tmp_path):
 
 
 def test_the_names_table_of_the_package_is_coherent():
-    package = Path(__file__).parent.parent / "facedata" / "bp"
-    table = pd.read_csv(package / "medications.csv", dtype=str, keep_default_na=False)
+    package = Path(__file__).parent.parent / "facedata"
+    table = pd.read_csv(package / "medications.csv", dtype=str, keep_default_na=False)       # shared by the cohorts
     assert table["name"].is_unique and (table["name"] == table["name"].str.upper()).all()
     # One ATC code and one group per molecule, and no group outside the ten of the schema.
     assert (table.groupby("molecule")[["atc", "treatment_group"]].nunique() == 1).all().all()
-    schema = load_schemas(package / "schemas")["medications"]
+    schema = load_schemas(package / "bp" / "schemas")["medications"]
     assert set(table["treatment_group"]) == set(schema["variables"]["treatment_group"]["codes"])

@@ -1,0 +1,34 @@
+instrument: bhcg_prolactine
+title: Prolactin
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  Prolactin, read like in FACE BP (the SZ extraction has no beta-hCG).
+
+  The unit column holds mUI/L on 676 results, ng/ml on 714, and the form's
+  default label mg/L, which nobody chose, on the others: that label is
+  ignored, as in BP (decision D31 of the BP file). 633 results are
+  converted from mUI/L. Where no unit was chosen, the rule of BP (custom
+  function prolactin_unit: the size of the value, then the other results of
+  the centre at that time) reads 130 results as mUI/L and leaves 162 that
+  fit both units (unit_unknown, missing). 36 results labelled mUI/L fit
+  ng/mL better (unit_doubt). 67 are out of range and 15 are written with
+  "<" (censored_left).
+
+  Same instrument as in FACE BP, with the SZ column of the result.
+
+defaults: {type: number}
+
+variables:
+  prolactin:
+    label: Prolactin
+    column: prolctn
+    unit_column: prolctn_lborresu
+    ignore_units: [mg/L]
+    unit: ng/mL
+    units:
+      ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L]}
+      mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l]}
+    unit_rule: prolactin_unit
+    range: [0.5, 500]

@@ -1,0 +1,79 @@
+instrument: psqi
+title: Pittsburgh Sleep Quality Index (PSQI)
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire PSQI
+status: draft
+notes: >
+  Pittsburgh Sleep Quality Index, filled from 2012 (3,222 visits). The BP
+  schema, where the notes give the rules: the minutes to fall asleep
+  multiplied by 60 are divided (15 unit_inferred), a bedtime typed in that
+  field is out of range (1), and the latency component and the total are
+  recomputed (15 and 11 score_mismatch). 25 cells of the minutes hold a
+  duration written like a time ("0:30") and end unparsed.
+
+  The SZ extraction also holds the questions about the bed partner
+  (psqi10 and psqi10a to psqi10e, the last one a free text), which BP does
+  not have: they are delivered and are not part of the score. psqi10a to
+  psqi10d are not in the dictionary.
+
+  Not loaded: psqi15 and psqi16, copies of items 6 and 7 on every row
+  (ignored.yaml), as in BP.
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours)}
+  psqi_latency:
+    column: psqi02
+    type: number
+    label: Minutes to fall asleep
+    unit: min
+    units:
+      min: {factor: 1, expect: [0, 240.01]}
+      "min x 60": {factor: 0.0166667, expect: [240.01, 1260]}
+      "min x 60, long": {factor: 0.0166667, expect: [1440, 4501]}
+    range: [0, 240]
+  psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours)}
+  psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night}
+  psqi05a: {label: "Vous n’êtes pas arrivé(e) à vous endormir en 30 minutes"}
+  psqi05b: {label: "Vous vous êtes réveillé(e) au milieu de la nuit ou plus tôt que..."}
+  psqi05c: {label: "Vous avez dû vous lever pour aller aux toilettes"}
+  psqi05d: {label: "Vous avez eu du mal à respirer"}
+  psqi05e: {label: "Vous avez toussé ou ronflé bruyamment"}
+  psqi05f: {label: "Vous avez eu trop froid"}
+  psqi05g: {label: "Vous avez eu trop chaud"}
+  psqi05h: {label: "Vous avez fait des cauchemars"}
+  psqi05i: {label: "Vous avez eu des douleurs"}
+  psqi05j: {label: "Combien de fois, au cours des 30 derniers jours, avez-vous eu des..."}
+  psqi05k: {type: text, label: "Other reason for troubled sleep, as written"}
+  psqi06: {label: "Comment qualifieriez-vous la qualité de votre sommeil en général au..."}
+  psqi07: {label: "Au cours des 30 derniers jours, combien de fois avez-vous pris des..."}
+  psqi08: {label: "Au cours des 30 derniers jours, combien de fois avez-vous eu des..."}
+  psqi09: {label: "Au cours des 30 derniers jours, combien vous a-t-il été difficile..."}
+
+  # The questions about the bed partner, which the BP extraction does not hold. Not part of the score.
+  psqi10: {label: "Has a bed partner or a room mate (0 none to 3 in the same bed)"}
+  psqi10a: {label: "As seen by the partner: loud snoring"}
+  psqi10b: {label: "As seen by the partner: long pauses between breaths while asleep"}
+  psqi10c: {label: "As seen by the partner: legs twitching or jerking while asleep"}
+  psqi10d: {label: "As seen by the partner: episodes of disorientation or confusion during sleep"}
+  psqi10e: {type: text, label: "As seen by the partner: other restlessness, as written"}
+
+  # Component scores as stored, 0 to 3.
+  psqi_efficiency: {column: psqi11, label: Component 4 - habitual sleep efficiency}
+  psqi_duration: {column: psqi12, label: Component 3 - sleep duration}
+  psqi_disturbances: {column: psqi13, label: Component 5 - sleep disturbances}
+  psqi_latency_stored: {column: psqi14, label: Component 2 as stored, keep: false}
+  psqi_dysfunction: {column: psqi17, label: Component 7 - daytime dysfunction}
+  psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
+
+scores:
+  psqi_latency_component:
+    label: Component 2 - sleep latency
+    custom: psqi_latency
+    compare: psqi_latency_stored
+  psqi_total:
+    label: PSQI total (0 to 21, higher is worse)
+    sum: [psqi06, psqi_latency_component, psqi_duration, psqi_efficiency,
+          psqi_disturbances, psqi07, psqi_dysfunction]
+    compare: psqi_stored

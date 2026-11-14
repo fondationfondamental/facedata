@@ -1,0 +1,38 @@
+instrument: extrapyramidal
+title: Extrapyramidal side effects (ten-item scale, parkinsonism)
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire EFFETS SECONDAIRES EXTRA-PYRAMIDAUX
+status: draft
+notes: >
+  Rated by the clinician at every visit: ten items from 0 (normal) to 4
+  (severe). The dictionary gives no name to the items, only "Q1 to Q10";
+  ten items of 0 to 4 with a mean score is the form of the Simpson-Angus
+  scale, but the dictionary does not say so and the items stay numbered.
+
+  Score. The stored score (esrsa, "parkinsonism if 1 or more" in the
+  dictionary) is the mean of the ten items, rounded to one decimal: equal
+  to ours on 4,185 of 4,195 visits, hence the tolerance. The ten others get
+  score_mismatch. A mean needs its ten items; 46 visits have the ten items
+  and no stored score.
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  esrsa01: {label: "Extrapyramidal scale, item 1"}
+  esrsa02: {label: "Extrapyramidal scale, item 2"}
+  esrsa03: {label: "Extrapyramidal scale, item 3"}
+  esrsa04: {label: "Extrapyramidal scale, item 4"}
+  esrsa05: {label: "Extrapyramidal scale, item 5"}
+  esrsa06: {label: "Extrapyramidal scale, item 6"}
+  esrsa07: {label: "Extrapyramidal scale, item 7"}
+  esrsa08: {label: "Extrapyramidal scale, item 8"}
+  esrsa09: {label: "Extrapyramidal scale, item 9"}
+  esrsa10: {label: "Extrapyramidal scale, item 10"}
+  esrsa_mean_stored: {column: esrsa, type: number, label: Mean as stored (one decimal), range: [0, 4], winsor: false, keep: false}
+
+scores:
+  esrsa_mean:
+    label: Extrapyramidal scale, mean of the ten items (0 to 4)
+    mean: [esrsa01, esrsa02, esrsa03, esrsa04, esrsa05, esrsa06, esrsa07, esrsa08, esrsa09, esrsa10]
+    compare: esrsa_mean_stored
+    compare_tolerance: 0.051

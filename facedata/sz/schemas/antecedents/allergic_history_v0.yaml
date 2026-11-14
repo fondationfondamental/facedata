@@ -1,0 +1,63 @@
+instrument: allergic_history_v0
+title: Allergic history, at inclusion
+tab: ANTECEDENTS
+section: Pathologies allergiques
+status: draft
+notes: >
+  One question, then two boxes written in one cell, as in BP (asked_if: no
+  allergic disease means neither). The columns asthme_mhoccur and
+  allergie_mhoccur repeat each box in a column of its own and are ignored.
+  Lupus and rheumatoid arthritis, boxes of this list in BP, are with the
+  auto-immune diseases here.
+
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+
+  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
+  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
+  questions are about the whole life. At the follow-up visits a disease
+  answered yes at inclusion is most often answered no (39 of 47 for a head
+  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
+  time since the last visit. The two are delivered as separate columns
+  ending in _v0 and _fu; visit_form says which form a visit used.
+
+  The section is answered at 85% to 95% of the inclusion visits in every
+  year: the fall that BP shows from 2022 is not seen here.
+
+  The SZ form is shorter than the BP one: one question "treated" per
+  disease, and no date of onset and no "controlled". The names are those of
+  BP where the question is the same.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  allergic_inflammatory_v0: {column: somat_all, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Allergic disease, at inclusion"}
+  asthma_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 0, "Asthme (allergique ou non)": 1}, asked_if: allergic_inflammatory_v0, label: "Asthma, at inclusion"}
+  allergy_v0: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 1, "Asthme (allergique ou non)": 0}, asked_if: allergic_inflammatory_v0, label: "Allergy other than asthma, at inclusion"}

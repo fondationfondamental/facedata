@@ -26,7 +26,7 @@ def load(path, instruments=None, winsor_limits=None, norms="norms"):
     norms: the folder that holds the norm tables (they are not part of the repository).
     Returns a Result with six tables: data, patients, flags, qc, treatments and relatives.
     """
-    return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms)
+    return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms, cohort="bp")
 
 
 def report(result, folder):

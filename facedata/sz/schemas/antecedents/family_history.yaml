@@ -1,0 +1,126 @@
+instrument: family_history
+title: Family history, one row per relative
+tab: ANTECEDENTS
+section: Antécédents filles, Antécédents fils, Antécédents sœurs, Antécédents frères, Antécédents maternels, Antécédents paternels
+status: draft
+level: relatives
+notes: >
+  One row per patient and relative: the mother, the father, up to five
+  sisters, five brothers, five daughters and five sons, in the table
+  relatives. The columns fdr_ of the table patients sum them up
+  (family_history_per_patient, below).
+
+  Two questions per relative: the mood or psychotic disorder (none,
+  depression or unipolar disorder, bipolar disorder, schizophrenia) and
+  suicide (none, attempt, completed). "U" and "Ne sais pas" are missing
+  codes. They are asked for the relatives who have something to describe: a
+  parent answered "yes" in family_structure, and as many sisters, brothers,
+  daughters and sons as the patient counted there. About 730 mothers, 715
+  fathers, 270 sisters and 315 brothers are described; the children almost
+  never (7 cells).
+
+  The BP schema with the two questions that the SZ form has: no birth and
+  death, no substance, anxiety, dementia or cardiovascular risk, and no
+  grandparents. The dictionary gives "yes, no, unknown" as the coding of
+  the sisters, brothers, daughters and sons; the data hold the same lists
+  of disorders as for the parents.
+
+relatives:
+  mere: {relative: mother, kinship: mother, degree: 1}
+  pere: {relative: father, kinship: father, degree: 1}
+  soeur1: {relative: sister_1, kinship: sister, degree: 1}
+  soeur2: {relative: sister_2, kinship: sister, degree: 1}
+  soeur3: {relative: sister_3, kinship: sister, degree: 1}
+  soeur4: {relative: sister_4, kinship: sister, degree: 1}
+  soeur5: {relative: sister_5, kinship: sister, degree: 1}
+  frere1: {relative: brother_1, kinship: brother, degree: 1}
+  frere2: {relative: brother_2, kinship: brother, degree: 1}
+  frere3: {relative: brother_3, kinship: brother, degree: 1}
+  frere4: {relative: brother_4, kinship: brother, degree: 1}
+  frere5: {relative: brother_5, kinship: brother, degree: 1}
+  fille1: {relative: daughter_1, kinship: daughter, degree: 1}
+  fille2: {relative: daughter_2, kinship: daughter, degree: 1}
+  fille3: {relative: daughter_3, kinship: daughter, degree: 1}
+  fille4: {relative: daughter_4, kinship: daughter, degree: 1}
+  fille5: {relative: daughter_5, kinship: daughter, degree: 1}
+  fils1: {relative: son_1, kinship: son, degree: 1}
+  fils2: {relative: son_2, kinship: son, degree: 1}
+  fils3: {relative: son_3, kinship: son, degree: 1}
+  fils4: {relative: son_4, kinship: son, degree: 1}
+  fils5: {relative: son_5, kinship: son, degree: 1}
+
+variables:
+  kinship:
+    column: kinship
+    label: Who the relative is
+    type: category
+    codes:
+      mother: mother
+      father: father
+      sister: sister
+      brother: brother
+      daughter: daughter
+      son: son
+  degree: {column: degree, type: item, range: [1, 2], label: "Degree of kinship (1: parent, sibling, child)"}
+  relative_disorder:
+    column: trouble
+    label: Mood or psychotic disorder of the relative
+    type: category
+    codes:
+      EDM ou Unipolaire: unipolar
+      Bipolaire: bipolar
+      Schizophrène: schizophrenia
+      Aucun: none
+    missing: {U: unknown}
+  relative_suicide:
+    column: suicide
+    label: Suicide or suicide attempt of the relative
+    type: category
+    codes:
+      Aucun: none
+      Tentative de suicide: attempt
+      Suicide abouti: completed
+    missing: {U: unknown}
+per_patient:
+  title: Family history, per patient
+  notes: >
+    One answer per patient: is there a parent, a sibling or a child with
+    bipolar disorder, depression, schizophrenia, a completed suicide or a
+    suicide attempt? Computed from the rows of the table relatives and from
+    the counts of family_structure, as in FACE BP.
+
+    1 when at least one of these relatives has it. 0 when every part of the
+    family is answered and nobody has it. Missing otherwise: one "do not
+    know" is enough, unless another relative says yes.
+
+    The SZ form asks nothing about substances or about the grandparents, so
+    the columns fdr_substance and gp_ of BP do not exist here.
+  by: kinship
+  counts:
+    mother: mother_affected
+    father: father_affected
+    sister: n_sisters_affected
+    brother: n_brothers_affected
+    daughter: n_daughters_affected
+    son: n_sons_affected
+  columns:
+    fdr_bipolar:
+      label: "A parent, a sibling or a child with bipolar disorder"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: bipolar}
+    fdr_depression:
+      label: "A parent, a sibling or a child with depression (a major depressive episode or unipolar disorder)"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: unipolar}
+    fdr_schizophrenia:
+      label: "A parent, a sibling or a child with schizophrenia"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_disorder: schizophrenia}
+    fdr_suicide:
+      label: "A parent, a sibling or a child who died by suicide"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_suicide: completed}
+    fdr_suicide_attempt:
+      label: "A parent, a sibling or a child who attempted suicide"
+      among: [mother, father, sister, brother, daughter, son]
+      where: {relative_suicide: attempt}

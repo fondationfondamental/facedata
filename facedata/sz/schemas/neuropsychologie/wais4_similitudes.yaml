@@ -1,0 +1,55 @@
+instrument: wais4_similitudes
+title: WAIS-IV similarities
+tab: NEUROPSYCHOLOGIE
+section: Similitudes (WAIS-3) ancienne version
+status: draft
+notes: >
+  WAIS-III and WAIS-IV are two instruments stored in the same columns
+  (decision D10 of the BP file). This schema reads the
+  similarities columns on the WAIS-IV visits (1,865 visits, from 2014): 18
+  items scored 0 to 2. wais3_similitudes.yaml reads the WAIS-III visits.
+  The dictionary files the columns under the WAIS-III, and does not list
+  the items.
+
+  One of items 10 and 11 is lost on the WAIS-IV visits. The columns
+  simil10_w and simil11_w are identical on every WAIS-IV visit, while they
+  differ on the WAIS-III visits as two items do. The stored total is not
+  the sum of the 18 columns (it differs by 1 or 2 on 817 of 1,865 visits)
+  but it is a possible total of 18 different items. The export fills one of
+  the two columns from the field of the other, the error found for the
+  matrices (decision D14 and open question O12 in PROGRESS.md). Which of
+  the two is the copy cannot be told, so neither is delivered: the schema
+  gives items 1 to 9 and 12 to 18, and the total as stored.
+
+  The z-score is (scaled score - 10) / 3 on 1,811 of 1,865 visits.
+
+  Same instrument as in FACE BP, where the items have their own columns
+  (simil01_wais4...) and the total is recomputed from the 18 items.
+
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+
+defaults: {type: item, range: [0, 2], versions: [wais4]}
+
+variables:
+  wais4_simil01: {column: simil01_w, label: Similarities item 1}
+  wais4_simil02: {column: simil02_w, label: Similarities item 2}
+  wais4_simil03: {column: simil03_w, label: Similarities item 3}
+  wais4_simil04: {column: simil04_w, label: Similarities item 4}
+  wais4_simil05: {column: simil05_w, label: Similarities item 5}
+  wais4_simil06: {column: simil06_w, label: Similarities item 6}
+  wais4_simil07: {column: simil07_w, label: Similarities item 7}
+  wais4_simil08: {column: simil08_w, label: Similarities item 8}
+  wais4_simil09: {column: simil09_w, label: Similarities item 9}
+  wais4_simil12: {column: simil12_w, label: Similarities item 12}
+  wais4_simil13: {column: simil13_w, label: Similarities item 13}
+  wais4_simil14: {column: simil14_w, label: Similarities item 14}
+  wais4_simil15: {column: simil15_w, label: Similarities item 15}
+  wais4_simil16: {column: simil16_w, label: Similarities item 16}
+  wais4_simil17: {column: simil17_w, label: Similarities item 17}
+  wais4_simil18: {column: simil18_w, label: Similarities item 18}
+  wais4_simil_total: {column: similtot_w, label: "Similarities raw total, as stored", range: [0, 36]}
+  wais4_simil_scaled: {column: similstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19]}
+  wais4_simil_z: {column: similcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false}

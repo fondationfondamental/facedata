@@ -1,0 +1,36 @@
+instrument: dosage_psychotropes
+title: Clozapine plasma level
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  The plasma level of clozapine, read like in FACE BP, and the question
+  that precedes it on the form, "is the patient treated with clozapine?".
+
+  clozapine_treated has 1,600 answers, 569 of them "yes". A level is
+  given on 524 of the "yes" visits and on 69 visits with no answer. 11
+  levels are in mg/L (0.4 for 400 µg/L), 9 are written with "<"
+  (censored_left) and 10 are out of range (0, or under 20 µg/L).
+
+  Same instrument as in FACE BP for the level; the BP extraction has other
+  drugs and another first question (was the treatment taken before the
+  sample).
+
+defaults: {type: number}
+
+variables:
+  clozapine_treated:
+    column: rad_clozapine
+    label: The patient is treated with clozapine
+    type: item
+    range: [0, 1]
+    codes: {Oui: 1, Non: 0}
+  clozapine:
+    label: Clozapine plasma level
+    column: clozapin
+    unit: µg/L
+    units:
+      µg/L: {factor: 1, expect: [20, 3000]}
+      mg/L: {factor: 1000, expect: [0.02, 1]}
+    range: [20, 3000]
+    winsor: [0, 0.99]

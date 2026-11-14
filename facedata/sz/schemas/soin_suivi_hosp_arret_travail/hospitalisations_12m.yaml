@@ -1,0 +1,30 @@
+instrument: hospitalisations_12m
+title: Full-time hospitalisations in the past year
+tab: SOIN SUIVI HOSP ARRET TRAVAIL
+section: LES 12 DERNIERS MOIS
+status: draft
+notes: >
+  Asked at inclusion and at every follow-up visit (4,513 visits): was the
+  patient hospitalised full time in the past year, how many times, for how
+  many weeks in all, and why. 36% yes at inclusion, 19% at follow-up. The
+  number, the length and the reason are filled after a yes (1,179 of 1,183).
+
+  "Ne sais pas" is a missing code. The length stops at 52 weeks. In FACE
+  BP the number and the length of the past year are asked at inclusion
+  only (hospitalisations_v0); the names are the same.
+
+variables:
+  hospitalised_12m: {column: hooccur_hospitalisationtc_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Hospitalised full time in the past year}
+  n_hospitalisations_12m: {column: nboccur_hospitalisationtc_ly, type: number, range: [0, 20], winsor: false, label: Number of hospitalisations in the past year}
+  hospitalisation_weeks_12m: {column: hodur_hospitalisationtc_ly, type: number, unit: weeks, range: [0, 52], winsor: false, label: Total length of the hospitalisations in the past year}
+  hospitalisation_reason_12m:
+    column: raison_hospitalisationtc_ly
+    label: Reason for the hospitalisation of the past year
+    type: category
+    codes:
+      Episode psychotique: psychotic_episode
+      Episode thymique: mood_episode
+      Recrudescence anxieuse: anxiety
+      Tentative de suicide: suicide_attempt
+      Déstabilisation de l environnement: environment
+      Autres: other

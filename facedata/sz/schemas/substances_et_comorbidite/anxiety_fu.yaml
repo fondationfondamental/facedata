@@ -1,0 +1,43 @@
+instrument: anxiety_fu
+title: Anxiety disorder at follow-up
+tab: SUBSTANCES ET COMORBIDITE
+section: Troubles ANXIEUX
+status: draft
+notes: >
+  The first question of anxiety_v0 (does the patient have an anxiety
+  disorder), at the follow-up visits: 2,265 visits, 716 yes, a stable 24%
+  to 42% every year. The form of the follow-up visits holds nothing else
+  on anxiety: the boxes that BP has at follow-up are not in the SZ
+  extraction. "Ne sais pas" is a missing code (39).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  anxiety_disorder_fu: {column: rad_tb_anx, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has an anxiety disorder, at follow-up"}

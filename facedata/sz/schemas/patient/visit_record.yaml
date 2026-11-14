@@ -1,0 +1,22 @@
+instrument: visit_record
+title: Visit record
+tab: PATIENT
+section: visit
+status: draft
+notes: >
+  One value per visit. The visit label, its date and the identifiers of this
+  dictionary section are key columns, built by the pipeline for every
+  instrument. What is left is the date at which the visit record was typed.
+
+  It is the visit date itself for 4,177 of the 6,616 visits. It is before
+  the visit date for 881 visits and a year or more after it for 311: it says
+  when the form was created, not when the patient came.
+
+  Same instrument as in FACE BP.
+
+variables:
+  entry_date:
+    column: date_saisie
+    label: Date the visit record was entered
+    type: date
+    range: [2008-01-01, 2030-12-31]

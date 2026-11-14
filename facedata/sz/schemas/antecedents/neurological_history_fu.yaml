@@ -1,0 +1,58 @@
+instrument: neurological_history_fu
+title: Neurological history, at follow-up
+tab: ANTECEDENTS
+section: Pathologies neurologiques
+status: draft
+notes: >
+  The two migraine columns are swapped in the extraction (open question
+  O24): migraine_mhdecod, named for "treated", holds the answer of every
+  patient (2,488 cells), and migraine_mhoccur, named for the disease, is
+  filled only after a yes (164 of 166 cells). They are read the other way
+  round. Every other disease has its answer in _mhoccur.
+
+  The questions of the inclusion form, asked again at part of the follow-up
+  visits (about 400, 5% to 40% of the visits of a year), where they seem to
+  be about the time since the last visit: see the schema of the inclusion
+  form, whose notes hold for this one.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  migraine_fu: {column: migraine_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Migraine, at follow-up"}
+  migraine_treated_fu: {column: migraine_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Migraine: treated, at follow-up"}
+  multiple_sclerosis_fu: {column: sep_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Multiple sclerosis, at follow-up"}
+  multiple_sclerosis_treated_fu: {column: sep_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Multiple sclerosis: treated, at follow-up"}
+  epilepsy_fu: {column: epilepsie_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Epilepsy, at follow-up"}
+  epilepsy_treated_fu: {column: epilepsie_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Epilepsy: treated, at follow-up"}
+  meningitis_fu: {column: meningte_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Meningitis, at follow-up"}
+  head_injury_fu: {column: traumacra_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Head injury, at follow-up"}
+  stroke_fu: {column: avc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Stroke, at follow-up"}
+  other_neurological_fu: {column: autneuro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another neurological disease, at follow-up"}
+  other_neurological_text_fu: {column: autneuro_mhmodify, type: text, label: "Another neurological disease: which one, as written, at follow-up"}

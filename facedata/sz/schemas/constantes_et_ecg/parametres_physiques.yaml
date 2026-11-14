@@ -1,0 +1,59 @@
+instrument: parametres_physiques
+title: Height, weight, body mass index and waist
+tab: CONSTANTES et ECG
+section: Paramètres physiques
+status: draft
+notes: >
+  These columns have no unit column. In FACE BP a few values are written on
+  another scale: a height in millimetres (1650 for 165 cm), a weight with a
+  lost decimal point (8602 for 86.02 kg). The same units are declared here,
+  so that such a value would be recognised and flagged unit_inferred; the SZ
+  extraction holds none.
+
+  Three heights under 100 cm, one weight of 55,300 and nine waists under 40
+  cm (one of them 0) are impossible: out_of_range.
+
+  The body mass index is recomputed from the harmonised weight and height
+  (custom function body_mass_index) and compared with the stored one, which
+  is rounded to one decimal: no visit differs. It is computed on 4,303
+  visits; the EMR stored it on 4,180.
+
+  Same instrument and same schema as in FACE BP.
+
+defaults: {type: number}
+
+variables:
+  height:
+    label: Height
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [100, 230]}
+      mm: {factor: 0.1, expect: [1000, 2300]}
+      0.1 mm: {factor: 0.01, expect: [10000, 23000]}
+    range: [100, 230]
+  weight:
+    label: Weight
+    unit: kg
+    units:
+      kg: {factor: 1, expect: [25, 300]}
+      0.1 kg: {factor: 0.1, expect: [300, 2500]}
+      0.01 kg: {factor: 0.01, expect: [2500, 25000]}
+    range: [25, 300]
+  waist:
+    column: wstcir
+    label: Waist circumference
+    unit: cm
+    units:
+      cm: {factor: 1, expect: [40, 200]}
+      mm: {factor: 0.1, expect: [400, 2000]}
+    range: [40, 200]
+  bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
+
+scores:
+  bmi:
+    label: Body mass index, from the harmonised weight and height
+    custom: body_mass_index
+    compare: bmi_stored
+    compare_tolerance: 0.051
+    range: [10, 80]
+    winsor: [0.01, 0.99]

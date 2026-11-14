@@ -1,0 +1,40 @@
+instrument: doors_test
+title: Doors test (visual recognition memory)
+tab: NEUROPSYCHOLOGIE
+section: Test des portes
+status: draft
+notes: >
+  Recognition of photographs of doors: part A (12 easy sets) and part B (12
+  hard sets), one point per door recognised. 987 visits with a part A from
+  2010 to 2018 (one in 2025).
+
+  The total is recomputed here as A + B and equals the stored one on all
+  774 visits that have both. Part B holds words on 42 visits ("NA", "non
+  réalisé", "DCM": missing codes): the part was not given, and the EMR left
+  the total empty. Three scores are above 12 and out of range.
+
+  The three percentiles are bands ("10 - 25") or limits ("5") of the norms
+  by age; the share of each band is stable from one period to the next.
+  "75 - 95", wider than one band, is read as 75 or more (censored_right).
+
+  The percentile of part B is "<1" on 172 visits where part B is empty: the
+  EMR computed it from an empty cell, as if the score were 0 (the same
+  error as for the CVLT recency in FACE BP). So does the percentile of part
+  A on one visit. These bands keep their value and get derived_doubt. Not
+  counting them, "<1" is the percentile of 119 visits for part B.
+
+defaults: {type: item, range: [0, 12]}
+
+variables:
+  doors_a: {column: portea_, label: Part A (0 to 12)}
+  doors_b: {column: porteb_, label: Part B (0 to 12), missing: {dcm: not_recorded, non réalisé: not_applicable, non realisé: not_applicable}}
+  doors_total_stored: {column: porte_, label: "Total, as stored", range: [0, 24], keep: false}
+  doors_a_band: {column: porteapc_, label: Part A as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_a}
+  doors_b_band: {column: portebpc_, label: Part B as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_b}
+  doors_total_band: {column: portepc_, label: Total as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_total}
+
+scores:
+  doors_total:
+    label: Total (A + B, 0 to 24)
+    sum: [doors_a, doors_b]
+    compare: doors_total_stored

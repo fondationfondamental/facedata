@@ -1,0 +1,68 @@
+instrument: biochimie
+title: Biochemistry (uric acid, CRP, glucose, HbA1c)
+tab: BILAN BIOLOGIQUE
+section: BILAN BIOLOGIQUE
+status: draft
+notes: >
+  Four analytes of the BP biochemistry, with the same units and limits. The
+  result is in the column named for the analyte (urate, crp, gluc, hba1c)
+  and the unit label in <analyte>_lborresu.
+
+  The unit column holds the form's default label on every visit of the
+  tab, also on the 400 to 930 visits that have no result (as in BP), so a
+  label says little: the unit is checked against the size of the value.
+
+  Uric acid: 22 results fit another unit than their label (mg/L, mg/dL or
+  mmol/L): 10 unit_inferred, 12 unit_doubt. CRP: 334 results are written
+  with "<" (censored_left) and one with ">". Glucose: 66 results labelled
+  g/L are converted; 17 labelled mmol/L can only be g/L (unit_inferred), 3
+  are doubtful and 3 are out of range. HbA1c: 6 results out of range (0, and
+  values above 18).
+
+  Same instrument as in FACE BP, with four of its sixteen analytes.
+
+defaults: {type: number}
+
+variables:
+  uric_acid:
+    label: Uric acid
+    column: urate
+    unit_column: urate_lborresu
+    unit: µmol/L
+    units:
+      µmol/L: {factor: 1, expect: [100, 1000]}
+      mg/L: {factor: 5.948, expect: [15, 100]}
+      mg/dL: {factor: 59.48, expect: [1, 10]}
+      mmol/L: {factor: 1000, expect: [0.1, 1]}
+    range: [50, 1000]
+
+  crp:
+    label: C-reactive protein
+    column: crp
+    unit_column: crp_lborresu
+    unit: mg/L
+    units:
+      mg/L: {factor: 1, expect: [0, 400]}
+    censor_units: {inf: left, inferieur: left}
+    range: [0, 400]
+    winsor: [0, 0.99]
+    note: The lower tail is censored, so only the upper tail is winsorised.
+
+  glucose:
+    label: Fasting glucose
+    column: gluc
+    unit_column: gluc_lborresu
+    unit: mmol/L
+    units:
+      mmol/L: {factor: 1, expect: [2.5, 40]}
+      g/L: {factor: 5.551, expect: [0.3, 2.5]}
+    range: [1.5, 40]
+
+  hba1c:
+    label: Glycated haemoglobin (HbA1c)
+    column: hba1c
+    unit_column: hba1c_lborresu
+    unit: "%"
+    units:
+      "%": {factor: 1, expect: [3, 18]}
+    range: [3, 18]

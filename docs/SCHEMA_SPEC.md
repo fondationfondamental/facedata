@@ -85,7 +85,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `versions` | all | The editions on whose visits the variable is read (section 7). Usually set once in `defaults`. Default: all visits |
 | `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
-| `derived_from` | number, item | Name of a score that has `compare`. Says that the EMR computed this stored value from the stored score, so it is doubtful wherever that stored score is wrong (section 8) |
+| `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
 | `asked_if` | item, number | Name of a yes/no variable or of a count listed before. The question is asked only after a yes to it (or a count above 0): where that answer is 0 and the cell is empty, the value is 0 (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ...}`: the cells of the visits dated in the period keep their value and get `period_doubt` (section 10) |
@@ -580,6 +580,7 @@ scores:
 | `reverse` | Items reversed first: `min + max − value`, using the item's own `range` |
 | `minus` | With `sum`: variables or earlier scores subtracted from the sum. All of them must be present |
 | `floor` | The lowest value the score can take; a lower result is raised to it (the Alda total is A minus B, not below 0) |
+| `scale` | With `sum` or `mean`: `[factor, offset]`. The sum or the mean is multiplied by the factor, then the offset is added. A sub-score of the S-QoL is the mean of two items of 1 to 5 brought to 0 to 100: `scale: [25, -25]`. A sum that the instrument halves: `scale: [0.5, 0]` |
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept |
@@ -682,6 +683,17 @@ extraction was wrong. Its schema now names the norm-table check instead:
 `derived_from: wais3_vocab_scaled_check` flags the scaled score where the
 table gives another value.
 
+`derived_from` can also name a variable: the raw score next to its
+percentile. The EMR sometimes computes a percentile from an empty cell, as
+if the score were 0. Where the named variable is empty, the derived value is
+kept and flagged `derived_doubt`:
+
+```yaml
+variables:
+  doors_b:      {column: porteb_, range: [0, 12]}
+  doors_b_band: {column: portebpc_, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_b}
+```
+
 ## 9. Sign conventions
 
 A z-score can be written with either sign. A slow Trail Making time is `+1.5`
@@ -727,7 +739,9 @@ Rules:
 - `checks: {variable: name}` on an instrument: `name(values)` takes the
   table of the instrument's values and returns True for the rows where the
   variable fails the check. Those cells keep their value and get
-  `check_failed`, with the function name in `detail`.
+  `check_failed`, with the function name in `detail`. An empty cell is never
+  flagged, so one function can be named for several variables that depend
+  on the same fact.
 - `custom: name` on a score: `name(values)` takes the same table and returns
   the score.
 - `unit_rule: name` on a variable: `name(values, keys)` takes the values
@@ -809,9 +823,10 @@ the list is not empty.
   say `shared: true`, and several items with `separator` may each read one
   box of the same list.
 - Scores refer to variables or earlier scores that exist; reversed items have a `range`.
-- `derived_from` names a score that has `compare`.
+- `derived_from` names a score that has `compare`, or another variable of the schema.
 - `checks` names variables or scores of the schema and functions that exist
   in `facedata/custom.py`.
+- `scale` is two numbers, on a score that has `sum` or `mean`.
 - A score has exactly one of `sum`, `mean`, `lookup` and `custom`; `lookup`
   comes with `from`, `by` with `lookup`, `minus` with `sum`, and `custom` names a function that
   exists in `facedata/custom.py`. Whether the norm table exists is not checked here: a missing table
@@ -880,7 +895,7 @@ level: list
 names:
   column: med_psy_cmtrt            # the list that holds the names
   clean: medication_name           # function of custom.py: "TERALITHE LP 400 mg, comprimé" -> "TERALITHE LP"
-  table: medications.csv           # in the cohort folder: name, molecule, atc, treatment_group
+  table: medications.csv           # name, molecule, atc, treatment_group; in the cohort folder, or in facedata/ when the cohorts share it
   gives: [molecule, atc, treatment_group]
 variables:
   medication: {column: med_psy_cmtrt, type: text}

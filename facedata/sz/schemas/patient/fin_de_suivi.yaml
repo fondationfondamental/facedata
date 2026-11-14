@@ -1,0 +1,53 @@
+instrument: fin_de_suivi
+title: End of follow-up
+tab: PATIENT
+section: Fin de suivi
+status: draft
+level: patient
+notes: >
+  One value per patient. The three columns are not in the dictionary, which
+  lists three other names (lost_to_follow_up, lost_to_follow_up_dcd,
+  lost_to_follow_up_demenage) that the extraction does not hold.
+
+  Same instrument as in FACE BP, with what the SZ extraction holds of it:
+  the reason, the new centre after a move, and the date of death. The export
+  leaves out the columns filled for fewer than 25 patients, and the SZ
+  extraction has only the newer generation of columns (_stopsuivi).
+
+  Reason. 583 patients are no longer followed: the patient refused (239),
+  another reason (196), "Ne sais pas" (91, a missing code), a move (23), a
+  change of diagnosis (19), a death (12), the doctor refused (fewer than
+  five).
+
+  Date of death. The column causedec_stopsuivi is named for the cause of
+  death, and in BP it holds the cause. Here it holds dates: the empty date
+  0000-00-00 for about a thousand patients and a real date for 8, all of
+  them among the 12 patients recorded as deceased. The export filled it from
+  the date of death, the kind of error found in BP for the death of the
+  mother (decision D4 in PROGRESS.md). It is delivered as what it holds,
+  death_date, and the cause of death is not in the extraction.
+
+  The new centre is a free text, delivered as text; it never appears in the
+  report.
+
+variables:
+  followup_end_reason:
+    column: lost_to_followup_stopsuivi
+    label: Reason why the patient is no longer followed
+    type: category
+    codes:
+      Refus du patient: patient_refused
+      Refus de son médecin: doctor_refused
+      Déménagement: moved
+      Changement de diagnostic: diagnosis_changed
+      Patient décédé: deceased
+      Autre: other
+  followup_end_new_centre:
+    column: lost_to_follow_up_demenag_stopsuivi
+    label: New expert centre after a move, free text
+    type: text
+  death_date:
+    column: causedec_stopsuivi
+    label: Date of death (read in the column named for the cause of death)
+    type: date
+    range: [2008-01-01, 2030-12-31]

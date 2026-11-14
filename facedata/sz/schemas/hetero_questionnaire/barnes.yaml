@@ -1,0 +1,37 @@
+instrument: barnes
+title: Barnes Akathisia Rating Scale
+tab: HETERO-QUESTIONNAIRE
+section: Questionnaire BARNES
+status: draft
+notes: >
+  Rated by the clinician at every visit. Three items from 0 to 3 and a
+  global clinical assessment. The dictionary does not name the three items;
+  the labels are those of the published scale in its order (objective,
+  awareness of restlessness, distress).
+
+  The global assessment goes from 0 to 5 in the published scale; the
+  dictionary says 0 to 4, and a few visits hold a 5.
+
+  Stored scores. bars0105 ("sum of the objective and subjective ratings")
+  is the sum of the three items on 4,349 of 4,352 visits; it is read to
+  check ours and is not delivered. bars0106, called "total Barnes score
+  (akathisia if 2 or more)", is the global assessment again: equal to
+  bars0104 on 4,359 of 4,360 visits. It is not loaded (ignored.yaml).
+
+  The columns are named bars01xx. The columns bars01 to bars03 and bars_
+  are another instrument, the Brief Adherence Rating Scale (bars.yaml).
+
+defaults: {type: item, range: [0, 3]}
+
+variables:
+  barnes_objective: {column: bars0101, label: "Barnes 1: objective restlessness"}
+  barnes_awareness: {column: bars0102, label: "Barnes 2: subjective awareness of restlessness"}
+  barnes_distress: {column: bars0103, label: "Barnes 3: subjective distress related to restlessness"}
+  barnes_global: {column: bars0104, label: "Barnes 4: global clinical assessment of akathisia (0 absent to 5 severe)", range: [0, 5]}
+  barnes_sum_stored: {column: bars0105, label: Sum of the three items as stored, range: [0, 9], keep: false}
+
+scores:
+  barnes_sum:
+    label: Barnes, sum of the objective and subjective items (0 to 9)
+    sum: [barnes_objective, barnes_awareness, barnes_distress]
+    compare: barnes_sum_stored

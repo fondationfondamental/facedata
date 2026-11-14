@@ -1,0 +1,58 @@
+instrument: laterality
+title: Edinburgh handedness inventory
+tab: NEUROPSYCHOLOGIE
+section: Latéralité
+status: draft
+notes: >
+  For each of ten activities, and for the foot and the eye, the hand used:
+  two crosses in a column for a strong preference, one in each column when
+  either hand is used. The extraction holds the number of crosses in the
+  left and in the right column of each line (0, 1 or 2). 505 visits from
+  2010 to 2016, nearly all at inclusion; the test is not in the form that
+  replaced the old one. The dictionary lists the quotient and names the 24
+  item columns in one line; the labels of the 12 lines are those of the
+  published inventory.
+
+  The laterality quotient is 100 x (right - left) / (right + left), from
+  -100 (left-handed) to +100 (right-handed), over the ten activities of the
+  inventory: the foot and the eye are not counted (Oldfield 1971).
+  Recomputed that way, it equals the stored quotient on 460 of 501 visits.
+  The 41 others, all in one centre, hold the quotient of the 12 lines: they
+  get score_mismatch and the ten-activity quotient is delivered, so that
+  every centre is on the same scale.
+
+defaults: {type: item, range: [0, 2]}
+
+variables:
+  laterality_01_left: {column: later01g_, label: "Writing - crosses for the left"}
+  laterality_01_right: {column: later01r_, label: "Writing - crosses for the right"}
+  laterality_02_left: {column: later02g_, label: "Drawing - crosses for the left"}
+  laterality_02_right: {column: later02r_, label: "Drawing - crosses for the right"}
+  laterality_03_left: {column: later03g_, label: "Throwing - crosses for the left"}
+  laterality_03_right: {column: later03r_, label: "Throwing - crosses for the right"}
+  laterality_04_left: {column: later04g_, label: "Scissors - crosses for the left"}
+  laterality_04_right: {column: later04r_, label: "Scissors - crosses for the right"}
+  laterality_05_left: {column: later05g_, label: "Toothbrush - crosses for the left"}
+  laterality_05_right: {column: later05r_, label: "Toothbrush - crosses for the right"}
+  laterality_06_left: {column: later06g_, label: "Knife (without fork) - crosses for the left"}
+  laterality_06_right: {column: later06r_, label: "Knife (without fork) - crosses for the right"}
+  laterality_07_left: {column: later07g_, label: "Spoon - crosses for the left"}
+  laterality_07_right: {column: later07r_, label: "Spoon - crosses for the right"}
+  laterality_08_left: {column: later08g_, label: "Broom (upper hand) - crosses for the left"}
+  laterality_08_right: {column: later08r_, label: "Broom (upper hand) - crosses for the right"}
+  laterality_09_left: {column: later09g_, label: "Striking a match - crosses for the left"}
+  laterality_09_right: {column: later09r_, label: "Striking a match - crosses for the right"}
+  laterality_10_left: {column: later10g_, label: "Opening a box (lid) - crosses for the left"}
+  laterality_10_right: {column: later10r_, label: "Opening a box (lid) - crosses for the right"}
+  laterality_11_left: {column: later11g_, label: "Foot to kick with - crosses for the left"}
+  laterality_11_right: {column: later11r_, label: "Foot to kick with - crosses for the right"}
+  laterality_12_left: {column: later12g_, label: "Eye when using only one - crosses for the left"}
+  laterality_12_right: {column: later12r_, label: "Eye when using only one - crosses for the right"}
+  laterality_quotient_stored: {column: later_, label: "Laterality quotient, as stored", type: number, range: [-100, 100], winsor: false, keep: false}
+
+scores:
+  laterality_quotient:
+    label: Laterality quotient over the ten activities (-100 left to +100 right)
+    custom: laterality_quotient
+    compare: laterality_quotient_stored
+    compare_tolerance: 0.51

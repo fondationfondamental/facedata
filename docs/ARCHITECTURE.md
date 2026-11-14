@@ -9,7 +9,7 @@ ready for algorithms:
 4. continuous variables are winsorised,
 5. every variable gets a quality-control (QC) summary and plots.
 
-There is one module per cohort (`facedata.bp`, later `sz`, `dr`, `asp`).
+There is one module per cohort (`facedata.bp`; `facedata.sz` is being written; later `dr`, `asp`).
 Everything specific to an instrument is written in a YAML schema
 (see [SCHEMA_SPEC.md](SCHEMA_SPEC.md)). The Python code is generic and does not
 change when an instrument is added.
@@ -53,10 +53,13 @@ facedata/
   report.py       write_report()
   thesaurus.py    read_thesaurus(), draft_schema(): a helper, never used by load()
   custom.py       the rare named functions a schema refers to
+  medications.csv the table of medication names (molecule, ATC code, group), shared by the cohorts
   bp/
     __init__.py   load(), report(), coverage()
     ignored.yaml  columns deliberately left out, each with a reason
     schemas/<tab>/<instrument>.yaml
+  sz/             the same three functions and files for FACE SZ, and
+    differences.yaml   the instruments whose schema is not the BP one, each with the reason
 tests/            small hand-written tables only
 ```
 
@@ -91,7 +94,8 @@ Key columns first, then the harmonised variables of every instrument.
 
 | Column | Content |
 |---|---|
-| `usubjid` | Patient identifier (text) |
+| `cohort` | `bp` or `sz`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
+| `usubjid` | Patient identifier (text), unique inside a cohort only |
 | `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...) |
 | `visit_order` | Rank of the visit (from `id_visit`) |
 | `visit_month` | Planned months since inclusion, read from the label (`V0` = 0, `V6_mois` = 6, `V1_an` = 12) |
@@ -100,7 +104,17 @@ Key columns first, then the harmonised variables of every instrument.
 | `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The export gives the date of birth to the month only, so it is exact to about two weeks |
 | harmonised variables | Numbers are floats in the schema's unit, categories are harmonised labels, dates are dates |
 
-(`usubjid`, `visit`) is unique.
+(`usubjid`, `visit`) is unique inside a cohort.
+
+**Putting two cohorts together.** The tables of two cohorts have the same key
+columns and the same names for the instruments they share, so they can be
+stacked (`pd.concat`). The key is then (`cohort`, `usubjid`, `visit`): a
+`usubjid` is a number given inside a cohort, and 824 numbers are used in both
+FACE BP and FACE SZ for different patients. Never join two cohorts on
+`usubjid` alone. `patients` also holds `fondacode`, the patient code of the
+foundation: it is unique across the cohorts, and it stays the same from one
+extraction to the next, while `usubjid` can change for a patient registered
+in two centres.
 
 Two kinds of companion column travel with the variables, because a model
 needs them:
@@ -117,7 +131,7 @@ editions.
 ### `patients`: one row per patient
 
 Variables whose schema says `level: patient` (demographics, lifetime
-history). They are repeated on every visit row in the extraction; here they
+history), with `cohort`, `usubjid` and `fondacode` first. They are repeated on every visit row in the extraction; here they
 appear once. The table also holds the yes/no columns that sum up the
 relatives of the patient (below).
 
@@ -542,7 +556,17 @@ git-ignored.
 
 Each cohort has its own schema folder. BP, SZ and DR share item codes for the
 instruments they have in common, so their schemas start as copies of the BP
-ones; a test reports any difference between same-named schemas. ASP has no
+ones and keep their instrument name, their output columns and their scoring
+key. `tests/test_cohorts.py` compares the schemas of the same name in two
+cohorts (`defaults`, `variables`, `scores`, `version`); a difference must be
+listed with its reason in the cohort's `differences.yaml`. A copy is only a
+starting point: it is checked on the cohort's own data like any other schema
+(the same column can hold another question, and the same score another
+formula). FACE SZ is written this way: all its columns are read or ignored
+(`docs/sz/PROGRESS.md`, `docs/sz/QUESTIONS.md`). 67 of its 125 schemas have the name
+of a BP schema: 9 are the same and 58 are listed in `differences.yaml`. A table that the cohorts share, such as the
+medication names, sits in the package folder: a schema names its file, and
+the loader looks in the cohort folder first. ASP has no
 thesaurus and different names, so its schemas are written from the data.
 
 ## 10. Tests and definition of done
