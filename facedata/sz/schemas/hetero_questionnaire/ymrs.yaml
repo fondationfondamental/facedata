@@ -7,13 +7,29 @@ notes: >
   Eleven items. Items 5, 6, 8 and 9 count double and are scored 0, 2, 4, 6 or
   8; the others are scored 0 to 4. The total goes up to 60.
 
-  The stored total equals the sum of the 11 items on all 4,538 rows that have
-  one. A total needs all its items.
+  Three of the double items are stored as levels here. Items 5
+  (irritability), 8 (content) and 9 (disruptive and aggressive behaviour) hold
+  0, 1, 2, 3 or 4 in this extraction: never a value above 4, and an odd value
+  on 80%, 56% and 96% of the visits where the item is not 0, in every year
+  from 2010 to 2026 and in each of the 12 centres. Item 6 (speech) holds 0, 2,
+  4, 6 or 8 as published, never an odd value. In FACE BP and FACE DR the four
+  items hold 0, 2, 4, 6 or 8 (no odd value on 17,246 and 1,033 visits). So the
+  form of this cohort records the level of items 5, 8 and 9 (0 to 4), not
+  their points. The three items are delivered in points (twice the level), so
+  that ymrs05, ymrs08 and ymrs09 mean the same in the cohorts and the total is
+  the published one.
+
+  Stored total: wrong, not delivered. The EMR adds the eleven columns as they
+  are, so its total counts items 5, 8 and 9 once. It is reproduced exactly by
+  the twin score ymrs_total_as_stored, which is read to check the stored value
+  and is not delivered (no mismatch on the 4,538 visits that have one). The
+  delivered total is higher than the stored one on the 776 visits (17%) where
+  one of the three items is not 0, by 2.1 points on average and by 9 at most;
+  at inclusion its mean is 2.25 where the stored one gives 1.86. A total needs
+  all its items.
 
   The dictionary gives no label for the items; the labels here are those of
   the published scale.
-
-  Same instrument and same schema as in FACE BP.
 
 defaults: {type: item, range: [0, 4]}
 
@@ -22,18 +38,28 @@ variables:
   ymrs02: {label: "Increased motor activity and energy"}
   ymrs03: {label: "Sexual interest"}
   ymrs04: {label: "Sleep"}
-  ymrs05: {label: "Irritability", range: [0, 8]}
+  ymrs05_level: {column: ymrs05, label: "Irritability, level 0 to 4 as stored", keep: false}
   ymrs06: {label: "Speech (rate and amount)", range: [0, 8]}
   ymrs07: {label: "Language and thought disorder"}
-  ymrs08: {label: "Content", range: [0, 8]}
-  ymrs09: {label: "Disruptive and aggressive behaviour", range: [0, 8]}
+  ymrs08_level: {column: ymrs08, label: "Content, level 0 to 4 as stored", keep: false}
+  ymrs09_level: {column: ymrs09, label: "Disruptive and aggressive behaviour, level 0 to 4 as stored", keep: false}
   ymrs10: {label: "Appearance"}
   ymrs11: {label: "Insight"}
   ymrs_total_stored: {column: ymrs_, label: "Total as stored", range: [0, 60], keep: false}
 
 scores:
+  # The three items in points, as published and as in BP: twice the level that this form stores.
+  ymrs05: {label: "Irritability", sum: [ymrs05_level], scale: [2, 0]}
+  ymrs08: {label: "Content", sum: [ymrs08_level], scale: [2, 0]}
+  ymrs09: {label: "Disruptive and aggressive behaviour", sum: [ymrs09_level], scale: [2, 0]}
   ymrs_total:
     label: "YMRS total (11 items)"
     sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
           ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
+  # What the EMR adds: items 5, 8 and 9 counted once. Read to check the stored total, not delivered.
+  ymrs_total_as_stored:
+    label: "YMRS total with items 5, 8 and 9 counted once, as the EMR adds it"
+    sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05_level, ymrs06,
+          ymrs07, ymrs08_level, ymrs09_level, ymrs10, ymrs11]
     compare: ymrs_total_stored
+    keep: false

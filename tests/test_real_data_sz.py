@@ -101,7 +101,13 @@ def test_hetero_questionnaires(result, qc):
     # Calgary: eight items; item 8 is not in the extraction, so no CDSS total.
     assert (qc.loc["calgary_sum8", "n_valid"], qc.loc["calgary_sum8", "max"]) == (4672, 20)
     assert "calgary08" not in result.data.columns and "calgary_total" not in result.data.columns
-    assert (qc.loc["ymrs_total", "n_valid"], qc.loc["ymrs_total", "score_mismatch"]) == (4538, 0)
+    # YMRS: items 5, 8 and 9 are stored as levels (0 to 4) and delivered in points, as published and as in BP (D26).
+    assert (qc.loc["ymrs_total", "n_valid"], qc.loc["ymrs_total", "score_mismatch"], qc.loc["ymrs_total", "max"]) == (4538, 0, 38)
+    for item in ["ymrs05", "ymrs06", "ymrs08", "ymrs09"]:
+        assert set(data[item].dropna()) <= {0, 2, 4, 6, 8}, item
+    assert "ymrs_total_as_stored" not in data.columns and (result.flags["variable"] == "ymrs_total_as_stored").sum() == 0     # the twin equals the stored total
+    higher = data["ymrs_total"].notna() & (data["ymrs05"] + data["ymrs08"] + data["ymrs09"] > 0)
+    assert higher.sum() == 776                                     # visits whose published total is above the stored one
     assert (qc.loc["barnes_sum", "score_mismatch"], qc.loc["esrsa_mean", "score_mismatch"]) == (3, 10)
     assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (32, 215)
     assert (qc.loc["bars_doses_per_day", "out_of_range"], qc.loc["psp_total", "out_of_range"]) == (250, 3)

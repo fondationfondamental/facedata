@@ -341,3 +341,5 @@ delivered. (O2)
 **S-QoL index with a missing dimension (O29).** The EMR averages the dimensions it has; 1,194 of 4,227 indices are concerned. Is that the rule to follow, and from how many dimensions?
 
 **Unit of vitamin D by centre (O30).**
+
+**YMRS, three items stored as levels (O31, for the EMR developers).** Items 5 (irritability), 8 (content) and 9 (disruptive and aggressive behaviour) are stored 0 to 4 where the scale scores them 0, 2, 4, 6 or 8, in every year and every centre, and the stored total adds them once; item 6 is stored in points. FACE BP and FACE DR store the points. The loader delivers the published total, which is higher than the stored one on 776 of 4,538 visits. Can the form store the points and the published total?
