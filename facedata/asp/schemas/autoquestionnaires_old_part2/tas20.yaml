@@ -9,13 +9,17 @@ notes: >
   the BVAQ replace it in the new set.
 
   Identified from its name and its twenty items as the TAS-20 (Bagby and
-  others, 1994), sure: the stored scores follow the published key, with its
-  five reversed items (4, 5, 10, 18 and 19).
+  others, 1994), sure: the stored total and the externally oriented
+  factor follow the published key, with its five reversed items (4, 5, 10, 18
+  and 19). **The two other stored factors swap the items 7 and 11**: the
+  publication puts the item 7 in "identifying" and the item 11 in
+  "describing". The factors delivered follow the publication; two scores "as
+  stored" reproduce the EMR to check the stored columns, and are not delivered.
 
   The scores, each fitted on the data:
 
-  - TAS-20 difficulty describing feelings: the sum of 5 items (2, 4, 7, 12 and 17; reversed: 4), equal to the stored score on 38 of 38 complete visits.
-  - TAS-20 difficulty identifying feelings: the sum of 7 items (1, 3, 6, 9, 11, 13 and 14), equal to the stored score on 38 of 38 complete visits.
+  - TAS-20 difficulty describing feelings: the sum of 5 items (2, 4, 11, 12 and 17; reversed: 4); the stored score counts the item 7 for the item 11 (38 of 38 complete visits).
+  - TAS-20 difficulty identifying feelings: the sum of 7 items (1, 3, 6, 7, 9, 13 and 14); the stored score counts the item 11 for the item 7 (38 of 38 complete visits).
   - TAS-20 externally oriented thinking: the sum of 8 items (5, 8, 10, 15, 16, 18, 19 and 20; reversed: 5, 10, 18 and 19), equal to the stored score on 38 of 38 complete visits.
   - TAS-20 total (20 to 100): the sum of 20 items (reversed: 4, 5, 10, 18 and 19), equal to the stored score on 38 of 38 complete visits.
 
@@ -51,14 +55,23 @@ variables:
 
 scores:
   tas_describing:
-    label: "TAS-20 difficulty describing feelings"
+    label: "TAS-20 difficulty describing feelings (items 2, 4, 11, 12 and 17)"
+    sum: [tas02, tas04, tas11, tas12, tas17]
+    reverse: [tas04]
+  tas_describing_as_stored:
+    label: "TAS-20 difficulty describing feelings as the EMR counts it (the item 7 for the item 11), to check the stored score"
     sum: [tas02, tas04, tas07, tas12, tas17]
     reverse: [tas04]
     compare: tas_describing_stored
+    keep: false
   tas_identifying:
-    label: "TAS-20 difficulty identifying feelings"
+    label: "TAS-20 difficulty identifying feelings (items 1, 3, 6, 7, 9, 13 and 14)"
+    sum: [tas01, tas03, tas06, tas07, tas09, tas13, tas14]
+  tas_identifying_as_stored:
+    label: "TAS-20 difficulty identifying feelings as the EMR counts it (the item 11 for the item 7), to check the stored score"
     sum: [tas01, tas03, tas06, tas09, tas11, tas13, tas14]
     compare: tas_identifying_stored
+    keep: false
   tas_externally_oriented:
     label: "TAS-20 externally oriented thinking"
     sum: [tas05, tas08, tas10, tas15, tas16, tas18, tas19, tas20]

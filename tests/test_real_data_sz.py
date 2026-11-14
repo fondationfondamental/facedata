@@ -134,7 +134,7 @@ def test_biology(qc):
     assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"]) == (2985, 633, 139)
     assert (prolactin["unit_unknown"], prolactin["unit_doubt"], prolactin["out_of_range"]) == (162, 36, 67)
     assert (qc.loc["clozapine", "n_valid"], qc.loc["clozapine", "unit_inferred"], qc.loc["clozapine_treated", "n_valid"]) == (592, 11, 1600)
-    assert (qc.loc["vitamin_d", "n_valid"], qc.loc["vitamin_d", "censored_left"], qc.loc["vitamin_d", "out_of_range"]) == (2718, 11, 2)
+    assert (qc.loc["vitamin_d_as_written", "n_valid"], qc.loc["vitamin_d_as_written", "censored_left"], qc.loc["vitamin_d_as_written", "out_of_range"]) == (2718, 11, 2)
     assert (qc.loc["toxo_igg_titre", "n_valid"], qc.loc["toxo_igg_titre", "censored_right"], qc.loc["toxo_serology", "n_valid"]) == (632, 16, 2828)
 
 
@@ -168,14 +168,17 @@ def test_neuropsychology_first_part(result, qc):
     # The form that holds the years of education stops in 2016: the TMT error norms cannot be read after.
     assert (qc.loc["education_years", "n_valid"], qc.loc["education_years", "last_year"]) == (776, 2016)
     assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (748, 2359)
-    assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time_z", "sign_flipped"], qc.loc["tmt_ba_errors_z", "sign_flipped"]) == (3210, 23, 0)
+    # One centre's 23 early visits mix the two sign conventions (mean correlation 0.24 the wrong way): too weak
+    # to flip, so the scores stay as written and are doubted.
+    assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time_z", "sign_flipped"], qc.loc["tmt_a_time_z", "sign_doubt"]) == (3210, 0, 23)
     assert (qc.loc["errands_errors", "n_valid"], qc.loc["errands_errors", "score_mismatch"], qc.loc["fluency_p_rule_breaks", "score_mismatch"]) == (1023, 0, 0)
     # WAIS-IV matrices: items 25 and 26 are copies of item 24 in the extraction, so the total is the stored one.
     assert "wais4_mat25" not in data.columns and "wais4_mat26" not in data.columns
     assert (qc.loc["wais3_mat_total", "n_valid"], qc.loc["wais3_mat_total", "score_mismatch"], qc.loc["wais4_mat_total", "n_valid"]) == (568, 4, 1867)
     # Digit span: the summary columns hold what their labels say (they are shifted in BP).
     checks = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts()
-    assert (qc.loc["wais4_ds_total", "n_valid"], checks.get("wais4_ds_total_check", 0), checks.get("wais3_ds_total_check", 0)) == (2494, 0, 30)
+    # The check scores are not delivered: their mismatch is filed under the stored total that the analyst sees.
+    assert (qc.loc["wais4_ds_total", "n_valid"], checks.get("wais4_ds_total", 0), checks.get("wais3_ds_total", 0)) == (2494, 0, 30)
 
 
 def same(stored, formula, tolerance=0.011):
@@ -253,7 +256,7 @@ def test_suicide_and_comorbidity(result, qc):
 def test_medical_evaluation_care_and_social(result, qc):
     data = result.data
     assert shape_of(qc, "PERINATALITE") == (19, 1, 0, 17)
-    assert (qc.loc["birth_weight", "n_valid"], qc.loc["gestational_age", "n_valid"]) == (1030, 830)
+    assert (qc.loc["birth_weight", "n_valid"], qc.loc["gestational_age", "n_valid"]) == (1017, 822)     # per patient, as in BP
     assert shape_of(qc, "EVALUATION MEDICALE") == (91, 3, 0, 2)
     assert (qc.loc["n_psychotic_episodes", "n_valid"], data["symptom_persecution_ever"].sum(), data["violence_verbal"].sum()) == (1899, 1807, 925)
     assert shape_of(qc, "SOIN SUIVI HOSP ARRET TRAVAIL") == (27, 5, 0, 25)

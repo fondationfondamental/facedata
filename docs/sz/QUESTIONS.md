@@ -335,3 +335,9 @@ missing?
 **PI-5. The class of the job.** As for BP: the mapping between the list of
 the form and the INSEE classes has to be confirmed before `empjob` can be
 delivered. (O2)
+
+## Added by the audit of 2026-11-14
+
+**S-QoL index with a missing dimension (O29).** The EMR averages the dimensions it has; 1,194 of 4,227 indices are concerned. Is that the rule to follow, and from how many dimensions?
+
+**Unit of vitamin D by centre (O30).**

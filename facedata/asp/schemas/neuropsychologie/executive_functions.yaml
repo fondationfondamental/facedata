@@ -19,9 +19,15 @@ notes: >
 variables:
   executive_done: {column: fctexe, type: item, range: [0, 1], label: "The executive function test (revised errands test) was done"}
   errands_time: {column: fctexe01, type: number, range: [0, 3000], label: "Revised errands test: time to do the task, seconds"}
-  errands_useless_detours: {column: fctexe02, type: number, range: [0, 20], winsor: false, label: "Revised errands test: number of useless detours"}
-  errands_time_violations: {column: fctexe03, type: number, range: [0, 20], winsor: false, label: "Revised errands test: number of times not respected"}
+  errands_detours: {column: fctexe02, type: number, range: [0, 20], winsor: false, label: "Revised errands test: number of useless detours"}
+  errands_late_trips: {column: fctexe03, type: number, range: [0, 20], winsor: false, label: "Revised errands test: number of trips that miss an opening hour"}
   errands_logic_errors: {column: fctexe04, type: number, range: [0, 20], winsor: false, label: "Revised errands test: number of logic errors"}
-  errands_total_errors: {column: fctexe05, type: number, range: [0, 20], winsor: false, label: "Revised errands test: total number of errors"}
+  errands_errors_stored: {column: fctexe05, type: number, range: [0, 20], winsor: false, keep: false, label: "Revised errands test: total number of errors, as stored"}
   executive_date: {column: fctexe_qsdtc, type: date, range: [2005-01-01, 2026-12-31], label: "Date of the executive function tests"}
   executive_age_months: {column: fctexeag, type: number, range: [0, 900], winsor: false, label: "Age at the executive function tests, in months"}
+
+scores:
+  errands_errors:
+    label: "Revised errands test: total number of errors (detours, late trips and logic errors)"
+    sum: [errands_detours, errands_late_trips, errands_logic_errors]
+    compare: errands_errors_stored

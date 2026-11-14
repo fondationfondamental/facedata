@@ -62,7 +62,8 @@ def test_scores_agree_with_the_stored_ones(result, qc):
     assert qc.loc["bis10_sum12", "n_valid"] == 4662
     assert (qc.loc["bis12_total", "n_valid"], qc.loc["bis12_total", "min"], qc.loc["bis12_total", "max"]) == (1444, 13, 48)
     mismatches = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts().to_dict()
-    expected = {"wais4_ds_total_check": 13, "wais3_vocab_total": 3, "wais4_vocab_total": 3, "wais4_mat_total": 1}
+    # A check that is not delivered files its mismatch under the stored value it checks (wais4_ds_total).
+    expected = {"wais4_ds_total": 13, "wais3_vocab_total": 3, "wais4_vocab_total": 3, "wais4_mat_total": 1}
     if (NORMS / "wais3_vocabulary.csv").exists():      # the norm table is not part of the repository
         expected["wais3_vocab_scaled_check"] = 20
     for name, count in expected.items():

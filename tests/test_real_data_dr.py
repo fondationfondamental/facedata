@@ -73,8 +73,8 @@ def test_patient_and_inclusion_tabs(result, qc):
     # The stored age was computed at a later date for the patients who came back: the age at inclusion is recomputed.
     assert (patients["age_at_inclusion"].notna().sum(), patients["age_at_inclusion"].median()) == (634, 51)
     assert (qc.loc["age_at_inclusion", "score_mismatch"], qc.loc["birth_date", "date_partial"]) == (71, 88)
-    assert (qc.loc["referred_by", "n_valid"], qc.loc["visit_purpose", "n_valid"]) == (111, 593)
-    assert patients["visit_purpose"].value_counts().to_dict() == {"code_3": 307, "code_2": 250, "code_1": 36}
+    assert (qc.loc["referred_by", "n_valid"], qc.loc["visit_purpose_code", "n_valid"]) == (111, 593)
+    assert patients["visit_purpose_code"].value_counts().to_dict() == {"code_3": 307, "code_2": 250, "code_1": 36}
     assert qc.loc[qc["tab"].isin(["PATIENT", "INCLUSION"]), ["unknown_code", "unparsed", "out_of_range", "patient_value_varies"]].sum().sum() == 0
     # The criteria are ticked at the screening visit, for all patients but one.
     screening = result.data[result.data["visit"] == "screening"]
@@ -222,11 +222,13 @@ def test_neuropsychology(result, qc):
     if (NORMS / "tmt_a_errors.csv").exists():
         assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "censored_right"]) == (695, 639)
         assert (qc.loc["tmt_b_errors_band", "n_valid"], qc.loc["tmt_b_perseverative_band", "n_valid"], qc.loc["tmt_ba_errors_band", "n_valid"]) == (693, 672, 624)
-    # Stored sums and differences against their parts (check scores, not delivered).
+    # Stored sums and differences against their parts: the check scores are not delivered,
+    # so the flag is filed under the stored value that the analyst sees.
     mismatch = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts()
-    expected = {"d2_gzf_check": 35, "tmt_b_errors_check": 31, "tmt_ba_errors_check": 22, "designs1_z_check": 19, "designs2_z_check": 18,
-                "wais4_simil_z_check": 16, "wais4_arith_z_check": 14, "wais4_ds_z_check": 14, "tmt_a_errors_check": 9, "wais4_ivt_sum_check": 2, "wais4_imt_sum_check": 2}
+    expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 19, "designs2_z": 18,
+                "wais4_simil_z": 16, "wais4_arith_z": 14, "wais4_ds_z": 14, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 2, "wais4_imt_sum_scaled": 2}
     assert {name: int(mismatch.get(name, 0)) for name in expected} == expected
+    assert not any(name.endswith("_check") for name in mismatch.index)
     assert (qc.loc["rlri16_free_sum", "n_valid"], qc.loc["rlri16_free_sum", "score_mismatch"]) == (712, 0)
     assert (qc.loc["rlri16_total_sum", "n_valid"], qc.loc["rlri16_total_sum", "score_mismatch"]) == (713, 0)
     assert data["rlri16_recognition_band"].value_counts().to_dict() == {99.0: 623, 5.0: 85}
@@ -294,12 +296,12 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (796, 44)
     # Codes of the dictionary, and codes that it does not give.
     assert data["tobacco_status"].value_counts().to_dict() == {"non_smoker": 701, "current_smoker": 417, "ex_smoker": 192}
-    assert data["birth_term"].value_counts().to_dict() == {"term": 435, "preterm": 47, "post_term": 14}
+    assert result.patients["birth_term"].value_counts().to_dict() == {"term": 435, "preterm": 47, "post_term": 14}     # asked once: per patient
     assert data["mdd_course"].value_counts().to_dict() == {"recurrent": 509, "single_episode": 123}
     assert data["current_episode_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
     assert data["marital_status"].value_counts().to_dict() == {"couple": 399, "single": 169, "divorced": 64, "separated": 28, "widowed": 20}
-    assert data["serious_method"].value_counts().head(2).to_dict() == {"code_1": 61, "code_2": 7}
-    assert data["closest_person"].value_counts().head(2).to_dict() == {"code_1": 330, "code_10": 117}
+    assert data["serious_method_code"].value_counts().head(2).to_dict() == {"code_1": 61, "code_2": 7}
+    assert data["closest_person_code"].value_counts().head(2).to_dict() == {"code_1": 330, "code_10": 117}
     # Sick leave, hospitalisations and care.
     assert (qc.loc["sick_leave_12m", "n_valid"], qc.loc["sick_leave_12m", "missing_code"], (data["sick_leave_12m"] == 1).sum(), qc.loc["sick_leave_weeks_12m", "out_of_range"]) == (433, 244, 241, 32)
     assert (qc.loc["sick_leave_fu", "n_valid"], (data["sick_leave_fu"] == 1).sum(), qc.loc["sick_leave_days_fu", "n_valid"]) == (714, 229, 742)
@@ -330,13 +332,16 @@ def test_treatments(result, qc):
     patients = {group: current.loc[current["treatment_group"] == group, "usubjid"].nunique() for group in ["antidepressant", "benzodiazepine", "antipsychotic_2g", "lithium"]}
     assert patients == {"antidepressant": 293, "benzodiazepine": 125, "antipsychotic_2g": 75, "lithium": 51}
     # On a treatment at the visit: known where the dates are.
-    assert (data["on_antidepressant"].notna().sum(), (data["on_antidepressant"] == 1).sum(), data["on_lithium"].notna().sum()) == (973, 286, 1619)
+    # One visit is dated 2000, before the cohort opened: it has no date, so nothing can be told for it.
+    assert (data["on_antidepressant"].notna().sum(), (data["on_antidepressant"] == 1).sum(), data["on_lithium"].notna().sum()) == (972, 286, 1618)
     # Non-drug treatments and psychotherapies: the whole life at inclusion, since the last visit at follow-up.
-    assert (qc.loc["ever_ect", "n_valid"], (data["ever_ect"] == 1).sum(), qc.loc["ect_fu", "n_valid"], (data["ect_fu"] == 1).sum()) == (504, 87, 810, 134)
-    assert (qc.loc["ever_tms", "n_valid"], (data["ever_tms"] == 1).sum(), (data["ever_psychotherapy"] == 1).sum()) == (498, 48, 248)
+    # The whole-life answers are asked once: they are in the patients table, as in BP.
+    ever = result.patients
+    assert (qc.loc["ever_ect", "n_valid"], (ever["ever_ect"] == 1).sum(), qc.loc["ect_fu", "n_valid"], (data["ect_fu"] == 1).sum()) == (504, 87, 810, 134)
+    assert (qc.loc["ever_tms", "n_valid"], (ever["ever_tms"] == 1).sum(), (ever["ever_psychotherapy"] == 1).sum()) == (498, 48, 248)
     assert (qc.loc["therapy_supportive_lifetime", "n_valid"], (data["therapy_supportive_lifetime"] == 1).sum(), (data["therapy_cbt_lifetime"] == 1).sum()) == (471, 215, 80)
     assert (qc.loc["therapy_supportive_fu", "n_valid"], (data["therapy_supportive_fu"] == 1).sum()) == (736, 241)
-    assert data.loc[data["visit_form"] == "follow_up", "ever_ect"].notna().sum() == 0
+    assert "ever_ect" not in data.columns and qc.loc["ever_ect", "level"] == "patient"
     assert (qc.loc["electronic_cigarette", "n_valid"], (data["electronic_cigarette"] == 1).sum(), (data["cpap"] == 1).sum()) == (993, 41, 35)
 
 

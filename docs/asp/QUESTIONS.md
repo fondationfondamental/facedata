@@ -209,3 +209,7 @@ CDI and BDI-II, BRIEF and BRIEF-A, WISC and WAIS). Is that the wanted reading?
 **PI-4. Standard scores.** The Wechsler indices, the Vineland standard scores, the
 CCC-2 scaled scores and the ADOS comparison score are delivered as stored: they need
 norm tables that the project does not hold. Should the tables be obtained?
+
+## Added by the audit of 2026-11-14
+
+Eight questions, in PROGRESS O17: the rule behind the scores typed without their items (one centre per instrument), the SRS adult key, the EQ item 57, the years of education, the relative codes of the family history, the two copies of the WAIS-IV indices, the opening year of the first centre, and the column `cmdosu`.

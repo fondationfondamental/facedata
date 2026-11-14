@@ -6,9 +6,11 @@ Load, harmonise and quality-check data from the FACE psychiatric cohorts
 One module per cohort. Everything specific to an instrument is written in a
 small YAML schema; the Python code is generic and stays small.
 
-**Status:** the pipeline works on FACE BP for the first 130 instrument schemas.
-The other BP instruments are added one by one; see
-[docs/bp/PROGRESS.md](docs/bp/PROGRESS.md).
+**Status:** every column of the four extractions (BP, SZ, DR, ASP) is read or
+deliberately ignored. The schemas are drafts: each cohort's progress file
+lists the decisions taken and the questions still open
+([BP](docs/bp/PROGRESS.md), [SZ](docs/sz/PROGRESS.md), [DR](docs/dr/PROGRESS.md),
+[ASP](docs/asp/PROGRESS.md)).
 
 ## Read first
 
@@ -127,8 +129,8 @@ be shared or sent to GitHub.
 uv run pytest
 ```
 
-The tests use small hand-written tables. One test file also checks the real
-extraction when it is on the computer, and is skipped otherwise.
+The tests use small hand-written tables. One test file per cohort also checks
+the real extraction when it is on the computer, and is skipped otherwise.
 
 ## Data
 

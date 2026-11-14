@@ -23,8 +23,8 @@ variables:
   paral1: {column: paral1, type: item, label: "Work and living situation: the work was alongside studies (0 no, 1 yes)", range: [0, 1]}
   paral2: {column: paral2, type: item, label: "Work and living situation: the work was part of an apprenticeship (0 no, 1 yes)", range: [0, 1]}
   jobdur: {column: jobdur, type: number, label: "Work and living situation: total length of the work contracts in the last 12 months, sick leave included", range: [0, 200], winsor: false}
-  jobclas: {column: jobclas, type: category, label: "Work and living situation: kind of work contract, full time or part time", codes: {"1": full_time, "2": part_time}}
-  hoocur_arret_travail: {column: hoocur_arret_travail, type: item, label: "Work and living situation: off work during these contracts (extraction: 1 and 2; thesaurus: 1 yes, 0 no)", range: [0, 2]}
-  hodur_arret_travail: {column: hodur_arret_travail, type: number, label: "Work and living situation: sick leave during these work contracts, weeks", range: [0, 200], winsor: false}
+  job_full_time: {column: jobclas, type: item, range: [0, 1], codes: {"1": 1, "2": 0}, label: "Work and living situation: the work contract is full time (1) or part time (0)"}
+  sick_leave_12m: {column: hoocur_arret_travail, type: item, range: [0, 1], codes: {"1": 1, "2": 0, "0": 0}, label: "Work and living situation: off work during the work contracts of the last 12 months (the extraction writes no as 2, rarely 0)"}
+  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, label: "Work and living situation: sick leave during these work contracts, weeks"}
   stpro2: {column: stpro2, type: category, label: "Work and living situation: situation when there was no work contract in the last 12 months", codes: {"8": minor_under_18, "3": student, "5": homemaker, "7": disability_because_of_illness, "0": without_employment}}
   sd_lvsbjind: {column: lvsbjind, type: category, label: "Work and living situation: main kind of housing", codes: {"1": own_home, "2": family_home, "6": with_a_third_party, "9": supervised_therapeutic_flat, "7": medico_social_establishment, "10": boarding_school, "11": hostel, "8": other}}

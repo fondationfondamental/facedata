@@ -18,17 +18,19 @@ from facedata.thesaurus import read_thesaurus
 
 FOLDER = Path(__file__).parent
 SCHEMAS = FOLDER / "schemas"
+FIRST_VISIT = "2012-01-01"       # the cohort opened that year: an earlier visit date is impossible
 
 
-def load(path, instruments=None, winsor_limits=None, norms="norms"):
+def load(path, instruments=None, winsor_limits=None, norms="norms", winsorise=True):
     """Load a FACE DR extraction (.tsv).
 
     instruments: names of the instruments to load. Default: all that have a schema.
     winsor_limits: the qc table of an earlier load, to reuse its winsor limits.
     norms: the folder that holds the norm tables (they are not part of the repository).
+    winsorise: False leaves the tails of the continuous variables as they are (no clipping, no limits in qc).
     Returns a Result with six tables: data, patients, flags, qc, treatments and relatives.
     """
-    return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms, cohort="dr")
+    return run_cohort(path, SCHEMAS, instruments, winsor_limits, norms, cohort="dr", first_visit=FIRST_VISIT, winsorise_values=winsorise)
 
 
 def report(result, folder):
@@ -38,7 +40,7 @@ def report(result, folder):
 
 def coverage(path, thesaurus_path=None):
     """Which columns of the extraction have a schema yet: one line per column name."""
-    raw, keys, flags = prepare_visits(read_extraction(path))
+    raw, keys, flags = prepare_visits(read_extraction(path), FIRST_VISIT)
     names = set(read_thesaurus(thesaurus_path)["name"]) if thesaurus_path else set()
     with open(FOLDER / "ignored.yaml", encoding="utf-8") as file:
         ignored = yaml.load(file, Loader=yaml.BaseLoader) or {}      # an empty list of ignored columns

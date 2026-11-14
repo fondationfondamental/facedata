@@ -222,6 +222,21 @@ def test_fix_sign_flips_the_scores_written_before_a_centre_changed():
     assert flagged(flags, "sign_doubt") == [11, 12, 13, 14, 15, 16]   # within 90 days of the switch
 
 
+def test_fix_sign_does_not_flip_a_centre_whose_early_scores_mix_the_two_conventions():
+    months = pd.date_range("2012-01-01", periods=30, freq="MS")
+    time = np.array([20 + (7 * i) % 23 for i in range(30)], dtype=float)
+    good = -(time - 30) / 10
+    mixed = (months < "2013-03-01") & (np.arange(30) % 2 > 0)    # one early score in two has the opposite sign
+    values = pd.DataFrame({"time": time, "z": np.where(mixed, -good, good)})
+    keys = make_keys(["P"] * 30, [0] * 30, list(months), ["A"] * 30)
+    schema = {"sign": {"relation": "negative", "by": "siteid", "pairs": {"z": "time"}}}
+    as_written = values["z"].copy()
+    values, flags, switch = fix_sign(values, keys, schema)
+    assert switch == {} and flagged(flags, "sign_flipped") == []
+    assert list(values["z"]) == list(as_written)                 # too weak to tell: nothing is changed
+    assert flagged(flags, "sign_doubt") == list(range(14))       # the scores before March 2013 are doubted
+
+
 def test_collapse_patient_level_keeps_the_first_value_and_flags_changes():
     keys = make_keys(["A", "A", "A", "B", "B"], [0, 6, 12, 0, 6], ["2015-01-01"] * 5)
     values = pd.DataFrame({"sex": ["F", None, "F", "M", "F"]})
@@ -269,6 +284,36 @@ def test_a_score_can_count_points_take_the_highest_item_and_keep_a_total_typed_a
     assert list(values["highest"][:2]) == [2.0, 2.0]
     assert flagged(flags, "score_as_stored") == [2]
     assert flagged(flags, "score_mismatch") == [4]               # 2 + 2 is not 9
+
+
+def test_a_stored_score_that_cannot_be_recomputed_is_flagged():
+    schema = {"variables": {"a": {}, "b": {}, "stored": {"keep": False}},
+              "scores": {"total": {"sum": ["a", "b"], "compare": "stored", "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [1.0, 2.0, np.nan], "b": [1.0, np.nan, np.nan], "stored": [2.0, 5.0, np.nan]})
+    values, flags = compute_scores(values, schema)
+    assert pd.isna(values["total"][1])                           # an item is missing
+    assert flagged(flags, "score_not_recomputed") == [1]         # the stored 5 is not delivered: the log says it existed
+
+
+def test_a_total_built_on_a_score_typed_alone_says_so():
+    schema = {"variables": {"a": {}, "b": {}, "c": {}, "part_stored": {"keep": False}},
+              "scores": {"part": {"sum": ["a", "b"], "otherwise": "part_stored", "compare_offset": 0.0},
+                         "total": {"sum": ["part", "c"], "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [1.0, np.nan], "b": [2.0, np.nan], "c": [1.0, 1.0], "part_stored": [3.0, 7.0]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["total"]) == [4.0, 8.0]
+    as_stored = flags[flags["flag"] == "score_as_stored"]
+    assert list(as_stored["variable"]) == ["part", "total"] and list(as_stored["row"]) == [1, 1]
+
+
+def test_the_mismatch_of_a_check_is_filed_under_the_stored_value_it_checks():
+    schema = {"variables": {"a": {}, "b": {}, "difference": {}},
+              "scores": {"difference_check": {"sum": ["a"], "minus": ["b"], "compare": "difference", "keep": False,
+                                              "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [5.0, 5.0], "b": [2.0, 2.0], "difference": [3.0, 4.0]})
+    values, flags = compute_scores(values, schema)
+    assert list(flags["variable"]) == ["difference"]             # the name the analyst sees, not the check's
+    assert flagged(flags, "score_mismatch") == [1]
 
 
 def test_units_without_a_unit_column_are_read_from_the_size_of_the_value():

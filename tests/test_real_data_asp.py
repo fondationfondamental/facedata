@@ -40,7 +40,10 @@ def test_visits(result):
     visits = result.data["visit"].value_counts()
     assert (visits["V0"], visits["screening"], visits["V1_an"], visits["V2_ans"]) == (2318, 1809, 177, 112)
     assert (visits["V3_ans"], visits["V4_ans"], visits["V5_ans"]) == (41, 29, 8)
-    assert result.flags[result.flags["flag"] == "visit_order"].shape[0] == 42
+    assert result.flags[result.flags["flag"] == "visit_order"].shape[0] == 41
+    # Five visits are dated before 2009 or in the future: the date is impossible and is not delivered.
+    impossible = result.flags[(result.flags["variable"] == "visit_date") & (result.flags["flag"] == "out_of_range")]
+    assert (len(impossible), result.data["visit_date"].isna().sum(), (result.data["age"] < 0).sum()) == (5, 5, 0)
     # The export writes the centre codes as numbers; they are delivered with two digits, as in the other cohorts.
     assert set(result.data["siteid"].str.len()) == {2} and result.data["siteid"].nunique() == 8
 
@@ -82,7 +85,8 @@ def test_patient_table(result, qc):
     assert patients["screening_criterion_a1"].notna().sum() == 125                    # the checklist of the children
     assert (patients["non_drug_care_04"].sum(), patients["non_drug_care_psychiatrist"].sum()) == (0, 320)
     flags = result.flags[result.flags["variable"].isin(patients.columns)]
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 32, "out_of_range": 1}
+    # The answers about the birth are asked once: they are per patient, as in BP, with their flags.
+    assert flags["flag"].value_counts().to_dict() == {"missing_code": 809, "out_of_range": 21, "unit_inferred": 1}
 
 
 def test_medical_evaluation(result, qc):
@@ -102,7 +106,7 @@ def test_medical_evaluation(result, qc):
     assert v0["asdi01"].value_counts().to_dict() == {"yes": 317, "no": 49, "a_little": 39} and (v0["asdi_criteria_met"] == 1).sum() == 252
     # An age that was first read as a list of codes.
     assert (data["language_disorder_onset_age"].notna().sum(), data["language_disorder_onset_age"].median()) == (50, 3)
-    assert v0["tobacco_use"].value_counts().to_dict() == {"dependence": 86, "no": 38, "abuse": 12}
+    assert v0["tobacco_use_disorder"].value_counts().to_dict() == {"dependence": 86, "no": 38, "abuse": 12}
     known = {name: (int(v0[name].notna().sum()), int((v0[name] == 1).sum())) for name in ["depressive_episode", "anxiety_disorder", "adhd", "insomnia"]}
     assert known == {"depressive_episode": (1522, 434), "anxiety_disorder": (1525, 899), "adhd": (1411, 475), "insomnia": (1645, 569)}
     assert (data["depressive_episode_n_episodes"] == 0).sum() == 1144               # a count is 0 where the disorder is absent
@@ -117,7 +121,8 @@ def test_medical_evaluation(result, qc):
     # Vineland-II: raw scores of the sub-domains, standard scores of the domains, their sum checked.
     assert (data["vineland_receptive_raw"].notna().sum(), data["vineland_receptive_raw"].max()) == (1108, 40)
     assert (data["vineland_composite"].notna().sum(), data["vineland_composite"].median()) == (974, 63)
-    assert (result.flags["variable"] == "vineland_sum_check").sum() == 30
+    # The check is not delivered: its mismatch is filed under the stored sum that the analyst sees.
+    assert ((result.flags["variable"] == "vineland_sum_standard") & (result.flags["flag"] == "score_mismatch")).sum() == 30
 
 
 def test_clinical_measures_and_biology(result, qc):
@@ -131,7 +136,7 @@ def test_clinical_measures_and_biology(result, qc):
     # Children are measured too: the ranges of the other cohorts would refuse them.
     assert (qc.loc["height", "n_valid"], qc.loc["height", "unit_inferred"], qc.loc["height", "out_of_range"]) == (1100, 3, 9)
     assert (qc.loc["weight", "n_valid"], data["weight"].min() < 25) == (1104, True)
-    assert (qc.loc["systolic", "unit_inferred"], qc.loc["diastolic", "unit_inferred"]) == (7, 7)                 # typed in cmHg
+    assert (qc.loc["systolic_supine", "unit_inferred"], qc.loc["diastolic_supine", "unit_inferred"]) == (7, 7)                 # typed in cmHg
     assert data["bmi"].notna().sum() == 1091 and (result.flags["variable"] == "qtc_bazett").sum() == 3
     v0 = data[data["visit"] == "V0"]
     assert v0["tobacco_status"].value_counts().to_dict() == {"non_smoker": 492, "current_smoker": 49, "ex_smoker": 22}
@@ -152,7 +157,9 @@ def test_neuropsychology(result, qc):
     table = qc[qc["tab"] == "neuropsychologie"]
     assert (table["instrument"].nunique(), len(table)) == (16, 373)
     flags = result.flags[result.flags["variable"].isin(table.index)]
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 731, "winsorised": 25, "out_of_range": 17}
+    # The total of the errands test is recomputed as in BP: 2 stored totals differ, 1 has an item missing.
+    assert flags["flag"].value_counts().to_dict() == {"missing_code": 731, "winsorised": 25, "out_of_range": 17, "score_mismatch": 2,
+                                                      "score_not_recomputed": 1}
     # The WAIS-IV item by item: every stored total is the sum of its items, and the digit span total of its three parts.
     wais = result.flags[result.flags["variable"].str.startswith("wais4_")]
     assert "score_mismatch" not in set(wais["flag"])
@@ -166,15 +173,16 @@ def test_neuropsychology(result, qc):
     difference = (data["barona_expected_qit"] - data["wais4_qit_np"] - data["barona_qit_difference"]).abs()
     assert difference.notna().sum() == 131 and difference.max() < 0.2                                    # expected minus measured
     assert (data["trbapp01"].notna().sum(), (data["trbapp01"] == 1).sum(), qc.loc["trbapp01", "missing_code"]) == (746, 71, 55)
-    assert (data["lis_score"].notna().sum(), data["face_emotion_total"].notna().sum(), data["errands_time"].notna().sum()) == (698, 701, 563)
+    assert (data["lis_total"].notna().sum(), data["face_emotion_total"].notna().sum(), data["errands_time"].notna().sum()) == (698, 701, 563)
 
 
 def test_new_questionnaires(result, qc):
     data, flags = result.data, result.flags
     table = qc[qc["tab"] == "autoquestionnaires"]
-    assert (table["instrument"].nunique(), len(table)) == (29, 1217)
+    assert (table["instrument"].nunique(), len(table)) == (29, 1216)             # the ADOS total of the summary line is not delivered
     counts = flags[flags["variable"].isin(table.index)]["flag"].value_counts().to_dict()
-    assert counts == {"score_as_stored": 14724, "missing_code": 1457, "score_mismatch": 749, "out_of_range": 59}
+    # 14,724 scores typed without their items, and 2,964 totals built on them; 767 stored scores whose items are incomplete.
+    assert counts == {"score_as_stored": 17688, "missing_code": 1457, "score_not_recomputed": 767, "score_mismatch": 749, "out_of_range": 59}
     mismatch = lambda name: int(((flags["variable"] == name) & (flags["flag"] == "score_mismatch")).sum())
     # A score typed without any of its items is kept as stored.
     kept = {name: (int(qc.loc[name, "n_valid"]), int(qc.loc[name, "score_as_stored"])) for name in ["adi_a1", "raads_social", "gsq_total", "bdi_total", "adhdrs_total", "cdi_total", "staic_trait"]}
@@ -193,14 +201,17 @@ def test_new_questionnaires(result, qc):
     assert (data["ados4_communication"].max(), data["ados4_social_interaction"].max()) == (8, 14)        # the published maxima
     assert (data["ados3_b08"].isna() & data["ados3_b07"].notna()).sum() == 96                              # the visits of the first edition
     # SRS of a relative: the child form and the adult form share the columns and are told apart by the age at the visit.
-    assert data["srs_relative_form"].value_counts().to_dict() == {"srs_relative_adult": 985, "srs_relative_child": 982}
+    # Two of these visits have an impossible date, so no age: their form cannot be told any more.
+    assert data["srs_relative_form"].value_counts().to_dict() == {"srs_relative_adult": 984, "srs_relative_child": 981}
     assert (data["srsc_total"].notna() & data["srsr_total"].notna()).sum() == 0
     # The published key, where the stored scores reverse no item.
-    assert (qc.loc["srsc_total", "n_valid"], data["srsc_total"].median(), mismatch("srsc_total_as_stored"), mismatch("srsc_awareness_as_stored")) == (887, 94, 0, 0)
-    assert (qc.loc["srsr_total", "n_valid"], data["srsr_total"].median(), mismatch("srsr_total_as_stored"), mismatch("srsr_awareness_as_stored")) == (830, 98, 0, 0)
+    assert (qc.loc["srsc_total", "n_valid"], data["srsc_total"].median(), mismatch("srsc_total_as_stored"), mismatch("srsc_awareness_as_stored")) == (886, 94, 0, 0)
+    assert (qc.loc["srsr_total", "n_valid"], data["srsr_total"].median(), mismatch("srsr_total_as_stored"), mismatch("srsr_awareness_as_stored")) == (829, 98, 0, 0)
     assert "srsc_total_t_stored" not in data.columns and "srsr_awr_t_stored" not in data.columns           # the T-scores are not delivered
     # GSQ: the stored proprioceptive sub-score counts the item 40 for the item 41; the delivered one is the sum of its two parts.
-    assert (qc.loc["gsq_proprioceptive", "n_valid"], mismatch("gsq_proprioceptive_as_stored"), mismatch("gsq_hyper_proprioceptive")) == (609, 2, 1)
+    # Where the two parts were typed without their items it is their sum, and says so (156 visits).
+    assert (qc.loc["gsq_proprioceptive", "n_valid"], mismatch("gsq_proprioceptive_as_stored"), mismatch("gsq_hyper_proprioceptive")) == (611, 2, 1)
+    assert qc.loc["gsq_proprioceptive", "score_as_stored"] == 156
     assert (data["adhdrs19"].value_counts().to_dict(), qc.loc["adhdrs19", "missing_code"]) == ({"yes": 675, "no": 31}, 50)
     # BRIEF: the form of children and the form of adults are two instruments.
     assert data["brief_form"].value_counts().to_dict() == {"brief_parent": 858, "brief_adult": 786}
@@ -235,7 +246,7 @@ def test_old_questionnaires(result, qc):
     # Two forms of the communication checklist in the same columns.
     assert data["communication_checklist_form"].value_counts().to_dict() == {"cca": 235, "ccc2": 106}
     forms = flags[flags["flag"] == "version_unknown"]["variable"].value_counts().to_dict()
-    assert forms == {"communication_checklist_form": 21, "srs_relative_form": 1}      # a visit with SRS answers and no age
+    assert forms == {"communication_checklist_form": 21, "srs_relative_form": 3}      # three visits with SRS answers and an impossible date: no age
     # PSQI: the components 4, 5 and 7 are recomputed; the stored ones do not cross midnight or do not follow the items.
     psqi = {name: (int(qc.loc[name, "n_valid"]), mismatch(name)) for name in ["psqi_latency_component", "psqi_efficiency", "psqi_disturbances", "psqi_dysfunction", "psqi_total"]}
     assert psqi == {"psqi_latency_component": (189, 0), "psqi_efficiency": (193, 94), "psqi_disturbances": (200, 158), "psqi_dysfunction": (201, 98), "psqi_total": (182, 147)}
@@ -249,14 +260,15 @@ def test_history_family_and_treatments(result, qc):
     data, lists, flags = result.data, result.treatments, result.flags
     table = qc[qc["tab"].isin(["antecedents", "antecedent_famille_psy"])]
     assert (table["instrument"].nunique(), len(table)) == (17, 240)
-    v0 = data[data["visit"] == "V0"]
+    birth = result.patients                                                        # the answers about the birth: one row per patient
+    v0 = data[data["visit"] == "V0"].merge(birth[["usubjid", "neonatal_hospitalisation"]], on="usubjid")
     # Yes/no questions with a 9 for "not known": read as missing with its reason.
     asked = {name: (int(v0[name].notna().sum()), int((v0[name] == 1).sum()), int(qc.loc[name, "missing_code"]))
              for name in ["miscarriage_before", "folic_acid", "neonatal_hospitalisation", "language_delay", "history_ent", "psychiatric_contact"]}
     assert asked == {"miscarriage_before": (1647, 379, 385), "folic_acid": (1187, 362, 790), "neonatal_hospitalisation": (1843, 168, 148), "language_delay": (1804, 415, 87),
                      "history_ent": (1970, 1040, 57), "psychiatric_contact": (1867, 1374, 12)}
     # The names of BP for the birth; a weight typed in kilograms is converted.
-    assert (data["gestational_age"].notna().sum(), data["gestational_age"].median(), data["birth_weight"].notna().sum(), data["birth_weight"].median()) == (1709, 39, 1257, 3300)
+    assert (birth["gestational_age"].notna().sum(), birth["gestational_age"].median(), birth["birth_weight"].notna().sum(), birth["birth_weight"].median()) == (1709, 39, 1257, 3300)
     assert ((v0["sudden_complex_language"] == 1).sum(), v0["sudden_complex_language"].notna().sum()) == (253, 1722)   # not a loss of language
     assert (qc.loc["birth_weight", "unit_inferred"], qc.loc["birth_weight", "out_of_range"], data["age_first_words"].median()) == (1, 3, 17)
     # Records packed in one cell are opened: one row per disease, relative or hospitalisation.
@@ -300,12 +312,12 @@ def test_coverage():
     finished = lines
     assert set(finished["status"]) == {"covered", "ignored"}
     # The only cells left unread: the items of the communication checklist on the 21 visits whose form cannot be told,
-    # and the SRS of a relative on the one visit that has no age to tell the child form from the adult form.
+    # and the SRS of a relative on the three visits whose date is impossible: no age to tell the child form from the adult form.
     unread = finished[finished["n_unread"] > 0]
     checklist = unread[unread["column"].str.fullmatch(r"comm\d+")]
     srs = unread[unread["column"].str.startswith("recs")]
     assert (len(checklist), checklist["n_unread"].sum()) == (70, 1351)
-    assert (len(srs), srs["n_unread"].max(), len(unread) - len(checklist) - len(srs)) == (79, 1, 0)
+    assert (len(srs), srs["n_unread"].max(), len(unread) - len(checklist) - len(srs)) == (80, 3, 0)
     assert counts.sum() == 4364                                             # no column named by a schema is absent from the file
     assert lines.groupby("table")["column"].size().to_dict() == {
         "patient": 93, "autoquestionnaires": 1135, "autoquestionnaires_old_part1": 991, "autoquestionnaires_old_part2": 716,

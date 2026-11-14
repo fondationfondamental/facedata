@@ -81,8 +81,11 @@ def visit_month(label):
     return number if found.group(2) == "mois" else 12 * number
 
 
-def prepare_visits(raw):
+def prepare_visits(raw, first_day=None):
     """Drop duplicated visit records and build the key columns.
+
+    first_day: the day the cohort opened (YYYY-MM-DD). A visit dated before
+    it, or after today, has an impossible date: the date becomes missing.
 
     Returns the extraction without duplicates (rows numbered from 0), the key
     columns, and the flags.
@@ -98,12 +101,17 @@ def prepare_visits(raw):
     is_placeholder = raw["svdtc"].isin(PLACEHOLDER_VISIT_DATES)
     date_text = raw["svdtc"].where(~is_placeholder & (raw["svdtc"] != EMPTY_DATE), "")
     keys["visit_date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
+    earliest = pd.Timestamp(first_day) if first_day else pd.Timestamp.min
+    impossible = (keys["visit_date"] < earliest) | (keys["visit_date"] > pd.Timestamp.today())
+    keys["visit_date"] = keys["visit_date"].mask(impossible)
     keys["siteid"] = raw["siteid"].str.zfill(2).where(raw["siteid"] != "", "")     # centre codes have two digits: "4" is "04"
     # Age at the visit, in years. The export gives the date of birth to the month only.
     keys["age"] = np.nan
     if "brthdtc" in raw.columns:
         birth = pd.to_datetime(raw["brthdtc"], format="%Y-%m-%d", errors="coerce")
         keys["age"] = (keys["visit_date"] - birth).dt.days / 365.25
+    wrong_age = (keys["age"] < 0) | (keys["age"] > 110)       # a wrong date of birth: no age is better than this one
+    keys["age"] = keys["age"].mask(wrong_age)
 
     # A visit dated before the patient's previous visit is out of order.
     dated = keys.dropna(subset=["visit_date"]).sort_values(["usubjid", "visit_order"])
@@ -113,6 +121,8 @@ def prepare_visits(raw):
     flags = stack_flags([
         make_flags(has_copy, "visit", "duplicate_row"),
         make_flags(is_placeholder, "visit_date", "date_placeholder"),
+        make_flags(impossible, "visit_date", "out_of_range", "dated before the cohort opened, or after today"),
+        make_flags(wrong_age, "age", "out_of_range", "below 0 or above 110 years"),
         make_flags(out_of_order, "visit_date", "visit_order", "dated before the previous visit"),
     ])
     return raw, keys, flags

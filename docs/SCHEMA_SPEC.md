@@ -53,6 +53,7 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `checks` | no | Names of functions in `facedata/custom.py` (section 10) |
 | `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
 | `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
+| `crossed`, `per_visit`, `packed` | no | With `level: list`: lists that the export crossed, lists of the visit, records packed in one cell (section 15) |
 | `relatives` | no | With `level: relatives`, required: the prefix of the raw columns of each relative, and who the relative is (section 16) |
 | `per_patient` | no | With `level: relatives`: the yes/no columns of the patients table computed from the rows of the relatives (section 16) |
 
@@ -619,8 +620,8 @@ scores:
 | `scale` | With `sum` or `mean`: `[factor, offset]`. The sum or the mean is multiplied by the factor, then the offset is added. A sub-score of the S-QoL is the mean of two items of 1 to 5 brought to 0 to 100: `scale: [25, -25]`. A sum that the instrument halves: `scale: [0.5, 0]` |
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
-| `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept |
-| `otherwise` | With `sum`, `mean` or `max`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule |
+| `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept. Where the stored score exists, is not delivered (`keep: false`) and the score cannot be recomputed, the row gets `score_not_recomputed`. A check score (`keep: false`) that compares a delivered variable files its `score_mismatch` under that variable |
+| `otherwise` | With `sum`, `mean` or `max`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
 | `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
@@ -867,7 +868,7 @@ the list is not empty.
 - `checks` names variables or scores of the schema and functions that exist
   in `facedata/custom.py`.
 - `scale` is two numbers, on a score that has `sum` or `mean`.
-- A score has exactly one of `sum`, `mean`, `lookup` and `custom`; `lookup`
+- A score has exactly one of `sum`, `mean`, `max`, `lookup` and `custom`; `points` and `otherwise` go with the first three; `lookup`
   comes with `from`, `by` with `lookup`, `minus` with `sum`, and `custom` names a function that
   exists in `facedata/custom.py`. Whether the norm table exists is not checked here: a missing table
   gives `norm_missing` flags, not an error.
