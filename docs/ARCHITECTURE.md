@@ -469,6 +469,13 @@ The switch dates are found again at each load, from the data. They are listed
 on the instrument's report page. An extraction with few visits per centre
 gives no switch date, and nothing is flipped.
 
+A schema can also give the date itself (`before`) with the variables to turn
+(`turn`), when a form changed the direction in which it stores some answers.
+Nothing is searched then: the values of the visits dated before that day are
+turned around the middle of their range (or multiplied by −1 when they have
+no range) and get `sign_flipped`; those within 90 days of the day, and those
+of a visit without a date, get `sign_doubt`.
+
 ### Step 9: range
 
 A value outside the schema's hard `range` is impossible. It becomes missing
@@ -477,7 +484,9 @@ a date before the cohort existed, or far in the future, is impossible.
 
 A schema can also name a period in which a column is not reliable (`doubt`).
 The values of the visits dated in that period are possible, so they are
-kept, but they get `period_doubt`: the analyst decides.
+kept, but they get `period_doubt`: the analyst decides. Where most of the
+doubted values are known to be wrong, the schema asks for them not to be
+delivered (`remove: true`): they become missing and get `period_removed`.
 
 ### Step 10: scores
 
@@ -502,6 +511,12 @@ the visit (a scaled score), and if the table says so from a second variable
 such as the years of education (the percentile bands of the TMT errors). The
 tables are copyrighted and are not in the repository; `load()` reads them
 from a folder. A raw score for which nothing can be read gets `norm_missing`.
+
+Where the norms give a regression and not a table (the CVLT), a z-score is
+computed from the raw score, the age at the visit and the other variables of
+the regression (years of education, sex); the coefficients are a file of the
+same folder. A band can then be read in a table for the ages that have one
+and be the band of the z-score for the others (SCHEMA_SPEC, section 8).
 
 Some stored values were computed by the EMR from another value (a scaled
 score from a raw total). Where the check of that other value fails, such a
@@ -553,7 +568,7 @@ QC table counts patients, not visit rows.
 | `format_repaired` | info | A number was written unusually but unambiguously |
 | `censored_left` | info | The cell was `<limit`. For a band: this band or a lower one |
 | `censored_right` | info | The cell was `>limit`. For a band: this band or a higher one |
-| `band_from_z` | info | The cell held a z-score; the band is the one it has under the normal law |
+| `band_from_z` | info | The band is the one a z-score has under the normal law: the z-score of the cell, or one computed with the regression of the norms |
 | `unit_converted` | info | Converted from a labelled unit |
 | `unit_inferred` | info | Unit taken from the magnitude; the label was missing, unknown or impossible |
 | `sign_flipped` | info | A standard score written in the old sign convention was multiplied by −1 |
@@ -572,12 +587,13 @@ QC table counts patients, not visit rows.
 | `visit_order` | discrepancy | Visit dates are not in visit order |
 | `check_failed` | discrepancy | A custom check named in the schema failed |
 | `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |
+| `period_removed` | danger | The visit is dated in a period in which the schema says the column is not reliable and asks for the value not to be delivered; `raw` holds what was written |
 | `unparsed` | danger | The cell could not be read as its type |
 | `unknown_code` | danger | A category value is not in the code list |
 | `out_of_range` | danger | The value is outside the hard range. Also a visit date before the cohort opened or after today, and an impossible age |
 | `unit_unknown` | danger | No usable unit label and the magnitude fits several units; or a percentage of a value that is missing |
 | `version_unknown` | danger | Data present but version not recognisable |
-| `norm_missing` | danger | No standard score could be read: the norm table was not found, or it has nothing for this age, raw score and second variable |
+| `norm_missing` | danger | No standard score could be read: the norm table was not found, or it has nothing for this age, raw score and second variable. For a z-score computed with a regression: the table was not found, or a variable of the regression is missing |
 | `score_not_recomputed` | danger | The extraction stores the score but an item is missing: the score is not delivered; `detail` holds the stored value |
 
 ## 7. QC and report

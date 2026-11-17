@@ -2,7 +2,7 @@ instrument: identite
 title: Patient identity
 tab: PATIENT
 section: IDENTIFICATION PATIENT
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. The extraction repeats these columns on every visit
@@ -10,11 +10,17 @@ notes: >
 
   The date of birth is exported with the day set to the 15th for every
   patient. The stored age is the age at the inclusion visit (V0): it equals
-  the age computed from the date of birth and the V0 date for 6,468 of 6,476
+  the age computed from the date of birth and the V0 date for 6,490 of 6,498
   patients, and is one year more for the other 8.
 
   The type of disorder holds three values, plus the abbreviations BPNOS and
-  TBNOS (one patient each), read as "not otherwise specified".
+  TBNOS (one patient each), read as "not otherwise specified". In the
+  application it is the mood-disorder diagnosis of the DSM form, which the
+  clinician fills at every visit; the export gives one value per patient,
+  and which visit it comes from is asked in QUESTIONS.md (DM-7). Type 2
+  rises from 40% of the patients included until 2012 to about 60% of those
+  included from 2022, in most centres, and type 1 falls from 46% to 34%:
+  no step at one date in one centre.
 
   fondacode (the column subjid) is the patient code of the foundation. A
   usubjid is a number given inside the cohort: it can change from one

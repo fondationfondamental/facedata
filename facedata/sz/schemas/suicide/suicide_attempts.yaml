@@ -1,19 +1,24 @@
 instrument: suicide_attempts
-title: History of suicide attempts
+title: History of suicide attempts over the whole life (inclusion visit)
 tab: SUICIDE
 section: Histoire des conduites suicidaires (VIE ENTIERE ou depuis la DERNIERE VISITE)
 status: draft
 notes: >
   Date of the first attempt, number of attempts, and whether some were
-  violent (firearm, hanging, jump...) or serious (intensive care). Filled
-  mostly at the inclusion visit (641 numbers of attempts at inclusion, 53
-  at follow-up, where the question is about the time since the last visit).
-  Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+  violent (firearm, hanging, jump...) or serious (intensive care), over the
+  whole life, as asked at the inclusion visit. Yes/no answers are delivered
+  as 1 and 0; "Ne sais pas" is a missing code.
 
-  Date of the first attempt, at inclusion only: 737 cells. 114 hold the
-  placeholder 1000-01-01, none the 2011-11-11 that BP has (the missing code
-  of the BP schema is kept, it matches nothing). 90 dates are a first of
-  January: only the year was known. 8 dates are after the visit.
+  Two forms in the same columns, as in BP (BP decision D86). The inclusion
+  form asks "how many times have you attempted suicide" and the date of the
+  first attempt; the follow-up form asks the same numbers "since the last
+  visit" and has no date of the first attempt (read in the form definitions
+  of the application in November 2026). The follow-up visits are another
+  instrument, suicide_attempts_since_visit.
+
+  Date of the first attempt: 114 cells hold the placeholder 1000-01-01. 90
+  dates are a first of January: only the year was known. 8 dates are after
+  the visit.
 
   Number of attempts. 67 patients who say they attempted suicide have no
   number, 5 have the number 0, and one "no" has a number above 0. One
@@ -21,7 +26,34 @@ notes: >
 
   The BP schema, unchanged.
 
-defaults: {type: item, range: [0, 1]}
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
 
 variables:
   first_attempt_date:
@@ -29,7 +61,6 @@ variables:
     type: date
     label: Date of the first suicide attempt
     range: [1920-01-01, 2026-12-31]
-    missing: {"2011-11-11": not_recorded}
   n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
   violent_attempts: {column: isf08, label: Has made violent suicide attempts, codes: {Oui: 1, Non: 0}}
   n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}

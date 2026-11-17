@@ -61,6 +61,7 @@ SEVERITY = {
     "visit_order": "discrepancy",
     "check_failed": "discrepancy",
     "period_doubt": "discrepancy",
+    "period_removed": "danger",
     "unparsed": "danger",
     "unknown_code": "danger",
     "out_of_range": "danger",

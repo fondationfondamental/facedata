@@ -13,11 +13,16 @@ notes: >
   relatives (decision D58 in PROGRESS.md). The columns fdr_ and gp_ of the
   table patients sum them up (family_history_per_patient, below).
 
-  Who has a row. The birth date, the death and its date are asked for
-  every relative. The other questions are asked only for the relatives who
-  have something to describe: a parent or a grandparent answered "yes" in
-  family_structure, and as many sisters, brothers, daughters and sons as
-  the patient counted there. So a row does not say that the relative has a
+  Who has a row. The questions on a sister, a brother, a daughter or a son
+  are asked for as many of them as the patient counted as affected in
+  family_structure: "sister 1" is the first of the affected sisters, not
+  the eldest sister, and at most five are described (read in the
+  application in November 2026; decision D95 in PROGRESS.md). On the form
+  of today the birth date, the death and its date of a sibling or a child
+  are asked for the affected ones only; the older form asked them for
+  every relative, which is why a birth date exists for unaffected ones. A
+  parent or a grandparent is described after a "yes" in family_structure.
+  So a row does not say that the relative has a
   disorder: half of the rows (15,040) hold only a birth date, a death or a
   date of death. A relative for whom nothing is known has no row.
 
@@ -53,7 +58,11 @@ notes: >
   date_placeholder). From 2022 the dates are almost never typed: the birth
   date is filled for 70% of the relatives of the patients included until
   2020 and for 8% of those of the patients included from 2022, the date of
-  death for 52% and for 1% of the deceased relatives. Hard limits: a birth
+  death for 52% and for 1% of the deceased relatives. The form explains it
+  (D95): the birth dates and the dates of death of the parents and the
+  grandparents are no longer shown (they are among its hidden fields), and
+  those of the siblings and the children are asked for the affected ones
+  only. Hard limits: a birth
   from 1840, a death from 1900. 19 dates are outside (out_of_range): ten
   have a year below 100 and nine are deaths in the nineteenth century.
   Three birth dates have a month written 00 with a day (unparsed).

@@ -276,15 +276,6 @@ def stroop_interference(values, keys=None):
     return values["stroop_colour_word_corrected"] - words * colours / (words + colours)
 
 
-def recency_z_without_recency(values):
-    """A CVLT recency z-score with no recency next to it.
-
-    The EMR computed it from an empty cell, as if the recency were 0. True
-    where that is the case.
-    """
-    return values["cvlt_recency_z"].notna() & values["cvlt_recency"].isna()
-
-
 def medication_name(names):
     """The stem of a medication name: "TERALITHE LP 400 mg, comprimé sécable" gives "TERALITHE LP"."""
     stems = names.str.upper().str.replace(r"\s+\d.*|[,(/*].*", "", regex=True)

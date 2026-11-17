@@ -49,7 +49,7 @@ def test_visits(result):
 
 def test_the_three_cohorts_can_be_stacked(result):
     from facedata import bp, sz
-    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261113.tsv"}
+    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261117.tsv"}
     if not all(path.exists() for path in files.values()):
         pytest.skip("the BP or the SZ extraction is not on this computer")
     for table in [result.data, result.patients, result.flags, result.treatments, result.relatives]:
@@ -140,7 +140,7 @@ def test_biology(result, qc):
     assert (round(yearly.min()), round(yearly.max())) == (49, 67)
     assert (qc.loc["vitamin_b12", "unit_converted"], qc.loc["vitamin_b12", "unit_unknown"], qc.loc["folates", "unit_converted"]) == (685, 27, 580)
     assert (qc.loc["cortisol", "n_valid"], qc.loc["cortisol", "unit_converted"]) == (988, 143)
-    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1140, 80, 22)
+    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1105, 80, 22)
     assert (qc.loc["glucose", "n_valid"], qc.loc["glucose", "unit_inferred"], qc.loc["ferritin", "n_valid"]) == (1085, 10, 460)
     assert (qc.loc["leukocytes", "check_failed"], qc.loc["cholesterol_hdl_ratio", "n_valid"]) == (23, 1097)
     # Drug levels: the antidepressants hold two scales a thousand times apart, delivered in µg/L.

@@ -2,10 +2,16 @@ instrument: fin_de_suivi
 title: End of follow-up
 tab: PATIENT
 section: Fin de suivi
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient.
+
+  An empty reason does not mean that the patient is still followed. A
+  reason is recorded for 848 patients, and for 15% only of the 4,957
+  patients whose last visit is more than three years old (742). Four
+  centres hold 81% of the reasons. To know who has left the cohort, use
+  the date of the last visit.
 
   The extraction holds two generations of the same form. The columns ending
   in _patient (dictionary section "patient") were used until about 2022, the
@@ -16,12 +22,15 @@ notes: >
   two reasons differ (column_conflict, the new one is kept).
 
   The EMR writes the placeholder 1000-01-01 in the two date columns when
-  there is nothing to record: 157 patients who are not recorded as deceased
-  have it as their date of death. It becomes missing (date_placeholder).
+  there is nothing to record: 165 patients have it as their date of death
+  and 303 as the date of a change of diagnosis. It becomes missing
+  (date_placeholder).
 
   22 patients are recorded as deceased and 17 have a date of death (one of
   them a year only); one of these dates belongs to a patient without that
-  reason.
+  reason. No visit is dated after a death. 68 patients have a change of
+  diagnosis as their reason, 55 of them with a date; 8 have a visit more
+  than a month after that date.
 
   The free-text columns (other reason, new centre, new diagnosis, other
   cause of death) are delivered as text and never appear in the report.

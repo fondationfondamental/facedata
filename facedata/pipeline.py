@@ -131,7 +131,8 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
             values[name], range_flags = check_range(values[name], name, variable)
             flags.append(range_flags)
         if "doubt" in variable:                      # a period in which the column is not reliable
-            flags.append(doubt_period(values[name], keys["visit_date"], name, variable["doubt"]))
+            values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
+            flags.append(doubt_flags)
     cens = cens.where(values[cens.columns].notna(), 0)
 
     values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens, keys)

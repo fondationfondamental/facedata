@@ -17,7 +17,7 @@ from facedata.treatments import open_lists
 from test_pipeline import assert_invariant
 
 ROOT = Path(__file__).parent.parent
-EXTRACTION = ROOT / "data" / "sz" / "SZALL_20261113.tsv"
+EXTRACTION = ROOT / "data" / "sz" / "SZALL_20261117.tsv"
 THESAURUS = ROOT / "thesauri" / "FACESZ_thesaurus_V4.20.xlsx"
 NORMS = ROOT / "norms"
 pytestmark = pytest.mark.skipif(not EXTRACTION.exists(), reason="the SZ extraction is not on this computer")
@@ -62,13 +62,13 @@ def test_the_two_cohorts_can_be_stacked(result):
 
 def test_patient_tab(result, qc):
     patients = result.patients
-    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 17
+    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 16
     assert patients["sex"].value_counts().to_dict() == {"male": 1706, "female": 647}
     assert patients["diagnosis"].value_counts().to_dict() == {"schizophrenia": 1797, "schizoaffective": 513, "schizophreniform": 43}
     assert (patients["age_at_inclusion"].min(), patients["age_at_inclusion"].max()) == (17, 84)
     assert qc.loc[qc["tab"] == "PATIENT", ["unknown_code", "unparsed", "out_of_range", "patient_value_varies"]].sum().sum() == 0
-    # The non-opposition form: code 2 for 87 patients, against 3 in FACE BP.
-    assert patients["opposition_form"].value_counts().to_dict() == {"1": 1012, "2": 87}
+    # The non-opposition form is administrative: it is not delivered, as in FACE BP.
+    assert "opposition_form" not in patients.columns
     assert (qc.loc["referred_by", "n_valid"], qc.loc["referral_letter_date", "date_placeholder"]) == (1591, 10)
     reason = qc.loc["followup_end_reason"]
     assert (reason["n_filled"], reason["n_valid"], reason["missing_code"]) == (583, 492, 91)
@@ -130,7 +130,8 @@ def test_biology(qc):
     tab = qc[qc["tab"] == "BILAN BIOLOGIQUE"]
     assert (len(tab), tab["instrument"].nunique(), tab["unparsed"].sum()) == (27, 7, 0)
     crp, glucose, haemoglobin = qc.loc["crp"], qc.loc["glucose"], qc.loc["haemoglobin"]
-    assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3563, 334, 1)
+    assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3086, 334, 1)
+    assert crp["missing_code"] == 477                                   # a CRP of exactly 0 is not a measurement (BP D101)
     assert (glucose["n_valid"], glucose["unit_converted"], glucose["unit_inferred"], glucose["out_of_range"]) == (3136, 66, 17, 3)
     assert (haemoglobin["n_valid"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (3658, 34, 4)
     assert (qc.loc["neutrophils", "unit_inferred"], qc.loc["eosinophils", "unit_doubt"]) == (23, 37)
@@ -168,12 +169,15 @@ def test_auto_questionnaires(result, qc):
 
 def test_neuropsychology_first_part(result, qc):
     tab = qc[qc["tab"] == "NEUROPSYCHOLOGIE"]
-    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (659, 30, 1)
+    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (662, 30, 0)
     data = result.data
     assert data["wais_version"].value_counts().to_dict() == {"wais4": 2654, "wais3": 781}
-    # The form that holds the years of education stops in 2016: the TMT error norms cannot be read after.
-    assert (qc.loc["education_years", "n_valid"], qc.loc["education_years", "last_year"]) == (776, 2016)
-    assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (748, 2359)
+    # The years of education are exported for every assessment since the extraction of 17 November 2026
+    # (776 visits until 2016 before): the TMT error norms can be read on every visit.
+    assert (qc.loc["education_years", "n_valid"], qc.loc["education_years", "last_year"]) == (3449, 2026)
+    assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (3107, 0)
+    # A suspected learning disorder: several kinds can be ticked, one box each, 0 after a "no".
+    assert (qc.loc["neuropsy_dyslexia", "n_valid"], (data["neuropsy_dyslexia"] == 1).sum(), (data["neuropsy_dyspraxia"] == 1).sum()) == (2851, 203, 42)
     # One centre's 23 early visits mix the two sign conventions (mean correlation 0.24 the wrong way): too weak
     # to flip, so the scores stay as written and are doubted.
     assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time_z", "sign_flipped"], qc.loc["tmt_a_time_z", "sign_doubt"]) == (3210, 0, 23)
@@ -195,8 +199,15 @@ def same(stored, formula, tolerance=0.011):
 
 def test_cvlt_and_wais(result, qc):
     data = result.data
-    # CVLT: the z-score of trials 1 to 5 does not follow the raw total from 2022 to mid-2025.
-    assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5_z", "period_doubt"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (2275, 260, 240)
+    # CVLT: the z-scores are computed again with the regressions of the norms, as in BP. From October 2021 to June 2026
+    # the application computed part of the z-scores of trials 1 to 5 with two coefficients exchanged: they differ from the stored ones.
+    assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5_z", "n_valid"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (2275, 2275, 0)
+    assert (qc.loc["cvlt_total_1_5_z", "score_mismatch"], qc.loc["cvlt_total_1_5_z", "norm_missing"], qc.loc["cvlt_trial1_z", "score_mismatch"]) == (333, 0, 5)
+    total_z = data["cvlt_total_1_5_z"]
+    from_2022 = data["visit_date"].dt.year >= 2022
+    assert abs(total_z[from_2022].median() - total_z[~from_2022].median()) < 0.3      # the stored ones were 3 points apart
+    assert (qc.loc["cvlt_total_1_5_band", "n_valid"], qc.loc["cvlt_short_free_band", "band_from_z"]) == (2275, 496)
+    assert not [name for name in data.columns if name.startswith("cvlt") and name.endswith("_stored")]
     # WAIS-IV similarities: items 10 and 11 are the same cell twice, so the total is the stored one.
     assert (qc.loc["wais3_simil_total", "n_valid"], qc.loc["wais3_simil_total", "score_mismatch"], qc.loc["wais4_simil_total", "n_valid"]) == (570, 12, 1865)
     # The sums of scaled scores are those of a seven-subtest short form. The scaled scores are in other schemas.
@@ -244,10 +255,11 @@ def shape_of(qc, tab):
 
 def test_suicide_and_comorbidity(result, qc):
     data = result.data
-    assert shape_of(qc, "SUICIDE") == (26, 3, 0, 1)
+    assert shape_of(qc, "SUICIDE") == (31, 4, 0, 1)
     # Two forms in the same columns: the whole life at inclusion, since the last visit at follow-up.
     assert (qc.loc["isf05_lifetime", "n_valid"], data["isf05_lifetime"].sum(), qc.loc["isf05_since_visit", "n_valid"], data["isf05_since_visit"].sum()) == (2231, 680, 2360, 57)
-    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (623, 114, 694)
+    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (623, 114, 641)
+    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (53, 50)       # BP D86
     assert qc.loc[qc.index.str.startswith("isf"), "period_doubt"].sum() == 0          # no doubtful period here, unlike BP
 
     assert shape_of(qc, "SUBSTANCES ET COMORBIDITE") == (189, 11, 0, 0)
@@ -285,7 +297,7 @@ def test_treatments(result, qc):
     assert (groups["antipsychotic_2g"], groups["antipsychotic_1g"], groups["antidepressant"], len(groups)) == (5278, 1325, 1492, 10)
     # The ATC code that the EMR gives for part of the medications agrees with the table.
     both = items["atc_coded"].notna() & items["atc"].notna()
-    assert (int(both.sum()), int((items.loc[both, "atc_coded"] == items.loc[both, "atc"]).sum())) == (3313, 3305)
+    assert (int(both.sum()), int((items.loc[both, "atc_coded"] == items.loc[both, "atc"]).sum())) == (3322, 3314)
     assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (11038, 5792, 1064)
     assert (data["on_antipsychotic_2g"].notna().sum(), round(data["on_antipsychotic_2g"].mean(), 2)) == (5888, 0.88)
     assert round(data.loc[data["visit"] == "V0", "on_clozapine"].mean(), 2) == 0.18
@@ -312,7 +324,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = sz.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1668, 52, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1667, 53, 0)
     assert counts["covered"] + counts["ignored"] == 1720
 
 

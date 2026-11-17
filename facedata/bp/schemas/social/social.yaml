@@ -19,17 +19,22 @@ notes: >
   neuropsychology form agree with it (a median of 12 years for "BAC", 17
   for BAC+5).
 
-  Work status. The dictionary gives seven codes, and code 3 (student) never
-  appears. Code 6 (other) is given to 23% of the patients, a quarter of them
-  under 23: the students are probably there. Delivered with the dictionary's
-  labels. The questions on the current job are filled for the employed
-  only, and the end of the last job for the unemployed only.
+  Work status. The form offers seven answers: without a job, in work, at
+  home, retired, student, pension, other (read in the application in
+  November 2026; decision D94 in PROGRESS.md). Code 3 (student) never
+  appears in the extraction, and code 6 (other) is given to 1,150 patients,
+  23%, with a median age of 30 and 39% under 25: the export writes the
+  students with "other". Code 6 is delivered as student_or_other until the
+  export is corrected. The other codes behave as the dictionary says: the
+  questions on the current job are filled for code 1 only (94%), the
+  retired (code 2) have a median age of 65, and 143 of the 188 patients
+  with code 4 live on a disability pension.
 
-  Main source of income. The dictionary says 7 = no income and 8 = other,
-  and code 8 never appears. Code 7 is given to 23% of the patients, among
-  them three quarters of the retired, who have a pension: it holds "other"
-  as well as "no income". It is delivered as none_or_other (open question
-  O35 in PROGRESS.md).
+  Main source of income. The form offers seven answers: salary, RMI or RSA,
+  AAH, disability pension, unemployment benefit, APL, other. It has no "no
+  income" and no eighth answer, so the dictionary's "7 = no income, 8 =
+  other" is not the form: code 7 is "other" (decision D94). It is given to
+  1,071 patients, among them 187 of the 288 retired, who have a pension.
 
   Household. The number of persons under the same roof is 1 for most of the
   patients who live alone and 0 for 131 of them: some count themselves and
@@ -47,12 +52,12 @@ notes: >
   Not loaded (ignored.yaml). empjob, the class of the current job, holds two
   of its nine codes only (5 for 110 patients, 1 for 12, of 2,300 employed):
   the export loses the others. The data managers found why (decision D74 in
-  PROGRESS.md): the form offers a list of about 17 classes, like the
-  follow-up question below, and the export looks them up in the nine
-  classes of the dictionary, whose labels are other ones. They ask for the
-  mapping; one is proposed in QUESTIONS.md (O43). protec, the legal protection measure, is the
-  column social_protec of the PATIENT tab again; it is delivered there, as
-  protection_measure.
+  PROGRESS.md): the export looks the answers up in the nine classes of the
+  dictionary, whose labels are other ones. The form offers 18 classes (read
+  in the application: the second level of the INSEE nomenclature); the
+  mapping to the nine classes is in QUESTIONS.md (FU-8, O43). The same list
+  is asked for the last job of a patient without a job. protec, the legal
+  protection measure, is not delivered (decision D111 in PROGRESS.md).
 
   The class of the job at follow-up (empjob_psytaitement) is a list of 17
   classes, filled on 214 follow-up visits from 2021.
@@ -95,7 +100,7 @@ variables:
     column: stprof
     label: Work status
     type: category
-    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: other}
+    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: student_or_other}
   job_duration:
     column: jobdur
     label: Time in work without a break of more than six months (the employed)
@@ -175,8 +180,7 @@ variables:
       4: disability_pension
       5: unemployment_benefit
       6: housing_benefit
-      7: none_or_other
-      8: other
+      7: other
   debt_level:
     column: dette
     label: Level of debt

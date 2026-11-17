@@ -26,11 +26,23 @@ notes: >
   with the day set to 15 (the month is known, not the day). The end date is
   empty for half of the medications, written 0000-00-00 or 0000-00-15: a
   missing code. A medication without an end date is taken as still running
-  when the columns of a visit are computed.
+  when the columns of a visit are computed. It is the rule of the
+  application (read in November 2026; decision D96 in PROGRESS.md): the
+  form has a box "Traitement en cours", which hides the end date and
+  writes it 0000-00-15; without it the end date is required; and a
+  medication whose end date has the year 0000 is shown as running "until
+  today". A treatment that was running when it was typed and never updated
+  therefore stays "running" at every later visit.
 
   Dose. The total daily dose is filled for a third of the medications: for
   four in five until 2013, for one in twenty from 2018. The number of units
   a day is filled for most; "Si besoin" (as needed) is a missing code there.
+  The dose is not a field of the form: it is the strength times the units a
+  day (equal on 6,408 of the 6,410 medications that have the three). What
+  the extraction lost is the strength: 5,374 medications started until 2013
+  have one, 1,483 of those started from 2014 to 2017, and 2 of the 8,654
+  started from 2018, although the form still records the strength of each
+  medication (D96). Asked in QUESTIONS.md.
   The strength is delivered as written.
 
   At a visit. The columns of medications_at_visit say, for each visit,

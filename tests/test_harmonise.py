@@ -7,7 +7,7 @@ import pytest
 from facedata import custom
 from facedata.harmonise import (censoring_from_units, check_range, collapse_patient_level,
                                 compute_scores, convert_units, detect_version, doubt_period, fix_sign,
-                                look_up, winsorise)
+                                look_up, regress, winsorise)
 from helpers import flagged, make_keys, texts
 
 GLUCOSE = {
@@ -58,14 +58,25 @@ def test_doubt_period_flags_and_keeps_the_values():
     dates = pd.Series(pd.to_datetime(["2021-12-31", "2022-01-01", "2022-06-01", "2022-06-02", "2023-12-31"]))
     period = [pd.Timestamp("2022-01-01"), pd.Timestamp("2023-12-31")]
     # Only the "yes" (1) of the period: its first and its last day are inside.
-    flags = doubt_period(values, dates, "x", {"period": period, "values": [1.0], "note": "why"})
+    kept, flags = doubt_period(values, dates, "x", {"period": period, "values": [1.0], "note": "why"})
     assert flagged(flags, "period_doubt") == [1, 4] and set(flags["detail"]) == {"why"}
+    assert kept.equals(values)
     # Without values, every filled cell of the period.
-    assert flagged(doubt_period(values, dates, "x", {"period": period}), "period_doubt") == [1, 2, 4]
+    assert flagged(doubt_period(values, dates, "x", {"period": period})[1], "period_doubt") == [1, 2, 4]
     # A category: the labels are listed.
     labels = pd.Series(["last_week", "long_ago", None, "last_week", "last_week"], dtype=object)
-    flags = doubt_period(labels, dates, "x", {"period": period, "values": [1.0, "last_week"]})
+    kept, flags = doubt_period(labels, dates, "x", {"period": period, "values": [1.0, "last_week"]})
     assert flagged(flags, "period_doubt") == [3, 4]
+
+
+def test_doubt_period_can_remove_the_doubted_values():
+    values = pd.Series([1.0, 1.0, 0.0, np.nan, 1.0])
+    dates = pd.Series(pd.to_datetime(["2021-12-31", "2022-01-01", "2022-06-01", "2022-06-02", "2023-12-31"]))
+    period = [pd.Timestamp("2022-01-01"), pd.Timestamp("2023-12-31")]
+    # The "yes" of the period are not delivered; the "no" of the period and the "yes" before it stay.
+    kept, flags = doubt_period(values, dates, "x", {"period": period, "values": [1.0], "remove": True})
+    assert flagged(flags, "period_removed") == [1, 4] and flagged(flags, "period_doubt") == []
+    assert kept.isna().tolist() == [False, True, False, True, True] and kept[0] == 1 and kept[2] == 0
 
 
 def test_compute_scores_reverses_compares_and_doubts_derived_values():
@@ -222,6 +233,22 @@ def test_fix_sign_flips_the_scores_written_before_a_centre_changed():
     assert flagged(flags, "sign_doubt") == [11, 12, 13, 14, 15, 16]   # within 90 days of the switch
 
 
+def test_fix_sign_turns_the_items_of_the_visits_before_a_known_date():
+    # An old form stored a scale of 0 to 10 already turned; the new form stores it as written.
+    dates = pd.to_datetime(["2020-05-01", "2021-07-15", "2021-09-01", "2023-02-01", None])
+    values = pd.DataFrame({"item": [2.0, 9.5, 4.0, 7.0, 3.0], "z": [1.5, np.nan, -1.0, 0.5, 2.0], "other": [1.0] * 5})
+    keys = make_keys(["P"] * 5, [0] * 5, list(dates), ["A"] * 5)
+    schema = {"variables": {"item": {"range": [0.0, 10.0]}, "z": {}, "other": {}},
+              "sign": {"before": pd.Timestamp("2021-09-01"), "turn": ["item", "z"]}}
+    values, flags, switch = fix_sign(values, keys, schema)
+    assert list(values["item"]) == [8.0, 0.5, 4.0, 7.0, 3.0]          # 10 - value before the day, as written from it
+    assert list(values["z"][[0, 2, 3]]) == [-1.5, -1.0, 0.5]           # no range: the sign changes
+    assert list(values["other"]) == [1.0] * 5 and switch == {}
+    item_flags = flags[flags["variable"] == "item"]
+    assert flagged(item_flags, "sign_flipped") == [0, 1]
+    assert flagged(item_flags, "sign_doubt") == [1, 2, 4]              # within 90 days of the day, or no date
+
+
 def test_fix_sign_does_not_flip_a_centre_whose_early_scores_mix_the_two_conventions():
     months = pd.date_range("2012-01-01", periods=30, freq="MS")
     time = np.array([20 + (7 * i) % 23 for i in range(30)], dtype=float)
@@ -284,6 +311,15 @@ def test_a_score_can_count_points_take_the_highest_item_and_keep_a_total_typed_a
     assert list(values["highest"][:2]) == [2.0, 2.0]
     assert flagged(flags, "score_as_stored") == [2]
     assert flagged(flags, "score_mismatch") == [4]               # 2 + 2 is not 9
+
+
+def test_a_score_can_take_the_lowest_of_the_items_that_are_known():
+    # The age at the first episode: the earliest of the ages that the form asked.
+    schema = {"variables": {"a": {}, "b": {}, "c": {}},
+              "scores": {"earliest": {"min": ["a", "b", "c"], "min_items": 1, "compare_offset": 0.0}}}
+    values = pd.DataFrame({"a": [25.0, np.nan, np.nan], "b": [19.0, 30.0, np.nan], "c": [np.nan, 31.0, np.nan]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["earliest"][:2]) == [19.0, 30.0] and pd.isna(values["earliest"][2])
 
 
 def test_a_stored_score_that_cannot_be_recomputed_is_flagged():
@@ -481,6 +517,61 @@ def test_look_up_with_a_second_variable_and_open_bands():
     assert values[4:].isna().all()                           # no education, or no age
     assert flagged(flags, "censored_right") == [1, 3]
     assert flagged(flags, "norm_missing") == [4, 5]
+
+
+# A made-up regression: one line up to 39 years, one from 60. Nothing in between.
+REGRESSION = pd.DataFrame({"age_min": [0, 60], "age_max": [39, 200], "intercept": [10.0, 20.0], "age": [0.0, -0.1],
+                           "schooling": [0.5, 0.0], "sex": [-1.0, 0.0], "sd": [2.0, 4.0]})
+
+
+def test_regress_gives_the_z_score_of_a_made_up_regression():
+    raw = pd.Series([14.0, 14.0, 10.0, 12.0, 12.0, None])
+    age = pd.Series([30.9, 30.9, 70.5, 50.0, 30.0, 30.0])
+    schooling = pd.Series([10.0, 12.0, 5.0, 10.0, np.nan, 10.0])
+    sex = pd.Series([1.0, 2.0, 1.0, 1.0, 1.0, 1.0])
+    z, flags = regress(raw, age, REGRESSION, {"schooling": schooling, "sex": sex}, "words_z")
+    # Row 0: expected 10 + 0.5 * 10 - 1 = 14, z = 0. Row 1: expected 10 + 6 - 2 = 14, z = 0.
+    # Row 2: 70 completed years, expected 20 - 7 = 13, z = (10 - 13) / 4.
+    assert list(z[:3]) == [0.0, 0.0, -0.75]
+    assert z[3:].isna().all()                # 50 years is in no line; no schooling; no raw score
+    assert flagged(flags, "norm_missing") == [4]         # only the missing schooling is flagged
+
+    z, flags = regress(raw, age, None, {"schooling": schooling, "sex": sex}, "words_z")
+    assert z.isna().all()
+    assert flagged(flags, "norm_missing") == [0, 1, 2, 3, 4]     # no table: every raw score is flagged
+
+
+def test_compute_scores_the_band_of_a_z_score_completes_a_norm_table():
+    """A percentile table up to 39 years, a regression from 60: one band for every patient."""
+    bands = pd.DataFrame({"age_min": [0, 0], "age_max": [39, 39], "raw_min": [0, 10], "raw_max": [9, 16], "value": [5, 50]})
+    schema = {
+        "variables": {"words": {"type": "item", "range": [0, 16]}, "schooling": {"type": "number"}, "sex": {"type": "item"},
+                      "words_z_stored": {"type": "number", "keep": False}},
+        "scores": {
+            "words_z": {"regression": "made_up_z", "from": "words", "with": {"schooling": "schooling", "sex": "sex"},
+                        "range": [-5, 5], "compare": "words_z_stored", "compare_offset": 0.0, "compare_tolerance": 0.25},
+            "words_band": {"lookup": "made_up_bands", "from": "words", "band_of": "words_z", "limits": [5, 25, 50, 75, 95],
+                           "compare_offset": 0.0},
+            "z_band": {"band_of": "words_z", "limits": [5, 25, 50, 75, 95], "compare_offset": 0.0},
+        },
+    }
+    values = pd.DataFrame({"words": [12.0, 4.0, 10.0, 16.0, 12.0], "schooling": [10.0, 10.0, 5.0, 5.0, 5.0],
+                           "sex": [1.0, 1.0, 1.0, 2.0, 1.0], "words_z_stored": [-1.0, -5.0, -0.6, 9.9, np.nan]})
+    age = pd.Series([30.0, 30.0, 70.0, 70.0, 50.0])
+    norms = {"made_up_z": REGRESSION, "made_up_bands": bands}
+    values, flags = compute_scores(values, schema, age=age, norms=norms)
+    assert list(values["words_z"][:4]) == [-1.0, -5.0, -0.75, 0.75]
+    assert pd.isna(values["words_z"][4])                         # 50 years: no regression
+    # The stored z-score of row 2 is within the tolerance; the one of row 3 was computed wrongly.
+    assert flagged(flags[flags["variable"] == "words_z"], "score_mismatch") == [3]
+    # Up to 39 years the band is read in the table; from 60 it is the band of the z-score (-0.75: 23rd percentile).
+    assert list(values["words_band"][:4]) == [50, 5, 5, 75]
+    assert pd.isna(values["words_band"][4])                      # neither a table nor a regression at 50
+    band_flags = flags[flags["variable"] == "words_band"]
+    assert flagged(band_flags, "band_from_z") == [2, 3]
+    assert flagged(band_flags, "norm_missing") == [4]
+    assert list(values["z_band"][:4]) == [5, 0, 5, 75]           # with no table, the band of the z-score everywhere
+    assert flagged(flags[flags["variable"] == "z_band"], "band_from_z") == [0, 1, 2, 3]
 
 
 def test_psp_band_of_the_score():

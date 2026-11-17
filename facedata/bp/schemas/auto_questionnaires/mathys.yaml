@@ -12,30 +12,56 @@ notes: >
   point is lost: 55 for 5.5, and once 510 for 5.10. A value above 10 is
   divided by 10 or by 100 (unit_inferred).
 
-  Total. Eight items are reversed (10 - value): 5, 6, 7, 8, 9, 10, 17 and
-  18. The total is the sum of the twenty items, from 0 (inhibition) to 200
-  (activation). The stored total (mathys_) is exactly this sum of the values
-  as written, so it is wrong on the visits with a lost decimal point: there
-  it differs from ours (score_mismatch), or it is impossible (out_of_range
-  on the stored total, which is not delivered).
+  Key. Eight items are reversed (10 - value): 5, 6, 7, 8, 9, 10, 17 and 18.
+  The total is the sum of the twenty items, from 0 (inhibition) to 200
+  (activation). Sub-scores: emotional reactivity (items 3, 7, 10, 18),
+  motivation (2, 11, 12, 15, 16, 17, 19), sensory perception (1, 6, 8, 13,
+  20), interpersonal communication (4, 14) and cognition (5, 9). It is the
+  key of the application, read in its code in November 2026, and the
+  wording of the twenty scales on its form is that of the published scale.
 
-  Sub-scores. Emotional reactivity (items 3, 7, 10, 18), motivation (2, 11,
-  12, 15, 16, 17, 19), sensory perception (1, 6, 8, 13, 20), interpersonal
-  communication (4, 14) and cognition (5, 9), with the same reversed items.
-  The stored sub-scores (mathys29 to mathys33, in that order) are read to
-  check ours and are not delivered. Like the stored total they add the
-  values as written, so they differ from ours on the visits with a lost
-  decimal point (score_mismatch, or out_of_range on the stored sub-score).
+  Two forms, two directions (decision D91 in PROGRESS.md). The old form
+  stored the eight reversed scales already turned towards the score; the
+  form that replaced it, centre by centre between September 2021 and May
+  2022, stores them as written. Evidence. Against the mania and depression
+  scales of the same visit (Altman and YMRS, QIDS and MADRS), item 17 as
+  stored goes with activation until 2021 (rank correlation +0.39) and
+  against it from 2022 (-0.32); items 8, 9, 10 and 18 turn the same way.
+  The internal consistency of the twenty items until 2021 is 0.85 to 0.87
+  with no item reversed and 0.64 to 0.67 with the key; from 2022 it is 0.69
+  and 0.83. The sub-scores that the application itself stored were plain
+  sums on the old form (10,043 visits) and reversed the eight items on the
+  new one (3,422 visits; extraction of October 2026). In FACE DR, another
+  application, the key holds in every year.
 
-  History. Until the extraction of October 2026 the stored sub-scores held
-  two formulas: the items added without reversing any until 2021, with the
-  reversed items from 2022 on (decision D34 in PROGRESS.md); they were not
-  read. In the extraction of November 2026 they follow the reversed-item
-  rule in every year and equal ours (D65). The data managers confirmed that
-  it is intended: since 10 November 2026 their pipeline recalculates the
-  five sub-scores from the items, with one formula for every year, instead
-  of taking the values stored in the EMR. The comparison therefore checks
-  our formula against theirs, not against the EMR.
+  What is delivered. Every item is delivered as written on the form of
+  today. (1) A visit dated before 2021-09-01 used the old form: its eight
+  items are turned (10 - value, flag sign_flipped) and the key then gives
+  the right scores. (2) From 2021-09-01 to 2022-12-31 the centres changed
+  one after the other and the two directions are mixed, also among the
+  visits of the new form: the eight items of these visits are not delivered
+  (period_removed), nor the total and the four sub-scores that use them.
+  Their twelve other items and the interpersonal sub-score are delivered.
+  (3) From 2023 the items are delivered as stored.
+
+  Limits. Two centres still enter the old direction on the new form (item
+  17 goes with activation there in every year): their scores from 2023 are
+  wrong, and the schema, which names no centre, cannot tell them apart.
+  About 80 visits dated before September 2021 were typed or saved again
+  with the new form and are turned by mistake. Both are asked in
+  QUESTIONS.md.
+
+  Stored scores. The total (mathys_) and the five sub-scores (mathys29 to
+  mathys33) of the extraction are not read. Until October 2026 the
+  sub-scores were those of the application, right for each form. Since 10
+  November 2026 the data managers recalculate them with the key applied to
+  the values as stored, in every year, which is wrong for the old form
+  (decisions D34, D65 and D75, replaced by D91). They are in ignored.yaml.
+
+# The old form stored the eight reversed scales turned; a visit dated before this day used it.
+sign:
+  before: 2021-09-01
+  turn: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
 
 # A value above 10 has lost its decimal point: 55 is 5.5.
 defaults:
@@ -53,66 +79,38 @@ variables:
   mathys02: {label: MAThyS item 2}
   mathys03: {label: MAThyS item 3}
   mathys04: {label: MAThyS item 4}
-  mathys05: {label: MAThyS item 5}
-  mathys06: {label: MAThyS item 6}
-  mathys07: {label: MAThyS item 7}
-  mathys08: {label: MAThyS item 8}
-  mathys09: {label: MAThyS item 9}
-  mathys10: {label: MAThyS item 10}
+  mathys05:
+    label: "MAThyS item 5 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys06:
+    label: "MAThyS item 6 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys07:
+    label: "MAThyS item 7 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys08:
+    label: "MAThyS item 8 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys09:
+    label: "MAThyS item 9 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys10:
+    label: "MAThyS item 10 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
   mathys11: {label: MAThyS item 11}
   mathys12: {label: MAThyS item 12}
   mathys13: {label: MAThyS item 13}
   mathys14: {label: MAThyS item 14}
   mathys15: {label: MAThyS item 15}
   mathys16: {label: MAThyS item 16}
-  mathys17: {label: MAThyS item 17}
-  mathys18: {label: MAThyS item 18}
+  mathys17:
+    label: "MAThyS item 17 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
+  mathys18:
+    label: "MAThyS item 18 (as written on the form of today; reversed in the scores)"
+    doubt: {period: [2021-09-01, 2022-12-31], remove: true, note: the form changed centre by centre}
   mathys19: {label: MAThyS item 19}
   mathys20: {label: MAThyS item 20}
-  # The stored total is read as written: its own units replace those of the items.
-  mathys_stored:
-    column: mathys_
-    label: MAThyS total as stored
-    range: [0, 200]
-    units:
-      point: {factor: 1, expect: [0, 200.01]}
-    keep: false
-  # The stored sub-scores, read as written like the stored total.
-  mathys_emotion_stored:
-    column: mathys29
-    label: MAThyS emotional reactivity as stored
-    range: [0, 40]
-    units:
-      point: {factor: 1, expect: [0, 40.01]}
-    keep: false
-  mathys_motivation_stored:
-    column: mathys30
-    label: MAThyS motivation as stored
-    range: [0, 70]
-    units:
-      point: {factor: 1, expect: [0, 70.01]}
-    keep: false
-  mathys_perception_stored:
-    column: mathys31
-    label: MAThyS sensory perception as stored
-    range: [0, 50]
-    units:
-      point: {factor: 1, expect: [0, 50.01]}
-    keep: false
-  mathys_interaction_stored:
-    column: mathys32
-    label: MAThyS interpersonal communication as stored
-    range: [0, 20]
-    units:
-      point: {factor: 1, expect: [0, 20.01]}
-    keep: false
-  mathys_cognition_stored:
-    column: mathys33
-    label: MAThyS cognition as stored
-    range: [0, 20]
-    units:
-      point: {factor: 1, expect: [0, 20.01]}
-    keep: false
 
 scores:
   mathys_total:
@@ -120,28 +118,22 @@ scores:
     sum: [mathys01, mathys02, mathys03, mathys04, mathys05, mathys06, mathys07, mathys08, mathys09, mathys10,
           mathys11, mathys12, mathys13, mathys14, mathys15, mathys16, mathys17, mathys18, mathys19, mathys20]
     reverse: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
-    compare: mathys_stored
   mathys_emotion:
     label: MAThyS emotional reactivity (4 items)
     sum: [mathys03, mathys07, mathys10, mathys18]
     reverse: [mathys07, mathys10, mathys18]
-    compare: mathys_emotion_stored
   mathys_motivation:
     label: MAThyS motivation (7 items)
     sum: [mathys02, mathys11, mathys12, mathys15, mathys16, mathys17, mathys19]
     reverse: [mathys17]
-    compare: mathys_motivation_stored
   mathys_perception:
     label: MAThyS sensory perception (5 items)
     sum: [mathys01, mathys06, mathys08, mathys13, mathys20]
     reverse: [mathys06, mathys08]
-    compare: mathys_perception_stored
   mathys_interaction:
     label: MAThyS interpersonal communication (2 items)
     sum: [mathys04, mathys14]
-    compare: mathys_interaction_stored
   mathys_cognition:
     label: MAThyS cognition (2 items)
     sum: [mathys05, mathys09]
     reverse: [mathys05, mathys09]
-    compare: mathys_cognition_stored

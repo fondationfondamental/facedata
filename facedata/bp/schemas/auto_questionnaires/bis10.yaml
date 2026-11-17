@@ -23,8 +23,10 @@ notes: >
   1. The extraction reverses an item as 6 - value. With a 1 to 4 scale the
   usual rule is 5 - value, which is what this schema does. Each stored score
   is therefore higher than ours by one point per reversed item; that is the
-  compare_offset of each score. Open question O1 in PROGRESS.md: which rule
-  do we keep?
+  compare_offset of each score. The rule kept is 5 - value (decision D92 in
+  PROGRESS.md): it is the usual one, and the script of the application
+  itself reverses 4, 3, 2, 1 (read in November 2026). The 6 - value is in
+  the score step of the data managers, which writes these columns.
 
   2. The dictionary formula for the planning subscale is incomplete. The
   stored score also includes items 14, 18 and 31 (not reversed).

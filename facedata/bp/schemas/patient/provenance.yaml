@@ -2,7 +2,7 @@ instrument: provenance
 title: How the patient came to the expert centre
 tab: PATIENT
 section: Provenance
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient.
@@ -20,6 +20,19 @@ notes: >
   inclusion visit for most. A few dates before 2008, when the cohort did not
   exist yet, are flagged out_of_range. The date of the referral letter holds
   the placeholder 1000-01-01 for 51 patients (date_placeholder).
+
+  The referral is recorded less and less: for 92% of the patients included
+  until 2012 and 36% of those included from 2024, and for 3% to 15% in three
+  centres (QUESTIONS.md, DM-6). Whether the patient lives inside the
+  catchment area depends on the centre: in one, the share goes from 16% to
+  91% between the patients included until 2018 and from 2022; in another it
+  is 1%. 68 referral letters are dated after the first visit and 24 more
+  than three years before it; they are delivered as written.
+
+  The answers are those of the form (read in the application in November
+  2026). Its list of associations also has "Unafam", which no patient of
+  this extraction has: 14 patients were referred by an association, and 11
+  have its name.
 
   The two free-text details may hold names of people; they are delivered as
   text and never appear in the report.
@@ -48,7 +61,7 @@ variables:
     column: adresseur_association
     label: Referring association
     type: category
-    codes: {Argos: argos, Autres: other}
+    codes: {Argos: argos, Unafam: unafam, Autres: other}
   referred_by_detail:
     column: adresseur_precis
     label: Referred by, free text

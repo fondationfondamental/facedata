@@ -39,17 +39,7 @@ visit_record:
   schemas: {bp: visit_record, sz: visit_record, dr: visit_record, asp: visit_record}
   stack: "yes"
   use: [entry_date]
-  note: The date the visit was entered. The date of the visit itself is the column visit_date of every row.
-
-inclusion:
-  title: Inclusion
-  domain: Patient and visits
-  schemas: {bp: inclusion, sz: inclusion}
-  stack: with care
-  use: [opposition_form]
-  note: >
-    One question in common (the form of non-opposition), whose two codes are not
-    documented. In the table patients.
+  note: The date the visit record was created. The date of the visit itself is the column visit_date of every row.
 
 provenance:
   title: How the patient came to the expert centre
@@ -166,11 +156,10 @@ psqi:
   note: >
     Seven components of 0 to 3 and their sum, on the same rules in the four
     cohorts; components 1 and 6 are the answers to questions 6 and 7 (psqi06,
-    psqi07). In ASP three stored components are wrong and are recomputed. One
-    rule is that of the database and not of the published sheet: exactly 7 hours
-    of sleep count 0 where the sheet counts 1. It is the same in the four
-    cohorts, so they compare; a total is one point lower than the published one
-    for these patients. In ASP the PSQI belongs to the old set of forms (2013 to
+    psqi07). In ASP three stored components are wrong and are recomputed.
+    Exactly 7 hours of sleep count 0: the application tests "7 hours or more",
+    where the published sheet says "more than 7 hours" and leaves 7 hours
+    open. It is the same in the four cohorts, so they compare. In ASP the PSQI belongs to the old set of forms (2013 to
     2021, adults). In DR it is on about nine inclusions in ten until 2016 and
     about one in two since 2018.
 
@@ -320,9 +309,11 @@ mathys:
   use: [mathys_total, mathys_emotion, mathys_motivation, mathys_perception, mathys_interaction, mathys_cognition]
   note: >
     Twenty visual scales of 0 to 10, five sub-scores and a total, recomputed
-    from the items with the same key in both cohorts. The grouping of the items
-    is that of the database, and one item (17) goes against the others in BP: an
-    open question of BP, which applies to both cohorts alike. In DR it is on
+    from the items with the same key in both cohorts: the published one, which
+    is also that of the application. In BP the form stored the eight reversed
+    scales already turned until 2021: they are turned back, and the visits from
+    September 2021 to December 2022, when the centres changed form, have no
+    total (BP D91). In DR the key holds in every year. In DR it is on
     about nine inclusions in ten until 2016 and about one in two since 2018.
 
 mathys_emotions:
@@ -409,8 +400,9 @@ cvlt:
   stack: with care
   use: [cvlt_total_1_5, cvlt_short_free, cvlt_long_free, cvlt_long_cued, cvlt_hits]
   note: >
-    The raw scores stack. The z-score of trials 1 to 5 of SZ is doubtful on the
-    visits of 2022 to 2025 (flag period_doubt): use the raw total there.
+    The raw scores stack, and so do the z-scores and the bands: in both
+    cohorts they are computed again with the regressions of the norms, from
+    the raw score, the age, the years of education and the sex.
 
 errands_test:
   title: Errands test (Test des commissions)
@@ -712,21 +704,37 @@ isf_since_visit:
   use: [isf01_since_visit, isf02_since_visit, isf03_since_visit, isf04_since_visit, isf05_since_visit]
   note: >
     The five questions are the same. 'When' does not use the same list in the
-    three cohorts. BP flags the visits of 2022 and 2023, where the share of
-    attempts since the last visit rises, and DR flags the answers whose period
-    is not certain (period_doubt).
+    three cohorts. BP does not deliver the answers of the follow-up visits of
+    2022 and 2023, whose form also asked about the whole life (period_removed),
+    and DR flags the answers whose period is not certain (period_doubt).
 
 suicide_attempts:
-  title: History of suicide attempts
+  title: History of suicide attempts over the whole life (inclusion form)
   domain: Suicide
   schemas: {bp: suicide_attempts, sz: suicide_attempts, dr: suicide_attempts}
-  stack: "yes"
+  stack: with care
   use: [n_attempts, first_attempt_date, violent_attempts, serious_attempts, n_violent_attempts, n_serious_attempts]
   note: >
     The number of attempts, the date of the first one and the violent and
-    serious attempts, the same in the three cohorts. The form is filled for the
-    patients who have attempted, mostly at the inclusion visit: the number of
-    attempts has no zero for the others.
+    serious attempts. The form is filled for the patients who have attempted:
+    the number of attempts has no zero for the others. BP and SZ deliver it
+    from the inclusion visit only, where it is about the whole life; their
+    follow-up visits are in suicide_attempts_since_visit. DR still reads
+    every visit: keep its inclusion visits to stack it.
+
+suicide_attempts_since_visit:
+  title: Suicide attempts since the last visit (follow-up form)
+  domain: Suicide
+  schemas: {bp: suicide_attempts_since_visit, sz: suicide_attempts_since_visit}
+  stack: with care
+  use: [n_attempts_since_visit, violent_attempts_since_visit, serious_attempts_since_visit, n_violent_attempts_since_visit, n_serious_attempts_since_visit]
+  note: >
+    The follow-up form of eBipolar and eSchizo asks the same numbers since the
+    last visit, after a "yes" to isf05_since_visit. BP does not deliver the
+    visits of 2022 and 2023 (period_removed): its follow-up form of these two
+    years also asked about the whole life. DR has a number of attempts since the last visit
+    under the same name, n_attempts_since_visit, read from another question
+    (mood_course_fu).
 
 most_serious_attempt:
   title: The most serious suicide attempt
@@ -1159,8 +1167,8 @@ social:
     labels; a full-time job is also in ASP. In SZ the export loses answers: no
     patient is recorded as married or living as a couple, and none with a salary
     or a disability pension (an open question of SZ): do not compare
-    marital_status and income_source with SZ. In BP the work status never holds
-    the answer 'student'. The other questions differ.
+    marital_status and income_source with SZ. In BP the export writes the
+    students with 'other' (student_or_other). The other questions differ.
 
 sick_leave_v0:
   title: Sick leave at inclusion

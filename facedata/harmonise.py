@@ -9,7 +9,7 @@ import pandas as pd
 
 from facedata import custom
 from facedata.flags import make_flags, stack_flags
-from facedata.parse import PERCENTILE_BAND, clean_text
+from facedata.parse import PERCENTILE_BAND, band_of_z, clean_text
 from facedata.tokens import EMPTY_DATE
 
 
@@ -219,6 +219,8 @@ def fix_sign(values, keys, schema):
     Returns the values, the flags and the switch date found in each centre.
     """
     sign = schema["sign"]
+    if "before" in sign:                               # the day of the change is known: nothing to search
+        return turn_before(values, keys, schema)
     wanted = -1 if sign["relation"] == "negative" else 1
     scores = list(sign["pairs"])
     table = pd.DataFrame({"date": keys["visit_date"], "group": keys[sign["by"]]})
@@ -252,6 +254,27 @@ def fix_sign(values, keys, schema):
     return values, stack_flags(flags), switch
 
 
+def turn_before(values, keys, schema):
+    """Turn the variables of the visits dated before a known change of direction.
+
+    A variable with a range is turned around its middle (min + max - value);
+    one without a range changes sign. Returns the values, the flags and no
+    switch date.
+    """
+    sign = schema["sign"]
+    date = keys["visit_date"]
+    close = (date - sign["before"]).dt.days.abs() <= 90
+    flags = []
+    for name in sign["turn"]:
+        present = values[name].notna()
+        before = present & (date < sign["before"])
+        middle = sum(schema["variables"][name].get("range", [0, 0]))
+        values[name] = values[name].where(~before, middle - values[name])
+        flags.append(make_flags(before, name, "sign_flipped"))
+        flags.append(make_flags(present & (close | date.isna()), name, "sign_doubt", "close to the change of form"))
+    return values, stack_flags(flags), {}
+
+
 # ---------------------------------------------------------------- step 9: range
 
 def check_range(values, name, variable):
@@ -268,18 +291,21 @@ def doubt_period(values, dates, name, doubt):
     """Flag the values of the visits dated in a period in which the column is not reliable.
 
     The values are kept. With doubt["values"], only those values are flagged.
+    With doubt["remove"], the flagged values are not delivered.
     """
     first, last = doubt["period"]
     doubtful = values.notna() & dates.between(first, last)
     if "values" in doubt:
         doubtful = doubtful & values.isin(doubt["values"])
-    return make_flags(doubtful, name, "period_doubt", doubt.get("note", ""))
+    if doubt.get("remove"):
+        return values.where(~doubtful), make_flags(doubtful, name, "period_removed", doubt.get("note", ""))
+    return values, make_flags(doubtful, name, "period_doubt", doubt.get("note", ""))
 
 
 # ---------------------------------------------------------------- step 10: scores
 
 def combine_items(values, score, schema):
-    """A score that is the sum, the mean or the highest of its items, some of them reversed first.
+    """A score that is the sum, the mean, the highest or the lowest of its items, some of them reversed first.
 
     points: {answer: points}, the answers that count other points than their own
     value. minus: variables subtracted from a sum. scale: [factor, offset],
@@ -295,6 +321,8 @@ def combine_items(values, score, schema):
     enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
     if "max" in score:
         result = table.max(axis=1)
+    elif "min" in score:
+        result = table.min(axis=1)
     else:
         result = table.sum(axis=1) if "sum" in score else table.mean(axis=1)
     if "minus" in score:
@@ -310,8 +338,8 @@ def combine_items(values, score, schema):
 
 
 def items_of(score):
-    """The variables that a score adds up, averages or takes the highest of (none for a table or a function)."""
-    return score.get("sum") or score.get("mean") or score.get("max") or []
+    """The variables that a score adds up, averages or takes the highest or the lowest of (none for a table or a function)."""
+    return score.get("sum") or score.get("mean") or score.get("max") or score.get("min") or []
 
 
 def keep_stored_score(result, values, score):
@@ -375,12 +403,51 @@ def band_from_table(text, values, cens, flags, name, variable, age, others, norm
     return values, cens, flags
 
 
+def regress(raw, age, table, terms, name):
+    """A z-score from the regression of a norm table: (raw score - expected score) / sd.
+
+    table: one line per age group (age_min, age_max, intercept, age, one
+    column per term, sd), or None when the table was not found. terms:
+    {column of the table: values}, the other variables of the regression,
+    such as the years of education. An age that is in no line of the table
+    gives no z-score and no flag: the norm has no regression for that age.
+
+    Returns the z-scores and the flags.
+    """
+    result = pd.Series(np.nan, index=raw.index)
+    in_table = pd.Series(table is None, index=raw.index)       # with no table, every raw score is flagged
+    if table is not None:
+        years = np.floor(age)                          # completed years
+        for line in table.itertuples():
+            fits = years.between(line.age_min, line.age_max)
+            expected = line.intercept + line.age * years
+            for term, others in terms.items():
+                expected = expected + getattr(line, term) * others
+            result = result.mask(fits, (raw - expected) / line.sd)
+            in_table = in_table | fits
+    detail = "the norm table was not found" if table is None else "a variable of the regression is missing"
+    flags = make_flags(raw.notna() & in_table & result.isna(), name, "norm_missing", detail)
+    return result.round(2), flags
+
+
+def complete_with_z(band, flags, z, limits, name):
+    """Where no band was read in a norm table, the band that the z-score has under the normal law.
+
+    band, flags: what the norm table gave. The rows filled here get
+    band_from_z and lose their norm_missing.
+    """
+    from_z = band.isna() & z.notna()
+    band = band.mask(from_z, band_of_z(z, limits))
+    filled = flags["row"].isin(band.index[from_z]) & (flags["flag"] == "norm_missing")
+    return band, stack_flags([flags[~filled], make_flags(from_z, name, "band_from_z", "z-score " + z.astype(str))])
+
+
 def compute_scores(values, schema, version=None, age=None, norms=None, cens=None, keys=None):
     """Recompute scores from the items and compare them with the stored scores.
 
     age and norms (the norm tables) are needed only by scores read in a norm
-    table. cens: the censoring table of the instrument; a band read in a norm
-    table writes its own column there. keys: the key columns, for the few
+    table or computed with its regression. cens: the censoring table of the
+    instrument; a band read in a norm table writes its own column there. keys: the key columns, for the few
     custom scores that need the visit or the patient.
     """
     flags = []
@@ -392,9 +459,20 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             by = values[score["by"]] if "by" in score else None
             table = (norms or {}).get(score["lookup"])
             result, censoring, lookup_flags = look_up(values[score["from"]], age, table, name, by)
+            if "band_of" in score:                     # an age the table does not have: the band of the z-score
+                result, lookup_flags = complete_with_z(result, lookup_flags, values[score["band_of"]], score["limits"], name)
             flags.append(lookup_flags)
             if cens is not None and (censoring != 0).any():
                 cens[name] = censoring
+        elif "regression" in score:                    # a z-score from the regression of a norm table
+            terms = {term: values[variable] for term, variable in score["with"].items()}
+            table = (norms or {}).get(score["regression"])
+            result, regression_flags = regress(values[score["from"]], age, table, terms, name)
+            flags.append(regression_flags)
+        elif "band_of" in score:                       # the band of a z-score, with no table
+            nothing = pd.Series(np.nan, index=values.index)
+            result, band_flags = complete_with_z(nothing, stack_flags([]), values[score["band_of"]], score["limits"], name)
+            flags.append(band_flags)
         elif "custom" in score:                        # a formula written as a function of custom.py
             result = getattr(custom, score["custom"])(values, keys)
         else:

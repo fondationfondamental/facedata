@@ -50,7 +50,7 @@ def test_visits(result):
 
 def test_the_four_cohorts_can_be_stacked(result):
     from facedata import bp, dr, sz
-    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261113.tsv",
+    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261117.tsv",
              "dr": ROOT / "data" / "dr" / "DRALL_20261030.tsv"}
     if not all(path.exists() for path in files.values()):
         pytest.skip("the BP, the SZ or the DR extraction is not on this computer")
@@ -146,7 +146,7 @@ def test_clinical_measures_and_biology(result, qc):
     assert (qc.loc["cholesterol", "n_valid"], qc.loc["cholesterol", "unit_converted"], qc.loc["triglycerides", "unit_converted"]) == (352, 67, 64)
     assert (qc.loc["vitamin_d", "n_valid"], qc.loc["vitamin_d", "unit_converted"], qc.loc["vitamin_d", "unit_unknown"]) == (265, 19, 29)
     assert (qc.loc["prolactin", "n_valid"], qc.loc["prolactin", "unit_converted"]) == (104, 14)
-    assert qc.loc["crp", "censored_left"] == 1
+    assert (qc.loc["crp", "censored_left"], qc.loc["crp", "missing_code"]) == (1, 45)       # a CRP of exactly 0 (BP D101)
     assert v0["mri"].value_counts().to_dict() == {"not_done": 577, "normal": 167, "abnormal": 54, "result_unknown": 36}
     assert v0["handedness"].value_counts().to_dict() == {"right": 745, "left": 109, "both": 29}      # the names of BP
     assert ((v0["biobank_sample"] == 1).sum(), v0["biobank_sample"].notna().sum()) == (387, 623)

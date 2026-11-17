@@ -20,7 +20,7 @@ notes: >
   isf_since_visit, with their own output columns. visit_form says which form
   a visit used; it is read from the visit label.
 
-  A doubtful period (open question O29 in PROGRESS.md). From 2012 to 2021,
+  A doubtful period (decisions D48 and D85 in PROGRESS.md). From 2012 to 2021,
   2% to 4% of the follow-up visits say that the patient attempted suicide
   since the last visit. In 2022 it is 16% and in 2023 9%, then 2% to 3%
   again from 2024. The first question rises too (36% to 54%). Of the eight
@@ -30,13 +30,26 @@ notes: >
   are at 3% to 4%. The clinician's rating of suicidal thoughts at the same
   visits (MADRS item 10) has no peak in these two years. On the "yes"
   visits of 2022 and 2023 the number of attempts and the date of the first
-  attempt given at inclusion are often typed again. It looks as if answers
-  about the whole life were entered at part of the follow-up visits during
-  these two years. The cell does not tell which. So every "yes" of a
-  follow-up visit dated 2022 or 2023, and the "when" that goes with it,
-  keeps its value and gets the flag period_doubt (decision D48). The "no"
-  answers are not flagged. What changed in the follow-up form of these
-  centres in early 2022 is still open question O29.
+  attempt given at inclusion are often typed again.
+
+  What the application shows (read in November 2026). The follow-up form of
+  today asks every question "since the last visit" and has no date of the
+  first attempt; it was already so in January 2024, the oldest version of
+  the code that can be read. In 2022 and 2023 the form was another one: a
+  real date of the first attempt, a question about the whole life, is typed
+  on 37 follow-up visits of 2022 and 11 of 2023, against 1 from 2012 to
+  2020. Each centre runs its own copy of the application, which is why only
+  some centres are concerned. The cell does not tell which answers are
+  about the whole life, and about three in four of the 114 "yes" to
+  "attempted" of these two years are more than the usual rate explains.
+
+  Not delivered (decision D88 in PROGRESS.md, of the project lead; it
+  replaces the flag of D48). Every answer of a follow-up visit dated 2022 or
+  2023 is delivered as missing and gets the flag period_removed, the "yes"
+  and the "no" alike: with the "yes" alone removed, the two years would read
+  0%. 5,602 cells of 875 visits; the flag log keeps what was written. What
+  the form of these two years asked cannot be read any more: the history of
+  the code starts in January 2024.
 
 version:
   name: visit_form
@@ -72,8 +85,8 @@ defaults:
   versions: [follow_up]
   doubt:
     period: [2022-01-01, 2023-12-31]
-    values: [1, last_week, since_last_visit]       # a "yes", and the "when" that goes with it
-    note: answers about the whole life entered at part of the follow-up visits of 2022 and 2023
+    remove: true                                   # not delivered (decision D88)
+    note: the follow-up form of 2022 and 2023 also asked about the whole life
 
 variables:
   isf01_since_visit: {column: isf01, label: "Felt that life is not worth living - since the last visit"}

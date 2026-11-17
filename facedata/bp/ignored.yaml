@@ -5,6 +5,10 @@ nom_centre: empty on every row
 id_fiche_clinique: identifier of the visit record; (usubjid, visit) is the key
 visit_neuropsychologie: a copy of the visit label, identical on every row
 
+# Administrative columns with no scientific use: not delivered (decision D111 in docs/bp/PROGRESS.md, by the project lead).
+formoppos: which non-opposition form was used (adult patient, patient under curatelle); administrative
+social_protec: the legal protection measure (curatelle, tutelle); administrative, and its coding is not settled
+
 # Second ratings of MADRS and YMRS: legacy columns left by a data-management experiment.
 # They are not part of the cohort's data (decision D27 in docs/bp/PROGRESS.md).
 madrs01_n1: legacy second rating, not part of the cohort's data
@@ -73,9 +77,17 @@ mhoccur_edm_psy_spv: a copy of mhoccur_edm_psy_lt, identical on every row
 mhoccur_epman_psy_spv: a copy of mhoccur_epman_psy_lt, identical on every row
 mhoccur_epmixt_psy_spv: a copy of mhoccur_epmixt_psy_lt, identical on every row
 
+# AUTO-QUESTIONNAIRES, MAThyS (decision D91 in docs/bp/PROGRESS.md)
+mathys_: MAThyS total of the data managers' score step; it applies the key to the values as stored, which is wrong for the old form
+mathys29: MAThyS emotion sub-score, recalculated by the data managers since 10 November 2026 with one formula for every year (wrong for the old form)
+mathys30: MAThyS motivation sub-score, recalculated by the data managers (see mathys29)
+mathys31: MAThyS perception sub-score, recalculated by the data managers (see mathys29)
+mathys32: MAThyS interaction sub-score, recalculated by the data managers (see mathys29)
+mathys33: MAThyS cognition sub-score, recalculated by the data managers (see mathys29)
+
 # SOCIAL
 empjob: class of the current job; the export keeps two of its nine codes (122 of 2,300 employed patients); the 17 classes of the form are not the nine of the dictionary (D74, O43)
-protec: the legal protection measure; the same answers as social_protec, delivered as protection_measure
+protec: the legal protection measure; not delivered (see social_protec)
 
 # ANTECEDENTS, family history (decision D58 in docs/bp/PROGRESS.md)
 mere_cause_du_d_c_s: cause of death of a relative, free text

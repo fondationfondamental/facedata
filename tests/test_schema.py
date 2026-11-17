@@ -120,6 +120,39 @@ def test_check_schema_checks_bands_and_shared_columns(tmp_path):
     assert "a_band: lookup and from go together" in " | ".join(check_schema(schemas["bands"]))
 
 
+Z_SCORES = """
+instrument: zscores
+title: Z-scores
+tab: TEST
+section: Z-scores
+status: draft
+variables:
+  words: {column: words, type: item, range: [0, 16]}
+  schooling: {column: schooling, type: number}
+scores:
+  good_z: {regression: some_table, from: words, with: {schooling: schooling}, range: [-5, 5]}
+  good_band: {lookup: some_bands, from: words, band_of: good_z, limits: [5, 25, 50]}
+  no_terms_z: {regression: some_table, from: words}
+  no_raw_z: {regression: some_table, with: {schooling: schooling}}
+  unknown_z: {regression: some_table, from: words, with: {schooling: nowhere}}
+  bad_band: {band_of: good_z, limits: [50, 25]}
+  sum_band: {sum: [words], band_of: good_z, limits: [5, 25, 50]}
+  lost_limits: {sum: [words], limits: [5, 25, 50]}
+"""
+
+
+def test_check_schema_checks_z_scores_and_their_bands(tmp_path):
+    write(tmp_path, "zscores", Z_SCORES)
+    problems = " | ".join(check_schema(load_schemas(tmp_path)["zscores"]))
+    assert "good_z" not in problems and "good_band" not in problems
+    assert "no_terms_z: regression comes with with" in problems
+    assert "no_raw_z: lookup and regression need from" in problems
+    assert "unknown_z: 'nowhere' is not a variable or an earlier score" in problems
+    assert "bad_band: band_of goes alone or with lookup, and needs limits, numbers in rising order" in problems
+    assert "sum_band: band_of goes alone or with lookup" in problems
+    assert "lost_limits: limits goes with band_of" in problems
+
+
 def test_a_variable_that_is_not_delivered_may_read_a_delivered_column(tmp_path):
     """The years of education are delivered by one schema and read again by another, for a norm table."""
     write(tmp_path, "demo", GOOD)

@@ -1,0 +1,91 @@
+instrument: suicide_attempts_since_visit
+title: Suicide attempts since the last visit (follow-up visits)
+tab: SUICIDE
+section: Histoire des conduites suicidaires
+status: draft
+notes: >
+  The number of suicide attempts since the last visit, and whether some were
+  violent or serious, as asked at the follow-up visits. Yes/no answers are
+  delivered as 1 and 0.
+
+  Two forms in the same columns (decision D86 in PROGRESS.md, was open
+  question O47). The follow-up form of the application asks "how many times
+  have you attempted suicide since the last visit", and the numbers of
+  violent and of serious attempts "since the last visit", only after a
+  "yes" to "have you attempted suicide since the last visit"
+  (isf05_since_visit). Read in the form definitions of the application in
+  November 2026; they were already so in January 2024, the oldest version of
+  the code that can be read. The data agree until 2021: a number is written
+  on the visits with a "yes" and almost nowhere else.
+
+  A period that is not delivered, the one of isf_since_visit (decisions D85
+  and D88). In
+  2022 and 2023 the follow-up form was not the form of today. Its date of
+  the first attempt, a question about the whole life that the form of today
+  does not have, holds a real date on 37 follow-up visits of 2022 and 11 of
+  2023, against 1 in the nine years from 2012 to 2020. On the "yes" visits
+  of these two years the number of attempts given at inclusion is often
+  typed again. Each centre runs its own copy of the application, which is
+  why only some centres are concerned. So every answer of a follow-up visit
+  dated 2022 or 2023 is delivered as missing and gets the flag
+  period_removed, like the five questions: 331 cells. The
+  flag log keeps what was written. 16 visits give a number above 0 after a
+  "no" to isf05_since_visit, 11 of them in 2022 and 2023.
+
+  The date of the first attempt at the follow-up visits is read and not
+  delivered (first_attempt_date_follow_up, keep false; decision of the
+  project lead). 1,142 cells hold 2011-11-11, written by the follow-up form
+  from 2012 to 2022 where no date was typed: a placeholder, read as a
+  missing code. 60 cells hold a real date, 59 of them from 2021 to 2025.
+  The date of the first attempt is delivered from the inclusion visit
+  (suicide_attempts).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults:
+  type: item
+  range: [0, 1]
+  versions: [follow_up]
+  doubt:
+    period: [2022-01-01, 2023-12-31]
+    remove: true                                   # not delivered (decision D88)
+    note: the follow-up form of 2022 and 2023 also asked about the whole life
+
+variables:
+  n_attempts_since_visit: {column: isf07, label: "Number of suicide attempts - since the last visit", range: [0, 50]}
+  violent_attempts_since_visit: {column: isf08, label: "Has made violent suicide attempts - since the last visit", codes: {Oui: 1, Non: 0}}
+  n_violent_attempts_since_visit: {column: isf08a, label: "Number of violent suicide attempts - since the last visit", range: [0, 20]}
+  serious_attempts_since_visit: {column: isf09, label: "Has made serious suicide attempts (intensive care) - since the last visit", codes: {Oui: 1, Non: 0}}
+  n_serious_attempts_since_visit: {column: isf09a, label: "Number of serious suicide attempts - since the last visit", range: [0, 20]}
+  first_attempt_date_follow_up:
+    column: isf05_qsdtc
+    type: date
+    label: Date of the first suicide attempt, as typed at a follow-up visit
+    range: [1920-01-01, 2026-12-31]
+    missing: {"2011-11-11": not_recorded}
+    keep: false

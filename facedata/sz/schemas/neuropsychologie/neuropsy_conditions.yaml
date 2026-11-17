@@ -7,11 +7,12 @@ notes: >
   The first lines of the neuropsychology form: who the patient is on the day
   of the testing, and whether the tests can be given.
 
-  Filled from 2010 to 2016 only (781 visits), although the tests themselves
-  go on to 2026 (about 3,400 visits). From 2017 the age and the years of
-  education entered by the psychologist are therefore missing; the norms of
-  the tests were read with them. Education is counted in years from the
-  first year of primary school.
+  Filled on about 3,450 visits from 2010 to 2026. Until the extraction of
+  17 November 2026 the export read these columns in the older form only
+  and they stopped in 2016 (781 visits); the later visits are now filled
+  from the WAIS-IV form of the assessment (decision D35 in PROGRESS.md).
+  Education is counted in years from the first year of primary school; the
+  norms of the TMT errors and the CVLT z-scores are read with it.
 
   The yes/no criteria are delivered as 1 (yes) and 0 (no). "Ne sais pas" is
   a missing code.
@@ -22,7 +23,9 @@ notes: >
   patient euthymic) and cclin11_ is "no electroconvulsive therapy in the
   last six months" (in BP: in the past year). Three questions exist here
   only: a psychotropic treatment, a suspected learning disorder and its
-  kind (43 visits, mostly dyslexia). The handedness, the hour of the
+  kinds (245 visits). The later form lets the psychologist tick several
+  kinds, written in one cell ("Dyslexie,Dysphasie"), so each kind is a
+  yes/no box, 0 after a "no" to the learning disorder. The handedness, the hour of the
   testing and the entry date of the form, which BP has, are not in the SZ
   extraction; the laterality has its own questionnaire here.
 
@@ -43,8 +46,7 @@ variables:
   neuropsy_no_ect_6_months: {column: cclin11_, label: No electroconvulsive therapy in the last six months}
   neuropsy_psychotropic_treatment: {column: cclin12_, label: Takes a psychotropic treatment}
   neuropsy_learning_disorder: {column: cclin16_, label: A learning disorder is suspected}
-  neuropsy_learning_disorder_kind:
-    column: cclin16a_
-    type: category
-    label: Kind of learning disorder
-    codes: {Dyslexie: dyslexia, Dysphasie: dysphasia, Dyspraxie: dyspraxia, Dysgraphie: dysgraphia}
+  neuropsy_dyslexia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 1, Dysphasie: 0, Dyspraxie: 0, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dyslexia"}
+  neuropsy_dysphasia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 1, Dyspraxie: 0, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dysphasia"}
+  neuropsy_dyspraxia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 0, Dyspraxie: 1, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dyspraxia"}
+  neuropsy_dysgraphia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 0, Dyspraxie: 0, Dysgraphie: 1}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dysgraphia"}

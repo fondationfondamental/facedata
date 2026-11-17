@@ -73,6 +73,7 @@ def test_scores_agree_with_the_stored_ones(result, qc):
 def test_biology(qc):
     crp, glucose, haemoglobin = qc.loc["crp"], qc.loc["glucose"], qc.loc["haemoglobin"]
     assert (crp["n_filled"], crp["censored_left"], crp["censored_right"], crp["unparsed"]) == (13095, 2359, 5, 0)
+    assert (crp["n_valid"], crp["missing_code"]) == (12696, 399)       # a CRP of exactly 0 is not a measurement (D101)
     assert (glucose["n_filled"], glucose["unit_converted"], glucose["unit_inferred"]) == (12993, 356, 124)
     assert (glucose["unit_doubt"], glucose["out_of_range"], glucose["censored_left"]) == (23, 7, 2)
     assert (haemoglobin["n_filled"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (13505, 487, 12)
@@ -84,9 +85,12 @@ def test_derived_values_and_sign(result, qc):
         wais_check = result.flags[result.flags["variable"] == "wais3_vocab_scaled_check"]
         assert "norm_missing" not in set(wais_check["flag"])          # every WAIS-III visit is in the table
     assert qc.loc["wais4_ds_scaled", "derived_doubt"] == 13
-    flipped = qc.loc[qc["sign_flipped"] > 0, "sign_flipped"].to_dict()
+    flipped = qc.loc[(qc["sign_flipped"] > 0) & (qc["instrument"] == "tmt"), "sign_flipped"].to_dict()
     assert flipped == {"tmt_a_time_z": 777, "tmt_a_errors_z": 770, "tmt_b_time_z": 768,
                        "tmt_b_errors_z": 758, "tmt_ba_time_z": 769}
+    # The only other values turned are the eight MAThyS items of the old form (D91).
+    assert set(qc.loc[(qc["sign_flipped"] > 0) & (qc["instrument"] != "tmt"), "instrument"]) == {"mathys"}
+    assert (qc["sign_flipped"] > 0).sum() == 13
     assert qc.loc["tmt_a_time_z", "sign_doubt"] == 194
 
 
@@ -108,8 +112,8 @@ def test_patient_tab(result, qc):
     # One row per patient: the key, 23 columns of the PATIENT tab, 11 of the perinatal schema,
     # 52 of the two lifetime treatment forms (45 variables and 7 censoring columns),
     # 14 counts of the family and 12 columns that sum up the relatives.
-    assert patients.shape == (6498, 115)
-    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 24
+    assert patients.shape == (6498, 113)
+    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 22
     assert patients["sex"].value_counts().to_dict() == {"female": 4108, "male": 2389}
     assert patients["diagnosis"].value_counts().to_dict() == {"bp2": 3111, "bp1": 2718, "bp_nos": 669}
     assert (patients["age_at_inclusion"].min(), patients["age_at_inclusion"].max()) == (17, 86)
@@ -173,11 +177,20 @@ def test_auto_questionnaires(result, qc):
     assert (qc.loc["epworth_total", "n_valid"], qc.loc["fagerstrom_total", "n_valid"], qc.loc["csm_total", "n_valid"]) == (16648, 5738, 6076)
     assert (int((result.data["fagers03"] == 0).sum()), int((result.data["csm07"] == 5).sum())) == (2119, 451)
     assert result.data["epworth_when"].value_counts().to_dict() == {"any_time": 5476, "after_meals": 4825, "fixed_hours": 3518, "night": 2423}
-    # MAThyS: a lost decimal point is repaired, and the stored total and sub-scores then differ from ours.
+    # MAThyS: a lost decimal point is repaired.
     assert qc.loc[qc["instrument"] == "mathys", "unit_inferred"].sum() == 52
-    assert qc.loc["mathys_total", "score_mismatch"] == 49
-    subscores = ["mathys_emotion", "mathys_motivation", "mathys_perception", "mathys_interaction", "mathys_cognition"]
-    assert list(qc.loc[subscores, "score_mismatch"]) == [2, 6, 2, 1, 2]
+    # The old form stored the eight reversed items already turned: they are turned back before September 2021,
+    # and they are not delivered while the centres changed form, until the end of 2022 (D91).
+    mathys = result.data
+    assert (qc.loc["mathys17", "sign_flipped"], qc.loc["mathys17", "period_removed"], qc.loc["mathys11", "period_removed"]) == (11357, 1433, 0)
+    assert (qc.loc["mathys_total", "n_valid"], qc.loc["mathys_interaction", "n_valid"]) == (14251, 15811)
+    changing = mathys["visit_date"].between("2021-09-01", "2022-12-31")
+    assert mathys.loc[changing, ["mathys_total", "mathys_cognition", "mathys17"]].notna().sum().sum() == 0
+    # Once turned, item 17 goes against the items of its sub-score on both forms, as its key says.
+    old_form, new_form = mathys["visit_date"] < "2021-09-01", mathys["visit_date"] >= "2023-01-01"
+    with_it = mathys[["mathys11", "mathys15", "mathys16"]].sum(axis=1, min_count=3)
+    assert mathys.loc[old_form, "mathys17"].corr(with_it[old_form]) < -0.3
+    assert mathys.loc[new_form, "mathys17"].corr(with_it[new_form]) < -0.3
     # PSQI: minutes written x 60 are converted; bedtimes typed as minutes are out of range.
     assert (qc.loc["psqi_latency", "unit_inferred"], qc.loc["psqi_latency", "out_of_range"]) == (279, 83)
     assert (qc.loc["psqi_latency_component", "score_mismatch"], qc.loc["psqi_total", "score_mismatch"]) == (234, 233)
@@ -219,19 +232,32 @@ def test_neuropsychologie(result, qc):
     shares = [(band[(years >= low) & (years <= high)] >= 10).mean() for low, high in [(2009, 2015), (2016, 2021), (2022, 2026)]]
     assert max(shares) - min(shares) < 0.10              # one rule for every year (the stored cells moved by 0.75)
     assert (qc.loc["fluency_p_band", "n_valid"], qc.loc["fluency_p_band", "censored_right"]) == (5864, 0)
-    # CVLT: one band for every age. It is read where the cell holds a percentile, and computed from the z-score elsewhere.
-    assert (qc.loc["cvlt_trial5_band", "n_valid"], qc.loc["cvlt_trial5_band", "band_from_z"]) == (5843, 69)
-    assert (qc.loc["cvlt_short_free_band", "n_valid"], qc.loc["cvlt_short_free_band", "band_from_z"]) == (5827, 2935)
-    # Where the EMR wrote a percentile, the band is read again in the norm table: a perfect recall is "this band or higher".
-    assert (qc.loc["cvlt_trial5_band", "censored_right"], qc.loc["cvlt_trial5_band", "norm_missing"]) == (1607, 3)
+    # CVLT: the z-scores are computed again with the regressions of the norms, the same rule in every year.
+    assert (qc.loc["cvlt_total_1_5_z", "n_valid"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (5834, 0)     # 241 stored ones were above 5
+    assert (qc.loc["cvlt_total_1_5_z", "score_mismatch"], qc.loc["cvlt_total_1_5_z", "norm_missing"]) == (380, 8)
+    total_z = result.data["cvlt_total_1_5_z"]
+    in_2013_2014 = result.data["visit_date"].dt.year.isin([2013, 2014])
+    assert abs(total_z[in_2013_2014].mean() - total_z[~in_2013_2014].mean()) < 0.1    # the stored ones were 2 points apart
+    assert (qc.loc["cvlt_trial1_z", "n_valid"], qc.loc["cvlt_trial1_z", "score_mismatch"]) == (5841, 45)
+    assert (qc.loc["cvlt_trial5_z", "n_valid"], qc.loc["cvlt_short_free_z", "n_valid"]) == (72, 2930)       # where the norms have a regression
+    assert (qc.loc["cvlt_recency_z", "n_valid"], qc.loc["cvlt_recency_z", "score_not_recomputed"]) == (5196, 45)   # 43 came from an empty recency
+    # Recency: the norm of the patients of 40 and over is corrected, so the same raw recency gives the same level at every age.
+    assert qc.loc["cvlt_recency_z", "score_mismatch"] == 1697
+    age = result.data["age"]
+    recency_z = result.data["cvlt_recency_z"]
+    means = [recency_z[(age >= low) & (age < high)].mean() for low, high in [(0, 40), (40, 70), (70, 200)]]
+    assert max(means) - min(means) < 0.4                     # as the application computes it: 0.05, -0.82 and -3.71
+    assert (qc.loc["cvlt_semantic_z", "n_valid"], qc.loc["cvlt_semantic_z", "out_of_range"]) == (2578, 104)  # the raw index is not an index there
+    assert not [name for name in result.data.columns if name.startswith("cvlt") and name.endswith("_stored")]
+    # CVLT: one band for every age, read in the percentile table where the norms have one, the band of the z-score elsewhere.
+    assert (qc.loc["cvlt_trial5_band", "n_valid"], qc.loc["cvlt_trial5_band", "band_from_z"]) == (5847, 72)
+    assert (qc.loc["cvlt_short_free_band", "n_valid"], qc.loc["cvlt_short_free_band", "band_from_z"]) == (5841, 2930)
+    # In the table a perfect recall is "this band or a higher one".
+    assert (qc.loc["cvlt_trial5_band", "censored_right"], qc.loc["cvlt_trial5_band", "norm_missing"]) == (1608, 1)
     assert (result.data["cvlt_trial5_band"] == 99).sum() == 0            # the EMR wrote 99 for 1,598 perfect recalls
     assert (qc.loc["cvlt_serial_band", "n_valid"], qc.loc["cvlt_serial_band", "censored_right"]) == (4971, 0)   # as the EMR wrote it
-    assert (qc.loc["cvlt_trial1_band", "n_valid"], qc.loc["cvlt_trial1_band", "band_from_z"]) == (5833, 5833)
-    assert (qc.loc["cvlt_total_1_5_band", "n_valid"], qc.loc["cvlt_total_1_5_band", "out_of_range"]) == (5582, 246)
-    assert (qc.loc["cvlt_trial5_z", "n_filled"], qc.loc["cvlt_short_free_z", "n_filled"]) == (70, 2939)    # the z-scores stay
-    assert (qc.loc["cvlt_recency_z", "missing_code"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (995, 246)
-    assert qc.loc["cvlt_recency_z", "check_failed"] == 43         # a z-score computed from an empty recency
-    assert qc.loc["cvlt_recency_band", "check_failed"] == 43      # and the band computed from it
+    assert (qc.loc["cvlt_trial1_band", "n_valid"], qc.loc["cvlt_trial1_band", "band_from_z"]) == (5841, 5841)
+    assert (qc.loc["cvlt_total_1_5_band", "n_valid"], qc.loc["cvlt_total_1_5_band", "band_from_z"]) == (5834, 5834)
     assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5", "score_mismatch"]) == (5842, 54)
     # Scores recomputed from the items.
     assert (qc.loc["stroop_interference", "n_valid"], qc.loc["stroop_interference", "score_mismatch"]) == (5793, 29)
@@ -292,8 +318,12 @@ def test_evaluation_medicale(result, qc):
     assert (qc.loc["dsm4_current_episode", "n_valid"], qc.loc["dsm5_current_episode", "n_valid"]) == (11709, 3491)
     assert (qc.loc["psychotic_disorder_v0", "n_valid"], qc.loc["psychotic_disorder_fu", "n_valid"]) == (5394, 9389)
     assert qc.loc["psychotic_onset_date_v0", "date_placeholder"] + qc.loc["psychotic_onset_date_fu", "date_placeholder"] == 741
+    # DSM-5 form: the column is the age at the first depressive episode; the first episode is the earliest of three ages (D89).
+    assert (qc.loc["dsm5_first_mde_age", "n_valid"], qc.loc["dsm5_first_episode_age", "n_valid"]) == (714, 867)
+    first = data[["dsm5_first_mde_age", "dsm5_first_hypomania_age", "dsm5_first_mania_age"]].min(axis=1)
+    assert (data["dsm5_first_episode_age"].dropna() == first.dropna()).all()
     # Three columns of the DSM-5 form only.
-    assert [qc.loc[name, "n_valid"] for name in ["dsm5_first_hypomania_age", "dsm5_first_mania_age", "dsm5_agethym"]] == [530, 283, 935]
+    assert [qc.loc[name, "n_valid"] for name in ["dsm5_first_hypomania_age", "dsm5_first_mania_age", "dsm5_first_mood_stabiliser_age"]] == [530, 283, 935]
     # DIVA: the number of criteria is recomputed where the nine are answered.
     totals = ["diva_adult_a_total", "diva_child_a_total", "diva_adult_hi_total", "diva_child_hi_total"]
     assert [qc.loc[name, "n_valid"] for name in totals] == [45, 41, 41, 42] and qc.loc[totals, "score_mismatch"].sum() == 7
@@ -335,7 +365,7 @@ def test_treatments(result, qc):
     # 99% of the names are found in the table; the others keep what was written and are flagged.
     assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22585, 173)
     groups = items["treatment_group"].value_counts()
-    assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5003, 4807, 10)
+    assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5120, 4807, 10)
     assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22630, 10903, 3117)
     assert (qc.loc["units_per_day", "missing_code"], qc.loc["daily_dose", "n_valid"]) == (893, 6418)
     # On the day of the visit: computed for the patients who have a list.
@@ -372,17 +402,16 @@ def test_social(result, qc):
     # Education is a list of levels: two of them are exported as words, the others as codes.
     levels = data["education_level"].value_counts()
     assert (levels["bac"], levels["bac_plus_5"], levels["primary_certificate"], len(levels)) == (714, 1202, 21, 17)
-    # Code 7 of the source of income holds "other" as well as "no income"; code 3 of the work status never appears.
-    assert data["income_source"].value_counts()["none_or_other"] == 1071
+    # Code 7 of the source of income is "other" on the form; the export writes the students with "other" (D94).
+    assert data["income_source"].value_counts()["other"] == 1071
     assert "student" not in set(data["work_status"].dropna()) and (data["work_status"] == "employed").sum() == 2308
+    assert (data["work_status"] == "student_or_other").sum() == 1150
     assert (qc.loc["last_job_end_date", "n_valid"], qc.loc["last_job_end_date", "date_placeholder"]) == (830, 176)
     assert (qc.loc["total_work_years", "out_of_range"], qc.loc["longest_job_years", "out_of_range"], qc.loc["household_size", "out_of_range"]) == (4, 1, 5)
     assert (qc.loc["debt_level", "n_valid"], qc.loc["debt_level", "missing_code"]) == (4481, 153)
     assert qc.loc["job_class_fu", "n_valid"] == 219
-    # The legal protection measure: one column of the PATIENT tab, once per patient.
-    assert result.patients["protection_measure"].value_counts().to_dict() == {"none": 4792, "curatorship": 62, "guardianship": 4}
-    # The non-opposition form: codes of the EMR, delivered as written (3 and 4 are removed by the export).
-    assert result.patients["opposition_form"].value_counts().to_dict() == {"1": 616, "2": 3}
+    # The legal protection measure and the non-opposition form are administrative: they are not delivered.
+    assert "protection_measure" not in result.patients.columns and "opposition_form" not in result.patients.columns
 
 
 def test_perinatal(result, qc):
@@ -409,22 +438,34 @@ def test_perinatal(result, qc):
 def test_suicide(result, qc):
     data = result.data
     # The same five columns hold lifetime answers at inclusion and answers since the last visit at follow-up.
-    assert (qc.loc["isf05_lifetime", "n_valid"], qc.loc["isf05_since_visit", "n_valid"]) == (5919, 9214)
-    assert round(data["isf05_lifetime"].mean(), 2) == 0.38 and round(data["isf05_since_visit"].mean(), 2) == 0.03
+    assert (qc.loc["isf05_lifetime", "n_valid"], qc.loc["isf05_since_visit", "n_valid"]) == (5919, 8348)
+    assert round(data["isf05_lifetime"].mean(), 2) == 0.38 and round(data["isf05_since_visit"].mean(), 3) == 0.024
     assert data["isf05_lifetime"].notna().sum() + data["isf05_since_visit"].notna().sum() == (data["isf05_lifetime"].notna() | data["isf05_since_visit"].notna()).sum()
     assert qc.loc[qc["instrument"].isin(["isf_lifetime", "isf_since_visit"]), "unknown_code"].sum() == 0
-    # Follow-up visits of 2022 and 2023: every "yes" and its "when" keep their value and are flagged as doubtful.
-    doubt = qc.loc[qc["instrument"] == "isf_since_visit", "period_doubt"]
-    assert (qc.loc["isf05_since_visit", "period_doubt"], qc.loc["isf05_since_visit_when", "period_doubt"]) == (114, 88)
-    assert (qc.loc["isf01_since_visit", "period_doubt"], doubt.sum()) == (448, 2702)
-    assert qc.loc[qc["instrument"] == "isf_lifetime", "period_doubt"].sum() == 0
-    flagged = result.flags[result.flags["flag"] == "period_doubt"]
-    assert set(flagged["severity"]) == {"discrepancy"} and (flagged["value"].astype(str) != "").all()
-    # The date of the first attempt: 2011-11-11 is a placeholder.
-    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "missing_code"]) == (2156, 1142)
-    assert (qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "out_of_range"]) == (162, 1)
+    # Follow-up visits of 2022 and 2023: the form also asked about the whole life. No answer is delivered (D88).
+    removed = qc.loc[qc["instrument"] == "isf_since_visit", "period_removed"]
+    assert (qc.loc["isf05_since_visit", "period_removed"], qc.loc["isf05_since_visit_when", "period_removed"]) == (866, 88)
+    assert (qc.loc["isf01_since_visit", "period_removed"], removed.sum()) == (874, 5602)
+    assert qc.loc[qc["instrument"] == "isf_lifetime", "period_removed"].sum() == 0
+    in_the_period = data["visit_date"].dt.year.isin([2022, 2023])
+    assert data.loc[in_the_period, ["isf01_since_visit", "isf05_since_visit", "n_attempts_since_visit"]].notna().sum().sum() == 0
+    flagged = result.flags[result.flags["flag"] == "period_removed"]
+    assert set(flagged["severity"]) == {"danger"}
+    assert (flagged["raw"].astype(str) != "").all() and (flagged["value"].astype(str) == "").all()   # the log keeps what was written
+    # The history of attempts: the whole life at inclusion, since the last visit at follow-up (D86).
+    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"]) == (2096, 162)
+    assert (qc.loc["n_attempts", "n_valid"], qc.loc["n_attempts", "out_of_range"]) == (2499, 1)
+    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (217, 172)
+    assert not (data["n_attempts"].notna() & data["n_attempts_since_visit"].notna()).any()
+    attempts_removed = qc.loc[qc["instrument"] == "suicide_attempts_since_visit", "period_removed"]
+    assert (qc.loc["n_attempts_since_visit", "period_removed"], attempts_removed.sum()) == (114, 331)
+    # A date of the first attempt typed at a follow-up visit is read and not delivered; 2011-11-11 is its placeholder.
+    typed_at_follow_up = result.flags[result.flags["variable"] == "first_attempt_date_follow_up"]
+    assert "first_attempt_date_follow_up" not in data.columns
+    assert (typed_at_follow_up["flag"] == "missing_code").sum() == 1142
     # Columbia and C-SSRS: every answer of the drop-downs has a code.
-    tab = qc[qc["instrument"].isin(["most_violent_attempt", "most_serious_attempt", "cssrs", "suicide_attempts"])]
+    tab = qc[qc["instrument"].isin(["most_violent_attempt", "most_serious_attempt", "cssrs", "suicide_attempts",
+                                    "suicide_attempts_since_visit"])]
     assert tab["unknown_code"].sum() == 0
     assert (qc.loc["violent_method", "n_valid"], qc.loc["serious_method", "n_valid"]) == (336, 457)
     assert (qc.loc["css0101", "n_valid"], qc.loc["cssrs_intensity", "n_valid"]) == (3606, 1022)
@@ -482,6 +523,9 @@ def test_medical_history(result, qc):
     no_allergy = data["allergic_inflammatory_v0"] == 0
     assert (no_allergy.sum(), (data.loc[no_allergy, "asthma_v0"] == 0).sum(), data["asthma_v0"].sum()) == (4211, 4211, 462)
     assert data.loc[data["allergic_inflammatory_v0"].isna(), "asthma_v0"].isna().all()
+    # The kinds of cancer and the causes of a drug eruption are boxes shown after a yes too: a "no" answers them.
+    assert (qc.loc["cancer_v0", "n_valid"], qc.loc["cancer_gynaecological_v0", "n_valid"], (data["cancer_gynaecological_v0"] == 1).sum()) == (4687, 4686, 96)
+    assert (qc.loc["drug_eruption_antibiotic_v0", "n_valid"], (data["drug_eruption_antibiotic_v0"] == 1).sum()) == (4667, 127)
     assert (data.loc[data["eye_disease_v0"] == 0, "closed_angle_glaucoma_v0"] == 0).all() and data["closed_angle_glaucoma_v0"].sum() == 7
     # Numbers of pregnancies: "Aucune" is 0, and with no pregnancy the other numbers are 0 unless typed otherwise.
     assert (qc.loc["n_pregnancies_v0", "n_valid"], data["n_pregnancies_v0"].sum(), data["n_pregnancies_v0"].max()) == (3621, 5229, 11)

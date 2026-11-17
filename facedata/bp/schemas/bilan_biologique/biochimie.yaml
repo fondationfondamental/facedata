@@ -17,8 +17,10 @@ notes: >
   with 18 different detection limits from 0.1 to 60 mg/L depending on the
   laboratory. The limit is kept as the value and crp_cens marks it. In 30
   more rows the mark sits in the unit column ("inf") and the result column
-  holds the limit. 389 results are exactly 0; they are kept as 0 for now
-  (open question O3 in PROGRESS.md).
+  holds the limit. 399 results are exactly 0: no assay measures a CRP of
+  0, so it is a result below a limit that was not written. They are
+  delivered as missing (missing code; decision D101 in PROGRESS.md, of the
+  project lead, was open question O3), in the four cohorts.
 
   Glucose. Of 12,930 results, 354 are labelled g/L and look like g/L
   (converted). 124 are labelled mmol/L but are too low to be mmol/L; these
@@ -180,6 +182,7 @@ variables:
     range: [1.5, 3.5]
 
   crp:
+    missing: {"0": unknown, "0.0": unknown, "00": unknown}      # exactly 0: below a limit that is not written (BP D101)
     label: C-reactive protein
     column: crp_lbstresc
     unit_column: crp_lborresu

@@ -14,20 +14,35 @@ notes: >
   2021 and with DSM-5 criteria since, in the same columns. This schema reads
   the DSM-5 visits; dsm4_premier_episode.yaml reads the others. Both carry
   the version block of the two schemas of the follow-up form (decisions D12,
-  D14 and D15). The DSM-5 form has no mixed episode. The age at the first
-  episode is filled for 64% of these patients only (98% with the DSM-IV
-  form).
+  D14 and D15). The DSM-5 form has no mixed episode.
+
+  The age at the first episode (decision D89 in PROGRESS.md). On the DSM-IV
+  form the column agedebutpremier_episode is the age at the first episode,
+  whatever its type. On the DSM-5 form the same column is labelled "Age du
+  premier EDM" and is shown only when the patient has had a depressive
+  episode: it is the age at the first major depressive episode (read in the
+  form definitions of the application in November 2026). The data agree: it
+  is filled for 713 of the 906 patients with at least one depressive episode
+  and for none of the 17 with none, and where the first episode was
+  hypomanic it is later than the age at the first hypomanic episode (29 of
+  49) or equal to it (20), never earlier. It is therefore delivered as
+  dsm5_first_mde_age. The DSM-5 form asks three ages, one per kind of
+  episode that the patient has had: dsm5_first_episode_age is the earliest
+  of those that are known.
 
   Three columns exist in the DSM-5 form only, from 2020; the dictionary
   gives them no label (section "New Columns"). age_ehman and age_epman are
   filled exactly where the patient has had at least one hypomanic episode,
-  or one manic episode: the age at the first one. rad_agethym is filled for
-  89% of the patients (60 "Ne sais pas"). It is not the age at the first
-  episode (later in 511 of 625 patients, by a median of six years) and it is
-  almost never before the age at the first psychotropic treatment (3 of 893;
-  the same age for 309): it looks like the age at the first mood stabiliser.
-  Its meaning is open question O34 in PROGRESS.md, and it keeps its raw
-  name.
+  or one manic episode: the age at the first one. rad_agethym is the age at
+  the first mood stabiliser: its label on the form is "Age du premier
+  traitement thymorégulateur" (read in the form definitions of the
+  application in November 2026; decision D87 in PROGRESS.md, was open
+  question O34). It is filled for 89% of the patients (60 "Ne sais pas"),
+  is later than the age at the first episode in 511 of 625 patients (by a
+  median of six years) and almost never before the age at the first
+  psychotropic treatment (3 of 893; the same age for 309). The form labels
+  the two other columns "Age au premier épisode hypomaniaque" and "Age au
+  premier épisode maniaque".
 
 version:
   name: dsm_version
@@ -43,11 +58,19 @@ defaults: {versions: [dsm5]}
 
 variables:
   dsm5_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic}, label: "Type of the first mood episode"}
-  dsm5_first_episode_age: {column: agedebutpremier_episode, type: item, range: [0, 90], label: "Age at the first mood episode"}
+  dsm5_first_mde_age: {column: agedebutpremier_episode, type: item, range: [0, 90], label: "Age at the first major depressive episode"}
   dsm5_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
   dsm5_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}
 
-  # Three columns that only the DSM-5 form has; the dictionary lists them without a label.
+  # Three columns that only the DSM-5 form has; the dictionary lists them without a label, the form gives it.
   dsm5_first_hypomania_age: {column: age_ehman, type: item, range: [0, 90], label: "Age at the first hypomanic episode"}
   dsm5_first_mania_age: {column: age_epman, type: item, range: [0, 90], label: "Age at the first manic episode"}
-  dsm5_agethym: {column: rad_agethym, type: item, range: [0, 90], label: "Age written in rad_agethym (probably the age at the first mood stabiliser)"}
+  dsm5_first_mood_stabiliser_age: {column: rad_agethym, type: item, range: [0, 90], label: "Age at the first mood stabiliser"}
+
+scores:
+  # The earliest of the three ages that the DSM-5 form asks; one known age is enough.
+  dsm5_first_episode_age:
+    min: [dsm5_first_mde_age, dsm5_first_hypomania_age, dsm5_first_mania_age]
+    min_items: 1
+    range: [0, 90]
+    label: "Age at the first mood episode (the earliest of the ages at the first depressive, hypomanic and manic episode)"
