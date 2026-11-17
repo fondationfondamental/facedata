@@ -137,7 +137,7 @@ def test_clinical_measures_and_biology(result, qc):
     assert (qc.loc["height", "n_valid"], qc.loc["height", "unit_inferred"], qc.loc["height", "out_of_range"]) == (1100, 3, 9)
     assert (qc.loc["weight", "n_valid"], data["weight"].min() < 25) == (1104, True)
     assert (qc.loc["systolic_supine", "unit_inferred"], qc.loc["diastolic_supine", "unit_inferred"]) == (7, 7)                 # typed in cmHg
-    assert data["bmi"].notna().sum() == 1091 and (result.flags["variable"] == "qtc_bazett").sum() == 3
+    assert data["bmi"].notna().sum() == 1091 and (result.flags["variable"] == "qtc_bazett").sum() == 0
     v0 = data[data["visit"] == "V0"]
     assert v0["tobacco_status"].value_counts().to_dict() == {"non_smoker": 492, "current_smoker": 49, "ex_smoker": 22}
     # No unit column for most analytes: the size of the value gives the unit.

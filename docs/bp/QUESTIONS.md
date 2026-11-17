@@ -174,8 +174,8 @@ decided and still to do.
 ### Priority C
 
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
-  and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113). The
-  121 others are drafts. Each
+  and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
+  CONSTANTES et ECG, three reviewed (D114). The 118 others are drafts. Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -227,6 +227,10 @@ source, in the export or in the application. Still to send.
   - It changes: with the shortcuts, a "Non pour tous" gives 0 to each
     disease of its section, and the prevalence of every somatic disease from
     2022 can be computed again. FACE SZ has the same fields.
+  - A ninth field, of lower priority (D114): the box "pregnant woman" of the
+    nurse form (`rad_femmenceinte`, table `inf_dossier_infirmier`), next to
+    the weight and the waist. Without it the weight, the body mass index and
+    the waist of a pregnant woman cannot be told apart.
 
 - [ ] **DM-11. Which answer does the export use to remove the patients who
   object?** (D94, D68; new on 2026-11-17)
@@ -375,6 +379,11 @@ source, in the export or in the application. Still to send.
     questions about the whole life at follow-up, and from when to when?
     With the answer, the removal of D88 could be narrowed (O29).
   - Prolactin in mUI/L: one centre holds 69% of the high results.
+  - ECG: in two centres the RR interval typed in the form does not fit the
+    heart rate of the same ECG (it agrees within 10% on 22% of their visits,
+    80% to 97% elsewhere; median RR 1.1 s for a rate of 70). What do they
+    type in that field? The QTc that the application computes from it is too
+    low; the package computes it from the heart rate (D114).
   - The referral information (`adresseur`) is recorded for 92% of the
     patients included in 2008-2012 and 43% in 2022-2026.
   - Among patients with an anxiety disorder, "panic disorder" is ticked for

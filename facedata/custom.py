@@ -75,8 +75,27 @@ def body_mass_index(values, keys=None):
 
 
 def corrected_qt(values, keys=None):
-    """Bazett's formula: the QT interval divided by the square root of the RR interval, in seconds."""
-    return values["qt_interval"] / values["rr_interval"] ** 0.5
+    """Bazett's formula: the QT interval divided by the square root of the RR interval, in seconds.
+
+    The RR interval is 60 divided by the heart rate of the ECG where there is
+    one: the RR typed in the form does not always fit that heart rate. The
+    typed RR is used where the heart rate is missing.
+    """
+    rr = values["rr_interval"]
+    if "ecg_heart_rate" in values:
+        rate = values["ecg_heart_rate"]
+        rr = (60 / rate).where(rate.notna(), rr)
+    return values["qt_interval"] / rr ** 0.5
+
+
+def rr_differs_from_rate(values):
+    """The RR interval typed in the form against the heart rate of the same ECG.
+
+    The two say the same thing: RR x rate / 60 is 1. True where it is under
+    0.7 or above 1.3: the typed RR is another quantity.
+    """
+    product = values["rr_interval"] * values["ecg_heart_rate"] / 60
+    return product.notna() & ~product.between(0.7, 1.3)
 
 
 def cholesterol_ratio(values, keys=None):

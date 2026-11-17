@@ -149,7 +149,9 @@ def test_constantes_et_ecg(result, qc):
                         "qt_interval": 395, "rr_interval": 109, "qtc_stored": 220}.items():
         assert inferred[name] == count, name
     assert (qc.loc["bmi", "n_valid"], qc.loc["bmi", "score_mismatch"]) == (16407, 34)
-    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"]) == (7834, 46)
+    # The QTc is computed from the heart rate of the ECG: the RR typed in two centres does not fit it.
+    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"], qc.loc["rr_interval", "check_failed"]) == (8963, 1185, 739)
+    assert (result.data["qtc_bazett"] < 0.35).sum() == 226                # 635 with the typed RR
     assert qc.loc["qtc_stored", "out_of_range"] == 168
     assert result.data["height"].between(100, 230).sum() == result.data["height"].notna().sum()
 

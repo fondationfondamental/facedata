@@ -15,9 +15,15 @@ notes: >
   and 15 stored QTc, among them heart rates of 1 and RR intervals of 0.
 
   The corrected QT is recomputed with Bazett's formula on the harmonised QT
-  and RR. The stored one equals it within 0.006 s on 96% of the visits from
-  2017 and on 76% of those until 2016 (113 score_mismatch, 110 of them until
-  2016); the formulas of Fridericia and Framingham fit worse in both periods.
+  and the heart rate of the ECG (RR = 60 / rate), and on the typed RR only
+  where there is no heart rate, as in BP (BP decision D114): in BP the RR
+  typed in two centres does not fit the heart rate. Here the two agree
+  within 10% on 90% of the visits and differ by more than 30% on 28, which
+  get check_failed on the RR. The QTc is computed on 1,009 visits and
+  differs from the stored one by more than 0.03 s on 70 (score_mismatch).
+  With the typed RR, the stored one equalled Bazett within 0.006 s on 96%
+  of the visits from 2017 and on 76% of those until 2016; the formulas of
+  Fridericia and Framingham fit worse in both periods.
 
   Same instrument as in FACE BP, without the question "ECG done".
 
@@ -51,9 +57,12 @@ variables:
 
 scores:
   qtc_bazett:
-    label: Corrected QT interval, Bazett's formula on the harmonised QT and RR
+    label: "Corrected QT interval (Bazett), from the QT and the heart rate of the ECG, or the RR where there is no rate"
     custom: corrected_qt
     compare: qtc_stored
-    compare_tolerance: 0.005
+    compare_tolerance: 0.03
     range: [0.2, 0.7]
     winsor: [0.01, 0.99]
+
+checks:
+  rr_interval: rr_differs_from_rate

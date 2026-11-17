@@ -2,14 +2,22 @@ instrument: pression_arterielle
 title: Blood pressure and heart rate, lying and standing
 tab: CONSTANTES et ECG
 section: Pression artérielle / fréquence cardiaque
-status: draft
+status: reviewed
 notes: >
   Blood pressure is in mmHg. In six centres some values are written in cmHg
-  (12 for 120): about 35 to 40 per column. A systolic pressure from 5 to 26,
-  or a diastolic pressure from 3 to 16, can only be cmHg; it is multiplied
-  by 10 and flagged unit_inferred.
+  (12 for 120): 34 to 40 per column, none since 2022. A systolic pressure
+  from 5 to 26, or a diastolic pressure from 3 to 18, can only be cmHg; it
+  is multiplied by 10 and flagged unit_inferred (no diastolic pressure is
+  typed 17 or 18).
 
-  One lying heart rate is 720 and is out_of_range.
+  One lying heart rate is 720 and one standing systolic pressure is
+  impossible: out_of_range.
+
+  The values hold together: the systolic pressure is not above the diastolic
+  one on 7 visits of 16,145, the standing heart rate is 7 beats above the
+  lying one (median), and the systolic pressure falls by 20 mmHg or more on
+  standing on 3.7% of the visits. One centre records the pressure on 17% of
+  its visits; the others on 55% to 85%.
 
 defaults: {type: number, unit: mmHg}
 

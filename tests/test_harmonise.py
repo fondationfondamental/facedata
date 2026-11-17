@@ -371,6 +371,17 @@ def test_a_score_can_be_a_formula_of_custom_py_with_a_tolerance():
     assert flagged(flags, "score_mismatch") == [1]     # 22.9 is 22.857 rounded; 35.0 is not 31.25
 
 
+def test_corrected_qt_uses_the_heart_rate_of_the_ecg():
+    """RR is 60 / heart rate; the typed RR is used only where there is no heart rate."""
+    values = pd.DataFrame({"qt_interval": [0.4, 0.4, 0.4, 0.4], "rr_interval": [1.0, 1.44, np.nan, 0.64],
+                           "ecg_heart_rate": [60.0, 60.0, 60.0, np.nan]})
+    assert list(custom.corrected_qt(values)) == pytest.approx([0.4, 0.4, 0.4, 0.5])
+    # A typed RR of 1.44 s with a rate of 60 is another quantity: the check says so, and only there.
+    assert list(custom.rr_differs_from_rate(values)) == [False, True, False, False]
+    # An extraction without the heart rate of the ECG: the typed RR is used.
+    assert list(custom.corrected_qt(values[["qt_interval", "rr_interval"]]))[:2] == pytest.approx([0.4, 0.4 / 1.2])
+
+
 def test_a_percentage_of_another_variable():
     """A kind of white cells written in percent is converted with the leukocytes of the visit."""
     count = {"unit": "G/L", "range": [0.0, 25.0],

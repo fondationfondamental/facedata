@@ -121,7 +121,7 @@ def test_vital_signs_and_ecg(result, qc):
     assert (qc.loc["systolic_supine", "n_valid"], qc.loc["systolic_supine", "unit_inferred"], qc.loc["systolic_standing", "n_valid"]) == (1223, 7, 1186)
     # QT and RR typed in milliseconds, most of them until 2016; the stored QTc follows Bazett since 2017.
     assert (qc.loc["qt_interval", "unit_inferred"], qc.loc["rr_interval", "unit_inferred"], qc.loc["rr_interval", "out_of_range"]) == (87, 61, 38)
-    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"]) == (971, 113)
+    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"], qc.loc["rr_interval", "check_failed"]) == (1009, 70, 28)
 
 
 def test_biology(result, qc):
