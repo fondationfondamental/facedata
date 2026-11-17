@@ -109,9 +109,11 @@ def test_hetero_questionnaires(result, qc):
     higher = data["ymrs_total"].notna() & (data["ymrs05"] + data["ymrs08"] + data["ymrs09"] > 0)
     assert higher.sum() == 776                                     # visits whose published total is above the stored one
     assert (qc.loc["barnes_sum", "score_mismatch"], qc.loc["esrsa_mean", "score_mismatch"]) == (3, 10)
-    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (32, 215)
+    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (23, 215)
     assert (qc.loc["bars_doses_per_day", "out_of_range"], qc.loc["psp_total", "out_of_range"]) == (250, 3)
-    assert (qc.loc["cgi_severity", "missing_code"], qc.loc["cgi_improvement", "missing_code"]) == (12, 354)
+    assert (qc.loc["cgi_severity", "missing_code"], qc.loc["cgi_improvement", "missing_code"]) == (12, 125)
+    # The improvement, the therapeutic effect and the index are asked at the follow-up visits only, as in BP.
+    assert (qc.loc["cgi_improvement", "n_valid"], data.loc[data["visit_month"] == 0, "cgi_improvement"].notna().sum()) == (2195, 0)
     # SUMD: 0 is "cannot be rated", a missing code.
     assert (qc.loc["sumd01", "missing_code"], qc.loc["sumd04_awareness", "missing_code"]) == (29, 2121)
     assert (qc.loc["aims_movements", "n_valid"], qc.loc["bars_adherence", "n_valid"], qc.loc["gaf", "n_valid"]) == (4149, 4383, 4534)

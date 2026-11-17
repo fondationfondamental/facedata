@@ -2,21 +2,62 @@ instrument: cgi_egf
 title: "Clinical Global Impression (CGI) and Global Assessment of Functioning (EGF)"
 tab: HETERO-QUESTIONNAIRES
 section: Questionnaire CGI-EGF
-status: draft
+status: reviewed
 notes: >
   The code 0 means "not assessed" for the severity, the improvement, the
   therapeutic effect and the efficacy index. It is read as a missing code.
 
-  The efficacy index is (therapeutic effect - 1) x 4 + side effects. A schema
-  cannot write a product, so the custom check cgi_index_differs compares the
-  stored index with that formula: it holds on 8,931 of 9,010 rows, and the
-  79 others get check_failed. They differ by a multiple of 4, as if the
-  therapeutic effect had been changed after the index was computed.
+  Three items at the follow-up visits only (decision D113 in PROGRESS.md,
+  by the project lead). The form asks the improvement, the therapeutic
+  effect with its side effects, and the efficacy index at the follow-up
+  visits, and says to tick "not assessed" at the initial evaluation: there
+  is no earlier state to compare with. They are nevertheless filled at
+  1,068 inclusion visits (19%), 1% to 3% in four centres and 37% to 60% in
+  three. These variables are read at the follow-up visits only (visit_form,
+  from the visit label); the inclusion values are not delivered. The
+  severity and the EGF are delivered at every visit.
 
-  The EGF is a number from 1 to 100. 149 cells hold a band of ten points
-  instead ("60-51", "90-81"). They are read as the middle of the band (55.5)
-  and flagged band_middle (decision D24 in PROGRESS.md). One band is
-  impossible and ends out_of_range. Two cells hold 0 (missing code).
+  The efficacy index is (therapeutic effect - 1) x 4 + side effects, the
+  formula of the scoring script of the application. A schema cannot write a
+  product, so the custom check cgi_index_differs compares the stored index
+  with that formula: it holds on 7,911 of the 7,985 follow-up visits that
+  have the three values, and the 74 others get check_failed. They differ by
+  a multiple of 4, as if the therapeutic effect had been changed after the
+  index was computed: the application computes it on a button.
+
+  The EGF is a number from 1 to 100, typed in a free field under the ten
+  anchors of the scale. 149 cells hold a band of ten points instead
+  ("60-51", "90-81"), 87 of them in one centre. They are read as the middle
+  of the band (55.5) and flagged band_middle (decision D24 in PROGRESS.md).
+  One band is impossible and ends out_of_range. Two cells hold 0 (missing
+  code). Eight values in ten are multiples of 5.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
 
 defaults: {type: item}
 
@@ -28,20 +69,24 @@ variables:
     missing: {0: not_recorded}
   cgi_improvement:
     column: cgi02
+    versions: [follow_up]
     label: "CGI global improvement, from 1 (very much improved) to 7 (very much worse)"
     range: [1, 7]
     missing: {0: not_recorded}
   cgi_therapeutic_effect:
     column: cgi03a
+    versions: [follow_up]
     label: "CGI therapeutic effect, from 1 (marked) to 4 (unchanged or worse)"
     range: [1, 4]
     missing: {0: not_recorded}
   cgi_side_effects:
     column: cgi03b
+    versions: [follow_up]
     label: "CGI side effects, from 1 (none) to 4 (outweigh the therapeutic effect)"
     range: [1, 4]
   cgi_efficacy_index:
     column: cgi03
+    versions: [follow_up]
     label: "CGI efficacy index, from 1 to 16"
     range: [1, 16]
     missing: {0: not_recorded}

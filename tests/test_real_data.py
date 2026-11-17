@@ -134,7 +134,11 @@ def test_hetero_questionnaires(result, qc):
     assert (qc.loc["etatd_total", "n_valid"], qc.loc["etatd_total", "score_mismatch"]) == (15414, 61)
     assert (qc.loc["etatm_total", "n_valid"], qc.loc["etatm_total", "score_mismatch"]) == (15283, 22)
     assert (qc.loc["gaf", "n_valid"], qc.loc["gaf", "band_middle"], qc.loc["gaf", "unparsed"]) == (14728, 149, 0)
-    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["cgi_severity", "missing_code"]) == (81, 247)
+    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["cgi_severity", "missing_code"]) == (74, 247)
+    # The improvement, the therapeutic effect and the index are asked at the follow-up visits only: 1,068 inclusion values are left out.
+    at_inclusion = result.data["visit_month"] == 0
+    assert (qc.loc["cgi_improvement", "n_valid"], result.data.loc[at_inclusion, "cgi_improvement"].notna().sum()) == (8932, 0)
+    assert (result.data.loc[at_inclusion, "cgi_severity"].notna().sum(), result.data.loc[at_inclusion, "gaf"].notna().sum()) == (5648, 5264)
     assert (qc.loc["alda_total", "n_valid"], qc.loc["alda_total", "score_mismatch"]) == (1669, 14)
     assert set(result.data["etatd01"].dropna().unique()) == {0, 1}
 

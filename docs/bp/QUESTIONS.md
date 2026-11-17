@@ -174,7 +174,8 @@ decided and still to do.
 ### Priority C
 
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
-  and one removed (D111). The 128 others are drafts. Each
+  and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113). The
+  121 others are drafts. Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
