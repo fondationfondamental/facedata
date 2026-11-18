@@ -204,6 +204,22 @@ def test_patient_level_instrument(tmp_path):
         assert_invariant(raw, keys, schema)
 
 
+def test_a_patient_level_flag_keeps_the_visit_and_the_text_of_its_cell(tmp_path):
+    """A flag raised at a later visit is logged on that visit, with what was written there."""
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "who.yaml").write_text(PATIENT_SCHEMA, encoding="utf-8")
+    extraction = PATIENT_EXTRACTION + "P4\tV0\t2\t6\t2018-04-01\t02\tMasculin\t\t\t\n"
+    extraction += "P4\tV1_an\t4\t7\t2019-04-01\t02\tFeminin\t\t\t1999-02-02\n"
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+
+    lines = result.flags[result.flags["usubjid"] == "P4"].set_index("variable")
+    assert list(lines.loc["death_date", ["visit", "flag", "raw"]]) == ["V1_an", "out_of_range", "1999-02-02"]
+    assert list(lines.loc["sex", ["visit", "flag", "raw"]]) == ["V1_an", "patient_value_varies", "Feminin"]
+    assert result.patients.set_index("usubjid").loc["P4", "sex"] == "male"           # the first value is kept
+    assert flags_of(result, "death_date").count(("P1", "V0", "date_placeholder")) == 1   # two visits, one flag
+
+
 NORM_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tbrthdtc\ta\tb\tscaled
 P1\tV0\t2\t1\t2015-06-15\t01\t1990-06-15\t3\t4\t10
 P1\tV1_an\t4\t2\t2016-06-20\t01\t1990-06-15\t3\t4\t12

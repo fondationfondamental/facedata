@@ -279,7 +279,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     data = result.data
     tabs = ["SUICIDE", "SUBSTANCES", "PERINATALITE", "EVALUATION MEDICALE", "SOIN SUIVI HOSP ARRET TRAVAIL", "MODULE SOCIAL ET PERINATALITE"]
     tab = result.qc[result.qc["tab"].isin(tabs)]
-    assert (len(tab), tab["instrument"].nunique()) == (287, 20)
+    assert (len(tab), tab["instrument"].nunique()) == (286, 20)
     assert (tab["unknown_code"].sum(), tab["version_unknown"].sum()) == (0, 0)
     # One column, two questions: the whole life at inclusion, the time since the last visit at follow-up. Never in one column.
     assert data["visit_form"].value_counts().to_dict() == {"inclusion": 1268, "follow_up": 924}
@@ -296,6 +296,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (796, 44)
     # Codes of the dictionary, and codes that it does not give.
     assert data["tobacco_status"].value_counts().to_dict() == {"non_smoker": 701, "current_smoker": 417, "ex_smoker": 192}
+    assert "legal_protection" not in data.columns            # administrative: not delivered, as in BP and SZ (BP D111, D116)
     assert result.patients["birth_term"].value_counts().to_dict() == {"term": 435, "preterm": 47, "post_term": 14}     # asked once: per patient
     assert data["mdd_course"].value_counts().to_dict() == {"recurrent": 509, "single_episode": 123}
     assert data["current_episode_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
@@ -373,7 +374,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = dr.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2337, 38, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2336, 39, 0)
     assert counts["covered"] + counts["ignored"] == 2375
 
 

@@ -175,7 +175,8 @@ decided and still to do.
 
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
-  CONSTANTES et ECG, three reviewed (D114). The 118 others are drafts. Each
+  CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
+  PERINATALITE, one reviewed (D117). The 116 others are drafts. Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -378,6 +379,11 @@ source, in the export or in the application. Still to send.
     centre runs its own copy of the application: which copies showed the
     questions about the whole life at follow-up, and from when to when?
     With the answer, the removal of D88 could be narrowed (O29).
+  - The social tab is held by 29% and 39% of the inclusions of centre C in
+    2016-18 and 2019-21 (71% to 89% before and after) and by 23% of those
+    of centre F in 2019-21 (D116). Centre I left the perinatal section of
+    the medical history empty from 2019 (1 of its 74 inclusions of
+    2019-21) while filling the rest of the form (D117).
   - Prolactin in mUI/L: one centre holds 69% of the high results.
   - ECG: in two centres the RR interval typed in the form does not fit the
     heart rate of the same ECG (it agrees within 10% on 22% of their visits,
@@ -492,7 +498,7 @@ source, in the export or in the application. Still to send.
   | 0 or 1 on every row | Five allergic diseases; `<relative>_alcool`, `_cannabis`, `_autre_substance` (the last one is 1 on 2,709 rows where the list does not hold it) | All rows |
   | A copy of another column | `mhoccur_*_psy_spv` (three), `protec`, `visit_neuropsychologie`, `cpt_version` (WAIS labels) | All rows |
   | A default unit label, also where there is no result | Biology; four defaults are wrong: "mg/L" for prolactin, "µUI/L" for TSH, "%" for MCH and MCHC | 796 to 10,809 rows per analyte |
-  | 0 when nothing was measured | Heart rate (20), creatinine clearance (246), perinatal measures in 2009-2010 (57 visits) | |
+  | 0 when nothing was measured | Heart rate (20), creatinine clearance (246). The perinatal measures of 2009-2010 (57 visits) are zeros saved by the application's forms of those years, which the export passes on (D117) | |
   | The day of birth set to 15 | All patients | 6,476 |
   | The unit chosen on the form is not exported | LDL cholesterol chosen as g/L, labelled mmol/L | 246 results |
 

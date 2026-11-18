@@ -284,7 +284,7 @@ def test_medical_evaluation_care_and_social(result, qc):
     assert shape_of(qc, "SOCIAL - PERINATALITE") == (11, 1, 0, 0)
     # Lost answers: no patient is married or living as a couple, none has a salary or a disability pension.
     assert data["marital_status"].value_counts().to_dict() == {"single": 1652, "divorced": 42, "separated": 30, "widowed": 4}
-    assert set(data["income_source"].dropna()) == {"disability_allowance", "other", "none_or_other", "minimum_income", "unemployment_benefit", "housing_benefit"}
+    assert set(data["income_source"].dropna()) == {"disability_allowance", "other", "no_income", "minimum_income", "unemployment_benefit", "housing_benefit"}
 
 
 def test_treatments(result, qc):

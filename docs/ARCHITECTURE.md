@@ -525,12 +525,16 @@ value is kept and gets `derived_doubt`.
 ### Step 11: patient level
 
 For `level: patient` variables the first non-missing value in visit order is
-kept. If visits disagree, the patient gets `patient_value_varies`.
+kept. If visits disagree, the patient gets `patient_value_varies`, on a
+visit whose value differs from the kept one.
 
 The extraction repeats a patient-level value on every visit row, so a bad
 cell would be flagged once per visit. The flags of a patient-level variable
-are therefore given once per patient, on the patient's first visit, and the
-QC table counts patients, not visit rows.
+are therefore given once per patient and kind of flag: each stays on the
+visit of the cell that raised it, with that cell's text in `raw` (the
+earliest visit when several raise it). The QC table counts patients, not
+visit rows. The report draws these flags with the value, on the patient's
+first visit.
 
 ### Step 12: winsorising
 

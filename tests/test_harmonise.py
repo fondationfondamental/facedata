@@ -270,7 +270,7 @@ def test_collapse_patient_level_keeps_the_first_value_and_flags_changes():
     patients, flags = collapse_patient_level(values, keys)
     assert list(patients["usubjid"]) == ["A", "B"]
     assert list(patients["sex"]) == ["F", "M"]
-    assert flagged(flags, "patient_value_varies") == [3]
+    assert flagged(flags, "patient_value_varies") == [4]     # the visit whose value differs from the kept one
 
 
 def test_a_score_can_subtract_and_have_a_floor():

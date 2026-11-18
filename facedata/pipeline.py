@@ -173,13 +173,15 @@ def delivered_columns(schema, result):
 
 
 def once_per_patient(result, table, keys):
-    """For a patient-level instrument: put values and flags on each patient's first visit.
+    """For a patient-level instrument: values on each patient's first visit, one flag per patient.
 
-    table is the one-row-per-patient table of the instrument. After this, the
-    QC table and the flag log count patients, not visit rows.
+    table is the one-row-per-patient table of the instrument. A flag stays on
+    the visit of the cell that raised it, so that the flag log shows that
+    visit and its text; when several visits raise the same flag, the earliest
+    is kept. After this, the QC table and the flag log count patients, not
+    visit rows.
     """
-    first = first_rows(keys)
-    is_first = keys.index.isin(first)
+    is_first = keys.index.isin(first_rows(keys))
     lookup = table.set_index("usubjid")
     for name in lookup.columns:
         on_first_visit = keys["usubjid"].map(lookup[name]).where(is_first)
@@ -188,8 +190,10 @@ def once_per_patient(result, table, keys):
         elif name.endswith("_cens"):
             result["cens"][name[:-5]] = on_first_visit.fillna(0)
     flags = result["flags"].copy()
-    flags["row"] = first.loc[keys["usubjid"].loc[flags["row"]]].to_numpy()
-    result["flags"] = flags.drop_duplicates(subset=["row", "variable", "flag"]).reset_index(drop=True)
+    flags["usubjid"] = keys["usubjid"].loc[flags["row"]].to_numpy()
+    flags["order"] = keys["visit_order"].loc[flags["row"]].to_numpy()
+    flags = flags.sort_values(["order", "row"], kind="stable").drop_duplicates(subset=["usubjid", "variable", "flag"])
+    result["flags"] = flags.drop(columns=["usubjid", "order"]).reset_index(drop=True)
     return result
 
 

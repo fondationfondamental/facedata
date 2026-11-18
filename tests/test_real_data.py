@@ -414,6 +414,8 @@ def test_social(result, qc):
     assert (data["work_status"] == "student_or_other").sum() == 1150
     assert (qc.loc["last_job_end_date", "n_valid"], qc.loc["last_job_end_date", "date_placeholder"]) == (830, 176)
     assert (qc.loc["total_work_years", "out_of_range"], qc.loc["longest_job_years", "out_of_range"], qc.loc["household_size", "out_of_range"]) == (4, 1, 5)
+    # The work durations are not winsorised: the long careers of the older patients are kept (D116).
+    assert tab["winsorised"].sum() == 0 and (data["total_work_years"] > 42).sum() == 39
     assert (qc.loc["debt_level", "n_valid"], qc.loc["debt_level", "missing_code"]) == (4481, 153)
     assert qc.loc["job_class_fu", "n_valid"] == 219
     # The legal protection measure and the non-opposition form are administrative: they are not delivered.

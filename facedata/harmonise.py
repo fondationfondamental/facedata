@@ -534,13 +534,11 @@ def collapse_patient_level(values, keys):
     ordered = values.assign(usubjid=keys["usubjid"], order=keys["visit_order"]).sort_values("order")
     per_patient = ordered.drop(columns="order").groupby("usubjid")
     patients = per_patient.first()
-    n_values = per_patient.nunique()
-    is_first = keys.index.isin(first_rows(keys))             # the flag goes on the patient's first visit
     flags = []
-    for name in values.columns:
-        varying = n_values.index[n_values[name] > 1]
-        rows = keys["usubjid"].isin(varying) & is_first
-        flags.append(make_flags(rows, name, "patient_value_varies"))
+    for name in values.columns:                              # the flag goes on a visit whose value differs from the kept one
+        kept = keys["usubjid"].map(patients[name])
+        differs = values[name].notna() & kept.notna() & (values[name] != kept)
+        flags.append(make_flags(differs, name, "patient_value_varies"))
     return patients.reset_index(), stack_flags(flags)
 
 
