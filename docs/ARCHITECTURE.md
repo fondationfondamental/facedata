@@ -380,8 +380,9 @@ missing with `unparsed` (or `unknown_code` for a category).
 
 ### Step 7: units
 
-Each unit named in a schema has a conversion factor and an expected range of
-values in its own scale. The rule is the same for every variable.
+Each unit named in a schema has a conversion factor (and an offset for a
+scale with another zero, such as an HbA1c in mmol/mol) and an expected range
+of values in its own scale. The rule is the same for every variable.
 
 | Unit label | The value fits | Result | Flag |
 |---|---|---|---|

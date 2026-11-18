@@ -140,7 +140,9 @@ def test_biology(result, qc):
     assert (round(yearly.min()), round(yearly.max())) == (49, 67)
     assert (qc.loc["vitamin_b12", "unit_converted"], qc.loc["vitamin_b12", "unit_unknown"], qc.loc["folates", "unit_converted"]) == (685, 27, 580)
     assert (qc.loc["cortisol", "n_valid"], qc.loc["cortisol", "unit_converted"]) == (988, 143)
-    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1105, 80, 22)
+    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1105, 80, 3)
+    # HbA1c typed in mmol/mol in one centre: brought to % with the IFCC-NGSP master equation (D26).
+    assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "unit_doubt"]) == (19, 1)
     assert (qc.loc["glucose", "n_valid"], qc.loc["glucose", "unit_inferred"], qc.loc["ferritin", "n_valid"]) == (1085, 10, 460)
     assert (qc.loc["leukocytes", "check_failed"], qc.loc["cholesterol_hdl_ratio", "n_valid"]) == (23, 1097)
     # Drug levels: the antidepressants hold two scales a thousand times apart, delivered in µg/L.

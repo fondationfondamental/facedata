@@ -261,6 +261,7 @@ glucose:
 | Field | Meaning |
 |---|---|
 | `factor` | Multiply a value in this unit by `factor` to get the target unit. The target unit has factor 1 |
+| `offset` | For a scale that does not start at the same zero: the value in the target unit is value × `factor` + `offset` (HbA1c in mmol/mol to %: factor 0.09148, offset 2.152, the IFCC–NGSP master equation). Default 0; the target unit has none |
 | `expect` | `[low, high)`: the values one expects to see **in this unit's own scale**. Used to recognise the unit from the magnitude |
 | `aliases` | Other spellings of the unit label. Case and spaces are already ignored, so `g/l` needs no alias. Also for a label that the form prints wrongly and that can only mean this unit (`mmol/L` for a bilirubin in µmol/L) |
 
@@ -1023,8 +1024,9 @@ the list is not empty.
   On a variable, `lookup` and `from` go together, on a band, and `from` names
   a number or an item with a range, listed before.
 - Fields that must be numbers are numbers; `range` and `expect` have low ≤ high.
-- A variable with `units` has a `unit`, that unit is listed, and its factor is 1.
-  Every unit has an `expect` range and either a `factor` or `percent_of`.
+- A variable with `units` has a `unit`, that unit is listed, its factor is 1
+  and it has no offset. Every unit has an `expect` range and either a
+  `factor` or `percent_of`; an `offset` is a number, never on a `percent_of`.
   `percent_of` names a number listed before the variable in the same schema.
 - `unit_rule` names a function that exists in `facedata/custom.py`.
 - `day` is a whole number from 1 to 28, on a date.

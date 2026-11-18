@@ -171,6 +171,8 @@ def test_bilan_biologique(qc):
     assert (qc.loc["creatinine_clearance", "missing_code"], qc.loc["creatinine_clearance", "censored_right"]) == (246, 177)
     assert (qc.loc["hcg", "censored_left"], qc.loc["hcg", "unit_inferred"]) == (2094, 0)
     assert qc.loc["cholesterol_hdl_ratio", "n_valid"] == 13199
+    # HbA1c in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D127).
+    assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "out_of_range"]) == (8, 32)
 
 
 def test_auto_questionnaires(result, qc):
@@ -271,6 +273,9 @@ def test_neuropsychologie(result, qc):
     assert (qc.loc["spatial_total", "n_valid"], qc.loc["spatial_total", "score_mismatch"]) == (5234, 41)
     assert (qc.loc["cobra_total", "n_valid"], qc.loc["cobra_total", "score_mismatch"]) == (596, 0)
     assert (qc.loc["errands_errors", "n_valid"], qc.loc["errands_errors", "score_mismatch"]) == (808, 9)
+    # The typed z-scores of the errands test mix two sign conventions: none is delivered (D126).
+    errands_z = ["errands_minutes_z", "errands_detours_z", "errands_late_trips_z", "errands_logic_errors_z", "errands_errors_z"]
+    assert (qc.loc[errands_z, "n_valid"].sum(), qc.loc[errands_z, "period_removed"].sum()) == (0, 140)
     # CPT-3: about 37 visits hold something else than a T-score.
     assert (qc.loc["cpt3_omissions_t", "n_valid"], qc.loc["cpt3_omissions_t", "out_of_range"]) == (488, 37)
     assert result.data["handedness"].value_counts().to_dict() == {"right": 5468, "left": 570, "both": 121}

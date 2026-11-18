@@ -18,6 +18,8 @@ notes: >
   What the values show: 8 glucose results in g/L, 13 phosphate results in mg/L,
   4 creatinine results in mg/L and 5 uric acid results in mg/L or mg/dL are
   converted. One CRP is given as "less than" a limit and keeps its mark.
+  HbA1c lists mmol/mol (IFCC) as in the other cohorts, where some centres
+  type it; no ASP result has that size.
 
 defaults: {type: number}
 
@@ -136,4 +138,5 @@ variables:
     unit: "%"
     units:
       "%": {factor: 1, expect: [3, 18]}
+      mmol/mol: {factor: 0.09148, offset: 2.152, expect: [18, 150]}
     range: [3, 18]

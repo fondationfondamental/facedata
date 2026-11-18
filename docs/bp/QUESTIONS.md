@@ -39,15 +39,15 @@ of today. Neither says how a form looked in 2012 or in early 2022.
 
 **What is not here.** Only counts are given, never a patient. The centres
 are not named, because this repository is public: their codes can be given
-on request. The schemas are still drafts: a clinician's review of each tab
-is a separate task (PI-12).
+on request. 53 of the 135 schemas are reviewed; the others are drafts until
+the review of their tab (PI-12).
 
 | Section | Open | Who closes it |
 |---|---|---|
 | 1. To read in the application | 1 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 3 | The project lead and the principal investigator |
-| 4. For the data managers, the centres and the developers | 18 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
+| 3. Choices of method | 5 | The project lead and the principal investigator |
+| 4. For the data managers, the centres and the developers | 17 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
 
@@ -146,10 +146,31 @@ its findings here.
 ## 3. Choices of method
 
 For the project lead and the principal investigator. Each has a default
-that the package follows today. The three left are pieces of work that are
-decided and still to do.
+that the package follows today. PI-8, PI-10 and PI-12 are pieces of work
+that are decided and still to do.
 
 ### Priority B
+
+- [ ] **PI-13. Use of care at follow-up: an empty box beside a ticked one.**
+  (O51, D123)
+  - `care_use` is on the same follow-up form as the non-drug treatments,
+    and clinicians tick only the kinds of care received after a yes: about
+    820 visits have an empty box beside a ticked one.
+  - Question: read these empty boxes as "no", as `box_list` does for the
+    non-drug treatments (D124)?
+  - Today: they are missing.
+
+- [ ] **PI-14. Dates of the most recent mood episode later than the
+  inclusion visit.** (O53)
+  - The most recent episode recorded at inclusion starts after the
+    inclusion visit on 114 visits (95 DSM-IV, 19 DSM-5; 37 of them within
+    a month) and ends after it on 212 (179 and 33). Most are less than a
+    year after the visit.
+  - Question: are they dates typed wrongly (delivered as missing, like the
+    first suicide attempt with `before_visit`, D125), the end of an episode
+    that was still running (kept), or a form filled in later than its visit
+    date (kept, flagged)?
+  - Today: delivered as written.
 
 - [ ] **PI-8. Plausible limits and extreme values: a table to read.** (D52,
   D54, D79, D107)
@@ -179,8 +200,10 @@ decided and still to do.
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
   CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
   PERINATALITE, one reviewed (D117); EVALUATION MEDICALE, fifteen reviewed
-  (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123). The 95 others
-  are drafts. Each
+  (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
+  four reviewed (D124); SUICIDE, ten reviewed after the splits by form
+  (D125); with the audit of the four cohorts, `errands_test` (D126) and
+  `biochimie` (D127). 53 of 135 are reviewed; the 82 others are drafts. Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read

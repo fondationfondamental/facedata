@@ -156,7 +156,10 @@ psqi:
   note: >
     Seven components of 0 to 3 and their sum, on the same rules in the four
     cohorts; components 1 and 6 are the answers to questions 6 and 7 (psqi06,
-    psqi07). In ASP three stored components are wrong and are recomputed.
+    psqi07). In ASP three stored components are wrong and are recomputed. In
+    BP, SZ and DR the same three, recomputed with the published rules, equal
+    the stored ones (2 of 16,678 BP visits differ, none of 3,107 SZ and 1,031
+    DR visits; checked 2026-11-18), so they are delivered as stored.
     Exactly 7 hours of sleep count 0: the application tests "7 hours or more",
     where the published sheet says "more than 7 hours" and leaves 7 hours
     open. It is the same in the four cohorts, so they compare. In ASP the PSQI belongs to the old set of forms (2013 to
@@ -185,8 +188,11 @@ eq5d:
   note: >
     Five dimensions of 1 to 5 and the visual scale of 0 to 100, in the four
     cohorts. The utility index is the one the database stores, in BP, SZ and
-    ASP: its value set is not documented, and the DR extraction has none.
-    Compare the dimensions and the visual scale; use the index with care.
+    ASP, and the DR extraction has none. Its value set is not documented, but
+    it is one table: each of the 876 BP, 603 SZ and 248 ASP health profiles
+    has one index, and the 446 profiles shared by BP and SZ and the 224 shared
+    by BP and ASP have the same index in both (checked 2026-11-18). ASP holds
+    28 indices above 1, which no value set gives; they are out of range.
 
 fagerstrom:
   title: Fagerström Test for Nicotine Dependence (6 items)
@@ -413,19 +419,23 @@ errands_test:
   note: >
     The four counts of errors and their sum are in the three cohorts (from 2017
     or 2018; in BP on inclusions from 2021). The time, the z-scores and the
-    bands are in BP and SZ, and almost only SZ fills the z-scores. In ASP the
-    test is one of several in the schema executive_functions.
+    bands are in BP and SZ. Only SZ delivers the z-scores (about 520 visits,
+    a higher z-score is better): the 30 typed in BP mix two sign conventions
+    and are not delivered (BP D126). In ASP the test is one of several in the
+    schema executive_functions.
 
 wais3_matrices:
   title: WAIS-III matrix reasoning
   domain: Neuropsychology
   schemas: {bp: wais3_matrices, sz: wais3_matrices}
-  stack: "yes"
+  stack: with care
   use: [wais3_mat_total, wais3_mat_scaled, wais3_mat_z]
   note: >
     The 26 items, the total, the scaled score and the z-score, the same in both
-    cohorts. Visits tested with the third edition only (until 2015 or 2016); a
-    few SZ visits labelled WAIS-III were given the WAIS-IV.
+    cohorts. Visits tested with the third edition only (until 2015 or 2016).
+    But 33 SZ visits labelled WAIS-III were given the WAIS-IV (SZ O16): their
+    scaled scores come from the wrong norms until the export tells them
+    apart.
 
 wais3_memoire_chiffres:
   title: WAIS-III digit span
@@ -640,12 +650,13 @@ tobacco:
   title: Tobacco
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: tobacco, sz: tobacco, dr: tobacco, asp: tobacco}
-  stack: "yes"
+  stack: with care
   use: [tobacco_status, pack_years, smoking_start_age, smoking_stop_age]
   note: >
     The status (non-smoker, smoker, ex-smoker), the pack-years and the two ages
-    are in the four cohorts. ASP records tobacco from 2020, and its pack-years
-    are doubtful for patients this young. SZ asks five more questions.
+    are in the four cohorts, with the same three answers. ASP records tobacco
+    from 2020, and its pack-years are doubtful (ASP O10): compare the
+    pack-years of BP, SZ and DR only. SZ asks five more questions.
 
 alcohol_use:
   title: Alcohol, age at the first use
@@ -793,9 +804,14 @@ parametres_physiques:
   title: Height, weight, body mass index and waist
   domain: Physical examination and laboratory
   schemas: {bp: parametres_physiques, sz: parametres_physiques, dr: parametres_physiques, asp: parametres_physiques}
-  stack: "yes"
+  stack: with care
   use: [height, weight, bmi, waist]
-  note: Centimetres and kilograms in the four cohorts; the body mass index is recomputed. ASP has children.
+  note: >
+    Centimetres and kilograms in the four cohorts; the body mass index is
+    recomputed from them in each. ASP has children: their height, weight and
+    body mass index depend on age and sex, and the adult cut-offs of the body
+    mass index do not apply to them. Compare adults, or use age- and
+    sex-specific references for the children.
 
 pression_arterielle:
   title: Blood pressure and heart rate
@@ -828,7 +844,9 @@ biochimie:
   note: >
     Glucose, HbA1c, CRP and uric acid are in the four cohorts; the other
     analytes in BP, DR and ASP. Each analyte is delivered in one unit. ASP has
-    no unit column: the unit is read from the size of the value. A CRP below the
+    no unit column: the unit is read from the size of the value. An HbA1c
+    typed in mmol/mol (IFCC) is brought to % with the IFCC-NGSP master
+    equation in every cohort (about 30 results in BP, SZ and DR). A CRP below the
     detection limit of its laboratory keeps the limit as its value (flag
     censored_left), and the limits differ between laboratories.
 
@@ -1210,7 +1228,7 @@ sick_leave_v0:
   title: Sick leave at inclusion
   domain: Social situation and use of care
   schemas: {bp: sick_leave_v0, sz: sick_leave_v0, dr: sick_leave_v0, asp: work}
-  stack: "yes"
+  stack: with care
   use: [sick_leave_12m, sick_leave_weeks_12m, sick_leave_current]
   note: >
     A sick leave in the last twelve months and its length in weeks are in the
@@ -1248,8 +1266,11 @@ hospitalisations_v0:
   note: >
     The number of hospitalisations over the life, their total length in months
     and the age at the first one are in the three cohorts. In SZ a patient who
-    was never hospitalised has no number (not a zero) and the form stops at 20
-    times and 30 months; the DR form is on about half of its inclusions.
+    was never hospitalised has no number (not a zero). The forms stop at 20
+    times in BP and SZ, and at 20 months in BP and 30 in SZ (">20", ">30" are
+    right-censored, with a _cens column); DR has no cap (14 durations above
+    20 months). To compare, cut the number at 20 and the months at 20 in
+    every cohort. The DR form is on about half of its inclusions.
 
 hospitalisations_12m:
   title: Hospitalisations in the year before the visit

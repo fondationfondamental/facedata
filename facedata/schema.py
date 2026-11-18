@@ -77,6 +77,7 @@ def load_schema(path):
             variable["range"] = to_numbers(variable["range"])
         for unit in variable.get("units", {}).values():
             unit["factor"] = to_number(unit.get("factor"))
+            unit["offset"] = to_number(unit.get("offset", "0"))
             unit["expect"] = to_numbers(unit.get("expect", []))
         if isinstance(variable.get("doubt"), dict):  # a period of dates, and the values that are doubted
             doubt = dict(variable["doubt"])
@@ -247,8 +248,8 @@ def check_variable(name, variable, schema, columns):
         problems.append(f"{name}: range must be [low, high]")
     if "units" in variable:
         target = variable["units"].get(variable.get("unit"), {})
-        if target.get("factor") != 1.0:
-            problems.append(f"{name}: the target unit must be listed in units with factor 1")
+        if target.get("factor") != 1.0 or target.get("offset") != 0.0:
+            problems.append(f"{name}: the target unit must be listed in units with factor 1 and no offset")
         names = list(schema["variables"])
         earlier = names[:names.index(name)]          # the variables listed before this one
         for unit_name, unit in variable["units"].items():
@@ -260,6 +261,8 @@ def check_variable(name, variable, schema, columns):
                     problems.append(f"{name}: percent_of must name a number with a range, listed before {name}")
             elif not isinstance(unit["factor"], float):
                 problems.append(f"{name}: unit {unit_name} needs a factor or percent_of")
+            if not isinstance(unit["offset"], float) or ("percent_of" in unit and unit["offset"] != 0.0):
+                problems.append(f"{name}: unit {unit_name}: offset must be a number, and not on a percent_of")
     if "asked_if" in variable:
         names = list(schema["variables"])
         gate = schema["variables"].get(variable["asked_if"], {})

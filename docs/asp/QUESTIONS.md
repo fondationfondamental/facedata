@@ -109,8 +109,9 @@ visits): a night from 23:00 to 07:00 counts sixteen hours. The disturbance compo
 3 as soon as one disturbance is reported (158 visits differ from the published rule).
 The daytime dysfunction does not follow its two items (98 visits). The stored total has
 a median of 9 where the corrected one has 7.
-*Questions:* can the three formulas be corrected? **Does the PSQI of BP, SZ and DR
-compute its components the same way?** They are delivered as stored there.
+*Questions:* can the three formulas be corrected? The PSQI of BP, SZ and DR does
+not have the error: recomputed with the published rules, components 4, 5 and 7 equal
+the stored ones there (2 of 16,678 BP visits differ, none in SZ and DR; D22).
 *Today:* the three components and the total are recomputed. (D9, O13)
 
 **DEV-5. CTQ and MARS.** The stored CTQ physical abuse and emotional abuse leave out

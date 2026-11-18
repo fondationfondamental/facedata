@@ -135,6 +135,8 @@ def test_biology(qc):
     assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3086, 334, 1)
     assert crp["missing_code"] == 477                                   # a CRP of exactly 0 is not a measurement (BP D101)
     assert (glucose["n_valid"], glucose["unit_converted"], glucose["unit_inferred"], glucose["out_of_range"]) == (3136, 66, 17, 3)
+    # HbA1c typed in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D41).
+    assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "out_of_range"]) == (5, 1)
     assert (haemoglobin["n_valid"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (3658, 34, 4)
     assert (qc.loc["neutrophils", "unit_inferred"], qc.loc["eosinophils", "unit_doubt"]) == (23, 37)
     # The stored cholesterol ratio is not the ratio of the stored values on 4% of the visits.

@@ -372,6 +372,19 @@ def test_units_without_a_unit_column_are_read_from_the_size_of_the_value():
     assert flagged(flags, "unit_inferred") == [1]      # only the value that was really converted
 
 
+def test_a_unit_with_an_offset():
+    """HbA1c typed in mmol/mol in a field labelled %: % = 0.09148 x mmol/mol + 2.152 (IFCC-NGSP)."""
+    hba1c = {"unit": "%", "range": [3.0, 18.0],
+             "units": {"%": {"factor": 1.0, "offset": 0.0, "expect": [3.0, 18.0]},
+                       "mmol/mol": {"factor": 0.09148, "offset": 2.152, "expect": [18.0, 150.0]}}}
+    values = pd.Series([5.6, 38.0, 48.0, 400.0])
+    converted, flags = convert_units(values, texts(["%", "%", "mmol/mol", "%"]), "hba1c", hba1c)
+    assert list(converted) == pytest.approx([5.6, 5.628, 6.543, 400.0], abs=0.001)
+    assert flagged(flags, "unit_inferred") == [1]      # 38 % is impossible: read as mmol/mol
+    assert flagged(flags, "unit_converted") == [2]
+    # 400 fits no unit: kept on its label, the range step removes it
+
+
 def test_a_score_can_be_a_formula_of_custom_py_with_a_tolerance():
     schema = {"variables": {"weight": {}, "height": {}, "stored": {}},
               "scores": {"bmi": {"custom": "body_mass_index", "compare": "stored", "compare_offset": 0.0,

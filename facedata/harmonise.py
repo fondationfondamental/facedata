@@ -111,9 +111,11 @@ def convert_units(values, labels, name, variable, keys=None, wholes=None):
 
     fits = pd.DataFrame(index=values.index)            # one True/False column per unit
     factor = pd.DataFrame(index=values.index)          # and the factor of each unit, row by row
+    offset = pd.DataFrame(index=values.index)          # and its offset (0 but on a scale with another zero)
     for unit, spec in units.items():
         low, high = spec["expect"]
         fits[unit] = (values >= low) & (values < high)
+        offset[unit] = spec.get("offset", 0.0)
         if "percent_of" in spec:                       # a percentage of another result of the visit
             factor[unit] = wholes[spec["percent_of"]] / 100
         else:
@@ -135,8 +137,8 @@ def convert_units(values, labels, name, variable, keys=None, wholes=None):
 
     used = labelled.fillna(target)
     used = used.mask(other | guessed, only_fit)
-    as_labelled = values * pick(factor, labelled)
-    converted = (values * pick(factor, used)).where(~unclear)
+    as_labelled = values * pick(factor, labelled) + pick(offset, labelled)
+    converted = (values * pick(factor, used) + pick(offset, used)).where(~unclear)
     done = converted.notna()
     no_whole = present & ~unclear & ~done              # a percentage of a result that is missing
 
