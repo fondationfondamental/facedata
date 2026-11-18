@@ -47,7 +47,7 @@ is a separate task (PI-12).
 | 1. To read in the application | 1 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
 | 3. Choices of method | 3 | The project lead and the principal investigator |
-| 4. For the data managers, the centres and the developers | 19 | The data managers; still to send |
+| 4. For the data managers, the centres and the developers | 18 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
 
@@ -105,6 +105,7 @@ with the project lead.
 | DM-2, scoring keys | The scripts of the application are the scoring rules; the keys of the schemas are the same for the twenty scales compared. Scores are computed on a button and not on saving, which explains most stored scores that do not follow their items | D106 |
 | PI-10 and DEV-8 (2), CVLT z-scores (2026-11-17) | The z-scores are computed again with the regressions of the application's script, from the raw score, the age at the visit, the years of education and the sex. The script gives back 95% to 99% of the stored z-scores; of those of trials 1 to 5, 232 were computed with the coefficients of the age and of the sex exchanged (2013 and 2014; the patients of 70 and over until August 2024) and 105 with no sex. The stored z-scores are kept as a check. Two lines of the recency norm are corrected (the mean from 40 to 69, the sign of the age term from 70): see DM-16 | D108, D109 |
 | DEV-6, dated list of the changes of rule | What the code can tell (its history starts in 2024): 2024-07-25, 1000-01-01 written in every empty date; 2024-08-02, CVLT regression of the patients of 70 and over corrected; the TMT "<5" is a defect of today's script | D98 |
+| DM-11, does the export remove the patients who object? (2026-11-18) | No step of the export reads the answer "objects"; it removes the records with a tutelle or minor form (`formoppos` 3 or 4) or under sauvegarde de justice (PROTEC 3), row by row. The project lead decided not to use the opposition answer: nothing is asked of the export | D119 |
 
 ## 1. To read in the application
 
@@ -210,6 +211,11 @@ source, in the export or in the application. Still to send.
   - Today: the unit is inferred where only one fits (flag `unit_inferred`);
     the 174 prolactin results and the 31 clozapine levels are missing.
   - It changes: 205 results recovered, and the inferred units confirmed.
+  - Export side, read on 2026-11-18 (batch 1 of the requests, [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the
+    unit chosen on the form is not exported for LDL (246 results chosen as
+    g/L are labelled mmol/L), and a default label is written also where there
+    is no result or no choice. Asked: R26 to R31. The question of the units of
+    each laboratory stays for the centres.
 
 - [ ] **DM-10. Eight fields of the application to add to the export.**
   (D83, D84; new on 2026-11-17)
@@ -232,21 +238,13 @@ source, in the export or in the application. Still to send.
     nurse form (`rad_femmenceinte`, table `inf_dossier_infirmier`), next to
     the weight and the waist. Without it the weight, the body mass index and
     the waist of a pregnant woman cannot be told apart.
-
-- [ ] **DM-11. Which answer does the export use to remove the patients who
-  object?** (D94, D68; new on 2026-11-17)
-  - What we see: you told us that the export removes the patients with
-    `formoppos` 3 or 4, "the oppositions". On the form of the application,
-    `formoppos` is the kind of non-opposition form that was used: 1 adult
-    patient, 2 patient under curatelle, 3 under tutelle, 4 minor. The
-    opposition is another question of the same form: "does not object to the
-    collection and use of the information" or "objects".
-  - Questions: does the export read that second question? Are the patients
-    who answered "objects" removed from the extraction? Are the patients
-    under tutelle and the minors removed on purpose?
-  - Today: every patient of the extraction is loaded.
-  - It changes: whether some patients must be removed from every table
-    already exported.
+  - Asked of the export on 2026-11-18 (batch 1, [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the seven shortcuts
+    (R77), the change questions of the medical history (R79), of the
+    comorbidities (R65) and of the family history (R80), the pregnancy box
+    (R66); the same fields in SZ (R78). Found on the way: "is there a
+    change?" reads "changed" in two BP forms and "unchanged" in the
+    comorbidity form and in eSchizo (A33): the export exports the answer as
+    typed, and the schemas will say what it means.
 
 - [ ] **DM-12. MAThyS: the old form stored eight scales the other way
   round.** (D91; new on 2026-11-17)
@@ -271,6 +269,11 @@ source, in the export or in the application. Still to send.
     2022-12-31 (1,435 visits).
   - It changes: with the form of each record, the 1,435 visits come back
     and the two centres can be corrected.
+  - Export side, 2026-11-18: the score step keeps writing its own MAThyS
+    scores (decided by the project lead, D119), so request (1) becomes: say
+    whether the form of each record can be told (M47 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)), and score
+    each record with the rule of its form (R85); the slider table is read by
+    no model (R52, M21). Our package computes the MAThyS from the items.
 
 ### Priority B
 
@@ -286,6 +289,12 @@ source, in the export or in the application. Still to send.
     3); the students are in code 6, "other" (1,150 patients, 39% of them
     under 25). The same kind of defect as the apostrophe one (D63)?
   - Today: `5 − value`; code 6 is delivered as `student_or_other`.
+  - Read on 2026-11-18: the BIS keys of the score step use names that its
+    reader ignores, so the default scale 1 to 5 reverses as `6 − value`; the
+    12-item scores are written on every visit. The work status: the export
+    tests "Étudiant" with an accent, the form stores "Etudiant", and every
+    other answer, an empty one included, becomes 6. Asked: R83 and R84 (BIS),
+    R38 (work status), in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md).
 
 - [ ] **FU-8. `empjob`: export the answer of the form as it is.** (O43,
   D74, D94, D99)
@@ -311,17 +320,24 @@ source, in the export or in the application. Still to send.
   - The same list is asked for the last job of a patient without a job: can
     it be exported too?
   - Today: `empjob` is not loaded.
+  - Asked of the export on 2026-11-18 (batch 1, [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the label of the
+    form (R35), the class of the last job as `empjob_last` (R36), the
+    follow-up work status (R44); the same in SZ (R45).
 
 - [ ] **DM-14. Three answers that the export does not carry.** (D95, D96;
   new on 2026-11-17)
   - The strength of the medications: 2 of the 8,654 medications started from
     2018 have a strength (`med_psy_cmdose`), against 5,374 of the 7,922
-    started until 2013. The form still records it, and the units a day are
-    exported, so only the strength is missing to compute a daily dose.
+    started until 2013. Read on 2026-11-18: since the public drug list the
+    form stores no strength (A38 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)); the strength is in the product
+    name. Asked: the export reads it there, with a source column (R54).
   - "More than 5" daughters, sons, sisters or brothers: the form offers it;
     the extraction stops at 5. Is it written 5, or lost?
   - Still wished: one row per medication, in place of lists in one cell
     repeated on every row of the patient.
+  - "More than 5" relatives: the export loses the answer (the count is
+    empty). Asked: write it 6 (R34); the package will read 6 as "more than
+    5". One row per medication: not asked; the lists stay.
   - Today: no daily dose from 2018; a count of relatives of 5 is read as 5.
 
 - [ ] **DEV-11. `dsm_criteria`: how does the export decide between DSM-IV
@@ -332,6 +348,13 @@ source, in the export or in the application. Still to send.
     is then unknown.
   - Today: the version is read once per patient, or taken from the year of
     inclusion; visits without one are not delivered in the mood sections.
+  - Read on 2026-11-18: the export writes DSM5 when the DSM-5 inclusion
+    record holds one of five lifetime answers, else DSM4 when the DSM-IV
+    record does, else nothing; follow-ups never get one. Of the 849 empty
+    inclusions, 206 have no content (202 in centre C, whose DSM-5 table is
+    missing from the export's staging union), 552 hold only default dates
+    and 91 other answers. Asked: R20, R68 to R70 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md). The package side
+    is reviewed with the tab EVALUATION MEDICALE.
 
 - [ ] **DM-5. Values to query with the centres.** Each is already
   neutralised in the package (missing with a flag, or repaired with a flag).
@@ -339,7 +362,7 @@ source, in the export or in the application. Still to send.
 
   | Finding | Count |
   |---|---|
-  | Heights with a lost decimal point (1650 for 165.0); half from one centre, from 2018 | 182 |
+  | Heights with a lost decimal point (1650 for 165.0): the export removes the point, the centres typed it (R23 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)) | 182 |
   | Blood pressure typed in cmHg, in six centres | 34 to 40 values per column |
   | ECG intervals typed in milliseconds, more and more often | QT 387 (274 since 2023), RR 106 |
   | RR values that look like heart rates | 25 |
@@ -368,7 +391,7 @@ source, in the export or in the application. Still to send.
     | Centre (inclusions from 2022) | At inclusion | At follow-up |
     |---|---|---|
     | A (210) | Medical evaluation 79% then 20%; neuropsychology 59% then 27%; social 62% then 16%; care and hospitalisations 80% then 26%; treatments 50% then 10% | Medical evaluation 73% then 27%; care 73% then 30%; suicide 77% then 32%; treatments 94% then 52% |
-    | C (178) | Medical evaluation 79% then 0%; biology 53% then 24%; neuropsychology 61% then 32% | Biology 64% then 30% |
+    | C (178) | Medical evaluation 79% then 0% (the DSM-5 table of this centre is missing from the export, R20); biology 53% then 24%; neuropsychology 61% then 32% | Biology 64% then 30% |
     | H (128) | Biology 85% then 16%, and none of the 71 inclusions from 2024; social 40% then 2%; neuropsychology 95% then 54% | Biology 92% then 6% |
     | B (197) | Neuropsychology 91% then 46% | Medical history 54% then 10% |
 
@@ -431,6 +454,13 @@ source, in the export or in the application. Still to send.
   - Between the two runs of 13 November, one questionnaire of one visit of
     2024 changed (six cells of the PRISE-M). An edit in the EMR in between,
     or two records of the same form?
+  - Read on 2026-11-18: a transfer between centres creates a second record
+    with the same patient code, and the export keeps one record at random
+    (A1). Asked: keep the active record and deliver the number of records
+    (R1, decided by the project lead); count the codes with two records
+    (M1). The PRISE-M cells changed because a visit holds two rows of the
+    form and the export picks one at random (R18: the lowest form id). The
+    patient who left: M8.
   - Today: loaded as extracted.
 
 - [ ] **DM-15. CVLT semantic clustering: another quantity typed in 2012
@@ -502,6 +532,8 @@ source, in the export or in the application. Still to send.
   | The day of birth set to 15 | All patients | 6,476 |
   | The unit chosen on the form is not exported | LDL cholesterol chosen as g/L, labelled mmol/L | 246 results |
 
+  Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): R19 (the empty-date placeholders), R22 (2011-11-11), R71 and R72 (the Y/N and the copies of the mood forms), R81 and R82 (allergic diseases, relatives' substances), R24 and R30 (zeros), R26 and R28 (units), R56 and R63 (copies), R8 (day 15, documented). The 1000-01-01 and 2011-11-11 dates are written by the application (A19, A20).
+
 - [ ] **DEV-14. Stored scores that do not follow their items, and names.**
   The formulas of the application are read (D106): it computes a score on a
   button and not on saving, so a stored score can be older than its items.
@@ -531,11 +563,15 @@ source, in the export or in the application. Still to send.
   | Read in the code: the ALS-18 form prints "19" for its last question; a WURS form of 28 questions exists beside the one of 25 (D97) | |
   | Two centres still enter the MAThyS in the direction of the old form (DM-12) | About 175 visits |
 
+  Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the names (R57, R62, R97, R98), the WAIS-IV digit span and vocabulary columns (R59 to R61), the WAIS-III vocabulary total (R60), the PSQI minutes (R49), one row per visit and form (R18, R21, R100). The damaged characters come from the transfer of a patient between centres (A2). The `_n1` MADRS and YMRS are, by the forms, the mood rated at the neuropsychological testing when the last rating is more than a week old: kept in the export (R58, M37); D27 is to be read again with the tab NEUROPSYCHOLOGIE.
+
 - [ ] **DM-8. Columns that the dictionary lists and the extraction does not
   hold.** `hooccur_hospitalisation_ly`, `nom_centre_expert`, `armcd`, `ageu`.
   `nom_centre` is in the extraction and empty on every row. The form
   does ask the number of hospitalisations of the past 12 months at inclusion:
   was the column dropped on purpose? The three other names are the export's.
+  - Read on 2026-11-18: no model ever produced `hooccur_hospitalisation_ly`;
+    `nom_centre` is empty by construction. Asked: R55 and R95 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md).
 
 ## 5. Norms: what the data hold and what could be checked
 
