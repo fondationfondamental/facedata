@@ -341,7 +341,14 @@ source, in the export or in the application. Still to send.
   - "More than 5" relatives: the export loses the answer (the count is
     empty). Asked: write it 6 (R34); the package will read 6 as "more than
     5". One row per medication: not asked; the lists stay.
-  - Today: no daily dose from 2018; a count of relatives of 5 is read as 5.
+  - Package side, 2026-11-18 (D124): until R54 ships, the package reads the
+    strength from the name with the rule of R54 (one amount of a mass, not
+    per volume) and delivers the daily dose in mg with a column that says
+    where the strength comes from. The export reads '1/2' units as 1, which
+    doubles 2 stored doses (R75); the package's dose is right there. The
+    item number changes between extractions until R76 ships.
+  - Today: the daily dose is the package's (strength stored, else read from
+    the name); a count of relatives of 5 is read as 5.
 
 - [ ] **DM-5. Values to query with the centres.** Each is already
   neutralised in the package (missing with a flag, or repaired with a flag).
@@ -364,7 +371,6 @@ source, in the export or in the application. Still to send.
   | Age entered on the neuropsychology form differs from the dates by more than a year | 199 visits |
   | The inclusion visit is dated before the screening visit | 26 patients |
   | Date the information was collected is impossible (before 2008, or a year below 100) | 26 patients |
-  | Method of the attempt empty although the lethality is filled | 17 visits |
   | The gynaecological section is filled for men | 200 |
   | The end-of-follow-up reason exists in two sets of columns with different answers | 2 of 5 patients who have both |
 
@@ -388,7 +394,18 @@ source, in the export or in the application. Still to send.
   - Suicide questions at follow-up in 2022-2023: five centres of eight. Each
     centre runs its own copy of the application: which copies showed the
     questions about the whole life at follow-up, and from when to when?
-    With the answer, the removal of D88 could be narrowed (O29).
+    With the answer, the removal of D88 could be narrowed (O29). The form
+    already shows in November 2021, where D88 now starts (D125). Centre A's
+    copy wrote 2011-11-11 in the first-attempt date of every follow-up form
+    it saved until May 2022, and its "yes" to "attempted" rose from June
+    2022; D88 is kept for every centre (D125).
+  - C-SSRS at inclusion (D125): centres G and H, and partly B and D, answer
+    "yes" far more often than the other centres (wish to be dead 65% to 71%
+    of their inclusions, 31% elsewhere) and rate a higher intensity (median
+    sum 17, against 12 to 13), while their patients report a wish to die in
+    the past week as often as elsewhere (12% against 15%). The form asks
+    about the past week: do their raters ask about the whole life, as the
+    paper version does?
   - The social tab is held by 29% and 39% of the inclusions of centre C in
     2016-18 and 2019-21 (71% to 89% before and after) and by 23% of those
     of centre F in 2019-21 (D116). Centre I left the perinatal section of
@@ -434,7 +451,8 @@ source, in the export or in the application. Still to send.
   | SUBSTANCES ET COMORBIDITE | Four anxiety columns are missing (`ceoccurtrouble_panique` and three others). The label of `abudep_autre` is that of a duration; it is a yes/no |
   | EVALUATION MEDICALE | `age_ehman`, `age_epman`, `rad_agethym` have no label: age at the first hypomanic episode, at the first manic episode, at the first mood stabiliser (D87). `agedebutpremier_episode` is the age at the first depressive episode on the DSM-5 form (D89). `mhoccur_ehman_ly` carries the label of another variable. `cedecodtrouble_humeur_actuel` is listed twice |
   | SOIN SUIVI HOSP ARRET TRAVAIL | Three follow-up columns of the sick leave have no label |
-  | TRAITEMENTS | The first question of the lifetime non-drug form carries the label of the follow-up form |
+  | TRAITEMENTS | The first question of the lifetime non-drug form carries the wording of the follow-up form ("depuis la dernière visite") in the application itself, and the dictionary copies it (D124). The six `CMOCCUR_*` columns and the boxes of the lifetime non-drug form hold "Oui; Non; Ne sais pas", not Y/N/U, and the 27 `_lt` rows are the patient's lifetime form, not follow-up visits. `CMDOSE` is the strength as text, empty since 2015; `CMDOSTOT` is computed by the export; an end date 0000-00-15 or 0000-00-00 is the box "Traitement en cours". The follow-up form also asks the number of CBT sessions and the start of the psychoeducation groups, which are not exported |
+  | SUICIDE | At the follow-up visits ISF01 to ISF09A hold the follow-up form, asked "since the last visit", with its own answers to "when"; the labels give the inclusion wording only. ISF08 and ISF09 hold Oui / Non / Ne sais pas, not Y / N. LTSV09 is Oui / Non. The export's descriptions of CSS0108 to CSS0112 are one row off, and code 3 of CSS0108 is "par semaine" (D125) |
   | PERINATALITE | The sheet has one more column than the others, so every column is one place to the right |
   | SOCIAL | `saltyp`: the form has seven answers and 7 is "other"; the dictionary says 7 = no income and 8 = other. `stprof`: see DM-13 (D94) |
   | ANTECEDENTS | `dyslipid_mhdecod_eq` has `mere_structure` as its coding. The answer for the thyroid disorder is in `dysthyro_mhoccur_tt` |
@@ -528,7 +546,7 @@ source, in the export or in the application. Still to send.
   | What is written | Where | Count |
   |---|---|---|
   | `1000-01-01` in a date that was not typed | Medical history (every date from 2025), relatives' birth and death dates, mood forms, death, change of diagnosis, referral. Written by the application since its version of 2024-07-25, in every empty date of a form that is saved (D98) | 21,903 + 22,172 + 1,136 + 488 |
-  | `2011-11-11` as the date of the first suicide attempt | Follow-up visits from 2012 to 2023; written by the follow-up form, which has no such field today (D85) | 1,142 cells |
+  | `2011-11-11` as the date of the first suicide attempt | Follow-up visits of one centre from 2011 to 2023 (every form it saved until May 2022); written by its copy of the follow-up form, which has no such field today (D85, D125) | 1,142 cells |
   | "Y" or "N" on every row, whatever was answered | `mhoccur_edm_lt`, `mhoccur_ehman_lt`, `mhoccur_epman_lt`, `mhoccur_epmixt_lt` | All rows |
   | 0 or 1 on every row | Five allergic diseases; `<relative>_alcool`, `_cannabis`, `_autre_substance` (the last one is 1 on 2,709 rows where the list does not hold it) | All rows |
   | A copy of another column | `mhoccur_*_psy_spv` (three), `protec`, `visit_neuropsychologie`, `cpt_version` (WAIS labels) | All rows |

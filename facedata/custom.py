@@ -17,6 +17,8 @@ A schema refers to a function of this file by its name:
 Use them rarely (docs/SCHEMA_SPEC.md, section 10).
 """
 
+import re
+
 import numpy as np
 import pandas as pd
 
@@ -317,3 +319,49 @@ def medication_name_plain(names):
     plain = names.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
     return medication_name(plain)
 
+
+
+# An amount of a mass, a percentage or units, alone or per volume: the rule of R54 in docs/EXPORT_REQUESTS.md.
+STRENGTH = re.compile(r"(?<![0-9] )(?<![0-9.,])([0-9]+(?:[.,][0-9]+)?)\s*(mg|g|µg|mcg|microgrammes?|ui|%)"
+                      r"(\s*/\s*(?:[0-9]+(?:[.,][0-9]+)?\s*)?(?:ml|g|dose))?(?![^\W\d_])", re.IGNORECASE)
+MILLIGRAMS = {"mg": 1.0, "g": 1000.0, "µg": 0.001, "mcg": 0.001, "microgramme": 0.001, "microgrammes": 0.001}
+
+
+def strength_in_name(names):
+    """The strength written in the name of a product, in mg (DM-14).
+
+    Read only where the name holds exactly one amount, of a mass and not per
+    volume: "DEPAKOTE 500 mg, comprimé" gives 500. Several amounts, an amount
+    per ml, a percentage or units give nothing.
+    """
+    def read(name):
+        found = STRENGTH.findall(name)
+        if len(found) != 1 or found[0][2]:
+            return np.nan
+        number, unit, per_volume = found[0]
+        return float(number.replace(",", ".")) * MILLIGRAMS.get(unit.lower(), np.nan)
+    return names.map(read).astype(float)
+
+
+def strength_used(values):
+    """The strength in mg of each medication: the one stored where the form stored one, else the one of the name."""
+    stored = values["strength"].fillna("")
+    number = stored.str.extract(r"^([0-9]+(?:[.,][0-9]+)?)", expand=False).str.replace(",", ".").astype(float)
+    in_mg = number * values["dose_unit"].fillna("").str.lower().map(MILLIGRAMS)
+    return in_mg.where(stored != "", strength_in_name(values["medication"].fillna("")))
+
+
+def daily_dose(values, keys=None):
+    """The total daily dose in mg: the strength times the number of units a day (D124)."""
+    return strength_used(values) * values["units_per_day"]
+
+
+def strength_from_name(values, keys=None):
+    """1 where the delivered daily dose rests on the strength read from the name, 0 on the stored one."""
+    from_name = (values["strength"].fillna("") == "").astype(float)
+    return from_name.where(values["daily_dose"].notna())
+
+
+def end_before_start(values):
+    """A treatment whose end date is before its start date."""
+    return values["end_date"] < values["start_date"]

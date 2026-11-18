@@ -5,9 +5,11 @@ section: Histoire des conduites suicidaires (VIE ENTIERE ou depuis la DERNIERE V
 status: draft
 notes: >
   Date of the first attempt, number of attempts, and whether some were
-  violent (firearm, hanging, jump...) or serious (intensive care), over the
-  whole life, as asked at the inclusion visit. Yes/no answers are delivered
-  as 1 and 0; "Ne sais pas" is a missing code.
+  violent (firearm, hanging, jump...) or serious without being violent
+  (intensive care after drugs or cutting), over the whole life, as asked at
+  the inclusion visit. Violent and serious are two separate groups of the
+  form. Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing
+  code (9 violent and 25 serious answers; 1 number of attempts holds NSP).
 
   Two forms in the same columns, as in BP (BP decision D86). The inclusion
   form asks "how many times have you attempted suicide" and the date of the
@@ -16,13 +18,24 @@ notes: >
   of the application in November 2026). The follow-up visits are another
   instrument, suicide_attempts_since_visit.
 
-  Date of the first attempt: 114 cells hold the placeholder 1000-01-01. 90
-  dates are a first of January: only the year was known. 8 dates are after
-  the visit.
+  Counts that are 0 by logic, as in BP (BP decision D125). The SZ inclusion
+  form shows the history of attempts only after a yes to "have you ever
+  attempted suicide" (isf05, delivered as isf05_lifetime). The number of
+  attempts is 0 after a no (1,528 inclusions get their 0 this way), the
+  violent and serious attempts are 0 after 0 attempts, and their numbers 0
+  after a no. n_attempts is on 2,169 inclusions. The forms of 2012 and 2013
+  typed 0 after a no themselves (22 inclusions).
 
-  Number of attempts. 67 patients who say they attempted suicide have no
-  number, 5 have the number 0, and one "no" has a number above 0. One
-  number of violent attempts is above the number of attempts.
+  Date of the first attempt, on 562 inclusions. A date on or after the
+  inclusion visit is delivered as missing (before_visit, BP D125): 61 cells
+  are out_of_range, 53 on the day of the visit (all from 2011 to 2015) and
+  8 after it. 114 cells hold the placeholder 1000-01-01. 90 dates are a
+  first of January: only the year was known.
+
+  Number of attempts. 62 patients who say they attempted suicide have no
+  number, 2 have the number 0, and one "no" has a number above 0. One
+  number cannot be read (unparsed). One number of violent attempts is
+  above the number of attempts.
 
   The BP schema, unchanged.
 
@@ -56,13 +69,15 @@ version:
 defaults: {type: item, range: [0, 1], versions: [inclusion]}
 
 variables:
+  attempted_ever: {column: isf05, codes: {Oui: 1, Non: 0}, keep: false, label: "Has ever attempted suicide (delivered as isf05_lifetime)"}
   first_attempt_date:
     column: isf05_qsdtc
     type: date
     label: Date of the first suicide attempt
     range: [1920-01-01, 2026-12-31]
-  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
-  violent_attempts: {column: isf08, label: Has made violent suicide attempts, codes: {Oui: 1, Non: 0}}
-  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}
-  serious_attempts: {column: isf09, label: Has made serious suicide attempts (intensive care), codes: {Oui: 1, Non: 0}}
-  n_serious_attempts: {column: isf09a, label: Number of serious suicide attempts, range: [0, 20]}
+    before_visit: true
+  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50], asked_if: attempted_ever}
+  violent_attempts: {column: isf08, label: Has made violent suicide attempts, codes: {Oui: 1, Non: 0}, asked_if: n_attempts}
+  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20], asked_if: violent_attempts}
+  serious_attempts: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care)", codes: {Oui: 1, Non: 0}, asked_if: n_attempts}
+  n_serious_attempts: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care)", range: [0, 20], asked_if: serious_attempts}

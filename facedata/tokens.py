@@ -65,6 +65,7 @@ SEVERITY = {
     "unparsed": "danger",
     "unknown_code": "danger",
     "out_of_range": "danger",
+    "not_shown": "danger",
     "unit_unknown": "danger",
     "version_unknown": "danger",
     "norm_missing": "danger",

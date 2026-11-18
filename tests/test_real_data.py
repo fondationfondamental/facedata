@@ -111,9 +111,9 @@ def test_nothing_disappears_silently():
 def test_patient_tab(result, qc):
     patients = result.patients
     # One row per patient: the key, 23 columns of the PATIENT tab, 11 of the perinatal schema,
-    # 52 of the two lifetime treatment forms (45 variables and 7 censoring columns),
-    # 14 counts of the family and 12 columns that sum up the relatives.
-    assert patients.shape == (6498, 113)
+    # 53 of the two lifetime treatment forms (46 variables, the IPSRT format as two boxes, and 7 censoring
+    # columns), 14 counts of the family and 12 columns that sum up the relatives.
+    assert patients.shape == (6498, 114)
     assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 22
     assert patients["sex"].value_counts().to_dict() == {"female": 4108, "male": 2389}
     assert patients["diagnosis"].value_counts().to_dict() == {"bp2": 3111, "bp1": 2718, "bp_nos": 669}
@@ -385,11 +385,19 @@ def test_treatments(result, qc):
     assert (qc.loc["molecule", "n_valid"], qc.loc["molecule", "unknown_code"]) == (22585, 173)
     groups = items["treatment_group"].value_counts()
     assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5120, 4807, 10)
-    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22630, 10903, 3117)
-    assert (qc.loc["units_per_day", "missing_code"], qc.loc["daily_dose", "n_valid"]) == (893, 6418)
+    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22608, 10890, 11868)
+    # "Traitement en cours" is written 0000-00-15 or 0000-00-00: running. An end before the start is flagged (D124).
+    assert (result.flags.loc[result.flags["variable"] == "end_date", "detail"] == "running").sum() == 11855
+    assert qc.loc["end_date", "check_failed"] == 148
+    # The daily dose in mg: the stored strength, else the one in the name (DM-14, D124).
+    assert (qc.loc["units_per_day", "missing_code"], qc.loc["daily_dose", "n_valid"]) == (893, 19349)
+    assert ((items["strength_from_name"] == 1).sum(), qc.loc["daily_dose", "score_mismatch"], qc.loc["daily_dose", "out_of_range"]) == (12948, 2, 3)
+    from_2018 = items["start_date"].dt.year >= 2018
+    assert (items.loc[from_2018, "daily_dose"].notna().sum(), from_2018.sum()) == (7664, 8654)
     # On the day of the visit: computed for the patients who have a list.
     assert qc.loc["on_lithium", "instrument"] == "medications_at_visit"
-    assert (data["on_lithium"].notna().sum(), round(data["on_lithium"].mean(), 2)) == (18131, 0.36)
+    assert (data["on_lithium"].notna().sum(), round(data["on_lithium"].mean(), 2)) == (18127, 0.36)
+    assert (data["on_valproate"] == 1).sum() == 3625                  # valproate or valpromide (D124)
     first = data[data["visit"] == "V0"]
     assert round(first["on_lithium"].mean(), 2) == 0.30 and round(first["on_anticonvulsant"].mean(), 2) == 0.44
     assert data.loc[~data["usubjid"].isin(items["usubjid"]), "on_lithium"].isna().all()
@@ -409,6 +417,9 @@ def test_treatment_forms(result, qc):
     # The follow-up form: boxes are 0 after a "no" to the first question.
     assert (qc.loc["non_drug_treatment_fu", "n_valid"], round(data["non_drug_treatment_fu"].mean(), 2)) == (9304, 0.34)
     assert (data.loc[data["non_drug_treatment_fu"] == 0, "cbt_fu"] == 0).all()
+    # After a yes, an empty box beside a ticked one is a no (box_list, D124).
+    assert (qc.loc["ect_fu", "n_valid"], qc.loc["cbt_fu", "n_valid"], qc.loc["ever_ect", "n_valid"]) == (9253, 9218, 1244)
+    assert (qc.loc["ipsrt_individual_fu", "n_valid"], qc.loc["ipsrt_individual", "n_valid"]) == (9242, 1238)
     # 1000-01-01 is written in every date that was not typed.
     assert forms.loc[forms["instrument"] != "drug_classes_lifetime", "date_placeholder"].sum() == 5713
 
@@ -459,37 +470,43 @@ def test_perinatal(result, qc):
 def test_suicide(result, qc):
     data = result.data
     # The same five columns hold lifetime answers at inclusion and answers since the last visit at follow-up.
-    assert (qc.loc["isf05_lifetime", "n_valid"], qc.loc["isf05_since_visit", "n_valid"]) == (5919, 8348)
+    assert (qc.loc["isf05_lifetime", "n_valid"], qc.loc["isf05_since_visit", "n_valid"]) == (5919, 8221)
     assert round(data["isf05_lifetime"].mean(), 2) == 0.38 and round(data["isf05_since_visit"].mean(), 3) == 0.024
     assert data["isf05_lifetime"].notna().sum() + data["isf05_since_visit"].notna().sum() == (data["isf05_lifetime"].notna() | data["isf05_since_visit"].notna()).sum()
     assert qc.loc[qc["instrument"].isin(["isf_lifetime", "isf_since_visit"]), "unknown_code"].sum() == 0
-    # Follow-up visits of 2022 and 2023: the form also asked about the whole life. No answer is delivered (D88).
+    # Follow-up visits of November 2021 to 2023: the form also asked about the whole life. No answer is delivered (D88, D125).
     removed = qc.loc[qc["instrument"] == "isf_since_visit", "period_removed"]
-    assert (qc.loc["isf05_since_visit", "period_removed"], qc.loc["isf05_since_visit_when", "period_removed"]) == (866, 88)
-    assert (qc.loc["isf01_since_visit", "period_removed"], removed.sum()) == (874, 5602)
+    assert (qc.loc["isf05_since_visit", "period_removed"], qc.loc["isf05_since_visit_when", "period_removed"]) == (993, 95)
+    assert (qc.loc["isf01_since_visit", "period_removed"], removed.sum()) == (1001, 6360)
     assert qc.loc[qc["instrument"] == "isf_lifetime", "period_removed"].sum() == 0
-    in_the_period = data["visit_date"].dt.year.isin([2022, 2023])
+    in_the_period = data["visit_date"].between("2021-11-01", "2023-12-31")
     assert data.loc[in_the_period, ["isf01_since_visit", "isf05_since_visit", "n_attempts_since_visit"]].notna().sum().sum() == 0
     flagged = result.flags[result.flags["flag"] == "period_removed"]
     assert set(flagged["severity"]) == {"danger"}
     assert (flagged["raw"].astype(str) != "").all() and (flagged["value"].astype(str) == "").all()   # the log keeps what was written
     # The history of attempts: the whole life at inclusion, since the last visit at follow-up (D86).
-    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"]) == (2096, 162)
-    assert (qc.loc["n_attempts", "n_valid"], qc.loc["n_attempts", "out_of_range"]) == (2499, 1)
-    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (217, 172)
+    # A first attempt dated on the inclusion day or later is impossible (before_visit, D125).
+    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"]) == (1790, 162)
+    assert qc.loc["first_attempt_date", "out_of_range"] == 307
+    # The counts are 0 after a "no" (asked_if): never attempted, no attempt since the last visit (D125).
+    assert (qc.loc["n_attempts", "n_valid"], qc.loc["n_attempts", "out_of_range"]) == (5785, 1)
+    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (8194, 162)
     assert not (data["n_attempts"].notna() & data["n_attempts_since_visit"].notna()).any()
     attempts_removed = qc.loc[qc["instrument"] == "suicide_attempts_since_visit", "period_removed"]
-    assert (qc.loc["n_attempts_since_visit", "period_removed"], attempts_removed.sum()) == (114, 331)
+    assert (qc.loc["n_attempts_since_visit", "period_removed"], attempts_removed.sum()) == (126, 376)
     # A date of the first attempt typed at a follow-up visit is read and not delivered; 2011-11-11 is its placeholder.
     typed_at_follow_up = result.flags[result.flags["variable"] == "first_attempt_date_follow_up"]
     assert "first_attempt_date_follow_up" not in data.columns
     assert (typed_at_follow_up["flag"] == "missing_code").sum() == 1142
-    # Columbia and C-SSRS: every answer of the drop-downs has a code.
-    tab = qc[qc["instrument"].isin(["most_violent_attempt", "most_serious_attempt", "cssrs", "suicide_attempts",
-                                    "suicide_attempts_since_visit"])]
+    # Columbia and C-SSRS: every answer of the drop-downs has a code; one schema per form (D125).
+    tab = qc[qc["tab"] == "SUICIDE"]
     assert tab["unknown_code"].sum() == 0
-    assert (qc.loc["violent_method", "n_valid"], qc.loc["serious_method", "n_valid"]) == (336, 457)
-    assert (qc.loc["css0101", "n_valid"], qc.loc["cssrs_intensity", "n_valid"]) == (3606, 1022)
+    assert (qc.loc["violent_method", "n_valid"], qc.loc["serious_method", "n_valid"]) == (319, 432)
+    assert (qc.loc["violent_method_since_visit", "n_valid"], qc.loc["serious_method_since_visit", "n_valid"]) == (16, 24)
+    # The forms of 2009-2010 saved the first option of the lists they hid: not answers (shown_if).
+    assert tab["not_shown"].sum() == 241
+    assert (qc.loc["cssrs01_inclusion", "n_valid"], qc.loc["cssrs01_since_visit", "n_valid"]) == (1251, 2355)
+    assert (qc.loc["cssrs_intensity_inclusion", "n_valid"], qc.loc["cssrs_intensity_since_visit", "n_valid"]) == (434, 588)
 
 
 def test_family_history(result, qc):

@@ -70,7 +70,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
 | `range` | number, item, date | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD` |
 | `codes` | category, item, number, band | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). For a band: `{raw: band}`, a label that the export cut short is written out in full before parsing (`{"25-5": "25-50"}`, section 6). Matching ignores case and surrounding spaces |
-| `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded` |
+| `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded`, `running` (an end date not reached: the treatment was running when it was typed), `as_needed` (a dose taken as needed). A schema may name the codes of its scale (`code_994` of the ADI-R) |
 | `unit` | number | Target unit of the output |
 | `unit_column` | number | Raw column holding the unit label. A list when two columns hold it: the first one that is filled is read |
 | `units` | number | `{unit: {factor, expect}}` (section 5) |
@@ -88,7 +88,10 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
 | `asked_if` | item, number | Name of a yes/no variable or of a count (an item or a number whose range starts at 0) listed before. The question is asked only after a yes to it (or a count above 0), or its answer is 0 when that count is 0: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `box_list` | item | Name of a list of yes/no boxes shown together. Once every box is read, an empty box beside a box of the same list that is 1 is 0: the rater ticked what applied (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
+| `shown_if` | all | `{variable: [answers]}`: the form shows the question only when that variable, listed before, holds one of the answers. Elsewhere a filled cell is a value the form wrote by itself: it becomes missing and gets `not_shown` (section 4) |
+| `before_visit` | date | `true`: the date is of an event before the visit (a first attempt asked at inclusion). A date on the day of the visit or later becomes missing and gets `out_of_range` |
 | `day` | date | The day of the month that the export writes in place of the real one (15 for a date of birth). A cell that holds another day is delivered with this day and flagged `date_partial` |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ..., remove: true}`: the cells of the visits dated in the period keep their value and get `period_doubt`; with `remove: true` they are delivered as missing and get `period_removed` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
@@ -166,11 +169,47 @@ question and the rater left it empty: with no manic episode, no manic
 episode had psychotic features; with no hospitalisation, the total time in
 hospital is 0 (decision D122). The notes of the schema say so.
 
+**Boxes of one list.** A form may show a list of yes/no boxes after a yes
+(the kinds of non-drug treatment received), and some raters tick only the
+boxes that apply and leave the others empty. An empty box beside a box of
+the same list that is 1 is then a no:
+
+```yaml
+ect_fu: {column: proccur_sismo_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds}
+tms_fu: {column: proccur_tms_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds}
+```
+
+- The variables that share a `box_list` name form the list. The rule is
+  applied once all of them are read, and then `asked_if` again, so that the
+  number of sessions of a box read as no is 0 too.
+- A visit where every box is empty keeps them missing: nothing says what
+  was received. A box that holds a missing code stays missing.
+- As with `asked_if`, these zeros get no flag and count as filled cells.
+  The notes of the schema say how many visits are concerned (decision D124).
+
 Never use it for a detail of the thing asked about, such as an age at onset
 or a severity: after a "no" it has no value and stays missing. A total (the
 months spent in hospital, the weeks of sick leave) is not a detail: it is 0
 when there was nothing. The schema check cannot tell a count from an age;
 that is for the author to see.
+
+### A question shown for some answers only
+
+`asked_if` reads an empty cell as 0. The opposite case is a cell that is
+filled although the form did not show the question: the lethality of a
+firearm attempt when the method was a drowning. The forms of 2009-2010 saved
+the first option of every list, the hidden ones too:
+
+```yaml
+violent_method: {column: ltsv01, type: category, codes: {Arme à feu: firearm, Noyade: drowning}}
+firearm_lethality: {column: ltsv02, type: category, shown_if: {violent_method: [firearm]}, codes: {...}}
+```
+
+- `shown_if` names one variable listed before and the delivered answers
+  (labels of a category, numbers of an item) that show the question.
+- Where that variable holds another answer, or nothing, a filled cell is
+  delivered as missing with `not_shown`; the flag keeps the text.
+- Use it only where the form's own display rule is known (decision D125).
 
 ### Several boxes in one cell
 
@@ -952,9 +991,11 @@ defaults:
   (danger) in place of `period_doubt`. The flag log keeps what was written
   (`raw`). With `values`, only those answers are removed; think of what is
   left before doing so: with the "yes" of a yes/no question removed, the
-  period reads as 0%.
+  period reads as 0%. Removed cells are taken out as soon as they are read,
+  before `asked_if`: a removed "no" makes no question after it 0 (D125).
 - A cell that is missing, or that another step removed (`out_of_range`,
-  `unknown_code`), is not flagged.
+  `unknown_code`), is not flagged. A removed cell that is also out of range
+  gets `period_removed` only.
 
 Like every field, `doubt` can be set once in `defaults`. Write in the schema
 `notes` what the data show, and log the decision in PROGRESS.md: a period is
@@ -1125,7 +1166,7 @@ written by hand and must be read by someone who knows the drugs.
 **`at_visit`.** A list has no visit: what a visit needs is whether the
 patient was on a treatment that day. Each column of `columns` is 1 on a
 visit when at least one item that fits `where` (a variable and the value it
-must have) has `start` on or before the visit date and `end` on or after it,
+must have, or a list of values: `{molecule: [valproate, valpromide]}`) has `start` on or before the visit date and `end` on or after it,
 or no `end`: an item without an end date is taken as still running. It is 0
 when the patient has items and none fits. It is missing when the patient has
 no list at all, when the visit has no date, and when the only items that fit

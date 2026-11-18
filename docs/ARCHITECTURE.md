@@ -488,6 +488,8 @@ The values of the visits dated in that period are possible, so they are
 kept, but they get `period_doubt`: the analyst decides. Where most of the
 doubted values are known to be wrong, the schema asks for them not to be
 delivered (`remove: true`): they become missing and get `period_removed`.
+They are removed as soon as they are read, so that no answer is inferred
+from them (a count set to 0 after a removed "no").
 
 ### Step 10: scores
 
@@ -595,7 +597,8 @@ first visit.
 | `period_removed` | danger | The visit is dated in a period in which the schema says the column is not reliable and asks for the value not to be delivered; `raw` holds what was written |
 | `unparsed` | danger | The cell could not be read as its type |
 | `unknown_code` | danger | A category value is not in the code list |
-| `out_of_range` | danger | The value is outside the hard range. Also a visit date before the cohort opened or after today, and an impossible age |
+| `out_of_range` | danger | The value is outside the hard range. Also a visit date before the cohort opened or after today, an impossible age, and a date that must come before its visit on the day of the visit or later (`before_visit`) |
+| `not_shown` | danger | The cell answers a question that the form did not show for the answer given (`shown_if`): a value the form wrote by itself; `raw` holds it |
 | `unit_unknown` | danger | No usable unit label and the magnitude fits several units; or a percentage of a value that is missing |
 | `version_unknown` | danger | Data present but version not recognisable |
 | `norm_missing` | danger | No standard score could be read: the norm table was not found, or it has nothing for this age, raw score and second variable. For a z-score computed with a regression: the table was not found, or a variable of the regression is missing |

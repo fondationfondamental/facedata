@@ -4,14 +4,20 @@ tab: SUICIDE
 section: Idéation Suicidaire
 status: draft
 notes: >
-  The Columbia scale at the inclusion visit, over the whole life: 557 visits (75% to 98% of the inclusions in every period).
+  The Columbia scale at the inclusion visit, over the whole life: 557
+  visits (556 V0 and 1 screening), 75% to 95% of the V0 visits in each
+  period from 2013 (1 of 6 before).
 
   Columbia Suicide Severity Rating Scale: five levels of ideation (yes or
   no, each with a free description), the most severe level as rated, five
   ratings of its intensity, the suicidal behaviours (actual, interrupted
   and aborted attempts, preparatory acts, self-injury without intent) and
-  the lethality of three attempts. Not the BP schema: BP has other columns
-  and one form.
+  the lethality of three attempts. BP has two forms too, cssrs_v0 and
+  cssrs_fu (BP decision D125), read from other columns, with the ideation
+  part only. BP's follow-up schema has the names of DR's cssrs_fu and
+  stacks with it (common_instruments.yaml). BP's inclusion form asks about
+  the past week, this one about the whole life: the two inclusion schemas
+  do not stack.
 
   Two forms in the same columns. The inclusion visit asks about the whole
   life; the follow-up visits use the same columns for the time since the
@@ -25,11 +31,13 @@ notes: >
   follow-up, and 267 of the 577 follow-up visits of patients who said yes
   at inclusion answer no.
 
-  The form follows its skips: levels 3 to 5 are asked after a yes to level
-  2. The most severe ideation as rated (cssrs06) is the highest level
-  answered yes on 354 of 474 visits, higher on 56 and lower on 64: it is
-  delivered as rated. The intensity score is the sum of the five ratings,
-  as in BP.
+  The form follows its skips: levels 3 to 5 are asked only after a yes to
+  level 2, and after a no they are 0 (asked_if; DR decision D25).
+  cssrs03_lifetime is on 554 visits: asked on 310, 0 after a no on 244.
+  The most severe ideation as rated (cssrs06) is the highest level
+  answered yes on 156 of 229 inclusion visits, higher on 34 and lower on
+  39: it is delivered as rated. The intensity score is the sum of the five
+  ratings, as in BP.
 
 version:
   name: visit_form
@@ -53,11 +61,11 @@ variables:
   cssrs01_lifetime_text: {column: cssrs01a, type: text, label: "Description, as written"}
   cssrs02_lifetime: {column: cssrs02, label: "Non-specific active suicidal thoughts - whole life"}
   cssrs02_lifetime_text: {column: cssrs02a, type: text, label: "Description, as written"}
-  cssrs03_lifetime: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - whole life"}
+  cssrs03_lifetime: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - whole life", asked_if: cssrs02_lifetime}
   cssrs03_lifetime_text: {column: cssrs03a, type: text, label: "Description, as written"}
-  cssrs04_lifetime: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - whole life"}
+  cssrs04_lifetime: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - whole life", asked_if: cssrs02_lifetime}
   cssrs04_lifetime_text: {column: cssrs04a, type: text, label: "Description, as written"}
-  cssrs05_lifetime: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - whole life"}
+  cssrs05_lifetime: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - whole life", asked_if: cssrs02_lifetime}
   cssrs05_lifetime_text: {column: cssrs05a, type: text, label: "Description, as written"}
   cssrs_most_severe_lifetime: {column: cssrs06, range: [0, 5], label: "Most severe ideation, as rated (1 to 5) - whole life"}
   cssrs_ideation_lifetime_text: {column: cssrs07, type: text, label: "Description of the ideation, as written"}

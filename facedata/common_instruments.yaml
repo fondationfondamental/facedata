@@ -705,8 +705,32 @@ isf_since_visit:
   note: >
     The five questions are the same. 'When' does not use the same list in the
     three cohorts. BP does not deliver the answers of the follow-up visits of
-    2022 and 2023, whose form also asked about the whole life (period_removed),
+    November 2021 to 2023, whose form also asked about the whole life (period_removed),
     and DR flags the answers whose period is not certain (period_doubt).
+
+cssrs_v0:
+  title: C-SSRS suicidal ideation at the inclusion visit
+  domain: Suicide
+  schemas: {bp: cssrs_v0, dr: cssrs_v0}
+  stack: "no"
+  note: >
+    The BP inclusion form asks about the past week (some centres answer over
+    a longer time), the DR one about the whole life: the same questions over
+    different periods, under other names (cssrs01_inclusion in BP,
+    cssrs01_lifetime in DR). Do not stack.
+
+cssrs_fu:
+  title: C-SSRS suicidal ideation since the last visit (follow-up form)
+  domain: Suicide
+  schemas: {bp: cssrs_fu, dr: cssrs_fu}
+  stack: with care
+  use: [cssrs01_since_visit, cssrs02_since_visit, cssrs03_since_visit, cssrs04_since_visit, cssrs05_since_visit, cssrs_intensity_since_visit]
+  note: >
+    The five ideation questions and the five intensity ratings are the same,
+    asked since the last visit, with questions 3 to 5 at 0 after a no to
+    question 2. DR also has the behaviour section. The inclusion forms
+    differ in period (BP the past week, DR the whole life): cssrs_v0 is not
+    stacked.
 
 suicide_attempts:
   title: History of suicide attempts over the whole life (inclusion form)
@@ -716,11 +740,13 @@ suicide_attempts:
   use: [n_attempts, first_attempt_date, violent_attempts, serious_attempts, n_violent_attempts, n_serious_attempts]
   note: >
     The number of attempts, the date of the first one and the violent and
-    serious attempts. The form is filled for the patients who have attempted:
-    the number of attempts has no zero for the others. BP and SZ deliver it
-    from the inclusion visit only, where it is about the whole life; their
-    follow-up visits are in suicide_attempts_since_visit. DR still reads
-    every visit: keep its inclusion visits to stack it.
+    serious (non-violent, intensive care) attempts. BP and SZ give 0 attempts
+    after "never attempted" and 0 violent or serious attempts after 0
+    attempts (BP D125); a first attempt dated on the inclusion day or later
+    is out of range. BP and SZ deliver it from the inclusion visit only,
+    where it is about the whole life; their follow-up visits are in
+    suicide_attempts_since_visit. DR still reads every visit: keep its
+    inclusion visits to stack it.
 
 suicide_attempts_since_visit:
   title: Suicide attempts since the last visit (follow-up form)
@@ -730,9 +756,11 @@ suicide_attempts_since_visit:
   use: [n_attempts_since_visit, violent_attempts_since_visit, serious_attempts_since_visit, n_violent_attempts_since_visit, n_serious_attempts_since_visit]
   note: >
     The follow-up form of eBipolar and eSchizo asks the same numbers since the
-    last visit, after a "yes" to isf05_since_visit. BP does not deliver the
-    visits of 2022 and 2023 (period_removed): its follow-up form of these two
-    years also asked about the whole life. DR has a number of attempts since the last visit
+    last visit, after a "yes" to isf05_since_visit, and the numbers of violent
+    and serious attempts after a yes to their own question: BP and SZ give 0
+    after a no (BP D125). BP does not deliver the visits of November 2021 to
+    2023 (period_removed): its follow-up form of that time also asked about
+    the whole life. DR has a number of attempts since the last visit
     under the same name, n_attempts_since_visit, read from another question
     (mood_course_fu).
 
@@ -743,7 +771,8 @@ most_serious_attempt:
   stack: "no"
   note: >
     The method, the lethality and the trigger are labelled lists in BP (filled
-    until 2022) and codes that the dictionary does not explain in DR (names
+    until 2022; the inclusion visit only, its follow-up visits are in
+    most_serious_attempt_since_visit, BP D125) and codes that the dictionary does not explain in DR (names
     ending in _code). Only the question 'was there a trigger'
     (serious_triggered) is comparable.
 
@@ -753,8 +782,9 @@ most_violent_attempt:
   schemas: {bp: most_violent_attempt, dr: most_violent_attempt}
   stack: "no"
   note: >
-    As for the most serious attempt: labelled lists in BP (filled until 2021),
-    unexplained codes in DR. Only the question 'was there a trigger'
+    As for the most serious attempt: labelled lists in BP (filled until 2021;
+    the inclusion visit only, its follow-up visits are in
+    most_violent_attempt_since_visit), unexplained codes in DR. Only the question 'was there a trigger'
     (violent_triggered) is comparable.
 
 # ---------------------------------------------------------------- Physical examination and laboratory
@@ -1112,7 +1142,9 @@ medications:
     not the same thing: the treatments of the patient with their dates in BP
     and SZ; lists that the export crossed in DR, where no dose and no date can
     be tied to a product of a patient who has several; the treatments of each
-    visit in ASP. Doses are not comparable across cohorts.
+    visit in ASP. BP and SZ compute the daily dose in mg with the same rule
+    (the stored strength, else the one written in the name of the product:
+    BP decision D124); DR's is in the unit of its strength, and ASP has none.
 
 medications_at_visit:
   title: Psychotropic treatments on the day of the visit

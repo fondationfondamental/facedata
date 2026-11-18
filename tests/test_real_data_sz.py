@@ -260,8 +260,8 @@ def test_suicide_and_comorbidity(result, qc):
     assert shape_of(qc, "SUICIDE") == (31, 4, 0, 1)
     # Two forms in the same columns: the whole life at inclusion, since the last visit at follow-up.
     assert (qc.loc["isf05_lifetime", "n_valid"], data["isf05_lifetime"].sum(), qc.loc["isf05_since_visit", "n_valid"], data["isf05_since_visit"].sum()) == (2231, 680, 2360, 57)
-    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (623, 114, 641)
-    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (53, 50)       # BP D86
+    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (562, 114, 2169)
+    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (2356, 50)       # BP D86, D125: 0 after a "no"
     assert qc.loc[qc.index.str.startswith("isf"), "period_doubt"].sum() == 0          # no doubtful period here, unlike BP
 
     assert shape_of(qc, "SUBSTANCES ET COMORBIDITE") == (189, 11, 0, 0)
@@ -292,7 +292,7 @@ def test_medical_evaluation_care_and_social(result, qc):
 
 def test_treatments(result, qc):
     items, data, patients = result.treatments, result.data, result.patients
-    assert shape_of(qc, "TRAITEMENTS") == (69, 6, 149, 2)
+    assert shape_of(qc, "TRAITEMENTS") == (71, 6, 149, 2)
     # One row per patient and medication: every row of a patient holds the same lists.
     assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (11038, 1975, 122)
     assert qc.loc["medication", "patient_value_varies"] == 0
@@ -303,8 +303,11 @@ def test_treatments(result, qc):
     # The ATC code that the EMR gives for part of the medications agrees with the table.
     both = items["atc_coded"].notna() & items["atc"].notna()
     assert (int(both.sum()), int((items.loc[both, "atc_coded"] == items.loc[both, "atc"]).sum())) == (3322, 3314)
-    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (11038, 5792, 1064)
+    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (11038, 5792, 5246)
     assert (data["on_antipsychotic_2g"].notna().sum(), round(data["on_antipsychotic_2g"].mean(), 2)) == (5888, 0.88)
+    # The daily dose in mg from the strength in the name: SZ stores no strength (BP D124).
+    assert (items["daily_dose"].notna().sum(), (items["strength_from_name"] == 1).sum(), qc.loc["end_date", "check_failed"]) == (9014, 6504, 41)
+    assert qc.loc["daily_dose", "out_of_range"] == 8            # laxatives in grams, 5.9 g or 10 g a unit
     assert round(data.loc[data["visit"] == "V0", "on_clozapine"].mean(), 2) == 0.18
     # The counts of the export are one value per patient, not per visit.
     assert patients["n_listed_antipsychotics"].notna().sum() == 1975 and "n_listed_antipsychotics" not in data.columns

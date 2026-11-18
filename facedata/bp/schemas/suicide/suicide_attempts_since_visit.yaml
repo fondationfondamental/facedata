@@ -2,11 +2,14 @@ instrument: suicide_attempts_since_visit
 title: Suicide attempts since the last visit (follow-up visits)
 tab: SUICIDE
 section: Histoire des conduites suicidaires
-status: draft
+status: reviewed
 notes: >
   The number of suicide attempts since the last visit, and whether some were
-  violent or serious, as asked at the follow-up visits. Yes/no answers are
-  delivered as 1 and 0.
+  violent or serious without being violent (intensive care after drugs or
+  cutting), as asked at the follow-up visits. Yes/no answers are delivered
+  as 1 and 0. "Ne sais pas" to the violent and serious questions is a
+  missing code (1 and 2 answers); one number of attempts is letters, not a
+  number (unparsed).
 
   Two forms in the same columns (decision D86 in PROGRESS.md, was open
   question O47). The follow-up form of the application asks "how many times
@@ -15,30 +18,52 @@ notes: >
   "yes" to "have you attempted suicide since the last visit"
   (isf05_since_visit). Read in the form definitions of the application in
   November 2026; they were already so in January 2024, the oldest version of
-  the code that can be read. The data agree until 2021: a number is written
-  on the visits with a "yes" and almost nowhere else.
+  the code that can be read. The data agree until October 2021: a number is
+  written on 147 of the 167 "yes" and on 29 of the 7,081 "no", all 0.
 
-  A period that is not delivered, the one of isf_since_visit (decisions D85
-  and D88). In
-  2022 and 2023 the follow-up form was not the form of today. Its date of
-  the first attempt, a question about the whole life that the form of today
-  does not have, holds a real date on 37 follow-up visits of 2022 and 11 of
-  2023, against 1 in the nine years from 2012 to 2020. On the "yes" visits
-  of these two years the number of attempts given at inclusion is often
-  typed again. Each centre runs its own copy of the application, which is
-  why only some centres are concerned. So every answer of a follow-up visit
-  dated 2022 or 2023 is delivered as missing and gets the flag
-  period_removed, like the five questions: 331 cells. The
-  flag log keeps what was written. 16 visits give a number above 0 after a
-  "no" to isf05_since_visit, 11 of them in 2022 and 2023.
+  Counts that are 0 by logic (decision D125, as D122). After a "no" to
+  "attempted since the last visit" (isf05, read here and delivered as
+  isf05_since_visit) the number of attempts and the violent and serious
+  attempts are 0, and the numbers of violent and of serious attempts are 0
+  after a "no" to their own question. n_attempts_since_visit is on 8,194
+  visits, 162 of them above 0. Raters had typed the 0 after a "no" on 36 of
+  these visits, 27 of them in 2009 and 2010. A removed answer of the period
+  below gives no 0: removed cells are taken out before the zeros are
+  filled.
+
+  Answers that do not agree, delivered as typed: 5 visits record an attempt
+  after a "no" (2 of them with a number above 0, in 2024 and 2025), 7 give
+  0 attempts after a "yes", and 27 "yes" have no number (13 of them in
+  2020 and 2021).
+
+  A period that is not delivered, the one of isf_since_visit (decisions
+  D85, D88 and D125). From November 2021 to 2023 the follow-up form was not
+  the form of today at some centres. Its date of the first attempt, a
+  question about the whole life that the form of today does not have,
+  holds a real date on 7 follow-up visits of November and December 2021,
+  37 of 2022 and 11 of 2023, against 1 from 2012 to October 2021. On the
+  "yes" visits of the period the number of attempts given at inclusion is
+  often typed again (26 of 58, against 23 of 145 from 2012 to October
+  2021), and 14 of the 16 visits that give a number above 0 after a "no"
+  fall in the period. Each centre runs its own copy of the application,
+  which is why only some centres are concerned. So every answer of a
+  follow-up visit dated from 2021-11-01 to 2023-12-31 is delivered as
+  missing and gets the flag period_removed, like the five questions: 376
+  cells of the delivered variables. The flag log keeps what was written.
+  The removal applies to every centre (D125).
 
   The date of the first attempt at the follow-up visits is read and not
   delivered (first_attempt_date_follow_up, keep false; decision of the
-  project lead). 1,142 cells hold 2011-11-11, written by the follow-up form
-  from 2012 to 2022 where no date was typed: a placeholder, read as a
-  missing code. 60 cells hold a real date, 59 of them from 2021 to 2025.
-  The date of the first attempt is delivered from the inclusion visit
-  (suicide_attempts).
+  project lead). 1,142 cells hold 2011-11-11, all at follow-up visits of
+  one centre, from 2011 to 2023: on all but one of its follow-up forms
+  until May 2022, and on 3 in November 2023. The other centres, and that
+  centre from June 2022, store 0000-00-00 (8,073 cells). It is a
+  placeholder, read as a missing code. It marks that centre's old
+  follow-up form, but the export will blank it (R22), so it does not
+  narrow the removed period. 60 cells hold a real date: 1 in 2018, 55 in
+  the removed period, and 4 from 2024 (two centres) on visits that are
+  delivered. The date of the first attempt is delivered from the inclusion
+  visit (suicide_attempts).
 
 version:
   name: visit_form
@@ -72,16 +97,17 @@ defaults:
   range: [0, 1]
   versions: [follow_up]
   doubt:
-    period: [2022-01-01, 2023-12-31]
+    period: [2021-11-01, 2023-12-31]
     remove: true                                   # not delivered (decision D88)
-    note: the follow-up form of 2022 and 2023 also asked about the whole life
+    note: the follow-up form of November 2021 to 2023 also asked about the whole life
 
 variables:
-  n_attempts_since_visit: {column: isf07, label: "Number of suicide attempts - since the last visit", range: [0, 50]}
-  violent_attempts_since_visit: {column: isf08, label: "Has made violent suicide attempts - since the last visit", codes: {Oui: 1, Non: 0}}
-  n_violent_attempts_since_visit: {column: isf08a, label: "Number of violent suicide attempts - since the last visit", range: [0, 20]}
-  serious_attempts_since_visit: {column: isf09, label: "Has made serious suicide attempts (intensive care) - since the last visit", codes: {Oui: 1, Non: 0}}
-  n_serious_attempts_since_visit: {column: isf09a, label: "Number of serious suicide attempts - since the last visit", range: [0, 20]}
+  attempted_since_visit: {column: isf05, codes: {Oui: 1, Non: 0}, keep: false, label: "Attempted suicide since the last visit (delivered as isf05_since_visit)"}
+  n_attempts_since_visit: {column: isf07, label: "Number of suicide attempts - since the last visit", range: [0, 50], asked_if: attempted_since_visit}
+  violent_attempts_since_visit: {column: isf08, label: "Has made violent suicide attempts - since the last visit", codes: {Oui: 1, Non: 0}, asked_if: attempted_since_visit}
+  n_violent_attempts_since_visit: {column: isf08a, label: "Number of violent suicide attempts - since the last visit", range: [0, 20], asked_if: violent_attempts_since_visit}
+  serious_attempts_since_visit: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care) - since the last visit", codes: {Oui: 1, Non: 0}, asked_if: attempted_since_visit}
+  n_serious_attempts_since_visit: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care) - since the last visit", range: [0, 20], asked_if: serious_attempts_since_visit}
   first_attempt_date_follow_up:
     column: isf05_qsdtc
     type: date

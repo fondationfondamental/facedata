@@ -1,0 +1,110 @@
+instrument: cssrs_v0
+title: "Columbia Suicide Severity Rating Scale, suicidal ideation, at the inclusion visit"
+tab: SUICIDE
+section: Questionnaire C-SSRS Idéation suicidaire
+status: reviewed
+notes: >
+  The ideation part of the Columbia Suicide Severity Rating Scale (C-SSRS)
+  at the inclusion visit: five yes/no questions of rising severity,
+  delivered as 1 (yes) and 0 (no), the most severe ideation as rated (1 to
+  5) and five ratings of its intensity, with their sum. The extraction
+  holds no behaviour section and no stored total.
+
+  One schema per form (decision D125 in PROGRESS.md). The application has
+  one C-SSRS form for the inclusion and the follow-up visits; its
+  instruction sets the period: the past week at an initial evaluation, the
+  time since the last visit at a follow-up. The follow-up answers are
+  cssrs_fu. visit_form says which form a visit used; it is read from the
+  visit label. The DR inclusion form asks about the whole life: the two
+  inclusion schemas are not stacked.
+
+  1,251 visits answer the first question (1,277 any question): 6 in 2019
+  and 2020, 34 in 2021, then 168 to 350 a year (2026 to November). From
+  2022 the form is filled at 67% (2022) to 96% (2026) of the inclusions.
+  The wish to be dead is answered yes on 458 visits (37%), active suicidal
+  thoughts on 304 of 1,263 (24%).
+
+  Questions 3 to 5 (a method, an intent, a plan) are asked only after a yes
+  to question 2. After a no they are 0 (asked_if): 959 visits. They were
+  asked on 297 to 299 visits.
+
+  The period, by centre (open question O52, asked of the centres in DM-6).
+  In most centres the answers are about the past week, as asked: the wish
+  to be dead is yes on 114 of the 121 inclusions whose last wish to die
+  (isf02_lifetime_when) was in the past week, and on 19 of the 194 where it
+  was more than a year ago. Two centres answer yes far more often: the wish
+  to be dead on 65% and 71% of their inclusions, against 31% in the others;
+  46 of 63 where the last wish to die was more than a year ago (two more
+  centres 28 of 94); 88 of 140 where MADRS item 10 is 0 at the same visit
+  (two more centres 51 of 224, the others 51 of 437). Their patients do not
+  report more recent thoughts (last wish to die in the past week on 12% of
+  their inclusions, 15% elsewhere). They may rate a longer period than the
+  past week. Delivered as rated. Their intensity sum has a median of 17,
+  against 13 in the two more centres and 12 in the others. The median at
+  inclusion rises from 12 in 2022 to 17 in 2026 as they give 42 of the 63
+  sums of 2026 (15 of 80 in 2022); without them it is 11 to 14 in each
+  year from 2022.
+
+  The most severe ideation (250 visits) and the five intensity ratings (441
+  to 455) are to be rated after a yes to question 1 or 2 (481 visits). The
+  application does not enforce it: 38 visits rate them although both
+  questions are no, and 27 of them get an intensity sum; delivered as
+  rated. After a yes, the most severe ideation is empty on 248 of the 481
+  visits and the five ratings on 61. The most severe ideation as rated is
+  the highest question answered yes on 142 of 233 visits, higher on 60 and
+  lower on 31; on 27 visits it names a level 3 to 5 although question 2 is
+  no. It is delivered as rated.
+
+  Intensity: code 0 of controllability ("does not try to control") and of
+  deterrents and reasons ("does not apply") is not the mild end of the
+  scale. The sum counts it as 0, the official rule (13, 36 and 37 cells;
+  65 of the 434 sums hold one). The sum is given where the five ratings
+  are: 434 visits, 3 to 25, median 14.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
+
+variables:
+  cssrs01_inclusion: {column: css0101, codes: {Oui: 1, Non: 0}, label: "Wish to be dead - at inclusion"}
+  cssrs02_inclusion: {column: css0102, codes: {Oui: 1, Non: 0}, label: "Non-specific active suicidal thoughts - at inclusion"}
+  cssrs03_inclusion: {column: css0103, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a method, without intent - at inclusion", asked_if: cssrs02_inclusion}
+  cssrs04_inclusion: {column: css0104, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with some intent to act, without a plan - at inclusion", asked_if: cssrs02_inclusion}
+  cssrs05_inclusion: {column: css0105, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a plan and intent - at inclusion", asked_if: cssrs02_inclusion}
+  cssrs_most_severe_inclusion: {column: css0106, range: [1, 5], label: "Most severe ideation, as rated (1 to 5) - at inclusion"}
+  cssrs_frequency_inclusion: {column: css0108, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - at inclusion"}
+  cssrs_duration_inclusion: {column: css0109, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - at inclusion"}
+  cssrs_control_inclusion: {column: css0110, range: [0, 5], label: "Intensity: controllability (1 easily to 5 unable, 0 does not try) - at inclusion"}
+  cssrs_deterrents_inclusion: {column: css0111, range: [0, 5], label: "Intensity: deterrents (1 definitely stopped to 5 did not stop at all, 0 does not apply) - at inclusion"}
+  cssrs_reasons_inclusion: {column: css0112, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - at inclusion"}
+
+scores:
+  cssrs_intensity_inclusion:
+    label: "C-SSRS intensity of ideation: sum of the five ratings - at inclusion"
+    sum: [cssrs_frequency_inclusion, cssrs_duration_inclusion, cssrs_control_inclusion, cssrs_deterrents_inclusion, cssrs_reasons_inclusion]

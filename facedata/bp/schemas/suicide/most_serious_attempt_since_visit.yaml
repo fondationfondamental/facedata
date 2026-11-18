@@ -1,0 +1,156 @@
+instrument: most_serious_attempt_since_visit
+title: The most serious suicide attempt since the last visit (follow-up visits)
+tab: SUICIDE
+section: Columbia TS la plus grave
+status: reviewed
+notes: >
+  The section on the most serious attempt as the follow-up form asked it:
+  the most serious non-violent attempt since the last visit, asked after a
+  yes to serious attempts since the last visit
+  (serious_attempts_since_visit). Delivered as categories; "triggered" as 1
+  (yes) and 0 (no). The inclusion visit, about the whole life, is
+  most_serious_attempt (one schema per form, decision D125 in PROGRESS.md,
+  as D86 did for the attempt counts).
+
+  24 methods on 27 follow-up visits, from 2010 to September 2020; the
+  section left the forms during 2021, at one centre early in 2022. All 27
+  follow a yes to serious attempts since the last visit. For 14 of the 24
+  patients the inclusion visit counts no serious attempt
+  (serious_attempts 0): the answer describes a later attempt. 9 gave a
+  method at inclusion too, 6 of them the same one. Drugs with a sedative
+  effect are 67% of the methods (81% at inclusion), other drugs or
+  substances 29%.
+
+  The period of D88, which starts on 2021-11-01 (D125), holds 1 visit, of
+  February 2022: its 4 cells (one method) are delivered as missing with the
+  flag period_removed.
+
+  As at inclusion, a drug type and a lethality are read only for their own
+  method and the trigger only after a yes to "triggered" (shown_if). The
+  forms of 2009-2010 saved the first option of these lists, the hidden ones
+  too: on 4 visits of 2010 with no method, 20 cells are delivered as
+  missing with the flag not_shown. The code lists are those of
+  most_serious_attempt. A drug type "Inconnu" is a missing code (1 cell).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+
+defaults:
+  type: category
+  versions: [follow_up]
+  doubt:
+    period: [2021-11-01, 2023-12-31]
+    remove: true                                   # not delivered (decisions D88 and D125)
+    note: the follow-up form of 2022 and 2023 also asked about the whole life
+
+variables:
+  serious_method_since_visit:
+    column: ltsg01
+    label: Method of the most serious attempt - since the last visit
+    codes:
+      "Médicaments (drogues) avec effets sédatifs": sedative_drugs
+      "Médicaments (drogues) sans effets sédatifs et pour toutes autres substances ingérées": non_sedative_drugs_or_substances
+      "Phlébotomie": cutting
+  serious_sedative_type_since_visit:
+    shown_if: {serious_method_since_visit: [sedative_drugs]}
+    column: ltsg02
+    label: Kind of drug with a sedative effect - since the last visit
+    missing: {Inconnu: unknown}
+    codes:
+      "Benzodiazépines / Hypnotique": benzodiazepine_or_hypnotic
+      "Antipsychotique": antipsychotic
+      "Antidépresseur": antidepressant
+      "Anticonvulsivant": anticonvulsant
+      "Prescription autre que psychotrope": other_prescription
+      "Sédatif en vente libre": over_the_counter_sedative
+      "Alcool": alcohol
+      "Substances festives": recreational_drug
+      "Gaz / Asphyxiant": gas
+  serious_non_sedative_type_since_visit:
+    shown_if: {serious_method_since_visit: [non_sedative_drugs_or_substances]}
+    column: ltsg03
+    label: Kind of drug or substance without a sedative effect - since the last visit
+    missing: {Inconnu: unknown}
+    codes:
+      "Prescription autre que psychotrope": other_prescription
+      "Lithium": lithium
+      "Médicament en vente libre": over_the_counter_drug
+      "Autres substances ingérées": other_substance
+      "Substances festives": recreational_drug
+      "Anticholinergique": anticholinergic
+      "Coupe faim": appetite_suppressant
+  serious_sedative_lethality_since_visit:
+    shown_if: {serious_method_since_visit: [sedative_drugs]}
+    column: ltsg04
+    label: Consequences of the attempt with sedative drugs - since the last visit
+    codes:
+      "Complètement conscient et lucide": fully_conscious
+      "Conscient mais somnolent / engourdi": conscious_drowsy
+      "Léthargique avec diminution des capacités intellectuelles": lethargic
+      "Endormi mais facilement réveillé": asleep_easily_roused
+      "Comateux - évitement des stimuli douloureux réflexes intacts blessures suffisantes pour l'hospitalisation": coma_withdraws_from_pain
+      "Comateux - pas d'évitement des stimuli douloureux la plupart des réflexes intacts pas de défaillance respiratoire ou circulatoire, blessures suffisantes pour surveillance aux Soins Intensifs.": coma_no_withdrawal
+      "Comateux - la plupart des réflexes absents, pas de défaillance respiratoire ou circulatoire, Soins Intensifs. et procédures médicales sérieuses": coma_most_reflexes_absent
+      "Comateux - tous les réflexes absents défaillance respiratoire avec cyanose ou défaillance circulatoire et choc ou les deux": coma_all_reflexes_absent
+      "Mort": death
+  serious_non_sedative_lethality_since_visit:
+    shown_if: {serious_method_since_visit: [non_sedative_drugs_or_substances]}
+    column: ltsg05
+    label: Consequences of the attempt with other drugs or substances - since the last visit
+    codes:
+      "Pas de conséquences médicales ou de traitement, ou minime": none_or_minimal
+      "Quelques blessures (ex : bouche brûlée) et traitement en urgence ou en ambulatoire (ex : lavage gastrique)": emergency_or_outpatient_treatment
+      "Blessures suffisantes pour l'hospitalisation - signes vitaux et niveau de conscience peuvent être affectés": hospitalisation
+      "Effets majeures systématiques - tels que perforation gastro-intestinale, défaillance rénale, hémolyse, ou choc signes vitaux instables": major_systemic_effects
+      "Mort": death
+  serious_cutting_lethality_since_visit:
+    shown_if: {serious_method_since_visit: [cutting]}
+    column: ltsg06
+    label: Consequences of the cutting - since the last visit
+    codes:
+      "Surfaces griffées, pas ou peu de saignements, pas ou peu de soins requis pour les blessures": scratches
+      "Saignement modéré avec caillot avant qu'il n'y ait perte de sang significative simples soins requis": moderate_bleeding
+      "Saignement des veines majeures, danger de perte de sang considérable sans intervention chirurgicale - suture nécessaire mais pas de transfusion, zones vitales intactes et pas de changement dans les signes vitaux, soins en ambulatoire": major_vein_bleeding
+      "Perte de sang importante, suture, transfusion nécessaire, réparation de tendons requise, blessures possibles sur la tête, le thorax, ou l'abdomen mais organes vitaux intacts et signes vitaux stables rétablissement attendu après hospitalisation": major_blood_loss
+      "Perte de sang très importante avec choc, lésion des zones vitales avec changement dans les signes vitaux rétablissement après hospitalisation peu probable": severe_blood_loss_vital_damage
+      "Mort": death
+  serious_triggered_since_visit: {column: ltsg07, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: A precise event seems to have triggered the attempt - since the last visit}
+  serious_trigger_since_visit:
+    shown_if: {serious_triggered_since_visit: [1]}
+    column: ltsg08
+    label: External trigger of the attempt - since the last visit
+    codes:
+      "Conjugal": partner
+      "Autre facteur interpersonnel": other_interpersonal
+      "Professionnel": work
+      "Evènement de vie": life_event
+      "Santé": health
+      "Sévices physiques": physical_abuse
+      "Abus sexuel": sexual_abuse
+      "Autre": other
+      "Ne peut pas être évalué": cannot_be_assessed

@@ -648,3 +648,52 @@ def test_winsorising_can_be_switched_off(folder):
     assert "winsorised" not in set(as_is.flags["flag"])
     assert as_is.qc["winsor_low"].isna().all()
     assert as_is.data.shape == clipped.data.shape
+
+
+LISTS_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tany\tect\ttms\tect_n\tmethod\tfirearm\tfirst\tlater\tn_later
+P1\tV0\t2\t1\t2015-01-10\t01\tOui\t\tOui\t\tNoyade\tPas de dommage\t2014-05-15\tNon\t
+P2\tV0\t2\t2\t2015-01-11\t01\tOui\t\t\t\tArme à feu\tPas de dommage\t2015-01-11\tNon\t
+P3\tV0\t2\t3\t2015-01-12\t01\tOui\tNe sais pas\tOui\t\t\tPas de dommage\t2016-03-15\tOui\t2
+P4\tV0\t2\t4\t2022-06-12\t01\tNon\t\t\t\t\t\t\tNon\t
+"""
+
+LISTS_SCHEMA = """
+instrument: lists
+title: Lists
+tab: TEST
+section: Lists
+status: draft
+defaults: {type: item, range: [0, 1]}
+variables:
+  any_treatment: {column: any, codes: {Oui: 1, Non: 0}}
+  ect: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  tms: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  ect_sessions: {column: ect_n, range: [0, 365], asked_if: ect}
+  method: {type: category, codes: {Noyade: drowning, Arme à feu: firearm}}
+  firearm_lethality: {column: firearm, type: category, codes: {Pas de dommage: no_damage}, shown_if: {method: [firearm]}}
+  first_date: {column: first, type: date, range: [1920-01-01, 2026-12-31], before_visit: true}
+  gate_later: {column: later, codes: {Oui: 1, Non: 0}, keep: false, doubt: {period: [2022-01-01, 2023-12-31], remove: true}}
+  count_later: {column: n_later, range: [0, 50], asked_if: gate_later}
+"""
+
+
+def test_boxes_of_a_list_hidden_answers_and_dates_before_the_visit(tmp_path):
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "lists.yaml").write_text(LISTS_SCHEMA, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(LISTS_EXTRACTION, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    data = result.data
+    # P1 ticked tms only: ect is a no, and its sessions follow. P2 ticked nothing: unknown.
+    # P3 does not know about ect: it stays missing. P4 said no: every box is 0.
+    assert list(data["ect"][[0, 3]]) == [0, 0] and data["ect"][[1, 2]].isna().all()
+    assert list(data["ect_sessions"][[0, 3]]) == [0, 0] and data["ect_sessions"][[1, 2]].isna().all()
+    assert flags_of(result, "ect") == [("P3", "V0", "missing_code")]
+    # The lethality of a firearm is shown only for a firearm: the drowning's and the empty method's are defaults.
+    assert data["firearm_lethality"][1] == "no_damage" and data["firearm_lethality"][[0, 2]].isna().all()
+    assert flags_of(result, "firearm_lethality") == [("P1", "V0", "not_shown"), ("P3", "V0", "not_shown")]
+    # A first date on the day of the visit or later is impossible.
+    assert data["first_date"][0] == pd.Timestamp("2014-05-15") and data["first_date"][[1, 2]].isna().all()
+    assert flags_of(result, "first_date") == [("P2", "V0", "out_of_range"), ("P3", "V0", "out_of_range")]
+    # A "no" of a removed period is no answer: nothing after it becomes 0, and the empty cell is not flagged.
+    assert list(data["count_later"][:3]) == [0, 0, 2] and pd.isna(data["count_later"][3])
+    assert flags_of(result, "count_later") == []

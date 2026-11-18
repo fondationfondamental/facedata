@@ -2,29 +2,77 @@ instrument: drug_classes_lifetime
 title: Classes of medication taken over the life
 tab: TRAITEMENTS
 section: MEDICAMENT LIFETIME
-status: draft
+status: reviewed
 level: patient
 notes: >
-  For each of six classes of medication (antidepressants, first- and second-
-  generation antipsychotics, benzodiazepines, hypnotics and anxiolytics,
-  lithium, anticonvulsant mood stabilisers): whether the patient has ever
-  taken one, the date of the first start and the cumulated months of
-  exposure. Asked once, about the whole life, of 2,636 patients. Yes/no
-  answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+  For each of six classes of medication (antidepressants, first- and
+  second-generation antipsychotics, benzodiazepines, hypnotics and
+  anxiolytics, lithium, anticonvulsant mood stabilisers): whether the
+  patient has taken one, the date of the first start and the cumulated
+  months of exposure. Yes/no answers are delivered as 1 and 0; "Ne sais pas"
+  is a missing code (9% of the answers for the first-generation
+  antipsychotics, 10% for the anxiolytics and hypnotics).
 
-  One value per patient: the extraction repeats these columns on every row
-  of the patient, and they never differ.
+  A form of the patient, not of a visit: it is opened from the medication
+  menu, can be saved again later, and its date is not exported (asked of the
+  export; D124). Its heading asks whether the patient has ever had each
+  class, counting the treatments taken at the screening and inclusion
+  visits: the answers cover the time up to the inclusion, not the whole
+  life. 2,817 patients have a record of the form, and 2,641 of them answer
+  at least one class yes or no.
 
-  Months. A list that stops at 240: ">240" is read as 240 with a mark in the
-  censoring column (this value or more). The months are 0 where the patient
-  has never taken the class (asked_if). They are not winsorised.
+  One value per patient. The extraction repeats these columns on every row
+  of the patient. Where a patient has two records of the form, the export
+  keeps one of them with no rule (R18 asks for the lowest id, the record the
+  application opens) and copies it onto every row: that is why the rows of a
+  patient never differ.
 
-  Dates. Many are a first of July or a 15th of June: the year was known, not
-  the day. 1000-01-01 is the form's placeholder (date_placeholder).
+  Months. A list of the form that stops at 240: ">240" is read as 240 with a
+  mark in the censoring column (this value or more; 190 answers). The months
+  are 0 where the patient has never taken the class (asked_if); the list has
+  no answer 0. They are not winsorised. One patient has anticonvulsant
+  months after the answer "no", and another has anticonvulsant months and a
+  date with no answer: both are delivered as stored.
 
-  These are the clinician's summary of the whole life. The table treatments
+  Dates. 83% fall on the 1st or the 15th of a month: the day was seldom
+  known. 38% are a 1 January (14%), a 1 July (14%) or a 15 June (11%), most
+  of them standing for a year alone. Which day was typed depends on the
+  centre and changed over time: for the patients included until 2015 and
+  after, 1 July is 22% and 7% of the dates, 15 June 5% and 15%, 1 January
+  11% and 16%. A date with an unknown month or day becomes the middle of the
+  period (date_partial, 7 cells; a year alone becomes 1 July). Two
+  antidepressant dates are not delivered: one with a month 00 and a day
+  (unparsed), one before 1950 (out_of_range).
+
+  Placeholders. The application writes 0000-00-00 in a date that was not
+  typed (read as empty, 9,927 cells) and, since its version of 2024-07-25,
+  which each centre got at its own date, 1000-01-01 (date_placeholder, 332
+  cells of 111 patients).
+
+  Time elapsed. 162 of the 6,641 first starts (131 patients) are after the
+  inclusion, 20 of them after the last visit. The months are longer than the
+  time from the first start to the inclusion for 506 of the 5,902 classes
+  that have both, to the last visit for 137 and to the extraction (13
+  November 2026) for 14, each time rounded up to the next answer of the
+  list. This is noted, not flagged (D124): the dates are often approximate
+  and the form can be saved again after the inclusion.
+
+  Completeness. The form is filled for 57% of the patients included until
+  2012, 65% in 2013-2015, 39% in 2016-2018 and 22% to 29% from 2019. Three
+  centres hardly fill it. Three fill it much less after 2015 and hardly at
+  all from 2019, two others hardly from 2024, while two fill it for most of
+  their patients included since 2019. After a yes, the date or the months
+  are given for 72% of the answers: about half in three centres and 12% in
+  one (among the centres with 100 answers or more). Another centre gives
+  them for 28% of its anxiolytic and hypnotic answers, against 73% to 97%
+  for the other classes.
+
+  These answers are the clinician's summary. The table treatments
   (medications.yaml) lists the medications one by one with their dates; the
-  two were typed separately and need not agree.
+  two were typed separately and need not agree. Where the answer is "no",
+  the table holds a medication of the class started on or before the
+  inclusion for 7 (antidepressants) to 61 patients (first-generation
+  antipsychotics, anticonvulsants).
 
 variables:
   ever_antidepressant: {column: cmoccur_antid, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has ever taken an antidepressant"}

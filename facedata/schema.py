@@ -18,7 +18,7 @@ REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
-                   "doubt", "asked_if", "separator", "parse", "note", "day"}
+                   "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day"}
 SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep"}
@@ -85,6 +85,11 @@ def load_schema(path):
                 doubt["values"] = to_numbers(doubt["values"])
             doubt["remove"] = doubt.get("remove") == "true"
             variable["doubt"] = doubt
+        if isinstance(variable.get("shown_if"), dict):   # {variable: the answers that show the question}
+            variable["shown_if"] = {gate: to_numbers(shown if isinstance(shown, list) else [shown])
+                                    for gate, shown in variable["shown_if"].items()}
+        if "before_visit" in variable:
+            variable["before_visit"] = variable["before_visit"] == "true"
         if "ignore_units" in variable:               # unit labels are compared in lower case
             variable["ignore_units"] = [label.lower() for label in variable["ignore_units"]]
         winsor = variable.get("winsor")
@@ -263,6 +268,16 @@ def check_variable(name, variable, schema, columns):
         if variable["asked_if"] not in names[:names.index(name)] or not gate_takes_zero or not takes_zero:
             problems.append(f"{name}: asked_if must name a yes/no item or a count (an item or a number whose range starts at 0) "
                             "listed before, on an item or a number whose range starts at 0")
+    if "box_list" in variable:
+        boxes = [other for other, spec in schema["variables"].items() if spec.get("box_list") == variable["box_list"]]
+        if kind != "item" or variable.get("range") != [0.0, 1.0] or len(boxes) < 2:
+            problems.append(f"{name}: box_list goes on a yes/no item, and names a list of two boxes or more")
+    if "shown_if" in variable:
+        gates = list(variable["shown_if"]) if isinstance(variable["shown_if"], dict) else []
+        if len(gates) != 1 or gates[0] not in list(schema["variables"])[:list(schema["variables"]).index(name)]:
+            problems.append(f"{name}: shown_if names one variable listed before, with the answers that show the question")
+    if "before_visit" in variable and kind != "date":
+        problems.append(f"{name}: before_visit goes on a date")
     if "separator" in variable and (kind != "item" or "codes" not in variable):
         problems.append(f"{name}: separator goes on an item that has codes")
     if "doubt" in variable:

@@ -287,6 +287,25 @@ def check_range(values, name, variable):
     return values.where(~outside), make_flags(outside, name, "out_of_range", detail)
 
 
+def drop_not_shown(values, name, variable):
+    """A filled cell of a question that the form did not show for the answer given is not an answer (shown_if).
+
+    The forms of 2009-2010 saved the first option of every list, the hidden
+    ones too. Such a cell becomes missing; the flag keeps what it held.
+    """
+    gate, shown = next(iter(variable["shown_if"].items()))
+    hidden = values[name].notna() & ~values[gate].isin(shown)
+    detail = "not shown when " + gate + " is " + values[gate].astype(str)
+    return values[name].where(~hidden), make_flags(hidden, name, "not_shown", detail)
+
+
+def after_the_visit(values, visit_dates, name):
+    """A date that must be before its visit (before_visit) is impossible on the day of the visit or later."""
+    late = values.notna() & (values >= visit_dates)
+    detail = "on or after the visit of " + visit_dates.dt.date.astype(str)
+    return values.where(~late), make_flags(late, name, "out_of_range", detail)
+
+
 def doubt_period(values, dates, name, doubt):
     """Flag the values of the visits dated in a period in which the column is not reliable.
 

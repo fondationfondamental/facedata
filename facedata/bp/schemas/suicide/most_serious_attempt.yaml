@@ -2,18 +2,84 @@ instrument: most_serious_attempt
 title: The most serious suicide attempt (method and lethality)
 tab: SUICIDE
 section: Columbia TS la plus grave
-status: draft
+status: reviewed
 notes: >
-  For patients with a serious attempt: its method (drugs with or without a
-  sedative effect, or cutting), the kind of drug, its medical consequences
-  on a scale that has its own wording for each method, and what triggered
-  it. Filled until 2022, almost always at the inclusion visit (456 visits).
+  The most serious non-violent suicide attempt of the whole life, as asked
+  at the inclusion visit after a yes to serious attempts: its method (drugs
+  with or without a sedative effect, or cutting), the kind of drug, its
+  medical consequences on a scale that has its own wording for each method,
+  and whether an event triggered it, with which one. Delivered as
+  categories; "triggered" as 1 (yes) and 0 (no).
 
-  The lethality columns are delivered as written, with short codes that
-  follow the order of the scale. A drug type "Inconnu" is a missing code.
-  On 17 visits the method is empty although the other columns are filled.
+  One schema per form (decision D125 in PROGRESS.md, as D86 did for the
+  attempt counts). The follow-up form asks the same section about the most
+  serious attempt since the last visit: those answers are
+  most_serious_attempt_since_visit. visit_form says which form a visit
+  used; it is read from the visit label.
 
-defaults: {type: category}
+  432 methods on 448 inclusion visits, from 2009 to January 2022. The
+  section left the forms during 2021, at one centre early in 2022: the last
+  inclusion answer of each centre is between December 2020 and November
+  2021, except one in 2019 and one in January 2022. 116 of the 117
+  inclusions from 2022 that report a serious attempt (serious_attempts)
+  have no detail. Until 2021 the method is given on 79% to 97% of the
+  inclusions with a serious attempt in each period, less often in the
+  later periods (97% to 2012, 79% in 2019-2021). Four centres never give
+  it. Drugs with a sedative effect are 79% to 85% of the methods in each
+  period. 16 inclusion visits of 2012 to 2021 with a serious attempt
+  answer "triggered" with no method.
+
+  The codes are short names; the lethalities follow the order of the scale.
+  Every list holds the whole list of the form, also answers that no visit
+  holds (death after sedative drugs, the two most severe levels of
+  cutting, recreational drugs, anticholinergics and appetite suppressants
+  among the drugs without a sedative effect). A drug type "Inconnu" is a missing code (23 sedative, 5 non-sedative). Death is
+  given after other drugs or substances on 2 visits (2013, 2018): the
+  patient was seen at that inclusion visit, so it cannot describe the
+  patient's own attempt. It is delivered as written.
+
+  Lists that the form hid (decision D125, field shown_if). The form shows a
+  drug type and a lethality only for their own method, and the trigger only
+  after a yes to "triggered". The forms of 2009-2010 saved the first option
+  of the lists that start with an empty choice, the hidden ones too
+  (antipsychotic, other prescription, fully conscious, scratches,
+  "Conjugal"). A filled cell that the form did not show is delivered as
+  missing with the flag not_shown; the flag log keeps the text. 80 cells on
+  24 visits. 76 are on 20 visits of 2009 and 2010 at four centres, nearly
+  all first options: 14 with no method, 6 with another method. The other 4
+  are on 4 visits of 2013 to 2020 and are not first options: a drug type or
+  a lethality with no method (2), the drug type of another method (1), a
+  trigger without a yes (1).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+
+defaults: {type: category, versions: [inclusion]}
 
 variables:
   serious_method:
@@ -24,6 +90,7 @@ variables:
       "Médicaments (drogues) sans effets sédatifs et pour toutes autres substances ingérées": non_sedative_drugs_or_substances
       "Phlébotomie": cutting
   serious_sedative_type:
+    shown_if: {serious_method: [sedative_drugs]}
     column: ltsg02
     label: Kind of drug with a sedative effect
     missing: {Inconnu: unknown}
@@ -38,6 +105,7 @@ variables:
       "Substances festives": recreational_drug
       "Gaz / Asphyxiant": gas
   serious_non_sedative_type:
+    shown_if: {serious_method: [non_sedative_drugs_or_substances]}
     column: ltsg03
     label: Kind of drug or substance without a sedative effect
     missing: {Inconnu: unknown}
@@ -46,7 +114,11 @@ variables:
       "Lithium": lithium
       "Médicament en vente libre": over_the_counter_drug
       "Autres substances ingérées": other_substance
+      "Substances festives": recreational_drug
+      "Anticholinergique": anticholinergic
+      "Coupe faim": appetite_suppressant
   serious_sedative_lethality:
+    shown_if: {serious_method: [sedative_drugs]}
     column: ltsg04
     label: Consequences of the attempt with sedative drugs
     codes:
@@ -58,7 +130,9 @@ variables:
       "Comateux - pas d'évitement des stimuli douloureux la plupart des réflexes intacts pas de défaillance respiratoire ou circulatoire, blessures suffisantes pour surveillance aux Soins Intensifs.": coma_no_withdrawal
       "Comateux - la plupart des réflexes absents, pas de défaillance respiratoire ou circulatoire, Soins Intensifs. et procédures médicales sérieuses": coma_most_reflexes_absent
       "Comateux - tous les réflexes absents défaillance respiratoire avec cyanose ou défaillance circulatoire et choc ou les deux": coma_all_reflexes_absent
+      "Mort": death
   serious_non_sedative_lethality:
+    shown_if: {serious_method: [non_sedative_drugs_or_substances]}
     column: ltsg05
     label: Consequences of the attempt with other drugs or substances
     codes:
@@ -68,6 +142,7 @@ variables:
       "Effets majeures systématiques - tels que perforation gastro-intestinale, défaillance rénale, hémolyse, ou choc signes vitaux instables": major_systemic_effects
       "Mort": death
   serious_cutting_lethality:
+    shown_if: {serious_method: [cutting]}
     column: ltsg06
     label: Consequences of the cutting
     codes:
@@ -75,8 +150,11 @@ variables:
       "Saignement modéré avec caillot avant qu'il n'y ait perte de sang significative simples soins requis": moderate_bleeding
       "Saignement des veines majeures, danger de perte de sang considérable sans intervention chirurgicale - suture nécessaire mais pas de transfusion, zones vitales intactes et pas de changement dans les signes vitaux, soins en ambulatoire": major_vein_bleeding
       "Perte de sang importante, suture, transfusion nécessaire, réparation de tendons requise, blessures possibles sur la tête, le thorax, ou l'abdomen mais organes vitaux intacts et signes vitaux stables rétablissement attendu après hospitalisation": major_blood_loss
+      "Perte de sang très importante avec choc, lésion des zones vitales avec changement dans les signes vitaux rétablissement après hospitalisation peu probable": severe_blood_loss_vital_damage
+      "Mort": death
   serious_triggered: {column: ltsg07, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: A precise event seems to have triggered the attempt}
   serious_trigger:
+    shown_if: {serious_triggered: [1]}
     column: ltsg08
     label: External trigger of the attempt
     codes:

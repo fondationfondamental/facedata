@@ -39,13 +39,13 @@ defaults: {type: item, range: [0, 1], versions: [follow_up]}
 
 variables:
   ect_fu: {column: proccur_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy since the last visit"}
-  ect_sessions_fu: {column: ect_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy since the last visit: number of sessions"}
+  ect_sessions_fu: {column: ect_procprfn, type: number, range: [0, 365], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy since the last visit: number of sessions"}
   ect_start_date_fu: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: start"}
   ect_end_date_fu: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: end"}
   ect_stimulation_fu: {column: prlat_ect, type: category, codes: {"1": code_1, "2": code_2}, label: "Electroconvulsive therapy since the last visit: kind of stimulation (code)"}
   ect_seizure_over_25s_fu: {column: prdostxt_ect, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Electroconvulsive therapy since the last visit: mean seizure on the EEG longer than 25 seconds (code)"}
   tms_fu: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation since the last visit"}
-  tms_sessions_fu: {column: tms_procprfn_nb, type: number, range: [0, 1500], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation since the last visit: number of sessions"}
+  tms_sessions_fu: {column: tms_procprfn_nb, type: number, range: [0, 365], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation since the last visit: number of sessions"}
   tms_start_date_fu: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: start"}
   tms_end_date_fu: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: end"}
   tms_stimulation_fu: {column: prlat_tms, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Transcranial magnetic stimulation since the last visit: kind of stimulation (code)"}

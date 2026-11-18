@@ -2,54 +2,89 @@ instrument: isf_since_visit
 title: Suicidal thoughts and acts since the last visit (follow-up visits)
 tab: SUICIDE
 section: Intentionnalité suicidaire actuelle
-status: draft
+status: reviewed
 notes: >
   The five yes/no questions of isf_lifetime, asked at the follow-up visits
   about the time since the last visit, each followed by "when did it last
-  happen?". Delivered as 1 (yes) and 0 (no).
+  happen?". Delivered as 1 (yes) and 0 (no): the first question on 8,244
+  visits (36% yes), "attempted" on 8,221 (2.4% yes).
 
-  Two forms in the same columns (decision D46 in PROGRESS.md). At the
-  inclusion visit the five questions are about the whole life ("have you
-  ever..."): 83% answer yes to the first and 38% say they have attempted
-  suicide. At the follow-up visits the same columns hold the answers for
-  the time since the last visit: 38% and 3%, and 93% of the patients who
-  said yes at inclusion say no later. The answers to "when did it last
-  happen" differ too: last week, two weeks to a year ago or more than a
-  year ago at inclusion; last week or since the last visit at follow-up.
-  The two forms are therefore two instruments, isf_lifetime and
-  isf_since_visit, with their own output columns. visit_form says which form
-  a visit used; it is read from the visit label.
+  Two forms in the same columns (decisions D46 and D85 in PROGRESS.md; see
+  isf_lifetime.yaml). The inclusion form asks "have you ever...": 83%
+  answer yes to the first question and 38% say they have attempted
+  suicide. The follow-up form asks the same questions "since the last
+  visit": 38% and 3% in the same columns, before the removal below. Of the
+  3,413 later answers of the patients who said at inclusion that they had
+  attempted suicide, 3,183 (93%) are no; 1,173 of these 1,371 patients
+  (86%) say no at every later visit. The answers to "when did it last
+  happen" differ too, and never cross: last week, two weeks to a year ago
+  or more than a year ago at inclusion; last week or since the last visit
+  at follow-up. The two forms are therefore two instruments, isf_lifetime
+  and isf_since_visit, with their own output columns. visit_form says which
+  form a visit used; it is read from the visit label.
 
-  A doubtful period (decisions D48 and D85 in PROGRESS.md). From 2012 to 2021,
-  2% to 4% of the follow-up visits say that the patient attempted suicide
-  since the last visit. In 2022 it is 16% and in 2023 9%, then 2% to 3%
-  again from 2024. The first question rises too (36% to 54%). Of the eight
-  centres with 30 answers or more in these two years, five rise and three
-  do not. The rise starts in the first quarter of 2022 and stops in the
-  first quarter of 2024; the years of the COVID epidemic, 2020 and 2021,
-  are at 3% to 4%. The clinician's rating of suicidal thoughts at the same
-  visits (MADRS item 10) has no peak in these two years. On the "yes"
-  visits of 2022 and 2023 the number of attempts and the date of the first
-  attempt given at inclusion are often typed again.
+  A doubtful period (decisions D48, D85, D88 and D125 in PROGRESS.md). From
+  2012 to 2021, 1.5% to 3.7% of the follow-up answers each year say that
+  the patient attempted suicide since the last visit. In 2022 it is 16% and
+  in 2023 9%, then 2.4% to 3.4% from 2024. The first question rises too,
+  from 36% in 2021 to 54% in 2022. Of the eight centres with 30 answers or
+  more in 2022 and 2023, five rise and three do not. By month the rise
+  starts in December 2021 (8 yes of 64 answers, against 0% to 4% a month
+  from July to November) and stops in the first quarter of 2024 (2 of
+  130). The years of the COVID epidemic, 2020 and 2021, are at 3% to 4%.
+  The clinician's rating of suicidal thoughts at the same visits (MADRS
+  item 10) has no peak in these years. On the "yes" visits of the period
+  the number of attempts given at inclusion is often typed again (26 of
+  the 58 numbers, against 23 of 145 from 2012 to October 2021). A date of
+  the first attempt is typed on 55 visits of the period: 47 of the 51
+  readable ones are before the inclusion visit, yet only 2 of 33 equal the
+  date given at inclusion. The question about the whole life was asked
+  again.
 
   What the application shows (read in November 2026). The follow-up form of
   today asks every question "since the last visit" and has no date of the
   first attempt; it was already so in January 2024, the oldest version of
-  the code that can be read. In 2022 and 2023 the form was another one: a
-  real date of the first attempt, a question about the whole life, is typed
-  on 37 follow-up visits of 2022 and 11 of 2023, against 1 from 2012 to
-  2020. Each centre runs its own copy of the application, which is why only
-  some centres are concerned. The cell does not tell which answers are
-  about the whole life, and about three in four of the 114 "yes" to
-  "attempted" of these two years are more than the usual rate explains.
+  the code that can be read. From November 2021 to 2023 the form was
+  another one at some centres: a real date of the first attempt, a question
+  about the whole life, is typed on 2 follow-up visits of November 2021, 5
+  of December 2021, 37 of 2022 and 11 of 2023, against 1 from 2012 to
+  October 2021 and 4 from 2024. Each centre runs its own copy of the
+  application, which is why only some centres are concerned. Eight centres
+  typed such dates in the period, the three without a rise among them. The
+  cell does not tell which answers are about the whole life: of the 124
+  "yes" to "attempted" in the period, about 24 are what the usual rate
+  (2.4%) explains, so about four in five are more. The "when" answers of
+  the period are those of the follow-up list (none says more than a year
+  ago), but they were left empty after a yes more often: 77% of the yes to
+  "attempted" have one, against 95% before and 93% after.
 
-  Not delivered (decision D88 in PROGRESS.md, of the project lead; it
-  replaces the flag of D48). Every answer of a follow-up visit dated 2022 or
-  2023 is delivered as missing and gets the flag period_removed, the "yes"
-  and the "no" alike: with the "yes" alone removed, the two years would read
-  0%. 5,602 cells of 875 visits; the flag log keeps what was written. What
-  the form of these two years asked cannot be read any more: the history of
-  the code starts in January 2024.
+  Not delivered (decisions D88 and D125 in PROGRESS.md, of the project
+  lead; D88 replaces the flag of D48). Every answer of a follow-up visit
+  dated from 2021-11-01 to 2023-12-31 is delivered as missing and gets the
+  flag period_removed, the "yes" and the "no" alike: with the "yes" alone
+  removed, the period would read 0%. 6,360 cells of 1,002 visits (774
+  patients); the flag log keeps what was written. D125 moved the start
+  from 2022-01-01 to 2021-11-01, the month of the first whole-life dates.
+  The removal applies to every centre. In one centre the placeholder
+  2011-11-11 of the first-attempt date marks, visit by visit, its old
+  follow-up form: it is on all but one of that centre's forms until May
+  2022, and on 86 visits of the period (3 "yes" to "attempted"). These
+  visits are removed too, because the export will blank the placeholder
+  (R22). What the form of the period asked cannot be read any more: the
+  history of the code starts in January 2024.
+
+  Some follow-up visits hold the C-SSRS (cssrs_fu) and none of these
+  questions: 14 in 2021, then 118 to 199 a year from 2022. Three centres
+  use it instead of these questions: none of their follow-up visits answers
+  them from 2022 (one centre) or 2024 (two). The share of follow-up visits
+  that answer these questions falls from 82% to 95% a year (2012 to 2021)
+  to 45% to 63% (2022 to 2025); those visits hold the other form.
+
+  From 2024 the attempts are back to their usual rate, but the first three
+  questions are not in four centres: the first question is at 47% from
+  2024 against 35% from 2019 to 2021, and 6 to 8 points higher at the same
+  MADRS total. In the other centres it is steady (37% and 38%). Compare the
+  thought questions across periods with care.
 
 version:
   name: visit_form
@@ -84,9 +119,9 @@ defaults:
   codes: {Oui: 1, Non: 0}
   versions: [follow_up]
   doubt:
-    period: [2022-01-01, 2023-12-31]
+    period: [2021-11-01, 2023-12-31]
     remove: true                                   # not delivered (decision D88)
-    note: the follow-up form of 2022 and 2023 also asked about the whole life
+    note: the follow-up form of November 2021 to 2023 also asked about the whole life
 
 variables:
   isf01_since_visit: {column: isf01, label: "Felt that life is not worth living - since the last visit"}

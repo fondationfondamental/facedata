@@ -6,9 +6,9 @@ import pandas as pd
 
 from facedata import custom
 from facedata.flags import finish_flags, make_flags, stack_flags
-from facedata.harmonise import (band_from_table, censoring_from_units, check_range, collapse_patient_level,
-                                compute_scores, convert_units, detect_version, doubt_period, first_rows,
-                                fix_sign, winsorise)
+from facedata.harmonise import (after_the_visit, band_from_table, censoring_from_units, check_range,
+                                collapse_patient_level, compute_scores, convert_units, detect_version,
+                                doubt_period, drop_not_shown, first_rows, fix_sign, winsorise)
 from facedata.parse import clean_text, own_cells, parse_column, split_missing
 from facedata.qc import qc_table
 from facedata.read import prepare_visits, read_extraction, read_norms
@@ -82,6 +82,24 @@ def read_variable(raw, version, name, variable, keys=None, wholes=None, norms=No
     return values, cens, stack_flags(flags), is_read, filled
 
 
+def answer_by_logic(values, filled, name, variable, schema=None):
+    """An empty cell whose answer is known is 0: after a "no" to the question it hangs on (asked_if).
+
+    With the schema, also an empty box beside a ticked box of its list
+    (box_list): the rater ticked what applied. Returns the values and which
+    cells now hold an answer.
+    """
+    empty = ~filled[name]
+    answered = pd.Series(False, index=values.index)
+    if "asked_if" in variable:
+        answered = empty & (values[variable["asked_if"]] == 0)
+    if schema is not None and "box_list" in variable:
+        others = [other for other, spec in schema["variables"].items()
+                  if other != name and spec.get("box_list") == variable["box_list"]]
+        answered = answered | (empty & (values[others] == 1).any(axis=1))
+    return values[name].mask(answered, 0), filled[name] | answered
+
+
 def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True):
     """Run every step for one instrument.
 
@@ -103,23 +121,29 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
     values = pd.DataFrame(index=raw.index)
     cens = pd.DataFrame(index=raw.index)
     wholes = pd.DataFrame(index=raw.index)           # the values inside their range, for a percentage or a norm table
-    n_rows, n_filled = {}, {}
-    per_patient = schema.get("level") == "patient"
+    is_read, filled = {}, {}
     for name, variable in schema["variables"].items():
-        values[name], cens[name], variable_flags, is_read, filled = read_variable(
+        values[name], cens[name], variable_flags, is_read[name], filled[name] = read_variable(
             raw, version, name, variable, keys, wholes, norms)
         flags.append(variable_flags)
-        if "asked_if" in variable:                   # a box shown only after a yes: a "no" there answers it too
-            answered = ~filled & (values[variable["asked_if"]] == 0)
-            values[name] = values[name].mask(answered, 0)
-            filled = filled | answered
+        if variable.get("doubt", {}).get("remove"):  # a removed answer is no answer: nothing is read from it below
+            values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
+            flags.append(doubt_flags)
+        values[name], filled[name] = answer_by_logic(values, filled, name, variable)
+        if "shown_if" in variable:                   # a cell the form did not show: a value it wrote by itself
+            values[name], hidden_flags = drop_not_shown(values, name, variable)
+            flags.append(hidden_flags)
         if variable["type"] in ("number", "item") and "range" in variable:
             wholes[name], _ = check_range(values[name], name, variable)
-        if per_patient:                              # count patients, not visit rows
-            n_rows[name] = keys["usubjid"][is_read].nunique()
-            n_filled[name] = keys["usubjid"][filled].nunique()
-        else:
-            n_rows[name], n_filled[name] = int(is_read.sum()), int(filled.sum())
+    if any("box_list" in variable for variable in schema["variables"].values()):
+        for name, variable in schema["variables"].items():     # all boxes are read: an empty one beside a ticked one is a no
+            values[name], filled[name] = answer_by_logic(values, filled, name, variable, schema)
+    if schema.get("level") == "patient":                       # count patients, not visit rows
+        n_rows = {name: keys["usubjid"][read].nunique() for name, read in is_read.items()}
+        n_filled = {name: keys["usubjid"][cells].nunique() for name, cells in filled.items()}
+    else:
+        n_rows = {name: int(read.sum()) for name, read in is_read.items()}
+        n_filled = {name: int(cells.sum()) for name, cells in filled.items()}
 
     switch = {}
     if "sign" in schema:
@@ -130,7 +154,10 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
         if "range" in variable and variable["type"] in ("number", "item", "date"):
             values[name], range_flags = check_range(values[name], name, variable)
             flags.append(range_flags)
-        if "doubt" in variable:                      # a period in which the column is not reliable
+        if variable.get("before_visit"):             # a date that cannot be on the day of its visit or later
+            values[name], late_flags = after_the_visit(values[name], keys["visit_date"], name)
+            flags.append(late_flags)
+        if "doubt" in variable and not variable["doubt"].get("remove"):     # a period in which the column is doubtful
             values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
             flags.append(doubt_flags)
     cens = cens.where(values[cens.columns].notna(), 0)
