@@ -423,7 +423,7 @@ source, in the export or in the application. Still to send.
 
   | Tab | Correction |
   |---|---|
-  | PATIENT | `formoppos` and `social_protec` have no label and no coding. They are no longer delivered (D111), so their coding is no longer asked. `arm`, the type of disorder: it is the mood-disorder diagnosis of the DSM form, which is filled at every visit; which visit gives the exported value, the inclusion or the last one? (D111) Three referral variables are listed under "Fin de suivi" |
+  | PATIENT | `formoppos` and `social_protec` have no label and no coding. They are no longer delivered (D111), so their coding is no longer asked. `arm`, the type of disorder: the dictionary should say that it is the type of mood disorder of the DSM-5 inclusion form, else of the DSM-IV one, replaced by the export's own list for 509 patients (read in the export, D119; R6). Three referral variables are listed under "Fin de suivi" |
   | AUTO-QUESTIONNAIRES | Codings of STAI-YA, PSQI, MARS and CSM (DM-2). `als55`, `als56`, `als59` carry labels of the long form but are scores of the 18 items: `als55`, labelled "Depression", is the anxiety-depression score (D72); `als56` is depression-elation and `als59` is anger (D67) |
   | NEUROPSYCHOLOGIE | The WAIS-IV digit-span summary columns have the labels of other columns. The CPT-3 names end with an underscore that the extraction does not have |
   | SUBSTANCES ET COMORBIDITE | Four anxiety columns are missing (`ceoccurtrouble_panique` and three others). The label of `abudep_autre` is that of a duration; it is a yes/no |
@@ -540,7 +540,7 @@ source, in the export or in the application. Still to send.
 
   | Finding | Count |
   |---|---|
-  | FAST domain scores differ from their items (the total is always right) | 442 cells |
+  | FAST domain scores differ from their items (the total is written again by the export's score step, so it always fits) | 442 cells |
   | CGI efficacy index differs from its two components, by a multiple of 4 | 79 of 9,010 rows |
   | DSM-IV checklist: the symptom counts are not stored | 1,946 visits (depressive), 678 (manic) |
   | WAIS-III vocabulary raw total is the sum of the items minus 3 | 1,207 of 1,210 rows |

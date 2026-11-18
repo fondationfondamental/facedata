@@ -113,15 +113,15 @@ Key columns first, then the harmonised variables of every instrument.
 |---|---|
 | `cohort` | `bp`, `sz`, `dr` or `asp`. First column of `data`, `patients`, `flags`, `treatments` and `relatives` |
 | `usubjid` | Patient identifier (text), unique inside a cohort only |
-| `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...) |
+| `visit` | Visit label as extracted (`V0`, `V6_mois`, `V1_an`, ...). The export writes it: the planned time point, from windows of six months on the days since the inclusion record, chosen by the visit type; not the visit type itself (requests R12 and R13 of [EXPORT_REQUESTS.md](EXPORT_REQUESTS.md)) |
 | `visit_order` | Rank of the visit (from `id_visit`) |
 | `visit_month` | Planned months since inclusion, read from the label (`V0` = 0, `V6_mois` = 6, `V1_an` = 12) |
 | `visit_date` | Visit date (from `svdtc`) |
 | `siteid` | Centre (text, leading zeros kept) |
-| `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The export gives the date of birth to the month only, so it is exact to about two weeks |
+| `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The BP, SZ and ASP exports give the date of birth to the month only, so it is exact to about two weeks; the DR export keeps the day for 88 patients, which the DR schema sets to the 15th |
 | harmonised variables | Numbers are floats in the schema's unit, categories are harmonised labels, dates are dates |
 
-(`usubjid`, `visit`) is unique inside a cohort.
+(`usubjid`, `visit`) is unique inside a cohort: the export's visit preprocessing merges or deletes the records that share a label, and the real-data tests check it.
 
 **Putting two cohorts together.** The tables of two cohorts have the same key
 columns and the same names for the instruments they share, so they can be
@@ -313,6 +313,7 @@ free text, which are not repaired.
   12 × n months, `V0` is 0.
 - `screening` is a visit of its own, before `V0`. It has no `visit_month`:
   it took place a median of 70 days before the inclusion, with a wide spread.
+  In BP it is dated after `V0` for 26 patients (`visit_order`).
 - Placeholder visit dates (`1950-01-01`) become missing (`date_placeholder`).
 - A visit dated before the cohort opened (each cohort module gives the day)
   or after today has an impossible date: it becomes missing (`out_of_range`

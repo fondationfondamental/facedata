@@ -14,12 +14,19 @@ notes: >
   the date of the last visit.
 
   The extraction holds two generations of the same form. The columns ending
-  in _patient (dictionary section "patient") were used until about 2022, the
-  columns ending in _stopsuivi (section "Fin de suivi") from 2018 on. The
+  in _patient (dictionary section "patient", a section of the patient form)
+  hold a reason for 783 patients, mostly older ones: 51 of them have their
+  last visit from 2022 and 13 from 2024. The columns ending in _stopsuivi
+  (section "Fin de suivi", the form of its own) are used from 2018 on. The
   questions and the answers are the same, so each variable reads the new
   column first and the old one when the new one is empty (decision D17 in
-  PROGRESS.md). Five patients have a reason in both; for two of them the
-  two reasons differ (column_conflict, the new one is kept).
+  PROGRESS.md). The newer form wins because the application's button "Fin
+  de suivi" opens it and its reminder lists read only it; it also always
+  holds the detail its reason asks for (the date of death 3 of 3, the date
+  and the new diagnosis of a change 9 of 9, the text of another reason 39
+  of 39), the older one less often. Five patients have a reason in both;
+  for two of them the two reasons differ (column_conflict, the new one is
+  kept). No patient mixes the two sets.
 
   The EMR writes the placeholder 1000-01-01 in the two date columns when
   there is nothing to record: 165 patients have it as their date of death

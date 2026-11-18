@@ -8,9 +8,11 @@ notes: >
   scores and a total.
 
   The stored total equals the sum of the 24 items on all 16,604 visits that
-  have one. The six stored domain scores do not always: each differs from
-  the sum of its items on 0.1 to 0.7% of the visits, in every period, while
-  the total never does. The domain scores are therefore recomputed here and
+  have one, because the export's score step writes it again from the items
+  (D120): it is a check of the package against the export, not against the
+  application. The six stored domain scores are the application's, which
+  computes them on a button and not on saving (D106): each differs from the
+  sum of its items on 0.1 to 0.7% of the visits, in every period. The domain scores are therefore recomputed here and
   compared with the stored ones (score_mismatch). The sums and the domains
   are those of the scoring script of the application.
 
