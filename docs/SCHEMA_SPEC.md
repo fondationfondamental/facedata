@@ -87,7 +87,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
-| `asked_if` | item, number | Name of a yes/no variable or of a count listed before. The question is asked only after a yes to it (or a count above 0): where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `asked_if` | item, number | Name of a yes/no variable or of a count (an item or a number whose range starts at 0) listed before. The question is asked only after a yes to it (or a count above 0), or its answer is 0 when that count is 0: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
 | `day` | date | The day of the month that the export writes in place of the real one (15 for a date of birth). A cell that holds another day is delivered with this day and flagged `date_partial` |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ..., remove: true}`: the cells of the visits dated in the period keep their value and get `period_doubt`; with `remove: true` they are delivered as missing and get `period_removed` (section 10) |
@@ -142,10 +142,10 @@ panic_disorder:   {column: ceoccurtrouble_panique, type: item, range: [0, 1], as
 ```
 
 - `asked_if` names a variable of the same schema, listed before: a yes/no
-  item with `range: [0, 1]`, or a count (an item whose range starts at 0:
-  "how many of them..." is asked only when the number of sisters is not 0).
-  The variable itself is a yes/no box or a count: an item or a number whose
-  range starts at 0.
+  item with `range: [0, 1]`, or a count (an item or a number whose range
+  starts at 0: "how many of them..." is asked only when the number of
+  sisters is not 0). The variable itself is a yes/no box, a count or a
+  total: an item or a number whose range starts at 0.
 - Where the named answer is 0 and the cell is empty, the value is 0.
 - Where the named answer is missing (unknown, or the form was not filled),
   the value stays missing. Where it is 1, the cell is read as usual.
@@ -161,9 +161,16 @@ any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Ou
 n_mde:       {column: evnum_edm_ly, type: number, range: [0, 50], asked_if: any_episode}
 ```
 
+It also covers an answer that is 0 by logic where the form showed the
+question and the rater left it empty: with no manic episode, no manic
+episode had psychotic features; with no hospitalisation, the total time in
+hospital is 0 (decision D122). The notes of the schema say so.
+
 Never use it for a detail of the thing asked about, such as an age at onset
-or a severity: after a "no" it has no value and stays missing. The schema
-check cannot tell a count from an age; that is for the author to see.
+or a severity: after a "no" it has no value and stays missing. A total (the
+months spent in hospital, the weeks of sick leave) is not a detail: it is 0
+when there was nothing. The schema check cannot tell a count from an age;
+that is for the author to see.
 
 ### Several boxes in one cell
 
@@ -579,6 +586,7 @@ Rules:
   instrument was not administered. "Nothing" means the columns that the
   schema's own variables read: a column of another instrument listed under
   `filled` does not give a version to a visit where the instrument is empty.
+  A placeholder date (1000-01-01, 0000-00-00) counts as nothing (D122).
 - A visit with data but a version code that is not listed gets
   `version_unknown`. So does a visit dated before the `since` day of the
   edition that its columns give.
@@ -981,9 +989,9 @@ the list is not empty.
 - `day` is a whole number from 1 to 28, on a date.
 - `doubt` has a `period` of two dates, first day ≤ last day, and no field
   other than `period`, `values`, `note` and `remove`.
-- `asked_if` names an item whose range starts at 0 (a yes/no item or a
-  count), listed before in the same schema, on an item or a number whose
-  range starts at 0.
+- `asked_if` names an item or a number whose range starts at 0 (a yes/no
+  item or a count), listed before in the same schema, on an item or a
+  number whose range starts at 0.
 - `separator` is on an item that has `codes`.
 - Versions named in `versions` exist in `version`.
 - Schemas that use the same version `name` have identical `version` blocks.

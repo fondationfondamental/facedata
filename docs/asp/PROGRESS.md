@@ -48,6 +48,7 @@ decisions of [the BP file](../bp/PROGRESS.md), [the SZ file](../sz/PROGRESS.md) 
 | D18 | 2026-11-17 | A CRP of exactly 0 is delivered as missing, as in BP (BP D101, decided by the project lead for the four cohorts): no assay gives 0, so it is a result below a limit that was not written. 45 of the 357 ASP results, which leaves 312 |
 | D19 | 2026-11-17 | Corrected QT: BP and DR now compute it from the heart rate of the ECG (BP D114). The ASP extraction has no heart rate of the ECG, so `qtc_bazett` is still computed from the typed RR; the shared function does that by itself. The tolerance of the comparison with the stored QTc goes from 0.005 to 0.03 s like in the other cohorts: no `score_mismatch` is left (3 before) |
 | D20 | 2026-11-18 | Requests to the export, batch 1: [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md), shared by the four cohorts (BP D119). Each request says what it changes in this cohort under "Other cohorts"; the centre letters there are those of this cohort |
+| D21 | 2026-11-18 | The weeks of sick leave of the past year are 0 after a "no" (asked_if, 143 visits), as in BP, SZ and DR (BP D123) |
 
 ## Open questions
 

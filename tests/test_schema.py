@@ -265,8 +265,9 @@ variables:
 
 def test_asked_if_names_a_yes_no_question_listed_before(tmp_path):
     problems = check_schema(load_schema(write(tmp_path, "asked", ASKED)))
-    # A box or a count may be asked after a yes/no question or after a count of whole things ("how many of them");
-    # a rating that cannot be 0 may not, and the question named cannot be a measure or a rating.
-    for name in ["too_early", "no_such", "a_rating", "after_a_number", "after_a_rating"]:
+    # A box or a count may be asked after a yes/no question or after a count, an item or a number ("how many of
+    # them", "how long, if any": D122); a rating that cannot be 0 may not, and the question named cannot be a rating.
+    for name in ["too_early", "no_such", "a_rating", "after_a_rating"]:
         assert f"asked: {name}: asked_if must name a yes/no item or a count" in " | ".join(problems), name
-    assert len(problems) == 5
+    assert "after_a_number" not in " | ".join(problems)
+    assert len(problems) == 4

@@ -281,6 +281,9 @@ def test_medical_evaluation_care_and_social(result, qc):
     assert (qc.loc["n_psychotic_episodes", "n_valid"], data["symptom_persecution_ever"].sum(), data["violence_verbal"].sum()) == (1899, 1807, 925)
     assert shape_of(qc, "SOIN SUIVI HOSP ARRET TRAVAIL") == (27, 5, 0, 25)
     assert (qc.loc["first_hospitalisation_age", "n_valid"], qc.loc["hospitalisation_months_v0", "censored_right"], qc.loc["hospitalised_12m", "n_valid"]) == (1868, 105, 4494)
+    # The psychiatric sick leave since the last visit is the BP question, under the BP names; 0 after a "no" (BP D123).
+    assert [qc.loc[name, "n_valid"] for name in ["sick_leave_fu", "n_sick_leaves_fu", "sick_leave_weeks_fu", "sick_leave_weeks_12m"]] == [1306, 1288, 1283, 797]
+    assert (data.loc[data["sick_leave_fu"] == 0, "sick_leave_weeks_fu"] == 0).all()
     assert shape_of(qc, "SOCIAL - PERINATALITE") == (11, 1, 0, 0)
     # Lost answers: no patient is married or living as a couple, none has a salary or a disability pension.
     assert data["marital_status"].value_counts().to_dict() == {"single": 1652, "divorced": 42, "separated": 30, "widowed": 4}

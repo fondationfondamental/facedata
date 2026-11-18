@@ -143,6 +143,17 @@ def test_version_from_a_column():
     assert flagged(flags, "version_unknown") == [2]      # data, but a code that is not listed
 
 
+def test_a_placeholder_date_does_not_make_a_visit_filled():
+    """A form that holds only the date the application writes in an empty field was not filled (D122)."""
+    raw = pd.DataFrame({"ver": ["", "", "WAIS3"], "x": ["1000-01-01", "0000-00-00", "1000-01-01"]})
+    keys = make_keys(["A", "B", "C"], [0, 0, 0], ["2015-01-01"] * 3)
+    schema = {"version": {"name": "wais_version", "column": "ver", "codes": {"WAIS3": "wais3"}},
+              "variables": {"v": {"columns": ["x"]}}}
+    version, flags = detect_version(raw, keys, schema)
+    assert version[:2].isna().all() and version[2] == "wais3"
+    assert flagged(flags, "version_unknown") == []        # nothing filled: no version and no flag
+
+
 def test_version_from_which_items_are_filled():
     raw = pd.DataFrame({"i1": ["1", "1", ""], "i2": ["2", "", ""], "i3": ["3", "", ""]})
     keys = make_keys(["A", "B", "C"], [0, 0, 0], ["2015-01-01"] * 3)
@@ -369,6 +380,14 @@ def test_a_score_can_be_a_formula_of_custom_py_with_a_tolerance():
     values, flags = compute_scores(values, schema)
     assert list(values["bmi"]) == pytest.approx([22.857, 31.25], abs=0.001)
     assert flagged(flags, "score_mismatch") == [1]     # 22.9 is 22.857 rounded; 35.0 is not 31.25
+
+
+def test_a_no_to_more_than_20_sick_leaves_is_read_as_yes():
+    """A script wrote "no" where the number of sick leaves was ">20" (read as 20): the answer is yes (D123)."""
+    values = pd.DataFrame({"sick_leave_12m_stored": [0.0, 0.0, 1.0, 0.0, np.nan],
+                           "n_sick_leaves_12m": [20.0, 0.0, 20.0, 3.0, 20.0]})
+    assert list(custom.sick_leave_more_than_20(values)[:4]) == [1.0, 0.0, 1.0, 0.0]   # a "no" with 3 leaves stays as typed
+    assert pd.isna(custom.sick_leave_more_than_20(values)[4])
 
 
 def test_corrected_qt_uses_the_heart_rate_of_the_ecg():

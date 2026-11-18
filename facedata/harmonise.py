@@ -10,7 +10,7 @@ import pandas as pd
 from facedata import custom
 from facedata.flags import make_flags, stack_flags
 from facedata.parse import PERCENTILE_BAND, band_of_z, clean_text
-from facedata.tokens import EMPTY_DATE
+from facedata.tokens import EMPTY_DATE, PLACEHOLDER_DATES
 
 
 # ---------------------------------------------------------------- step 4: versions
@@ -19,7 +19,7 @@ def detect_version(raw, keys, schema):
     """The edition or form of the instrument used at each visit."""
     version = schema["version"]
     columns = sorted({column for variable in schema["variables"].values() for column in variable["columns"]})
-    has_data = ((raw[columns] != "") & (raw[columns] != EMPTY_DATE)).any(axis=1)
+    has_data = ((raw[columns] != "") & (raw[columns] != EMPTY_DATE) & ~raw[columns].isin(PLACEHOLDER_DATES)).any(axis=1)
     flags = []
     if "filled" in version:
         result = pd.Series(np.nan, index=raw.index, dtype=object)

@@ -258,10 +258,10 @@ def check_variable(name, variable, schema, columns):
     if "asked_if" in variable:
         names = list(schema["variables"])
         gate = schema["variables"].get(variable["asked_if"], {})
-        gate_takes_zero = gate.get("type") == "item" and gate.get("range", [None])[0] == 0.0
+        gate_takes_zero = gate.get("type") in ("item", "number") and gate.get("range", [None])[0] == 0.0
         takes_zero = kind in ("item", "number") and variable.get("range", [None])[0] == 0.0
         if variable["asked_if"] not in names[:names.index(name)] or not gate_takes_zero or not takes_zero:
-            problems.append(f"{name}: asked_if must name a yes/no item or a count (an item whose range starts at 0) "
+            problems.append(f"{name}: asked_if must name a yes/no item or a count (an item or a number whose range starts at 0) "
                             "listed before, on an item or a number whose range starts at 0")
     if "separator" in variable and (kind != "item" or "codes" not in variable):
         problems.append(f"{name}: separator goes on an item that has codes")

@@ -10,13 +10,15 @@ notes: >
   "Non applicable" (no job: 941 answers) and "Ne sais pas" (287 for the
   somatic leaves) are missing codes; so is 999 in a number or a length.
 
-  FACE BP asks one question for all sick leaves at follow-up; the SZ form
-  separates the psychiatric and the somatic ones, so the names differ.
+  The psychiatric question is the one of FACE BP (the same field of the
+  application, the same words) and has the BP names (BP D123). SZ adds the
+  somatic sick leaves of the past 12 months, under names of its own. After
+  a "no", the number and the length are 0 (asked_if), as in BP.
 
 variables:
-  sick_leave_psychiatric_fu: {column: hooccur_arret_travailpsy_spv, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Sick leave for a psychiatric disorder since the last visit}
-  n_sick_leaves_psychiatric_fu: {column: nboccur_arret_travailpsy_spv, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, label: Number of sick leaves for a psychiatric disorder since the last visit}
-  sick_leave_psychiatric_weeks_fu: {column: hodur_arret_travailpsy_spv, type: number, unit: weeks, range: [0, 160], missing: {999: unknown}, winsor: false, label: Total length of the sick leaves for a psychiatric disorder since the last visit}
+  sick_leave_fu: {column: hooccur_arret_travailpsy_spv, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Sick leave for a psychiatric disorder since the last visit}
+  n_sick_leaves_fu: {column: nboccur_arret_travailpsy_spv, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, asked_if: sick_leave_fu, label: Number of sick leaves for a psychiatric disorder since the last visit}
+  sick_leave_weeks_fu: {column: hodur_arret_travailpsy_spv, type: number, unit: weeks, range: [0, 160], missing: {999: unknown}, winsor: false, asked_if: sick_leave_fu, label: Total length of the sick leaves for a psychiatric disorder since the last visit}
   sick_leave_somatic_12m: {column: hooccur_arret_travailsom_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave for a somatic disorder in the past 12 months, at follow-up"}
-  n_sick_leaves_somatic_12m: {column: nboccur_arret_travailsom_ly, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, label: Number of sick leaves for a somatic disorder in the past 12 months}
-  sick_leave_somatic_weeks_12m: {column: hodur_arret_travailsom_ly, type: number, unit: weeks, range: [0, 52], missing: {999: unknown}, winsor: false, label: Total length of the sick leaves for a somatic disorder in the past 12 months}
+  n_sick_leaves_somatic_12m: {column: nboccur_arret_travailsom_ly, type: number, range: [0, 50], missing: {999: unknown}, winsor: false, asked_if: sick_leave_somatic_12m, label: Number of sick leaves for a somatic disorder in the past 12 months}
+  sick_leave_somatic_weeks_12m: {column: hodur_arret_travailsom_ly, type: number, unit: weeks, range: [0, 52], missing: {999: unknown}, winsor: false, asked_if: sick_leave_somatic_12m, label: Total length of the sick leaves for a somatic disorder in the past 12 months}

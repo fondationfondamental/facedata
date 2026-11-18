@@ -2,11 +2,14 @@ instrument: hospitalisations_v0
 title: Hospitalisations before inclusion (inclusion visit)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: VIE ENTIERE / DEPUIS LA DERNIERE VISITE
-status: draft
+status: reviewed
 notes: >
-  Psychiatric hospitalisations up to the inclusion visit: the age at the
-  first one, their number and total duration over the whole life, and their
-  number and duration in the 12 months before the visit.
+  Hospitalisations up to the inclusion visit: the age at the first one,
+  their number and total duration over the whole life, and their number
+  and duration in the 12 months before the visit. The two inclusion
+  diagnosis forms (DSM-IV, then DSM-5) ask them in their part on mood
+  disorders and do not say for what cause. Filled at the inclusion visit
+  only.
 
   Two periods in the same columns (decision D54 in PROGRESS.md). The number
   of hospitalisations and their total duration are asked at the inclusion
@@ -18,24 +21,67 @@ notes: >
   and is read from the visit label.
 
   Number. The form stops at 20: ">20" is read as 20 with a mark in the
-  censoring column (this value or more). "Ne sais pas" is a missing code.
+  censoring column (this value or more; 25 visits). "Ne sais pas" is a
+  missing code, here and in the age, the lifetime duration and the number
+  for the year.
 
   Duration, in months. A choice in a list: 0, a quarter, half or three
-  quarters of a month, 1 to 20 months, more than 20 (censored at 20).
+  quarters of a month, 1 to 20 months, more than 20 (censored at 20; 32
+  visits). A duration left empty where the number is 0 is 0 (asked_if on
+  the number, D123): 569 visits.
 
-  No winsorising (decision D54 in PROGRESS.md): most answers are 0, so the
-  99th percentile would bring the rare high values down to it, or to 0.
+  Age at the first hospitalisation. The form asks it before the number,
+  and its list starts with "<5" and has no answer for a patient never
+  hospitalised. "<5" is therefore read as unknown, a missing code (D123):
+  16 of the 21 patients who chose it have a number of 0 and 3 have none.
+  Of the 1,278 patients with a number of 0, the age is empty for 1,076,
+  "Ne sais pas" for 176 and a number for 10. 30 patients with a number of
+  1 or more give no age, and 24 more answer "Ne sais pas".
 
-  Age at the first hospitalisation. "<5" (21 patients) is read as 5 with a
-  mark in the censoring column (this value or less). 10 patients give an age
-  although they have had no hospitalisation, and 30 have had some and give
-  none.
+  The 12 months before inclusion. The number and the total duration in
+  weeks. The DSM-IV form (inclusions up to 2022) shows them only after a
+  yes to "at least one mood episode in the past year"; the DSM-5 form
+  (from 2020) asks every patient. After a "no" to that question both are 0
+  (asked_if, D123; the question is read from rad_tb_hum_epthyman and
+  delivered in the DSM schemas): 852 numbers of DSM-IV inclusions and 29
+  of DSM-5 inclusions were empty there. A few of these zeros may be wrong:
+  on the DSM-5 form, 7 of the 158 patients with no episode who answered
+  were hospitalised in the year. The weeks are 0 where the number for the
+  year is 0 (1,989 visits: 1,119 after a typed 0, 870 after a 0 given by
+  the mood question). 31% of the DSM-IV numbers and 28% of the DSM-5
+  numbers are above 0. A duration above 52 weeks is out of range (3 cells,
+  all on the DSM-IV form; the DSM-5 form stops at 52).
 
-  The 12 months before inclusion. Number and total duration in weeks; a
-  duration above 52 weeks is out of range (3 cells). The dictionary also
-  lists a yes/no question (hooccur_hospitalisation_ly) that is not in the
-  extraction. 20 patients give more hospitalisations in the year than in
-  their whole life; delivered as written.
+  The dictionary also lists a yes/no question, hospitalised in the past
+  12 months (hooccur_hospitalisation_ly). No form has this field and no
+  export model writes it; the dictionary row is to be deleted (R95).
+
+  Centre C holds no answer from 2022: its DSM-5 table is missing from the
+  export (R20). Centre A fills the number on 19% of its inclusions in
+  2022-23 and on none from 2024 (O40). Where a hospitalisation is counted,
+  centre H leaves the lifetime duration empty on 33 of its 68 inclusions
+  from 2022, and centre C on 102 of 449 up to 2021 (6% to 10% in the other
+  centres).
+
+  Delivered as written, with no flag: 5 ages at the first hospitalisation
+  are 2 to 16 years above the age at inclusion (2015 to 2020), and 26 more
+  are 1 year above, which fits an age counted by calendar year. 20 patients
+  give more hospitalisations in the year than over their whole life (9 of
+  them none over the life). 18 durations for the year exceed the lifetime
+  duration by more than 2 weeks (5 of them with a lifetime duration of 0).
+  21 durations for the year are above 0 with a number for the year of 0,
+  and 5 lifetime durations are above 0 with a lifetime number of 0.
+
+  No winsorising (decision D54 in PROGRESS.md). The numbers and durations
+  count events, and their rare high values are real. A quarter of the
+  lifetime numbers are 0, and 70% of the numbers for the year. The default
+  99th percentile would bring 37 lifetime numbers of 16 to 20 down to 15,
+  34 numbers of 4 to 8 in the year down to 3, and 50 durations of 23 to 52
+  weeks in the year down to 22; for the lifetime duration it is 20, the top
+  of the list, and would change nothing. The age at the first
+  hospitalisation is not winsorised either, like the other ages at onset:
+  the default would raise 17 ages of 9 to 12 to 13 and lower 37 ages of 61
+  to 77 to 60.
 
 version:
   name: visit_form
@@ -67,10 +113,11 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first hospitalisation"}
+  first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, unit: years, range: [0, 90], winsor: false, missing: {"<5": unknown}, label: "Age at the first hospitalisation"}
   n_hospitalisations_v0: {column: nboccur_hospitalisation, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations over the life, at inclusion"}
-  hospitalisation_months_v0: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, label: "Total duration of the hospitalisations over the life, at inclusion"}
+  hospitalisation_months_v0: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, asked_if: n_hospitalisations_v0, label: "Total duration of the hospitalisations over the life, at inclusion"}
 
-  # The 12 months before the inclusion visit.
-  n_hospitalisations_12m: {column: nboccur_hospitalisation_ly, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations in the 12 months before inclusion"}
-  hospitalisation_weeks_12m: {column: hodur_hospitalisation_ly, type: number, unit: weeks, range: [0, 52], winsor: false, label: "Total duration of the hospitalisations in the 12 months before inclusion"}
+  # The 12 months before the inclusion visit. After a "no" to any mood episode in the past year they are 0 (D123).
+  mood_episode_12m: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, keep: false, label: "At least one mood episode in the past year (delivered in the DSM schemas)"}
+  n_hospitalisations_12m: {column: nboccur_hospitalisation_ly, type: number, range: [0, 50], winsor: false, asked_if: mood_episode_12m, label: "Number of hospitalisations in the 12 months before inclusion"}
+  hospitalisation_weeks_12m: {column: hodur_hospitalisation_ly, type: number, unit: weeks, range: [0, 52], winsor: false, asked_if: n_hospitalisations_12m, label: "Total duration of the hospitalisations in the 12 months before inclusion"}

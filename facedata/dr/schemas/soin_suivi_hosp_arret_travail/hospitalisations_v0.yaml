@@ -8,8 +8,11 @@ notes: >
   about half of the inclusions (8% to 83% by centre). The SZ schema of this
   name, with the columns that this cohort has: ever hospitalised (written Y
   and N), the age at the first hospitalisation, their number and their
-  total length in months. An age of 0 is "not recorded" (26 visits); 6 ages
-  under 5 are out of range.
+  total length in months. An age of 0 is "not recorded" (26 visits, all
+  with a number of 0). 6 ages are written "00" and are out of range: they
+  are on 6 of the 19 inclusions (15 of them from 2024) whose number is
+  "00" and whose yes/no is empty, because the export derives the yes/no
+  from the number (R73).
 
 variables:
   ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Has ever been hospitalised, at inclusion"}

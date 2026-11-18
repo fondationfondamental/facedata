@@ -2,11 +2,13 @@ instrument: hospitalisations_fu
 title: Hospitalisations since the last visit (follow-up visits)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: VIE ENTIERE / DEPUIS LA DERNIERE VISITE
-status: draft
+status: reviewed
 notes: >
-  Psychiatric hospitalisations since the last visit: their number and total
-  duration. Asked at every follow-up visit, six-monthly and yearly; 86% of
-  the answers are 0.
+  Hospitalisations since the last visit: their number and total duration.
+  Asked at every follow-up visit, six-monthly and yearly, in the part of
+  the follow-up diagnosis form on mood disorders since the last visit
+  ("Troubles de l'humeur depuis la dernière visite"); the form does not say
+  for what cause. 87% of the numbers are 0.
 
   Two periods in the same columns (decision D54 in PROGRESS.md). The number
   of hospitalisations and their total duration are asked at the inclusion
@@ -18,13 +20,44 @@ notes: >
   and is read from the visit label.
 
   Number. The form stops at 20: ">20" is read as 20 with a mark in the
-  censoring column (this value or more). "Ne sais pas" is a missing code.
+  censoring column (this value or more; 1 visit). "Ne sais pas" is a
+  missing code for the number (29 cells) and the duration (60, 29 of them
+  after a number of 0).
 
   Duration, in months. A choice in a list: 0, a quarter, half or three
-  quarters of a month, 1 to 20 months, more than 20 (censored at 20).
+  quarters of a month, 1 to 20 months, more than 20 (censored at 20). A
+  duration left empty where the number is 0 is 0 (asked_if on the number,
+  D123): 978 visits. This happens more often in recent years (6% of the
+  numbers of 0 until 2012, 18% from 2024) and in centres E and I (27% and
+  25%).
 
-  No winsorising (decision D54 in PROGRESS.md): most answers are 0, so the
-  99th percentile would bring the rare high values down to it, or to 0.
+  The time covered is the time since the previous visit: a median of 6
+  months at the six-monthly visits and 12 at the yearly ones, and more than
+  16 months for one visit in ten. The numbers rise with it: 0.13
+  hospitalisations on average after 4 to 8 months, 0.44 after more than
+  30. Compare visits through the time since the previous visit (from
+  visit_date).
+
+  Filled at 72% of the follow-up visits: 84% until 2012 and 57% from 2024.
+  The form is missing more often from 2022 (centre A, DM-6 in
+  QUESTIONS.md), and where it is filled the number is skipped more often
+  (filled on 94% of those visits until 2012, 81% from 2024). The share of
+  visits with a hospitalisation stays between 11% and 14% in every period.
+
+  Delivered as written: 20 visits give a number of 0 and a duration above
+  0, 36 give a number of 1 or more and a duration of 0 (a stay of less than
+  a week fits 0 on this list), and 11 durations are longer than the time
+  since the previous visit.
+
+  No winsorising (decision D54 in PROGRESS.md): most answers are 0 (87% of
+  the numbers, 88% of the durations), so the 99th percentile would bring
+  the rare high values down to it.
+
+  DR has a twin, hospitalisations_since_visit, which counts the stays for
+  depression and for another reason (not said to be psychiatric) apart,
+  and its durations may reach 60 months; it is not in
+  common_instruments.yaml. SZ
+  asks the past 12 months at every visit instead (hospitalisations_12m).
 
 version:
   name: visit_form
@@ -57,4 +90,4 @@ defaults: {versions: [follow_up]}
 
 variables:
   n_hospitalisations_fu: {column: nboccur_hospitalisation, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations since the last visit"}
-  hospitalisation_months_fu: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, label: "Total duration of the hospitalisations since the last visit"}
+  hospitalisation_months_fu: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, asked_if: n_hospitalisations_fu, label: "Total duration of the hospitalisations since the last visit"}

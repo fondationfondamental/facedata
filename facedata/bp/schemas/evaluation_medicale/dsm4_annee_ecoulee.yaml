@@ -2,31 +2,65 @@ instrument: dsm4_annee_ecoulee
 title: Mood episodes of the year before inclusion, DSM-IV criteria
 tab: EVALUATION MEDICALE
 section: Caractéristique du trouble au cours de l'année ecoulée
-status: draft
+status: reviewed
 notes: >
   The mood episodes of the year before the inclusion visit: one yes/no
-  question (at least one episode), then for each kind of episode a box and a
-  number, and those with psychotic features. Yes/no answers are delivered as
-  1 and 0; "Ne sais pas" is a missing code.
+  question (at least one episode), then the number of each kind of episode
+  (depressive, hypomanic, manic, mixed), and for depressive, manic and mixed
+  episodes a yes/no and a number for those with psychotic features. Asked
+  at the inclusion visit only. Yes/no answers are delivered as 1 and 0; "Ne
+  sais pas" is a missing code.
 
-  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
-  evaluation was made with DSM-IV criteria for the patients included until
-  2021 and with DSM-5 criteria since, in the same columns. This schema reads
-  the DSM-IV visits; dsm5_annee_ecoulee.yaml reads the others. Both carry
-  the version block of the two schemas of the follow-up form (decisions D12,
-  D14 and D15). The DSM-IV form counts mixed episodes; the DSM-5 form has
-  none.
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md), asked on
+  two inclusion forms and exported in the same columns. The application
+  stores no edition: the export writes dsm_criteria on the inclusion row,
+  DSM5 where the DSM-5 form holds one of five answers on the mood history,
+  else DSM4 where the DSM-IV form does (DEV-11). The label is DSM-IV until
+  2019 (7 DSM-5 exceptions), DSM-5 on 24 of 380 labelled inclusions in
+  2020, 44 of 425 in 2021 and 203 of 238 in 2022 (the 35 DSM-IV ones of
+  2022 are dated January to May), and DSM-5 on all from 2023. This schema
+  reads the DSM-IV visits; dsm5_annee_ecoulee.yaml reads the others. Both
+  carry the version block of the follow-up schemas (D12, D14, D15): an
+  inclusion with no label is read by the date of the patient's first visit
+  (the screening, where there is one), DSM-IV before 2020 and DSM-5 from
+  2023 (version_inferred), and has no version from 2020 to 2022
+  (version_unknown, not delivered). Why labels are missing: see
+  dsm4_depuis_derniere_visite.yaml. In this section 12 unlabelled
+  inclusions are read by date (9 DSM-IV, 3 DSM-5) and 4 of 2020 and 2021
+  are not delivered (R69 would label them). The DSM-IV form counts mixed
+  episodes; the DSM-5 form has none.
 
-  Asked only after a yes (asked_if). The boxes and the numbers are shown
-  only where the first answer is yes; where it is no they are empty in the
-  extraction and are read as 0: with no mood episode in the year, there was
-  no depressive episode. Where the first answer is unknown or empty they
-  stay missing. In the same way the number of episodes with psychotic
-  features is 0 where the answer to "at least one" is no.
+  The numbers. The form asks a number for each kind of episode, 0 to 20 or
+  ">20" (read as 20 and censored_right: 4 depressive, 5 hypomanic and 1
+  mixed), only after a yes to the first question (asked_if). Where the
+  first answer is no they are empty in the extraction and are read as 0:
+  with no mood episode in the year, there was no depressive episode. Where
+  the first answer is unknown or empty they stay missing.
 
-  The boxes add nothing to the numbers: a box is 1 where the number is 1 or
-  more, 0 where it is 0, and empty where the number is unknown. They are
-  delivered because the follow-up form has the same pair.
+  The boxes. The form has no box per kind of episode: the export writes the
+  four boxes (mhoccur_edm_ly, mhoccur_ehman_ly, mhoccur_epman_ly,
+  mhoccur_epmixt_ly) from the number, 1 where it is 1 or more (">20"
+  included), 0 where it is 0, empty where it is "Ne sais pas" or empty
+  (3,193, 3,039, 3,185 and 3,006 boxes). After a no they are read as 0 like
+  the numbers (843 to 855 visits). They add nothing to the numbers and are
+  delivered so that this section and the follow-up one have the same pair
+  (D53); the export writes the three follow-up boxes the same way, with no
+  mixed one. On 2 visits the first answer is no and the hypomanic number is
+  "Ne sais pas": the box is 0 and the number is missing.
+
+  Psychotic features. The form shows the three yes/no questions after a yes
+  to the first question, whatever the number of that kind of episode.
+  Where that number is 0 and the rater left the question empty, the answer
+  is 0 too: with no manic episode, no manic episode had psychotic features
+  (asked_if on the box, D122). This gives 90 depressive, 369 manic and 518
+  mixed zeros. The number with psychotic features is 0 where the yes/no is
+  0.
+
+  Answers that contradict each other are delivered as typed: 15 inclusions
+  say yes and then give 0 for every kind of episode; 2 give a number above
+  0 after a no and 4 give numbers with no first answer or "Ne sais pas"; 23
+  say yes to psychotic features with no episode of that kind; 9 give more
+  episodes with psychotic features than episodes of that kind.
 
 version:
   name: dsm_version
@@ -44,16 +78,16 @@ variables:
   dsm4_ly_any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one mood episode in the past year"}
 
   dsm4_ly_mde: {column: mhoccur_edm_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one major depressive episode in the past year"}
-  dsm4_ly_n_mde: {column: evnum_edm_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of major depressive episodes in the past year"}
-  dsm4_ly_mde_psychotic: {column: mhoccur_edmpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_any_episode, label: "At least one major depressive episode with psychotic features in the past year"}
-  dsm4_ly_n_mde_psychotic: {column: evnum_edmpsy_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_mde_psychotic, label: "Number of major depressive episodes with psychotic features in the past year"}
+  dsm4_ly_n_mde: {column: evnum_edm_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of major depressive episodes in the past year"}
+  dsm4_ly_mde_psychotic: {column: mhoccur_edmpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mde, label: "At least one major depressive episode with psychotic features in the past year"}
+  dsm4_ly_n_mde_psychotic: {column: evnum_edmpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mde_psychotic, label: "Number of major depressive episodes with psychotic features in the past year"}
   dsm4_ly_hypomania: {column: mhoccur_ehman_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one hypomanic episode in the past year"}
-  dsm4_ly_n_hypomania: {column: evnum_ehman_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of hypomanic episodes in the past year"}
+  dsm4_ly_n_hypomania: {column: evnum_ehman_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of hypomanic episodes in the past year"}
   dsm4_ly_mania: {column: mhoccur_epman_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one manic episode in the past year"}
-  dsm4_ly_n_mania: {column: evnum_epman_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of manic episodes in the past year"}
-  dsm4_ly_mania_psychotic: {column: mhoccur_epman_psy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_any_episode, label: "At least one manic episode with psychotic features in the past year"}
-  dsm4_ly_n_mania_psychotic: {column: evnum_epman_psy_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_mania_psychotic, label: "Number of manic episodes with psychotic features in the past year"}
+  dsm4_ly_n_mania: {column: evnum_epman_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of manic episodes in the past year"}
+  dsm4_ly_mania_psychotic: {column: mhoccur_epman_psy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mania, label: "At least one manic episode with psychotic features in the past year"}
+  dsm4_ly_n_mania_psychotic: {column: evnum_epman_psy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mania_psychotic, label: "Number of manic episodes with psychotic features in the past year"}
   dsm4_ly_mixed: {column: mhoccur_epmixt_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one mixed episode in the past year"}
-  dsm4_ly_n_mixed: {column: evnum_epmixt_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of mixed episodes in the past year"}
-  dsm4_ly_mixed_psychotic: {column: mhoccur_epmixtpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_any_episode, label: "At least one mixed episode with psychotic features in the past year"}
-  dsm4_ly_n_mixed_psychotic: {column: evnum_epmixtpsy_ly, type: number, range: [0, 50], winsor: false, asked_if: dsm4_ly_mixed_psychotic, label: "Number of mixed episodes with psychotic features in the past year"}
+  dsm4_ly_n_mixed: {column: evnum_epmixt_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of mixed episodes in the past year"}
+  dsm4_ly_mixed_psychotic: {column: mhoccur_epmixtpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mixed, label: "At least one mixed episode with psychotic features in the past year"}
+  dsm4_ly_n_mixed_psychotic: {column: evnum_epmixtpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mixed_psychotic, label: "Number of mixed episodes with psychotic features in the past year"}

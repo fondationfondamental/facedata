@@ -53,7 +53,8 @@ def test_versions(result):
     assert data["visit_form"].value_counts().to_dict() == {"follow_up": 11686, "inclusion": 6498}
     # Counted on every visit that holds a value of a mood section (inclusion and follow-up forms).
     flags = result.flags[result.flags["variable"] == "dsm_version"]["flag"].value_counts().to_dict()
-    assert flags == {"version_inferred": 371, "version_unknown": 38}
+    # A placeholder date alone does not make a form filled (D122).
+    assert flags == {"version_inferred": 359, "version_unknown": 32}
 
 
 def test_scores_agree_with_the_stored_ones(result, qc):
@@ -325,7 +326,7 @@ def test_evaluation_medicale(result, qc):
     assert (qc.loc["psychotic_disorder_v0", "n_valid"], qc.loc["psychotic_disorder_fu", "n_valid"]) == (5394, 9389)
     assert qc.loc["psychotic_onset_date_v0", "date_placeholder"] + qc.loc["psychotic_onset_date_fu", "date_placeholder"] == 741
     # DSM-5 form: the column is the age at the first depressive episode; the first episode is the earliest of three ages (D89).
-    assert (qc.loc["dsm5_first_mde_age", "n_valid"], qc.loc["dsm5_first_episode_age", "n_valid"]) == (714, 867)
+    assert (qc.loc["dsm5_first_mde_age", "n_valid"], qc.loc["dsm5_first_episode_age", "n_valid"]) == (715, 867)   # "<5" is read as 5 (D122)
     first = data[["dsm5_first_mde_age", "dsm5_first_hypomania_age", "dsm5_first_mania_age"]].min(axis=1)
     assert (data["dsm5_first_episode_age"].dropna() == first.dropna()).all()
     # Three columns of the DSM-5 form only.
@@ -336,6 +337,12 @@ def test_evaluation_medicale(result, qc):
     # Counts of episodes are mostly 0 and are not winsorised: the rare episodes keep their number.
     assert tab["winsorised"].sum() == 0
     assert (data["dsm4_fu_n_mixed_psychotic"].max(), int((data["dsm4_fu_n_mixed_psychotic"] > 0).sum())) == (4, 43)
+    # A question that the form hides, or that is implied, after a count of 0 of its kind is 0 (D122).
+    assert [qc.loc[name, "n_valid"] for name in ["dsm5_ly_mania_psychotic", "dsm5_lt_mania_psychotic", "dsm4_ly_mde_psychotic", "dsm4_fu_n_mde_psychotic"]] == [1007, 971, 4050, 6627]
+    # The export loses the DSM-5 count of manic episodes with psychotic features (R68): not delivered.
+    assert "dsm5_lt_n_mania_psychotic" not in data.columns
+    # The follow-up total is the sum of its counts; the stored one is a check.
+    assert (qc.loc["dsm5_fu_n_episodes", "n_valid"], qc.loc["dsm5_fu_n_episodes", "score_mismatch"]) == (2174, 6)
 
 
 def test_care_and_sick_leave(result, qc):
@@ -346,10 +353,16 @@ def test_care_and_sick_leave(result, qc):
     assert (qc.loc["n_hospitalisations_v0", "n_valid"], qc.loc["n_hospitalisations_fu", "n_valid"]) == (5065, 8415)
     assert round(data["n_hospitalisations_v0"].mean(), 1) == 2.5 and round(data["n_hospitalisations_fu"].mean(), 2) == 0.17
     assert not (data["n_hospitalisations_v0"].notna() & data["n_hospitalisations_fu"].notna()).any()
-    assert (qc.loc["n_hospitalisations_v0", "censored_right"], qc.loc["first_hospitalisation_age", "censored_left"]) == (25, 21)
+    # "<5" as the age at the first hospitalisation is mostly chosen by patients never hospitalised: missing (D123).
+    assert (qc.loc["n_hospitalisations_v0", "censored_right"], qc.loc["first_hospitalisation_age", "censored_left"]) == (25, 0)
+    # A total is 0 where its count is 0; the 12-month count is 0 after no mood episode in the year (D123).
+    assert [qc.loc[name, "n_valid"] for name in ["hospitalisation_months_v0", "n_hospitalisations_12m", "hospitalisation_weeks_12m", "hospitalisation_months_fu"]] == [4516, 5122, 5007, 8350]
     assert data["hospitalisation_months_fu"].isin([0.25, 0.5, 0.75]).sum() == 379            # a quarter, half, three quarters of a month
     # Sick leave: "Non applicable" is a missing code; number and duration are 0 after a "no".
-    assert (qc.loc["sick_leave_12m", "n_valid"], qc.loc["sick_leave_12m", "missing_code"]) == (4057, 1205)
+    # The yes/no is the stored one, but yes on 8 DSM-IV inclusions where a script read ">20" sick leaves as "no" (D123).
+    assert (qc.loc["sick_leave_12m", "n_valid"], qc.loc["sick_leave_12m", "score_mismatch"]) == (4057, 8)
+    # A number above 20 cannot come from the forms (the social form's weeks, R74); a follow-up length above two years is out of range.
+    assert (qc.loc["n_sick_leaves_12m", "out_of_range"], qc.loc["sick_leave_weeks_fu", "out_of_range"]) == (40, 22)
     assert (qc.loc["sick_leave_fu", "n_valid"], qc.loc["sick_leave_fu", "missing_code"]) == (6323, 3091)
     assert (data.loc[data["sick_leave_fu"] == 0, "sick_leave_weeks_fu"] == 0).all()
     weeks = qc.loc["sick_leave_weeks_12m"]

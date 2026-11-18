@@ -88,6 +88,17 @@ def corrected_qt(values, keys=None):
     return values["qt_interval"] / rr ** 0.5
 
 
+def sick_leave_more_than_20(values, keys=None):
+    """A sick leave in the past year: the stored yes/no, but yes where it says no to more than 20 sick leaves.
+
+    At the DSM-IV inclusions an application script wrote the yes/no from the
+    number of sick leaves, and read the answer ">20" as 0 (decision D123). The
+    number is then 20, censored on the right.
+    """
+    stored = values["sick_leave_12m_stored"]
+    return stored.mask((stored == 0) & (values["n_sick_leaves_12m"] == 20), 1.0)
+
+
 def rr_differs_from_rate(values):
     """The RR interval typed in the form against the heart rate of the same ECG.
 

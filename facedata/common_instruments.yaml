@@ -1183,7 +1183,16 @@ sick_leave_v0:
   note: >
     A sick leave in the last twelve months and its length in weeks are in the
     four cohorts; a sick leave at the visit in BP, SZ and DR. Asked of the
-    patients who work.
+    patients who work. After a no the weeks are 0 in the four cohorts. SZ
+    and DR read the past year from the social form ("Arrêt de travail au
+    cours de l'année passée"). BP reads it from the diagnosis form of the
+    inclusion visit: the DSM-5 form asks the same question, but the DSM-IV
+    form, where 3,327 of the 4,057 BP answers come from, has none, and an
+    application script wrote the yes/no from the number of sick leaves
+    (see the BP schema). When R74 ships, BP also takes the social form's
+    answers where the diagnosis forms are empty. ASP asks another question:
+    off work during the work contracts of the last 12 months, hospital
+    weeks excluded.
 
 sick_leave_fu:
   title: Sick leave since the last visit
@@ -1192,9 +1201,11 @@ sick_leave_fu:
   stack: with care
   use: [sick_leave_fu, n_sick_leaves_fu]
   note: >
-    BP and DR share the question and the number of sick leaves; the length is
-    in weeks in BP and in days in DR, under two names. SZ separates the
-    psychiatric and the somatic sick leaves, under names of its own.
+    BP and SZ ask the same question (a sick leave for a psychiatric disorder
+    since the last visit), with the number and the length in weeks, under the
+    same names; SZ adds the somatic sick leaves of the past 12 months. DR has
+    a sick-leave question and the number (its wording is not checked); its
+    length is in days, under another name.
 
 hospitalisations_v0:
   title: Hospitalisations before inclusion
@@ -1215,5 +1226,9 @@ hospitalisations_12m:
   stack: with care
   use: [n_hospitalisations_12m, hospitalisation_weeks_12m]
   note: >
-    Asked at inclusion in BP and at every visit in SZ. In SZ the number is
-    recorded for the patients who were hospitalised (no zero), in BP for all.
+    Asked at inclusion in BP and at every visit in SZ. In SZ the number and
+    the length follow a yes and are almost always empty after a no (4 of
+    3,261). In BP the DSM-IV form asks them only after a mood episode in the
+    past year and the DSM-5 form asks every patient; after a no to any mood
+    episode in the past year both are 0, and the length is 0 where the
+    number is 0 (BP D123). So BP has zeros where SZ has empty cells.

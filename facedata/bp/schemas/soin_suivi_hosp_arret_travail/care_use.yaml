@@ -2,31 +2,76 @@ instrument: care_use
 title: Use of care since the last visit (follow-up visits)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: RECOURS AUX SOINS
-status: draft
+status: reviewed
 notes: >
   The care the patient used for the psychiatric disorder since the last
-  visit, asked at every follow-up visit. Two parts: the usual follow-up (90%
-  of the visits say yes) and unscheduled or emergency care (12%). In each,
+  visit, asked at every follow-up visit. Two parts: the usual follow-up (91%
+  of the visits say yes) and unscheduled or emergency care (13%). In each,
   one yes/no per kind of professional and the number of consultations, and
   for the second part the visits to an emergency room without admission.
   Yes/no answers are delivered as 1 and 0.
 
   Asked only after a yes (asked_if). The boxes of a part are shown only
   after a yes to its first question, and a number only after a yes to its
-  box; in the extraction they are empty otherwise. They are read as 0 there:
-  with no unscheduled care, there was no emergency consultation of a
-  psychiatrist, and their number is 0. Where the first question is not
-  answered everything stays missing.
+  box; in the extraction they are almost always empty otherwise. They are
+  read as 0 there: with no unscheduled care, there was no emergency
+  consultation of a psychiatrist, and their number is 0.
 
-  Numbers. Typed freely. "NSP" is a missing code; about a hundred cells hold
-  words ("1 fois par mois") and end unparsed. A number above 365 is out of
-  range. 71 numbers are above 52, most of them for the psychiatrist or the
-  psychologist. After a yes to a box, the number is empty for 15% to 26% of
-  the visits.
+  Where the first question of the usual part is not answered, 10 visits
+  still hold boxes (42 answers, 17 of them yes), delivered as written;
+  their numbers are read as usual (11 written after a yes, 25 read as 0
+  after a no to their box). The unscheduled part has no such visit. A few
+  answers contradict the order of the form and are delivered as written,
+  with no flag: 13 numbers are written although their box is empty after a
+  yes to the part (12 visits); after a no to the unscheduled part, 4
+  visits hold boxes (23 answers, 3 yes); 8 numbers above 0 have a box at 0
+  (3 after a no to the box, 5 with the box empty after a no to the part);
+  39 numbers are 0 after a yes to their box; 21 visits say yes to the
+  usual part and no to all five of its boxes.
 
-  The numbers and durations are not winsorised (decision D54 in
-  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
-  rare high values down to it, or to 0.
+  The unscheduled part also covers admissions, which have no box: on 141
+  of its 1,183 yes the six boxes are all no, and 104 of the 125 of these
+  visits with a known number were hospitalised since the last visit
+  (hospitalisations_fu). care_urgent is therefore not "any of the six
+  boxes".
+
+  Numbers. Typed freely. "NSP", "?" and "inconnu" are missing codes (19
+  cells). One ">10" is read as 10 with a mark in the censoring column. 100
+  cells on 79 visits hold words and end unparsed, all before 2022 and half
+  of them in centre D: 53 hold a number with words ("1 fois par mois", a
+  range), 47 words only. Since 2022 the form accepts only one or two
+  digits for the numbers of consultations (the emergency-room count is the
+  exception), so the words and the 13 numbers above 99 are all older. A
+  number above 365 is out of range (none). 71 numbers are above 52, most of
+  them for the psychiatrist (29) or the psychologist (32).
+
+  After a yes to a box, the number is empty on 15% (psychiatrist) to 25%
+  (general practitioner) of the visits in the usual follow-up, and on 9%
+  (emergency room) to 32% (psychologist, 18 of 56) in the unscheduled
+  part. It is more and more often empty: for the psychiatrist, 6% to 8% of
+  the visits until 2018, 19% in 2019-2021 and 28% from 2022, and 54% to
+  66% from 2022 in centres A, C, F and I. A mean over the delivered numbers
+  therefore leaves out more visits with care in recent years.
+
+  The numbers cover the time since the previous visit: about 6 months at a
+  six-monthly visit, 12 at a yearly one, more when a visit was missed.
+  After a yes, the median number of psychiatrist consultations is 6 after 4
+  to 8 months, 10 after 10 to 14 and 12 after 18 to 30. Divide by the time
+  since the previous visit (from visit_date) before comparing visits.
+
+  The form is filled on 82% to 91% of the follow-up visits until 2021 and
+  on 70% to 72% from 2022 (centre A: 26% from 2022, DM-6). The share of
+  visits with a psychologist rises from 27% to 30% until 2018 to 41% in
+  2022-2023 and 50% from 2024, in nearly every centre.
+
+  The numbers are not winsorised (decision D54 in PROGRESS.md): they are
+  counts of events, with a hard range of 0 to 365. Ten of the eleven are 0
+  on 70% to 99.8% of the visits, so their 99th percentile is low (0 to 2
+  for unscheduled care, 8 to 50 for the usual follow-up) and a cut there
+  would bring the rare high counts down to it. The number of psychiatrist
+  consultations is 0 on only 15% of the visits (median 6); it is left
+  unwinsorised like the others, and its high values are left to the hard
+  range.
 
 variables:
   care_usual: {column: rad_recours_soin_psy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used care for the psychiatric disorder since the last visit, usual follow-up"}
@@ -36,10 +81,10 @@ variables:
   n_care_psychiatrist: {column: nboccur_psy_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: care_psychiatrist, label: "Usual follow-up: number of consultations, psychiatrist"}
   care_psychologist: {column: hooccur_psy_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a psychologist"}
   n_care_psychologist: {column: nboccur_psy_psychologue, type: number, range: [0, 365], winsor: false, asked_if: care_psychologist, label: "Usual follow-up: number of consultations, psychologist"}
-  care_specialist: {column: hooccur_psy_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted other medical specialists"}
-  n_care_specialist: {column: nboccur_psy_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: care_specialist, label: "Usual follow-up: number of consultations, other medical specialists"}
-  care_other: {column: hooccur_psy_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted other professionals (dietician, nurse...)"}
-  n_care_other: {column: nboccur_psy_autres, type: number, range: [0, 365], winsor: false, asked_if: care_other, label: "Usual follow-up: number of consultations, other professionals (dietician, nurse...)"}
+  care_specialist: {column: hooccur_psy_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted one or more medical specialists for the disorder or its treatment"}
+  n_care_specialist: {column: nboccur_psy_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: care_specialist, label: "Usual follow-up: number of consultations, medical specialists for the disorder or its treatment"}
+  care_other: {column: hooccur_psy_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: other consultations for the disorder or its treatment (dietician, nurse...)"}
+  n_care_other: {column: nboccur_psy_autres, type: number, range: [0, 365], winsor: false, asked_if: care_other, label: "Usual follow-up: number of other consultations for the disorder or its treatment (dietician, nurse...)"}
 
   care_urgent: {column: rad_recours_soin_urgence, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used unscheduled or emergency care since the last visit"}
   urgent_gp: {column: hooccur_urgence_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a general practitioner"}
@@ -48,9 +93,9 @@ variables:
   n_urgent_psychiatrist: {column: nboccur_urg_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychiatrist, label: "Unscheduled care: number of consultations, psychiatrist"}
   urgent_psychologist: {column: hooccur_urgence_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a psychologist"}
   n_urgent_psychologist: {column: nboccur_urg_psychologue, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychologist, label: "Unscheduled care: number of consultations, psychologist"}
-  urgent_specialist: {column: hooccur_urgence_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted other medical specialists"}
-  n_urgent_specialist: {column: nboccur_urg_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: urgent_specialist, label: "Unscheduled care: number of consultations, other medical specialists"}
-  urgent_other: {column: hooccur_urgence_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted other professionals (dietician, nurse...)"}
-  n_urgent_other: {column: nboccur_urg_autres, type: number, range: [0, 365], winsor: false, asked_if: urgent_other, label: "Unscheduled care: number of consultations, other professionals (dietician, nurse...)"}
+  urgent_specialist: {column: hooccur_urgence_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted one or more medical specialists for the disorder or its treatment"}
+  n_urgent_specialist: {column: nboccur_urg_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: urgent_specialist, label: "Unscheduled care: number of consultations, medical specialists for the disorder or its treatment"}
+  urgent_other: {column: hooccur_urgence_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: other consultations for the disorder or its treatment (dietician, nurse...)"}
+  n_urgent_other: {column: nboccur_urg_autres, type: number, range: [0, 365], winsor: false, asked_if: urgent_other, label: "Unscheduled care: number of other consultations for the disorder or its treatment (dietician, nurse...)"}
   emergency_room: {column: hooccur_urg_sans_hosp, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Went to an emergency room for the psychiatric disorder, without admission"}
   n_emergency_room: {column: nboccur_urg_sans_hosp, type: number, range: [0, 365], winsor: false, asked_if: emergency_room, label: "Number of visits to an emergency room without admission"}

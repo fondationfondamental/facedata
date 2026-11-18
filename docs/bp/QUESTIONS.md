@@ -106,6 +106,7 @@ with the project lead.
 | PI-10 and DEV-8 (2), CVLT z-scores (2026-11-17) | The z-scores are computed again with the regressions of the application's script, from the raw score, the age at the visit, the years of education and the sex. The script gives back 95% to 99% of the stored z-scores; of those of trials 1 to 5, 232 were computed with the coefficients of the age and of the sex exchanged (2013 and 2014; the patients of 70 and over until August 2024) and 105 with no sex. The stored z-scores are kept as a check. Two lines of the recency norm are corrected (the mean from 40 to 69, the sign of the age term from 70): see DM-16 | D108, D109 |
 | DEV-6, dated list of the changes of rule | What the code can tell (its history starts in 2024): 2024-07-25, 1000-01-01 written in every empty date; 2024-08-02, CVLT regression of the patients of 70 and over corrected; the TMT "<5" is a defect of today's script | D98 |
 | DM-11, does the export remove the patients who object? (2026-11-18) | No step of the export reads the answer "objects"; it removes the records with a tutelle or minor form (`formoppos` 3 or 4) or under sauvegarde de justice (PROTEC 3), row by row. The project lead decided not to use the opposition answer: nothing is asked of the export | D119 |
+| DEV-11, how the export decides between DSM-IV and DSM-5 (2026-11-18) | From the content of the two inclusion records: DSM5 when the DSM-5 record holds one of five lifetime answers, else DSM4; follow-ups never get one. Of the 849 empty inclusions, 202 are centre C's, whose DSM-5 table is missing from the export. Asked of the export: R20, R68 to R70. In the package, a placeholder date no longer counts as a filled form, and the follow-ups keep the switch date of 2022 | D119, D122 |
 
 ## 1. To read in the application
 
@@ -177,7 +178,9 @@ decided and still to do.
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
   CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
-  PERINATALITE, one reviewed (D117). The 116 others are drafts. Each
+  PERINATALITE, one reviewed (D117); EVALUATION MEDICALE, fifteen reviewed
+  (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123). The 95 others
+  are drafts. Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -340,22 +343,6 @@ source, in the export or in the application. Still to send.
     5". One row per medication: not asked; the lists stay.
   - Today: no daily dose from 2018; a count of relatives of 5 is read as 5.
 
-- [ ] **DEV-11. `dsm_criteria`: how does the export decide between DSM-IV
-  and DSM-5?** (D12, D15)
-  - What we see: the application stores no DSM version, so the export
-    writes this column. It is empty at inclusion for 850 of 6,476 patients;
-    364 of them have follow-up mood evaluations (731 visits) whose version
-    is then unknown.
-  - Today: the version is read once per patient, or taken from the year of
-    inclusion; visits without one are not delivered in the mood sections.
-  - Read on 2026-11-18: the export writes DSM5 when the DSM-5 inclusion
-    record holds one of five lifetime answers, else DSM4 when the DSM-IV
-    record does, else nothing; follow-ups never get one. Of the 849 empty
-    inclusions, 206 have no content (202 in centre C, whose DSM-5 table is
-    missing from the export's staging union), 552 hold only default dates
-    and 91 other answers. Asked: R20, R68 to R70 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md). The package side
-    is reviewed with the tab EVALUATION MEDICALE.
-
 - [ ] **DM-5. Values to query with the centres.** Each is already
   neutralised in the package (missing with a flag, or repaired with a flag).
   The centre codes can be given on request.
@@ -368,7 +355,7 @@ source, in the export or in the application. Still to send.
   | RR values that look like heart rates | 25 |
   | The five kinds of white cells do not add up to the leukocytes | 222 visits |
   | Pack-years typed freely: above 200, words, fractions | 29 + 34, and 101 "NA" |
-  | Numbers of consultations and sick-leave durations typed as words; one duration of 880,410 weeks | 193 cells |
+  | Numbers of consultations typed as words (the follow-up sick-leave number and duration lose their words in the export, which runs the digits together: 880,410 weeks is the export's, D123) | 193 cells |
   | Birth weights typed as a gestational age, or months instead of weeks | 12 and 14 |
   | CPT-II values of 1,000 or more, counts above the number of targets | 57 cells |
   | CPT-3 columns that hold a raw value instead of a T-score | About 37 visits |
@@ -415,6 +402,24 @@ source, in the export or in the application. Still to send.
     low; the package computes it from the heart rate (D114).
   - The referral information (`adresseur`) is recorded for 92% of the
     patients included in 2008-2012 and 43% in 2022-2026.
+  - Medical evaluation (D122). From 2022 centre B fills the DSM-5 mood form
+    for about 70% of its inclusions, against 94% to 100% before, while its
+    MADRS stays at 98%: is the mood evaluation of the inclusion filled
+    elsewhere? Centre A has the first-episode section (and the other
+    sections of the DSM-5 form) for 2 of its 141 inclusions since 2023,
+    against 838 of 911 in the other centres: do these records exist in the
+    application? Centre A also leaves the follow-up diagnosis form almost
+    empty from 2022Q4 to 2024Q1 and from 2025Q3 while it rates the MADRS.
+    Centre F answers "yes, an episode since the last visit" at 73% of its
+    follow-ups from 2022 against 46% before: does it count the current
+    episode? Centre F also has 12 "yes" to a psychotic disorder at
+    inclusion in 2016-18 against 0 before and 5 after: real diagnoses, or
+    the psychotic features of mood episodes?
+  - Use of care (D123): four centres leave the number of consultations
+    empty after a yes more and more often. Psychiatrist: centre A 8% until
+    2018, 37% in 2019-2021, 66% from 2022; C 14%, 24%, 55%; F 4%, 46%, 57%;
+    I 1%, 4%, 54%; B, D and G stay at 15% or less. Do they no longer ask
+    the number?
   - Among patients with an anxiety disorder, "panic disorder" is ticked for
     about 40% until 2017 and 13% in 2025-2026, while "not otherwise
     specified" doubles: a slow change of habits, with no date.
