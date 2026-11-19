@@ -49,10 +49,11 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `version` | no | How to recognise the visits of this edition or form, when several share the same raw columns (section 7) |
 | `variables` | yes | Output name → variable fields (section 4) |
 | `scores` | no | Output name → score fields (section 8) |
-| `sign` | no | Standard scores whose sign convention changed during the study, and how to recognise it (section 9) |
+| `sign` | no | Values whose sign or direction changed during the study, and how to recognise it or when it happened (section 9) |
 | `checks` | no | Names of functions in `facedata/custom.py` (section 10) |
 | `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
 | `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
+| `uses` | no | Names of variables or scores that other schemas of the cohort deliver; a score of this schema may add up, average or look up from them (section 8, "A score built on the scores of other schemas") |
 | `crossed`, `per_visit`, `packed` | no | With `level: list`: lists that the export crossed, lists of the visit, records packed in one cell (section 15) |
 | `relatives` | no | With `level: relatives`, required: the prefix of the raw columns of each relative, and who the relative is (section 16) |
 | `per_patient` | no | With `level: relatives`: the yes/no columns of the patients table computed from the rows of the relatives (section 16) |
@@ -68,9 +69,9 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `column` | all | Raw column. Default: the output name. A list of columns when the extraction moved the variable to another column (see below) |
 | `label` | all | Short label for the report |
 | `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
-| `range` | number, item, date | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD` |
+| `range` | number, item, date, time | `[min, max]`: hard limits, in the target unit (hours for a time: `[0, 24]` for a time of day or a duration of a day). Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD`. A schema that gives `item` defaults must give a `time` its own range |
 | `codes` | category, item, number, band | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). For a band: `{raw: band}`, a label that the export cut short is written out in full before parsing (`{"25-5": "25-50"}`, section 6). Matching ignores case and surrounding spaces |
-| `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded` |
+| `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded`, `running` (an end date not reached: the treatment was running when it was typed), `as_needed` (a dose taken as needed). A schema may name the codes of its scale (`code_994` of the ADI-R) |
 | `unit` | number | Target unit of the output |
 | `unit_column` | number | Raw column holding the unit label. A list when two columns hold it: the first one that is filled is read |
 | `units` | number | `{unit: {factor, expect}}` (section 5) |
@@ -87,10 +88,13 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
-| `asked_if` | item, number | Name of a yes/no variable or of a count listed before. The question is asked only after a yes to it (or a count above 0): where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `asked_if` | item, number | Name of a yes/no variable or of a count (an item or a number whose range starts at 0) listed before. The question is asked only after a yes to it (or a count above 0), or its answer is 0 when that count is 0: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
+| `box_list` | item | Name of a list of yes/no boxes shown together. Once every box is read, an empty box beside a box of the same list that is 1 is 0: the rater ticked what applied. Not where a count that hangs on the box (`asked_if`) was typed: the count is shown only after a yes, so that box is left as written (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
+| `shown_if` | all | `{variable: [answers]}`: the form shows the question only when that variable, listed before, holds one of the answers. Elsewhere a filled cell is a value the form wrote by itself: it becomes missing and gets `not_shown` (section 4) |
+| `before_visit` | date | `true`: the date is of an event before the visit (a first attempt asked at inclusion). A date on the day of the visit or later becomes missing and gets `out_of_range` |
 | `day` | date | The day of the month that the export writes in place of the real one (15 for a date of birth). A cell that holds another day is delivered with this day and flagged `date_partial` |
-| `doubt` | all | `{period: [first day, last day], values: [...], note: ...}`: the cells of the visits dated in the period keep their value and get `period_doubt` (section 10) |
+| `doubt` | all | `{period: [first day, last day], values: [...], note: ..., remove: true}`: the cells of the visits dated in the period keep their value and get `period_doubt`; with `remove: true` they are delivered as missing and get `period_removed` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
 | `note` | all | Free text |
 
@@ -103,7 +107,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `band` | Percentile bands (`25 - 50`, `>95`) | lower limit of the band, as a float | never |
 | `category` | Coded answers | harmonised label | never |
 | `date` | Dates, written `YYYY-MM-DD` or `DD/MM/YYYY`; a part that is not known is `00` or left out (`06/2018`, `2018`) | date | never |
-| `time` | Clock times and durations written `HH:MM` or `HH:MM:SS` | hours as float | never |
+| `time` | Clock times and durations written `HH:MM` or `HH:MM:SS` | hours as float; hard `range` applied | never |
 | `text` | Free text | cleaned string | never |
 
 More types are added only when an instrument needs one (lists for
@@ -142,10 +146,10 @@ panic_disorder:   {column: ceoccurtrouble_panique, type: item, range: [0, 1], as
 ```
 
 - `asked_if` names a variable of the same schema, listed before: a yes/no
-  item with `range: [0, 1]`, or a count (an item whose range starts at 0:
-  "how many of them..." is asked only when the number of sisters is not 0).
-  The variable itself is a yes/no box or a count: an item or a number whose
-  range starts at 0.
+  item with `range: [0, 1]`, or a count (an item or a number whose range
+  starts at 0: "how many of them..." is asked only when the number of
+  sisters is not 0). The variable itself is a yes/no box, a count or a
+  total: an item or a number whose range starts at 0.
 - Where the named answer is 0 and the cell is empty, the value is 0.
 - Where the named answer is missing (unknown, or the form was not filled),
   the value stays missing. Where it is 1, the cell is read as usual.
@@ -161,9 +165,55 @@ any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Ou
 n_mde:       {column: evnum_edm_ly, type: number, range: [0, 50], asked_if: any_episode}
 ```
 
+It also covers an answer that is 0 by logic where the form showed the
+question and the rater left it empty: with no manic episode, no manic
+episode had psychotic features; with no hospitalisation, the total time in
+hospital is 0 (decision D122). The notes of the schema say so.
+
+**Boxes of one list.** A form may show a list of yes/no boxes after a yes
+(the kinds of non-drug treatment received), and some raters tick only the
+boxes that apply and leave the others empty. An empty box beside a box of
+the same list that is 1 is then a no:
+
+```yaml
+ect_fu: {column: proccur_sismo_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds}
+tms_fu: {column: proccur_tms_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds}
+```
+
+- The variables that share a `box_list` name form the list. The rule is
+  applied once all of them are read, and then `asked_if` again, so that the
+  number of sessions of a box read as no is 0 too.
+- A visit where every box is empty keeps them missing: nothing says what
+  was received. A box that holds a missing code stays missing. A box whose
+  count was typed (a variable with `asked_if` on it that holds a value) is not
+  read as a no either: the count is shown only after a yes, so the cell is
+  left as written.
+- As with `asked_if`, these zeros get no flag and count as filled cells.
+  The notes of the schema say how many visits are concerned (decision D124).
+
 Never use it for a detail of the thing asked about, such as an age at onset
-or a severity: after a "no" it has no value and stays missing. The schema
-check cannot tell a count from an age; that is for the author to see.
+or a severity: after a "no" it has no value and stays missing. A total (the
+months spent in hospital, the weeks of sick leave) is not a detail: it is 0
+when there was nothing. The schema check cannot tell a count from an age;
+that is for the author to see.
+
+### A question shown for some answers only
+
+`asked_if` reads an empty cell as 0. The opposite case is a cell that is
+filled although the form did not show the question: the lethality of a
+firearm attempt when the method was a drowning. The forms of 2009-2010 saved
+the first option of every list, the hidden ones too:
+
+```yaml
+violent_method: {column: ltsv01, type: category, codes: {Arme à feu: firearm, Noyade: drowning}}
+firearm_lethality: {column: ltsv02, type: category, shown_if: {violent_method: [firearm]}, codes: {...}}
+```
+
+- `shown_if` names one variable listed before and the delivered answers
+  (labels of a category, numbers of an item) that show the question.
+- Where that variable holds another answer, or nothing, a filled cell is
+  delivered as missing with `not_shown`; the flag keeps the text.
+- Use it only where the form's own display rule is known (decision D125).
 
 ### Several boxes in one cell
 
@@ -215,6 +265,7 @@ glucose:
 | Field | Meaning |
 |---|---|
 | `factor` | Multiply a value in this unit by `factor` to get the target unit. The target unit has factor 1 |
+| `offset` | For a scale that does not start at the same zero: the value in the target unit is value × `factor` + `offset` (HbA1c in mmol/mol to %: factor 0.09148, offset 2.152, the IFCC–NGSP master equation). Default 0; the target unit has none |
 | `expect` | `[low, high)`: the values one expects to see **in this unit's own scale**. Used to recognise the unit from the magnitude |
 | `aliases` | Other spellings of the unit label. Case and spaces are already ignored, so `g/l` needs no alias. Also for a label that the form prints wrongly and that can only mean this unit (`mmol/L` for a bilirubin in µmol/L) |
 
@@ -412,6 +463,10 @@ the 79th (band 75) and -1.70 the 4th (band 1). The cell gets `band_from_z`.
 A z-score outside `z_range` is an error: the band is missing and the cell
 gets `out_of_range`. The number variable still delivers the z-score itself.
 
+When the z-score itself is computed again by the package (section 8, "A
+z-score computed with a regression"), the band is a score too: see "The
+band of a z-score" there.
+
 This assumes that the scores of the norm group follow a normal law, which a
 norm table does not. `band_from_z` tells which bands rest on that
 assumption. A higher band is a higher z-score; whether that is a better
@@ -548,6 +603,24 @@ version:
   since: {wurs25: 2021-01-01}        # no visit dated before that day is a wurs25
 ```
 
+An edition is also recognised from a column that only it has, whatever the
+visit is labelled: `override` gives, for an edition, the columns that no other
+edition holds. A visit where one of them is filled gets that edition and the
+flag `version_overridden` if its label said another one. The WAIS-IV digit-span
+sequencing task is filled on 33 FACE SZ visits that the form labels WAIS-III
+(decision D138):
+
+```yaml
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
+```
+
+The same block is written in every schema that shares the version name. A
+visit with no data keeps no version.
+
 A visit dated before that day does not get the edition, whatever its columns
 hold. It does not fall back on another edition either: it has no version, its
 values are not delivered, and it gets `version_unknown` with the detail
@@ -575,6 +648,10 @@ Rules:
   instrument was not administered. "Nothing" means the columns that the
   schema's own variables read: a column of another instrument listed under
   `filled` does not give a version to a visit where the instrument is empty.
+  A placeholder date (1000-01-01, 0000-00-00) counts as nothing (D122). A
+  variable that a score reads only as its `age`, `age_date`, `by` or a term of its `with` (the typed age,
+  the education or the sex of a norm table, filled at every testing whatever the test) is
+  not a datum of the instrument either.
 - A visit with data but a version code that is not listed gets
   `version_unknown`. So does a visit dated before the `since` day of the
   edition that its columns give.
@@ -610,19 +687,27 @@ scores:
 
 | Field | Meaning |
 |---|---|
-| `sum`, `mean` or `max` | The variables to combine: added, averaged, or the highest of them (the ADI-R counts the higher of two mannerism items). Scores defined higher up in the file may be used too |
+| `sum`, `mean`, `max` or `min` | The variables to combine: added, averaged, the highest of them (the ADI-R counts the higher of two mannerism items) or the lowest (the age at the first mood episode is the earliest of three ages). Scores defined higher up in the file may be used too |
 | `lookup` and `from` | Instead of `sum` or `mean`: the score is read in a norm table. `lookup` names the table, `from` the raw score to look up, and `by` a second variable the table depends on (see below) |
+| `profile` and `from` | Instead of `sum` or `mean`: the score is read in a table with one line per combination of answers (the EQ-5D index of the five answers). `profile` names the table, `from` lists the variables whose answers make the profile, written one after another (`11235`); a missing answer or a profile that the table does not hold gives a missing score, and the second gets `norm_missing` (see below) |
+| `regression`, `from` and `with` | Instead of `sum` or `mean`: a z-score computed with the regression of a norm table. `regression` names the table, `from` the raw score and `with` the other variables of the regression (see below). A table with no `sd` column gives the expected score instead of a z-score ("An expected value") |
+| `distance` and `from` | Instead of `sum` or `mean`: the sum over the items of the distance to a reference answer ("A distance to a reference"). `distance` names the table, `from` lists the items |
+| `band_of` and `limits` | The percentile band of a z-score, alone or to complete a `lookup` (see below) |
 | `custom` | Instead of `sum` or `mean`: the name of a function of `facedata/custom.py` that computes the score from the instrument's values, when it is a formula (a body mass index, a corrected QT interval) |
 | `reverse` | Items reversed first: `min + max − value`, using the item's own `range` |
-| `points` | With `sum`, `mean` or `max`: `{answer: points}`. An answer listed here counts the points given, any other answer counts as it is. The items are delivered as recorded. The algorithms of the ADI-R and of the ADOS count a code 3 as 2 and the codes 7, 8 and 9 as 0: `points: {"3": 2, "7": 0, "8": 0, "9": 0}` |
+| `points` | With `sum`, `mean`, `max` or `min`: `{answer: points}`. An answer listed here counts the points given, any other answer counts as it is. The items are delivered as recorded. The algorithms of the ADI-R and of the ADOS count a code 3 as 2 and the codes 7, 8 and 9 as 0: `points: {"3": 2, "7": 0, "8": 0, "9": 0}` |
 | `minus` | With `sum`: variables or earlier scores subtracted from the sum. All of them must be present |
 | `floor` | The lowest value the score can take; a lower result is raised to it (the Alda total is A minus B, not below 0) |
 | `scale` | With `sum` or `mean`: `[factor, offset]`. The sum or the mean is multiplied by the factor, then the offset is added. A sub-score of the S-QoL is the mean of two items of 1 to 5 brought to 0 to 100: `scale: [25, -25]`. A sum that the instrument halves: `scale: [0.5, 0]` |
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept. Where the stored score exists, is not delivered (`keep: false`) and the score cannot be recomputed, the row gets `score_not_recomputed`. A check score (`keep: false`) that compares a delivered variable files its `score_mismatch` under that variable |
-| `otherwise` | With `sum`, `mean` or `max`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
+| `otherwise` | With `sum`, `mean`, `max` or `min`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
+| `age` | With `lookup`, `regression`: the variable that holds the age typed in the form. The EMR reads its norms with the age typed in the form, which is sometimes wrong; the table is read with that age where it is within 1 year of the age at the visit, and with the age at the visit elsewhere or where nothing was typed. A variable of the same schema, usually `keep: false` (section 8) |
+| `age_date` | With `lookup`, `regression`: a date variable (of the schema, or of `uses`): the date of the assessment. The table is read with the age at that date, `age at the visit + (date - visit date) / 365.25`, where the date is within 366 days of the visit date and, with `age_date_since`, on or after that day; elsewhere with the age at the visit. FACE ASP has no typed age: its application computes the age at the date of the assessment form (decision D139) |
+| `stop_at_zero` | With `sum`: the items are added in the order listed, and the items after the first one scored 0 are not counted (a span: the test stops at the first failure) |
+| `compare_turned` | With `compare`: a stored value equal to the score with the opposite sign is not a mismatch; it gets `sign_flipped`. For a z-score that a centre wrote with the opposite sign in some years |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
 | `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
 | `label`, `range`, `keep` | As for variables. `keep: false` makes a score a pure consistency check |
@@ -690,12 +775,203 @@ EMR already stores the standard score: the stored one is delivered, and the
 rows where the table disagrees are flagged. Or as the delivered score, when
 the extraction has none.
 
+### Norm tables without an age, a second variable for a regression
+
+A table with no `age_min` and `age_max` holds at every age, and a visit
+without a date is still read: it turns the sum of scaled scores into an
+index. A line with `cens` -1 is "this band or a lower one" (`censored_left`),
++1 "or a higher one".
+
+A `regression` can depend on a second variable like a `lookup` (`by`, with
+`by_min` and `by_max` in the table); a visit without that variable has no score and
+has `norm_missing`, where the EMR silently took the lowest class. Its `with` is optional. A norm given as a
+mean and a standard deviation for each cell is a regression with `age` 0, the
+mean as `intercept` and, for a score that is better when it is low (a time, a
+number of errors), the standard deviation written negative in `sd`, so that
+z = (mean - raw) / sd is positive for a good performance.
+
+### A score read in a table of profiles
+
+The EQ-5D index is not a formula of the five answers: the application reads
+it in a table of the 3,125 combinations. The table is a file of the norms
+folder with two columns, `profile` (the five answers written one after
+another, from 11111 to 55555) and `value`:
+
+```yaml
+scores:
+  eq5d_index:
+    label: EQ-5D-5L index
+    profile: eq5d_index                # norms/eq5d_index.csv
+    from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]
+    compare: eq5d_index_stored
+```
+
+The answers are items of whole numbers. A visit with one answer missing has no
+index and no flag; an answer profile that the table does not hold (an answer
+outside 1 to 5) is missing and gets `norm_missing`. A stored index is
+compared as for any score (`compare`), so that a stored value that is not the
+table's is `score_mismatch`.
+
+### A score built on the scores of other schemas
+
+An index of the WAIS-IV is the sum of the scaled scores of subtests that each
+have their own schema. `uses` lists the names of those scores; they are read
+from the columns that the other schemas deliver, so a score of this schema can
+add them up. The schemas that have `uses` run after all the others, and the
+used columns are the delivered ones (recomputed, in their range):
+
+```yaml
+uses: [wais4_simil_scaled, wais4_info_scaled]
+scores:
+  wais4_icv_sum_scaled:
+    label: Verbal comprehension, sum of the scaled scores
+    sum: [wais4_simil_scaled, wais4_info_scaled]
+    scale: [1.5, 0]
+    compare: wais4_icv_sum_scaled_stored
+```
+
+A name in `uses` must be a variable or a score that another schema of the
+cohort delivers (`check_cohort`). When the schema that gives it is not loaded
+(`load(instruments=[...])`), the column is empty and so is the score. A stored
+value that cannot be recomputed is flagged `score_not_recomputed`, as for any
+score with `compare`.
+
+### A z-score computed with a regression
+
+For some tests the manual gives no table but a regression: the score
+expected for a person of that age, education and sex, and the standard
+deviation around it. The z-score is the distance between the raw score and
+the expected one, in standard deviations. The coefficients are copyrighted
+like the tables: they are a CSV file of the norms folder, one line per age
+group:
+
+```
+age_min,age_max,intercept,age,education,sex,sd
+0,39,10,-0.1,0.5,-1,2
+```
+
+A line says: at an age from `age_min` to `age_max` (completed years, at the
+visit),
+
+    expected = intercept + age × age + education × years of education + sex × sex
+    z-score  = (raw score − expected) / sd, rounded to two decimals
+
+`age` is the coefficient of the age in completed years. Every other column
+between `age` and `sd` is a term of the regression, and `with` says which
+variable of the schema holds it:
+
+```yaml
+variables:
+  cvlt_education: {column: cclin08_, type: number, range: [0, 30], winsor: false, keep: false}
+  cvlt_sex: {column: sex, type: item, codes: {Feminin: "1", Masculin: "2"}, range: [1, 2], keep: false}
+  cvlt_trial1_z_stored: {column: cvlt01z_, type: number, keep: false}
+
+scores:
+  cvlt_trial1_z:
+    regression: cvlt_trial1_z          # the file norms/cvlt_trial1_z.csv
+    from: cvlt_trial1                  # the raw score: a variable or an earlier score
+    with: {education: cvlt_education, sex: cvlt_sex}
+    range: [-5, 5]
+    compare: cvlt_trial1_z_stored      # the z-score stored by the EMR
+    compare_tolerance: 0.25
+```
+
+(The numbers of the example table are made up.)
+
+A term is used as it is recorded, not rounded down. A variable such as the
+sex is read as a number, with the coding the regression was published with.
+
+If the age of the visit is in no line of the table, the z-score is missing
+and nothing is flagged: the norm has no regression for that age (the manual
+gives a percentile table instead). A raw score with an age that is in the
+table gets `norm_missing` when the z-score cannot be computed: the table
+was not found, or a variable named in `with` is missing.
+
+Use it as the delivered score, with `compare` on the stored z-score, when
+the EMR has computed the z-score with different rules over the years. The
+EMR works with the age typed in the form, the package with the age at the
+visit: set `compare_tolerance` so that a difference of one year of age is
+not flagged, and say so in `notes`.
+
+### An expected value
+
+A regression table that has no `sd` column does not give a z-score: it gives
+the expected score, `intercept + age × age + each term × its variable`,
+rounded to two decimals. The Barona formula (the IQ that the sex, the diploma,
+the occupation and the age predict) and the fNART (an IQ from the number of
+words read) are expected values. `from` is then a variable or a list of
+variables that tell that the test was done (the diploma and the occupation of
+the Barona): the expected value is missing where all of them are missing. A
+visit of an age that the table does not cover gets no value and no flag; a
+visit with the test and a missing term gets `norm_missing`.
+
+```yaml
+scores:
+  barona_expected_qit:
+    regression: wais3_barona_qit       # norms/wais3_barona_qit.csv: age_min, age_max, intercept, age, education, occupation, sex
+    from: [barona_education, barona_occupation]
+    with: {education: barona_education, occupation: barona_occupation, sex: barona_sex}
+    age: barona_age_entered
+    compare: barona_expected_qit_stored
+    compare_tolerance: 0.011
+```
+
+### A distance to a reference
+
+`distance` is the sum, over the items, of the absolute difference between the
+answer and a reference answer: the LIS score (30 ratings against the ratings
+of a panel). The table is a file of the norms folder with two columns, `item`
+(the name of the variable) and `reference`. All the items are needed: a visit
+with one item missing has no score. A table that was not found gives
+`norm_missing`.
+
+```yaml
+scores:
+  lis_total:
+    distance: lis_reference            # norms/lis_reference.csv: item, reference
+    from: [lis_01, lis_02]             # the 30 ratings
+    compare: lis_total_stored
+```
+
+### The band of a z-score
+
+`band_of` turns a z-score into the band it has under the normal law, as
+`z_range` does for a band read from a cell (section 6): the share of the
+law that lies under the z-score, in percent, is put between the `limits`.
+The rows get `band_from_z`.
+
+```yaml
+scores:
+  cvlt_trial1_band:
+    band_of: cvlt_trial1_z             # a z-score: a variable or an earlier score
+    limits: [1, 5, 25, 50, 75, 95, 99]
+```
+
+With `lookup`, `band_of` completes the table. The band is first read in the
+norm table. Where the table gives nothing and the z-score exists, the band
+is the one of the z-score, and the row gets `band_from_z` instead of
+`norm_missing`. This puts every patient on one scale when the norm has a
+percentile table for one age group and a regression for the other:
+
+```yaml
+scores:
+  cvlt_trial5_band:
+    lookup: cvlt_trial5                # the percentile table, up to 69 years
+    from: cvlt_trial5
+    band_of: cvlt_trial5_z             # the regression, from 70 years
+    limits: [1, 5, 25, 50, 75, 95, 99]
+```
+
+A z-score outside its `range` is missing, and so is its band.
+
 ### Stored values derived from a stored score
 
 Next to a raw total, the extraction often stores values that the EMR computed
-from it: an age-scaled score, a z-score, a percentile. They cannot be
-recomputed without the norm tables, so they are delivered as stored. But when
-the stored total is wrong, they are wrong too. `derived_from` says so:
+from it: an age-scaled score, a z-score, a percentile. Where the norm tables
+are known they are computed again (`lookup`, `regression`, section 8: the
+recomputed value is delivered and the stored one is a check). Where they are
+not, the stored value is delivered. But when the stored total is wrong, they
+are wrong too. `derived_from` says so:
 
 ```yaml
 variables:
@@ -717,9 +993,9 @@ wrong in a known way, and what was derived from it carries the error.
 Check first that the value really was derived from the stored score. The
 WAIS-III vocabulary scaled score looked like it; the norm table showed that
 the EMR had used the true total, and that only the total column of the
-extraction was wrong. Its schema now names the norm-table check instead:
-`derived_from: wais3_vocab_scaled_check` flags the scaled score where the
-table gives another value.
+extraction was wrong. Its scaled score is now read in the norm table from the
+recomputed total (BP D135), and the stored one is a check that says
+`score_mismatch` where the table gives another value.
 
 `derived_from` can also name a variable: the raw score next to its
 percentile. The EMR sometimes computes a percentile from an empty cell, as
@@ -769,6 +1045,35 @@ Rules:
 - The standard scores listed are of type `number`. Their `range` is checked
   after the flip, so write it in the convention of the output.
 
+### A change at a known date
+
+Sometimes the date is known and nothing has to be searched. Until 2021 the
+MAThyS form stored eight of its scales already turned towards the score;
+the form that replaced it stores them as written. The schema gives the day
+the new direction starts and the variables concerned:
+
+```yaml
+sign:
+  before: 2021-09-01       # a visit dated before this day is in the other direction
+  turn: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
+```
+
+| Field | Meaning |
+|---|---|
+| `before` | The first day of the direction of the output, written `YYYY-MM-DD` |
+| `turn` | The variables turned on the visits dated before it |
+
+A variable that has a `range` is turned around the middle of its range
+(`min + max − value`, as a reversed item is); one without a range is
+multiplied by −1. The turned values get `sign_flipped`. Those dated within
+90 days of the day, before or after, and those of a visit with no date, get
+`sign_doubt`. A block has either `relation`, `by` and `pairs`, or `before`
+and `turn`.
+
+Use it only when the data show the day for the whole cohort. Where the
+centres changed over some months, the direction of a visit of those months
+is not known: name them in a `doubt` block with `remove: true` (section 10).
+
 ## 10. Checks and custom functions
 
 `facedata/custom.py` holds the few rules that cannot be written as data.
@@ -816,8 +1121,16 @@ defaults:
 - `values` lists delivered values (numbers, or labels of a category).
   Without it every filled cell of the period is flagged.
 - `note` is the text written in the `detail` column of the flag log.
+- `remove: true` is for a period in which most of the doubted cells are
+  known to be wrong: they are delivered as missing and get `period_removed`
+  (danger) in place of `period_doubt`. The flag log keeps what was written
+  (`raw`). With `values`, only those answers are removed; think of what is
+  left before doing so: with the "yes" of a yes/no question removed, the
+  period reads as 0%. Removed cells are taken out as soon as they are read,
+  before `asked_if`: a removed "no" makes no question after it 0 (D125).
 - A cell that is missing, or that another step removed (`out_of_range`,
-  `unknown_code`), is not flagged.
+  `unknown_code`), is not flagged. A removed cell that is also out of range
+  gets `period_removed` only.
 
 Like every field, `doubt` can be set once in `defaults`. Write in the schema
 `notes` what the data show, and log the decision in PROGRESS.md: a period is
@@ -845,16 +1158,17 @@ the list is not empty.
   On a variable, `lookup` and `from` go together, on a band, and `from` names
   a number or an item with a range, listed before.
 - Fields that must be numbers are numbers; `range` and `expect` have low ≤ high.
-- A variable with `units` has a `unit`, that unit is listed, and its factor is 1.
-  Every unit has an `expect` range and either a `factor` or `percent_of`.
+- A variable with `units` has a `unit`, that unit is listed, its factor is 1
+  and it has no offset. Every unit has an `expect` range and either a
+  `factor` or `percent_of`; an `offset` is a number, never on a `percent_of`.
   `percent_of` names a number listed before the variable in the same schema.
 - `unit_rule` names a function that exists in `facedata/custom.py`.
 - `day` is a whole number from 1 to 28, on a date.
 - `doubt` has a `period` of two dates, first day ≤ last day, and no field
-  other than `period`, `values` and `note`.
-- `asked_if` names an item whose range starts at 0 (a yes/no item or a
-  count), listed before in the same schema, on an item or a number whose
-  range starts at 0.
+  other than `period`, `values`, `note` and `remove`.
+- `asked_if` names an item or a number whose range starts at 0 (a yes/no
+  item or a count), listed before in the same schema, on an item or a
+  number whose range starts at 0.
 - `separator` is on an item that has `codes`.
 - Versions named in `versions` exist in `version`.
 - Schemas that use the same version `name` have identical `version` blocks.
@@ -865,16 +1179,20 @@ the list is not empty.
   box of the same list.
 - Scores refer to variables or earlier scores that exist; reversed items have a `range`.
 - `derived_from` names a score that has `compare`, or another variable of the schema.
+- `uses` names variables or scores that another schema of the cohort delivers; a score may add up, average or look up from them.
 - `checks` names variables or scores of the schema and functions that exist
   in `facedata/custom.py`.
 - `scale` is two numbers, on a score that has `sum` or `mean`.
-- A score has exactly one of `sum`, `mean`, `max`, `lookup` and `custom`; `points` and `otherwise` go with the first three; `lookup`
-  comes with `from`, `by` with `lookup`, `minus` with `sum`, and `custom` names a function that
-  exists in `facedata/custom.py`. Whether the norm table exists is not checked here: a missing table
-  gives `norm_missing` flags, not an error.
+- A score has exactly one of `sum`, `mean`, `max`, `min`, `lookup`, `profile`, `regression`, `distance` and `custom`, or `band_of` alone; `points` and
+  `otherwise` go with the first four; `lookup` and `regression` come with `from`, `by` with `lookup`, `with` with `regression`,
+  `minus` with `sum`, and `custom` names a function that exists in `facedata/custom.py`. `band_of` names a variable or an
+  earlier score, comes with `limits` (numbers in rising order) and goes alone or with `lookup`. `with` gives each term of the
+  regression a variable or an earlier score. Whether the norm table exists is not checked here: a missing table gives
+  `norm_missing` flags, not an error.
 - A `version` block has a `name` and exactly one of `column` (with `codes`),
   `filled` and `age`. `age` gives each version two numbers, the first below
-  the second.
+  the second. `override` names versions of the block, each with a list of
+  columns of the extraction.
 - A `version` block with `level` says `patient` and reads a `column`.
   `follow_up` and `by_inclusion_date` need `level: patient`; they name
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.
@@ -882,7 +1200,8 @@ the list is not empty.
   `YYYY-MM-DD`.
 - A `sign` block has `relation`, `by` and `pairs`; `by` is a key column; every
   name in `pairs` is a variable of the schema, and the standard scores are of
-  type `number`.
+  type `number`. Or it has `before`, a date written `YYYY-MM-DD`, and `turn`,
+  a list of variables of the schema.
 - Every raw column named exists in the extraction.
 - Output names are unique within the cohort. The list instruments of a cohort may share names: they fill one table (section 15).
 
@@ -985,7 +1304,7 @@ written by hand and must be read by someone who knows the drugs.
 **`at_visit`.** A list has no visit: what a visit needs is whether the
 patient was on a treatment that day. Each column of `columns` is 1 on a
 visit when at least one item that fits `where` (a variable and the value it
-must have) has `start` on or before the visit date and `end` on or after it,
+must have, or a list of values: `{molecule: [valproate, valpromide]}`) has `start` on or before the visit date and `end` on or after it,
 or no `end`: an item without an end date is taken as still running. It is 0
 when the patient has items and none fits. It is missing when the patient has
 no list at all, when the visit has no date, and when the only items that fit

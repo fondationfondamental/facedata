@@ -2,7 +2,7 @@ instrument: mars
 title: Medication Adherence Rating Scale (MARS, 10 items)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire MARS
-status: draft
+status: reviewed
 notes: >
   Ten yes/no questions on taking the treatment. Filled at every visit.
 
@@ -17,10 +17,13 @@ notes: >
   "yes" to items 7 and 8: with the coding above, the sum of the ten items
   with items 7 and 8 reversed. A higher total is a better adherence (0 to
   10). The stored total (mars_) is exactly this in every row where both
-  exist (15,987).
+  exist (16,071).
 
-  mars11 was added in 2021: "do you take a medication at present?". Here 1 is
-  yes, as the dictionary says (95% of the answers).
+  mars11 is "do you take a medication at present?" (1 yes, 0 no; 95% of the
+  4,433 answers are yes): 1 to 14 answers a year to 2020, 108 in 2021 and
+  about 1,000 a year since 2022. The form shows the ten items only after a
+  yes to it: of its 231 visits with a no, none holds an item, so the MARS is
+  missing (not zero) for a patient who takes no medication.
 
 defaults: {type: item, range: [0, 1]}
 

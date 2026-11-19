@@ -49,7 +49,7 @@ def test_visits(result):
 
 def test_the_three_cohorts_can_be_stacked(result):
     from facedata import bp, sz
-    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261113.tsv"}
+    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261117.tsv"}
     if not all(path.exists() for path in files.values()):
         pytest.skip("the BP or the SZ extraction is not on this computer")
     for table in [result.data, result.patients, result.flags, result.treatments, result.relatives]:
@@ -121,7 +121,7 @@ def test_vital_signs_and_ecg(result, qc):
     assert (qc.loc["systolic_supine", "n_valid"], qc.loc["systolic_supine", "unit_inferred"], qc.loc["systolic_standing", "n_valid"]) == (1223, 7, 1186)
     # QT and RR typed in milliseconds, most of them until 2016; the stored QTc follows Bazett since 2017.
     assert (qc.loc["qt_interval", "unit_inferred"], qc.loc["rr_interval", "unit_inferred"], qc.loc["rr_interval", "out_of_range"]) == (87, 61, 38)
-    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"]) == (971, 113)
+    assert (qc.loc["qtc_bazett", "n_valid"], qc.loc["qtc_bazett", "score_mismatch"], qc.loc["rr_interval", "check_failed"]) == (1009, 70, 28)
 
 
 def test_biology(result, qc):
@@ -132,7 +132,7 @@ def test_biology(result, qc):
     assert (qc.loc["hdl", "n_valid"], qc.loc["hdl", "unit_converted"]) == (1101, 207)
     assert (qc.loc["haematocrit", "unit_converted"], qc.loc["mchc", "unit_converted"]) == (205, 287)
     prolactin = qc.loc["prolactin"]
-    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"], prolactin["out_of_range"]) == (645, 223, 13, 38)
+    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"], prolactin["out_of_range"]) == (645, 223, 6, 3)   # the 35 zeros are missing codes (BP D130)
     vitamin_d = qc.loc["vitamin_d"]
     assert (vitamin_d["n_valid"], vitamin_d["unit_converted"], vitamin_d["out_of_range"]) == (945, 239, 80)
     # Once in nmol/L, the vitamin D has the same level in every year.
@@ -140,7 +140,9 @@ def test_biology(result, qc):
     assert (round(yearly.min()), round(yearly.max())) == (49, 67)
     assert (qc.loc["vitamin_b12", "unit_converted"], qc.loc["vitamin_b12", "unit_unknown"], qc.loc["folates", "unit_converted"]) == (685, 27, 580)
     assert (qc.loc["cortisol", "n_valid"], qc.loc["cortisol", "unit_converted"]) == (988, 143)
-    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1140, 80, 22)
+    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1105, 80, 3)
+    # HbA1c typed in mmol/mol in one centre: brought to % with the IFCC-NGSP master equation (D26).
+    assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "unit_doubt"]) == (19, 1)
     assert (qc.loc["glucose", "n_valid"], qc.loc["glucose", "unit_inferred"], qc.loc["ferritin", "n_valid"]) == (1085, 10, 460)
     assert (qc.loc["leukocytes", "check_failed"], qc.loc["cholesterol_hdl_ratio", "n_valid"]) == (23, 1097)
     # Drug levels: the antidepressants hold two scales a thousand times apart, delivered in µg/L.
@@ -151,7 +153,7 @@ def test_biology(result, qc):
 def test_auto_questionnaires(result, qc):
     data = result.data
     tab = result.qc[result.qc["tab"] == "AUTO-QUESTIONNAIRES"]
-    assert (len(tab), tab["instrument"].nunique()) == (764, 26)
+    assert (len(tab), tab["instrument"].nunique()) == (765, 26)
     assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["version_unknown"].sum()) == (0, 1, 0)
     # Stored totals that follow their items on every visit.
     for score, visits in [("altman_total", 1067), ("csm_total", 718), ("prisem_total", 1041), ("mathys_total", 937), ("epworth_total", 719),
@@ -187,9 +189,10 @@ def test_auto_questionnaires(result, qc):
     assert round(data["rosenberg_total"].corr(data["qids_total"]), 2) == -0.70
     assert round(data["mars_total"].corr(data["qids_total"]), 2) == -0.38
     # The other questionnaires.
-    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unit_inferred"]) == (1007, 1, 1)
+    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unit_inferred"]) == (1007, 17, 1)       # the 12-hour bedtimes are corrected (BP D132)
     assert (qc.loc["mdq_total", "n_valid"], data["mdq_screen"].value_counts().to_dict()) == (982, {"negative": 922, "positive": 60})
     assert (qc.loc["eq5d_vas", "n_valid"], qc.loc["eq5d_vas", "out_of_range"]) == (1422, 1)
+    assert qc.loc["eq5d_index", "n_valid"] == 1434                # the index DR does not store, read in the table of the application (BP D133)
     assert (qc.loc["sitting_weekday_hours", "out_of_range"], qc.loc["sitting_weekend_hours", "out_of_range"]) == (75, 28)
     assert (qc.loc["detc_cage_total", "n_valid"], qc.loc["food_01", "n_valid"], qc.loc["leaps_not_working", "n_valid"]) == (100, 863, 754)
     assert (qc.loc["paykel_events", "n_valid"], int(tab.loc[tab["instrument"] == "paykel", "out_of_range"].sum())) == (530, 43)
@@ -201,7 +204,7 @@ def test_auto_questionnaires(result, qc):
 def test_neuropsychology(result, qc):
     data = result.data
     tab = result.qc[result.qc["tab"] == "NEUROPSYCHOLOGIE"]
-    assert (len(tab), tab["instrument"].nunique()) == (161, 16)
+    assert (len(tab), tab["instrument"].nunique()) == (163, 16)      # the conditions of the testing gain the age at the assessment (WAIS review, D138-D143)
     assert tab["unknown_code"].sum() == 0
     assert ((result.flags["variable"] == "fluency_form") & (result.flags["flag"] == "version_unknown")).sum() == 1
     # One edition of the WAIS, read from the columns that are filled; two forms of the verbal fluency, never in one column.
@@ -210,8 +213,8 @@ def test_neuropsychology(result, qc):
     assert (qc.loc["fluency_p_words", "n_valid"], qc.loc["fluency2_letter_words", "n_valid"]) == (582, 95)
     assert (data["fluency_animals_words"].median(), data["fluency2_category_words"].median()) == (26, 18)
     # Band labels cut by the export after four characters are read as the band they stand for.
-    assert (qc.loc["tmt_ba_time_band", "n_valid"], qc.loc["tmt_ba_time_band", "unparsed"]) == (698, 4)
-    assert (qc.loc["fluency_p_band", "n_valid"], qc.loc["fluency_p_band", "unparsed"]) == (579, 4)
+    assert (qc.loc["tmt_ba_time_band", "n_valid"], qc.loc["tmt_ba_time_band", "unparsed"]) == (703, 0)
+    assert (qc.loc["fluency_p_band", "n_valid"], qc.loc["fluency_p_band", "unparsed"]) == (582, 0)       # read in the table (D135); the 4 unparsed cells are in the stored band
     assert round(data["tmt_ba_time_band"].value_counts(normalize=True)[25.0], 2) == 0.25
     # TMT: the five z-scores read as in BP (higher is better); three were stored with the other sign.
     for score, raw in [("tmt_a_time_z", "tmt_a_time"), ("tmt_b_time_z", "tmt_b_time"), ("tmt_ba_time_z", "tmt_ba_time"), ("tmt_a_errors_z", "tmt_a_errors"), ("tmt_b_errors_z", "tmt_b_errors")]:
@@ -220,23 +223,23 @@ def test_neuropsychology(result, qc):
     assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time", "out_of_range"], qc.loc["tmt_b_time", "n_valid"]) == (715, 2, 704)
     # The error bands come from the norm tables, as in BP: most carry "this band or a higher one".
     if (NORMS / "tmt_a_errors.csv").exists():
-        assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "censored_right"]) == (695, 639)
-        assert (qc.loc["tmt_b_errors_band", "n_valid"], qc.loc["tmt_b_perseverative_band", "n_valid"], qc.loc["tmt_ba_errors_band", "n_valid"]) == (693, 672, 624)
+        assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "censored_right"]) == (695, 600)      # bands rebuilt from the scripts (WAIS review, D138-D143)
+        assert (qc.loc["tmt_b_errors_band", "n_valid"], qc.loc["tmt_b_perseverative_band", "n_valid"], qc.loc["tmt_ba_errors_band", "n_valid"]) == (693, 672, 684)      # the B-A band reads the checked difference (WAIS review, D138-D143)
     # Stored sums and differences against their parts: the check scores are not delivered,
     # so the flag is filed under the stored value that the analyst sees.
     mismatch = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts()
-    expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 19, "designs2_z": 18,
-                "wais4_simil_z": 16, "wais4_arith_z": 14, "wais4_ds_z": 14, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 2, "wais4_imt_sum_scaled": 2}
+    expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 18, "designs2_z": 9,
+                "wais4_simil_z": 43, "wais4_arith_z": 25, "wais4_ds_z": 23, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 20, "wais4_imt_sum_scaled": 17}      # the designs z-scores are looked up in the tables (WAIS review, D138-D143)
     assert {name: int(mismatch.get(name, 0)) for name in expected} == expected
     assert not any(name.endswith("_check") for name in mismatch.index)
     assert (qc.loc["rlri16_free_sum", "n_valid"], qc.loc["rlri16_free_sum", "score_mismatch"]) == (712, 0)
     assert (qc.loc["rlri16_total_sum", "n_valid"], qc.loc["rlri16_total_sum", "score_mismatch"]) == (713, 0)
     assert data["rlri16_recognition_band"].value_counts().to_dict() == {99.0: 623, 5.0: 85}
     # WAIS-IV indices and the other tests.
-    assert (qc.loc["wais4_ivt_index", "n_valid"], data["wais4_ivt_index"].median(), qc.loc["wais4_imt_index", "n_valid"], data["wais4_imt_index"].median()) == (712, 94, 615, 94)
+    assert (qc.loc["wais4_ivt_index", "n_valid"], data["wais4_ivt_index"].median(), qc.loc["wais4_imt_index", "n_valid"], data["wais4_imt_index"].median()) == (685, 94, 614, 94)
     assert (qc.loc["wais4_ds_total", "n_valid"], qc.loc["wais4_simil_total", "n_valid"], qc.loc["wais4_arith_total", "n_valid"]) == (669, 654, 621)
     assert (qc.loc["d2_gz", "n_valid"], qc.loc["dual_task_mu", "n_valid"], qc.loc["dual_task_mu", "out_of_range"], qc.loc["designs1_raw", "n_valid"]) == (631, 331, 22, 243)
-    assert (qc.loc["auditory_span_forward", "n_valid"], qc.loc["auditory_span_forward_z", "missing_code"]) == (426, 138)
+    assert (qc.loc["auditory_span_forward", "n_valid"], qc.loc["auditory_span_forward_z", "missing_code"]) == (426, 0)      # the stored "NaN" cells are not_applicable, filed under the stored variable (WAIS review, D138-D143)
     # The conditions of the testing: codes that the dictionary does not explain.
     assert data["handedness"].value_counts().to_dict() == {"right": 676, "left": 36, "both": 19}
     assert data["neuropsy_mood_rating_delay"].value_counts().to_dict() == {"under_a_week": 518, "over_a_week": 192}
@@ -279,7 +282,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     data = result.data
     tabs = ["SUICIDE", "SUBSTANCES", "PERINATALITE", "EVALUATION MEDICALE", "SOIN SUIVI HOSP ARRET TRAVAIL", "MODULE SOCIAL ET PERINATALITE"]
     tab = result.qc[result.qc["tab"].isin(tabs)]
-    assert (len(tab), tab["instrument"].nunique()) == (287, 20)
+    assert (len(tab), tab["instrument"].nunique()) == (286, 20)
     assert (tab["unknown_code"].sum(), tab["version_unknown"].sum()) == (0, 0)
     # One column, two questions: the whole life at inclusion, the time since the last visit at follow-up. Never in one column.
     assert data["visit_form"].value_counts().to_dict() == {"inclusion": 1268, "follow_up": 924}
@@ -296,6 +299,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (796, 44)
     # Codes of the dictionary, and codes that it does not give.
     assert data["tobacco_status"].value_counts().to_dict() == {"non_smoker": 701, "current_smoker": 417, "ex_smoker": 192}
+    assert "legal_protection" not in data.columns            # administrative: not delivered, as in BP and SZ (BP D111, D116)
     assert result.patients["birth_term"].value_counts().to_dict() == {"term": 435, "preterm": 47, "post_term": 14}     # asked once: per patient
     assert data["mdd_course"].value_counts().to_dict() == {"recurrent": 509, "single_episode": 123}
     assert data["current_episode_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
@@ -373,7 +377,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = dr.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2337, 38, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2336, 39, 0)
     assert counts["covered"] + counts["ignored"] == 2375
 
 

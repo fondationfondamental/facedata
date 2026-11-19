@@ -1,7 +1,8 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4), from the extraction `SZALL_20261113.tsv` (6,616 rows:
+PI-2 and PI-4), from the extraction `SZALL_20261113.tsv`, replaced on
+2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
 `FACESZ_thesaurus_V4.20.xlsx`.
 
@@ -37,6 +38,8 @@ use disorder at inclusion), DEV-3 (marital status and source of income),
 DEV-4 (occupation of the Barona estimate) and DEV-5 (scores computed
 wrongly). Each concerns a main variable of the cohort, and each looks like
 an error of the export or of the EMR that a developer can find quickly.
+A sixth, DM-10 (years of education), was answered by the extraction of
+17 November 2026.
 
 ## 1. For the EMR developers and whoever writes the export
 
@@ -106,15 +109,22 @@ can the formulas be corrected there?
 the PANSS; the stored index plus 0.7 and plus 2.9 for the WAIS-IV) and keeps
 the stored ones as checks. (O5, O15, D10, D12)
 
-**DEV-6. CVLT: the z-score of trials 1 to 5 is wrong from 2022 to mid-2025.**
-The median of `cvlt01z_` is about -1.5 in every year until 2021, then 0.8 in
-2022, 4.0 in 2023 and 5.3 in 2024, and -1.2 again from the third quarter of
-2025, while the raw total does not move. Twelve centres. FACE BP does not
-show it.
-*Question:* which rule computed this z-score in that period, and can the
-values be computed again?
-*Today:* 240 values are out of range and removed; 260 others of the period
-are kept and flagged, with their percentile bands. (O13, D14)
+**DEV-6. CVLT: the z-score of trials 1 to 5 is wrong on 291 visits, from
+October 2021 to June 2026.** The median of `cvlt01z_` is about -1.5 in
+every year until 2021, then 0.8 in 2022, 4.0 in 2023 and 5.3 in 2024, while
+the raw total does not move.
+*Answered on 2026-11-17 by the code of the application (D32).* Until a
+correction dated 2024-08-02 the script of the SZ form computed this z-score
+with the coefficients of the age and of the sex exchanged, for the patients
+under 70. Each centre runs its own copy, so the wrong formula was still in
+use in June 2026: 291 stored z-scores in eleven centres, each 4 to 9 points
+too high. FACE BP has the same defect in 2013 and 2014 and for its patients
+of 70 and over, and computes its z-scores again (BP D108).
+*Question left:* (1) which centres still run a copy older than the
+correction of 2024-08-02? The 13 wrong values of 2026 come from them. (2)
+Can the stored values be computed again in the database?
+*Today:* the package computes the CVLT z-scores again since the years of
+education are exported (D35); the stored ones are only compared with them.
 
 **DEV-14. Medical history: three sections are mostly empty since 2022.**
 (Added on 2026-11-14.) Until 2021 each section of somatic diseases is
@@ -182,9 +192,8 @@ classes of the dictionary.
 **DEV-12. Columns that are missing from the extraction.** The estimated
 full-scale IQ of the WAIS-III (`ei06_wais3`) and `ei08_wais3`, although its
 percentile rank and its confidence interval are extracted. The years of
-education after 2015: the form that holds them stops in 2016, and the norms
-of the TMT errors need them (about 2,300 visits per band cannot be read).
-The sheet TAP of the dictionary.
+education after 2015: see DM-10, the application has them. The sheet TAP of
+the dictionary.
 *Question:* can they be added?
 *Today:* not delivered. (O14, O11)
 
@@ -218,20 +227,41 @@ unknown". (O21, O19, O10, D4, D18, D20)
 
 ### Priority A
 
-**DM-1. `formoppos`: what is code 2?** Filled for 1,099 of the 2,353
+**DM-10. Years of education: a field of the application that the export
+does not read.** (Added on 2026-11-17, and answered the same day: the extraction
+of 17 November 2026 reads it at every assessment, D35.) `cclin08_` holds the years of
+education until 2016 only: 569 of the 2,298 visits with a CVLT. In the
+application the later visits have them: the WAIS-IV form of the
+neuropsychological assessment has the same field (`annees_etudes`), and the
+form of the CVLT and of the TMT reads it there to compute its z-scores. The
+export reads the field of the older form only.
+*Question:* can `cclin08_` be filled from the WAIS-IV form too, at every
+visit?
+*What it unlocks:* the percentile bands of the TMT errors on about 2,300
+visits per band, and the CVLT z-scores computed again as in BP, which
+corrects 291 z-scores of trials 1 to 5 (DEV-6).
+*Today:* done. The TMT error bands exist on about 3,100 visits and the CVLT
+z-scores are computed again. (D35)
+
+**DM-1. `formoppos`: what is code 2?** *(No longer delivered since 2026-11-17, D34: the column is administrative. The answer below stays for the record.)* Filled for 1,099 of the 2,353
 patients: code 1 for 1,012 and code 2 for 87, in nine centres and in every
 year from 2012. In FACE BP code 2 is given to 3 patients of 619, and you told
 us that codes 1 and 2 have no documented definition.
 *Question:* what does code 2 mean, and why is it so much more frequent here?
 *Today:* delivered with its codes as written. (O1)
+**Answered on 2026-11-17, read on the form of the application (D29):** code 1
+is the form of an adult patient, code 2 that of a patient under curatelle.
+The opposition itself is another question of the form: see DM-11 of the BP
+list.
 
 **DM-2. 33 visits labelled WAIS-III that were given the WAIS-IV.** In 2013,
 2015 and 2016 (every visit labelled WAIS3 in 2016): their digit-span total
 counts the sequencing task, all have cells in the WAIS-IV index columns, none
 has the letter-number sequencing.
 *Question:* can `wais_version` be corrected for these visits?
-*Today:* the label is followed; 30 of these visits are flagged on the
-digit-span total and their WAIS-IV indices are not read. (O16)
+*Today:* answered by the project lead (D47): a visit that holds the sequencing
+task is read as WAIS-IV whatever its label (`version.override`, flag
+`version_overridden`); 33 visits move. (O16)
 
 **DM-3. Work status and source of income, 2015 to 2018.** `stprof` and
 `saltyp` are empty on almost every inclusion visit from mid-2015 to 2018
@@ -263,7 +293,8 @@ reference group; one set of 30 reference ratings gives the stored score on
 ratings do not give, and 137 visits with the 30 ratings have no score.
 *Question:* which reference ratings does the EMR use? With them the score
 could be computed for every visit.
-*Today:* the score as stored. (O18)
+*Today:* recomputed from the 30 ratings with the reference ratings found in the
+script of the application (D48): 28 visits differ from the stored score. (O18)
 
 **DM-7. AIMS, items 11 and 12.** The dictionary names them in two orders in
 the same line.

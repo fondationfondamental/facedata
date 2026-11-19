@@ -2,10 +2,10 @@ instrument: aim20
 title: Affect Intensity Measure, 20 items (AIM-20)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire AIM (version réduite 20 items)
-status: draft
+status: reviewed
 notes: >
-  AIM-40 and AIM-20 are two instruments. The 20-item AIM-20 replaced the
-  40-item AIM in 2021 and 2022, depending on the centre (answer of the data
+  AIM-40 and AIM-20 are two instruments. The 20-item AIM-20 replaced the 40-item AIM between January 2021 and January 2023, depending on
+  the centre (October 2021 to May 2022 in the large ones) (answer of the data
   managers in November 2026, decision D66 in PROGRESS.md). Its 20 questions
   are 20 of the 40, and the extraction stores both in the same columns.
   This schema reads those columns on the visits where the 20-item
@@ -15,15 +15,19 @@ notes: >
   long questionnaires have. aim40.yaml reads the other visits and explains
   the rule and its limit. Both files carry the same version block.
 
-  Filled once, at the inclusion visit. Each item is 1 (never) to 6 (always).
+  Filled at the inclusion visit (1,403 of 1,442 visits; 39 follow-up visits
+  also hold one). Each item is 1 (never) to 6 (always).
 
   Item names. The EMR kept the numbers that the questions have in the
-  40-item questionnaire: aim20_02 is the question numbered 2 there. The
-  order of the questions on the 20-item form is not known.
+  40-item questionnaire: aim20_02 is the question numbered 2 there. On
+  the 20-item form the questions are numbered 1 to 20 in the rising order
+  of these numbers (2, 7, 9 ... 40): the rank of an item is its number on
+  the form (read in the application in November 2026; decision D97 in
+  PROGRESS.md).
 
   Score. The mean of the 20 items (1 to 6), six of them reversed (7 -
-  value): 12, 24, 29, 33, 37 and 40. The stored score (aim_) is exactly this
-  mean in every row where both exist.
+  value): 12, 24, 29, 33, 37 and 40. The stored score (aim_) is exactly this mean in all 6,084 rows where both exist (the export's score
+  step writes it, D120).
 
   Before 2021. The data managers found no visit with only the reduced
   questionnaires before 2021, and advise not to deliver the questionnaires

@@ -43,6 +43,7 @@ at_visit:
   columns:
     on_calming: {where: {pill_group: calming}, label: On a calming pill}
     on_sleeping: {where: {pill_group: sleeping}, label: On a sleeping pill}
+    on_any: {where: {molecule: [calmine, sedaline]}, label: On calmine or sedaline}
 """
 
 
@@ -87,6 +88,7 @@ def test_columns_of_a_visit_come_from_the_dates(tmp_path):
     assert pd.isna(data.loc[("P2", "V0"), "on_sleeping"]) and data.loc[("P2", "V0"), "on_calming"] == 0
     # P3 has no list at all: nothing can be said.
     assert data.loc["P3", ["on_calming", "on_sleeping"]].isna().all().all()
+    assert list(data.loc["P1", "on_any"]) == [1, 1]                      # where takes a list of values too
     qc = result.qc.set_index("variable")
     assert qc.loc["on_calming", "instrument"] == "pills_at_visit" and qc.loc["on_calming", "n_valid"] == 3
     assert qc.loc["pill", "instrument"] == "pills" and qc.loc["molecule", "unknown_code"] == 1
@@ -266,3 +268,26 @@ def test_accents_written_twice_are_put_back_and_a_second_column_of_names_is_read
     items = result.treatments
     assert list(items["molecule"]) == ["calmine", "sedaline", "sedaline", "sedaline"]       # ZZZ is unknown, its generic name is found
     assert "unknown_code" not in set(result.flags["flag"])
+
+
+def test_the_strength_read_from_the_name_and_the_daily_dose():
+    """DM-14: the form stores no strength since 2015; the name holds it (rule R54 of EXPORT_REQUESTS.md)."""
+    names = pd.Series(["DRUGA 500 mg, comprimé", "DRUGB 0,5 g", "DRUGC 25 microgrammes", "DRUGD 2 mg/ml, solution",
+                       "DRUGE 10 mg + 5 mg", "DRUGF 1 %", "DRUGG LP", "DRUGH 100mgx"])
+    found = custom.strength_in_name(names)
+    assert list(found[:3]) == [500, 500, 0.025] and found[3:].isna().all()
+    values = pd.DataFrame({"strength": ["400 mg", None, "2 COMPRIM", None, None],
+                           "dose_unit": ["MG", None, "COMPRIM", None, None],
+                           "medication": ["DRUGA 400 mg", "DRUGB 500 mg", "DRUGC", "DRUGD", "DRUGE 50 mg"],
+                           "units_per_day": [0.5, 2.0, 1.0, 3.0, None]})
+    # The stored strength first, else the name; a strength in tablets gives no dose; no units, no dose.
+    dose = custom.daily_dose(values)
+    assert list(dose[:2]) == [200, 1000] and dose[2:].isna().all()
+    values["daily_dose"] = dose
+    assert list(custom.strength_from_name(values)[:2]) == [0, 1] and custom.strength_from_name(values)[2:].isna().all()
+
+
+def test_a_treatment_that_ends_before_it_starts():
+    values = pd.DataFrame({"start_date": pd.to_datetime(["2015-03-15", "2015-03-15", None]),
+                           "end_date": pd.to_datetime(["2015-01-15", "2015-03-15", "2015-01-15"])})
+    assert list(custom.end_before_start(values)) == [True, False, False]

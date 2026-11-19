@@ -2,7 +2,7 @@ instrument: identite
 title: Patient identity
 tab: PATIENT
 section: IDENTIFICATION PATIENT
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. The extraction repeats these columns on every visit
@@ -10,22 +10,41 @@ notes: >
 
   The date of birth is exported with the day set to the 15th for every
   patient. The stored age is the age at the inclusion visit (V0): it equals
-  the age computed from the date of birth and the V0 date for 6,468 of 6,476
+  the age computed from the date of birth and the V0 date for 6,490 of 6,498
   patients, and is one year more for the other 8.
 
   The type of disorder holds three values, plus the abbreviations BPNOS and
-  TBNOS (one patient each), read as "not otherwise specified".
+  TBNOS (one patient each), read as "not otherwise specified". The export
+  takes it from the type of mood disorder of the DSM-5 diagnosis form, or
+  of the DSM-IV form when the DSM-5 one is empty; both forms belong to the
+  inclusion visit only (the export's edition column is filled on 5,649
+  rows, all at V0). For 509 patients the export replaces it by a value
+  from a list of its own (298 type 2, 165 type 1, 46 not otherwise
+  specified), 496 of them in centres A, C and B and most with no DSM
+  edition at V0 (requests R6 and R20 of docs/EXPORT_REQUESTS.md). The
+  cohort is made of the patients whose type is one of the five labels the
+  extraction keeps. Type 2 rises from 40% of the patients included until
+  2012 to about 60% of those included from 2022, in most centres, and type
+  1 falls from 46% to 34%: no step at one date in one centre.
 
-  fondacode (the column subjid) is the patient code of the foundation. A
-  usubjid is a number given inside the cohort: it can change from one
-  extraction to the next for a patient registered in two centres, and 824
-  numbers are also used in FACE SZ for other patients. The fondacode does
-  neither: it is the key to join two extractions or two cohorts (decision
-  D76 in PROGRESS.md). It is a text and never appears in the report.
+  fondacode (the column subjid) is the patient code of the foundation. Its
+  first two digits are the centre that registered the patient (the same as
+  siteid for the 17 centres), and a transfer between centres copies it
+  unchanged. A usubjid is the id of the delivered record and encodes its
+  centre (usubjid // 10000 is siteid for every patient). A patient
+  transferred between centres has two records, and the export keeps one at
+  random (FU-9; request R1): the usubjid and the centre of such a patient
+  can change from one extraction to the next. 50 patients are delivered
+  under a centre other than the one of their code. 824 usubjid numbers are
+  also used in FACE SZ for other patients. The fondacode changes neither
+  way: it is the key to join two extractions or two cohorts (decision D76
+  in PROGRESS.md). It is a text and never appears in the report.
 
-  Not loaded: nom_centre (empty; in ignored.yaml). usubjid and siteid are
-  key columns. The dictionary also lists armcd and ageu, which are not in
-  the extraction.
+  Not loaded: nom_centre, empty on every row (the application's export to
+  the central database removes it and the export writes it empty; the
+  centre is siteid; in ignored.yaml). usubjid and siteid are key columns.
+  The dictionary also lists armcd and ageu, which are not in the
+  extraction.
 
 variables:
   fondacode:

@@ -28,9 +28,10 @@ vitamine_d: the unit is recorded and the result is delivered in nmol/L, where SZ
 bis10: eleven reverse-keyed items are stored already reversed and are read back to the answer as asked; the stored scores reverse them twice and are checked by twin scores that are not delivered
 ctq: seven reverse-keyed items are stored already reversed and are read back to the answer as asked; the stored neglect scores and total reverse them twice and are checked by twin scores; no severity classes in the extraction
 epworth: the eight situations are in the columns ess01 to ess08 (delivered under the BP names), the time of day in ess09 and the stored total in ess
-eq5d: the extraction has no utility index
+eq5d: the extraction has no stored utility index (the index is computed from the answers, as in BP)
 fagerstrom: item 3 is stored as the code of the answer (1 the first cigarette, 2 any other), read as 1 and 0 points
 mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence and is checked by a twin score; no mars11
+mathys: the DR form stored the scales as written in every year, so no item is turned and no period is left out (BP D91); the stored scores are still read to check ours
 mathys_emotions: one free text more, "other emotions" (mathys28)
 mdq: the extraction stores no count of symptoms to compare with
 physical_activity: the columns are named qiap01a to qiap04bm
@@ -40,12 +41,12 @@ stai_ya: the answers are stored on three codings (0 to 3, 1 to 4, 2 to 5); they 
 # NEUROPSYCHOLOGIE
 neuropsy_conditions: the columns are named cclin01 to cclin16 and hold codes; some questions are other ones (French as mother tongue, state compatible with the tests, number of testing days, a three-code psychotropic treatment)
 learning_disorders: the answers are 0, 1 and 2 (not known); three more questions and the free text of the cognitive complaints
-tmt: the kinds of errors are in eight columns and the totals are stored; three z-scores are stored with the other sign and are turned; band labels cut by the export are written out; no B minus A z-score of the errors
+tmt: the kinds of errors are in eight columns and the totals are stored (the error z-scores are computed from them); three stored z-scores have the other sign and are only flagged sign_flipped; band labels cut by the export are written out; the B minus A z-score of the errors is computed (nothing is stored)
 verbal_fluency: two forms of the test, read from fv01; only the words, the z-score and the band of each task are entered
 wais4_similitudes: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
 wais4_memoire_chiffres: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
 wais4_arithmetique: only the raw total, the scaled score and the z-score are entered; no column names the edition, which is read from the columns that are filled
-wais4_efficience: the working memory index only, and it is stored right (in SZ it is 0.7 too low); no column names the edition
+wais4_efficience: the working memory index only (the form has no information, vocabulary, matrices or picture completion, so no other index and no full-scale IQ), read in the table of the application from the sum of the scaled scores that the digit span and arithmetic schemas deliver (uses); the stored index is the table's value (in SZ it is 0.7 too low and is read with an offset); no column names the edition
 wais4_code_symboles_ivt: the columns are named code01 to ivt04; no column names the edition, which is read from the columns that are filled
 
 # SUICIDE, SUBSTANCES, PERINATALITE, SOIN SUIVI, MODULE SOCIAL
@@ -59,7 +60,7 @@ perinatal: the answers are stored as numbers, with 0 or 2 for "not known"
 sick_leave_v0: the answers are 0, 1 and 2 (not applicable); the number of sick leaves is not in the extraction
 sick_leave_fu: other columns; the answers are Y and N; the length is in days
 hospitalisations_v0: the columns of this cohort (ever hospitalised, age at the first one, number, months), with no question on the first psychotic episode
-social: the time in the job is a number of months; the occupational class and the legal protection are added; the closest person is stored as a code that the dictionary does not explain; no questions on income and debts
+social: the time in the job is a number of months; the occupational class is added; the closest person is stored as a code that the dictionary does not explain; no questions on housing, income and debts
 
 # TRAITEMENTS
 medications: the lists of this extraction are crossed by the export and are put back with the field crossed; the generic name of the catalogue is looked up; no liquid strength; the form is added
@@ -87,3 +88,5 @@ other_history_v0: the answers are numbers; the cancers are boxes in columns of t
 other_history_fu: the answers are numbers; the cancers are boxes in columns of their own, with two more kinds; the virus is coded 1, 2, 3
 family_structure: the psychiatric history and the cardiovascular risk factors are two questions; children and siblings are counted as groups
 family_history: the children and the siblings are each one row; the disorders are separate yes/no questions and coded lists; no per-patient summary
+cssrs_v0: the inclusion form of this cohort asks about the whole life (BP the past week), under other names; the behaviour section, the lethality ratings, the dates and the descriptions are added; the screening visit is an inclusion visit
+cssrs_fu: the behaviour section, the lethality ratings, the dates and the descriptions are added; the columns are named cssrs; the screening visit is an inclusion visit

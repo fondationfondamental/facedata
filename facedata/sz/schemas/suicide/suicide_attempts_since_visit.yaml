@@ -1,0 +1,73 @@
+instrument: suicide_attempts_since_visit
+title: Suicide attempts since the last visit (follow-up visits)
+tab: SUICIDE
+section: Histoire des conduites suicidaires (VIE ENTIERE ou depuis la DERNIERE VISITE)
+status: draft
+notes: >
+  The number of suicide attempts since the last visit, and whether some were
+  violent or serious without being violent (intensive care after drugs or
+  cutting), as asked at the follow-up visits. Yes/no answers are delivered
+  as 1 and 0; "Ne sais pas" is a missing code (1 answer).
+
+  Two forms in the same columns, as in BP (BP decision D86): the follow-up
+  form asks "how many times have you attempted suicide since the last
+  visit", only after a "yes" to isf05_since_visit (read in the form
+  definitions of the application in November 2026). It asks the numbers of
+  violent and of serious attempts only after a "yes" to their own
+  question.
+
+  Counts that are 0 by logic, as in BP (BP decision D125). After a "no" to
+  isf05_since_visit the number of attempts and the violent and serious
+  attempts are 0 (2,303 visits), and the numbers of violent and of serious
+  attempts are 0 after a "no" to their own question.
+  n_attempts_since_visit is on 2,356 visits, 50 of them above 0.
+
+  The BP schema without its doubtful period (BP decisions D85, D88 and
+  D125): the share of attempts since the last visit does not rise in 2022
+  and 2023 here. The date of the first attempt is not written at the
+  follow-up visits (0 of 2,588); the variable that reads it there is kept
+  from BP and matches nothing.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [follow_up]}
+
+variables:
+  attempted_since_visit: {column: isf05, codes: {Oui: 1, Non: 0}, keep: false, label: "Attempted suicide since the last visit (delivered as isf05_since_visit)"}
+  n_attempts_since_visit: {column: isf07, label: "Number of suicide attempts - since the last visit", range: [0, 50], asked_if: attempted_since_visit}
+  violent_attempts_since_visit: {column: isf08, label: "Has made violent suicide attempts - since the last visit", codes: {Oui: 1, Non: 0}, asked_if: attempted_since_visit}
+  n_violent_attempts_since_visit: {column: isf08a, label: "Number of violent suicide attempts - since the last visit", range: [0, 20], asked_if: violent_attempts_since_visit}
+  serious_attempts_since_visit: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care) - since the last visit", codes: {Oui: 1, Non: 0}, asked_if: attempted_since_visit}
+  n_serious_attempts_since_visit: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care) - since the last visit", range: [0, 20], asked_if: serious_attempts_since_visit}
+  first_attempt_date_follow_up:
+    column: isf05_qsdtc
+    type: date
+    label: Date of the first suicide attempt, as typed at a follow-up visit
+    range: [1920-01-01, 2026-12-31]
+    missing: {"2011-11-11": not_recorded}
+    keep: false

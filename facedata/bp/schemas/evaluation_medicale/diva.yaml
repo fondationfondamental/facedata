@@ -2,22 +2,44 @@ instrument: diva
 title: DIVA, diagnostic interview for ADHD in adults (DSM-IV-TR criteria)
 tab: EVALUATION MEDICALE
 section: questionnaire DIVA - critère DSM-IV TR
-status: draft
+status: reviewed
 notes: >
   DIVA, the diagnostic interview for attention deficit and hyperactivity in
   adults, with the criteria of DSM-IV-TR: nine criteria of attention deficit
   and nine of hyperactivity-impulsivity, each answered for adult life and
-  for childhood (1 = present, 0 = absent). Filled at the inclusion visit of
-  50 patients, from 2019, in eight centres.
+  for childhood (1 = present, 0 = absent). It is on the DSM-5 inclusion
+  form only. Filled at the inclusion visit of 50 patients, from 2019 to
+  2026, in eight centres; never at follow-up.
+
+  Who was evaluated. The block is shown only after a yes to "has the
+  patient been evaluated with the DIVA for ADHD?", a question that the
+  extraction does not hold. The patients are a selection made by the
+  clinician, not a screening of the inclusions, so the DIVA gives no
+  prevalence of ADHD: 24 of the 48 patients with a childhood count reach 6
+  of 9 criteria in attention or in hyperactivity-impulsivity. The levels
+  rise after 2021 (adult attention: mean 3.1 of 9 in 2019-2021, 6.1 from
+  2022), partly because the centre with the lowest levels (E) filled 13 of
+  the 22 early ones. Centre C has no DIVA because its DSM-5 form is missing
+  from the export (R20).
 
   Scores. The number of criteria present, for each of the four blocks (0 to
   9). It is computed where the nine criteria are answered and compared with
-  the stored number: they agree on 91 of 98 complete blocks. 17 blocks have
-  a stored number although some criteria were not answered (in 13 of them it
-  is the sum of those that were); ours is missing there.
+  the stored number. The stored number is typed by the clinician: the
+  application's counting script is attached to the DSM-IV form, which has
+  no DIVA, so the button of the DSM-5 form does nothing. 71 complete blocks
+  have no stored number (8 in 2019-2021, 16 in 2022-2023, 47 from 2024).
+  Where it is stored, it agrees on 91 of 98 complete blocks; the 7 others
+  differ by one (score_mismatch). 17 blocks have a stored number although
+  some criteria were not answered (score_not_recomputed): in 13 it is the
+  sum of those that were, in 3 no criterion is answered; ours is missing
+  there. Two of these 3 are on an inclusion that holds no criterion at all,
+  so 51 inclusions hold a DIVA cell and 50 are delivered.
 
   The interview is DSM-IV-TR for every patient, so it is not split by DSM
-  version.
+  version. It is read whatever the edition of the mood sections of the same
+  visit: 16 of the 50 inclusions are labelled DSM-IV (centres A and E, 2019
+  to 2022) because their mood answers are on the DSM-IV form, and their
+  DIVA still comes from the DSM-5 form (R70 keeps it so).
 
 variables:
   # Criteria of attention, adult

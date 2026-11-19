@@ -2,60 +2,96 @@ instrument: social
 title: Social situation at inclusion
 tab: SOCIAL
 section: MODULE SOCIAL
-status: draft
+status: reviewed
 notes: >
   The social situation of the patient on the day of the inclusion visit:
   marital status, education, work, housing, household, income and debts.
-  Filled once, at the inclusion visit, for 5,000 patients. One column, the
-  class of the job, is filled at the follow-up visits instead.
+  Filled once, at the inclusion visit (5,045 patients; no follow-up or
+  screening visit holds any of these questions). One column, the class of
+  the job, is filled at the follow-up visits instead. The way of living,
+  the housing, the income and the debts are asked from 2010-2011. The tab
+  is held by 29% and 39% of the inclusions of centre C in 2016-18 and
+  2019-21 (71% to 89% before and after), by 23% of those of centre F in
+  2019-21, and hardly by centres A and H from 2022 (O40, DM-6).
 
   Education. The level reached, as a list from the first year of primary
   school to the doctorate. The export writes most levels as a number (CP to
-  CM2 = 1 to 5, collège = 6 to 9, lycée = 10 to 12, CAP = 13, BEP = 14, BAC+1
-  to BAC+5 = 15 to 19, doctorate = 20) and two as words, "BAC" and
-  "Certificat d'études". The numbers are codes of a list, not years of
-  schooling (a CAP is 13, the last year of lycée 12), so the level is
-  delivered as a category. The years of education asked on the
-  neuropsychology form agree with it (a median of 12 years for "BAC", 17
-  for BAC+5).
+  CM2 = 1 to 5, collège = 6 to 9, lycée = 10 and 11, CAP = 13, BEP = 14,
+  BAC+1 to BAC+5 = 15 to 19, doctorate = 20) and two as words, "BAC" and
+  "Certificat d'études". The form has no Terminale, so code 12 never
+  occurs. The numbers are codes of a list, not years of schooling (a CAP is
+  13, the 1ère 11), so the level is delivered as a category. The years of
+  education asked on the neuropsychology form agree with it (a median of 12
+  years for "BAC", 17 for BAC+5).
 
-  Work status. The dictionary gives seven codes, and code 3 (student) never
-  appears. Code 6 (other) is given to 23% of the patients, a quarter of them
-  under 23: the students are probably there. Delivered with the dictionary's
-  labels. The questions on the current job are filled for the employed
-  only, and the end of the last job for the unemployed only.
+  Work status. The form offers seven answers: without a job, in work, at
+  home, retired, student, pension, other (decision D94 in PROGRESS.md).
+  Code 3 (student) never appears in the extraction: the export tests
+  "Étudiant" with an accent while the form stores "Etudiant", and writes 6
+  for every other answer, an empty one included (DM-13). Code 6 is given to
+  1,150 patients, 23%, with a median age of 30 and 39% under 25; 7 of them
+  answered no other social question. Its share rises from 20%-23% of the
+  inclusions until 2021 to 34% in 2022-23 and 27% from 2024. Code 6 is
+  delivered as student_or_other until the export is corrected. The other
+  codes behave as the dictionary says: the questions on the current job are
+  filled for code 1 only (94%), the retired (code 2) have a median age of
+  65, and 143 of the 188 patients with code 4 live on a disability pension.
+  The longest period of work is asked only when the current period of work
+  is not the longest: for the employed an empty cell may mean that the
+  current period (job_duration) is the longest.
 
-  Main source of income. The dictionary says 7 = no income and 8 = other,
-  and code 8 never appears. Code 7 is given to 23% of the patients, among
-  them three quarters of the retired, who have a pension: it holds "other"
-  as well as "no income". It is delivered as none_or_other (open question
-  O35 in PROGRESS.md).
+  Main source of income. The form offers seven answers: salary, RMI or RSA,
+  AAH, disability pension, unemployment benefit, APL, other. It has no "no
+  income" and no eighth answer, so the dictionary's "7 = no income, 8 =
+  other" is not the form: code 7 is "other" (decision D94). It is given to
+  1,071 patients, among them 187 of the 288 retired, who have a pension.
+  The SZ form does have "no income" as its seventh answer: do not compare
+  code 7 between the cohorts.
 
   Household. The number of persons under the same roof is 1 for most of the
-  patients who live alone and 0 for 131 of them: some count themselves and
-  some do not, and for the others the cell does not tell. Delivered as
-  written; a number above 20 is out of range (5 cells).
+  patients who live alone and 0 for 134 of them: some count themselves and
+  some do not. Centre C writes 0 for 42 of its 99 patients who live alone,
+  the other centres for 3% to 12%. The number is typed as text and the
+  export keeps its digits, so the five values above 20 (out of range) are
+  probably two numbers run together.
 
-  Durations of work, in years. A longest period or a total above 60 years is
-  out of range (5 cells, up to 2,223). 39 totals are longer than the
-  patient's age allows and 40 longest periods are longer than the total;
+  Durations of work, in years. Not winsorised: the long careers of the
+  older patients are real (as in DR). A longest period or a total above 60
+  years is out of range (5 cells, up to 2,223). 42 totals are longer than
+  the age at inclusion minus 14 years (11 longer than the age itself), and
+  51 longest periods are longer than the total (39 by more than a year);
   delivered as written.
 
-  End of the last job. 1000-01-01 is the form's placeholder (162 cells, from
-  2023); 15 dates are after the visit.
+  End of the last job. 1000-01-01 is the date the application writes in an
+  empty date since July 2024 (D98): 176 cells, 171 of them from 2024, 168
+  on patients with another work status, who are not asked the question. 15
+  dates are after the visit.
+
+  Debt. The answer "Non renseigné" of the form is delivered as missing (not
+  recorded): 153 inclusions, 85 of them until 2012.
 
   Not loaded (ignored.yaml). empjob, the class of the current job, holds two
-  of its nine codes only (5 for 110 patients, 1 for 12, of 2,300 employed):
-  the export loses the others. The data managers found why (decision D74 in
-  PROGRESS.md): the form offers a list of about 17 classes, like the
-  follow-up question below, and the export looks them up in the nine
-  classes of the dictionary, whose labels are other ones. They ask for the
-  mapping; one is proposed in QUESTIONS.md (O43). protec, the legal protection measure, is the
-  column social_protec of the PATIENT tab again; it is delivered there, as
-  protection_measure.
+  of its nine codes only (5 for 110 patients, 1 for 12, of 2,308 employed):
+  the export looks the 18 classes of the form (the second level of the INSEE
+  nomenclature) up in the nine classes of the dictionary, whose labels are
+  other ones, and keeps two (D74, D99). The mapping to the nine classes is
+  in QUESTIONS.md (FU-8). protec, the legal protection measure, is not
+  delivered (decision D111 in PROGRESS.md).
 
-  The class of the job at follow-up (empjob_psytaitement) is a list of 17
-  classes, filled on 214 follow-up visits from 2021.
+  Not in the extraction: the date of the social assessment, the class of
+  the last job of a patient without one (asked for in FU-8) and, at
+  follow-up, whether the work status changed and the new status. The sick
+  leave questions of the form are read in the tab SOIN SUIVI HOSP ARRET
+  TRAVAIL. Three cells of the other way of living hold only an escaped line
+  break and are read as empty.
+
+  The class of the job at follow-up (empjob_psytaitement) uses the 18
+  classes of the inclusion form (no patient has "Chef d'entreprise de 10
+  salariés ou plus"). It is filled on 219 follow-up visits of 200 patients
+  from 2021, and asked only when the work status changed since the last
+  visit and the new status is "in work". The change and the new status are
+  not exported, so an empty cell does not say that the patient does not
+  work.
 
 variables:
   marital_status:
@@ -95,7 +131,7 @@ variables:
     column: stprof
     label: Work status
     type: category
-    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: other}
+    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: student_or_other}
   job_duration:
     column: jobdur
     label: Time in work without a break of more than six months (the employed)
@@ -121,8 +157,8 @@ variables:
     type: date
     range: [1950-01-01, 2026-12-31]
   first_job_age: {column: profage, label: Age at the first job, type: item, range: [10, 70]}
-  longest_job_years: {column: profdur, label: Longest period of work, type: number, unit: years, range: [0, 60]}
-  total_work_years: {column: durtot, label: Total duration of work over the life, type: number, unit: years, range: [0, 60]}
+  longest_job_years: {column: profdur, label: "Longest period of work, when the current one is not the longest", type: number, unit: years, range: [0, 60], winsor: false}
+  total_work_years: {column: durtot, label: Total duration of work over the life, type: number, unit: years, range: [0, 60], winsor: false}
 
   housing:
     column: vie
@@ -138,6 +174,7 @@ variables:
       "Logement associatif": association_housing
       "Foyer Hôtel": hostel
       "Foyer éducateur": supervised_home
+      "Résidence post-cure": post_cure_residence
       "Autre": other
   housing_other: {column: vieautre, label: "Other housing, as written", type: text}
   living_arrangement:
@@ -175,8 +212,7 @@ variables:
       4: disability_pension
       5: unemployment_benefit
       6: housing_benefit
-      7: none_or_other
-      8: other
+      7: other
   debt_level:
     column: dette
     label: Level of debt
@@ -196,6 +232,7 @@ variables:
       "Agriculteur exploitant": farmer
       "Artisan": craftsperson
       "Commerçant et assimilé": shopkeeper
+      "Chef d'entreprise de 10 salariés ou plus": company_head
       "Profession libérale et assimilé": liberal_profession
       "Cadre de la fonction publique, profession intellectuelle et artistique": public_executive_or_intellectual
       "Cadre d'entreprise": company_executive

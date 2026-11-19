@@ -19,7 +19,7 @@ lists the decisions taken and the questions still open
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
 | [docs/SCHEMA_SPEC.md](docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
 | [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
-| [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The questions that only the EMR developers, the data manager or the principal investigator can settle, sorted by recipient and priority, and the state of the norms |
+| [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The open questions of FACE BP as a list to close, sorted by who can close them (the application, the data, a choice of method, the data managers) and by priority, and the state of the norms |
 | [docs/sz/PROGRESS.md](docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
 | [docs/sz/QUESTIONS.md](docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
 | [docs/dr/PROGRESS.md](docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
@@ -69,7 +69,7 @@ import pandas as pd
 from facedata import bp, sz
 
 one = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
-two = sz.load("data/sz/SZALL_20261113.tsv", instruments=["identite", "ymrs"])
+two = sz.load("data/sz/SZALL_20261117.tsv", instruments=["identite", "ymrs"])
 patients = pd.concat([one.patients, two.patients], ignore_index=True)
 visits = pd.concat([one.data, two.data], ignore_index=True)
 ```

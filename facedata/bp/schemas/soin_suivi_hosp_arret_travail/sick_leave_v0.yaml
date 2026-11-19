@@ -2,41 +2,106 @@ instrument: sick_leave_v0
 title: Sick leave before inclusion (inclusion visit)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: LES 12 DERNIERS MOIS / DEPUIS LA DERNIERE VISITE
-status: draft
+status: reviewed
 notes: >
   Sick leave in the 12 months before the inclusion visit (whether there was
   any, how many, their total duration in weeks) and on the day of the visit
   (on sick leave, and whether it is a long-term one). Yes/no answers are
-  delivered as 1 and 0. "Non applicable" (the patient has no job: a quarter
-  of the answers) and "Ne sais pas" are missing codes.
+  delivered as 1 and 0. "Non applicable" (the patient has no job: 23% of
+  the answers for the year, 28% for the day of the visit) and "Ne sais pas"
+  are missing codes. Filled at the inclusion visit only; the follow-up
+  visits have columns of their own, read by sick_leave_fu.yaml. These
+  questions name no cause, while the follow-up question asks only about
+  sick leave for a psychiatric disorder: they are not one question.
 
-  These columns are filled at the inclusion visit only; the follow-up visits
-  have columns of their own, read by sick_leave_fu.yaml.
+  Where the answers come from. The 12 months are read from the inclusion
+  diagnosis form, the day of the visit from the social form. The DSM-5
+  form asks the yes/no in the words of the social form ("Arrêt de travail
+  au cours de l'année passée"), then the number and the weeks, with no
+  condition. The DSM-IV form has no yes/no, and it shows the number and the
+  weeks only after a mood episode in the past year. Most answers (3,327 of
+  the 4,057 yes/no) are from DSM-IV inclusions, where an application
+  script, social_diag.php, wrote the yes/no. It first copied the social
+  form's answer where the number or the weeks were empty or 0 (a yes as
+  "Ne sais pas", a no as 0, "Non applicable" as "NA", and the social weeks
+  as the weeks). Then it wrote the yes/no from the number: "NA" gives "Non
+  applicable", "Ne sais pas" or 1 to 20 give yes, and 0 gives no (4,087 of
+  the 4,094 DSM-IV answers follow this rule). So 872 of the 917 "Ne sais
+  pas" numbers are a social yes with no number, and numbers also appear
+  after a "no" to a mood episode (723 of the 879 DSM-IV inclusions with no
+  episode). The script also created DSM-IV records that hold only these
+  answers: 178 inclusions with no DSM label hold exactly its pairs (R69).
 
-  Asked only after a yes (asked_if). The number and the duration are 0 where
-  the patient had no sick leave in the year. Where the first answer is "Non
-  applicable" or empty they stay missing.
+  sick_leave_12m is a score (D123): the stored yes/no, except yes on the 8
+  DSM-IV inclusions with ">20" sick leaves, where the script wrote no (PHP
+  7 reads ">20" as 0). These 8 carry score_mismatch; the stored answer is
+  the check (sick_leave_12m_stored, not delivered).
 
-  Number. Typed freely: "NA" (962 cells) and "Ne sais pas" (914) are missing
-  codes, ">20" is censored at 20, and a number above 52 is out of range (4
-  cells).
+  A "no" gives 0 to an empty number or duration (asked_if), because no
+  sick leave in the year means 0 sick leaves: 168 numbers and 1,316
+  durations. The forms do not hide the number and the weeks after a "no",
+  and a filled cell is read whatever the yes/no says. After "Non
+  applicable" that is 20 numbers and 80 durations (72 of them 0); after an
+  empty yes/no, 49 numbers and 23 durations (12 of them 0).
+
+  Number. A list on both diagnosis forms (0 to 20, ">20", "NA", "Ne sais
+  pas"): "NA" (963 cells) and "Ne sais pas" (917) are missing codes, and
+  ">20" is censored at 20 (10 visits). Where the number is empty on both
+  diagnosis forms, the export takes the social form's weeks instead (R74).
+  These weeks show only where they leave the list: the 40 numbers above 20
+  are out of range (the range is [0, 20], D123), 2 decimals are delivered
+  as numbers and 2 texts end unparsed. Smaller week values cannot be told
+  from a number. Most of the 49 numbers delivered after an empty yes/no
+  are probably such weeks (46 of them from 2022).
 
   Duration, in weeks. 52 (the whole year) is the most frequent answer after
-  0. A duration above 53 weeks cannot be about 12 months and is out of range
-  (43 cells, up to 208), like the one negative value. About 90 cells hold
-  words ("2 semaines", "3 mois") and end unparsed.
+  0 (379 and 307 cells). A duration above 53 weeks cannot be about 12
+  months and is out of range (43 cells, up to 208), like the one negative
+  value; 32 of these 43 patients are on sick leave at the visit, so they
+  may be the length of a sick leave still running, counted from its start.
+  91 cells hold words ("2 semaines", "3 mois") and end unparsed, and 19
+  hold a "not applicable" word and are a missing code. The words and the
+  values above 53 weeks are all at DSM-IV inclusions or inclusions with no
+  DSM label (78 of the 110 word cells in centre C, until 2021): the DSM-5
+  form accepts only 0 to 52.
 
-  Long-term sick leave is a detail of the current sick leave: it stays
-  missing where the patient is not on sick leave.
+  Long-term sick leave is a detail of the current sick leave, which the
+  form shows only after a yes. It is missing where the patient is not on
+  sick leave, except on 2 inclusions of 2010-2011 that answer no and still
+  hold it; it is empty on 147 of the 887 yes.
+
+  The two forms sometimes disagree; the answers are delivered as written.
+  36 patients are on sick leave at the visit with no sick leave in the
+  year (25 at DSM-IV inclusions); their weeks are delivered as 0 on 31. A
+  "no" for the year comes with weeks above 0 on 8 visits and with a number
+  above 0 on 21 (all DSM-5; 4 have both). On 14 of these 21 the weeks were
+  empty and set to 0, while the number is probably the social form's weeks
+  (R74). A yes comes with 0 weeks on 12 visits (9 DSM-IV, with the number
+  "Ne sais pas") and with a number of 0 on 3. 69 inclusions have at least
+  one of these.
+
+  From 2022, centre C has no answer for the 12 months: its DSM-5 table is
+  missing from the export (R20). Centre A fills them on 22 of its 210
+  inclusions, and centre H the current sick leave on 3 of 128 (DM-6).
 
   The numbers and durations are not winsorised (decision D54 in
-  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
-  rare high values down to it, or to 0.
+  PROGRESS.md). They count events and are bounded by the form and the hard
+  limits (20 sick leaves, 53 weeks). About half are 0 (51% of the numbers,
+  46% of the durations), and the 99th percentile would bring real high
+  values down to it (16 numbers above 12; for the weeks it is 52).
 
 variables:
-  sick_leave_12m: {column: hooccur_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave in the 12 months before inclusion"}
-  n_sick_leaves_12m: {column: nboccur_arret_travail, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_12m, label: "Number of sick leaves in the 12 months before inclusion"}
-  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, asked_if: sick_leave_12m, label: "Total duration of the sick leaves in the 12 months before inclusion"}
+  sick_leave_12m_stored: {column: hooccur_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, keep: false, label: "Sick leave in the 12 months before inclusion, as stored"}
+  n_sick_leaves_12m: {column: nboccur_arret_travail, type: number, range: [0, 20], winsor: false, asked_if: sick_leave_12m_stored, label: "Number of sick leaves in the 12 months before inclusion"}
+  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, asked_if: sick_leave_12m_stored, label: "Total duration of the sick leaves in the 12 months before inclusion"}
 
   sick_leave_current: {column: hooccur_arret_travail_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "On sick leave at the inclusion visit"}
   sick_leave_current_long: {column: hodur_arret_travail_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current sick leave: a long-term one"}
+
+scores:
+  # The stored answer, but yes where it says no to more than 20 sick leaves: a script error of the DSM-IV inclusions (D123).
+  sick_leave_12m:
+    custom: sick_leave_more_than_20
+    label: "Sick leave in the 12 months before inclusion"
+    range: [0, 1]
+    compare: sick_leave_12m_stored

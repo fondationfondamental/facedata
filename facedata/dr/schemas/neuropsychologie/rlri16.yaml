@@ -2,32 +2,87 @@ instrument: rlri16
 title: Free and cued recall of sixteen words (RL/RI-16)
 tab: NEUROPSYCHOLOGIE
 section: MÉMOIRE
-status: draft
+status: reviewed
 notes: >
-  Free and cued recall of sixteen words (the RL/RI-16 procedure): an
-  immediate cued recall, three trials of free then cued recall, a
-  recognition and a delayed recall. Not in BP or SZ, which use the CVLT.
-  The dictionary calls the section "MÉMOIRE" and does not name the test.
-  716 visits.
+  Free and cued recall of sixteen words (the RL/RI-16 procedure; the form of
+  the application, 199.php, calls it "RL-RI 16 items"): an immediate cued
+  recall, three trials of free then cued recall, a recognition and a delayed
+  recall. Not in BP or SZ, which use the CVLT. The dictionary calls the
+  section "MÉMOIRE" and does not name the test. It labels MEM23 and MEM24
+  "Rappel libre différé", like MEM21 and MEM22, but they are the delayed
+  total recall (free and cued) and its band; the delayed free recall is
+  MEM21 and its z-score MEM22. 716 visits.
 
   Sums. The stored sum of the three free recalls and the stored sum of the
-  three total recalls equal ours on every visit (712 and 713).
+  three total recalls equal ours on every visit that has them (712 and 712;
+  the stored total sum is missing on 1 of our 713).
 
-  Z-scores of the free recalls: a higher z-score is a better recall, on
-  every trial.
+  Z-scores of the free recalls (three trials and the delayed recall):
+  recomputed with the rule of the application (neuro.js, the tables
+  tab_normes_rl and tab_ecart_RL), z = (free recall - mean) / SD, to two
+  decimals; a higher z-score is a better recall, on every trial. The mean is
+  the one of the cell of the age class (16 to 29, 30 to 49, 50 to 64, 65 to
+  74, 75 and over), of the sex and of the class of education (1 to 11 years,
+  12, 13 to 20); there is one SD for each measure. The age is the one typed
+  in the form (cclin01) where it is within a year of the age at the visit
+  and the age at the visit elsewhere, as for the other tests of DR; the
+  years of education are cclin08 and the sex is the one of the patient file
+  (the application reads 1 as a man and 2 as a woman). A missing education
+  gives no z-score and norm_missing. The tables are made from the script
+  (norms/make_rlri16_tables.py; norms/ is not in the repository). The stored
+  z-scores are kept as checks (rlri16_*_z_stored, not delivered) and
+  compared with a tolerance of 0.0101.
 
-  Percentile bands of the cued recalls and of the recognition. Each band
-  is a function of the raw score alone (for the immediate recall: 16 words
-  gives 99, 15 gives 25, 14 gives "5-25", 13 gives 5), and the share of
-  each band is the same in every period. They are read as bands with the
+  With the typed age the recomputed z-score equals the stored one on 711 of
+  711, 710 of 712, 711 of 712 and 705 of 707 visits (trials 1 to 3, delayed
+  recall); with the reconciled age it differs on 12, 13, 12 and 13 visits
+  (50 of 2,843 z-scores, 1.8%): score_mismatch. 44 of the 50 are visits
+  whose typed age is more than a year from the age at the visit, 5 are
+  stored values that are not the table's even with the typed age, and 1 is
+  the stored "<0.25", which agrees with the recomputed value but is compared
+  as 0.25 (censored_left on the stored variable).
+
+  The tables of the script break their own pattern in a few cells. In each
+  measure the mean rises by the same step from the class of 1 to 11 years to
+  the class of 12 years and to the class of 13 to 20 years, except in five
+  cases: trials 2 and 3 and the delayed recall for women of 16 to 29 (the
+  cell of 13 to 20 years equals the one of men of 16 to 29 with 1 to 11
+  years; 19 visits), the delayed recall for men of 50 to 64 (the step to 13
+  to 20 years; 55 visits) and for men of 75 and over (the step to 12 years;
+  no visit with 1 to 12 years, 1 with 13 to 20). They look like typos of the
+  script (no manual is available to say). The stored z-scores follow the
+  script, so they do not show as a mismatch, and the recomputed ones follow
+  it too.
+
+  Percentile bands of the cued recalls (immediate, total of trials 1 to 3,
+  delayed total): left as stored, not recomputed. Each band is a function of
+  the raw score alone (for the immediate recall: 16 words gives 99, 15 gives
+  25, 14 gives "5-25", 13 gives 5). The script writes a label for each raw
+  score, and the stored band is that label on 714 of 714, 713 of 713, 712 of
+  713, 712 of 713 and 707 of 708 visits; the three exceptions are visits
+  with 16 words stored "50-99" or "25-99". They are read as bands with the
   limits 1, 5, 25, 50 and 99; "5-1" is the band from 1 to 5 written the
-  other way. A perfect recognition is written 100 (615 visits) or 99 (8
-  visits, until 2014): both are read as 99.
+  other way.
+
+  The recognition band is not a percentile band but a flag with two values:
+  perfect or not perfect. 16 words recognised gives 100 on 615 visits and 99
+  on 8 (7 until 2014 and 1 in 2021); any other score gives 5 (85 visits).
+  100 and 99 are read as 99.
+
+  Checks. The total recall of a trial is its free recall plus its cued
+  recall, so it cannot be lower than the free recall: it is, on 2, 2, 6 and
+  9 visits (trials 1 to 3 and delayed recall). The check scores (cued
+  recall, total minus free; not delivered) are out_of_range there.
 
   The neuropsychological assessment is given at inclusion and at the visits
-  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
-  four hold it until 2020 and about one in two since 2021 (open question
-  O22).
+  of 1, 2 and 4 years: 744 visits of 436 patients. The RL/RI-16 is present
+  at 72% of the inclusion visits until 2017, 73% in 2018 to 2020 and 48%
+  since 2021. The form (199.php) has a "test non réalisé" box for each test
+  (RL_RI_TEST here) and a "Non effectuée" box for the whole assessment
+  (NEUROPSY_OFF). Their columns exist in the database (ecedr.sql) but are
+  not in the dictionary, so they are not exported: the data managers should
+  be asked to export them, to tell a test that was not done from one that
+  was not entered (open question O22).
 
 defaults: {type: item, range: [0, 16]}
 
@@ -35,28 +90,33 @@ variables:
   rlri16_immediate: {column: mem01, label: Immediate cued recall (0 to 16)}
   rlri16_immediate_band: {column: mem02, type: band, limits: [1, 5, 25, 50, 99], label: Immediate cued recall as a percentile band}
   rlri16_free1: {column: mem03, label: "Trial 1: free recall"}
-  rlri16_free1_z: {column: mem04, type: number, range: [-6, 6], label: "Trial 1: free recall as a z-score (higher is better)"}
+  rlri16_free1_z_stored: {column: mem04, type: number, range: [-6, 6], winsor: false, keep: false, label: "Trial 1: free recall as a z-score, as stored"}
   rlri16_total1: {column: mem05, label: "Trial 1: total recall, free and cued"}
   rlri16_total1_band: {column: mem06, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 1: total recall as a percentile band"}
   rlri16_free2: {column: mem07, label: "Trial 2: free recall"}
-  rlri16_free2_z: {column: mem08, type: number, range: [-6, 6], label: "Trial 2: free recall as a z-score (higher is better)"}
+  rlri16_free2_z_stored: {column: mem08, type: number, range: [-6, 6], winsor: false, keep: false, label: "Trial 2: free recall as a z-score, as stored"}
   rlri16_total2: {column: mem09, label: "Trial 2: total recall, free and cued"}
   rlri16_total2_band: {column: mem10, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 2: total recall as a percentile band"}
   rlri16_free3: {column: mem11, label: "Trial 3: free recall"}
-  rlri16_free3_z: {column: mem12, type: number, range: [-6, 6], label: "Trial 3: free recall as a z-score (higher is better)"}
+  rlri16_free3_z_stored: {column: mem12, type: number, range: [-6, 6], winsor: false, keep: false, label: "Trial 3: free recall as a z-score, as stored"}
   rlri16_total3: {column: mem13, label: "Trial 3: total recall, free and cued"}
   rlri16_total3_band: {column: mem14, type: band, limits: [1, 5, 25, 50, 99], label: "Trial 3: total recall as a percentile band"}
   rlri16_free_sum_stored: {column: mem15, range: [0, 48], keep: false, label: Sum of the three free recalls as stored}
   rlri16_total_sum_stored: {column: mem16, range: [0, 48], keep: false, label: Sum of the three total recalls as stored}
   rlri16_recognition: {column: mem17, label: Recognition (0 to 16)}
-  rlri16_recognition_band: {column: mem18, type: band, limits: [1, 5, 25, 50, 99], codes: {"100": "99"}, label: Recognition as a percentile band}
+  rlri16_recognition_band: {column: mem18, type: band, limits: [1, 5, 25, 50, 99], codes: {"100": "99"}, label: "Recognition, perfect or not: 99 for all 16 words recognised, 5 otherwise (a flag, not a percentile band)"}
   rlri16_false_semantic: {column: mem19, label: "Recognition: semantic distractors taken for a word of the list"}
   rlri16_false_neutral: {column: mem20, label: "Recognition: neutral distractors taken for a word of the list"}
   rlri16_delayed_free: {column: mem21, label: Delayed free recall}
-  rlri16_delayed_free_z: {column: mem22, type: number, range: [-6, 6], label: Delayed free recall as a z-score (higher is better)}
+  rlri16_delayed_free_z_stored: {column: mem22, type: number, range: [-6, 6], winsor: false, keep: false, label: "Delayed free recall as a z-score, as stored"}
   rlri16_delayed_total: {column: mem23, label: "Delayed total recall, free and cued"}
   rlri16_delayed_total_band: {column: mem24, type: band, limits: [1, 5, 25, 50, 99], label: Delayed total recall as a percentile band}
   rlri16_intrusions: {column: mem25, range: [0, 30], label: Intrusions}
+
+  # What the norms of the application are read with: the age and the years of education typed in the conditions form, and the sex
+  rlri16_age: {column: cclin01, type: number, range: [15, 100], winsor: false, keep: false, label: "Age at the testing, as typed (for the norms)"}
+  rlri16_education: {column: cclin08, type: number, range: [0, 30], winsor: false, keep: false, label: Years of education (for the norms)}
+  rlri16_sex: {column: sex, type: item, codes: {Masculin: "0", Feminin: "1"}, range: [0, 1], keep: false, label: "Sex, 0 for a man and 1 for a woman (for the norms)"}
 
 scores:
   rlri16_free_sum:
@@ -67,3 +127,56 @@ scores:
     label: Sum of the three total recalls (0 to 48)
     sum: [rlri16_total1, rlri16_total2, rlri16_total3]
     compare: rlri16_total_sum_stored
+
+  # The z-scores of the free recalls: the mean of the cell of the age class, the sex and the education class, one SD per measure
+  rlri16_free1_z:
+    label: "Trial 1: free recall as a z-score (higher is better)"
+    regression: rlri16_free1_z
+    from: rlri16_free1
+    by: rlri16_education
+    age: rlri16_age
+    with: {sex: rlri16_sex}
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: rlri16_free1_z_stored
+    compare_tolerance: 0.0101
+  rlri16_free2_z:
+    label: "Trial 2: free recall as a z-score (higher is better)"
+    regression: rlri16_free2_z
+    from: rlri16_free2
+    by: rlri16_education
+    age: rlri16_age
+    with: {sex: rlri16_sex}
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: rlri16_free2_z_stored
+    compare_tolerance: 0.0101
+  rlri16_free3_z:
+    label: "Trial 3: free recall as a z-score (higher is better)"
+    regression: rlri16_free3_z
+    from: rlri16_free3
+    by: rlri16_education
+    age: rlri16_age
+    with: {sex: rlri16_sex}
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: rlri16_free3_z_stored
+    compare_tolerance: 0.0101
+  rlri16_delayed_free_z:
+    label: Delayed free recall as a z-score (higher is better)
+    regression: rlri16_delayed_free_z
+    from: rlri16_delayed_free
+    by: rlri16_education
+    age: rlri16_age
+    with: {sex: rlri16_sex}
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: rlri16_delayed_free_z_stored
+    compare_tolerance: 0.0101
+
+  # Consistency checks only: the total recall is the free recall plus the cued recall, so the cued recall
+  # (total minus free) cannot be negative
+  rlri16_cued1_check: {sum: [rlri16_total1], minus: [rlri16_free1], range: [0, 16], keep: false, label: "Trial 1: cued recall, total minus free recall (check)"}
+  rlri16_cued2_check: {sum: [rlri16_total2], minus: [rlri16_free2], range: [0, 16], keep: false, label: "Trial 2: cued recall, total minus free recall (check)"}
+  rlri16_cued3_check: {sum: [rlri16_total3], minus: [rlri16_free3], range: [0, 16], keep: false, label: "Trial 3: cued recall, total minus free recall (check)"}
+  rlri16_delayed_cued_check: {sum: [rlri16_delayed_total], minus: [rlri16_delayed_free], range: [0, 16], keep: false, label: "Delayed cued recall, total minus free recall (check)"}

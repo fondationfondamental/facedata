@@ -2,7 +2,7 @@ instrument: bis10
 title: Barratt Impulsiveness Scale, BIS-10 (34 items)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire BIS10 (version long 34 items)
-status: draft
+status: reviewed
 notes: >
   BIS-10 and BIS-12 are two instruments. An error in the EMR stored the
   answers of the 12-item BIS-12 (used from 2021 on) in twelve of the columns
@@ -23,15 +23,20 @@ notes: >
   1. The extraction reverses an item as 6 - value. With a 1 to 4 scale the
   usual rule is 5 - value, which is what this schema does. Each stored score
   is therefore higher than ours by one point per reversed item; that is the
-  compare_offset of each score. Open question O1 in PROGRESS.md: which rule
-  do we keep?
+  compare_offset of each score. The rule kept is 5 - value (decision D92 in
+  PROGRESS.md): it is the usual one, and the script of the application
+  itself reverses 4, 3, 2, 1 (read in November 2026). The 6 - value is in
+  the score step of the data managers, which writes these columns.
 
   2. The dictionary formula for the planning subscale is incomplete. The
   stored score also includes items 14, 18 and 31 (not reversed).
 
   3. The stored behavioural and general scores (bis1039, bis1040) are rounded
   to one decimal. Comparing them would flag most rows for a rounding
-  difference, so those two scores have no compare.
+  difference: they are compared with a tolerance of 0.051 (the general score with an offset of 0.5). The export also writes a score
+  when an item is missing, as the sum of the answers present (27 of 27
+  checked): 227 score_not_recomputed, and 4 stored motor sums (7 to 10) fall
+  under the declared range.
 
   The last four scores use only the 12 items that the BIS-12 also has. They
   are the only bridge between the two instruments. Whether an answer given
@@ -158,7 +163,12 @@ scores:
   bis10_behavioural:
     label: Behavioural impulsivity (mean of 7 items)
     mean: [bis1006, bis1014, bis1017, bis1020, bis1023, bis1025, bis1028]
+    compare: bis10_behavioural_stored
+    compare_tolerance: 0.051
 
   bis10_general:
     label: General impulsivity (mean of the cognitive and behavioural scores)
     mean: [bis10_cognitive, bis10_behavioural]
+    compare: bis10_general_stored
+    compare_offset: 0.5
+    compare_tolerance: 0.08

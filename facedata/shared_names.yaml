@@ -82,12 +82,22 @@ columns:
 
 # An output name that two cohorts deliver with labels that are not the same list.
 names:
+  apgar_1min: "BP and DR read a 0 as 'nothing known' (their forms of 2009-2010 saved a 0, BP D51) and keep 1 to 10; ASP has 3 patients with a 1-minute 0 that no 5-minute 0 accompanies, kept as true values (0 to 10)"
+  apgar_5min: "BP and DR read a 0 as 'nothing known' (BP D51) and keep 1 to 10; ASP keeps 0 to 10 (no 5-minute 0 in the data)"
+  birth_date: "ASP has children (born up to 2023); the adult cohorts stop in 2012"
+  height: "ASP has children: its lower limit is 80 cm, against 100 cm for adults"
+  weight: "ASP has children: its lower limit is 10 kg, against 25 kg for adults"
+  hospitalisation_months_v0: "the BP form stops at 20 months (\">20\" is read as 20, censored), the SZ form at 30; DR has no cap (up to 72 months seen). Compare after cutting every cohort at 20"
   chronic_viral_hepatitis_virus_fu: "the forms do not list the same viruses (hepatitis D in DR, 'unclassified' in BP)"
   chronic_viral_hepatitis_virus_v0: "the forms do not list the same viruses (hepatitis D in DR, 'unclassified' in BP)"
   diagnosis: "each cohort has its own diagnoses"
+  handedness: "the DR form numbers the answers 1 right, 2 left; the ASP form 1 left, 2 right. Both readings are checked on the data: right-handed 92% in DR, 84% in ASP, 89% in BP"
+  income_source: "code 7 is 'no income' on the SZ form and 'other' on the BP form, which has no 'no income' (SZ D37): do not compare code 7 between them"
   isf01_since_visit_when: "the DR form asks how long ago since the last visit (two weeks to a year, over a year); BP and SZ have one answer"
   isf02_since_visit_when: "the DR form asks how long ago since the last visit (two weeks to a year, over a year); BP and SZ have one answer"
   isf03_since_visit_when: "the DR form asks how long ago since the last visit (two weeks to a year, over a year); BP and SZ have one answer"
   isf04_since_visit_when: "the DR form asks how long ago since the last visit (two weeks to a year, over a year); BP and SZ have one answer"
   isf05_since_visit_when: "the DR form asks how long ago since the last visit (two weeks to a year, over a year); BP and SZ have one answer"
   kinship: "DR describes the siblings and the children as one row each; BP and SZ describe each sister, brother, son and daughter, and BP the grandparents"
+  sick_leave_12m: "the answer 2 is 'not applicable' (no job) on the DR form and 'no' on the ASP form, which asks another question (off work during the work contracts of the last 12 months)"
+  work_status: "in BP the export writes the students with 'other' (code 6 is student_or_other); SZ and DR have an answer 'other' of their own"

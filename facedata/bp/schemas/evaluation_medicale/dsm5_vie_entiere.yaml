@@ -2,7 +2,7 @@ instrument: dsm5_vie_entiere
 title: Mood disorder over the whole life, DSM-5 criteria
 tab: EVALUATION MEDICALE
 section: Caractéristique du trouble vie entière
-status: draft
+status: reviewed
 notes: >
   The mood disorder over the whole life, as recorded at the inclusion visit:
   the number of episodes of each kind, those with psychotic features,
@@ -10,33 +10,79 @@ notes: >
   pattern and the age at the first psychotropic treatment. Yes/no answers
   are delivered as 1 and 0; "Ne sais pas" is a missing code.
 
-  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
-  evaluation was made with DSM-IV criteria for the patients included until
-  2021 and with DSM-5 criteria since, in the same columns. This schema reads
-  the DSM-5 visits; dsm4_vie_entiere.yaml reads the others. Both carry the
-  version block of the two schemas of the follow-up form (decisions D12, D14
-  and D15). The DSM-5 form has no mixed episode: the three mixed-episode
-  columns are not read here (a few cells hold a value). The number of manic
-  episodes with psychotic features is almost never filled in this form.
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md), asked on
+  two inclusion forms and exported in the same columns. The application
+  stores no edition: the export writes dsm_criteria on the inclusion row,
+  DSM5 where the DSM-5 form holds one of five answers on the mood history,
+  else DSM4 where the DSM-IV form does (DEV-11). The label is DSM-IV until
+  2019 (7 DSM-5 exceptions), DSM-5 on 24 of 380 labelled inclusions in
+  2020, 44 of 425 in 2021 and 203 of 238 in 2022 (the 35 DSM-IV ones of
+  2022 are dated January to May), and DSM-5 on all from 2023. This schema
+  reads the DSM-5 visits; dsm4_vie_entiere.yaml reads the others. Both
+  carry the version block of the follow-up schemas (D12, D14, D15): an
+  inclusion with no label is read by the date of the patient's first visit
+  (the screening, where there is one), DSM-IV before 2020 and DSM-5 from
+  2023 (version_inferred), and has no version from 2020 to 2022
+  (version_unknown, not delivered). Why labels are missing: see
+  dsm5_depuis_derniere_visite.yaml. In this section 6 unlabelled
+  inclusions are read by date (4 DSM-IV, 2 DSM-5) and none is left without
+  a version.
+
+  The DSM-5 form has no mixed episode: the three mixed-episode columns are
+  not read here. They hold 19 cells on 10 DSM-5 inclusions, 9 of which also
+  hold a DSM-IV record (a lifetime number of mixed episodes); the export
+  takes their answers here from the DSM-IV record first, so they may be
+  those of the DSM-IV form. They are delivered (R70). The DSM-5 form asks
+  instead about depressive and manic episodes with mixed features (yes/no
+  and number) and about a seasonal pattern of depression and of
+  (hypo)mania with its season; the extraction holds none of these 8
+  questions.
 
   Counts. The form stops at 20: ">20" is read as 20 with a mark in the
-  censoring column (this value or more). 15% of the counts of depressive
-  episodes are "Ne sais pas".
+  censoring column (this value or more; 58 depressive, 45 hypomanic, 4
+  manic). "Ne sais pas" is 14% of the numbers of depressive episodes, 31%
+  and 38% in centres E and F.
 
-  A count asked only after a yes (asked_if): the number of episodes with
-  psychotic features, and of induced episodes, is 0 where the answer to "at
-  least one" is no.
+  Psychotic features. The form asks whether there was at least one
+  depressive, or manic, episode with psychotic features only after 1 to 15
+  episodes of that kind (the DSM-IV form asks every patient). The answer is
+  0 where the number of that kind is 0 (asked_if on the number, D122): 17
+  depressive and 639 manic zeros. So 252 of the 971 answers on manic
+  episodes are yes (26%; 30% with the DSM-IV form). After 16 or more
+  episodes the form does not ask (an application defect): the 75 patients
+  with 16 or more depressive episodes and the 7 with 16 or more manic ones
+  have no answer. The 9 answers given where the form does not ask (2
+  depressive, 7 manic) are all on the inclusions that hold a DSM-IV record.
+  The number of depressive episodes with psychotic features, and of induced
+  episodes, is asked only after a yes (asked_if): it is 0 where the answer
+  to "at least one" is no. The number of manic episodes with psychotic
+  features is not delivered: the export loses it for the DSM-5 form (R68),
+  although 252 patients answer yes.
+
+  The age at the first psychotropic treatment is a list from "<5" to ">89"
+  on the form: "<5" is read as 5 and censored_left (1 patient), ">89" as 89
+  and censored_right (none; D122). Against the age at the first episode
+  (dsm5_first_episode_age, D89), 72 of the 832 patients with both ages have
+  a first treatment more than two years earlier. 48 of them have no age for
+  the kind of episode named as the first (41 a depressive one), so the age
+  compared is that of a later episode; where that age is known the count
+  is 22 of 686. Against the first depressive episode (dsm5_first_mde_age)
+  it is 42 of 691. 1 of the 1,003 ages is above the age at inclusion, by
+  less than a year. Delivered as written.
+
+  Centres. There is no value from centre C (R20), and centre A has values
+  for only 6 of its 145 DSM-5 inclusions (O40). Centre H reports a seasonal
+  pattern for
+  8% and rapid cycling for 11% of its DSM-5 patients (23% to 51% and 20% to
+  42% in the other centres); delivered as written.
 
   Not loaded (ignored.yaml). mhoccur_edm_lt, mhoccur_ehman_lt,
   mhoccur_epman_lt and mhoccur_epmixt_lt say "Y" where the count of the row
   is 1 or more and "N" everywhere else, also where the count is unknown or
   empty and on every row of the other visits: the export writes them, and
-  their "N" does not mean "none". The three columns mhoccur_edm_psy_spv,
-  mhoccur_epman_psy_spv and mhoccur_epmixt_psy_spv are copies of the
-  lifetime columns read here.
-
-  210 patients have a first treatment more than two years before their first
-  episode; delivered as written.
+  their "N" does not mean "none" (R71). The three columns
+  mhoccur_edm_psy_spv, mhoccur_epman_psy_spv and mhoccur_epmixt_psy_spv are
+  copies of the lifetime columns read here, filled at inclusion only (R72).
 
 version:
   name: dsm_version
@@ -52,16 +98,16 @@ defaults: {versions: [dsm5]}
 
 variables:
   dsm5_lt_n_mde: {column: evnum_edm_lt, type: number, range: [0, 50], winsor: false, label: "Number of major depressive episodes over the life"}
-  dsm5_lt_mde_psychotic: {column: mhoccur_edm_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one major depressive episode with psychotic features"}
+  dsm5_lt_mde_psychotic: {column: mhoccur_edm_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm5_lt_n_mde, label: "At least one major depressive episode with psychotic features"}
   dsm5_lt_n_mde_psychotic: {column: evnum_edm_psy_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm5_lt_mde_psychotic, label: "Number of major depressive episodes with psychotic features"}
   dsm5_lt_n_hypomania: {column: evnum_ehman_lt, type: number, range: [0, 50], winsor: false, label: "Number of hypomanic episodes over the life"}
   dsm5_lt_n_mania: {column: evnum_epman_lt, type: number, range: [0, 50], winsor: false, label: "Number of manic episodes over the life"}
-  dsm5_lt_mania_psychotic: {column: mhoccur_epman_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one manic episode with psychotic features"}
-  dsm5_lt_n_mania_psychotic: {column: evnum_epman_psy_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm5_lt_mania_psychotic, label: "Number of manic episodes with psychotic features"}
+  dsm5_lt_mania_psychotic: {column: mhoccur_epman_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm5_lt_n_mania, label: "At least one manic episode with psychotic features"}
+  # The number of manic episodes with psychotic features is not delivered: the export loses it for the DSM-5 form (R68).
   dsm5_lt_induced: {column: mhoccur_epind_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one induced episode (switch under antidepressants or ECT)"}
   dsm5_lt_n_induced: {column: evnum_epind_lt, type: number, range: [0, 50], winsor: false, asked_if: dsm5_lt_induced, label: "Number of induced episodes"}
 
   dsm5_lt_rapid_cycling: {column: cyclerap, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Rapid cycling, now or in the past"}
   dsm5_lt_full_remission: {column: remisc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Full remission between the episodes"}
   dsm5_lt_seasonal: {column: saison, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Seasonal pattern"}
-  dsm5_lt_first_treatment_age: {column: agetrt, type: item, range: [0, 90], label: "Age at the first psychotropic treatment"}
+  dsm5_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first psychotropic treatment"}

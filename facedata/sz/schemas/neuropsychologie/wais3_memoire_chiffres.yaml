@@ -5,32 +5,70 @@ section: Mémoire des chiffres (WAIS-3) ancienne version
 status: draft
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the digit-span columns
-  on the WAIS-III visits (739 visits, from 2010 to 2016);
+  (decision D10 of the BP file). This schema reads the digit-span columns on
+  the WAIS-III visits (706 visits, from 2010 to 2015);
   wais4_memoire_chiffres.yaml reads the WAIS-IV visits.
 
-  The SZ extraction holds the summary scores only: the items of the two
-  tasks, which BP has, are not extracted. So the two raw scores cannot be
-  recomputed; the raw total is checked against their sum.
+  Edition rule (decision D138, question O16). The form labels 33 visits
+  WAIS-III although they hold the WAIS-IV digit-span sequencing task (the
+  columns mcoc_w and mcocemp_w, which only the WAIS-IV has). They are read as
+  WAIS-IV: the version block lists the two columns under override, and the
+  visits get the flag version_overridden. All 33 hold digit-span values and
+  are read in wais4_memoire_chiffres.yaml, not here. Read here, as they were
+  before the rule, 32 of them had a raw total that also counts the sequencing
+  score (30 gave score_mismatch on the total, and 2 had a total above 30, out
+  of range, so that their scaled score was not recomputed:
+  score_not_recomputed) and the 33rd a total of forward + backward only.
 
-  The raw total is forward + backward on 707 of the 739 visits. On the 32
-  others it also counts a sequencing score (mcoc_w), a task that only the
-  WAIS-IV has: these visits were most likely given the WAIS-IV digit span
-  under the label WAIS3. 30 of them get score_mismatch, with derived_doubt
-  on their scaled score and its z-score; on the 2 others the total is above
-  30 and out of range.
+  The SZ extraction holds the summary scores only: the items of the two tasks,
+  which BP has, are not extracted. So the two raw scores cannot be recomputed;
+  the raw total is checked against their sum.
 
-  The span difference is forward span minus backward span on every visit,
-  and the z-score of the scaled score is (scaled score - 10) / 3 on every
-  visit. "Infinity" in a z-score of a span is a missing code.
+  The raw total is forward + backward on 706 of the 706 visits.
+
+  The span difference is forward span minus backward span on 706 of 706
+  visits, and the z-score of the scaled score is (scaled score - 10) / 3 on
+  706 of 706. "Infinity" in a z-score of a span is a missing code.
+
+  Scaled score, z-scores and spans (decision of 18 November 2026). The scaled
+  score is recomputed from the stored raw total in the application's own norm
+  table (norms/wais3_digit_span.csv, 12 age groups read from the scripts of
+  the EMR; not part of the repository) and delivered; the stored scaled score
+  and z-score are checks (keep: false) and a difference is score_mismatch on
+  the delivered score. The EMR read its tables with the age typed in the form
+  (cclin01_); the package uses that age where it is within one year of the age
+  at the visit, else the age at the visit (age: wais3_ds_age). The z-score is
+  (scaled score - 10) / 3 (tolerance 0.006). The z-scores of the longest spans
+  are computed with a mean and a standard deviation per age group and per
+  class of years of education typed in the form
+  (norms/wais3_span_forward_z.csv and wais3_span_backward_z.csv, by:
+  wais3_ds_education), as the scripts of the EMR do. On the 706 visits with a
+  stored and a recomputed scaled score, 7 differ (6 before 2013, 1 in 2013 to
+  2015), 4 of them with a typed age more than a year from the age at the visit
+  (read with the typed age as it stands the table gives the stored score on
+  all but 3 of the 704 visits that have a typed age). The z-score differs on
+  the same 7. The z-score of the forward span differs from the stored one on
+  16 of 705 visits and that of the backward span on 17 of 705; the typed age
+  is more than a year from the age at the visit on 5 of each, and read with
+  the typed age as it stands the differences are 11 and 12. The typed age is
+  within a year of the age at the visit on 685 of the 706 visits that have a
+  total, farther on 19 and missing on 2.
 
   Same instrument as in FACE BP, reduced to the summary scores; the z-scores
-  of the spans are in the columns mcodempz_w and mcoiempz_w here.
+  of the spans are in the columns mcodempz_w and mcoiempz_w here. Two typed
+  ages written 'NN ans' are unparsed; the age at the visit is used where the
+  typed one is not read (both visits have this subtest), and 2 education
+  cells hold a word and stay unparsed (visits with no test value). Draft
+  because: item 5, the z-scores of the forward and backward spans differ
+  from the stored ones on 16 and 17 of 705 visits and the typed age explains
+  only 5 of each: the other 11 and 12 visits (1.6% and 1.7%, 2011 to 2015, 8
+  centres) have no known cause.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, versions: [wais3]}
 
@@ -41,10 +79,13 @@ variables:
   wais3_ds_forward_span:    {column: mcodemp_w, label: Longest forward span,                     range: [0, 9]}
   wais3_ds_backward_span:   {column: mcoiemp_w, label: Longest backward span,                    range: [0, 8]}
   wais3_ds_span_difference: {column: empdid_w,  label: Forward span minus backward span,         range: [-8, 9]}
-  wais3_ds_scaled:          {column: nstand_w,  label: Age-scaled score (mean 10 and SD 3),      range: [1, 19], derived_from: wais3_ds_total_check}
-  wais3_ds_z:               {column: vstand_w,  label: Scaled score as a z-score, type: number,  range: [-3, 3], winsor: false, derived_from: wais3_ds_total_check}
-  wais3_ds_forward_span_z: {column: mcodempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest forward span as a z-score}
-  wais3_ds_backward_span_z: {column: mcoiempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest backward span as a z-score}
+  # Typed in the form: the age and the years of education that the EMR read its tables with
+  wais3_ds_age:       {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its tables with"}
+  wais3_ds_education: {column: cclin08_, type: number, range: [0, 30], winsor: false, keep: false, label: "Years of education typed in the form"}
+  wais3_ds_scaled_stored: {column: nstand_w, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_ds_z_stored:      {column: vstand_w, label: "Scaled score as a z-score, as stored", type: number, range: [-3, 3], winsor: false, keep: false}
+  wais3_ds_forward_span_z_stored:  {column: mcodempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: "Longest forward span as a z-score, as stored", keep: false}
+  wais3_ds_backward_span_z_stored: {column: mcoiempz_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: "Longest backward span as a z-score, as stored", keep: false}
 
 scores:
   # A consistency check only: the stored total must be forward + backward.
@@ -53,3 +94,35 @@ scores:
     sum: [wais3_ds_forward_raw, wais3_ds_backward_raw]
     compare: wais3_ds_total
     keep: false
+
+  wais3_ds_scaled:
+    label: Age-scaled score (mean 10 and SD 3)
+    lookup: wais3_digit_span
+    from: wais3_ds_total
+    age: wais3_ds_age
+    range: [1, 19]
+    compare: wais3_ds_scaled_stored
+  wais3_ds_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_ds_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_ds_z_stored
+    compare_tolerance: 0.006
+  wais3_ds_forward_span_z:
+    label: Longest forward span as a z-score
+    regression: wais3_span_forward_z
+    from: wais3_ds_forward_span
+    by: wais3_ds_education
+    age: wais3_ds_age
+    range: [-5, 5]
+    compare: wais3_ds_forward_span_z_stored
+    compare_tolerance: 0.011
+  wais3_ds_backward_span_z:
+    label: Longest backward span as a z-score
+    regression: wais3_span_backward_z
+    from: wais3_ds_backward_span
+    by: wais3_ds_education
+    age: wais3_ds_age
+    range: [-5, 5]
+    compare: wais3_ds_backward_span_z_stored
+    compare_tolerance: 0.011

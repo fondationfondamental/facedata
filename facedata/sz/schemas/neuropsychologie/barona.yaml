@@ -6,41 +6,99 @@ status: draft
 notes: >
   The IQ that the occupation, the diploma, the age and the sex of the patient
   let expect, and its difference with the IQ estimated from the WAIS. Filled
-  with the WAIS of both editions (1,541 visits with an expected full-scale
-  IQ, 2010 to 2026); the expected verbal and performance IQs exist on the
-  WAIS-III visits only (577). The dictionary gives no formula and the
-  expected IQs are delivered as stored.
+  with the WAIS of both editions: an expected full-scale IQ on 1,546 visits
+  (2010 to 2026) and, on the 555 WAIS-III visits (2010 to 2015), an expected
+  verbal IQ and an expected performance IQ.
+
+  The expected IQs are recomputed and delivered; the values that the
+  application stored are checks (barona_expected_qit_stored,
+  barona_expected_qiv_stored and barona_expected_qip_stored, not delivered).
+  The formula is the one of the scripts of the application
+  (psy_neuropsychologie_barona.js for the three IQs, _barona_sz_wais4.js for
+  the full-scale IQ of the WAIS-IV): a constant, the sex (1 for a woman, 2 for
+  a man), the rank of the diploma (1 to 7), the rank of the occupation (1 to
+  7) and the class of age, rounded to two decimals. The coefficients are in
+  norms/wais3_barona_qit.csv, wais3_barona_qiv.csv and wais3_barona_qip.csv,
+  one line for each of the 12 classes of age from 16 to 89 years; outside them
+  there would be no value and no flag (no visit is). The dictionary gives no
+  formula. The age is the age typed in the form where it is within a year of
+  the age at the visit, else the age at the visit. The two spellings of the
+  label of the highest diploma are both rank 7 here (78 visits of 2010 to 2016
+  and 177 of 2015 to 2026); each script of the application knows one of them.
+
+  Against the stored values. Full-scale IQ: 1,458 of the 1,507 visits that
+  have both are equal (to 0.01) and the 49 others are score_mismatch. 18 of
+  them equal the formula without the diploma term (WAIS-III visits of 2011 to
+  2014, a diploma of the first cycle or of the higher level; the reason is
+  unknown), 3 the formula without the occupation term (2015), 14 the formula
+  with another age (11 with the age typed in the form where it is more than a
+  year from the age at the visit) and 14 are not explained. Verbal and
+  performance IQs: 515 of the 547 WAIS-III visits that have both are equal and
+  32 are score_mismatch for each of the two IQs.
+
+  More and fewer values than the application stored. 39 WAIS-IV visits of 2015
+  and 2016 that have both answers had no stored expected full-scale IQ, and 8
+  WAIS-III visits of 2015 no stored verbal and performance IQs: their expected
+  IQs are delivered. 34 stored full-scale values cannot be recomputed
+  (score_not_recomputed, not delivered): 11 visits have neither answer, 22 no
+  occupation and 1 no diploma; 8 stored verbal and 8 stored performance values
+  cannot be recomputed either. A visit that has only one of the two answers
+  gets no value and norm_missing (117 visits for the full-scale IQ, 10 for
+  each of the other two): the application needs both.
 
   The occupation is not reliable (decision D13, open question O17, to send
-  first). The form lists seven occupations and seven diplomas. On 1,111 of
-  the 1,546 visits that have both (72%, against 15% if the two were
-  independent), the occupation holds the same place in its list as the
-  diploma in its own: 221 of the 225 farmers have a vocational certificate
-  (CAP BEP), 218 of the 237 retired patients a general baccalaureate, in a
-  cohort whose median age is about 30. It happens in every year and in
-  every centre (27% to 91% of the visits). The diploma agrees with the
-  education level of the patient tab, so the diploma is the answer and the
-  occupation is, on most of these visits, a copy of its place in the list.
-  The cell does not tell a copy from a true coincidence (a higher
-  professional with a university degree). The expected IQ depends on the
-  occupation, so it carries the error. On these visits the occupation, the
-  expected IQs and the differences keep their value and get check_failed.
+  first). The form lists seven occupations and seven diplomas. On 1,111 of the
+  1,546 visits that have both (72%, against 15% if the two were independent),
+  the occupation holds the same place in its list as the diploma in its own:
+  221 of the 225 farmers have a vocational certificate (CAP BEP), 218 of the
+  237 retired patients a general baccalaureate, in a cohort whose median age
+  is about 32. It happens in every year and in every centre (27% to 91% of the
+  visits). The diploma agrees with the education level of the patient tab, so
+  the diploma is the answer and the occupation is, on most of these visits, a
+  copy of its place in the list. The cell does not tell a copy from a true
+  coincidence (a higher professional with a university degree). The expected
+  IQ depends on the occupation and the stored one used the copy: the
+  recomputed value, which reads the same answers, equals the stored one on
+  1,042 of the 1,079 visits where the occupation mirrors the diploma and 416
+  of the 428 others (full-scale IQ). So the expected IQs carry the error. On
+  these visits (1,111 for the full-scale IQ, 428 for the verbal and for the
+  performance IQ) the occupation, the expected IQs and the differences keep
+  their value and get check_failed.
 
-  The differences are the expected IQ minus the IQ estimated from the WAIS.
-  WAIS-III: verbal on 508 of 508 visits and performance on 516 of 516; the
-  estimated full-scale IQ is not in the extraction. WAIS-IV: the full-scale
-  difference uses the seven-subtest IQ where it exists (292 of 293, with
-  the IQ corrected as in wais4_efficience.yaml) and the two-subtest IQ
-  otherwise (154 of 161). tests/test_real_data_sz.py checks them.
+  The differences are the expected IQ minus the IQ estimated from the WAIS, as
+  the application stored them. With the stored expected IQ: verbal on 508 of
+  508 visits (against the verbal IQ as stored) and performance on 516 of 516;
+  the estimated full-scale IQ of the WAIS-III is not in the extraction (the IQ
+  recomputed from the sum of the scaled scores gives 504 of 504 on the load of
+  2026-11-18). WAIS-IV: the full-scale difference uses the seven-subtest IQ
+  where it exists (292 of 293 with the stored IQ corrected as in
+  wais4_efficience.yaml, 287 of 293 with the delivered IQ, which follows the
+  recomputed sum, D137) and the two-subtest IQ otherwise (154 of 161). The
+  differences are delivered as stored and derived from the expected IQ: a
+  difference whose stored expected IQ is not the recomputed one is kept and
+  gets derived_doubt (38 full-scale, 29 verbal and 30 performance).
 
-  The highest diploma is written in two ways (until 2016 and from 2015);
-  both give university_higher. The occupation and the diploma differ
-  between two visits for 108 and 69 of the 266 patients seen twice.
+  The occupation and the diploma differ between two visits for 108 and 69 of
+  the 266 patients seen at least twice. Two typed ages written 'NN ans' stay
+  unparsed (the age at the visit is used, and both visits get their expected
+  IQ), and 22 of the 33 visits read as WAIS-IV hold a stored expected verbal
+  IQ and a stored expected performance IQ (barona05_wais3 and
+  barona07_wais3: 44 cells) that the WAIS-III variables do not read there,
+  so they are not delivered. The full-scale difference steps down from 2019
+  (median 12.9 on the 308 WAIS-IV visits of 2015 to 2018 that have the
+  seven-subtest IQ, 4.0 on the 155 visits of 2016 to 2026 that have only the
+  two-subtest IQ, 114 of them in 2019 to 2021): the estimated IQ it implies
+  is 100 against 90 (medians) while the expected IQ stays within 2 points
+  (102 and 104), so the step is the change of the estimated IQ, not of the
+  expected one. Draft because: item 5, the 32 expected verbal IQ and the 32
+  expected performance IQ mismatches (5.9% of the 547 WAIS-III visits that
+  have both) and 14 full-scale ones (0.9% of 1,507) have no stated cause.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: number, winsor: false}
 
@@ -70,12 +128,105 @@ variables:
       "Diplôme universitaire 1er cycle, BTS, DUT, diplômes des professions sociales et de la santé": university_first_cycle
       "Diplôme universitaire 2e et 3e cycle, ingenieur grande école": university_higher
       "Diplôme universitaire 2e et 3e cycle,d ingenieur d une grande école": university_higher
-  barona_expected_qit: {column: barona03_w, label: Expected full-scale IQ, range: [70, 130]}
-  barona_qit_difference: {column: barona04_w, label: Expected minus estimated full-scale IQ, range: [-70, 80]}
-  barona_expected_qiv: {column: barona05_wais3, label: Expected verbal IQ (WAIS-III visits), range: [70, 130], versions: [wais3]}
-  barona_qiv_difference: {column: barona06_wais3, label: Expected minus estimated verbal IQ (WAIS-III visits), range: [-70, 80], versions: [wais3]}
-  barona_expected_qip: {column: barona07_wais3, label: Expected performance IQ (WAIS-III visits), range: [70, 130], versions: [wais3]}
-  barona_qip_difference: {column: barona08_wais3, label: Expected minus estimated performance IQ (WAIS-III visits), range: [-70, 80], versions: [wais3]}
+  barona_occupation_rank:
+    column: barona01_w
+    label: Rank of the occupation in its list (1 to 7, for the formula)
+    type: item
+    codes:
+      Ouvriers: "1"
+      Employés: "2"
+      Agriculteurs: "3"
+      "Artisans, commerçants": "4"
+      Retraités: "5"
+      Professions intermédiaires: "6"
+      Professions intellectuelles supérieures: "7"
+    range: [1, 7]
+    keep: false
+  barona_education_rank:
+    column: barona02_w
+    label: Rank of the diploma in its list (1 to 7, for the formula)
+    type: item
+    codes:
+      Sans diplôme: "1"
+      CEP: "2"
+      CAP BEP: "3"
+      "BAC technologique, pro et brevet professionnel": "4"
+      BAC général: "5"
+      "Diplôme universitaire 1er cycle, BTS, DUT, diplômes des professions sociales et de la santé": "6"
+      "Diplôme universitaire 2e et 3e cycle, ingenieur grande école": "7"
+      "Diplôme universitaire 2e et 3e cycle,d ingenieur d une grande école": "7"
+    range: [1, 7]
+    keep: false
+  barona_occupation_rank_wais3:
+    column: barona01_w
+    label: Rank of the occupation on the WAIS-III visits (the test of the verbal and performance IQs)
+    type: item
+    codes:
+      Ouvriers: "1"
+      Employés: "2"
+      Agriculteurs: "3"
+      "Artisans, commerçants": "4"
+      Retraités: "5"
+      Professions intermédiaires: "6"
+      Professions intellectuelles supérieures: "7"
+    range: [1, 7]
+    versions: [wais3]
+    keep: false
+  barona_education_rank_wais3:
+    column: barona02_w
+    label: Rank of the diploma on the WAIS-III visits (the test of the verbal and performance IQs)
+    type: item
+    codes:
+      Sans diplôme: "1"
+      CEP: "2"
+      CAP BEP: "3"
+      "BAC technologique, pro et brevet professionnel": "4"
+      BAC général: "5"
+      "Diplôme universitaire 1er cycle, BTS, DUT, diplômes des professions sociales et de la santé": "6"
+      "Diplôme universitaire 2e et 3e cycle, ingenieur grande école": "7"
+      "Diplôme universitaire 2e et 3e cycle,d ingenieur d une grande école": "7"
+    range: [1, 7]
+    versions: [wais3]
+    keep: false
+  barona_sex: {column: sex, type: item, codes: {Feminin: "1", Masculin: "2"}, range: [1, 2], label: "Sex, 1 for a woman and 2 for a man (the coding of the formula)", keep: false}
+  barona_age_entered: {column: cclin01_, label: Age typed in the form (the formula was read with it), range: [15, 100], keep: false}
+  barona_expected_qit_stored: {column: barona03_w, label: Expected full-scale IQ as stored, range: [70, 130], keep: false}
+  barona_qit_difference: {column: barona04_w, label: Expected minus estimated full-scale IQ, range: [-70, 80], derived_from: barona_expected_qit}
+  barona_expected_qiv_stored: {column: barona05_wais3, label: Expected verbal IQ as stored (WAIS-III visits), range: [70, 130], versions: [wais3], keep: false}
+  barona_qiv_difference: {column: barona06_wais3, label: Expected minus estimated verbal IQ (WAIS-III visits), range: [-70, 80], versions: [wais3], derived_from: barona_expected_qiv}
+  barona_expected_qip_stored: {column: barona07_wais3, label: Expected performance IQ as stored (WAIS-III visits), range: [70, 130], versions: [wais3], keep: false}
+  barona_qip_difference: {column: barona08_wais3, label: Expected minus estimated performance IQ (WAIS-III visits), range: [-70, 80], versions: [wais3], derived_from: barona_expected_qip}
+
+scores:
+  barona_expected_qit:
+    label: Expected full-scale IQ
+    regression: wais3_barona_qit
+    from: [barona_education_rank, barona_occupation_rank]
+    with: {education: barona_education_rank, occupation: barona_occupation_rank, sex: barona_sex}
+    age: barona_age_entered
+    range: [70, 130]
+    compare: barona_expected_qit_stored
+    compare_tolerance: 0.011
+  barona_expected_qiv:
+    label: Expected verbal IQ (WAIS-III visits)
+    regression: wais3_barona_qiv
+    from: [barona_education_rank_wais3, barona_occupation_rank_wais3]
+    with: {education: barona_education_rank_wais3, occupation: barona_occupation_rank_wais3, sex: barona_sex}
+    age: barona_age_entered
+    range: [70, 130]
+    versions: [wais3]
+    compare: barona_expected_qiv_stored
+    compare_tolerance: 0.011
+  barona_expected_qip:
+    label: Expected performance IQ (WAIS-III visits)
+    regression: wais3_barona_qip
+    from: [barona_education_rank_wais3, barona_occupation_rank_wais3]
+    with: {education: barona_education_rank_wais3, occupation: barona_occupation_rank_wais3, sex: barona_sex}
+    age: barona_age_entered
+    range: [70, 130]
+    versions: [wais3]
+    compare: barona_expected_qip_stored
+    compare_tolerance: 0.011
 
 checks:
   barona_occupation: barona_occupation_follows_diploma

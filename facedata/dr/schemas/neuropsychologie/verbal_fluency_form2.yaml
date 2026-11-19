@@ -1,26 +1,39 @@
 instrument: verbal_fluency_form2
-title: Verbal fluency, second form (another letter, fruits)
+title: Verbal fluency, second form (fruits and letter R)
 tab: NEUROPSYCHOLOGIE
 section: LANGAGE
-status: draft
+status: reviewed
 notes: >
-  The second form of the verbal fluency (another letter, fruits), used at
-  the retest: 96 visits. Not in BP. The number of words of each task is
-  filled on 95 visits, the z-score on 39; the percentile band is nearly
-  never filled.
+  The second form of the verbal fluency, "Fruits et lettre R" (the form 199 of
+  the application: a category, fruits, and a letter, R), used at the retest:
+  96 visits. Not in BP. The number of words of each task is filled on 95
+  visits, the z-score on 39 for the letter and 40 for the fruits (one of them
+  unparsed); the percentile band is nearly never filled (2 cells for the letter, 3 for
+  the fruits). Of these 5 band cells 4 are unparsed (3 numbers that are no
+  limit of the band list and the code PA that other DR tests write for no
+  norm), and the unparsed z-score of the fruits is a word typed in the
+  number field.
 
-  Two forms of the test. The form used is in fv01, stored 1 or 2, with no
-  code in the dictionary, which only says "animals or fruits". Form 1 is
-  used at inclusion (388 of 394 inclusions) and form 2 at the retest of
-  the first year (81 of its 96 visits): the usual sequence of a patient is
-  1, 2, 1, 1. The words differ: the medians are 21 words for the letter
-  and 26 for the category on form 1 (24 for the letter P and 32 for
-  animals in BP), 18 and 18 on form 2. The two forms are two tests: each
-  has its own schema and its own columns, and fluency_form says which one
-  was used. That form 1 is "letter P and animals" and form 2 another
-  letter with fruits is read from these numbers and from the label, not
-  from a code (open question O23). One visit has results and no form
-  (version_unknown).
+  No norm. The script of the application holds tables for this form
+  (tab_part_cat_fruits and tab_part_phono_r) but never applies them: the code
+  that would is commented out, "en attente du tableau", and choosing form 2
+  empties the result fields. The z-score and the band are typed by hand, with
+  no norm, and nothing is recomputed. The table of the first form (the letter
+  P table for the letter, the animals table for the fruits) gives 2 of the 39
+  typed z-scores of the letter and none of the 39 of the fruits, so they
+  follow no known rule.
+
+  Two forms of the test. The form used is in fv01, stored 1 or 2. The
+  dictionary only says "animals or fruits", and the form of the application
+  (FLUE_VERB_CHOI) names them: form 1 is "Animaux et lettre P", form 2 is
+  "Fruits et lettre R" (open question O23 and PI-4 are answered by the form).
+  Form 1 is used at inclusion (388 of 394 inclusions) and form 2 at the retest
+  of the first year (81 of its 96 visits): the usual sequence of a patient is
+  1, 2, 1, 1. The words differ: the medians are 21 words for the letter and 26
+  for the category on form 1 (24 for the letter P and 32 for animals in BP),
+  18 and 18 on form 2. The two forms are two tests: each has its own schema
+  and its own columns, and fluency_form says which one was used. One visit has
+  results and no form (version_unknown).
 
 version:
   name: fluency_form
@@ -31,11 +44,11 @@ defaults: {type: item, range: [0, 30], versions: [form_2]}
 
 variables:
   # The letter of the second form
-  fluency2_letter_words: {column: fv05, type: number, label: "Second form, letter - correct words", range: [0, 80]}
-  fluency2_letter_z: {column: fv06, type: number, label: "Second form, letter - z-score", range: [-6, 6]}
-  fluency2_letter_band: {column: fv07, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, letter - percentile band"}
+  fluency2_letter_words: {column: fv05, type: number, label: "Second form, letter R - correct words", range: [0, 80]}
+  fluency2_letter_z: {column: fv06, type: number, label: "Second form, letter R - z-score", range: [-6, 6]}
+  fluency2_letter_band: {column: fv07, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, letter R - percentile band"}
 
   # The category of the second form
-  fluency2_category_words: {column: fv02, type: number, label: "Second form, category - correct words", range: [0, 80]}
-  fluency2_category_z: {column: fv03, type: number, label: "Second form, category - z-score", range: [-6, 6]}
-  fluency2_category_band: {column: fv04, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, category - percentile band"}
+  fluency2_category_words: {column: fv02, type: number, label: "Second form, fruits - correct words", range: [0, 80]}
+  fluency2_category_z: {column: fv03, type: number, label: "Second form, fruits - z-score", range: [-6, 6]}
+  fluency2_category_band: {column: fv04, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Second form, fruits - percentile band"}

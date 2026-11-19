@@ -2,19 +2,23 @@ instrument: prisem
 title: PRISE-M, side effects of the treatment (32 items)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire PRISEM
-status: draft
+status: reviewed
 notes: >
   Patient-Rated Inventory of Side Effects, modified. 32 symptoms in nine
-  groups, each rated 0 (absent), 1 (tolerable) or 2 (distressing). Filled at
-  every visit.
+  groups, each rated 0 (absent), 1 (tolerable) or 2 (distressing). Filled at every visit until 2020; from 2021 the form is shown only after a
+  yes to "do you take a medication at present?" (mars11): 7% of the visits
+  with a no hold items, 98% of those with a yes.
 
   Two items are for one sex only: prism06d (irregular periods, women) and
-  prism08c (erection, men). A patient therefore answers 31 items at most.
+  prism08c (erection, men). A patient therefore answers 31 items at most (35 visits answer both sex
+  items, 32 items).
 
   The stored total (prism) is the sum of the items that are filled, in every
-  row (16,147). It is recomputed here in the same way, but only when at least
+  row (16,227 visits). It is recomputed here in the same way, but only when at least
   28 of the 32 items are filled: a total over a few items would look like a
-  low score. The comparison below should raise no score_mismatch.
+  low score. No score_mismatch is raised; 89 stored totals have fewer than 28 items and
+  get score_not_recomputed, and on 239 more visits (28 to 30 items) the
+  total is a partial sum.
 
 defaults: {type: item, range: [0, 2]}
 
@@ -41,7 +45,7 @@ variables:
   prism06d: {label: "Règles irrégulières (pour les femmes)"}
   prism07a: {label: "Difficultés d'endormissements"}
   prism07b: {label: "Augmentation du temps de sommeil"}
-  prism08a: {label: "Fonctions sexuelles"}
+  prism08a: {label: "Perte du désir sexuel"}
   prism08b: {label: "Difficultés à atteindre un orgasme"}
   prism08c: {label: "Trouble de l'érection (pour les hommes)"}
   prism09a: {label: "Anxiété"}

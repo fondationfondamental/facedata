@@ -2,29 +2,50 @@ instrument: assessment_conditions
 title: "Conditions and history of the neuropsychological assessment"
 tab: neuropsychologie
 section: assessment
-status: draft
+status: reviewed
 notes: >
-  What the form asks before the tests, on about 839 inclusion visits, almost
-  all of adults: seven boxes (npsy_1 to npsy_7, the conditions of the
-  assessment: each is yes on almost every visit but npsy_5 and npsy_6, with a
-  text after npsy_5), the handedness (a code), an earlier Wechsler assessment
-  (atcd_w1, yes on 27 visits, with a code, texts and an age in years and
-  months) and an earlier neuropsychological assessment (atcd_npsy1, yes on 195,
-  with the same details), the date of the assessment and a comment.
+  What the form asks before the tests, on 839 inclusion visits that hold
+  npsy_1 (and one visit at 4 years). 103 of the 839 are of patients under 18
+  (41 under 16): the form is not only for adults. Seven boxes (npsy_1 to
+  npsy_7, the conditions of the assessment: each is yes on almost every
+  visit but npsy_5 and npsy_6, with a text after npsy_5), the handedness (a
+  code), an earlier Wechsler assessment (atcd_w1, yes on 27 visits, with a
+  code, texts and an age in years and months) and an earlier
+  neuropsychological assessment (atcd_npsy1, yes on 195, with the same
+  details), the date of the assessment and a comment. The date (qsdtc) is on
+  326 visits, not on all 839, and is more than 1 year from the visit date on
+  14 of them.
+
+  The six questions of npsy_1 to npsy_6 carry the names that the other
+  cohorts give to the same questions (the question texts are the same):
+  neuropsy_french_fluent (BP and SZ; DR asks whether French is the mother
+  tongue, neuropsy_french_native, which is another question),
+  neuropsy_state_compatible (SZ and DR), neuropsy_no_visual_disorder and
+  neuropsy_no_hearing_disorder (BP, SZ and DR), neuropsy_learning_disorder
+  and neuropsy_psychotropic_treatment (SZ and DR). Only the names changed.
+  The handedness keeps its own name, handedness_np, and its own codes: 1
+  left, 2 right, 3 both, as on the form (DR codes 1 as right). It agrees
+  with the handedness of the clinical form on 237 of the 251 visits that
+  have both.
+
+  NPSY_5 and NPSY_6 hold 1 (yes), 0 (no) and 9 ("does not know", read as
+  missing: 67 visits for npsy_5, 29 for npsy_6). The form (237.php) and the
+  data say 1, 0 and 9; the dictionary V2.13 says 1 yes and 2 no for both:
+  the schema is right and the dictionary wrong.
 
   The schema was written from the column names and the answers, then checked
-  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
-  D14).
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13
+  and D14).
 
   An instrument of the ASP cohort only.
 
 variables:
-  sufficient_french: {column: npsy_1, type: item, range: [0, 1], label: "Conditions of the assessment: sufficient command of French"}
-  clinical_state_compatible: {column: npsy_2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: clinical state compatible with the cognitive tests"}
-  no_visual_impairment: {column: npsy_3, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no colour blindness or disabling visual impairment"}
-  no_uncorrected_hearing_loss: {column: npsy_4, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no uncorrected hearing loss"}
-  suspected_learning_disorder: {column: npsy_5, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: a learning or developmental disorder is suspected"}
-  psychotropic_treatment: {column: npsy_6, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: on a psychotropic treatment"}
+  neuropsy_french_fluent: {column: npsy_1, type: item, range: [0, 1], label: "Conditions of the assessment: sufficient command of French"}
+  neuropsy_state_compatible: {column: npsy_2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: clinical state compatible with the cognitive tests"}
+  neuropsy_no_visual_disorder: {column: npsy_3, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no colour blindness or disabling visual impairment"}
+  neuropsy_no_hearing_disorder: {column: npsy_4, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: no uncorrected hearing loss"}
+  neuropsy_learning_disorder: {column: npsy_5, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: a learning or developmental disorder is suspected"}
+  neuropsy_psychotropic_treatment: {column: npsy_6, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: on a psychotropic treatment"}
   fit_for_assessment: {column: npsy_7, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conditions of the assessment: the patient can have a neuropsychological assessment"}
   suspected_learning_disorder_text: {column: npsy_5a, type: text, label: "Suspected learning or developmental disorder, free text"}
   handedness_np: {column: neuro_lateral, type: category, codes: {"1": left, "2": right, "3": both}, label: "Handedness, neuropsychology form"}

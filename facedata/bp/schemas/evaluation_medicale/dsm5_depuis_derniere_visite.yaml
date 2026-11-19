@@ -2,44 +2,99 @@ instrument: dsm5_depuis_derniere_visite
 title: Mood episodes since the last visit, DSM-5 criteria
 tab: EVALUATION MEDICALE
 section: Caractéristique du trouble depuis la dernière visite à la visite de suivi
-status: draft
+status: reviewed
 notes: >
-  The mood evaluation was made with DSM-IV criteria for some patients and
-  with DSM-5 criteria for others, in the same columns (decision D9 in
-  PROGRESS.md). The criteria used are recorded once, at the inclusion visit
-  (dsm_criteria). This section is filled at follow-up visits only, so the
-  version of a visit comes from three decisions:
+  The mood episodes since the last visit, asked at the follow-up visits
+  only: one yes/no question (at least one episode), then the number of
+  depressive, hypomanic and manic episodes, the numbers with psychotic
+  features, and the type of the most recent episode. Yes/no answers are
+  delivered as 1 and 0; "Ne sais pas" is a missing code (20 first answers,
+  35 depressive, 32 hypomanic and 7 manic numbers).
 
-  D12. Before 2022 a follow-up visit takes the criteria of the patient's
+  Editions. DSM-IV and DSM-5 are two editions, in the same columns (decision
+  D9 in PROGRESS.md). The follow-up form is one form for every patient,
+  changed in place from the DSM-IV to the DSM-5 version centre by centre
+  between October 2021 and May 2022. The application stores no edition:
+  the export writes dsm_criteria on the inclusion row only, DSM5 where the
+  DSM-5 inclusion form holds one of five answers on the mood history (type
+  and age of the first episode, numbers of depressive, hypomanic and manic
+  episodes), else DSM4 where the DSM-IV form does (DEV-11). It is empty at
+  849 of 6,498 inclusions: 206 hold no answer of either form (202 at centre
+  C, whose DSM-5 form the export leaves out, R20), 552 hold only default
+  dates and 91 hold other answers (R69 would label 85 of them). The version
+  of a follow-up visit comes from three decisions.
+
+  D12. Before 2022 a follow-up visit takes the label of the patient's
   inclusion.
 
-  D14. From 2022 the follow-up form is the DSM-5 form for everyone. The
-  change was made centre by centre between the end of 2021 and May 2022; the
-  date used is 1 January 2022.
+  D14. From 1 January 2022 a follow-up visit is DSM-5, whatever the
+  inclusion, in every centre. So a few visits are read in the other
+  edition. 35 visits answering yes hold a number that only the old form has
+  (the mixed or the total number) and are read as DSM-5 here: 33 of January
+  to May 2022 (two centres; their 31 mixed numbers and 20 mixed numbers
+  with psychotic features are not read, and coverage() counts them) and 2
+  of 2021 of patients included with DSM-5. 25 visits answering yes in
+  October to December 2021 (six centres) hold neither number, the pattern
+  of the new form, and are read as DSM-IV. The date on which the form was
+  filled ("Date de recueil des informations"), which would date the change
+  of form, is not in the extraction.
 
-  D15. A patient with no criteria recorded at inclusion is DSM-IV if
-  included before 2020 and DSM-5 if included from 2023 (version_inferred).
-  Included in 2020 to 2022, the version stays unknown.
+  D15. A patient with no label is read by the date of the first visit (the
+  screening, where there is one): DSM-IV before 2020 and DSM-5 from 2023
+  (version_inferred). Patients first seen from 2020 to 2022 have no version
+  before 2022: 22 follow-up visits of 2020 and 2021 are not delivered
+  (version_unknown); all 14 of them that answer yes hold a number of the
+  old form.
 
-  This schema reads the DSM-5 visits; dsm4_depuis_derniere_visite.yaml
-  reads the others. DSM-5 has no mixed episode, so the two mixed-episode
-  counts are not in this schema. A few visits of the first months of 2022
-  still hold a mixed-episode count, because their centre had not changed
-  form yet: those cells are not read, and coverage() counts them.
+  This schema reads the DSM-5 visits: 2,363 visits, all but 3 from 2022.
+  909 are of patients labelled DSM-5, 1,058 of patients labelled DSM-IV
+  (D14) and 396 of patients with no label (D14, no flag).
+  dsm4_depuis_derniere_visite.yaml reads the others. DSM-5 has no mixed
+  episode, so the mixed numbers are not in this schema.
 
-  The total number of episodes is almost never filled on DSM-5 visits.
+  The numbers. 0 to 20 or ">20" (">20" would be read as 20 and
+  censored_right; none today). They are shown only after a yes to the first
+  question; where it is no (1,219 visits) they are empty in the extraction
+  and are read as 0 (asked_if, decision D53): with no mood episode since
+  the last visit, there was no depressive episode.
 
-  The counts are capped at 20 on the form: ">20" is read as right-censored
-  at 20.
+  The boxes. The form has no box per kind of episode: the export writes the
+  three boxes (mhoccur_edm_spv, mhoccur_ehman_spv, mhoccur_epman_spv) from
+  the numbers, 1 where the number is 1 or more, 0 where it is 0, empty
+  where it is "Ne sais pas" or empty. After a no they are read as 0 like
+  the numbers.
 
-  Yes/no answers are delivered as 1 and 0. The boxes and the counts are
-  shown only after a yes to the first question; where it is no they are
-  empty in the extraction and are read as 0 (asked_if, decision D53): with
-  no mood episode since the last visit, the number of depressive episodes is
-  0.
+  Psychotic features. The form shows each number with psychotic features
+  only after 1 to 20 episodes of that kind; it is therefore 0 where the
+  number of that kind is 0 (asked_if on the box, D122): 181 depressive and
+  891 manic zeros after a yes. The form also hides it after ">20", an
+  application defect that touches no visit today.
 
-  The type of the most recent episode since the last visit is filled where
-  the first answer is yes. The follow-up form has no mixed type of episode.
+  The total (dsm5_fu_n_episodes) is the sum of the depressive, hypomanic and
+  manic numbers (D122): 953 of the 1,142 visits answering yes, and 0 after
+  a no. The form of today computes the total on screen in a field that is
+  never saved (an application defect), so the stored total is filled on 35
+  of the 1,142 visits answering yes, all of them old-form visits of 2021
+  and January to May 2022. It is kept as a check: it agrees on 25, differs
+  on 6 (score_mismatch) and is stored where a number is missing on 4
+  (score_not_recomputed).
+
+  The type of the most recent episode is filled on 939 of the 1,142 visits
+  answering yes. The list has no mixed type (see
+  dsm4_depuis_derniere_visite.yaml).
+
+  Not in the extraction: the form also asks the numbers of depressive and
+  manic episodes with mixed features since the last visit, and the dates
+  of the first depressive, manic and hypomanic episode since the last
+  visit.
+
+  Centres. Centre A holds an answer of the follow-up mood form (this
+  section or the current episode) on 27 of its 287 follow-up visits from
+  October 2022 to March 2024 and on 4 of its 129 from July 2025 (O40),
+  against 85% of the follow-up visits of the other centres from 2022. In
+  centre F the share of visits answering yes rises from 46% before 2022 to
+  73% from 2022, while it stays at 44% and 47% elsewhere; this is not
+  explained.
 
 version:
   name: dsm_version
@@ -51,21 +106,29 @@ version:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
 
-defaults: {type: number, range: [0, 50], winsor: false, versions: [dsm5]}
+defaults: {type: number, range: [0, 20], winsor: false, versions: [dsm5]}
 
 variables:
   dsm5_fu_any_episode:       {column: mhoccur_epthym_spv,  label: At least one mood episode since the last visit, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
-  dsm5_fu_n_episodes:        {column: evnum_epthym_spv,    label: Number of mood episodes, asked_if: dsm5_fu_any_episode}
+  dsm5_fu_n_episodes_stored: {column: evnum_epthym_spv,    label: Number of mood episodes as stored, range: [0, 60], keep: false, asked_if: dsm5_fu_any_episode}
   dsm5_fu_mde:               {column: mhoccur_edm_spv,     label: At least one major depressive episode, type: item, range: [0, 1], asked_if: dsm5_fu_any_episode}
   dsm5_fu_n_mde:             {column: evnum_edm_spv,       label: Number of major depressive episodes, asked_if: dsm5_fu_any_episode}
-  dsm5_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,   label: Number of major depressive episodes with psychotic features, asked_if: dsm5_fu_any_episode}
+  dsm5_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,   label: Number of major depressive episodes with psychotic features, asked_if: dsm5_fu_mde}
   dsm5_fu_hypomania:         {column: mhoccur_ehman_spv,   label: At least one hypomanic episode, type: item, range: [0, 1], asked_if: dsm5_fu_any_episode}
   dsm5_fu_n_hypomania:       {column: evnum_ehman_spv,     label: Number of hypomanic episodes, asked_if: dsm5_fu_any_episode}
   dsm5_fu_mania:             {column: mhoccur_epman_spv,   label: At least one manic episode, type: item, range: [0, 1], asked_if: dsm5_fu_any_episode}
   dsm5_fu_n_mania:           {column: evnum_epman_spv,     label: Number of manic episodes, asked_if: dsm5_fu_any_episode}
-  dsm5_fu_n_mania_psychotic: {column: evnum_epman_psy_spv, label: Number of manic episodes with psychotic features, asked_if: dsm5_fu_any_episode}
+  dsm5_fu_n_mania_psychotic: {column: evnum_epman_psy_spv, label: Number of manic episodes with psychotic features, asked_if: dsm5_fu_mania}
   dsm5_fu_recent_type:
     column: cetermepisode_recent_type
     label: Type of the most recent episode since the last visit
     type: category
     codes: {"Episode Dépressif Majeur": mde, "Hypomaniaque": hypomania, "Maniaque": mania, "Episode non spécifié": unspecified}
+
+scores:
+  # The total of the form is filled on 3% of the visits with an episode: it is the sum of the three counts (D122).
+  dsm5_fu_n_episodes:
+    sum: [dsm5_fu_n_mde, dsm5_fu_n_hypomania, dsm5_fu_n_mania]
+    label: Number of mood episodes since the last visit (depressive, hypomanic and manic, added)
+    range: [0, 60]
+    compare: dsm5_fu_n_episodes_stored

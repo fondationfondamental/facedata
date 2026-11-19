@@ -2,24 +2,52 @@ instrument: sstics
 title: Subjective Scale to Investigate Cognition in Schizophrenia (SSTICS)
 tab: NEUROPSYCHOLOGIE
 section: SSTICS (WAIS-4)
-status: draft
+status: reviewed
 notes: >
-  Self-rated cognitive complaints: 21 items from 0 (never) to 4 (very often).
-  2,354 visits from 2013 to 2026, 2,338 of them with the 21 items. The
-  columns carry the suffix _wais4 but the scale is not a WAIS test; it came
-  with the new neuropsychological form and is read on every visit.
+  Self-rated cognitive complaints: 21 items from 0 (never) to 4 (very
+  often). 2,354 visits from 2013 to 2026 hold items, 2,338 of them all 21.
+  The columns carry the suffix _wais4 but the scale is not a WAIS test; it
+  came with the new neuropsychological form and is read on every visit.
 
   The six factor scores and the total are the sums of the publication (Stip
-  2003): working memory items 1 and 2, explicit memory 3 to 11, attention
-  12 to 16, executive functions 17 to 19, language 20, praxia 21. Recomputed
-  from the items, they equal the stored scores on all but 3 visits. A score
-  needs all its items. Where an item is missing the EMR writes "Qu" or
-  "Ques" (questionnaire incomplete) in the score: a missing code here.
+  2003): working memory items 1 and 2, explicit memory 3 to 11, attention 12
+  to 16, executive functions 17 to 19, language 20, praxia 21. Recomputed
+  from the items, they equal the stored scores on all visits but 2, both in
+  centre A (2013-15 and 2016-18): 4 score_mismatch cells (working memory 1,
+  attention 1, total 2). The stored total is the sum of the six stored
+  factors on 2,329 of 2,329 visits. A score needs all its items. Where an
+  item is missing the EMR writes "Qu" or "Ques" (questionnaire incomplete)
+  in the score: a missing code here, on 21 visits (2 of them have all 21
+  items, 6 none; "Ques" in the z-score and "Qu" in the scores are the same
+  cut to the width of the field). Two visits of centre G (2015 and 2018)
+  hold stored scores and no item: 12 score cells that cannot be recomputed
+  (score_not_recomputed).
 
-  The z-score is delivered as stored. It is a decreasing straight line of the
-  total, one value per total, written with one decimal on most visits: a
-  negative z-score is more complaints than the reference group. The
-  dictionary does not give the reference mean and SD.
+  The z-score is computed again from the total, as the application script
+  (psy_neuropsychologie_sstics_sz_wais4.js) does: (13.1 - total) / 6.2, a
+  decreasing straight line of the total; a negative z-score is more
+  complaints than the reference group. The script rounds it to two decimals;
+  it is delivered with all its decimals. The form field takes four
+  characters, so the stored value is the rounded z cut to its first four
+  characters (-1.11 is stored as -1.1): the rule gives the stored value on
+  2,329 of 2,329 visits, and the cut changes the value on 1,838 of them. The
+  delivered z therefore differs from the stored one by 0.15 at most on 2,326
+  of the 2,328 visits that have both (the largest difference is at a total
+  of 76, where the cut leaves -10.). The 2 others are the visits of centre A
+  whose stored total is not the recomputed one: score_mismatch on the
+  z-score as on the total (they were derived_doubt when the stored z was
+  delivered); compare_tolerance is 0.151, for the cut. 10 visits gain a
+  z-score (all 21 items, the stored total empty on 8 and "Qu" on 2) and one
+  loses it (stored scores and no item: score_not_recomputed): 2,338 z-scores
+  in all, against 2,329 stored.
+
+  The reference group of the constants 13.1 and 6.2 is not sourced: neither
+  the dictionary nor the script names it. Question for the data managers:
+  which sample gave this mean and this standard deviation. Item 10 (explicit
+  memory) is higher in centre I (mean 1.4 against 0.7 elsewhere, on 188
+  visits) while the total of that centre is only 0.12 SD above the others
+  (31.3 against 29.8): an item-level centre difference, no step of the
+  scores.
 
 defaults: {type: item, range: [0, 4]}
 
@@ -52,7 +80,7 @@ variables:
   sstics_language_stored: {column: sstics5_wais4, label: "Language, as stored", range: [0, 4], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
   sstics_praxia_stored: {column: sstics6_wais4, label: "Praxia, as stored", range: [0, 4], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
   sstics_total_stored: {column: sstics7_wais4, label: "SSTICS total, as stored", range: [0, 84], missing: {qu: not_recorded, ques: not_recorded}, keep: false}
-  sstics_z: {column: ssticsz_wais4, label: "Total as a z-score (negative: more complaints than the reference group)", type: number, range: [-12, 3], winsor: false, missing: {qu: not_recorded, ques: not_recorded}, derived_from: sstics_total}
+  sstics_z_stored: {column: ssticsz_wais4, label: "Total as a z-score, as stored (cut to four characters)", type: number, range: [-12, 3], winsor: false, missing: {qu: not_recorded, ques: not_recorded}, keep: false}
 
 scores:
   sstics_working_memory:
@@ -86,3 +114,10 @@ scores:
           sstics_09, sstics_10, sstics_11, sstics_12, sstics_13, sstics_14, sstics_15, sstics_16,
           sstics_17, sstics_18, sstics_19, sstics_20, sstics_21]
     compare: sstics_total_stored
+  sstics_z:
+    label: "Total as a z-score, (13.1 - total) / 6.2 (negative: more complaints than the reference group)"
+    sum: [sstics_total]
+    scale: [-0.16129032, 2.11290323]
+    range: [-12, 3]
+    compare: sstics_z_stored
+    compare_tolerance: 0.151

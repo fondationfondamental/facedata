@@ -2,42 +2,68 @@ instrument: wais4_matrices
 title: WAIS-IV matrix reasoning (26 items)
 tab: NEUROPSYCHOLOGIE
 section: Matrices
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 of the BP file). The columns mat01_w to mat26_w hold the
-  WAIS-IV matrices on WAIS-IV visits (1,870 visits, from 2014) and the
-  WAIS-III matrices on WAIS-III visits (568 visits, until 2016). Both tests
-  have 26 items scored 0 or 1, but the items and the norms differ. This
-  schema reads the WAIS-IV visits; wais3_matrices.yaml reads the others.
+  WAIS-IV matrices on WAIS-IV visits (1,906 visits, from 2013) and the
+  WAIS-III matrices on WAIS-III visits (543 visits, until 2015). Both tests
+  have 26 items scored 0 or 1, but the items and the norms differ. This schema
+  reads the WAIS-IV visits; wais3_matrices.yaml reads the others.
 
-  Items 25 and 26 are lost on the WAIS-IV visits. There the columns
-  mat25_w and mat26_w are copies of mat24_w, on every visit of every year,
-  while on the WAIS-III visits the three columns differ as items do. The
-  stored total is not the sum of the 26 columns (it differs on 636 of
-  1,867 visits) but it is the true total: it exceeds the sum of items 1 to
-  23 by 0 where item 24 is failed and nothing else is passed, and by 1, 2
-  or 3 where item 24 is passed, as a total that counts three different
-  items does. The export fills the two columns from the field of item 24,
-  the kind of error found for the Calgary scale (decision D11 and open
-  question O12 in PROGRESS.md).
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold matrices items and are read
+  here, not in wais3_matrices.yaml.
 
-  What is delivered: items 1 to 24, and the total as stored, which cannot
-  be recomputed. In BP the total is recomputed from the 26 items and
-  equals the stored one on every visit. The scaled score and its z-score
-  are delivered as stored; the z-score is (scaled score - 10) / 3 on every
-  visit.
+  Items 25 and 26 are lost on the WAIS-IV visits. There the columns mat25_w
+  and mat26_w are copies of mat24_w, on 1,895 of the 1,895 visits that have
+  the 26 columns, of every year, while on the WAIS-III visits the three
+  columns are not all equal on 201 of 543 visits, as items are not. The stored
+  total is not the sum of the 26 columns (it differs on 640 of 1,892 visits)
+  but it is the true total: it exceeds the sum of items 1 to 23 by 0 to 2
+  where item 24 is failed (1,342 visits) and by 1 to 3 where item 24 is passed
+  (550 of 550 visits), as a total that counts three different items does. The
+  export fills the two columns from the field of item 24, the kind of error
+  found for the Calgary scale (decision D11 and open question O12 in
+  PROGRESS.md).
+
+  What is delivered: items 1 to 24, and the total as stored, which cannot be
+  recomputed. In BP the total is recomputed from the 26 items and equals the
+  stored one on every visit. The scaled score and the z-score are recomputed
+  from the stored total, which is the true total, and delivered; the stored
+  ones are checks.
 
   Same instrument as in FACE BP, without items 25 and 26.
+
+  Scaled score and z-score. They are recomputed and delivered (decision of
+  the project lead for the standard scores of the neuropsychological tests):
+  the scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_matrices.csv) from the stored raw total, and the z-score is
+  (scaled score - 10) / 3. The table is read with the age typed in the form
+  (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it is
+  within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (1,818 of the 1,892 visits that have a total use the typed age,
+  74 have a typed age more than 1 year away). The stored scores are
+  wais4_mat_scaled_stored and wais4_mat_z_stored, not delivered. Verified:
+  the scaled score differs on 14 of the 1,892 visits (0.7%), and so does its
+  z-score (score_mismatch, 2013 to 2026, in 7 centres); one stored scaled
+  score is not recomputed (score_not_recomputed). 8 of the 14 differences
+  are on visits whose typed age is more than 1 year from the age at the
+  visit (3.9% of the visits that have a total), where the package reads the
+  table with the age at the visit and the EMR with the typed one.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
 variables:
+  wais4_mat_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_mat01: {column: mat01_w, label: Matrices item 1}
   wais4_mat02: {column: mat02_w, label: Matrices item 2}
   wais4_mat03: {column: mat03_w, label: Matrices item 3}
@@ -64,6 +90,21 @@ variables:
   wais4_mat24: {column: mat24_w, label: Matrices item 24}
 
   wais4_mat_total:        {column: mat_tot_w, label: "Matrices raw total (26 items), as stored", range: [0, 26]}
-  wais4_mat_scaled:       {column: mat_std_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19]}
-  wais4_mat_z:            {column: mat_cr_w,  label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_mat_scaled_stored: {column: mat_std_w, label: Age-scaled score (mean 10 and SD 3) as stored, range: [1, 19], keep: false}
+  wais4_mat_z_stored: {column: mat_cr_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
+scores:
+  wais4_mat_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_matrices
+    from: wais4_mat_total
+    age: wais4_mat_age_entered
+    range: [1, 19]
+    compare: wais4_mat_scaled_stored
+  wais4_mat_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_mat_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_mat_z_stored
+    compare_tolerance: 0.006

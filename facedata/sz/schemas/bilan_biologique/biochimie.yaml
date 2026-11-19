@@ -16,8 +16,10 @@ notes: >
   mmol/L): 10 unit_inferred, 12 unit_doubt. CRP: 334 results are written
   with "<" (censored_left) and one with ">". Glucose: 66 results labelled
   g/L are converted; 17 labelled mmol/L can only be g/L (unit_inferred), 3
-  are doubtful and 3 are out of range. HbA1c: 6 results out of range (0, and
-  values above 18).
+  are doubtful and 3 are out of range. HbA1c: five results labelled % are
+  33 to 44, which is mmol/mol (IFCC): they are converted with % = 0.09148 x
+  mmol/mol + 2.152 (unit_inferred; 5.2% to 6.2%, within 0.3 point of the
+  patient's other results in the median); one 0 stays out of range.
 
   Same instrument as in FACE BP, with four of its sixteen analytes.
 
@@ -37,6 +39,7 @@ variables:
     range: [50, 1000]
 
   crp:
+    missing: {"0": unknown, "0.0": unknown, "00": unknown}      # exactly 0: below a limit that is not written (BP D101)
     label: C-reactive protein
     column: crp
     unit_column: crp_lborresu
@@ -65,4 +68,5 @@ variables:
     unit: "%"
     units:
       "%": {factor: 1, expect: [3, 18]}
+      mmol/mol: {factor: 0.09148, offset: 2.152, expect: [18, 150]}
     range: [3, 18]

@@ -18,6 +18,9 @@ notes: >
   sits in the unit column ("inf"). A few labels are words ("negatif",
   "enceinte"); the value beside them is read on the usual scale.
 
+  Prolactin: a 0 is "nothing measured", not a result (19 cells, now a missing
+  code instead of out_of_range; decision D130).
+
   Prolactin (decision D31 in PROGRESS.md). The results are on two scales,
   ng/mL (µg/L is the same number) and mUI/L (1 ng/mL = 21.2 mUI/L). They
   overlap between about 30 and 500: a value there can be a high prolactin in
@@ -80,3 +83,4 @@ variables:
       mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l]}
     unit_rule: prolactin_unit
     range: [0.5, 500]
+    missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured (BP D130)

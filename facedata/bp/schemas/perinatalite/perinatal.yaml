@@ -2,42 +2,62 @@ instrument: perinatal
 title: The patient's own birth
 tab: PERINATALITE
 section: PERINATALITE
-status: draft
+status: reviewed
 level: patient
 notes: >
   How the patient was born: the age of each parent at the birth, term,
   gestational age, type of birth, stay in a neonatal unit, weight, length,
   head circumference and Apgar scores. Asked of an adult patient, so most
   answers are memories or come from a health booklet: the type of birth is
-  known for 4,500 patients, the Apgar scores for 900.
+  known for 4,500 patients, the Apgar scores for 900. The section is held
+  by 85% to 88% of the inclusions until 2015 and 67% to 70% from 2019.
+  Centre I left it empty from 2019 (1 of its 74 inclusions of 2019-21)
+  while filling the rest of the medical-history form; centres A and H from
+  2022 with the whole form (DM-6). The gestational age is given at 10% to
+  16% of the inclusions until 2016 and 21% to 28% from 2019.
 
   One value per patient (decision D51 in PROGRESS.md). A birth does not
   change, so the value is the one of the patient's earliest visit that has
-  it (the inclusion visit for 99% of them). The form can be filled again at a
-  yearly visit: one answer in five then differs from the first (62 of 317
-  for the mother's age, 36 of 153 for the weight). The first is kept and the
-  patient gets patient_value_varies.
+  it (the inclusion visit for 99% of them). The heading of the section says
+  that it is filled at the initial evaluation only, yet it is filled again
+  at 421 yearly visits (never at screening or at 6 months). The ages and
+  the weight then differ from the first answer for one patient in five (56
+  of 284 for the mother's age, 29 of 130 for the weight; most ages by 1 or
+  2 years), the classes for fewer than one in twenty (14 of 312 for the
+  term). The first is kept and the patient gets patient_value_varies, on
+  the visit of the answer that differs.
 
-  Zeros. In 2009 and 2010 the form saved a 0 in the measures that were not
-  known: 67 visits hold a 0 in the weight, the length, the head
-  circumference or an Apgar score, 57 of them in these two years, and an
-  Apgar score of 0 at one minute always comes with a 0 at five minutes. A 0
-  is therefore a missing code in these five measures, in the gestational age
-  and in the two ages. An age of 99 is a missing code too (3 patients each).
+  Zeros. In 2009 and 2010 the form of the application saved a 0 in the
+  measures that were not known (the export passes them on): 67 visits hold
+  a 0 in the weight, the length, the head circumference or an Apgar score,
+  57 of them in these two years, and an Apgar score of 0 at one minute
+  always comes with a 0 at five minutes. A 0 is therefore a missing code in
+  these five measures, in the gestational age and in the two ages. An age
+  of 99 is a missing code too (3 patients each).
 
-  Gestational age, in weeks of amenorrhoea. 14 cells hold 6 to 9: months.
-  They are converted to weeks (unit_inferred); 8 of these patients are
-  recorded as premature. 12 cells hold a birth weight (2,000 and more) and a
-  few hold other impossible values: out_of_range. The term (born at term,
-  premature, post-term) and the gestational age are two answers of the
-  patient and often disagree: of the patients recorded as premature who
-  give a gestational age, a third give 37 weeks or more.
+  Gestational age, in weeks of amenorrhoea. 14 cells hold 6 to 9: months,
+  counted from conception. They are converted to weeks with a factor of
+  4.345 (unit_inferred), which gives the middle of the month named, in
+  weeks of amenorrhoea, within 0.2 week; 8 of these patients are recorded
+  as premature. 12 cells hold a birth weight of 3,000 to 4,500 g typed in
+  this field (10 of these patients have no birth weight delivered) and 11
+  hold other impossible values (2 to 4, 15, 47 and 48, 291, 361):
+  out_of_range. The term (born at term, premature, post-term) and the
+  gestational age are two answers of the patient and often disagree: of
+  the patients recorded as premature who give a gestational age, a third
+  give 37 weeks or more; of those recorded as born at term, 30 of 911 give
+  less than 37 weeks and 94 give 42 or more.
 
-  Hard limits. Weight 400 to 6,500 g (17 values outside: 12 below 100,
-  which may be hectograms or weeks, 2 between 100 and 400, 3 above 7,000);
-  length 25 to 60 cm (5 outside); head circumference 20 to 42 cm (6
-  outside, most of them above 46: a length typed in the wrong field); Apgar
-  1 to 10 (3 above); mother's age 12 to 60, father's age 12 to 90 (1 below).
+  Hard limits. Weight 400 to 6,500 g (17 values outside: 12 below 100, of
+  which 10 are 47 to 57, a birth length typed in the weight field, and 2
+  are 35; 2 of 300; 3 of 31,000 to 45,000, all multiples of 1,000); length
+  25 to 60 cm (5 outside); head circumference 20 to 42 cm (6 outside: 4 of
+  46 to 58.5 cm on visits whose length field holds another value, 47 to 52,
+  and 2 of 10 on rows whose fields are shifted); Apgar 1 to 10 (3 above);
+  mother's age 12 to 60, father's age 12 to 90 (1 below). On 3 visits the
+  birth fields are shifted one place (a length in the weight field, a head
+  circumference in the length field): 2 patients keep a birth length of 35
+  or 37 cm from them, delivered as written.
 
   No winsorising (decision D52 in PROGRESS.md). The weight, the length, the
   head circumference and the gestational age are delivered as they are
@@ -46,12 +66,16 @@ notes: >
   impossible values.
 
   Apgar score at one minute. 10 for three quarters of the patients, far more
-  than at a birth clinic, where 10 at one minute is unusual; the share goes from 45%
-  to 95% between centres. Delivered as written.
+  than at a birth clinic, where 10 at one minute is unusual; the share goes
+  from 45% to 95% between centres. Delivered as written. For 3 of the 837
+  patients with both scores, the score at five minutes is lower than at one
+  minute.
 
   The dictionary sheet of this tab has one more column than the others (a
-  code list before the names); the names used here are those of the column
-  "NOM VARIABLE EXTRACTION".
+  list of CDISC codes before the names); the names used here are those of
+  the column "NOM VARIABLE EXTRACTION". Not exported: the question "no
+  change since the last visit" that opens the section at a yearly visit
+  (DM-10).
 
 variables:
   mother_age_at_birth:

@@ -17,7 +17,7 @@ from facedata.treatments import open_lists
 from test_pipeline import assert_invariant
 
 ROOT = Path(__file__).parent.parent
-EXTRACTION = ROOT / "data" / "sz" / "SZALL_20261113.tsv"
+EXTRACTION = ROOT / "data" / "sz" / "SZALL_20261117.tsv"
 THESAURUS = ROOT / "thesauri" / "FACESZ_thesaurus_V4.20.xlsx"
 NORMS = ROOT / "norms"
 pytestmark = pytest.mark.skipif(not EXTRACTION.exists(), reason="the SZ extraction is not on this computer")
@@ -62,13 +62,13 @@ def test_the_two_cohorts_can_be_stacked(result):
 
 def test_patient_tab(result, qc):
     patients = result.patients
-    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 17
+    assert ((qc["tab"] == "PATIENT") & (qc["level"] == "patient")).sum() == 16
     assert patients["sex"].value_counts().to_dict() == {"male": 1706, "female": 647}
     assert patients["diagnosis"].value_counts().to_dict() == {"schizophrenia": 1797, "schizoaffective": 513, "schizophreniform": 43}
     assert (patients["age_at_inclusion"].min(), patients["age_at_inclusion"].max()) == (17, 84)
     assert qc.loc[qc["tab"] == "PATIENT", ["unknown_code", "unparsed", "out_of_range", "patient_value_varies"]].sum().sum() == 0
-    # The non-opposition form: code 2 for 87 patients, against 3 in FACE BP.
-    assert patients["opposition_form"].value_counts().to_dict() == {"1": 1012, "2": 87}
+    # The non-opposition form is administrative: it is not delivered, as in FACE BP.
+    assert "opposition_form" not in patients.columns
     assert (qc.loc["referred_by", "n_valid"], qc.loc["referral_letter_date", "date_placeholder"]) == (1591, 10)
     reason = qc.loc["followup_end_reason"]
     assert (reason["n_filled"], reason["n_valid"], reason["missing_code"]) == (583, 492, 91)
@@ -109,9 +109,11 @@ def test_hetero_questionnaires(result, qc):
     higher = data["ymrs_total"].notna() & (data["ymrs05"] + data["ymrs08"] + data["ymrs09"] > 0)
     assert higher.sum() == 776                                     # visits whose published total is above the stored one
     assert (qc.loc["barnes_sum", "score_mismatch"], qc.loc["esrsa_mean", "score_mismatch"]) == (3, 10)
-    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (32, 215)
+    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (23, 215)
     assert (qc.loc["bars_doses_per_day", "out_of_range"], qc.loc["psp_total", "out_of_range"]) == (250, 3)
-    assert (qc.loc["cgi_severity", "missing_code"], qc.loc["cgi_improvement", "missing_code"]) == (12, 354)
+    assert (qc.loc["cgi_severity", "missing_code"], qc.loc["cgi_improvement", "missing_code"]) == (12, 125)
+    # The improvement, the therapeutic effect and the index are asked at the follow-up visits only, as in BP.
+    assert (qc.loc["cgi_improvement", "n_valid"], data.loc[data["visit_month"] == 0, "cgi_improvement"].notna().sum()) == (2195, 0)
     # SUMD: 0 is "cannot be rated", a missing code.
     assert (qc.loc["sumd01", "missing_code"], qc.loc["sumd04_awareness", "missing_code"]) == (29, 2121)
     assert (qc.loc["aims_movements", "n_valid"], qc.loc["bars_adherence", "n_valid"], qc.loc["gaf", "n_valid"]) == (4149, 4383, 4534)
@@ -130,8 +132,11 @@ def test_biology(qc):
     tab = qc[qc["tab"] == "BILAN BIOLOGIQUE"]
     assert (len(tab), tab["instrument"].nunique(), tab["unparsed"].sum()) == (27, 7, 0)
     crp, glucose, haemoglobin = qc.loc["crp"], qc.loc["glucose"], qc.loc["haemoglobin"]
-    assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3563, 334, 1)
+    assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3086, 334, 1)
+    assert crp["missing_code"] == 477                                   # a CRP of exactly 0 is not a measurement (BP D101)
     assert (glucose["n_valid"], glucose["unit_converted"], glucose["unit_inferred"], glucose["out_of_range"]) == (3136, 66, 17, 3)
+    # HbA1c typed in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D41).
+    assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "out_of_range"]) == (5, 1)
     assert (haemoglobin["n_valid"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (3658, 34, 4)
     assert (qc.loc["neutrophils", "unit_inferred"], qc.loc["eosinophils", "unit_doubt"]) == (23, 37)
     # The stored cholesterol ratio is not the ratio of the stored values on 4% of the visits.
@@ -152,7 +157,7 @@ def test_auto_questionnaires(result, qc):
     counts = (qc.loc["ctq_total", "n_valid"], qc.loc["eq5d_index", "n_valid"], qc.loc["fagerstrom_total", "n_valid"], qc.loc["wurs_sum25", "n_valid"])
     assert counts == (2166, 3909, 1981, 295)
     assert (qc.loc["mars_total", "n_valid"], qc.loc["mars_total", "score_mismatch"]) == (4266, 2)
-    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unparsed"]) == (2954, 11, 26)
+    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unparsed"]) == (2960, 106, 26)
     assert (qc.loc["birchwood_total", "n_valid"], qc.loc["birchwood_total", "score_mismatch"]) == (4244, 5)
     # S-QoL: items 17 and 18 hold only three of their five answers; the stored dimension is delivered.
     assert (qc.loc["sqol16", "n_valid"], qc.loc["sqol17", "n_valid"], qc.loc["sqol18", "n_valid"]) == (4267, 2734, 2784)
@@ -168,23 +173,29 @@ def test_auto_questionnaires(result, qc):
 
 def test_neuropsychology_first_part(result, qc):
     tab = qc[qc["tab"] == "NEUROPSYCHOLOGIE"]
-    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (659, 30, 1)
+    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (664, 30, 0)       # + neuropsy_age_used (D138-D143, D48)
     data = result.data
-    assert data["wais_version"].value_counts().to_dict() == {"wais4": 2654, "wais3": 781}
-    # The form that holds the years of education stops in 2016: the TMT error norms cannot be read after.
-    assert (qc.loc["education_years", "n_valid"], qc.loc["education_years", "last_year"]) == (776, 2016)
-    assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (748, 2359)
+    # 33 visits labelled WAIS-III hold the WAIS-IV sequencing task and are read as WAIS-IV (WAIS review, D138-D143, D47).
+    assert data["wais_version"].value_counts().to_dict() == {"wais4": 2687, "wais3": 748}
+    # The years of education are exported for every assessment since the extraction of 17 November 2026
+    # (776 visits until 2016 before): the TMT error norms can be read on every visit.
+    assert (qc.loc["education_years", "n_valid"], qc.loc["education_years", "last_year"]) == (3449, 2026)
+    assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (3107, 0)
+    # A suspected learning disorder: several kinds can be ticked, one box each, 0 after a "no".
+    assert (qc.loc["neuropsy_dyslexia", "n_valid"], (data["neuropsy_dyslexia"] == 1).sum(), (data["neuropsy_dyspraxia"] == 1).sum()) == (2851, 203, 42)
     # One centre's 23 early visits mix the two sign conventions (mean correlation 0.24 the wrong way): too weak
     # to flip, so the scores stay as written and are doubted.
-    assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time_z", "sign_flipped"], qc.loc["tmt_a_time_z", "sign_doubt"]) == (3210, 0, 23)
+    assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time_z", "sign_flipped"], qc.loc["tmt_a_time_z", "sign_doubt"]) == (3210, 0, 0)       # recomputed (D135)
     assert (qc.loc["errands_errors", "n_valid"], qc.loc["errands_errors", "score_mismatch"], qc.loc["fluency_p_rule_breaks", "score_mismatch"]) == (1023, 0, 0)
     # WAIS-IV matrices: items 25 and 26 are copies of item 24 in the extraction, so the total is the stored one.
     assert "wais4_mat25" not in data.columns and "wais4_mat26" not in data.columns
-    assert (qc.loc["wais3_mat_total", "n_valid"], qc.loc["wais3_mat_total", "score_mismatch"], qc.loc["wais4_mat_total", "n_valid"]) == (568, 4, 1867)
+    # The 25 matrices visits read as WAIS-IV leave the WAIS-III total, with its 4 mismatches (WAIS review, D138-D143, D47).
+    assert (qc.loc["wais3_mat_total", "n_valid"], qc.loc["wais3_mat_total", "score_mismatch"], qc.loc["wais4_mat_total", "n_valid"]) == (543, 0, 1892)
     # Digit span: the summary columns hold what their labels say (they are shifted in BP).
     checks = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts()
     # The check scores are not delivered: their mismatch is filed under the stored total that the analyst sees.
-    assert (qc.loc["wais4_ds_total", "n_valid"], checks.get("wais4_ds_total", 0), checks.get("wais3_ds_total", 0)) == (2494, 0, 30)
+    # The 33 digit-span visits read as WAIS-IV take their mismatches with them: 30 were filed under the WAIS-III total, 1 is now under the WAIS-IV one (WAIS review, D138-D143, D47).
+    assert (qc.loc["wais4_ds_total", "n_valid"], checks.get("wais4_ds_total", 0), checks.get("wais3_ds_total", 0)) == (2527, 1, 0)
 
 
 def same(stored, formula, tolerance=0.011):
@@ -195,43 +206,59 @@ def same(stored, formula, tolerance=0.011):
 
 def test_cvlt_and_wais(result, qc):
     data = result.data
-    # CVLT: the z-score of trials 1 to 5 does not follow the raw total from 2022 to mid-2025.
-    assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5_z", "period_doubt"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (2275, 260, 240)
+    # CVLT: the z-scores are computed again with the regressions of the norms, as in BP. From October 2021 to June 2026
+    # the application computed part of the z-scores of trials 1 to 5 with two coefficients exchanged: they differ from the stored ones.
+    assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5_z", "n_valid"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (2275, 2275, 0)
+    assert (qc.loc["cvlt_total_1_5_z", "score_mismatch"], qc.loc["cvlt_total_1_5_z", "norm_missing"], qc.loc["cvlt_trial1_z", "score_mismatch"]) == (333, 0, 5)
+    total_z = data["cvlt_total_1_5_z"]
+    from_2022 = data["visit_date"].dt.year >= 2022
+    assert abs(total_z[from_2022].median() - total_z[~from_2022].median()) < 0.3      # the stored ones were 3 points apart
+    assert (qc.loc["cvlt_total_1_5_band", "n_valid"], qc.loc["cvlt_short_free_band", "band_from_z"]) == (2275, 496)
+    # Serial clustering is read in the same table as in BP (BP D129); 37 stored bands have no index to read it from.
+    assert (qc.loc["cvlt_serial_band", "n_valid"], qc.loc["cvlt_serial_band", "censored_right"], qc.loc["cvlt_serial_band", "norm_missing"]) == (1615, 88, 37)
+    assert not [name for name in data.columns if name.startswith("cvlt") and name.endswith("_stored")]
     # WAIS-IV similarities: items 10 and 11 are the same cell twice, so the total is the stored one.
-    assert (qc.loc["wais3_simil_total", "n_valid"], qc.loc["wais3_simil_total", "score_mismatch"], qc.loc["wais4_simil_total", "n_valid"]) == (570, 12, 1865)
+    # 25 visits read as WAIS-IV, with the 12 WAIS-III mismatches, and one WAIS-III total lost to the total rule, no `min_items` (WAIS review, D138-D143, D47).
+    assert (qc.loc["wais3_simil_total", "n_valid"], qc.loc["wais3_simil_total", "score_mismatch"], qc.loc["wais4_simil_total", "n_valid"]) == (544, 0, 1890)
     # The sums of scaled scores are those of a seven-subtest short form. The scaled scores are in other schemas.
     w3_verbal = 2 * data["wais3_simil_scaled"] + 2 * data["wais3_info_scaled"] + data["wais3_arith_scaled"] + data["wais3_ds_scaled"]
     w3_performance = 2 * data["wais3_pc_scaled"] + 2 * data["wais3_mat_scaled"] + data["wais3_code_scaled"]
+    # The sums of the WAIS-III efficiency form are recomputed from the delivered scaled scores (`uses`, WAIS review, D138-D143, D47): they equal the formula by construction.
+    # The counts move with the edition (visits read as WAIS-IV leave the WAIS-III sums) and with the total rule (a total with a missing item is not delivered, so its sum goes).
     assert same(data["wais3_qiv_sum_scaled"], w3_verbal) == (528, 528)
-    assert same(data["wais3_qip_sum_scaled"], w3_performance) == (539, 539)
-    assert same(data["wais3_imt_sum_scaled"], data["wais3_ds_scaled"] + data["wais3_arith_scaled"] + data["wais3_lns_scaled"]) == (472, 472)
-    assert same(data["wais4_icv_sum_scaled"], 1.5 * (data["wais4_simil_scaled"] + data["wais4_info_scaled"])) == (455, 456)
-    assert same(data["wais4_irp_sum_scaled"], 1.5 * (data["wais4_mat_scaled"] + data["wais4_pc_scaled"])) == (451, 451)
-    assert same(data["wais4_imt_sum_scaled"], data["wais4_ds_scaled"] + data["wais4_arith_scaled"]) == (445, 447)
+    assert same(data["wais3_qip_sum_scaled"], w3_performance) == (538, 538)
+    assert same(data["wais3_imt_sum_scaled"], data["wais3_ds_scaled"] + data["wais3_arith_scaled"] + data["wais3_lns_scaled"]) == (473, 473)
+    # WAIS-IV: 24 to 25 visits gained from WAIS-III, 3 to 11 lost to the total rule (WAIS review, D138-D143, D47).
+    assert same(data["wais4_icv_sum_scaled"], 1.5 * (data["wais4_simil_scaled"] + data["wais4_info_scaled"])) == (474, 474)       # the sums are recomputed from the delivered scaled scores (D137): they equal the formula by construction
+    assert same(data["wais4_irp_sum_scaled"], 1.5 * (data["wais4_mat_scaled"] + data["wais4_pc_scaled"])) == (475, 475)
+    assert same(data["wais4_imt_sum_scaled"], data["wais4_ds_scaled"] + data["wais4_arith_scaled"]) == (471, 471)
     seven = ["wais4_simil_scaled", "wais4_info_scaled", "wais4_arith_scaled", "wais4_ds_scaled", "wais4_pc_scaled", "wais4_mat_scaled", "wais4_code_scaled"]
-    assert same(data["wais4_qit_sum_scaled"], data[seven].sum(axis=1, min_count=7) * 10 / 7, 0.06) == (428, 430)
+    assert same(data["wais4_qit_sum_scaled"], data[seven].sum(axis=1, min_count=7) * 10 / 7, 0.06) == (447, 447)
     # WAIS-IV: the working memory index and the full-scale IQ are stored 0.7 and 2.9 too low. Corrected, they are whole numbers.
-    for name, count in [("wais4_imt_index", 447), ("wais4_qit", 430)]:
+    for name, count in [("wais4_imt_index", 471), ("wais4_qit", 447)]:
         index = data[name].dropna()
         assert (len(index), int((index == index.round()).sum())) == (count, count)
     # The Barona differences are the expected IQ minus the estimated one: with the corrected IQ on the WAIS-IV visits.
-    assert same(data["barona_qiv_difference"], data["barona_expected_qiv"] - data["wais3_qiv"]) == (508, 508)
-    assert same(data["barona_qip_difference"], data["barona_expected_qip"] - data["wais3_qip"]) == (516, 516)
-    assert same(data["barona_qit_difference"], data["barona_expected_qit"] - data["wais4_qit"]) == (292, 293)
-    assert same(data["barona_qit_difference"], data["barona_expected_qit"] - data["wais4_qi_two_subtests"]) == (154, 161)
+    # The expected IQs are recomputed with the norms and the differences stay as stored (`derived_from`): where the stored expected IQ
+    # was not the recomputed one the difference no longer equals expected minus estimated, and where the expected IQ cannot be
+    # recomputed it is not delivered (WAIS review, D138-D143, D48).
+    assert same(data["barona_qiv_difference"], data["barona_expected_qiv"] - data["wais3_qiv"]) == (472, 501)
+    assert same(data["barona_qip_difference"], data["barona_expected_qip"] - data["wais3_qip"]) == (478, 509)
+    assert same(data["barona_qit_difference"], data["barona_expected_qit"] - data["wais4_qit"]) == (298, 304)       # the EMR computed the difference from its stored IQ: 6 visits differ since the IQ follows the recomputed sum (D137); 21 visits gained from WAIS-III (D47)
+    assert same(data["barona_qit_difference"], data["barona_expected_qit"] - data["wais4_qi_two_subtests"]) == (143, 151)
     # The Barona occupation mirrors the diploma on 72% of the visits that have both.
-    assert (qc.loc["barona_occupation", "n_valid"], qc.loc["barona_occupation", "check_failed"], qc.loc["barona_expected_qit", "check_failed"]) == (1548, 1111, 1079)
+    assert (qc.loc["barona_occupation", "n_valid"], qc.loc["barona_occupation", "check_failed"], qc.loc["barona_expected_qit", "check_failed"]) == (1548, 1111, 1111)       # the expected IQ is recomputed: the 32 gained check_failed (WAIS review, D138-D143, D48)
     assert "wais4_imt_index_stored" not in data.columns and "wais4_qit_stored" not in data.columns
 
 
 def test_neuropsychology_other_tests(qc):
-    assert (qc.loc["sstics_total", "n_valid"], qc.loc["sstics_total", "score_mismatch"], qc.loc["sstics_z", "n_valid"]) == (2338, 2, 2329)
-    assert (qc.loc["lis_a1", "n_valid"], qc.loc["lis_total", "n_valid"]) == (1162, 1018)
-    assert (qc.loc["fnart_total", "n_valid"], qc.loc["fnart_total", "score_mismatch"], qc.loc["fnart_qit", "derived_doubt"]) == (684, 0, 0)
+    assert (qc.loc["sstics_total", "n_valid"], qc.loc["sstics_total", "score_mismatch"], qc.loc["sstics_z", "n_valid"]) == (2338, 2, 2338)       # z recomputed: 10 gained, 1 lost (D138-D143, D48)
+    assert (qc.loc["lis_a1", "n_valid"], qc.loc["lis_total", "n_valid"]) == (1162, 1148)       # the distance score is recomputed: 137 gained, 7 lost (D138-D143, D48)
+    assert (qc.loc["fnart_total", "n_valid"], qc.loc["fnart_total", "score_mismatch"], qc.loc["fnart_qit", "derived_doubt"]) == (1294, 0, 0)       # 610 totals gained as stored, IQs on 1,294 visits (D138-D143, D48)
     assert (qc.loc["cptip_dprime_mean", "n_valid"], qc.loc["cptip_dprime_mean", "score_mismatch"], qc.loc["cptip_percentile", "band_middle"]) == (999, 0, 59)
     assert (qc.loc["six_elements_points", "n_valid"], qc.loc["six_elements_points", "score_mismatch"], qc.loc["six_elements_time", "unparsed"]) == (862, 1, 83)
-    # Doors: a percentile "<1" computed from an empty part B.
-    assert (qc.loc["doors_total", "n_valid"], qc.loc["doors_b_band", "derived_doubt"], qc.loc["doors_a_band", "derived_doubt"]) == (771, 172, 1)
+    # Doors: a percentile "<1" computed from an empty part B is not read again: it is not recomputed (D135).
+    assert (qc.loc["doors_total", "n_valid"], qc.loc["doors_b_band", "score_not_recomputed"], qc.loc["doors_a_band", "score_not_recomputed"]) == (771, 172, 1)
     # Laterality: one centre computed the quotient on 12 lines instead of 10.
     assert (qc.loc["laterality_quotient", "n_valid"], qc.loc["laterality_quotient", "score_mismatch"]) == (502, 41)
 
@@ -244,10 +271,11 @@ def shape_of(qc, tab):
 
 def test_suicide_and_comorbidity(result, qc):
     data = result.data
-    assert shape_of(qc, "SUICIDE") == (26, 3, 0, 1)
+    assert shape_of(qc, "SUICIDE") == (31, 4, 0, 1)
     # Two forms in the same columns: the whole life at inclusion, since the last visit at follow-up.
     assert (qc.loc["isf05_lifetime", "n_valid"], data["isf05_lifetime"].sum(), qc.loc["isf05_since_visit", "n_valid"], data["isf05_since_visit"].sum()) == (2231, 680, 2360, 57)
-    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (623, 114, 694)
+    assert (qc.loc["first_attempt_date", "n_valid"], qc.loc["first_attempt_date", "date_placeholder"], qc.loc["n_attempts", "n_valid"]) == (562, 114, 2169)
+    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (2356, 50)       # BP D86, D125: 0 after a "no"
     assert qc.loc[qc.index.str.startswith("isf"), "period_doubt"].sum() == 0          # no doubtful period here, unlike BP
 
     assert shape_of(qc, "SUBSTANCES ET COMORBIDITE") == (189, 11, 0, 0)
@@ -267,15 +295,18 @@ def test_medical_evaluation_care_and_social(result, qc):
     assert (qc.loc["n_psychotic_episodes", "n_valid"], data["symptom_persecution_ever"].sum(), data["violence_verbal"].sum()) == (1899, 1807, 925)
     assert shape_of(qc, "SOIN SUIVI HOSP ARRET TRAVAIL") == (27, 5, 0, 25)
     assert (qc.loc["first_hospitalisation_age", "n_valid"], qc.loc["hospitalisation_months_v0", "censored_right"], qc.loc["hospitalised_12m", "n_valid"]) == (1868, 105, 4494)
+    # The psychiatric sick leave since the last visit is the BP question, under the BP names; 0 after a "no" (BP D123).
+    assert [qc.loc[name, "n_valid"] for name in ["sick_leave_fu", "n_sick_leaves_fu", "sick_leave_weeks_fu", "sick_leave_weeks_12m"]] == [1306, 1288, 1281, 800]
+    assert (data.loc[data["sick_leave_fu"] == 0, "sick_leave_weeks_fu"] == 0).all()
     assert shape_of(qc, "SOCIAL - PERINATALITE") == (11, 1, 0, 0)
     # Lost answers: no patient is married or living as a couple, none has a salary or a disability pension.
     assert data["marital_status"].value_counts().to_dict() == {"single": 1652, "divorced": 42, "separated": 30, "widowed": 4}
-    assert set(data["income_source"].dropna()) == {"disability_allowance", "other", "none_or_other", "minimum_income", "unemployment_benefit", "housing_benefit"}
+    assert set(data["income_source"].dropna()) == {"disability_allowance", "other", "no_income", "minimum_income", "unemployment_benefit", "housing_benefit"}
 
 
 def test_treatments(result, qc):
     items, data, patients = result.treatments, result.data, result.patients
-    assert shape_of(qc, "TRAITEMENTS") == (69, 6, 149, 2)
+    assert shape_of(qc, "TRAITEMENTS") == (71, 6, 149, 2)
     # One row per patient and medication: every row of a patient holds the same lists.
     assert (len(items), items["usubjid"].nunique(), items["molecule"].nunique()) == (11038, 1975, 122)
     assert qc.loc["medication", "patient_value_varies"] == 0
@@ -285,9 +316,12 @@ def test_treatments(result, qc):
     assert (groups["antipsychotic_2g"], groups["antipsychotic_1g"], groups["antidepressant"], len(groups)) == (5278, 1325, 1492, 10)
     # The ATC code that the EMR gives for part of the medications agrees with the table.
     both = items["atc_coded"].notna() & items["atc"].notna()
-    assert (int(both.sum()), int((items.loc[both, "atc_coded"] == items.loc[both, "atc"]).sum())) == (3313, 3305)
-    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (11038, 5792, 1064)
+    assert (int(both.sum()), int((items.loc[both, "atc_coded"] == items.loc[both, "atc"]).sum())) == (3322, 3314)
+    assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (11038, 5792, 5246)
     assert (data["on_antipsychotic_2g"].notna().sum(), round(data["on_antipsychotic_2g"].mean(), 2)) == (5888, 0.88)
+    # The daily dose in mg from the strength in the name: SZ stores no strength (BP D124).
+    assert (items["daily_dose"].notna().sum(), (items["strength_from_name"] == 1).sum(), qc.loc["end_date", "check_failed"]) == (9014, 6504, 41)
+    assert qc.loc["daily_dose", "out_of_range"] == 8            # laxatives in grams, 5.9 g or 10 g a unit
     assert round(data.loc[data["visit"] == "V0", "on_clozapine"].mean(), 2) == 0.18
     # The counts of the export are one value per patient, not per visit.
     assert patients["n_listed_antipsychotics"].notna().sum() == 1975 and "n_listed_antipsychotics" not in data.columns
@@ -312,7 +346,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = sz.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1668, 52, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1667, 53, 0)
     assert counts["covered"] + counts["ignored"] == 1720
 
 

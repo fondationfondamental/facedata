@@ -24,18 +24,27 @@ notes: >
   at the six-monthly ones. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
   305 of the 660 "yes" of this section that are answered again (9 of 37 for a cancer, 78 of 130 for a major surgery, 142 of 366 for another somatic disease). The
-  yearly form therefore seems to ask about the time since the last visit; this
-  is not confirmed (open question O38). The two are delivered as separate
+  yearly form is the inclusion form again: the same questions, with no period
+  in their wording, after one more question, "is there a change since the
+  last visit?", which the extraction does not hold (read in the application
+  in November 2026, decision D84 in PROGRESS.md). A yearly answer is an
+  update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
   says which form a visit used and is read from the visit label.
 
-  From 2022 the section is mostly left empty (open question O37). Until 2021
+  From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
   it is answered at 86% of the inclusion visits, from 2022 at 39%, and the
-  answered visits hold more "yes": 0.72 per visit against 0.47. The section seems to
-  be opened only for a patient who has one of its diseases. From 2022 the
+  answered visits hold more "yes": 0.72 per visit against 0.47. The form has a
+  shortcut at the top of the section, "Non pour tous" (no for all) or "Ne
+  sais pas pour tous". In eBipolar it leaves each disease unanswered; the
+  application saves it and the extraction does not hold it (read in the
+  application in November 2026). An empty section is therefore most often a
+  "no for all". From 2022 the
   share of "yes" among the answers (9.0% against 4.8%) is therefore not a
   prevalence. The values are delivered as recorded: an empty section is
-  missing, not "no". The yearly visits answer the section at 32% of the
+  missing, not "no". Once the shortcut is exported, a "no for all" will
+  give 0 to each disease of the section. The yearly visits answer the section at 32% of the
   visits until 2021 and at 11% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
@@ -75,11 +84,11 @@ defaults: {versions: [follow_up]}
 variables:
   cancer_fu: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at follow-up"}
   cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of diagnosis, at follow-up"}
-  cancer_gynaecological_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 1, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: gynaecological, at follow-up"}
-  cancer_digestive_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 1, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: digestive, at follow-up"}
-  cancer_ent_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 1, "Cancers pulmonaires": 0, "Autre cancers": 0}, label: "Cancer, the type: ear, nose and throat, at follow-up"}
-  cancer_lung_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 1, "Autre cancers": 0}, label: "Cancer, the type: lung, at follow-up"}
-  cancer_other_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 1}, label: "Cancer, the type: another cancer, at follow-up"}
+  cancer_gynaecological_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 1, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: gynaecological, at follow-up"}
+  cancer_digestive_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 1, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: digestive, at follow-up"}
+  cancer_ent_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 1, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: ear, nose and throat, at follow-up"}
+  cancer_lung_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 1, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: lung, at follow-up"}
+  cancer_other_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 1}, asked_if: cancer_fu, label: "Cancer, the type: another cancer, at follow-up"}
   cancer_text_fu: {column: neoplasi_mhmodify, type: text, label: "Cancer: which one, as written, at follow-up"}
   hiv_fu: {column: vih_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection, at follow-up"}
   hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "HIV infection: date of diagnosis, at follow-up"}

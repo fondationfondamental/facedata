@@ -1,32 +1,70 @@
 instrument: sick_leave_fu
-title: Sick leave since the last visit (follow-up visits)
+title: Sick leave for a psychiatric disorder since the last visit (follow-up visits)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: ARRET DE TRAVAIL
-status: draft
+status: reviewed
 notes: >
-  Sick leave since the last visit: whether there was any, how many, and
-  their total duration in weeks. Asked at every follow-up visit. Yes/no
-  answers are delivered as 1 and 0; "Non applicable" (the patient has no
-  job: a third of the answers) is a missing code.
+  Sick leave for a psychiatric disorder since the last visit (the form
+  asks "en lien avec un trouble psychiatrique", D94 (6)): whether there was
+  any, how many, and their total duration in weeks. Asked at every
+  follow-up visit. Yes/no answers are delivered as 1 and 0; "Non
+  applicable" (the patient has no job: a third of the answers) is a
+  missing code.
 
   These three columns are filled at the follow-up visits only and have no
-  label in the dictionary; the inclusion visit has columns of its own, read
-  by sick_leave_v0.yaml.
+  label in the dictionary (DM-7); the inclusion visit has columns of its
+  own, read by sick_leave_v0.yaml. The inclusion question covers the 12
+  months before inclusion and names no cause: do not stack the two as one
+  question.
+
+  "Non applicable" is mostly the answer of patients without a job (78% of
+  the answers of the patients retired at inclusion, 11% of those of the
+  employed). But "Non" is also given by patients without one: 797 of the
+  4,447 "Non" come from patients unemployed, retired, on a disability
+  pension or at home at inclusion. To study sick leave among workers,
+  select on the work status, not on this answer.
 
   Asked only after a yes (asked_if). The number and the duration are filled
   only after a yes; they are 0 where the patient had no sick leave. Where
-  the first answer is "Non applicable" or empty they stay missing.
+  the first answer is "Non applicable" they stay missing; one visit with no
+  first answer holds both and is delivered as written. After a yes, 152
+  numbers and 175 durations are empty (115 visits have neither); the
+  duration is empty on 6% of the yes until 2012, 14% from 2024 and 22% in
+  centre C. 7 numbers and 11 durations are 0 after a yes and are delivered
+  as written.
 
-  Hard limits. A number above 52 is out of range. A duration above 260 weeks
-  (five years) is out of range (2 cells, one of them 880,410). 112 durations
-  are longer than the time since the patient's previous visit; delivered as
-  written.
+  The export keeps only the digits of the number and the duration (since
+  January 2026): a text answer has its digits run together ("1,5" gives
+  15), and an answer with no digit becomes empty, so no cell is flagged
+  unparsed. This is to be asked in the second batch of export requests.
+
+  Hard limits. A number above 52 is out of range (1 cell). A duration above
+  104 weeks (two years) is out of range (22 cells, D123). The 20 of 120 to
+  250 weeks are all longer than the time since the previous visit (33
+  weeks at the median). The 2 above 260, one of them 880,410, are digits
+  run together by the export, not values typed by a centre.
+
+  Since late 2021 the form accepts at most 52 weeks: no duration is above
+  52 after July 2021, and from October 2021, 47 of the 426 durations after
+  a yes are exactly 52 (30 of them more than 52 weeks after the previous
+  visit), so a 52 may stand for a longer leave. Before, 70 durations were
+  above 52 (48 of them up to 104, delivered). 152 durations are longer
+  than the time since the previous visit (90 by more than four weeks);
+  they are delivered as written. Centre K wrote 9 of its 52 durations more
+  than four weeks longer than that time (all before 2022), more than any
+  other centre.
+
+  The question is answered on 97.5% of the follow-up visits where the
+  follow-up form is filled. The empty visits are visits without the form:
+  centre A from 2022 (DM-6), and centre B in 2025-2026 (perhaps not yet
+  entered).
 
   The numbers and durations are not winsorised (decision D54 in
-  PROGRESS.md): most answers are 0, so the 99th percentile would bring the
-  rare high values down to it, or to 0.
+  PROGRESS.md): most answers are 0 (72% of the numbers, 73% of the
+  durations), so the 99th percentile would bring the rare high values down
+  to it.
 
 variables:
-  sick_leave_fu: {column: rad_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave since the last visit"}
-  n_sick_leaves_fu: {column: arret_travail_nb, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_fu, label: "Number of sick leaves since the last visit"}
-  sick_leave_weeks_fu: {column: arret_travail_duree, type: number, unit: weeks, range: [0, 260], winsor: false, asked_if: sick_leave_fu, label: "Total duration of the sick leaves since the last visit"}
+  sick_leave_fu: {column: rad_arret_travail, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sick leave for a psychiatric disorder since the last visit"}
+  n_sick_leaves_fu: {column: arret_travail_nb, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_fu, label: "Number of sick leaves for a psychiatric disorder since the last visit"}
+  sick_leave_weeks_fu: {column: arret_travail_duree, type: number, unit: weeks, range: [0, 104], winsor: false, asked_if: sick_leave_fu, label: "Total duration of the sick leaves for a psychiatric disorder since the last visit"}

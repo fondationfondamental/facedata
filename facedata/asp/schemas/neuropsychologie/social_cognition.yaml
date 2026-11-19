@@ -4,24 +4,48 @@ tab: neuropsychologie
 section: social cognition
 status: draft
 notes: >
-  Tests added in 2018, on about 996 inclusion visits (273 children): a box "done"
-  (cogsoc, yes on 906), the date and the age in months; a facial emotion test
-  (tref: done on 708 visits, seven scores from 0 to 100, read as the percentage of
-  correct answers in all and for six emotions); a faux pas test (faupa: done on
-  819, one score from 0 to 100); and the six films of FACE SZ (lis: done on 707,
-  one score on 698 visits, the distance to reference ratings: lower is better).
-  9 is read as "not known".
+  Tests added in 2018, on 993 inclusion visits (273 children): a box "done"
+  (cogsoc, yes on 906), the date and the age in months; a facial emotion
+  test (tref: done on 708 visits, seven scores from 0 to 100, read as the
+  percentage of correct answers in all and for six emotions); a faux pas
+  test (faupa: done on 819, one score from 0 to 100); and the six films of
+  FACE SZ (lis: done on 707, one score on 698 visits, the distance to
+  reference ratings: lower is better). 9 is read as "not known". The seven
+  scores of the facial emotion test are the percentages of right answers for
+  every emotion together, then joy, anger, sadness, disgust, contempt and
+  fear.
 
-  The thirty ratings of the six films, which FACE SZ records, are not in this
-  extraction: only the score. The seven scores of the facial emotion test are
-  the percentages of right answers for every emotion together, then joy, anger,
-  sadness, disgust, contempt and fear.
+  The six films. The ASP forms (119, 346 and 349) have no field for the
+  thirty ratings that FACE SZ records: LIS_SCORE is typed in, with no script
+  that computes it. Only the score is in the extraction, so it cannot be
+  recomputed as in SZ. Its 5th, 50th and 95th percentiles are 9.5, 15.0 and
+  26.9 (SZ: 9.9, 16.0 and 29.5). One value is 99.0 (the next is 59, the SZ
+  maximum is 71): it is inside the range of 0 to 100 and is delivered as
+  typed; it may be a typing error.
+
+  Scores above 100. The scores of the facial emotion and of the faux pas
+  tests are percentages: one value of tref01 and 5 of faupa01 are in the
+  700s (out_of_range). Divided by 10 they would give 0 to 100, and the field
+  takes 3 characters, so a value such as 77.8 cannot be typed. They are not
+  repaired (the decimal point is a guess). Question for the centres.
+
+  Ages in months. The age at the social cognition tests is more than 2 years
+  from the age at the visit x 12 on 85 of 809 visits; on 59 of them the
+  typed value is within 1.5 of the age in years (typed in years). The age at
+  the executive function tests (executive_age_months) does the same on 36 of
+  550 visits (19 of them within 1.5 of the age in years). Not corrected. Centre D types
+  the age in years (37 of its 43 values are within 1.5 of the age in years,
+  and it holds 37 of the 59 typed in years above), which is the step of its
+  median.
 
   The schema was written from the column names and the answers, then checked
-  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
-  D14).
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13
+  and D14).
 
-  An instrument of the ASP cohort only.
+  An instrument of the ASP cohort only. Draft because: at centre D the facial
+  emotion scores for anger, sadness, disgust and fear are about 10 points
+  below centres B and C (fear: 0.9 of the interquartile range) with no known
+  cause.
 
 variables:
   social_cognition_done: {column: cogsoc, type: item, range: [0, 1], missing: {"9": unknown}, label: "The social cognition tests were done"}

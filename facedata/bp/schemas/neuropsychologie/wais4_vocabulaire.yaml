@@ -2,23 +2,75 @@ instrument: wais4_vocabulaire
 title: WAIS-IV vocabulary (30 items)
 tab: NEUROPSYCHOLOGIE
 section: Vocabulaire
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 in PROGRESS.md). The columns vocab01_wais3 to vocab30_wais3
-  hold the 30-item WAIS-IV vocabulary test on WAIS-IV visits (2,107 visits,
-  2011 to 2021), in spite of their name. This schema reads those visits;
-  wais3_vocabulaire.yaml reads the WAIS-III visits. From 2018 on the WAIS-IV
-  battery uses Similitudes instead (wais4_similitudes.yaml).
+  hold the 30-item WAIS-IV vocabulary test on WAIS-IV visits (2,109 visits
+  with at least one item, 2011 to 2021), in spite of their name. This schema
+  reads those visits; wais3_vocabulaire.yaml reads the WAIS-III visits. From
+  2018 on the WAIS-IV battery uses Similitudes instead
+  (wais4_similitudes.yaml).
 
-  Items 1 to 3 are picture items scored 0 or 1; items 4 to 30 are scored 0
-  to 2, so the raw total goes up to 57. 27 cells of items 1 to 3 hold a 2 and
-  will be flagged out_of_range.
+  Items 1 to 3 are picture items scored 0 or 1; items 4 to 30 are scored 0 to
+  2, so the raw total goes up to 57. 27 cells of items 1 to 3 hold a 2, on 9
+  visits. They stay out_of_range (the range of these items is not widened), so
+  that those 9 visits have no recomputed total, scaled score or z-score
+  (score_not_recomputed on the stored ones). No rule explains the stored total
+  of these 9 visits: it is the sum of the items with the 2 counted as typed on
+  1 of them, and with the 2 counted as 1 on 3.
 
-  The stored raw total equals the sum of the 30 items on 99.5% of rows.
+  The stored raw total equals the sum of the 30 items on 2,082 of the 2,085
+  visits that have both (99.9%; 3 score_mismatch).
 
   Not read. Items 31 to 33 do not exist in WAIS-IV. They are filled on 11
   WAIS-IV visits; coverage() reports those cells as unread.
+
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV vocabulary table of the application
+  (norms/wais4_vocabulary.csv, the table of the BP application with the row
+  for 25 to 29 years of the ASP application, see below; ASP has its own table)
+  from the raw total, and the z-score is (scaled score - 10) / 3. The table is
+  read with the age typed in the form (cclin01_, delivered as neuropsy_age by
+  neuropsy_conditions) where it is within 1 year of the age at the visit, and
+  with the age at the visit elsewhere. The stored scores are
+  wais4_vocab_scaled_stored and wais4_vocab_z_stored, not delivered.
+
+  Verified on the 2,085 visits that have both a stored and a recomputed scaled
+  score: it differs on 146 (7.0%), and the z-score on the same 146
+  (score_mismatch, 143 on the scaled score; the stored scaled score of 3
+  visits is 20, out of its range 1 to 19, so it is not compared and those 3
+  are flagged on the z-score only). 136 of the 146 are at 25 to 29 years (255
+  visits are read in that row); the 10 others are dated 2012 to 2017 (2 under
+  25 years, 8 from 30 years). No total gives norm_missing.
+
+  Ages 25 to 29. The row of the application's own script for these ages is not
+  monotone, and the project lead decided (19 November 2026) to read the table
+  with the row of the ASP application instead. The stored score of the BP
+  application follows its own row, so it differs from the delivered one on 136
+  of the 255 visits of that age group; it stays as the flagged check
+  (wais4_vocab_scaled_stored). The script's row gives 20 to the highest raw
+  scores, one more than the scale has: 3 visits have a stored scaled score of
+  20 (out_of_range on the stored value); their delivered scaled score is 19,
+  and no delivered scaled score is out of range any more.
+
+  Total typed alone. 6 visits (2013 to 2020, in 4 centres) have a stored
+  total, scaled score and z-score and no item at all. The total was typed
+  alone: it is delivered as stored (otherwise: wais4_vocab_total_stored,
+  score_as_stored on the total) and the scaled score and the z-score are read
+  from it; the table gives the stored scaled score on all 6. Only the total
+  carries score_as_stored: the flag passes to a score that adds up a score
+  delivered as stored, not to one read in a table. The 9 other visits with a
+  stored total and no recomputed one are those with an item of 1 to 3 typed 2
+  (7 of them in 2013 to 2015), see above.
+
+  Unexplained and left as measured (use a centre term in a pooled analysis): a
+  centre step: centre K (81 visits, 2014 to 2018)
+  has a median scaled score of 16 and a median total of 45 against 11 to 13
+  and 36 to 40 in the other centres, 3.4 scaled points above what a straight
+  line on the years of education gives, with ten of the items 15 to 28
+  scored higher, and no known cause.
 
 version:
   name: wais_version
@@ -59,9 +111,10 @@ variables:
   wais4_vocab29: {column: vocab29_wais3, label: Vocabulary item 29}
   wais4_vocab30: {column: vocab30_wais3, label: Vocabulary item 30}
 
+  wais4_vocab_age_entered:  {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_vocab_total_stored: {column: vocabtot_wais3, label: Raw total as stored, range: [0, 57], keep: false}
-  wais4_vocab_scaled:       {column: vocabstd_wais3, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_vocab_total}
-  wais4_vocab_z:            {column: vocabcr_wais3,  label: Scaled score as a z-score, type: number, range: [-3, 3.34], winsor: false, derived_from: wais4_vocab_total}
+  wais4_vocab_scaled_stored: {column: vocabstd_wais3, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_vocab_z_stored:      {column: vocabcr_wais3, label: Scaled score as a z-score as stored, type: number, range: [-3, 3.34], winsor: false, keep: false}
 
 scores:
   wais4_vocab_total:
@@ -73,3 +126,18 @@ scores:
           wais4_vocab21, wais4_vocab22, wais4_vocab23, wais4_vocab24, wais4_vocab25,
           wais4_vocab26, wais4_vocab27, wais4_vocab28, wais4_vocab29, wais4_vocab30]
     compare: wais4_vocab_total_stored
+    otherwise: wais4_vocab_total_stored
+  wais4_vocab_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_vocabulary
+    from: wais4_vocab_total
+    age: wais4_vocab_age_entered
+    range: [1, 19]
+    compare: wais4_vocab_scaled_stored
+  wais4_vocab_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_vocab_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_vocab_z_stored
+    compare_tolerance: 0.006

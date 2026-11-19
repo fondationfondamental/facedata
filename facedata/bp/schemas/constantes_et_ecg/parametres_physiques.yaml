@@ -2,28 +2,43 @@ instrument: parametres_physiques
 title: Height, weight, body mass index and waist
 tab: CONSTANTES et ECG
 section: Paramètres physiques
-status: draft
+status: reviewed
 notes: >
   These columns have no unit column, and a few values are written on another
-  scale: a height in millimetres (1650 for 165 cm), a weight with a lost
-  decimal point (8602 for 86.02 kg). The unit is recognised from the size of
+  scale: a height whose decimal point the export removed (1725 for 172.5
+  cm), a weight with a lost decimal point (8602 for 86.02 kg). The unit is recognised from the size of
   the value and the cell is flagged unit_inferred.
 
-  The stored body mass index confirms these readings: on the 181 visits where
+  The stored body mass index confirms these readings: on the visits where
   a height or a weight is rescaled and a body mass index is stored, the
   stored index equals the one computed from the rescaled values.
 
-  Height: 180 values in millimetres and 2 in tenths of a millimetre. Half of
-  them come from one centre, from 2018 on.
+  Height. The form accepts a decimal (its help text gives 170.5), and the
+  export removes the point (request R23 of docs/EXPORT_REQUESTS.md): 180
+  four-digit values (178 of them end in 5) and 2 five-digit values, half of
+  them from one centre. The stored body mass index equals the weight
+  divided by the square of value/10 on all 178 four-digit values that have
+  one, and of value/100 on the two others: the centres typed the decimal.
+  A height in metres (1.72) is read too, for the extractions made after the
+  export is corrected; none holds one today.
 
   The body mass index is recomputed from the harmonised weight and height
-  (custom function body_mass_index) and compared with the stored one, which
+  (custom function body_mass_index: weight divided by the square of the
+  height, the formula of the form) and compared with the stored one, which
   is rounded to one decimal: 34 visits differ by more than the rounding
-  (score_mismatch). It is also computed on the 250 visits where the EMR
+  (score_mismatch). It is also computed on the 246 visits where the EMR
   stored none. Seven stored values have no height or weight beside them and
   are not delivered.
 
-  A waist under 40 cm is impossible for an adult: out_of_range.
+  A waist under 40 cm is impossible for an adult: out_of_range (17 values).
+
+  Pregnancy. The form has a box "pregnant woman" next to these measures;
+  the extraction does not hold it, so the weight, the body mass index and
+  the waist of a pregnant woman cannot be told apart. It is asked for in
+  QUESTIONS.md (DM-10).
+
+  One centre records these measures on 38% of its visits; the others on
+  59% to 86%. The medians do not move between the periods.
 
 defaults: {type: number}
 
@@ -33,8 +48,9 @@ variables:
     unit: cm
     units:
       cm: {factor: 1, expect: [100, 230]}
-      mm: {factor: 0.1, expect: [1000, 2300]}
-      0.1 mm: {factor: 0.01, expect: [10000, 23000]}
+      "cm, decimal point lost": {factor: 0.1, expect: [1000, 2300]}
+      "cm, two decimals, point lost": {factor: 0.01, expect: [10000, 23000]}
+      m: {factor: 100, expect: [1, 2.3]}
     range: [100, 230]
   weight:
     label: Weight

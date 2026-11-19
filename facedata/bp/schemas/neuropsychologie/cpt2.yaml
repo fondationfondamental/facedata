@@ -2,92 +2,119 @@ instrument: cpt2
 title: Conners' Continuous Performance Test II (CPT-II)
 tab: NEUROPSYCHOLOGIE
 section: CPT II
-status: draft
+status: reviewed
 notes: >
   A sustained-attention test on a computer; the psychologist copies the
-  results of the report into the form. About 3,145 visits, until 2022. The
-  CPT-3 took its place from 2018 on and has its own columns and its own
-  schema (cpt3.yaml); only 2 visits have both. The column cpt_version says
-  nothing about the CPT and is ignored.
+  results of the report into the form. 3,154 visits hold any cell (3,152 a
+  value or a T-score), 2,374 to 2017 and 777 in 2018 to 2021, 3 later. The
+  CPT-3 took its place in 2022 (516 visits from 2022, 9 in 2018 to 2021) and
+  has its own columns and its own schema (cpt3.yaml); the edition is
+  whichever block is filled, and 2 visits (centre D, 2020 and 2021) have
+  both. The column cpt_version follows the edition of the WAIS and is
+  ignored, and so is visit_neuropsychologie, which equals visit.
 
   Twelve measures. Each has a value, a T-score, a percentile and the
   guideline printed by the report; omissions, commissions and perseverations
-  also have a percentage. Everything is delivered as stored: the T-scores
-  and percentiles come from the software.
+  also have a percentage. The T-scores, the percentiles and the guidelines
+  come from the software and are delivered as stored: nothing can be
+  recomputed (the eBipolar form has no script for them). A higher T-score or
+  percentile is a more atypical performance (the T-score falls where the
+  detectability rises), while the d-prime of the CPT-IP of SZ is better when
+  higher. The names hit_rt and hit_rt_se are not those of the CPT-3 (hrt,
+  hrt_sd): they are other statistics (a standard error against a standard
+  deviation), and no CPT name is shared across cohorts.
 
-  Typing errors. A few T-scores and percentiles are 1,000 or more (a lost
-  decimal point: 5045 for 50.45, but the number of decimals is not known),
-  and a few values are impossible (more omissions than there are targets).
-  They end out_of_range. The limits are wide on purpose: an omission
+  Winsorising. The values (counts, times, d-prime) are winsorised at the 1st
+  and 99th percentiles of the cohort (585 cells flagged winsorised). The
+  T-scores (12) and the percentages (3) are not: a T-score is a standard
+  scale, and clipping it at cohort percentiles would make its tails depend
+  on the cohort. The percentiles are not winsorised either. Without the
+  clipping 805 cells (689 T-scores, 116 percentages) keep their stored
+  number.
+
+  Typing errors. 57 cells of 44 visits end out_of_range: a T-score 18 (16
+  above 1,000, 2 negative), a percentile 14 (8 above 1,000, 6 from 258 to
+  990), a percentage 4 and a value 21; centres B 11, C 9, D 24, E 1, F 3, I
+  8, L 1. They look like lost or misplaced decimal points (5045 for 50.45,
+  but the number of decimals is not known), not like raw scores typed in the
+  T columns: on the 15 T-scores out of range whose raw column is not zero,
+  the T-score equals the raw column on none. One visit of centre B, in 2023,
+  holds CPT-3 style T-scores (20 to 90) in 10 of its 12 value columns and
+  nothing in its T columns. The limits are wide on purpose: an omission
   T-score above 100 is common (418 visits), because few healthy people miss
   a target.
 
-  The guidelines are spelled as in the extraction ("Midly atypical", "Very
-  good perfomance").
+  The guidelines are spelled as in the extraction (Midly atypical, Very good
+  perfomance).
+
+  Unparsed cells. The 23 cells that stay unparsed (18 variables) are typing
+  errors that no rule can read: 8 hold a word, or a letter with a digit, and
+  15 a malformed number (two decimal points, a slash, a double minus or a
+  superscript); none is repaired.
 
 defaults: {type: number}
 
 variables:
   # Omissions
   cpt2_omissions: {column: cpt201a, label: "Omissions", range: [0, 324]}
-  cpt2_omissions_percent: {column: cpt201b, label: "Omissions (percent)", range: [0, 100]}
-  cpt2_omissions_t: {column: cpt201c, label: "Omissions - T-score", range: [0, 1000]}
+  cpt2_omissions_percent: {column: cpt201b, label: "Omissions (percent)", range: [0, 100], winsor: false}
+  cpt2_omissions_t: {column: cpt201c, label: "Omissions - T-score", range: [0, 1000], winsor: false}
   cpt2_omissions_percentile: {column: cpt201d, label: "Omissions - percentile", range: [0, 100], winsor: false}
   cpt2_omissions_class: {column: cpt201e, type: category, label: "Omissions - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Commissions
   cpt2_commissions: {column: cpt202a, label: "Commissions", range: [0, 36]}
-  cpt2_commissions_percent: {column: cpt202b, label: "Commissions (percent)", range: [0, 100]}
-  cpt2_commissions_t: {column: cpt202c, label: "Commissions - T-score", range: [0, 1000]}
+  cpt2_commissions_percent: {column: cpt202b, label: "Commissions (percent)", range: [0, 100], winsor: false}
+  cpt2_commissions_t: {column: cpt202c, label: "Commissions - T-score", range: [0, 1000], winsor: false}
   cpt2_commissions_percentile: {column: cpt202d, label: "Commissions - percentile", range: [0, 100], winsor: false}
   cpt2_commissions_class: {column: cpt202e, type: category, label: "Commissions - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit reaction time (ms)
   cpt2_hit_rt: {column: cpt203a, label: "Hit reaction time (ms)", range: [100, 1500]}
-  cpt2_hit_rt_t: {column: cpt203b, label: "Hit reaction time (ms) - T-score", range: [0, 1000]}
+  cpt2_hit_rt_t: {column: cpt203b, label: "Hit reaction time (ms) - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_rt_percentile: {column: cpt203c, label: "Hit reaction time (ms) - percentile", range: [0, 100], winsor: false}
   cpt2_hit_rt_class: {column: cpt203d, type: category, label: "Hit reaction time (ms) - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit reaction time standard error
   cpt2_hit_rt_se: {column: cpt204a, label: "Hit reaction time standard error", range: [0, 100]}
-  cpt2_hit_rt_se_t: {column: cpt204b, label: "Hit reaction time standard error - T-score", range: [0, 1000]}
+  cpt2_hit_rt_se_t: {column: cpt204b, label: "Hit reaction time standard error - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_rt_se_percentile: {column: cpt204c, label: "Hit reaction time standard error - percentile", range: [0, 100], winsor: false}
   cpt2_hit_rt_se_class: {column: cpt204d, type: category, label: "Hit reaction time standard error - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Variability
   cpt2_variability: {column: cpt205a, label: "Variability", range: [0, 200]}
-  cpt2_variability_t: {column: cpt205b, label: "Variability - T-score", range: [0, 1000]}
+  cpt2_variability_t: {column: cpt205b, label: "Variability - T-score", range: [0, 1000], winsor: false}
   cpt2_variability_percentile: {column: cpt205c, label: "Variability - percentile", range: [0, 100], winsor: false}
   cpt2_variability_class: {column: cpt205d, type: category, label: "Variability - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Detectability (d')
   cpt2_detectability: {column: cpt206a, label: "Detectability (d')", range: [-2, 10]}
-  cpt2_detectability_t: {column: cpt206b, label: "Detectability (d') - T-score", range: [0, 1000]}
+  cpt2_detectability_t: {column: cpt206b, label: "Detectability (d') - T-score", range: [0, 1000], winsor: false}
   cpt2_detectability_percentile: {column: cpt206c, label: "Detectability (d') - percentile", range: [0, 100], winsor: false}
   cpt2_detectability_class: {column: cpt206d, type: category, label: "Detectability (d') - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Response style (beta)
   cpt2_response_style: {column: cpt207a, label: "Response style (beta)", range: [0, 100]}
-  cpt2_response_style_t: {column: cpt207b, label: "Response style (beta) - T-score", range: [0, 1000]}
+  cpt2_response_style_t: {column: cpt207b, label: "Response style (beta) - T-score", range: [0, 1000], winsor: false}
   cpt2_response_style_percentile: {column: cpt207c, label: "Response style (beta) - percentile", range: [0, 100], winsor: false}
   cpt2_response_style_class: {column: cpt207d, type: category, label: "Response style (beta) - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Perseverations
   cpt2_perseverations: {column: cpt208a, label: "Perseverations", range: [0, 360]}
-  cpt2_perseverations_percent: {column: cpt208b, label: "Perseverations (percent)", range: [0, 100]}
-  cpt2_perseverations_t: {column: cpt208c, label: "Perseverations - T-score", range: [0, 1000]}
+  cpt2_perseverations_percent: {column: cpt208b, label: "Perseverations (percent)", range: [0, 100], winsor: false}
+  cpt2_perseverations_t: {column: cpt208c, label: "Perseverations - T-score", range: [0, 1000], winsor: false}
   cpt2_perseverations_percentile: {column: cpt208d, label: "Perseverations - percentile", range: [0, 100], winsor: false}
   cpt2_perseverations_class: {column: cpt208e, type: category, label: "Perseverations - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit reaction time block change
   cpt2_hit_rt_block_change: {column: cpt209a, label: "Hit reaction time block change", range: [-1, 1]}
-  cpt2_hit_rt_block_change_t: {column: cpt209b, label: "Hit reaction time block change - T-score", range: [0, 1000]}
+  cpt2_hit_rt_block_change_t: {column: cpt209b, label: "Hit reaction time block change - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_rt_block_change_percentile: {column: cpt209c, label: "Hit reaction time block change - percentile", range: [0, 100], winsor: false}
   cpt2_hit_rt_block_change_class: {column: cpt209d, type: category, label: "Hit reaction time block change - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit standard error block change
   cpt2_hit_se_block_change: {column: cpt210a, label: "Hit standard error block change", range: [-3.5, 3.5]}
-  cpt2_hit_se_block_change_t: {column: cpt210b, label: "Hit standard error block change - T-score", range: [0, 1000]}
+  cpt2_hit_se_block_change_t: {column: cpt210b, label: "Hit standard error block change - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_se_block_change_percentile: {column: cpt210c, label: "Hit standard error block change - percentile", range: [0, 100], winsor: false}
   cpt2_hit_se_block_change_class: {column: cpt210d, type: category, label: "Hit standard error block change - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit reaction time ISI change
   cpt2_hit_rt_isi_change: {column: cpt211a, label: "Hit reaction time ISI change", range: [-1, 1]}
-  cpt2_hit_rt_isi_change_t: {column: cpt211b, label: "Hit reaction time ISI change - T-score", range: [0, 1000]}
+  cpt2_hit_rt_isi_change_t: {column: cpt211b, label: "Hit reaction time ISI change - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_rt_isi_change_percentile: {column: cpt211c, label: "Hit reaction time ISI change - percentile", range: [0, 100], winsor: false}
   cpt2_hit_rt_isi_change_class: {column: cpt211d, type: category, label: "Hit reaction time ISI change - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}
   # Hit standard error ISI change
   cpt2_hit_se_isi_change: {column: cpt212a, label: "Hit standard error ISI change", range: [-3.5, 3.5]}
-  cpt2_hit_se_isi_change_t: {column: cpt212b, label: "Hit standard error ISI change - T-score", range: [0, 1000]}
+  cpt2_hit_se_isi_change_t: {column: cpt212b, label: "Hit standard error ISI change - T-score", range: [0, 1000], winsor: false}
   cpt2_hit_se_isi_change_percentile: {column: cpt212c, label: "Hit standard error ISI change - percentile", range: [0, 100], winsor: false}
   cpt2_hit_se_isi_change_class: {column: cpt212d, type: category, label: "Hit standard error ISI change - guideline", codes: {Very good perfomance: very_good, Good performance: good, Within average range: average, Midly atypical: mildly_atypical, Markedly atypical: markedly_atypical, Atypically fast: atypically_fast, A little fast: a_little_fast, A little slow: a_little_slow, Atypically slow: atypically_slow}}

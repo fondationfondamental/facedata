@@ -256,6 +256,10 @@ dimension (104 of 242 visits hold a value between two points of the scale)?
 Is the word-list test of the neuropsychology the RL/RI-16, and the test for
 designs the Designs subtest of the WMS-IV? Which letter and category does
 each of the two forms of the verbal fluency use? (O7, O23)
+*Answered by the eCEDR form (2026-11-19, D32):* the word-list test is the
+RL/RI-16 (16 items), the test for designs is the Designs subtest of the WMS-IV
+(MEM IV), and the fluency forms are letter P with animals and letter R with
+fruits.
 
 **PI-5. Mood history.** The type of the first episode has the answers
 "resistant" and "not resistant" next to the kinds of episode (21 visits).

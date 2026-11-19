@@ -22,9 +22,11 @@ notes: >
   379; the dictionary names the two kinds (CRP, high-sensitivity CRP) without
   saying which code is which (open question O11 in PROGRESS.md).
 
-  HbA1c: 22 values are out of range, 18 of them in one centre; they have the
-  size of a result in mmol/mol, which a factor cannot bring back to a
-  percentage, so they are removed (O11).
+  HbA1c: 22 values are out of range as percentages, 18 of them in one
+  centre; 19 have the size of a result in mmol/mol (IFCC, 18 to 52) and are
+  converted with the IFCC-NGSP master equation, % = 0.09148 x mmol/mol +
+  2.152 (unit_inferred; 3.8% to 6.9%). The others (0 and a value of seven
+  digits) stay out of range. O11 asks the centre to confirm the unit.
 
   Same instrument as in FACE BP, with ferritin and the kind of CRP.
 
@@ -168,6 +170,7 @@ variables:
     range: [1.5, 3.5]
 
   crp:
+    missing: {"0": unknown, "0.0": unknown, "00": unknown}      # exactly 0: below a limit that is not written (BP D101)
     label: C-reactive protein
     column: crp
     unit_column: crp_lborresu
@@ -209,4 +212,5 @@ variables:
     unit: "%"
     units:
       "%": {factor: 1, expect: [3, 18]}
+      mmol/mol: {factor: 0.09148, offset: 2.152, expect: [18, 150]}
     range: [3, 18]

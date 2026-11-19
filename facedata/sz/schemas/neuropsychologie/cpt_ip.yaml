@@ -2,30 +2,45 @@ instrument: cpt_ip
 title: Continuous Performance Test, Identical Pairs (CPT-IP)
 tab: NEUROPSYCHOLOGIE
 section: CPT-IP
-status: draft
+status: reviewed
 notes: >
   Sustained attention: numbers of 2, 3 and 4 digits flash on the screen and
   the patient answers when the same number comes twice in a row. Each of the
   three parts has 30 targets, 30 near-targets (an answer there is a false
-  alarm) and 90 other numbers. About 1,000 visits from 2010 to 2018 (one in
-  2025).
+  alarm) and 90 other numbers. 1,009 visits hold any cell: 1,008 from 2010
+  to 2018 and one in 2025.
 
-  The numbers are those of the test software, typed by the rater. d-prime
-  (the ability to tell a target from a near-target) is delivered as typed:
-  it is the normal deviate of the hit rate minus that of the false-alarm
-  rate, rates kept away from 0 and 1, on 90% to 94% of the visits of each
-  part; the others, from 2011 to 2017, hold another value and nothing tells
-  which number was mistyped. A few counts are impossible (34 hits out of
-  30, 90 hits) and are out of range.
+  The numbers are those of the test software, typed by the rater. The
+  d-prime of each part (the ability to tell a target from a near-target) is
+  delivered as typed. It is the normal deviate of the hit rate minus that of
+  the false-alarm rate, each rate being a count over 30 kept between 1/59
+  and 58/59 (norms/cptip_rate_z.csv, made by norms/make_cptip_tables.py),
+  and the three checks cptip_*_dprime_check, not delivered, compute it
+  again. The typed d-prime is the recomputed one to 0.011 on 896 of 992
+  visits for 2 digits, 922 of 994 for 3 digits and 932 of 990 for 4 digits
+  (90% to 94%); the others (score_mismatch on the typed d-prime: 96, 72 and
+  58) are all from 2011 to 2017, in 8 centres, and hold another value:
+  nothing tells which of the hits, the false alarms or the d-prime was
+  mistyped, so the typed d-prime stays the delivered one. A few counts are
+  impossible (34 hits out of 30, 90 hits) and are out of range.
 
-  The mean d-prime is recomputed here as the mean of the three parts; it
-  equals the stored one on all 956 visits that have the four numbers.
+  The mean d-prime is recomputed here as the mean of the three parts. It
+  equals the stored one on all 956 visits that have the four numbers (955
+  delivered, one part d-prime being out of range), but it is not rounded:
+  the application rounds it to 2 decimals. 3 stored means cannot be
+  recomputed (score_not_recomputed): two visits have an unparsed part
+  d-prime and one an out_of_range part d-prime.
 
-  The percentile was typed by hand from 2013 to 2017 (420 visits, 8
-  centres), against norms that the dictionary does not name. 335 cells hold
-  a number, 16 a value under a limit ("<1": censored_left) and 68 a band
-  ("10-25"), read as its middle and flagged band_middle. One value is above
-  100.
+  The percentile was typed by hand, from 2013 to 2017 (417 visits of 8
+  centres, 3 more in 2018 and 2025), against norms that the dictionary does
+  not name. 335 cells hold a number (one above 100 is out of range), 16 a
+  value under a limit ("<1": censored_left) and 59 a band ("10-25"), read as
+  its middle and flagged band_middle. 10 cells are bands cut by the export
+  ("1.4-1.", "1.5 - "), as the percentile labels of the DR tab (open
+  question O23, 4): they are unparsed. The 6 other unparsed cells are 3
+  d-prime values written as two words, 2 d-prime values written with two
+  decimal points and 1 count of random answers that starts with a point;
+  none can be read with certainty.
 
 defaults: {type: item, range: [0, 30]}
 
@@ -50,3 +65,15 @@ scores:
     label: Mean d-prime of the three parts
     mean: [cptip_2_dprime, cptip_3_dprime, cptip_4_dprime]
     compare: cptip_dprime_mean_stored
+
+  # The d-prime of each part, computed again as a check: z(hits / 30) - z(false alarms / 30), each rate kept between 1/59 and
+  # 58/59 (norms/cptip_rate_z.csv). The typed d-prime stays the delivered one; it differs on 6% to 10% of the visits.
+  cptip_2_hit_z: {label: "2 digits: normal deviate of the hit rate", lookup: cptip_rate_z, from: cptip_2_hits, keep: false}
+  cptip_2_false_alarm_z: {label: "2 digits: normal deviate of the false-alarm rate", lookup: cptip_rate_z, from: cptip_2_false_alarms, keep: false}
+  cptip_2_dprime_check: {label: "2 digits: d-prime from the hits and false alarms", sum: [cptip_2_hit_z], minus: [cptip_2_false_alarm_z], compare: cptip_2_dprime, compare_tolerance: 0.011, keep: false}
+  cptip_3_hit_z: {label: "3 digits: normal deviate of the hit rate", lookup: cptip_rate_z, from: cptip_3_hits, keep: false}
+  cptip_3_false_alarm_z: {label: "3 digits: normal deviate of the false-alarm rate", lookup: cptip_rate_z, from: cptip_3_false_alarms, keep: false}
+  cptip_3_dprime_check: {label: "3 digits: d-prime from the hits and false alarms", sum: [cptip_3_hit_z], minus: [cptip_3_false_alarm_z], compare: cptip_3_dprime, compare_tolerance: 0.011, keep: false}
+  cptip_4_hit_z: {label: "4 digits: normal deviate of the hit rate", lookup: cptip_rate_z, from: cptip_4_hits, keep: false}
+  cptip_4_false_alarm_z: {label: "4 digits: normal deviate of the false-alarm rate", lookup: cptip_rate_z, from: cptip_4_false_alarms, keep: false}
+  cptip_4_dprime_check: {label: "4 digits: d-prime from the hits and false alarms", sum: [cptip_4_hit_z], minus: [cptip_4_false_alarm_z], compare: cptip_4_dprime, compare_tolerance: 0.011, keep: false}

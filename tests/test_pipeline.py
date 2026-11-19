@@ -204,6 +204,22 @@ def test_patient_level_instrument(tmp_path):
         assert_invariant(raw, keys, schema)
 
 
+def test_a_patient_level_flag_keeps_the_visit_and_the_text_of_its_cell(tmp_path):
+    """A flag raised at a later visit is logged on that visit, with what was written there."""
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "who.yaml").write_text(PATIENT_SCHEMA, encoding="utf-8")
+    extraction = PATIENT_EXTRACTION + "P4\tV0\t2\t6\t2018-04-01\t02\tMasculin\t\t\t\n"
+    extraction += "P4\tV1_an\t4\t7\t2019-04-01\t02\tFeminin\t\t\t1999-02-02\n"
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+
+    lines = result.flags[result.flags["usubjid"] == "P4"].set_index("variable")
+    assert list(lines.loc["death_date", ["visit", "flag", "raw"]]) == ["V1_an", "out_of_range", "1999-02-02"]
+    assert list(lines.loc["sex", ["visit", "flag", "raw"]]) == ["V1_an", "patient_value_varies", "Feminin"]
+    assert result.patients.set_index("usubjid").loc["P4", "sex"] == "male"           # the first value is kept
+    assert flags_of(result, "death_date").count(("P1", "V0", "date_placeholder")) == 1   # two visits, one flag
+
+
 NORM_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tbrthdtc\ta\tb\tscaled
 P1\tV0\t2\t1\t2015-06-15\t01\t1990-06-15\t3\t4\t10
 P1\tV1_an\t4\t2\t2016-06-20\t01\t1990-06-15\t3\t4\t12
@@ -632,3 +648,140 @@ def test_winsorising_can_be_switched_off(folder):
     assert "winsorised" not in set(as_is.flags["flag"])
     assert as_is.qc["winsor_low"].isna().all()
     assert as_is.data.shape == clipped.data.shape
+
+
+LISTS_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tany\tect\ttms\tect_n\tmethod\tfirearm\tfirst\tlater\tn_later
+P1\tV0\t2\t1\t2015-01-10\t01\tOui\t\tOui\t\tNoyade\tPas de dommage\t2014-05-15\tNon\t
+P2\tV0\t2\t2\t2015-01-11\t01\tOui\t\t\t\tArme à feu\tPas de dommage\t2015-01-11\tNon\t
+P3\tV0\t2\t3\t2015-01-12\t01\tOui\tNe sais pas\tOui\t\t\tPas de dommage\t2016-03-15\tOui\t2
+P4\tV0\t2\t4\t2022-06-12\t01\tNon\t\t\t\t\t\t\tNon\t
+"""
+
+LISTS_SCHEMA = """
+instrument: lists
+title: Lists
+tab: TEST
+section: Lists
+status: draft
+defaults: {type: item, range: [0, 1]}
+variables:
+  any_treatment: {column: any, codes: {Oui: 1, Non: 0}}
+  ect: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  tms: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  ect_sessions: {column: ect_n, range: [0, 365], asked_if: ect}
+  method: {type: category, codes: {Noyade: drowning, Arme à feu: firearm}}
+  firearm_lethality: {column: firearm, type: category, codes: {Pas de dommage: no_damage}, shown_if: {method: [firearm]}}
+  first_date: {column: first, type: date, range: [1920-01-01, 2026-12-31], before_visit: true}
+  gate_later: {column: later, codes: {Oui: 1, Non: 0}, keep: false, doubt: {period: [2022-01-01, 2023-12-31], remove: true}}
+  count_later: {column: n_later, range: [0, 50], asked_if: gate_later}
+"""
+
+
+def test_boxes_of_a_list_hidden_answers_and_dates_before_the_visit(tmp_path):
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "lists.yaml").write_text(LISTS_SCHEMA, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(LISTS_EXTRACTION, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    data = result.data
+    # P1 ticked tms only: ect is a no, and its sessions follow. P2 ticked nothing: unknown.
+    # P3 does not know about ect: it stays missing. P4 said no: every box is 0.
+    assert list(data["ect"][[0, 3]]) == [0, 0] and data["ect"][[1, 2]].isna().all()
+    assert list(data["ect_sessions"][[0, 3]]) == [0, 0] and data["ect_sessions"][[1, 2]].isna().all()
+    assert flags_of(result, "ect") == [("P3", "V0", "missing_code")]
+    # The lethality of a firearm is shown only for a firearm: the drowning's and the empty method's are defaults.
+    assert data["firearm_lethality"][1] == "no_damage" and data["firearm_lethality"][[0, 2]].isna().all()
+    assert flags_of(result, "firearm_lethality") == [("P1", "V0", "not_shown"), ("P3", "V0", "not_shown")]
+    # A first date on the day of the visit or later is impossible.
+    assert data["first_date"][0] == pd.Timestamp("2014-05-15") and data["first_date"][[1, 2]].isna().all()
+    assert flags_of(result, "first_date") == [("P2", "V0", "out_of_range"), ("P3", "V0", "out_of_range")]
+    # A "no" of a removed period is no answer: nothing after it becomes 0, and the empty cell is not flagged.
+    assert list(data["count_later"][:3]) == [0, 0, 2] and pd.isna(data["count_later"][3])
+    assert flags_of(result, "count_later") == []
+
+
+def test_a_time_outside_its_hours_is_impossible(tmp_path):
+    """The hard range holds for a time too: 90 hours of sleep and a bedtime of 25:30 end out_of_range (BP D130)."""
+    schema = """
+instrument: sleep
+title: Sleep
+tab: TEST
+section: Sleep
+status: draft
+defaults: {type: item, range: [0, 3]}
+variables:
+  bedtime: {column: bed, type: time, range: [0, 24]}
+  sleep_hours: {column: sleep, type: time, range: [0, 24]}
+"""
+    extraction = "usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tbed\tsleep\nP1\tV0\t2\t1\t2015-01-10\t01\t23:30\t7:30\nP2\tV0\t2\t2\t2016-02-01\t02\t25:30\t90:00\nP3\tV0\t2\t3\t2016-03-01\t02\t24:00\t\n"
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "sleep.yaml").write_text(schema, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    data = result.data.set_index("usubjid")
+    assert list(data["bedtime"]) == pytest.approx([23.5, float("nan"), 24.0], nan_ok=True)    # 24:00 is midnight
+    assert data["sleep_hours"].notna().tolist() == [True, False, False]
+    assert flags_of(result, "bedtime") == [("P2", "V0", "out_of_range")]
+    assert flags_of(result, "sleep_hours") == [("P2", "V0", "out_of_range")]
+
+
+def test_an_empty_box_with_a_typed_count_is_not_a_no(tmp_path):
+    """A box beside a ticked one is a no, unless a count that hangs on it was typed: it is shown only after a yes."""
+    extraction = ("usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tany\tect\ttms\tect_n\n"
+                  "P1\tV0\t2\t1\t2015-01-10\t01\tOui\t\tOui\t\n"         # tms ticked, ect left empty: a no, 0 sessions
+                  "P2\tV0\t2\t2\t2015-01-11\t01\tOui\t\tOui\t3\n"        # the same, but 3 sessions were typed for ect
+                  "P3\tV0\t2\t3\t2015-01-12\t01\tOui\tOui\t\t4\n")       # ect ticked: its 4 sessions as written
+    schema = """
+instrument: boxes
+title: Boxes
+tab: TEST
+section: Boxes
+status: draft
+defaults: {type: item, range: [0, 1]}
+variables:
+  any_treatment: {column: any, codes: {Oui: 1, Non: 0}}
+  ect: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  tms: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  ect_sessions: {column: ect_n, range: [0, 365], asked_if: ect}
+"""
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "boxes.yaml").write_text(schema, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    data = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas").data
+    assert data["ect"][0] == 0 and data["ect_sessions"][0] == 0
+    assert pd.isna(data["ect"][1]) and data["ect_sessions"][1] == 3          # left as written: not turned into a no
+    assert data["ect"][2] == 1 and data["tms"][2] == 0 and data["ect_sessions"][2] == 4
+
+
+USES = """
+instrument: aaa_doubled
+title: Doubled
+tab: TEST
+section: Doubled
+status: draft
+uses: [total]
+defaults: {type: item, range: [0, 20]}
+variables:
+  dbl_stored: {column: dbl, keep: false}
+scores:
+  doubled: {sum: [total], scale: [2, 0], range: [0, 20], compare: dbl_stored}
+"""
+
+USES_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tit1\tit2\ttot\tglu\tglu_unit\tdbl
+P1\tV0\t2\t1\t2016-01-10\t01\t1\t2\t3\t5\tmmol/L\t6
+P2\tV0\t2\t2\t2016-02-01\t02\t2\t2\t4\t5\tmmol/L\t9
+P3\tV0\t2\t3\t2016-03-01\t02\t1\t\t1\t5\tmmol/L\t4
+"""
+
+
+def test_a_score_can_add_up_the_scores_of_another_schema(folder):
+    """A schema with `uses` runs last (its file name sorts first here) and reads the delivered scores of the others."""
+    (folder / "schemas" / "tab" / "aaa_doubled.yaml").write_text(USES, encoding="utf-8")
+    (folder / "extraction.tsv").write_text(USES_EXTRACTION, encoding="utf-8")
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    data = result.data.set_index("usubjid")
+    assert data["total"].fillna(-1).tolist() == [3, 4, -1]          # P3 lacks an item
+    assert data["doubled"].fillna(-1).tolist() == [6, 8, -1]
+    assert "total" in result.data.columns and "dbl_stored" not in result.data.columns
+    assert flags_of(result, "doubled") == [("P2", "V0", "score_mismatch"), ("P3", "V0", "score_not_recomputed")]
+    only = run_cohort(folder / "extraction.tsv", folder / "schemas", instruments=["aaa_doubled"])
+    assert only.data["doubled"].isna().all()                        # the schema it uses is not loaded: nothing to add up

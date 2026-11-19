@@ -2,33 +2,103 @@ instrument: memory_designs
 title: Memory for designs, two parts
 tab: NEUROPSYCHOLOGIE
 section: MÉMOIRE DESSIN
-status: draft
+status: reviewed
 notes: >
   A memory test for designs in two parts, each with a raw score, an
   age-scaled score (1 to 19) and its z-score. Not in BP or SZ. The
-  dictionary calls it "MÉMOIRE DESSIN" and does not name the test; raw
-  scores go up to 117, which fits the Designs subtest of the WMS-IV (120
-  points a part), immediate then delayed (open question O23).
+  dictionary calls it "MÉMOIRE DESSIN" and does not name the test; it labels
+  the second part "Dessin1", like the first (DES201 to DES203). The form of
+  the application (199.php) calls it "MEM IV : Dessin", the Designs subtest
+  of the WMS-IV, with the parts "Dessin 1" and "Dessin 2", read as the
+  immediate and the delayed recall. The script accepts raw scores from 0 to
+  120. 245 visits.
 
-  Used until 2020: 47% of the inclusions until 2017, 16% in 2018 to 2020,
-  almost none since. 245 visits.
+  Scaled scores and z-scores, recomputed with the rule of the application
+  (neuro.js, the tables tab_bornes_dess1, tab_bornes_dess2 and ns_ecart).
+  The scaled score is the number of the first of 19 upper bounds that the
+  raw score does not exceed, in the age class (18 to 19, 20 to 24, 25 to 29,
+  30 to 34, 35 to 44, 45 to 54, 55 to 64, 65 to 69); there is no norm under
+  18 or from 70 years, and no visit has such an age. The z-score is read in
+  a table of the 19 scaled scores: the scaled score minus 10, over 3, to two
+  decimals. The age is the one typed in the form (cclin01) where it is
+  within a year of the age at the visit and the age at the visit elsewhere,
+  as for the other tests of DR. The tables are made from the script
+  (norms/make_dr_designs_tables.py; norms/ is not in the repository). The
+  stored scaled scores and z-scores are kept as checks
+  (designs*_scaled_stored, designs*_z_stored, not delivered).
 
-  The z-score is the scaled score minus 10, over 3, except on 19 visits
-  (part 1) and 18 (part 2) of 2013 to 2015, where the stored z-score is
-  another number: score_mismatch on the check scores. Both are delivered as
-  stored.
+  With the typed age the recomputed scaled score equals the stored one on
+  241 of 243 (part 1) and 234 of 234 visits (part 2); with the reconciled
+  age it differs on 5 and 1 visits (score_mismatch), 3 and 1 of them visits
+  whose typed age is more than a year from the age at the visit. Two visits
+  of part 1 have a stored scaled score and z-score but no raw score: they
+  are not delivered (score_not_recomputed).
+
+  The stored z-score is not the table's value for the stored scaled score on
+  19 visits (part 1) and 18 (part 2), all of 2013 to 2015 (2, 13 and 4; 2,
+  13 and 3 by year) and, but for 2 and 1 visits, of one centre (F: 17 and
+  17). On 5 and 10 of them the difference is 0.01, a rounding that the
+  tolerance of 0.0101 does not flag; on 14 and 8 it is 0.02 to 0.33 (0.17 on 13 and 7 of them): the stored z-score is in steps of 0.5 (0.5
+  stored where 0.33 is computed), the old z table of the application that
+  the WAIS-IV z-scores show (wais4_memoire_chiffres.yaml), in the same
+  window (2013-10 to 2015-05: 16 and 9 of the 18 and 9 visits that differ)
+  and the same centre (F: 14 and 7). The recomputed
+  z-score is delivered and differs from the stored one by more than 0.0101
+  on 18 (part 1) and 9 (part 2) visits: the 14 and 8 above, and 4 and 1
+  visits whose scaled score differs.
+
+  Used until 2020. The neuropsychological assessment is given at inclusion
+  and at the visits of 1, 2 and 4 years: 744 visits of 436 patients. The
+  test is present at 47% of the inclusion visits until 2017, 16% in 2018 to
+  2020 and 0.4% since 2021 (1 of 228). The form (199.php) has a "test non
+  réalisé" box for each test (MEM_DESS_TEST here) and a "Non effectuée" box
+  for the whole assessment (NEUROPSY_OFF). Their columns exist in the
+  database (ecedr.sql) but are not in the dictionary, so they are not
+  exported: the data managers should be asked to export them, to tell a test
+  that was not done from one that was not entered (open question O22).
 
 defaults: {type: item}
 
 variables:
   designs1_raw: {column: des101, label: "Designs, part 1: raw score", range: [0, 120]}
-  designs1_scaled: {column: des102, label: "Designs, part 1: age-scaled score (mean 10 and SD 3)", range: [1, 19]}
-  designs1_z: {column: des103, type: number, label: "Designs, part 1: scaled score as a z-score", range: [-3, 3], winsor: false}
   designs2_raw: {column: des201, label: "Designs, part 2: raw score", range: [0, 120]}
-  designs2_scaled: {column: des202, label: "Designs, part 2: age-scaled score (mean 10 and SD 3)", range: [1, 19]}
-  designs2_z: {column: des203, type: number, label: "Designs, part 2: scaled score as a z-score", range: [-3, 3], winsor: false}
+
+  # What the norms of the application are read with: the age typed in the conditions form
+  designs_age: {column: cclin01, type: number, range: [15, 100], winsor: false, keep: false, label: "Age at the testing, as typed (for the norms)"}
+
+  # The scaled scores and z-scores as the EMR stored them: only compared with the recomputed ones
+  designs1_scaled_stored: {column: des102, label: "Designs, part 1: age-scaled score, as stored", range: [1, 19], keep: false}
+  designs1_z_stored: {column: des103, type: number, label: "Designs, part 1: scaled score as a z-score, as stored", range: [-3, 3], winsor: false, keep: false}
+  designs2_scaled_stored: {column: des202, label: "Designs, part 2: age-scaled score, as stored", range: [1, 19], keep: false}
+  designs2_z_stored: {column: des203, type: number, label: "Designs, part 2: scaled score as a z-score, as stored", range: [-3, 3], winsor: false, keep: false}
 
 scores:
-  # Consistency checks only: the z-score is the scaled score minus 10, over 3.
-  designs1_z_check: {sum: [designs1_scaled], scale: [0.3333333, -3.3333333], compare: designs1_z, compare_tolerance: 0.006, keep: false}
-  designs2_z_check: {sum: [designs2_scaled], scale: [0.3333333, -3.3333333], compare: designs2_z, compare_tolerance: 0.006, keep: false}
+  # The scaled score of the raw score and the age class, then its z-score: the tables of the application (norms/designs*_scaled.csv, designs_scaled_z.csv)
+  designs1_scaled:
+    label: "Designs, part 1: age-scaled score (mean 10 and SD 3)"
+    lookup: designs1_scaled
+    from: designs1_raw
+    age: designs_age
+    range: [1, 19]
+    compare: designs1_scaled_stored
+  designs1_z:
+    label: "Designs, part 1: scaled score as a z-score"
+    lookup: designs_scaled_z
+    from: designs1_scaled
+    range: [-3, 3]
+    compare: designs1_z_stored
+    compare_tolerance: 0.0101
+  designs2_scaled:
+    label: "Designs, part 2: age-scaled score (mean 10 and SD 3)"
+    lookup: designs2_scaled
+    from: designs2_raw
+    age: designs_age
+    range: [1, 19]
+    compare: designs2_scaled_stored
+  designs2_z:
+    label: "Designs, part 2: scaled score as a z-score"
+    lookup: designs_scaled_z
+    from: designs2_scaled
+    range: [-3, 3]
+    compare: designs2_z_stored
+    compare_tolerance: 0.0101

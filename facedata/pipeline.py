@@ -6,9 +6,9 @@ import pandas as pd
 
 from facedata import custom
 from facedata.flags import finish_flags, make_flags, stack_flags
-from facedata.harmonise import (band_from_table, censoring_from_units, check_range, collapse_patient_level,
-                                compute_scores, convert_units, detect_version, doubt_period, first_rows,
-                                fix_sign, winsorise)
+from facedata.harmonise import (after_the_visit, band_from_table, censoring_from_units, check_range,
+                                collapse_patient_level, compute_scores, convert_units, detect_version,
+                                doubt_period, drop_not_shown, first_rows, fix_sign, winsorise)
 from facedata.parse import clean_text, own_cells, parse_column, split_missing
 from facedata.qc import qc_table
 from facedata.read import prepare_visits, read_extraction, read_norms
@@ -82,10 +82,32 @@ def read_variable(raw, version, name, variable, keys=None, wholes=None, norms=No
     return values, cens, stack_flags(flags), is_read, filled
 
 
-def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True):
+def answer_by_logic(values, filled, name, variable, schema=None):
+    """An empty cell whose answer is known is 0: after a "no" to the question it hangs on (asked_if).
+
+    With the schema, also an empty box beside a ticked box of its list
+    (box_list): the rater ticked what applied, unless a count that hangs on
+    the box was typed (it is shown only after a yes). Returns the values and
+    which cells now hold an answer.
+    """
+    empty = ~filled[name]
+    answered = pd.Series(False, index=values.index)
+    if "asked_if" in variable:
+        answered = empty & (values[variable["asked_if"]] == 0)
+    if schema is not None and "box_list" in variable:
+        others = [other for other, spec in schema["variables"].items()
+                  if other != name and spec.get("box_list") == variable["box_list"]]
+        counts = [filled[other] for other, spec in schema["variables"].items() if spec.get("asked_if") == name]
+        typed = pd.concat(counts, axis=1).any(axis=1) if counts else pd.Series(False, index=values.index)
+        answered = answered | (empty & (values[others] == 1).any(axis=1) & ~typed)
+    return values[name].mask(answered, 0), filled[name] | answered
+
+
+def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True, delivered=None):
     """Run every step for one instrument.
 
     limits: winsor limits of an earlier load. norms: the norm tables.
+    delivered: the columns the other schemas deliver, for a schema that has `uses`.
     winsorise_values: False leaves the tails of the continuous variables as they are.
 
     Returns a dict: values (one column per variable and score), cens, version,
@@ -103,23 +125,29 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
     values = pd.DataFrame(index=raw.index)
     cens = pd.DataFrame(index=raw.index)
     wholes = pd.DataFrame(index=raw.index)           # the values inside their range, for a percentage or a norm table
-    n_rows, n_filled = {}, {}
-    per_patient = schema.get("level") == "patient"
+    is_read, filled = {}, {}
     for name, variable in schema["variables"].items():
-        values[name], cens[name], variable_flags, is_read, filled = read_variable(
+        values[name], cens[name], variable_flags, is_read[name], filled[name] = read_variable(
             raw, version, name, variable, keys, wholes, norms)
         flags.append(variable_flags)
-        if "asked_if" in variable:                   # a box shown only after a yes: a "no" there answers it too
-            answered = ~filled & (values[variable["asked_if"]] == 0)
-            values[name] = values[name].mask(answered, 0)
-            filled = filled | answered
+        if variable.get("doubt", {}).get("remove"):  # a removed answer is no answer: nothing is read from it below
+            values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
+            flags.append(doubt_flags)
+        values[name], filled[name] = answer_by_logic(values, filled, name, variable)
+        if "shown_if" in variable:                   # a cell the form did not show: a value it wrote by itself
+            values[name], hidden_flags = drop_not_shown(values, name, variable)
+            flags.append(hidden_flags)
         if variable["type"] in ("number", "item") and "range" in variable:
             wholes[name], _ = check_range(values[name], name, variable)
-        if per_patient:                              # count patients, not visit rows
-            n_rows[name] = keys["usubjid"][is_read].nunique()
-            n_filled[name] = keys["usubjid"][filled].nunique()
-        else:
-            n_rows[name], n_filled[name] = int(is_read.sum()), int(filled.sum())
+    if any("box_list" in variable for variable in schema["variables"].values()):
+        for name, variable in schema["variables"].items():     # all boxes are read: an empty one beside a ticked one is a no
+            values[name], filled[name] = answer_by_logic(values, filled, name, variable, schema)
+    if schema.get("level") == "patient":                       # count patients, not visit rows
+        n_rows = {name: keys["usubjid"][read].nunique() for name, read in is_read.items()}
+        n_filled = {name: keys["usubjid"][cells].nunique() for name, cells in filled.items()}
+    else:
+        n_rows = {name: int(read.sum()) for name, read in is_read.items()}
+        n_filled = {name: int(cells.sum()) for name, cells in filled.items()}
 
     switch = {}
     if "sign" in schema:
@@ -127,12 +155,18 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
         flags.append(sign_flags)
 
     for name, variable in schema["variables"].items():
-        if "range" in variable and variable["type"] in ("number", "item", "date"):
+        if "range" in variable and variable["type"] in ("number", "item", "date", "time"):
             values[name], range_flags = check_range(values[name], name, variable)
             flags.append(range_flags)
-        if "doubt" in variable:                      # a period in which the column is not reliable
-            flags.append(doubt_period(values[name], keys["visit_date"], name, variable["doubt"]))
+        if variable.get("before_visit"):             # a date that cannot be on the day of its visit or later
+            values[name], late_flags = after_the_visit(values[name], keys["visit_date"], name)
+            flags.append(late_flags)
+        if "doubt" in variable and not variable["doubt"].get("remove"):     # a period in which the column is doubtful
+            values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
+            flags.append(doubt_flags)
     cens = cens.where(values[cens.columns].notna(), 0)
+    if "uses" in schema:                              # scores that other schemas deliver, an empty column if they are not loaded
+        values[schema["uses"]] = (values if delivered is None else delivered).reindex(columns=schema["uses"])
 
     values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens, keys)
     flags.append(score_flags)
@@ -172,13 +206,15 @@ def delivered_columns(schema, result):
 
 
 def once_per_patient(result, table, keys):
-    """For a patient-level instrument: put values and flags on each patient's first visit.
+    """For a patient-level instrument: values on each patient's first visit, one flag per patient.
 
-    table is the one-row-per-patient table of the instrument. After this, the
-    QC table and the flag log count patients, not visit rows.
+    table is the one-row-per-patient table of the instrument. A flag stays on
+    the visit of the cell that raised it, so that the flag log shows that
+    visit and its text; when several visits raise the same flag, the earliest
+    is kept. After this, the QC table and the flag log count patients, not
+    visit rows.
     """
-    first = first_rows(keys)
-    is_first = keys.index.isin(first)
+    is_first = keys.index.isin(first_rows(keys))
     lookup = table.set_index("usubjid")
     for name in lookup.columns:
         on_first_visit = keys["usubjid"].map(lookup[name]).where(is_first)
@@ -187,8 +223,10 @@ def once_per_patient(result, table, keys):
         elif name.endswith("_cens"):
             result["cens"][name[:-5]] = on_first_visit.fillna(0)
     flags = result["flags"].copy()
-    flags["row"] = first.loc[keys["usubjid"].loc[flags["row"]]].to_numpy()
-    result["flags"] = flags.drop_duplicates(subset=["row", "variable", "flag"]).reset_index(drop=True)
+    flags["usubjid"] = keys["usubjid"].loc[flags["row"]].to_numpy()
+    flags["order"] = keys["visit_order"].loc[flags["row"]].to_numpy()
+    flags = flags.sort_values(["order", "row"], kind="stable").drop_duplicates(subset=["usubjid", "variable", "flag"])
+    result["flags"] = flags.drop(columns=["usubjid", "order"]).reset_index(drop=True)
     return result
 
 
@@ -312,7 +350,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
     all_qc = []
     lists = []                                           # the items of each list instrument
     relatives = pd.DataFrame(columns=["usubjid", "relative"])
-    for schema in schemas.values():
+    for schema in sorted(schemas.values(), key=lambda schema: "uses" in schema):     # a schema that uses others runs last
         if "derived_from" in schema:                     # computed with the instrument it comes from
             continue
         if schema.get("level") == "relatives":
@@ -330,7 +368,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_flags.append(flags)
             all_qc.extend(qc)
             continue
-        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values)
+        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values, data)
         table = delivered_columns(schema, result)
         for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
             data[column] = data[column].fillna(table[column])

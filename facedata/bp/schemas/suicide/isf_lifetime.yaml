@@ -2,22 +2,52 @@ instrument: isf_lifetime
 title: Suicidal thoughts and acts over the whole life (inclusion visit)
 tab: SUICIDE
 section: Intentionnalité suicidaire actuelle
-status: draft
+status: reviewed
 notes: >
   Five yes/no questions of rising severity, each followed by "when did it
-  last happen?". Delivered as 1 (yes) and 0 (no).
+  last happen?". Delivered as 1 (yes) and 0 (no). 5,952 of the 6,498
+  inclusion visits hold at least one answer.
 
-  Two forms in the same columns (decision D46 in PROGRESS.md). At the
-  inclusion visit the five questions are about the whole life ("have you
-  ever..."): 83% answer yes to the first and 38% say they have attempted
-  suicide. At the follow-up visits the same columns hold the answers for
-  the time since the last visit: 38% and 3%, and 93% of the patients who
-  said yes at inclusion say no later. The answers to "when did it last
-  happen" differ too: last week, two weeks to a year ago or more than a
-  year ago at inclusion; last week or since the last visit at follow-up.
-  The two forms are therefore two instruments, isf_lifetime and
-  isf_since_visit, with their own output columns. visit_form says which form
-  a visit used; it is read from the visit label.
+  Two forms in the same columns (decisions D46 and D85 in PROGRESS.md). The
+  application has two suicide forms in two tables: the one of the initial
+  evaluation asks "have you ever...", the one of the six-monthly and yearly
+  visits asks the same questions "since the last visit". The export writes
+  both into the same columns and picks the table by the visit label. At
+  inclusion 83% answer yes to the first question and 38% say they have
+  attempted suicide. At the follow-up visits the same columns read 38% and
+  3% (36% and 2.4% as delivered, without the period removed by D88 and
+  D125). Of the 3,413 later answers of the patients who said at inclusion
+  that they had attempted suicide, 3,183 (93%) are no; 1,173 of these 1,371
+  patients (86%) say no at every later visit. The answers to "when did it
+  last happen" differ too: last week, two weeks to a year ago or more than
+  a year ago at inclusion; last week or since the last visit at follow-up.
+  They never cross: no inclusion visit holds the follow-up answer, and no
+  follow-up visit holds an inclusion one. The two forms are therefore two
+  instruments, isf_lifetime and isf_since_visit, with their own output
+  columns. visit_form says which form a visit used; it is read from the
+  visit label.
+
+  The inclusion form has no doubtful period (D88 and D125 are about the
+  follow-up form). The share who have attempted suicide is 43% up to 2012,
+  36% to 43% a year from 2013 to 2021, 30% in 2022 and 2023, and 37% from
+  2024. The dip of 2022 and 2023 is seen alike in the centres with the
+  follow-up rise of D88 (42% up to 2021, then 32% and 40%) and in the
+  others (36%, then 29% and 34%); nothing explains it yet.
+
+  The form asks "when" only after a yes. 56 to 83 yes answers per question
+  have no "when"; 10 "when" answers follow a no and 8 an empty answer, and
+  are delivered as written. The questions do not always nest: 626 of the
+  5,845 visits with five answers (11%) say yes to a question after a no to
+  a milder one.
+
+  From early 2022 the inclusion form also shows the history of attempts
+  (suicide_attempts) after a no to "attempted" (D125): 51 inclusions that
+  say no here give a number of attempts above 0 there, 50 of them from
+  2022. Both answers are delivered as written.
+
+  One centre left the form empty on most of its inclusions of 2023 (17 of
+  64 answered, against 85% of its inclusions from 2016 to 2021); the other
+  centres answered 91% of theirs that year.
 
 version:
   name: visit_form

@@ -2,29 +2,59 @@ instrument: neuropsy_conditions
 title: Conditions of the neuropsychological assessment
 tab: NEUROPSYCHOLOGIE
 section: Critères cliniques (nouvelle version)
-status: draft
+status: reviewed
 notes: >
   The first lines of the neuropsychology form: who the patient is on the day
   of the testing, and whether the tests can be given.
 
-  Filled from 2010 to 2016 only (781 visits), although the tests themselves
-  go on to 2026 (about 3,400 visits). From 2017 the age and the years of
-  education entered by the psychologist are therefore missing; the norms of
-  the tests were read with them. Education is counted in years from the
-  first year of primary school.
+  Filled on 3,455 visits of 2,131 patients, from 2010 to 2026 (the typed age
+  on 3,451). Until the extraction of 17 November 2026 the export read these
+  columns in the older form only and they stopped in 2016 (781 visits at the
+  time); the later visits are now filled from the WAIS-IV form of the
+  assessment (decision D35 in PROGRESS.md). Whenever another instrument of
+  the tab is filled this form is too (3,408 of 3,408 visits).
 
-  The yes/no criteria are delivered as 1 (yes) and 0 (no). "Ne sais pas" is
+  Age. The norms of the tests are read with the typed age where it is within
+  1 year of the age at the visit (computed from the dates), else with the
+  age at the visit; neuropsy_age_used delivers the age that was used
+  (missing on a visit with no form), so that a user sees which one it was.
+  It carries no flag. The typed age differs from the age at the visit by
+  more than 1 year on 126 of 3,451 visits (typed lower on 119; 1 to 2 years
+  on 118, more than 2 years on 8); by centre C 25, A 19, J 17. 2 typed ages
+  are written with their unit ("NN ans") and are not read (unparsed, not
+  repaired).
+
+  Education is counted in years from the first year of primary school: 3,449
+  visits, from 0 to 24 (3 visits at 0 and 5 at 21 to 24: plausible, the
+  range stays [0, 30]). The norms of the TMT errors and the CVLT z-scores
+  are read with it, and none of the 3,294 visits with a TMT or a CVLT value
+  lacks it. It is entered again at each assessment: of the 938 patients with
+  two values or more, 292 have different ones.
+
+  The yes/no criteria are delivered as 1 (yes) and 0 (no). "Ne sait pas" is
   a missing code.
 
-  Same instrument as in FACE BP, but not the same form. Two questions sit
-  in the columns of two other BP questions and have names of their own
-  here: cclin05_ is "clinical state compatible with the testing" (in BP:
-  patient euthymic) and cclin11_ is "no electroconvulsive therapy in the
-  last six months" (in BP: in the past year). Three questions exist here
-  only: a psychotropic treatment, a suspected learning disorder and its
-  kind (43 visits, mostly dyslexia). The handedness, the hour of the
+  Same instrument as in FACE BP, but not the same form. Two questions sit in
+  the columns of two other BP questions and have names of their own here:
+  cclin05_ is "clinical state compatible with the testing" (in BP: patient
+  euthymic) and cclin11_ is "no electroconvulsive therapy in the last six
+  months" (in BP: in the past year). Three questions are not in BP: a
+  psychotropic treatment and a suspected learning disorder (DR and ASP ask
+  them too) and the kinds of learning disorder (a kind is ticked on 245
+  visits; SZ only). The later form lets the psychologist tick several kinds,
+  written in one cell ("Dyslexie,Dysphasie"), so each kind is a yes/no box,
+  0 after a "no" to the learning disorder. The handedness, the hour of the
   testing and the entry date of the form, which BP has, are not in the SZ
   extraction; the laterality has its own questionnaire here.
+
+  With the other cohorts. neuropsy_age, education_years,
+  neuropsy_mood_rating_delay and the visual and hearing questions are the
+  same question and the same coding in BP, SZ and DR. The French question is
+  the one of BP (a sufficient command; DR asks for the mother tongue). DR
+  asks the psychotropic treatment and the learning disorder too, under the
+  same names. No cohort asks about sleep. 2 education cells hold a
+  three-letter word instead of a number of years and stay unparsed; the 2
+  visits hold no test value.
 
 defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
 
@@ -43,8 +73,12 @@ variables:
   neuropsy_no_ect_6_months: {column: cclin11_, label: No electroconvulsive therapy in the last six months}
   neuropsy_psychotropic_treatment: {column: cclin12_, label: Takes a psychotropic treatment}
   neuropsy_learning_disorder: {column: cclin16_, label: A learning disorder is suspected}
-  neuropsy_learning_disorder_kind:
-    column: cclin16a_
-    type: category
-    label: Kind of learning disorder
-    codes: {Dyslexie: dyslexia, Dysphasie: dysphasia, Dyspraxie: dyspraxia, Dysgraphie: dysgraphia}
+  neuropsy_dyslexia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 1, Dysphasie: 0, Dyspraxie: 0, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dyslexia"}
+  neuropsy_dysphasia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 1, Dyspraxie: 0, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dysphasia"}
+  neuropsy_dyspraxia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 0, Dyspraxie: 1, Dysgraphie: 0}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dyspraxia"}
+  neuropsy_dysgraphia: {column: cclin16a_, separator: ",", codes: {Dyslexie: 0, Dysphasie: 0, Dyspraxie: 0, Dysgraphie: 1}, asked_if: neuropsy_learning_disorder, label: "Suspected learning disorder: dysgraphia"}
+
+scores:
+  neuropsy_age_used:
+    label: "Age the norms of the tab are read with (years): the age typed in the form where it is within 1 year of the age at the visit, else the age at the visit"
+    custom: neuropsy_age_used

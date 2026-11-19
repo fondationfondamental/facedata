@@ -2,32 +2,58 @@ instrument: wais4_information
 title: WAIS-IV information
 tab: NEUROPSYCHOLOGIE
 section: Information (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  information columns on the WAIS-IV visits (458 visits, from 2014 to
-  2025): 26 items scored 0 or 1. wais3_information.yaml reads the WAIS-III
-  visits. The dictionary files the columns under the WAIS-III.
+  (decision D10 of the BP file). This schema reads the information columns on
+  the WAIS-IV visits (491 visits, from 2013 to 2025): 26 items scored 0 or 1.
+  wais3_information.yaml reads the WAIS-III visits. The dictionary files the
+  columns under the WAIS-III; the section of this schema repeats that label,
+  '(WAIS-3) ancienne version', and the WAIS-IV visits are recognised by the
+  version rule, not by the label.
 
-  The stored raw total is the sum of the 26 items on 452 of 458 visits; it
-  is one point higher on the 6 others (score_mismatch). The first two
-  items are 1 on every visit: the test starts further on and credits them.
-  The z-score is (scaled score - 10) / 3 on every visit.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold information items and are
+  read here, not in wais3_information.yaml.
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  Of the 491 visits, 477 have all 26 items; the stored raw total is their sum
+  on 477 of 477. 14 visits have empty items (the last item filled is 0 on 13
+  of them, the mark of a stopping rule): 8 have no stored total and get none,
+  6 have a stored total one point above the sum of the items present, which
+  cannot be recomputed (score_not_recomputed). The application adds the 26
+  items and writes 'Questionnaire incomplet' when one is empty. The first two
+  items are 1 on 489 of the 491 visits: the test starts further on and credits
+  them. The z-score is (scaled score - 10) / 3 on every visit.
 
   FACE BP does not have this subtest.
+
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_information.csv) from the raw total of the items, and the
+  z-score is (scaled score - 10) / 3. The table is read with the age typed in
+  the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where
+  it is within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (463 of the 477 visits that have a total use the typed age, 14
+  have a typed age more than 1 year away). The stored scores are
+  wais4_info_scaled_stored and wais4_info_z_stored, not delivered. Verified:
+  the scaled score differs on 2 of the 477 visits that have both
+  (score_mismatch, 1 in 2013 to 2015, 1 from 2024), and so does its z-score;
+  no total gives norm_missing; the 6 stored totals that cannot be recomputed
+  give score_not_recomputed on the total, the scaled score and the z-score.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
 variables:
+  wais4_info_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_info01: {column: infor01_w, label: Information item 1}
   wais4_info02: {column: infor02_w, label: Information item 2}
   wais4_info03: {column: infor03_w, label: Information item 3}
@@ -55,8 +81,8 @@ variables:
   wais4_info25: {column: infor25_w, label: Information item 25}
   wais4_info26: {column: infor26_w, label: Information item 26}
   wais4_info_total_stored: {column: infortot_w, label: Raw total as stored, range: [0, 26], keep: false}
-  wais4_info_scaled: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_info_total}
-  wais4_info_z: {column: inforcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_info_total}
+  wais4_info_scaled_stored: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3) as stored, range: [1, 19], keep: false}
+  wais4_info_z_stored: {column: inforcr_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais4_info_total:
@@ -66,5 +92,18 @@ scores:
           wais4_info13, wais4_info14, wais4_info15, wais4_info16, wais4_info17, wais4_info18,
           wais4_info19, wais4_info20, wais4_info21, wais4_info22, wais4_info23, wais4_info24,
           wais4_info25, wais4_info26]
-    min_items: 1
     compare: wais4_info_total_stored
+  wais4_info_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_information
+    from: wais4_info_total
+    age: wais4_info_age_entered
+    range: [1, 19]
+    compare: wais4_info_scaled_stored
+  wais4_info_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_info_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_info_z_stored
+    compare_tolerance: 0.006

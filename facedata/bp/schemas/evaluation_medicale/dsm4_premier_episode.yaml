@@ -2,20 +2,53 @@ instrument: dsm4_premier_episode
 title: First mood episode, DSM-IV criteria
 tab: EVALUATION MEDICALE
 section: Caractéristique du PREMIER EPISODE
-status: draft
+status: reviewed
 notes: >
   The first mood episode of the patient: its type, the age at which it
   began, whether it came within six months of a birth and whether a
   cyclothymic period came before. Filled once, at the inclusion visit.
   Yes/no answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
 
-  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
-  evaluation was made with DSM-IV criteria for the patients included until
-  2021 and with DSM-5 criteria since, in the same columns. This schema reads
-  the DSM-IV visits; dsm5_premier_episode.yaml reads the others. Both carry
-  the version block of the two schemas of the follow-up form (decisions D12,
-  D14 and D15). The DSM-IV form has two more types of first episode, mixed
-  with and without psychotic features (91 patients).
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md), asked on
+  two inclusion forms and exported in the same columns. The application
+  stores no edition: the export writes dsm_criteria on the inclusion row,
+  DSM5 where the DSM-5 form holds one of five answers on the mood history,
+  else DSM4 where the DSM-IV form does (DEV-11). The label is DSM-IV until
+  2019 (7 DSM-5 exceptions), DSM-5 on 24 of 380 labelled inclusions in
+  2020, 44 of 425 in 2021 and 203 of 238 in 2022 (the 35 DSM-IV ones of
+  2022 are dated January to May), and DSM-5 on all from 2023. This schema
+  reads the DSM-IV visits; dsm5_premier_episode.yaml reads the others. Both
+  carry the version block of the follow-up schemas (D12, D14, D15): an
+  inclusion with no label is read by the date of the patient's first visit
+  (the screening, where there is one), DSM-IV before 2020 and DSM-5 from
+  2023 (version_inferred), and has no version from 2020 to 2022
+  (version_unknown, not delivered). Why labels are missing: see
+  dsm4_depuis_derniere_visite.yaml. In this section 6 unlabelled
+  inclusions, which hold only a postpartum or a cyclothymic answer, are
+  read as DSM-IV by date, and 3 of 2020 and 2021 are not delivered (R69
+  would label them). No inclusion labelled DSM-IV holds a
+  first-episode answer that only the DSM-5 form has; 9 inclusions labelled
+  DSM-5 hold the DSM-IV form (see dsm5_premier_episode.yaml, R70).
+
+  The DSM-IV form has two more types of first episode, mixed with and
+  without psychotic features (91 patients). The age is the age at the first
+  episode, whatever its type (D89). The form offers "<5", 5 to 89 and
+  ">89": "<5" is read as 5 and censored_left (2 patients), ">89" as 89 and
+  censored_right (none), as for the age at the first hospitalisation (D54,
+  D122). 4 ages are above the age at the inclusion visit (by 0.1, 0.4, 2.3
+  and 4.2 years); they are delivered as written.
+
+  The postpartum question is asked of every patient: the 1,628 men who
+  answer give 0, and 169 of the 2,712 women (6.2%) give 1, so a rate is
+  computed among women. The initial cyclothymic period is yes for 13% of
+  the patients (496 of 3,887): 31% in centres G and H, 5% to 6% in L and I,
+  steady over the years; "Ne sais pas" goes from 5% to 21% by centre.
+
+  Answers that contradict others are delivered as written: 28 first
+  episodes are of a kind whose lifetime number is 0; 46 with psychotic
+  features go with a lifetime no to psychotic features of that kind (26
+  depressive, 13 manic, 7 mixed); 15 patients with a bipolar II diagnosis
+  have a manic or mixed first episode.
 
 version:
   name: dsm_version
@@ -31,6 +64,6 @@ defaults: {versions: [dsm4]}
 
 variables:
   dsm4_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic, "Mixte sans caractéristiques psychotiques": mixed, "Mixte avec caractéristiques psychotiques": mixed_psychotic}, label: "Type of the first mood episode"}
-  dsm4_first_episode_age: {column: agedebutpremier_episode, type: item, range: [0, 90], label: "Age at the first mood episode"}
+  dsm4_first_episode_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first mood episode"}
   dsm4_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
   dsm4_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}

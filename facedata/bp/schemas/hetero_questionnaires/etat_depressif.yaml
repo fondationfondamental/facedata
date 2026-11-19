@@ -2,7 +2,7 @@ instrument: etat_depressif
 title: "Current major depressive episode: DSM-IV symptom checklist"
 tab: HETERO-QUESTIONNAIRES
 section: Episode depressif majeur actuel
-status: draft
+status: reviewed
 notes: >
   Part of the "État du patient" form: a DSM-IV symptom checklist, filled at
   the inclusion visit and at the follow-up visits. It is the same form for
@@ -12,11 +12,13 @@ notes: >
   that the symptoms can be counted. U ("does not know") is a missing code.
 
   The stored score is the number of symptoms present, and exists only when the
-  nine symptoms are answered. It equals the count on 13,326 of 13,386 rows; the
-  others get score_mismatch and the recomputed count is kept.
+  nine symptoms are answered with yes or no, as in the scoring script of the
+  application. It is computed on 15,414 visits and differs from the stored
+  one on 61; they get score_mismatch and the recomputed count is kept.
 
   Five symptoms have a detail that says which way the change goes (loss or
-  gain, insomnia or hypersomnia). It is asked when the symptom is present.
+  gain, insomnia or hypersomnia). It is asked when the symptom is present,
+  and is filled for 79% to 94% of the symptoms present.
 
 defaults: {type: item, range: [0, 1], codes: {Y: 1, N: 0}, missing: {U: unknown}}
 

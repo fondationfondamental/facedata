@@ -16,6 +16,9 @@ notes: >
   meanings guessed from the column names (PROGRESS.md D14). The output names
   stay the column names.
 
+  The weeks of sick leave are 0 after a "no" (asked_if, 143 visits), as in
+  BP, SZ and DR (BP D123).
+
   A section of the ASP cohort only.
 
 variables:
@@ -25,6 +28,6 @@ variables:
   jobdur: {column: jobdur, type: number, label: "Work and living situation: total length of the work contracts in the last 12 months, sick leave included", range: [0, 200], winsor: false}
   job_full_time: {column: jobclas, type: item, range: [0, 1], codes: {"1": 1, "2": 0}, label: "Work and living situation: the work contract is full time (1) or part time (0)"}
   sick_leave_12m: {column: hoocur_arret_travail, type: item, range: [0, 1], codes: {"1": 1, "2": 0, "0": 0}, label: "Work and living situation: off work during the work contracts of the last 12 months (the extraction writes no as 2, rarely 0)"}
-  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, label: "Work and living situation: sick leave during these work contracts, weeks"}
+  sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, asked_if: sick_leave_12m, label: "Work and living situation: sick leave during these work contracts, weeks"}
   stpro2: {column: stpro2, type: category, label: "Work and living situation: situation when there was no work contract in the last 12 months", codes: {"8": minor_under_18, "3": student, "5": homemaker, "7": disability_because_of_illness, "0": without_employment}}
   sd_lvsbjind: {column: lvsbjind, type: category, label: "Work and living situation: main kind of housing", codes: {"1": own_home, "2": family_home, "6": with_a_third_party, "9": supervised_therapeutic_flat, "7": medico_social_establishment, "10": boarding_school, "11": hostel, "8": other}}

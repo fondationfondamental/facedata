@@ -19,15 +19,17 @@ notes: >
   (censored_left). The number and the total length hold "more than" on 20
   and 105 visits (censored_right: the form stops at 20 times and 30
   months) and "Ne sais pas" on 44 and 110. The two lengths in weeks stop at
-  50. 1,812 of 1,867 patients were hospitalised at least once.
+  50. 1,812 of 1,867 patients were hospitalised at least once; 44 of them
+  have the number "Ne sais pas", which the export writes as a yes (R73),
+  and 37 of these 44 give an age at the first hospitalisation.
 
   The hospitalisations of the past year, asked at every visit, are in
   hospitalisations_12m.yaml. There is no hospitalisations_fu in SZ.
 
 variables:
-  first_hospitalisation_age: {column: agedebut_hospitalisation_first, type: number, unit: years, range: [0, 90], missing: {"pas d'hospitalisations": not_applicable}, winsor: false, label: Age at the first hospitalisation for a psychotic disorder}
+  first_hospitalisation_age: {column: agedebut_hospitalisation_first, type: number, unit: years, range: [5, 90], missing: {"pas d'hospitalisations": not_applicable}, winsor: false, label: Age at the first hospitalisation for a psychotic disorder}
   first_hospitalisation_weeks: {column: hodur_hospitalisation_first, type: number, unit: weeks, range: [0, 60], winsor: false, label: Length of the first hospitalisation for a psychotic disorder}
   first_episode_hospitalisation_weeks: {column: hodur_hospitalisation_fe, type: number, unit: weeks, range: [0, 60], winsor: false, label: Total length of the hospitalisations for the first psychotic episode}
   ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Has ever been hospitalised in psychiatry, at inclusion"}
-  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 100], winsor: false, label: "Number of psychiatric hospitalisations over the whole life, at inclusion"}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 50], winsor: false, label: "Number of psychiatric hospitalisations over the whole life, at inclusion"}
   hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 600], winsor: false, label: "Total length of the psychiatric hospitalisations over the whole life, at inclusion"}

@@ -2,14 +2,18 @@ instrument: visit_record
 title: Visit record
 tab: PATIENT
 section: visit
-status: draft
+status: reviewed
 notes: >
   One value per visit. The visit label, its date and the identifiers of this
   dictionary section are key columns, built by the pipeline for every
-  instrument. What is left is the date at which the visit record was typed.
+  instrument. What is left is the date at which the visit record was
+  created: in the application it is a time stamp written when the record is
+  opened for the first time.
 
-  It is the visit date itself for half of the visits. It is before the visit
-  date for 2,623 visits and years after it for a few: it says when the form
+  It is the visit date itself for 63% of the visits and within a month after
+  it for 17%. It is before the visit date for 2,661 visits (2% of the visits
+  until 2015, 23% from 2022: the records are more and more opened ahead of
+  the visit) and more than a year after it for 451. It says when the form
   was created, not when the patient came.
 
   Not loaded: id_fiche_clinique, the identifier of the record (in
@@ -18,6 +22,6 @@ notes: >
 variables:
   entry_date:
     column: date_saisie
-    label: Date the visit record was entered
+    label: Date the visit record was created
     type: date
     range: [2008-01-01, 2030-12-31]

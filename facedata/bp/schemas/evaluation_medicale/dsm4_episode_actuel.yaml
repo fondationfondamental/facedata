@@ -2,35 +2,92 @@ instrument: dsm4_episode_actuel
 title: Current mood episode, DSM-IV criteria
 tab: EVALUATION MEDICALE
 section: Caractéristique du trouble de l'HUMEUR ACTUEL
-status: draft
+status: reviewed
 notes: >
   The mood episode the patient is in on the day of the visit, if any: its
   type, specifier, severity, chronicity and whether it followed a birth.
   Filled at the inclusion visit and at every follow-up visit (six-monthly
-  and yearly): a third of the patients are in an episode at inclusion, a
-  quarter at follow-up. It describes the day of the visit at every visit, so
-  the inclusion and the follow-up answers are in the same columns. Yes/no
-  answers are delivered as 1 and 0; "Ne sais pas" is a missing code.
+  and yearly). It describes the day of the visit at every visit, so the
+  inclusion and the follow-up answers are in the same columns. A third of
+  the inclusions read here are in an episode (1,445 of 4,415) and a quarter
+  of the follow-up visits (1,671 of 7,294). Yes/no answers are delivered as
+  1 and 0; "Ne sais pas" is a missing code.
 
-  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md): the
-  evaluation was made with DSM-IV criteria for the patients included until
-  2021 and with DSM-5 criteria since, in the same columns. This schema reads
-  the DSM-IV visits; dsm5_episode_actuel.yaml reads the others. Both carry
-  the version block of the two schemas of the follow-up form (decisions D12,
-  D14 and D15). The inclusion form of DSM-IV has a mixed type of episode (91
-  visits) and a yes/no "catatonic" (100 visits). 22 follow-up visits of 2021
-  and 2022 carry the DSM-5 wording of the specifier "none" (read as none)
-  and 2 carry the DSM-5 specifier "mixed", which this form does not have:
-  unknown_code.
+  DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md), asked on
+  two inclusion forms and exported in the same columns. The application
+  stores no edition: the export writes dsm_criteria on the inclusion row,
+  DSM5 where the DSM-5 form holds one of five answers on the mood history,
+  else DSM4 where the DSM-IV form does (DEV-11). The label is DSM-IV until
+  2019 (7 DSM-5 exceptions), DSM-5 on 24 of 380 labelled inclusions in
+  2020, 44 of 425 in 2021 and 203 of 238 in 2022 (the 35 DSM-IV ones of
+  2022 are dated January to May), and DSM-5 on all from 2023. This schema
+  reads the DSM-IV visits; dsm5_episode_actuel.yaml reads the others. Both
+  carry the version block of the follow-up schemas: a follow-up visit takes
+  the label of the inclusion before 2022 (D12) and is DSM-5 from 1 January
+  2022 (D14); a patient with no label is read by the date of the first
+  visit, DSM-IV before 2020 and DSM-5 from 2023 (D15, version_inferred),
+  and has no version from 2020 to 2022 (version_unknown, not delivered).
+  Why labels are missing and which visits D14 reads in the other edition:
+  see dsm4_depuis_derniere_visite.yaml. Here 20 inclusions and 327
+  follow-up visits are read as DSM-IV by date, and 29 visits with an answer
+  (5 inclusions and 24 follow-ups of 2020 and 2021, 27 patients) have no
+  version and are delivered in neither schema.
 
-  The details are filled only where the patient is in an episode. They are
-  details of that episode, so they stay missing where there is none.
+  The inclusion form of DSM-IV has a mixed type of episode (91 visits) and
+  a yes/no "catatonic" asked for a manic or mixed episode (100 visits, 1 of
+  them "Ne sais pas"). Each detail is asked for some types only: the
+  specifier and the chronicity for a depressive episode, the severity for a
+  depressive, manic or mixed one, the postpartum onset for every type but
+  the unspecified one.
 
-  At the follow-up visits. The form has no mixed type of episode in any
-  year, and the specifier is filled on a handful of visits a year until 2020
-  and on about a hundred a year from 2022. The start date of the episode
-  exists at the follow-up visits only; 1000-01-01 is the form's placeholder
-  (313 cells), and 72 dates are after the visit.
+  The details are asked only after a yes. After a no the form empties the
+  type of episode, and the start date at follow-up, but not the details
+  asked after the type. 33 visits answered no still hold details (10
+  inclusions and 23 follow-ups, 2011 to 2021): postpartum 27 (all no),
+  severity 17, chronicity 15 (14 no), type 6, specifier 5. 2 follow-up
+  visits with no answer to the first question hold a type and a start date.
+  All are delivered as written, as in D50.
+
+  "Chronic" is a judgement of the rater: of the follow-up episodes ticked
+  chronic that have a start date, 45 of 296 began two years or more before
+  the visit, and the share of chronic depressive episodes at inclusion goes
+  from 18% to 74% between centres. The share of inclusions in an episode
+  rises from 27% until 2012 to 37% in 2019-2021, and goes from 15% to 51%
+  between centres; the mixed type is under 1% to 18% of the episodes by
+  centre.
+  One centre (K) gives a melancholic or atypical specifier to 55% of the
+  depressive episodes, the others to 12% or less.
+
+  At the follow-up visits. The follow-up form, one form for every patient,
+  has no mixed type of episode today. It most likely had one until it
+  changed (October 2021 to May 2022, D14), like the DSM-IV inclusion form
+  whose answer rules it keeps, and those answers were emptied when the type
+  left the list: 161 follow-up visits in an episode have no type (2010 to
+  2021), 139 of them with a severity and none with a chronicity, as a mixed
+  episode would; 79 count a mixed episode since the last visit. "Episode
+  non spécifié" has a severity on 0 of 44 DSM-IV follow-ups and on 18 of 18
+  DSM-5 ones. These visits are delivered with no type.
+
+  The follow-up specifier. Until September 2021 it holds almost only the
+  answers that the DSM-5 list kept: 94 of its 99 values are melancholic,
+  atypical or catatonic, and the DSM-IV answer "none" never appears, so an
+  empty cell means "none" or not answered (87 of the 1,087 follow-up
+  depressive episodes of 2011 to 2020 have a specifier). Its share cannot
+  be compared with the inclusion one. From October 2021 the new list is
+  used: 17 of the 19 values are "none". So 22 follow-up visits carry the
+  DSM-5 wording of "none" (read as none; 17 of October to December 2021, 5
+  of 2014 to 2019), and 2 carry the DSM-5 specifier "mixed" (2019, 2021),
+  which this form does not have: unknown_code.
+
+  The start date of the episode exists at the follow-up visits only (1,532
+  dates). 52 are after the visit (1 to 340 days), delivered as written. 2
+  have no day or no month and are read as the middle of the period
+  (date_partial). The
+  placeholder 1000-01-01, which the application writes into empty dates
+  since its version of 2024-07-25 (D98), never occurs here.
+
+  Not in the extraction: the follow-up form asks whether a manic or
+  unspecified episode is catatonic or has mixed features (R68).
 
 version:
   name: dsm_version
@@ -48,8 +105,8 @@ variables:
   dsm4_current_episode: {column: ceoccurtrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "In a mood episode at the visit"}
   dsm4_current_type: {column: cetermtrouble_humeur_actuel, type: category, codes: {"Episode Dépressif Majeur": mde, "Hypomaniaque": hypomania, "Maniaque": mania, "Mixte": mixed, "Episode non spécifié": unspecified}, label: "Type of the current episode"}
   dsm4_current_specifier: {column: cedecodtrouble_humeur_actuel_type, type: category, codes: {"Sans caractéristique mélancolique atypique ou catatonique": none, "Sans caractéristique mélancolique atypique catatonique ou mixte": none, "Mélancolique": melancholic, "Atypique": atypical, "Catatonique": catatonic}, label: "Current episode, if depressive: specifier"}
-  dsm4_current_catatonic: {column: cedecodtrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current episode: catatonic"}
+  dsm4_current_catatonic: {column: cedecodtrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current episode, if manic or mixed: catatonic"}
   dsm4_current_severity: {column: cesevtrouble_humeur_actuel, type: category, codes: {"Léger": mild, "Modéré": moderate, "Sévère sans caractéristiques psychotiques": severe, "Sévère sans caractéristique psychotique": severe, "Sévère avec caractéristiques psychotiques congruentes": severe_psychotic_congruent, "Sévère avec caractéristiques psychotiques non congruentes": severe_psychotic_incongruent}, label: "Severity of the current episode"}
-  dsm4_current_chronic: {column: chrontrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current episode: chronic"}
+  dsm4_current_chronic: {column: chrontrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current episode, if depressive: chronic"}
   dsm4_current_postpartum: {column: pparttrouble_humeur_actuel, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Current episode: after a birth"}
   dsm4_current_start_date: {column: cestdtctrouble_humeur_actuel, type: date, range: [1950-01-01, 2026-12-31], label: "Start of the current episode (follow-up visits)"}

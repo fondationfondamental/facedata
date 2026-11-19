@@ -2,27 +2,48 @@ instrument: trouble_psychotique_fu
 title: Psychotic disorder (follow-up visits)
 tab: EVALUATION MEDICALE
 section: Trouble PSYCHOTIQUE
-status: draft
+status: reviewed
 notes: >
   Whether the patient has a psychotic disorder other than the mood disorder,
   which one, since when and whether symptoms were present in the past month.
-  Rare in this cohort: 69 patients at inclusion (1.3%). Yes/no answers are
-  delivered as 1 and 0; "Ne sais pas" is a missing code.
+  At follow-up the four questions are on the follow-up diagnostic form
+  ("Diagnostic psychiatrique de suivi"), one form for every patient
+  whatever the DSM edition, filled at the six-monthly and the yearly visits
+  (2,875 of the 9,463 answers are at a visit labelled in months) and never
+  at screening. It asks the questions and offers the nine disorders of the
+  inclusion forms, with no "change since the last visit" question. Two of
+  the nine (shared psychotic disorder, and one due to a general medical
+  condition) hold no answer today. Rare: 34 yes in 9,389 answers (0.36%),
+  from 30 patients, 18 of whom answered no at inclusion; of the 12 yes
+  followed by another answer, 8 are followed by a no. Yes/no answers are
+  delivered as 1 and 0; "Ne sais pas" is a missing code (74).
 
   Two periods in the same columns (decision D53 in PROGRESS.md), as for the
   comorbidities (D49, D50): the question is asked at the inclusion visit and
-  at every follow-up visit, where it is about the time since the last visit.
+  at every follow-up visit, with the same wording ("does the patient have a
+  psychotic disorder"). The follow-up answer is an update given at that
+  visit (decision D84 in PROGRESS.md).
   Of the 73 follow-up answers of patients who had a psychotic disorder at
-  inclusion, 69 are "no". The two are delivered as separate columns, ending
+  inclusion, 70 are "no". The two are delivered as separate columns, ending
   in _v0 and _fu; visit_form says which form a visit used and is read
   from the visit label.
 
-  Date of onset. 686 cells hold 1000-01-01, the form's placeholder, 611 of
-  them in 2025 and 2026 and almost all next to a "no": date_placeholder. 71
-  real dates.
+  Completeness. The question is answered on 9,463 of the 11,686 follow-up
+  visits (81%): 87% to 92% by period until 2018, 81% in 2019-2021 and 66%
+  to 68% from 2022, 24% in one large centre (A) from 2022. Where the
+  follow-up diagnostic form holds any answer, this question is answered on
+  92% to 99% of the visits in every period: the missing answers are
+  missing forms.
 
-  The DSM-IV and the DSM-5 forms offer the same disorders, so this section
-  is not split by DSM version.
+  The details are shown only after a yes. 1 answer about the past month is
+  filled after a no; it is delivered as written, as in D50.
+
+  Date of onset. 1000-01-01 is the placeholder that the application writes
+  into empty dates since its version of 2024-07-25 (D98): 422 cells at
+  follow-up, 396 of them on visits of 2025 and 2026, 405 next to a "no" and
+  15 next to an empty answer: date_placeholder. 22 real dates, 9 of them
+  before the inclusion; 1 is 225 days after the visit and is delivered as
+  written.
 
 version:
   name: visit_form
@@ -56,5 +77,5 @@ defaults: {versions: [follow_up]}
 variables:
   psychotic_disorder_fu: {column: ceoccurtroubpsy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has a psychotic disorder, at follow-up"}
   psychotic_onset_date_fu: {column: cestdtctroubpsy, type: date, range: [1920-01-01, 2026-12-31], label: "Psychotic disorder: date of onset, at follow-up"}
-  psychotic_type_fu: {column: cedecodtroubpsy, type: category, codes: {"Schizophrénie": schizophrenia, "Trouble schizophréniforme": schizophreniform, "Trouble schizo-affectif": schizoaffective, "Troubles délirants": delusional, "Trouble psychotique bref": brief_psychotic, "Trouble psychotique induit par une substance": substance_induced, "Trouble psychotique non spécifié": unspecified}, label: "Psychotic disorder: which one, at follow-up"}
+  psychotic_type_fu: {column: cedecodtroubpsy, type: category, codes: {"Schizophrénie": schizophrenia, "Trouble schizophréniforme": schizophreniform, "Trouble schizo-affectif": schizoaffective, "Troubles délirants": delusional, "Trouble psychotique bref": brief_psychotic, "Trouble psychotique induit par une substance": substance_induced, "Trouble psychotique non spécifié": unspecified, "Trouble psychotique partagé": shared_psychotic, "Trouble psychotique induit par une affection médicale générale": medical_condition_induced}, label: "Psychotic disorder: which one, at follow-up"}
   psychotic_last_month_fu: {column: occurtroubpsy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Psychotic disorder: symptoms in the past month, at follow-up"}

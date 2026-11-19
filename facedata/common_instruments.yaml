@@ -39,17 +39,7 @@ visit_record:
   schemas: {bp: visit_record, sz: visit_record, dr: visit_record, asp: visit_record}
   stack: "yes"
   use: [entry_date]
-  note: The date the visit was entered. The date of the visit itself is the column visit_date of every row.
-
-inclusion:
-  title: Inclusion
-  domain: Patient and visits
-  schemas: {bp: inclusion, sz: inclusion}
-  stack: with care
-  use: [opposition_form]
-  note: >
-    One question in common (the form of non-opposition), whose two codes are not
-    documented. In the table patients.
+  note: The date the visit record was created. The date of the visit itself is the column visit_date of every row.
 
 provenance:
   title: How the patient came to the expert centre
@@ -166,11 +156,13 @@ psqi:
   note: >
     Seven components of 0 to 3 and their sum, on the same rules in the four
     cohorts; components 1 and 6 are the answers to questions 6 and 7 (psqi06,
-    psqi07). In ASP three stored components are wrong and are recomputed. One
-    rule is that of the database and not of the published sheet: exactly 7 hours
-    of sleep count 0 where the sheet counts 1. It is the same in the four
-    cohorts, so they compare; a total is one point lower than the published one
-    for these patients. In ASP the PSQI belongs to the old set of forms (2013 to
+    psqi07). In ASP three stored components are wrong and are recomputed. In
+    BP, SZ and DR the same three, recomputed with the published rules, equal
+    the stored ones (2 of 16,678 BP visits differ, none of 3,107 SZ and 1,031
+    DR visits; checked 2026-11-18), so they are delivered as stored.
+    Exactly 7 hours of sleep count 0: the application tests "7 hours or more",
+    where the published sheet says "more than 7 hours" and leaves 7 hours
+    open. It is the same in the four cohorts, so they compare. In ASP the PSQI belongs to the old set of forms (2013 to
     2021, adults). In DR it is on about nine inclusions in ten until 2016 and
     about one in two since 2018.
 
@@ -196,8 +188,11 @@ eq5d:
   note: >
     Five dimensions of 1 to 5 and the visual scale of 0 to 100, in the four
     cohorts. The utility index is the one the database stores, in BP, SZ and
-    ASP: its value set is not documented, and the DR extraction has none.
-    Compare the dimensions and the visual scale; use the index with care.
+    ASP, and the DR extraction has none. Its value set is not documented, but
+    it is one table: each of the 876 BP, 603 SZ and 248 ASP health profiles
+    has one index, and the 446 profiles shared by BP and SZ and the 224 shared
+    by BP and ASP have the same index in both (checked 2026-11-18). ASP holds
+    28 indices above 1, which no value set gives; they are out of range. The index delivered is the table's value, read from the five answers in the four cohorts (BP D133), so it is on one value set everywhere; DR, which stores none, now has it.
 
 fagerstrom:
   title: Fagerström Test for Nicotine Dependence (6 items)
@@ -320,9 +315,11 @@ mathys:
   use: [mathys_total, mathys_emotion, mathys_motivation, mathys_perception, mathys_interaction, mathys_cognition]
   note: >
     Twenty visual scales of 0 to 10, five sub-scores and a total, recomputed
-    from the items with the same key in both cohorts. The grouping of the items
-    is that of the database, and one item (17) goes against the others in BP: an
-    open question of BP, which applies to both cohorts alike. In DR it is on
+    from the items with the same key in both cohorts: the published one, which
+    is also that of the application. In BP the form stored the eight reversed
+    scales already turned until 2021: they are turned back, and the visits from
+    September 2021 to December 2022, when the centres changed form, have no
+    total (BP D91). In DR the key holds in every year. In DR it is on
     about nine inclusions in ten until 2016 and about one in two since 2018.
 
 mathys_emotions:
@@ -365,29 +362,42 @@ wurs:
 neuropsy_conditions:
   title: Conditions of the neuropsychological assessment
   domain: Neuropsychology
-  schemas: {bp: neuropsy_conditions, sz: neuropsy_conditions, dr: neuropsy_conditions, asp: puberty_and_handedness}
+  schemas: {bp: neuropsy_conditions, sz: neuropsy_conditions, dr: neuropsy_conditions, asp: assessment_conditions}
   stack: with care
-  use: [neuropsy_age, education_years, handedness, neuropsy_mood_rating_delay]
+  use: [neuropsy_age, neuropsy_age_used, education_years, neuropsy_mood_rating_delay, neuropsy_no_visual_disorder, neuropsy_no_hearing_disorder, neuropsy_french_fluent, neuropsy_state_compatible, neuropsy_psychotropic_treatment, neuropsy_learning_disorder]
   note: >
-    The age at the testing and the years of education are in BP, SZ and DR; the
-    handedness is in BP, DR and ASP (not in SZ). In SZ the form was filled from
-    2010 to 2016 only, so the age at the testing and the years of education are
-    missing afterwards. The other questions of the form are not the same from
-    one cohort to the next.
+    The age typed at the testing, its reconciled version neuropsy_age_used (the
+    age the norms of the tab are read with) and the years of education are in BP,
+    SZ and DR; ASP has neither (its application takes the age at the date of the
+    assessment form). The questions with the same names have the same meaning:
+    visual and hearing disorder in the four cohorts; sufficient French in BP, SZ
+    and ASP (DR asks for the mother tongue); compatible clinical state, treatment
+    by psychotropic drugs (1 yes, 0 no, 2 or unknown is missing) and learning
+    disorder in SZ, DR and ASP. The handedness is in BP and DR (DR codes 1 = right)
+    and in ASP under the name handedness_np (1 = left); SZ has none. Three questions
+    are not the same from one cohort to the next (the second box of the form, the
+    period of the last episode). The form of SZ covers 3,455 visits to 2026; from
+    2022 about half of the BP inclusions hold it.
 
 tmt:
   title: Trail Making Test, parts A and B
   domain: Neuropsychology
   schemas: {bp: tmt, sz: tmt, dr: tmt}
-  stack: with care
-  use: [tmt_a_time, tmt_b_time, tmt_ba_time, tmt_a_errors, tmt_b_errors, tmt_a_time_z, tmt_b_time_z]
+  stack: "yes"
+  use: [tmt_a_time, tmt_b_time, tmt_ba_time, tmt_a_errors_z, tmt_b_errors_z, tmt_a_time_z, tmt_b_time_z, tmt_ba_time_z, tmt_a_time_band, tmt_b_time_band]
   note: >
-    The times and the errors stack as they are. The z-scores follow one sign in
-    the three cohorts once delivered (a higher z is a better performance): the
-    centres did not all write them with the same sign, and the package turns the
-    ones it can tell; a visit flagged sign_doubt is left as written. The
-    z-scores come from the norm tables of the centres. The percentile bands of
-    the errors need the years of education, which SZ records until 2015 only.
+    The times stack as they are. The z-scores and the time bands are computed
+    again from the raw scores in the three cohorts with the table of the
+    application's script (BP D135): z = (mean - raw) / SD for the age and the
+    years of education, so a higher z is a better performance and the sign is
+    the same everywhere; the age is the one typed in the form where it is within
+    a year of the age at the visit. The stored z-scores are checks: where a centre
+    wrote the opposite sign (13% of the BP visits, mostly before 2013, one SZ centre
+    in 2011-2012, three z-scores of DR in every year) the cell gets sign_flipped,
+    elsewhere a difference is a score_mismatch. A visit with no education has no
+    z-score. The z-scores are not clipped (no winsorising). The error bands read the
+    checked difference of B and A; the lowest band is never open (BP D138-D143). The raw error counts differ: BP and SZ store the corrected and the
+    uncorrected, DR a typed total and four kinds.
 
 verbal_fluency:
   title: Verbal fluency, letter P and animals
@@ -399,8 +409,10 @@ verbal_fluency:
     The number of words, the z-score and the percentile band of each task are in
     the three cohorts. The errors are in BP and SZ. DR has two forms of the test
     and no code that names them: the form with the letter P and animals is told
-    from the data, and the second form (another letter, fruits) is another
-    instrument.
+    from the data, and the second form (the letter R and fruits, as the eCEDR
+    form says) is another instrument whose z-score and band are typed by hand.
+    One rule for the education below 6 years in the three cohorts (the lowest
+    class); the DR application reads the middle class on 16 visits.
 
 cvlt:
   title: California Verbal Learning Test (CVLT)
@@ -409,8 +421,15 @@ cvlt:
   stack: with care
   use: [cvlt_total_1_5, cvlt_short_free, cvlt_long_free, cvlt_long_cued, cvlt_hits]
   note: >
-    The raw scores stack. The z-score of trials 1 to 5 of SZ is doubtful on the
-    visits of 2022 to 2025 (flag period_doubt): use the raw total there.
+    The raw scores stack, and so do the z-scores and the bands: in both
+    cohorts they are computed again with the regressions of the norms, from
+    the raw score, the age, the years of education and the sex. The percentile
+    bands of the twelve measures that have a table (serial clustering too,
+    since BP D129) are read in the same tables from the raw score and the age,
+    with one rule for ties (the lowest band it can be, `_cens` = 1), so a band
+    of BP and a band of SZ are on one scale. The semantic clustering index is
+    out of range from 8 on in both (a typed count, BP D130); a few counts
+    between 4 and 8 cannot be told from an index.
 
 errands_test:
   title: Errands test (Test des commissions)
@@ -421,19 +440,26 @@ errands_test:
   note: >
     The four counts of errors and their sum are in the three cohorts (from 2017
     or 2018; in BP on inclusions from 2021). The time, the z-scores and the
-    bands are in BP and SZ, and almost only SZ fills the z-scores. In ASP the
-    test is one of several in the schema executive_functions.
+    bands are in BP and SZ and are computed again from the raw counts with the
+    same tables in both (BP D135; a higher z-score is better; the age typed in
+    the form, 20 to 60 years, and the years of education: 12 years or more is the
+    class of the baccalaureate, as for the other tests, whatever the class ticked
+    in the form). The z-scores typed in BP mix two sign conventions (BP D126) and
+    are only checks. ASP has the counts only, in seconds, with no norm: no z-score,
+    no band (the schema executive_functions holds this test only).
 
 wais3_matrices:
   title: WAIS-III matrix reasoning
   domain: Neuropsychology
   schemas: {bp: wais3_matrices, sz: wais3_matrices}
-  stack: "yes"
+  stack: with care
   use: [wais3_mat_total, wais3_mat_scaled, wais3_mat_z]
   note: >
     The 26 items, the total, the scaled score and the z-score, the same in both
-    cohorts. Visits tested with the third edition only (until 2015 or 2016); a
-    few SZ visits labelled WAIS-III were given the WAIS-IV.
+    cohorts. Visits tested with the third edition only (until 2015 or 2016).
+    33 SZ visits labelled WAIS-III were given the WAIS-IV (SZ O16): the version
+    rule reads them as WAIS-IV from the digit-span sequencing task (flag
+    version_overridden), so their cells are in the WAIS-IV schemas.
 
 wais3_memoire_chiffres:
   title: WAIS-III digit span
@@ -468,8 +494,14 @@ wais4_similitudes:
   stack: "yes"
   use: [wais4_simil_total, wais4_simil_scaled, wais4_simil_z]
   note: >
-    The total, the scaled score and the z-score are in the four cohorts. The
-    items are recorded in BP, SZ and ASP, not in DR.
+    The total, the scaled score and the z-score are in the four cohorts, with the
+    same names, ranges and direction: for the same total and the same age the four
+    cohorts give one scaled score (0 conflicts). The total is the sum of the items
+    in BP and ASP and the stored total in SZ (its export copies one item twice) and
+    DR (no items). The stored scaled score is wrong in the application (it read an
+    empty age: BP 34% of the visits, SZ 7%, DR 5% typing error in its table):
+    the recomputed score is delivered. No score below 16 or from 80 years.
+    wais4_simil_not_done is in BP only.
 
 wais4_memoire_chiffres:
   title: WAIS-IV digit span
@@ -490,10 +522,11 @@ wais4_code_symboles_ivt:
   use: [wais4_code_raw, wais4_code_scaled, wais4_code_z, wais4_symbol_raw, wais4_symbol_scaled, wais4_ivt_index]
   note: >
     The coding subtest is in the four cohorts; the symbol search is in BP, DR
-    and ASP. The raw score of the coding is delivered as stored: the centres do
-    not all take the errors off. The processing speed index of this form is
-    wais4_ivt_index in BP, SZ and DR and wais4_ivt_index_np in ASP, where the
-    shared name holds the copy of the medical evaluation (see wais4_indices).
+    and ASP. The raw score of the coding is the boxes filled minus the errors in
+    the four cohorts (BP D136: the application stopped taking the errors off in
+    2021). The processing speed index of this form is wais4_ivt_index in the four
+    cohorts (in SZ an estimate from the coding alone); the clinician's copy of
+    ASP is wais4_ivt_index_clinician.
 
 wais4_arithmetique:
   title: WAIS-IV arithmetic
@@ -511,8 +544,9 @@ wais4_vocabulaire:
   use: [wais4_vocab_total, wais4_vocab_scaled, wais4_vocab_z]
   note: >
     The 30 items, the total, the scaled score and the z-score, the same in both
-    cohorts. In BP the subtest was given from 2011 to 2021, then replaced by the
-    similarities.
+    cohorts, read in the same table (the ASP row at 25 to 29 years replaces the BP
+    script row, which was not monotone). In BP the subtest was given from 2011 to
+    2021, then replaced by the similarities.
 
 wais4_information:
   title: WAIS-IV information
@@ -535,28 +569,20 @@ wais4_efficience:
   domain: Neuropsychology
   schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_efficience}
   stack: with care
-  use: [wais4_imt_sum_scaled, wais4_imt_percentile]
+  use: [wais4_imt_sum_scaled, wais4_imt_index, wais4_imt_percentile, wais4_icv_index, wais4_irp_index, wais4_qit]
   note: >
     The working memory index is in the three cohorts, and the three other
-    indices and the full-scale IQ in SZ and ASP. In ASP the indices of this
-    form are named with the ending _np (wais4_imt_index_np ...), because the
-    shared names hold the copy of the medical evaluation: rename them before
-    stacking, or use wais4_indices. In SZ the stored working memory index and
-    full-scale IQ are corrected.
-
-wais4_indices:
-  title: WAIS-IV indices and full-scale IQ under the shared names
-  domain: Neuropsychology
-  schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_indices}
-  stack: with care
-  use: [wais4_icv_index, wais4_irp_index, wais4_imt_index, wais4_qit]
-  note: >
-    In SZ (four indices and the IQ) and DR (working memory index) the values
-    come from the neuropsychology form. In ASP the shared names hold the values
-    that the clinician copied in the medical evaluation: they cover about five
-    times more visits than the neuropsychology form and equal it on 83% to 89%
-    of the visits that have both (72% for the IQ). The processing speed index
-    (wais4_ivt_index) follows the same rule and is also in BP.
+    indices and the full-scale IQ in SZ and ASP, under the same names. The sums of
+    the scaled scores are recomputed from the scaled scores that the subtest
+    schemas deliver (BP D137), and the indices are read in the table of the
+    application from them; the stored sums and indices are checks. SZ stores the
+    working memory index 0.7 and the full-scale IQ 2.9 below the table. The sums
+    are not the same: SZ and the second set of ASP (_a) use 1.5 x (similarities +
+    information) for the verbal comprehension, ASP uses the three subtests. In ASP
+    the clinician's copy of the medical evaluation (about five times more visits;
+    it equals the form on 83% to 92% of the visits that have both, 76% for the IQ)
+    is under the names ending in _clinician. BP delivers the processing speed
+    index only (no information, arithmetic or block design in its form).
 
 barona:
   title: Premorbid IQ expected from occupation and education (Barona)
@@ -566,10 +592,15 @@ barona:
   use: [barona_expected_qit, barona_qit_difference, barona_occupation, barona_education]
   note: >
     The expected full-scale IQ and its difference with the measured one are in
-    both cohorts; the expected verbal and performance IQ in SZ only. In SZ the
-    occupation is not reliable (it follows the diploma on 72% of the visits) and
-    the expected IQs keep their value with the flag check_failed: read the flags
-    before comparing. One code of each list is not documented in ASP.
+    both cohorts; the expected verbal and performance IQ in SZ only. The expected
+    IQ is computed from the sex, the diploma, the occupation and the age
+    (regression of the application, BP D138-D143): in SZ with the typed age, in ASP
+    with the age at the date of the form. In SZ the occupation is not reliable (it
+    follows the diploma on 72% of the visits) and the expected IQs keep their value
+    with the flag check_failed: read the flags before comparing. The ASP codes 0
+    and 8 of the occupation (about 460 expected IQs) are outside the seven ranks of
+    the formula; the difference is the stored one (derived_doubt where the expected
+    IQ moved).
 
 lis:
   title: Attribution of intentions in six film clips (LIS)
@@ -579,7 +610,9 @@ lis:
   use: [lis_total]
   note: >
     The total is in both cohorts (a distance to reference ratings: lower is
-    better); the answers to each clip are in SZ only. Added in 2018 in ASP.
+    better); the answers to each clip are in SZ only, where the total is recomputed
+    from them (BP D138-D143). In ASP the total is typed by hand, with no ratings
+    and a different scale: do not pool the two. Added in 2018 in ASP.
 
 learning_disorders:
   title: History of learning and developmental disorders
@@ -648,12 +681,13 @@ tobacco:
   title: Tobacco
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: tobacco, sz: tobacco, dr: tobacco, asp: tobacco}
-  stack: "yes"
+  stack: with care
   use: [tobacco_status, pack_years, smoking_start_age, smoking_stop_age]
   note: >
     The status (non-smoker, smoker, ex-smoker), the pack-years and the two ages
-    are in the four cohorts. ASP records tobacco from 2020, and its pack-years
-    are doubtful for patients this young. SZ asks five more questions.
+    are in the four cohorts, with the same three answers. ASP records tobacco
+    from 2020, and its pack-years are doubtful (ASP O10): compare the
+    pack-years of BP, SZ and DR only. SZ asks five more questions.
 
 alcohol_use:
   title: Alcohol, age at the first use
@@ -712,21 +746,65 @@ isf_since_visit:
   use: [isf01_since_visit, isf02_since_visit, isf03_since_visit, isf04_since_visit, isf05_since_visit]
   note: >
     The five questions are the same. 'When' does not use the same list in the
-    three cohorts. BP flags the visits of 2022 and 2023, where the share of
-    attempts since the last visit rises, and DR flags the answers whose period
-    is not certain (period_doubt).
+    three cohorts. BP does not deliver the answers of the follow-up visits of
+    November 2021 to 2023, whose form also asked about the whole life (period_removed),
+    and DR flags the answers whose period is not certain (period_doubt).
+
+cssrs_v0:
+  title: C-SSRS suicidal ideation at the inclusion visit
+  domain: Suicide
+  schemas: {bp: cssrs_v0, dr: cssrs_v0}
+  stack: "no"
+  note: >
+    The BP inclusion form asks about the past week (some centres answer over
+    a longer time), the DR one about the whole life: the same questions over
+    different periods, under other names (cssrs01_inclusion in BP,
+    cssrs01_lifetime in DR). Do not stack.
+
+cssrs_fu:
+  title: C-SSRS suicidal ideation since the last visit (follow-up form)
+  domain: Suicide
+  schemas: {bp: cssrs_fu, dr: cssrs_fu}
+  stack: with care
+  use: [cssrs01_since_visit, cssrs02_since_visit, cssrs03_since_visit, cssrs04_since_visit, cssrs05_since_visit, cssrs_intensity_since_visit]
+  note: >
+    The five ideation questions and the five intensity ratings are the same,
+    asked since the last visit, with questions 3 to 5 at 0 after a no to
+    question 2. DR also has the behaviour section. The inclusion forms
+    differ in period (BP the past week, DR the whole life): cssrs_v0 is not
+    stacked.
 
 suicide_attempts:
-  title: History of suicide attempts
+  title: History of suicide attempts over the whole life (inclusion form)
   domain: Suicide
   schemas: {bp: suicide_attempts, sz: suicide_attempts, dr: suicide_attempts}
-  stack: "yes"
+  stack: with care
   use: [n_attempts, first_attempt_date, violent_attempts, serious_attempts, n_violent_attempts, n_serious_attempts]
   note: >
     The number of attempts, the date of the first one and the violent and
-    serious attempts, the same in the three cohorts. The form is filled for the
-    patients who have attempted, mostly at the inclusion visit: the number of
-    attempts has no zero for the others.
+    serious (non-violent, intensive care) attempts. BP and SZ give 0 attempts
+    after "never attempted" and 0 violent or serious attempts after 0
+    attempts (BP D125); a first attempt dated on the inclusion day or later
+    is out of range. BP and SZ deliver it from the inclusion visit only,
+    where it is about the whole life; their follow-up visits are in
+    suicide_attempts_since_visit. DR still reads every visit: keep its
+    inclusion visits to stack it.
+
+suicide_attempts_since_visit:
+  title: Suicide attempts since the last visit (follow-up form)
+  domain: Suicide
+  schemas: {bp: suicide_attempts_since_visit, sz: suicide_attempts_since_visit}
+  stack: with care
+  use: [n_attempts_since_visit, violent_attempts_since_visit, serious_attempts_since_visit, n_violent_attempts_since_visit, n_serious_attempts_since_visit]
+  note: >
+    The follow-up form of eBipolar and eSchizo asks the same numbers since the
+    last visit, after a "yes" to isf05_since_visit, and the numbers of violent
+    and serious attempts after a yes to their own question: BP and SZ give 0
+    after a no (BP D125). BP does not deliver the visits of November 2021 to
+    2023 (period_removed): its follow-up form of that time also asked about
+    the whole life. DR has a number of attempts since the last visit
+    under the same name, n_attempts_since_visit, read from another question
+    (mood_course_fu).
 
 most_serious_attempt:
   title: The most serious suicide attempt
@@ -735,7 +813,8 @@ most_serious_attempt:
   stack: "no"
   note: >
     The method, the lethality and the trigger are labelled lists in BP (filled
-    until 2022) and codes that the dictionary does not explain in DR (names
+    until 2022; the inclusion visit only, its follow-up visits are in
+    most_serious_attempt_since_visit, BP D125) and codes that the dictionary does not explain in DR (names
     ending in _code). Only the question 'was there a trigger'
     (serious_triggered) is comparable.
 
@@ -745,8 +824,9 @@ most_violent_attempt:
   schemas: {bp: most_violent_attempt, dr: most_violent_attempt}
   stack: "no"
   note: >
-    As for the most serious attempt: labelled lists in BP (filled until 2021),
-    unexplained codes in DR. Only the question 'was there a trigger'
+    As for the most serious attempt: labelled lists in BP (filled until 2021;
+    the inclusion visit only, its follow-up visits are in
+    most_violent_attempt_since_visit), unexplained codes in DR. Only the question 'was there a trigger'
     (violent_triggered) is comparable.
 
 # ---------------------------------------------------------------- Physical examination and laboratory
@@ -755,9 +835,14 @@ parametres_physiques:
   title: Height, weight, body mass index and waist
   domain: Physical examination and laboratory
   schemas: {bp: parametres_physiques, sz: parametres_physiques, dr: parametres_physiques, asp: parametres_physiques}
-  stack: "yes"
+  stack: with care
   use: [height, weight, bmi, waist]
-  note: Centimetres and kilograms in the four cohorts; the body mass index is recomputed. ASP has children.
+  note: >
+    Centimetres and kilograms in the four cohorts; the body mass index is
+    recomputed from them in each. ASP has children: their height, weight and
+    body mass index depend on age and sex, and the adult cut-offs of the body
+    mass index do not apply to them. Compare adults, or use age- and
+    sex-specific references for the children.
 
 pression_arterielle:
   title: Blood pressure and heart rate
@@ -777,6 +862,9 @@ ecg:
     The stored corrected QT is in the four cohorts. The intervals, and the QTc
     recomputed with the Bazett formula, are in BP, DR and ASP; SZ holds the
     stored QTc only, with no way to check its formula. ASP has few ECGs.
+    Prefer qtc_bazett: in BP and DR it is computed from the heart rate of the
+    ECG, because the RR typed in the form does not always fit that heart
+    rate, and the stored QTc follows the typed RR.
 
 biochimie:
   title: Blood biochemistry
@@ -787,7 +875,9 @@ biochimie:
   note: >
     Glucose, HbA1c, CRP and uric acid are in the four cohorts; the other
     analytes in BP, DR and ASP. Each analyte is delivered in one unit. ASP has
-    no unit column: the unit is read from the size of the value. A CRP below the
+    no unit column: the unit is read from the size of the value. An HbA1c
+    typed in mmol/mol (IFCC) is brought to % with the IFCC-NGSP master
+    equation in every cohort (about 30 results in BP, SZ and DR). A CRP below the
     detection limit of its laboratory keeps the limit as its value (flag
     censored_left), and the limits differ between laboratories.
 
@@ -1101,7 +1191,9 @@ medications:
     not the same thing: the treatments of the patient with their dates in BP
     and SZ; lists that the export crossed in DR, where no dose and no date can
     be tied to a product of a patient who has several; the treatments of each
-    visit in ASP. Doses are not comparable across cohorts.
+    visit in ASP. BP and SZ compute the daily dose in mg with the same rule
+    (the stored strength, else the one written in the name of the product:
+    BP decision D124); DR's is in the unit of its strength, and ASP has none.
 
 medications_at_visit:
   title: Psychotropic treatments on the day of the visit
@@ -1159,19 +1251,29 @@ social:
     labels; a full-time job is also in ASP. In SZ the export loses answers: no
     patient is recorded as married or living as a couple, and none with a salary
     or a disability pension (an open question of SZ): do not compare
-    marital_status and income_source with SZ. In BP the work status never holds
-    the answer 'student'. The other questions differ.
+    marital_status and income_source with SZ (SZ also has a "no income"
+    answer that BP has not). In BP the export writes the
+    students with 'other' (student_or_other). The other questions differ.
 
 sick_leave_v0:
   title: Sick leave at inclusion
   domain: Social situation and use of care
   schemas: {bp: sick_leave_v0, sz: sick_leave_v0, dr: sick_leave_v0, asp: work}
-  stack: "yes"
+  stack: with care
   use: [sick_leave_12m, sick_leave_weeks_12m, sick_leave_current]
   note: >
     A sick leave in the last twelve months and its length in weeks are in the
     four cohorts; a sick leave at the visit in BP, SZ and DR. Asked of the
-    patients who work.
+    patients who work. After a no the weeks are 0 in the four cohorts. SZ
+    and DR read the past year from the social form ("Arrêt de travail au
+    cours de l'année passée"). BP reads it from the diagnosis form of the
+    inclusion visit: the DSM-5 form asks the same question, but the DSM-IV
+    form, where 3,327 of the 4,057 BP answers come from, has none, and an
+    application script wrote the yes/no from the number of sick leaves
+    (see the BP schema). When R74 ships, BP also takes the social form's
+    answers where the diagnosis forms are empty. ASP asks another question:
+    off work during the work contracts of the last 12 months, hospital
+    weeks excluded.
 
 sick_leave_fu:
   title: Sick leave since the last visit
@@ -1180,9 +1282,11 @@ sick_leave_fu:
   stack: with care
   use: [sick_leave_fu, n_sick_leaves_fu]
   note: >
-    BP and DR share the question and the number of sick leaves; the length is
-    in weeks in BP and in days in DR, under two names. SZ separates the
-    psychiatric and the somatic sick leaves, under names of its own.
+    BP and SZ ask the same question (a sick leave for a psychiatric disorder
+    since the last visit), with the number and the length in weeks, under the
+    same names; SZ adds the somatic sick leaves of the past 12 months. DR has
+    a sick-leave question and the number (its wording is not checked); its
+    length is in days, under another name.
 
 hospitalisations_v0:
   title: Hospitalisations before inclusion
@@ -1193,8 +1297,11 @@ hospitalisations_v0:
   note: >
     The number of hospitalisations over the life, their total length in months
     and the age at the first one are in the three cohorts. In SZ a patient who
-    was never hospitalised has no number (not a zero) and the form stops at 20
-    times and 30 months; the DR form is on about half of its inclusions.
+    was never hospitalised has no number (not a zero). The forms stop at 20
+    times in BP and SZ, and at 20 months in BP and 30 in SZ (">20", ">30" are
+    right-censored, with a _cens column); DR has no cap (14 durations above
+    20 months). To compare, cut the number at 20 and the months at 20 in
+    every cohort. The DR form is on about half of its inclusions.
 
 hospitalisations_12m:
   title: Hospitalisations in the year before the visit
@@ -1203,5 +1310,9 @@ hospitalisations_12m:
   stack: with care
   use: [n_hospitalisations_12m, hospitalisation_weeks_12m]
   note: >
-    Asked at inclusion in BP and at every visit in SZ. In SZ the number is
-    recorded for the patients who were hospitalised (no zero), in BP for all.
+    Asked at inclusion in BP and at every visit in SZ. In SZ the number and
+    the length follow a yes and are almost always empty after a no (4 of
+    3,261). In BP the DSM-IV form asks them only after a mood episode in the
+    past year and the DSM-5 form asks every patient; after a no to any mood
+    episode in the past year both are 0, and the length is 0 where the
+    number is 0 (BP D123). So BP has zeros where SZ has empty cells.

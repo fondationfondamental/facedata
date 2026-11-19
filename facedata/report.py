@@ -133,13 +133,15 @@ def write_report(result, schemas, folder):
     flags = result.flags.merge(rows, on=["usubjid", "visit"], how="left")
     contents = []
     per_patient = patient_frame(result)
+    first_row = pd.Series(per_patient.index, index=per_patient["usubjid"])
     frames = {"relatives": rows_frame(result, result.relatives, result.relatives["relative"])}
     for name, schema in schemas.items():
         qc = result.qc[result.qc["instrument"] == name]
         if len(qc) == 0:                             # this instrument was not loaded
             continue
-        data = per_patient if schema.get("level") == "patient" else result.data
-        if schema.get("level") in ("list", "relatives"):     # several rows per patient: items or relatives
+        if schema.get("level") == "patient":         # a flag is drawn on the patient's first visit, with the value
+            link = instrument_page(schema, per_patient, qc, flags.assign(row=flags["usubjid"].map(first_row)), folder)
+        elif schema.get("level") in ("list", "relatives"):     # several rows per patient: items or relatives
             frame = frames.get(schema["level"])
             if schema["level"] == "list":                # the items of this list, named as the flag log names them
                 items, label = result.treatments, "item "
@@ -149,7 +151,7 @@ def write_report(result, schemas, folder):
             own = result.flags.merge(frame[["usubjid", "visit"]].assign(row=frame.index), on=["usubjid", "visit"])
             link = instrument_page(schema, frame, qc, own, folder)
         else:
-            link = instrument_page(schema, data, qc, flags, folder)
+            link = instrument_page(schema, result.data, qc, flags, folder)
         contents.append({"instrument": f"<a href='{link}'>{html.escape(schema['title'])}</a>", "tab": schema["tab"],
                          "status": schema["status"], "variables": len(qc), "values": int(qc["n_valid"].sum()),
                          "info": int(qc["n_info"].sum()), "discrepancy": int(qc["n_discrepancy"].sum()),

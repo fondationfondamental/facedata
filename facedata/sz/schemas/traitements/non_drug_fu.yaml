@@ -4,36 +4,51 @@ tab: TRAITEMENTS
 section: Traitement non pharmacologique
 status: draft
 notes: >
-  At the follow-up visits (2,297): did the patient have a non-drug treatment
-  since the last visit (836 yes), then one yes/no per treatment. 1 is yes,
-  0 is no; "Ne sais pas" is a missing code.
+  At the follow-up visits, never at the inclusion: did the patient have a
+  non-drug treatment since the last visit, then one yes/no per treatment.
+  2,297 visits answer the first question (836 yes, 40 "Ne sais pas"). 1 is
+  yes, 0 is no; "Ne sais pas" is a missing code.
 
   The treatments are answered after a yes to the first question, and the
   five contents of the cognitive behavioural therapy after a yes to that
-  therapy (asked until 2019). After a "no" they are delivered as 0
+  therapy (last answered in July 2019). After a "no" they are delivered as 0
   (asked_if).
 
-  The same questions as in FACE BP for the first one, the
-  electroconvulsive therapy, the magnetic stimulation, the cognitive
-  behavioural therapy and "another treatment", under the same names, in
-  columns without the suffix _sem. The SZ form has no number of sessions
-  and no dates, and asks about cognitive remediation, the psychodynamic
-  approach, family therapy and family psychoeducation instead of the
-  psychoeducation group and the IPSRT of BP.
+  Boxes of one list (box_list, D124). After a yes, some raters tick only the
+  treatments received and leave the other boxes empty. An empty box beside a
+  ticked box of the same list is read as no: 722 boxes on 163 visits among
+  the seven treatments of the current form, and 138 boxes on 56 visits among
+  the five contents of the cognitive behavioural therapy, a list of their
+  own. Where all seven treatments are empty after a yes (50 visits), they
+  stay missing. 79 visits say yes and then no to all seven; they are
+  delivered as recorded.
+
+  "Another treatment" is not in the list: the form dropped it in 2019. It
+  was last answered in August 2019, and none of the 390 yes visits from 2020
+  answer it: since then it is 0 after a "no" to the first question and
+  missing after a yes.
+
+  The same questions as in FACE BP for the first one, the electroconvulsive
+  therapy, the magnetic stimulation, the cognitive behavioural therapy and
+  "another treatment", under the same names, in columns without the suffix
+  _sem. The SZ form has no number of sessions and no dates, and asks about
+  cognitive remediation, the psychodynamic approach, family therapy and
+  family psychoeducation instead of the psychoeducation group and the IPSRT
+  of BP.
 
 variables:
   non_drug_treatment_fu: {column: rad_non_pharmacologique, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Had a non-drug treatment since the last visit"}
 
-  ect_fu: {column: proccur_sismo, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Electroconvulsive therapy since the last visit"}
-  tms_fu: {column: proccur_tms, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Transcranial magnetic stimulation since the last visit"}
-  cbt_fu: {column: proccur_tcc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Cognitive behavioural therapy since the last visit"}
-  cbt_information_fu: {column: proccur_tcc_info, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, label: "Cognitive behavioural therapy: information on the illness and the treatments"}
-  cbt_social_functioning_fu: {column: proccur_tcc_ameliosocio, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, label: "Cognitive behavioural therapy: social functioning"}
-  cbt_stress_fu: {column: proccur_tcc_gestress, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, label: "Cognitive behavioural therapy: management of stress and anxiety"}
-  cbt_positive_symptoms_fu: {column: proccur_tcc_gestpositif, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, label: "Cognitive behavioural therapy: management of the positive symptoms"}
-  cbt_other_fu: {column: proccur_tcc_autre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, label: "Cognitive behavioural therapy: other"}
-  cognitive_remediation_fu: {column: proccur_remedcognitive, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Cognitive remediation since the last visit"}
-  psychodynamic_fu: {column: proccur_appsychodynamique, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Psychodynamic approach since the last visit"}
-  family_therapy_fu: {column: proccur_therapiefam, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Family therapy since the last visit"}
-  family_psychoeducation_fu: {column: proccur_psychoedfam, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Psychoeducation group for the families since the last visit"}
+  ect_fu: {column: proccur_sismo, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Electroconvulsive therapy since the last visit"}
+  tms_fu: {column: proccur_tms, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Transcranial magnetic stimulation since the last visit"}
+  cbt_fu: {column: proccur_tcc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Cognitive behavioural therapy since the last visit"}
+  cbt_information_fu: {column: proccur_tcc_info, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, box_list: cbt_contents, label: "Cognitive behavioural therapy: information on the illness and the treatments"}
+  cbt_social_functioning_fu: {column: proccur_tcc_ameliosocio, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, box_list: cbt_contents, label: "Cognitive behavioural therapy: social functioning"}
+  cbt_stress_fu: {column: proccur_tcc_gestress, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, box_list: cbt_contents, label: "Cognitive behavioural therapy: management of stress and anxiety"}
+  cbt_positive_symptoms_fu: {column: proccur_tcc_gestpositif, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, box_list: cbt_contents, label: "Cognitive behavioural therapy: management of the positive symptoms"}
+  cbt_other_fu: {column: proccur_tcc_autre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cbt_fu, box_list: cbt_contents, label: "Cognitive behavioural therapy: other"}
+  cognitive_remediation_fu: {column: proccur_remedcognitive, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Cognitive remediation since the last visit"}
+  psychodynamic_fu: {column: proccur_appsychodynamique, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Psychodynamic approach since the last visit"}
+  family_therapy_fu: {column: proccur_therapiefam, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Family therapy since the last visit"}
+  family_psychoeducation_fu: {column: proccur_psychoedfam, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Psychoeducation group for the families since the last visit"}
   other_therapy_fu: {column: proccur_autre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, label: "Another non-drug treatment since the last visit"}

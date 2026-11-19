@@ -11,8 +11,9 @@ notes: >
 
   The intervals are typed in seconds or in milliseconds: the size of the value
   tells which, and a value in milliseconds is converted (unit_inferred). The
-  corrected QT is recomputed with Bazett's formula and compared with the
-  stored one.
+  corrected QT is recomputed with Bazett's formula on the typed RR, since
+  this extraction has no heart rate of the ECG (BP and DR use the heart
+  rate, BP decision D114), and compared with the stored one.
 
 defaults: {type: number, unit: s}
 
@@ -44,9 +45,9 @@ variables:
 
 scores:
   qtc_bazett:
-    label: Corrected QT interval, Bazett's formula on the harmonised QT and RR
+    label: "Corrected QT interval (Bazett), from the QT and the heart rate of the ECG, or the RR where there is no rate"
     custom: corrected_qt
     compare: qtc_stored
-    compare_tolerance: 0.005
+    compare_tolerance: 0.03
     range: [0.2, 0.7]
     winsor: [0.01, 0.99]

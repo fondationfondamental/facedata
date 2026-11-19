@@ -2,22 +2,47 @@ instrument: wais3_matrices
 title: WAIS-III matrix reasoning (26 items)
 tab: NEUROPSYCHOLOGIE
 section: Matrices
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 of the BP file). This schema reads the columns mat01_w to
-  mat26_w on the WAIS-III visits (568 visits, from 2010 to 2016);
+  mat26_w on the WAIS-III visits (543 visits, from 2010 to 2015);
   wais4_matrices.yaml reads the WAIS-IV visits.
 
-  The stored raw total equals the sum of the 26 items on 563 of the 567
-  visits that have it; the 4 others get score_mismatch.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold matrices items and are read
+  in wais4_matrices.yaml, not here.
 
-  Same instrument and same schema as in FACE BP.
+  The stored raw total equals the sum of the 26 items on 542 of the 542 visits
+  that have it (the 543rd visit has none and gets the recomputed one).
+
+  Scaled score and z-score (decision of 18 November 2026). Recomputed from the
+  raw total in the application's own norm table (norms/wais3_matrices.csv, not
+  part of the repository) and delivered; the stored ones are read as checks
+  (keep: false), and a difference is score_mismatch on the delivered score.
+  The EMR read its table with the age typed in the form (cclin01_); the
+  package reads it with that age where it is within one year of the age at the
+  visit, else with the age at the visit (age: wais3_mat_age). The z-score is
+  (scaled score - 10) / 3. On the 542 visits that have a stored and a
+  recomputed scaled score, 6 differ (before 2013): five have a typed age more
+  than a year from the age at the visit (read with the typed age as it stands
+  the table gives the stored score on all but one of the 541 visits that have
+  a typed age). The z-score differs on 6. The typed age is within a year of
+  the age at the visit on 525 of the 543 visits that have a total, farther on
+  17 and missing on 1.
+
+  Same instrument and same schema as in FACE BP, except the version block
+  (the override of the edition rule above, which BP does not have). Two
+  typed ages written 'NN ans' are unparsed; the age at the visit is used
+  where the typed one is not read (1 of the 2 visits have this subtest).
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais3]}
 
@@ -49,9 +74,10 @@ variables:
   wais3_mat25: {column: mat25_w, label: Matrices item 25}
   wais3_mat26: {column: mat26_w, label: Matrices item 26}
 
-  wais3_mat_total_stored: {column: mat_tot_w, label: Raw total as stored, range: [0, 26], keep: false}
-  wais3_mat_scaled:       {column: mat_std_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_mat_total}
-  wais3_mat_z:            {column: mat_cr_w,  label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_mat_total}
+  wais3_mat_age:           {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its table with"}
+  wais3_mat_total_stored:  {column: mat_tot_w, label: Raw total as stored, range: [0, 26], keep: false}
+  wais3_mat_scaled_stored: {column: mat_std_w, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_mat_z_stored:      {column: mat_cr_w,  label: "Scaled score as a z-score, as stored", type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais3_mat_total:
@@ -62,3 +88,16 @@ scores:
           wais3_mat19, wais3_mat20, wais3_mat21, wais3_mat22, wais3_mat23, wais3_mat24,
           wais3_mat25, wais3_mat26]
     compare: wais3_mat_total_stored
+  wais3_mat_scaled:
+    label: Age-scaled score (mean 10 and SD 3)
+    lookup: wais3_matrices
+    from: wais3_mat_total
+    age: wais3_mat_age
+    range: [1, 19]
+    compare: wais3_mat_scaled_stored
+  wais3_mat_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_mat_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_mat_z_stored
+    compare_tolerance: 0.006

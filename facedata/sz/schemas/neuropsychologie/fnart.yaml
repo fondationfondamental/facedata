@@ -2,19 +2,38 @@ instrument: fnart
 title: French National Adult Reading Test (fNART)
 tab: NEUROPSYCHOLOGIE
 section: fNART
-status: draft
+status: reviewed
 notes: >
   Reading aloud of 40 irregular French words, each scored correct or
-  incorrect: an estimate of the premorbid IQ. 686 visits from 2010 to 2016,
-  all with the old neuropsychological form; the test is not in the form
-  that replaced it.
+  incorrect: an estimate of the premorbid IQ. The words are recorded on 686
+  visits from 2010 to 2016 (684 with the 40 words, 2 with some of them), all
+  with the old neuropsychological form; the test is not in the form that
+  replaced it. A total and three IQs are stored on 1,295 visits: 685 of them
+  have words, 610 have none (2014: 2, 2015: 150, 2016: 239, 2017: 208, 2018:
+  10, 2025: 1).
 
-  The total is the number of words read correctly: recomputed here, it
-  equals the stored total on the 684 visits that have the 40 words. The
-  three estimated IQs (full scale, verbal, performance) are each an exact
-  straight line of the total, on all 685 visits; they are delivered as
-  stored, and doubted where the stored total is not the number of correct
-  words. The dictionary does not give the three equations.
+  The total is the number of words read correctly. Recomputed, it equals the
+  stored total on the 684 visits that have the 40 words. Where no word is
+  recorded and a total is stored (the 610 visits), the total is delivered as
+  stored and gets score_as_stored. The visit with only some of the words has a
+  stored total that cannot be recomputed (score_not_recomputed).
+
+  The three estimated IQs (full scale, verbal, performance) are each an exact
+  straight line of the total, with one intercept and one slope for all ages;
+  the coefficients are in norms/wais3_fnart_qit.csv, wais3_fnart_qiv.csv and
+  wais3_fnart_qip.csv (read in psy_neuropsychologie_fnart.js; the dictionary
+  does not give the equations). They are recomputed from the total and
+  delivered on 1,294 visits, where they equal the stored IQs on 1,294 of 1,294
+  (the stored ones, fnart_qit_stored, fnart_qiv_stored and fnart_qip_stored,
+  are checks). On the 610 visits where the total is the stored one, the IQs
+  are the line of that stored total. The stored IQs of the visit with only
+  some of the words cannot be recomputed (score_not_recomputed). Centre D (82
+  visits with the words, 174 with a total) reads items 12, 22 and 30 correct
+  on 61%, 38% and 9% of its visits against 92%, 74% and 66% in the other
+  centres, which costs 1.2 points of the total on average and accounts for
+  most of its median total of 23.5 against 25: a centre habit on three
+  words, with no step in time (the yearly medians of the total are 24 to
+  25).
 
 defaults: {type: item, range: [0, 1], codes: {Correct: 1, Incorrect: 0}}
 
@@ -60,9 +79,9 @@ variables:
   fnart_39: {column: fnart39_, label: fNART word 39 read correctly}
   fnart_40: {column: fnart40_, label: fNART word 40 read correctly}
   fnart_total_stored: {column: fnartot_, label: "Number of words read correctly, as stored", range: [0, 40], keep: false}
-  fnart_qit: {column: fnarqit_, label: Full-scale IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
-  fnart_qiv: {column: fnarqiv_, label: Verbal IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
-  fnart_qip: {column: fnarqip_, label: Performance IQ estimated from the fNART, type: number, range: [60, 140], winsor: false, derived_from: fnart_total}
+  fnart_qit_stored: {column: fnarqit_, label: Full-scale IQ estimated from the fNART as stored, type: number, range: [60, 140], winsor: false, keep: false}
+  fnart_qiv_stored: {column: fnarqiv_, label: Verbal IQ estimated from the fNART as stored, type: number, range: [60, 140], winsor: false, keep: false}
+  fnart_qip_stored: {column: fnarqip_, label: Performance IQ estimated from the fNART as stored, type: number, range: [60, 140], winsor: false, keep: false}
 
 scores:
   fnart_total:
@@ -72,4 +91,30 @@ scores:
           fnart_17, fnart_18, fnart_19, fnart_20, fnart_21, fnart_22, fnart_23, fnart_24,
           fnart_25, fnart_26, fnart_27, fnart_28, fnart_29, fnart_30, fnart_31, fnart_32,
           fnart_33, fnart_34, fnart_35, fnart_36, fnart_37, fnart_38, fnart_39, fnart_40]
+    range: [0, 40]
+    otherwise: fnart_total_stored
     compare: fnart_total_stored
+  fnart_qit:
+    label: Full-scale IQ estimated from the fNART
+    regression: wais3_fnart_qit
+    from: fnart_total
+    with: {total: fnart_total}
+    range: [60, 140]
+    compare: fnart_qit_stored
+    compare_tolerance: 0.011
+  fnart_qiv:
+    label: Verbal IQ estimated from the fNART
+    regression: wais3_fnart_qiv
+    from: fnart_total
+    with: {total: fnart_total}
+    range: [60, 140]
+    compare: fnart_qiv_stored
+    compare_tolerance: 0.011
+  fnart_qip:
+    label: Performance IQ estimated from the fNART
+    regression: wais3_fnart_qip
+    from: fnart_total
+    with: {total: fnart_total}
+    range: [60, 140]
+    compare: fnart_qip_stored
+    compare_tolerance: 0.011

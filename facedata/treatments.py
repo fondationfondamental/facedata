@@ -157,8 +157,8 @@ def at_visit(values, item_keys, keys, block):
     visits = keys[["usubjid", "visit_date"]].reset_index(names="row")
     for name, column in block["columns"].items():
         fits = pd.Series(True, index=values.index)
-        for variable, value in column["where"].items():
-            fits = fits & (values[variable] == value)
+        for variable, wanted in column["where"].items():   # one value, or a list of values
+            fits = fits & values[variable].isin(wanted if isinstance(wanted, list) else [wanted])
         periods = pd.DataFrame({"usubjid": item_keys["usubjid"], "start": values[block["start"]], "end": values[block["end"]]})
         pairs = visits.merge(periods[fits], on="usubjid")              # each visit with each fitting item of the patient
         running = pairs["end"].isna() | (pairs["end"] >= pairs["visit_date"])

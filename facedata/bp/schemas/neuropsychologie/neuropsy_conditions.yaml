@@ -2,28 +2,63 @@ instrument: neuropsy_conditions
 title: Neuropsychological assessment, conditions of the testing
 tab: NEUROPSYCHOLOGIE
 section: NEUROPSYCHOLOGIE
-status: draft
+status: reviewed
 notes: >
   The first lines of the neuropsychology form: who the patient is on the day
   of the testing, and whether the tests can be given. Filled once per
-  assessment (about 6,280 visits).
+  assessment: 6,313 visits of 4,839 patients, 6,302 of them with the typed
+  age. Whenever another instrument of the tab is filled this form is too
+  (6,243 of 6,243 visits).
 
-  The age and the years of education are those the psychologist entered;
-  the norms of the tests were read with them. The age differs by more than
-  a year from the age computed from the dates on 199 visits. Education is
-  counted in years from the first year of primary school.
+  The age and the years of education are those the psychologist entered; the
+  norms of the tests were read with them. The norms are read with the typed
+  age where it is within 1 year of the age at the visit (computed from the
+  dates), else with the age at the visit; neuropsy_age_used delivers the age
+  that was used (missing on a visit with no form), so that a user sees which
+  one it was. It carries no flag. The typed age differs from the age at the
+  visit by more than 1 year on 221 of 6,302 visits (typed lower on 173; 1 to
+  2 years on 140, more than 2 years on 81). By period: until 2012 55,
+  2013-15 50, 2016-18 47, 2019-21 40, 2022-23 21, 2024 on 8; by centre D 56,
+  C 42, B 29, A 23. The entry date of the form explains 15 of them (the
+  typed age is within a year of the age on that day). 9 typed ages are
+  written with their unit ("NN ans") and are not read (unparsed, not
+  repaired).
+
+  Education is counted in years from the first year of primary school: 6,303
+  visits, from 0 to 25 (1 visit at 0 and 33 at 21 to 25: plausible, the
+  range stays [0, 30]; one raw value of 44 is out_of_range; 6 text answers
+  are unparsed). It is entered again at each assessment: of the 1,360
+  patients with two values or more, 304 have different ones. 8 of the 6,006
+  visits with a TMT or a CVLT value have no education (the norms need it).
 
   The yes/no criteria are delivered as 1 (yes) and 0 (no). Each is worded so
   that "yes" is the condition wanted for the testing.
+
+  With the other cohorts. neuropsy_age, education_years,
+  neuropsy_mood_rating_delay and the visual and hearing questions are the
+  same question and the same coding in BP, SZ and DR. Not the same: cclin05
+  (BP asks whether the patient is euthymic, SZ whether the clinical state is
+  compatible with the tests, DR has no cclin05), cclin11 (electroconvulsive
+  therapy in the past year in BP and DR, in the last six months in SZ) and
+  the French question (a sufficient command in BP and SZ, the mother tongue
+  in DR). SZ has no handedness; in DR the code 1 is right, in ASP it is
+  left. No cohort asks about sleep.
 
   The hour of the testing (rad_heure_passation_) sits in the SCIP section of
   the dictionary but concerns the whole assessment; it exists from 2018.
 
   The date the form was entered (date_saise_neuropsychologie, a column that
-  is not in the dictionary) is filled on the same 6,280 visits. It is the
-  day of the visit for 1,922 of them, before it for 59, more than a month
-  after it for 1,036 and more than a year after it for 195: it says when
-  the form was typed, not when the tests were given.
+  is not in the dictionary) is filled on the 6,313 visits. It is the day of
+  the visit for 1,928 of them, before it for 60, more than a month after it
+  for 1,041 and more than a year after it for 195: it says when the form was
+  typed, not when the tests were given.
+
+  Not every centre fills the form at inclusion any more (open question O40).
+  The typed age is on 69.9% of the inclusion visits of 2016-21 (2,759) and
+  on 53.7% of those from 2022 (1,519); some test of the tab is on 69.1% then
+  51.9%. By centre, 2016-21 then from 2022: A 59% then 27%, B 91% then 46%,
+  C 61% then 32%, H 95% then 54%, F 37% then 19% (102 inclusions since
+  2022); E is low throughout (24%, then 30%).
 
 defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
 
@@ -54,3 +89,8 @@ variables:
     type: date
     range: [2008-01-01, 2030-12-31]
     label: Date the neuropsychology form was entered
+
+scores:
+  neuropsy_age_used:
+    label: "Age the norms of the tab are read with (years): the age typed in the form where it is within 1 year of the age at the visit, else the age at the visit"
+    custom: neuropsy_age_used

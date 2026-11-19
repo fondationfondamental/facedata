@@ -17,6 +17,8 @@ A schema refers to a function of this file by its name:
 Use them rarely (docs/SCHEMA_SPEC.md, section 10).
 """
 
+import re
+
 import numpy as np
 import pandas as pd
 
@@ -75,8 +77,38 @@ def body_mass_index(values, keys=None):
 
 
 def corrected_qt(values, keys=None):
-    """Bazett's formula: the QT interval divided by the square root of the RR interval, in seconds."""
-    return values["qt_interval"] / values["rr_interval"] ** 0.5
+    """Bazett's formula: the QT interval divided by the square root of the RR interval, in seconds.
+
+    The RR interval is 60 divided by the heart rate of the ECG where there is
+    one: the RR typed in the form does not always fit that heart rate. The
+    typed RR is used where the heart rate is missing.
+    """
+    rr = values["rr_interval"]
+    if "ecg_heart_rate" in values:
+        rate = values["ecg_heart_rate"]
+        rr = (60 / rate).where(rate.notna(), rr)
+    return values["qt_interval"] / rr ** 0.5
+
+
+def sick_leave_more_than_20(values, keys=None):
+    """A sick leave in the past year: the stored yes/no, but yes where it says no to more than 20 sick leaves.
+
+    At the DSM-IV inclusions an application script wrote the yes/no from the
+    number of sick leaves, and read the answer ">20" as 0 (decision D123). The
+    number is then 20, censored on the right.
+    """
+    stored = values["sick_leave_12m_stored"]
+    return stored.mask((stored == 0) & (values["n_sick_leaves_12m"] == 20), 1.0)
+
+
+def rr_differs_from_rate(values):
+    """The RR interval typed in the form against the heart rate of the same ECG.
+
+    The two say the same thing: RR x rate / 60 is 1. True where it is under
+    0.7 or above 1.3: the typed RR is another quantity.
+    """
+    product = values["rr_interval"] * values["ecg_heart_rate"] / 60
+    return product.notna() & ~product.between(0.7, 1.3)
 
 
 def cholesterol_ratio(values, keys=None):
@@ -235,10 +267,14 @@ def psqi_efficiency(values, keys=None):
 
     The hours asleep over the hours in bed, from the bedtime to the rising
     time across midnight: 85% or more counts 0, 75% to 84% counts 1, 65% to
-    74% counts 2, less counts 3.
+    74% counts 2, less counts 3. A bedtime from 6:00 to 17:00 with more than
+    16 hours in bed is a bedtime typed on a 12-hour clock (11:00 for 23:00):
+    12 hours are added to it (554 BP visits, 3.3%).
     """
     in_bed = (values["psqi_rising_time"] - values["psqi_bedtime"]) % 24
-    efficiency = 100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)
+    clock_of_12 = values["psqi_bedtime"].between(6, 17, inclusive="left") & (in_bed > 16)
+    in_bed = in_bed.where(~clock_of_12, in_bed - 12)
+    efficiency = (100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)).round(6)       # 75.0 and not 74.99999999999999
     points = (efficiency < 85).astype(float) + (efficiency < 75) + (efficiency < 65)
     return points.where(efficiency.notna())
 
@@ -276,15 +312,6 @@ def stroop_interference(values, keys=None):
     return values["stroop_colour_word_corrected"] - words * colours / (words + colours)
 
 
-def recency_z_without_recency(values):
-    """A CVLT recency z-score with no recency next to it.
-
-    The EMR computed it from an empty cell, as if the recency were 0. True
-    where that is the case.
-    """
-    return values["cvlt_recency_z"].notna() & values["cvlt_recency"].isna()
-
-
 def medication_name(names):
     """The stem of a medication name: "TERALITHE LP 400 mg, comprimé sécable" gives "TERALITHE LP"."""
     stems = names.str.upper().str.replace(r"\s+\d.*|[,(/*].*", "", regex=True)
@@ -296,3 +323,71 @@ def medication_name_plain(names):
     plain = names.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
     return medication_name(plain)
 
+
+
+# An amount of a mass, a percentage or units, alone or per volume: the rule of R54 in docs/EXPORT_REQUESTS.md.
+STRENGTH = re.compile(r"(?<![0-9] )(?<![0-9.,])([0-9]+(?:[.,][0-9]+)?)\s*(mg|g|µg|mcg|microgrammes?|ui|%)"
+                      r"(\s*/\s*(?:[0-9]+(?:[.,][0-9]+)?\s*)?(?:ml|g|dose))?(?![^\W\d_])", re.IGNORECASE)
+MILLIGRAMS = {"mg": 1.0, "g": 1000.0, "µg": 0.001, "mcg": 0.001, "microgramme": 0.001, "microgrammes": 0.001}
+
+
+def strength_in_name(names):
+    """The strength written in the name of a product, in mg (DM-14).
+
+    Read only where the name holds exactly one amount, of a mass and not per
+    volume: "DEPAKOTE 500 mg, comprimé" gives 500. Several amounts, an amount
+    per ml, a percentage or units give nothing.
+    """
+    def read(name):
+        found = STRENGTH.findall(name)
+        if len(found) != 1 or found[0][2]:
+            return np.nan
+        number, unit, per_volume = found[0]
+        return float(number.replace(",", ".")) * MILLIGRAMS.get(unit.lower(), np.nan)
+    return names.map(read).astype(float)
+
+
+def strength_used(values):
+    """The strength in mg of each medication: the one stored where the form stored one, else the one of the name."""
+    stored = values["strength"].fillna("")
+    number = stored.str.extract(r"^([0-9]+(?:[.,][0-9]+)?)", expand=False).str.replace(",", ".").astype(float)
+    in_mg = number * values["dose_unit"].fillna("").str.lower().map(MILLIGRAMS)
+    return in_mg.where(stored != "", strength_in_name(values["medication"].fillna("")))
+
+
+def daily_dose(values, keys=None):
+    """The total daily dose in mg: the strength times the number of units a day (D124)."""
+    return strength_used(values) * values["units_per_day"]
+
+
+def strength_from_name(values, keys=None):
+    """1 where the delivered daily dose rests on the strength read from the name, 0 on the stored one."""
+    from_name = (values["strength"].fillna("") == "").astype(float)
+    return from_name.where(values["daily_dose"].notna())
+
+
+def end_before_start(values):
+    """A treatment whose end date is before its start date."""
+    return values["end_date"] < values["start_date"]
+
+
+def neuropsy_age_used(values, keys):
+    """The age that the norms of the neuropsychology tab are read with.
+
+    The age typed in the form where it is within 1 year of the age at the
+    visit, else the age at the visit (the rule of norm_age in harmonise.py).
+    Missing on the visits that have no conditions form: no test was given.
+    """
+    typed, age = values["neuropsy_age"], keys["age"]
+    used = typed.where(typed.notna() & (age.isna() | ((typed - age).abs() <= 1)), age)
+    return used.where(values.notna().any(axis=1))
+
+
+def cpt3_typed_raw(values):
+    """CPT-3: the visit holds raw values in its T-score columns.
+
+    A T-score of the hit reaction time never exceeds 90; the visits where it
+    is above 100 hold the raw values of the report (a time in ms). True on
+    them, so that a raw value that looks like a T-score (20 to 90) is flagged.
+    """
+    return values["cpt3_hrt_t_typed"] > 100

@@ -4,14 +4,20 @@ tab: SUICIDE
 section: Idéation Suicidaire
 status: draft
 notes: >
-  The Columbia scale at the follow-up visits, since the last visit: 784 visits (79% to 93% of the visits of each kind).
+  The Columbia scale at the follow-up visits, since the last visit: 784
+  visits, 79% to 93% of the visits of each of the five main kinds (6 of
+  the 8 visits of the three others).
 
   Columbia Suicide Severity Rating Scale: five levels of ideation (yes or
   no, each with a free description), the most severe level as rated, five
   ratings of its intensity, the suicidal behaviours (actual, interrupted
   and aborted attempts, preparatory acts, self-injury without intent) and
-  the lethality of three attempts. Not the BP schema: BP has other columns
-  and one form.
+  the lethality of three attempts. BP has two forms too, cssrs_v0 and
+  cssrs_fu (BP decision D125), read from other columns, with the ideation
+  part only. BP's follow-up schema has the names of this one and stacks
+  with it (common_instruments.yaml). BP's inclusion form asks about the
+  past week, DR's about the whole life: the two inclusion schemas do not
+  stack.
 
   Two forms in the same columns. The inclusion visit asks about the whole
   life; the follow-up visits use the same columns for the time since the
@@ -25,11 +31,13 @@ notes: >
   follow-up, and 267 of the 577 follow-up visits of patients who said yes
   at inclusion answer no.
 
-  The form follows its skips: levels 3 to 5 are asked after a yes to level
-  2. The most severe ideation as rated (cssrs06) is the highest level
-  answered yes on 354 of 474 visits, higher on 56 and lower on 64: it is
-  delivered as rated. The intensity score is the sum of the five ratings,
-  as in BP.
+  The form follows its skips: levels 3 to 5 are asked only after a yes to
+  level 2, and after a no they are 0 (asked_if; DR decision D25).
+  cssrs03_since_visit is on 782 visits: asked on 219, 0 after a no on 563.
+  The most severe ideation as rated (cssrs06) is the highest level
+  answered yes on 198 of 244 follow-up visits, higher on 21 and lower on
+  25: it is delivered as rated. The intensity score is the sum of the five
+  ratings, as in BP.
 
 version:
   name: visit_form
@@ -53,13 +61,13 @@ variables:
   cssrs01_since_visit_text: {column: cssrs01a, type: text, label: "Description, as written"}
   cssrs02_since_visit: {column: cssrs02, label: "Non-specific active suicidal thoughts - since the last visit"}
   cssrs02_since_visit_text: {column: cssrs02a, type: text, label: "Description, as written"}
-  cssrs03_since_visit: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - since the last visit"}
+  cssrs03_since_visit: {column: cssrs03, label: "Active suicidal ideation with a method, without intent - since the last visit", asked_if: cssrs02_since_visit}
   cssrs03_since_visit_text: {column: cssrs03a, type: text, label: "Description, as written"}
-  cssrs04_since_visit: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - since the last visit"}
+  cssrs04_since_visit: {column: cssrs04, label: "Active suicidal ideation with some intent to act, without a plan - since the last visit", asked_if: cssrs02_since_visit}
   cssrs04_since_visit_text: {column: cssrs04a, type: text, label: "Description, as written"}
-  cssrs05_since_visit: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - since the last visit"}
+  cssrs05_since_visit: {column: cssrs05, label: "Active suicidal ideation with a plan and intent - since the last visit", asked_if: cssrs02_since_visit}
   cssrs05_since_visit_text: {column: cssrs05a, type: text, label: "Description, as written"}
-  cssrs_most_severe_since_visit: {column: cssrs06, range: [0, 5], label: "Most severe ideation, as rated (1 to 5) - since the last visit"}
+  cssrs_most_severe_since_visit: {column: cssrs06, range: [1, 5], label: "Most severe ideation, as rated (1 to 5) - since the last visit"}
   cssrs_ideation_since_visit_text: {column: cssrs07, type: text, label: "Description of the ideation, as written"}
   cssrs_frequency_since_visit: {column: cssrs08, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - since the last visit"}
   cssrs_duration_since_visit: {column: cssrs09, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - since the last visit"}

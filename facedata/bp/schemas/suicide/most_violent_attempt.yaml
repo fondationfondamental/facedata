@@ -2,19 +2,81 @@ instrument: most_violent_attempt
 title: The most violent suicide attempt (method and lethality)
 tab: SUICIDE
 section: Columbia TS la plus violente
-status: draft
+status: reviewed
 notes: >
-  For patients with a violent attempt: its method, its medical consequences
-  on a scale that has its own wording for each method, and what triggered
-  it. Filled until 2021, almost always at the inclusion visit (336 visits).
+  The most violent suicide attempt of the whole life, as asked at the
+  inclusion visit after a yes to violent attempts: its method, its medical
+  consequences on a scale that has its own wording for each method, and
+  whether an event triggered it, with which one. Delivered as categories;
+  "triggered" as 1 (yes) and 0 (no).
 
-  Each method has its own lethality column. They are delivered as written,
-  with short codes that follow the order of the scale, from no damage to
-  death. On 17 visits the method is empty and every lethality column holds
-  "no damage"; on a few visits a lethality is filled for a method that is
-  not the one given.
+  One schema per form (decision D125 in PROGRESS.md, as D86 did for the
+  attempt counts). The follow-up form asks the same section about the most
+  violent attempt since the last visit: those answers are
+  most_violent_attempt_since_visit. visit_form says which form a visit
+  used; it is read from the visit label.
 
-defaults: {type: category}
+  319 methods on 321 inclusion visits, from 2009 to November 2021. The
+  section left the forms during 2021: the last answer of each centre is
+  between March and November 2021 (one centre stopped in 2019), and none of
+  the 88 inclusions from 2022 that report a violent attempt
+  (violent_attempts) has the detail. Until 2021 the method is given on 90%
+  to 97% of the inclusions with a violent attempt in each period. Four
+  centres never give it. 2 inclusion visits with a violent attempt answer
+  "triggered" with no method.
+
+  Each method has its own lethality column. The codes are short names in
+  the order of the scale, from no damage to death. The code lists hold the
+  whole scale of the form, also answers that no visit holds (death after a
+  firearm, an immolation, a drowning or a hanging). Death is given on 2
+  visits (a jump in 2021, another method in 2011): the patient was seen at
+  that inclusion visit, so it cannot describe the patient's own attempt.
+  It is delivered as written.
+
+  Lists that the form hid (decision D125, field shown_if). The form shows a
+  lethality only for its own method, and the trigger only after a yes to
+  "triggered". The forms of 2009-2010 at two centres saved the first option
+  of these lists, the hidden ones too ("no damage", "Conjugal"). A filled
+  cell that the form did not show is delivered as missing with the flag
+  not_shown; the flag log keeps the text. 113 cells on 22 visits. 106 are on
+  16 visits of 2009 and 2010: 13 with no method, where the six lethalities
+  and the trigger hold their first option, and 3 with another method, where
+  the lethalities of the five other methods do. The other 7 are on 6 visits
+  of 2011 to 2021, not all of them first options: a lethality or a jump
+  height with no method (4), a trigger without a yes (2), the lethality of
+  another method (1). The 13 visits with no method, and 4 of the follow-up
+  form, were the row "method empty although the lethality is filled: 17
+  visits" of DM-5, removed.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+
+defaults: {type: category, versions: [inclusion]}
 
 variables:
   violent_method:
@@ -28,6 +90,7 @@ variables:
       "Saut": jump
       "Autre (précipitation sous métro/voiture/train, armes blanches, autre)": other
   violent_jump_height:
+    shown_if: {violent_method: [jump]}
     column: ltsv02
     label: Height of the jump
     codes:
@@ -35,6 +98,7 @@ variables:
       "Hauteur modérée": moderate_height
       "D'un endroit élevé": high_place
   violent_jump_lethality:
+    shown_if: {violent_method: [jump]}
     column: ltsv03
     label: Consequences of the jump
     codes:
@@ -45,13 +109,18 @@ variables:
       "Dégâts majeurs aux zones vitales (crâne, cou, colonne vertébrale) paralysie prévue": major_damage_vital
       "Mort": death
   violent_firearm_lethality:
+    shown_if: {violent_method: [firearm]}
     column: ltsv04
     label: Consequences of the firearm attempt
     codes:
       "Pas de dommage": no_damage
+      "Blessures avec brûlures de poudre": powder_burns
       "Balle logée dans une extrémité, légères hémorragies": bullet_in_limb
       "Balle dans l'abdomen ou la poitrine, hémorragies importantes, signes vitaux instables": bullet_in_trunk
+      "Balle dans la région de la tête": bullet_in_head
+      "Mort": death
   violent_immolation_lethality:
+    shown_if: {violent_method: [immolation]}
     column: ltsv05
     label: Consequences of the immolation
     codes:
@@ -59,14 +128,21 @@ variables:
       "Brûlures du premier degré": first_degree_burns
       "Brûlures du second degré": second_degree_burns
       "Brûlures du troisième degré sur 20% de la surface du corps": third_degree_burns
+      "Brûlures du troisième degré sur 60% de la surface du corps": third_degree_burns_60
+      "Mort": death
   violent_drowning_lethality:
+    shown_if: {violent_method: [drowning]}
     column: ltsv06
     label: Consequences of the drowning
     codes:
       "Pas de dommage": no_damage
       "Conscient - légère détresse respiratoire mais sans besoin de réanimation": conscious_mild_distress
+      "Conscient - efforts de réanimation minimes à modérés nécessaires": conscious_minor_resuscitation
+      "Conscient - efforts de réanimation importants nécessaires": conscious_major_resuscitation
       "Inconscient - efforts de réanimation très importants indispensables pour la survie": unconscious_resuscitation
+      "Mort": death
   violent_hanging_lethality:
+    shown_if: {violent_method: [hanging]}
     column: ltsv07
     label: Consequences of the hanging
     codes:
@@ -74,7 +150,10 @@ variables:
       "Simple brûlure de corde": rope_burn
       "Blessures plus importantes avec traitement en ambulatoire": outpatient_treatment
       "Hospitalisation et réanimation nécessaire": hospital_resuscitation
+      "Paralysie ou autre blessure de la colonne vertébrale": spinal_injury
+      "Mort": death
   violent_other_lethality:
+    shown_if: {violent_method: [other]}
     column: ltsv08
     label: Consequences of an attempt by another method
     codes:
@@ -86,6 +165,7 @@ variables:
       "Mort": death
   violent_triggered: {column: ltsv09, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: A precise event seems to have triggered the attempt}
   violent_trigger:
+    shown_if: {violent_triggered: [1]}
     column: ltsv10
     label: External trigger of the attempt
     codes:

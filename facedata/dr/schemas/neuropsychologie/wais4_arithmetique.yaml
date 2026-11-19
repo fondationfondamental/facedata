@@ -2,22 +2,52 @@ instrument: wais4_arithmetique
 title: WAIS-IV Arithmetic
 tab: NEUROPSYCHOLOGIE
 section: ARITHMETIQUE
-status: draft
+status: reviewed
 notes: >
-  WAIS-IV Arithmetic: the raw total, the age-scaled score and its z-score.
-  SZ also has the 22 items; here only the totals are entered. 621 visits.
+  WAIS-IV Arithmetic: the raw total, the age-scaled score and its z-score. SZ
+  also has the 22 items; here only the totals are entered. 621 visits.
 
   One edition. No column names the edition of the WAIS in this cohort. The
-  data show the WAIS-IV in every year: within an age group, a raw score has
-  one scaled score, the same before and after 2018, for the five subtests;
-  95 digit span totals are above 30, the maximum of the WAIS-III; and the
-  processing speed index follows the WAIS-IV table of BP on each of the 35
-  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
-  block gives wais_version = wais4 on the 731 visits that hold a subtest,
-  so that the column exists as in BP and SZ.
+  data show the WAIS-IV in every year. Within a band of the typed age a raw
+  score has one stored scaled score for digit span and similarities, and for
+  arithmetic, coding and symbol search on every cell but one (2, 3 and 4
+  visits). The stored score is the same before and after 2018 on every cell
+  seen in both periods but one (symbol search). 95 digit span totals are above
+  30, the maximum of the WAIS-III. The processing speed index stored by DR
+  follows the WAIS-IV table of BP (norms/wais4_ivt.csv) on each of its 35
+  distinct sums, all seen in BP (the WAIS-III table on 21 of 35). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest, so
+  that the column exists as in BP and SZ.
 
-  The z-score is the scaled score minus 10, over 3, except on 14 visits of
-  2013 to 2015 (score_mismatch on the check score).
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_arithmetic.csv) from the raw total, and the z-score is (scaled
+  score - 10) / 3. The plain table that the other cohorts use is used here
+  too, not the table of the DR script (norms/wais4_arithmetic_dr.csv): where
+  the script has another value (a typo), the stored score is flagged. The
+  35-44 row of the DR script holds 18 cells instead of 19 and differs from the
+  table on 10 age-by-raw cells (one raw score at each of the ten ages): on 3
+  of the 621 visits the script gives another value (the stored score is the
+  script's, 1 point below the table's). One visit aged 80 or over at the visit
+  (its typed age is more than 1 year younger, which is why a score is stored)
+  has no value in the table, and the DR script has no row from 80 either:
+  norm_missing, and the stored score is not recomputed.
+
+  Age. The table is read with the age typed in the form (cclin01, delivered as
+  neuropsy_age by neuropsy_conditions) where it is within 1 year of the age at
+  the visit, and with the age at the visit elsewhere: 579 of the 621 visits
+  use the typed age and 42 have a typed age more than 1 year away (35 of them
+  typed younger). The 7 of them that differ from the delivered score equal the
+  table at the typed age (see wais4_memoire_chiffres.yaml for the four schemas
+  together).
+
+  The stored scores are wais4_arith_scaled_stored and wais4_arith_z_stored,
+  not delivered. Verified: the scaled score differs from the stored one on 11
+  of 620 visits (1.8%, score_mismatch, 2013 to 2023: 7 typed age, 3 table
+  typo, 1 unexplained), its z-score on 25 of 605, which include the 14 visits
+  of 2013-10 to 2015-05 where the stored z-score is not (scaled score - 10) /
+  3 (the old z table described in wais4_memoire_chiffres.yaml).
 
 version:
   name: wais_version
@@ -28,10 +58,23 @@ version:
 defaults: {type: item, versions: [wais4]}
 
 variables:
+  wais4_arith_age_entered: {column: cclin01, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_arith_total: {column: arithtot, label: Arithmetic raw total (22 items), range: [0, 22]}
-  wais4_arith_scaled: {column: arithstd, label: Age-scaled score (mean 10 and SD 3), range: [1, 19]}
-  wais4_arith_z: {column: arithcr, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_arith_scaled_stored: {column: arithstd, label: Age-scaled score (mean 10 and SD 3) as stored, range: [1, 19], keep: false}
+  wais4_arith_z_stored: {column: arithcr, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
-  # Consistency check only: the z-score is the scaled score minus 10, over 3.
-  wais4_arith_z_check: {sum: [wais4_arith_scaled], scale: [0.3333333, -3.3333333], compare: wais4_arith_z, compare_tolerance: 0.006, keep: false, versions: [wais4]}
+  wais4_arith_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_arithmetic
+    from: wais4_arith_total
+    age: wais4_arith_age_entered
+    range: [1, 19]
+    compare: wais4_arith_scaled_stored
+  wais4_arith_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_arith_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_arith_z_stored
+    compare_tolerance: 0.006

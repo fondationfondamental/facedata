@@ -120,6 +120,39 @@ def test_check_schema_checks_bands_and_shared_columns(tmp_path):
     assert "a_band: lookup and from go together" in " | ".join(check_schema(schemas["bands"]))
 
 
+Z_SCORES = """
+instrument: zscores
+title: Z-scores
+tab: TEST
+section: Z-scores
+status: draft
+variables:
+  words: {column: words, type: item, range: [0, 16]}
+  schooling: {column: schooling, type: number}
+scores:
+  good_z: {regression: some_table, from: words, with: {schooling: schooling}, range: [-5, 5]}
+  good_band: {lookup: some_bands, from: words, band_of: good_z, limits: [5, 25, 50]}
+  no_terms_z: {sum: [words], with: {schooling: schooling}}
+  no_raw_z: {regression: some_table, with: {schooling: schooling}}
+  unknown_z: {regression: some_table, from: words, with: {schooling: nowhere}}
+  bad_band: {band_of: good_z, limits: [50, 25]}
+  sum_band: {sum: [words], band_of: good_z, limits: [5, 25, 50]}
+  lost_limits: {sum: [words], limits: [5, 25, 50]}
+"""
+
+
+def test_check_schema_checks_z_scores_and_their_bands(tmp_path):
+    write(tmp_path, "zscores", Z_SCORES)
+    problems = " | ".join(check_schema(load_schemas(tmp_path)["zscores"]))
+    assert "good_z" not in problems and "good_band" not in problems
+    assert "no_terms_z: with goes with regression" in problems
+    assert "no_raw_z: lookup, regression and profile need from" in problems
+    assert "unknown_z: 'nowhere' is not a variable or an earlier score" in problems
+    assert "bad_band: band_of goes alone or with lookup, and needs limits, numbers in rising order" in problems
+    assert "sum_band: band_of goes alone or with lookup" in problems
+    assert "lost_limits: limits goes with band_of" in problems
+
+
 def test_a_variable_that_is_not_delivered_may_read_a_delivered_column(tmp_path):
     """The years of education are delivered by one schema and read again by another, for a norm table."""
     write(tmp_path, "demo", GOOD)
@@ -232,8 +265,18 @@ variables:
 
 def test_asked_if_names_a_yes_no_question_listed_before(tmp_path):
     problems = check_schema(load_schema(write(tmp_path, "asked", ASKED)))
-    # A box or a count may be asked after a yes/no question or after a count of whole things ("how many of them");
-    # a rating that cannot be 0 may not, and the question named cannot be a measure or a rating.
-    for name in ["too_early", "no_such", "a_rating", "after_a_number", "after_a_rating"]:
+    # A box or a count may be asked after a yes/no question or after a count, an item or a number ("how many of
+    # them", "how long, if any": D122); a rating that cannot be 0 may not, and the question named cannot be a rating.
+    for name in ["too_early", "no_such", "a_rating", "after_a_rating"]:
         assert f"asked: {name}: asked_if must name a yes/no item or a count" in " | ".join(problems), name
-    assert len(problems) == 5
+    assert "after_a_number" not in " | ".join(problems)
+    assert len(problems) == 4
+
+
+def test_check_cohort_finds_a_uses_that_nothing_delivers(tmp_path):
+    write(tmp_path, "demo", GOOD)
+    write(tmp_path, "other", GOOD.replace("instrument: demo", "instrument: other").replace("it1", "o1").replace("it2", "o2").replace("tot", "ot")
+          .replace("variables:", "uses: [nothing, o1]\nvariables:", 1))
+    problems = " | ".join(check_cohort(load_schemas(tmp_path)))
+    assert "other: uses 'nothing', which no other schema delivers" in problems
+    assert "uses 'o1'" in problems                                  # a name of the schema itself is no use

@@ -2,26 +2,52 @@ instrument: wais3_complement_images
 title: WAIS-III picture completion
 tab: NEUROPSYCHOLOGIE
 section: Complètement d'images (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  picture completion columns on the WAIS-III visits (571 visits, from 2010
-  to 2016): 25 items scored 0 or 1. wais4_complement_images.yaml reads the
-  WAIS-IV visits.
+  (decision D10 of the BP file). This schema reads the picture completion
+  columns on the WAIS-III visits (546 visits, from 2010 to 2015): 25 items
+  scored 0 or 1. wais4_complement_images.yaml reads the WAIS-IV visits.
 
-  The stored raw total is the sum of the 25 items on 570 of 571 visits.
-  The z-score is (scaled score - 10) / 3 on every visit.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold picture completion items
+  and are read in wais4_complement_images.yaml, not here.
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  All 546 visits have the 25 items. The stored raw total is their sum on 545
+  of 546 visits; the other gets score_mismatch. The z-score is (scaled score -
+  10) / 3 on every visit.
+
+  No stopping rule shows in the data: no visit has an empty item. A total with
+  an empty item would not be computed, as in the application ('Questionnaire
+  incomplet').
 
   FACE BP does not have this subtest.
+
+  Scaled score and z-score (decision of 18 November 2026). Recomputed from
+  the raw total in the application's own norm table
+  (norms/wais3_picture_completion.csv, 12 age groups read from the scripts
+  of the EMR; not part of the repository) and delivered; the stored ones are
+  read as checks (keep: false) and a difference is score_mismatch on the
+  delivered score. The EMR read its table with the age typed in the form
+  (cclin01_); the package uses that age where it is within one year of the
+  age at the visit, else the age at the visit (age: wais3_pc_age). The
+  z-score is (scaled score - 10) / 3 (tolerance 0.006). On the 546 visits
+  that have both, 4 differ (before 2013), 3 of them with a typed age more
+  than a year from the age at the visit (read with the typed age as it
+  stands the table gives the stored score on all but 1 of the 545 visits
+  that have a typed age). The z-score differs on the same 4. The typed age
+  is within a year of the age at the visit on 529 of the 546 visits that
+  have a total, farther on 16 and missing on 1. Two typed ages written 'NN
+  ans' are unparsed; the age at the visit is used where the typed one is not
+  read (1 of the 2 visits have this subtest).
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais3]}
 
@@ -52,8 +78,9 @@ variables:
   wais3_pc24: {column: compl24_w, label: Picture completion item 24}
   wais3_pc25: {column: compl25_w, label: Picture completion item 25}
   wais3_pc_total_stored: {column: compltot_w, label: Raw total as stored, range: [0, 25], keep: false}
-  wais3_pc_scaled: {column: complstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_pc_total}
-  wais3_pc_z: {column: complcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_pc_total}
+  wais3_pc_age: {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its table with"}
+  wais3_pc_scaled_stored: {column: complstd_w, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_pc_z_stored: {column: complcr_w, label: "Scaled score as a z-score, as stored", type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais3_pc_total:
@@ -62,5 +89,17 @@ scores:
           wais3_pc08, wais3_pc09, wais3_pc10, wais3_pc11, wais3_pc12, wais3_pc13, wais3_pc14,
           wais3_pc15, wais3_pc16, wais3_pc17, wais3_pc18, wais3_pc19, wais3_pc20, wais3_pc21,
           wais3_pc22, wais3_pc23, wais3_pc24, wais3_pc25]
-    min_items: 1
     compare: wais3_pc_total_stored
+  wais3_pc_scaled:
+    label: Age-scaled score (mean 10 and SD 3)
+    lookup: wais3_picture_completion
+    from: wais3_pc_total
+    age: wais3_pc_age
+    range: [1, 19]
+    compare: wais3_pc_scaled_stored
+  wais3_pc_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_pc_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_pc_z_stored
+    compare_tolerance: 0.006

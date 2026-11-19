@@ -2,41 +2,95 @@ instrument: medications
 title: Psychotropic treatments, one row per treatment
 tab: TRAITEMENTS
 section: TRAITEMENTS PSYCHOTROPES
-status: draft
+status: reviewed
 level: list
 notes: >
-  The medications of each patient with their dates. The extraction writes
-  them as lists in one cell (the name of each medication in one column, its
-  start date in another, and so on), and every row of a patient holds the
-  same lists: the patient's whole history, not the treatment of the visit.
-  The lists are opened into one row per patient and medication, delivered in
-  the table treatments (decision D56 in PROGRESS.md).
+  The medications of each patient with their dates: 22,758 medications of
+  4,779 patients. The extraction writes them as lists in one cell (the name
+  of each medication in one column, its start date in another, and so on),
+  and every row of a patient holds the same lists: the patient's whole
+  history, not the treatment of the visit. The lists are opened into one
+  row per patient and medication, delivered in the table treatments
+  (decision D56 in PROGRESS.md).
+
+  Lists. 1,719 of the 6,498 patients have no list. The application has no
+  answer for "no treatment": a patient without a list is unknown, not
+  untreated. A list is held by 83% to 85% of the patients included until
+  2015 and by 60% to 63% of those included from 2022.
+
+  Item. The item number is the place of the medication in the exported
+  list. Until the export orders the lists (R76 of EXPORT_REQUESTS.md), it
+  changes between extractions: join the items of two extractions on their
+  content (patient, name and dates), never on item.
 
   Name, molecule and group. The name is delivered as written: a brand, a
   brand with its dose and form, or a generic with the name of its maker. It
-  is looked up in medications.csv, which gives the molecule, its ATC code
-  and one of ten groups: lithium, anticonvulsant, antipsychotic_2g,
-  antipsychotic_1g, antidepressant, benzodiazepine,
-  other_anxiolytic_hypnotic, stimulant, other_nervous_system and
-  non_psychotropic. The table is written by hand from the pharmacopoeia and
-  has not yet been read by a pharmacist. A name that is not in it keeps what
-  was written, has no molecule and no group, and gets unknown_code.
+  is looked up in medications.csv, which gives the molecule (one word, with
+  underscores for a combination), its ATC code and one of ten groups:
+  lithium, anticonvulsant, antipsychotic_2g, antipsychotic_1g,
+  antidepressant, benzodiazepine, other_anxiolytic_hypnotic, stimulant,
+  other_nervous_system and non_psychotropic. The table was checked against
+  the application's own drug list and the ATC codes of the SZ extraction
+  (D102); gabapentin and pregabalin are anticonvulsants, as in the
+  application (117 medications). A name that is not in the table (173
+  medications, 0.8%) keeps what was written, has no molecule and no group,
+  and gets unknown_code.
 
-  Dates. The start date is filled for almost every medication, most often
-  with the day set to 15 (the month is known, not the day). The end date is
-  empty for half of the medications, written 0000-00-00 or 0000-00-15: a
-  missing code. A medication without an end date is taken as still running
-  when the columns of a visit are computed.
+  Dates. The start date is filled for 22,608 medications, most often with
+  the day set to 15 (the month is known, not the day). One centre wrote
+  1950-01-01 for an unknown start and 1950-01-02 for an unknown end: they
+  are missing with the reason unknown (20 starts, 13 ends). The range of
+  the start begins in 1951, so two more starts of 1950 are out_of_range;
+  three other ends of 1950 are kept. The box "Traitement en cours" of the
+  form hides the end date and writes it 0000-00-15 on today's add page and
+  0000-00-00 on the correction page; seven of the sixteen centres have
+  0000-00-15, mostly for treatments started from 2016, and the nine others
+  only 0000-00-00. The application shows both as running "until today"
+  (D96): both are missing with the reason running (11,855 medications:
+  8,738 and 3,117). The end date is filled for 10,890 medications. An end
+  date before the start (148 medications) is kept and gets check_failed
+  (end_before_start).
 
-  Dose. The total daily dose is filled for a third of the medications: for
-  four in five until 2013, for one in twenty from 2018. The number of units
-  a day is filled for most; "Si besoin" (as needed) is a missing code there.
-  The strength is delivered as written.
+  Dose. The form stores no strength since it took its names from the public
+  drug list in 2015 (A38 of EXPORT_REQUESTS.md): a strength is stored for
+  6,974 medications, 4 of the 11,593 started from 2016. The strength is in
+  the name of the product, and the package reads it there with the rule of
+  R54: exactly one amount of a mass, not per volume, not a percentage, not
+  in units (UI); a number right after another number and a space is not
+  read. Of the 15,784 medications with no stored strength, 14,355 get one
+  from the name; 1,284 names hold no amount, 29 several, and 116 one per
+  volume, in % or in UI. daily_dose is a score in mg (D124): the stored
+  strength where one is stored (its leading number, unit MG; a strength in
+  tablets, per volume or in % gives no dose), else the strength in the
+  name, times units_per_day. strength_from_name says 1 (name) or 0
+  (stored). 19,349 medications have a daily dose, 12,948 of them from the
+  name. By start date: 6,283 of the 7,900 started until 2013, 5,281 of the
+  6,054 started from 2014 to 2017 and 7,664 of the 8,654 started from 2018;
+  2,185 of the 2,225 patients with a medication started from 2018 have a
+  dose.
+
+  Stored dose. The extracted dose (the export's strength times units) is
+  kept as daily_dose_stored, not delivered, and compared: 2 score_mismatch
+  (the export reads the units "1/2" as 1 and doubles the dose, R75), 17
+  score_not_recomputed (8 whose units the package cannot read, 9 whose
+  strength is in tablets; the stored value is in the flag). 3 doses read
+  from the name are above 5,000 mg and out_of_range (300 to 500 mg at 50
+  to 100 units a day), and strength_from_name is missing there.
+
+  Units a day. The add form offers 0.25 to 100, ">100" and "Si besoin"
+  (as needed); the correction page takes free text. ">100" is read as 100
+  and censored (7); "Si besoin" and "sb" are a missing code (893); "1/2"
+  is read as 0.5 (9); a decimal comma is repaired (22, format_repaired);
+  29 texts with words (ranges, counts with their form) are unparsed. A
+  long-acting injection has no units a day: the form records ampoules
+  every n weeks instead, which the BP export does not deliver (109
+  medications of 90 patients, none with a daily dose; kept for batch 2 of
+  the requests to the export).
 
   At a visit. The columns of medications_at_visit say, for each visit,
   whether the patient was on a group or a molecule that day: a medication
   that started on or before the visit date and has no end date, or an end
-  date on or after the visit.
+  date on or after the visit (see their notes).
 
 names:
   column: med_psy_cmtrt
@@ -63,15 +117,15 @@ variables:
       stimulant: stimulant
       other_nervous_system: other_nervous_system
       non_psychotropic: non_psychotropic
-  start_date: {column: med_psy_cmstdtc, type: date, range: [1950-01-01, 2026-12-31], label: Start of the treatment}
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1951-01-01, 2026-12-31], missing: {"1950-01-01": unknown}, label: Start of the treatment}
   end_date:
     column: med_psy_cmendtc
     type: date
     range: [1950-01-01, 2026-12-31]
-    missing: {"0000-00-15": not_recorded}
+    missing: {"0000-00-15": running, "0000-00-00": running, "1950-01-02": unknown}
     label: End of the treatment
-  strength: {column: med_psy_cmdose, type: text, label: "Strength and form, as written"}
-  dose_unit: {column: med_psy_cmdosu, type: text, label: "Unit of the strength, as written"}
+  strength: {column: med_psy_cmdose, type: text, label: "Strength and form, as stored (none for the medications typed since the public drug list, 2015)"}
+  dose_unit: {column: med_psy_cmdosu, type: text, label: "Unit of the stored strength, read by the export from it"}
   dose_text: {column: med_psy_cmdostxt, type: text, label: "Strength of a liquid form, as written"}
   units_per_day:
     column: med_psy_cmdosfrq
@@ -81,22 +135,51 @@ variables:
     codes: {"1/2": 0.5}
     missing: {"si besoin": as_needed, sb: as_needed}
     label: Number of units a day
-  daily_dose: {column: med_psy_cmdostot, type: number, range: [0, 5000], winsor: false, label: Total daily dose (in the unit of the strength)}
+  daily_dose_stored: {column: med_psy_cmdostot, type: number, range: [0, 5000], winsor: false, keep: false, label: "Total daily dose as extracted (the export's strength x units, in the unit of the strength)"}
+
+scores:
+  daily_dose:
+    custom: daily_dose
+    range: [0, 5000]
+    compare: daily_dose_stored
+    label: "Total daily dose, mg: the strength (stored, else read from the name of the product) times the units a day"
+  strength_from_name:
+    custom: strength_from_name
+    range: [0, 1]
+    label: "The daily dose rests on the strength read from the name of the product (1) or on the stored strength (0)"
+
+checks:
+  end_date: end_before_start
 
 at_visit:
   title: Psychotropic treatments on the day of the visit
   notes: >
     For each visit, whether the patient was on a group of medications, or on
     one of seven molecules, that day: 1 or 0. Computed from the rows of the
-    table treatments (medications.yaml): 1 when a medication of the group
-    started on or before the visit date and has no end date, or an end date
-    on or after the visit. Missing for the patients who have no medication
-    list at all (a quarter of the patients), for a visit without a date, and
-    where the only medications of the group have no start date.
+    table treatments (medications.yaml), with the rule of the application's
+    page "Psychotropes présents aux visites" (D124): 1 when a medication of
+    the group started on or before the visit date and has no end date, or
+    an end date on or after the visit. Missing for the patients who have no
+    medication list at all (1,719 of 6,498 patients: unknown, not
+    untreated), for a visit without a date (5 visits of patients with a
+    list), and where a medication of the group has no start date (150
+    medications) and no end before the visit, unless another one gives 1.
 
     A medication without an end date is taken as still running: an end that
     was never typed keeps the patient "on" the medication at every later
-    visit. A name that is not in medications.csv belongs to no group.
+    visit. For a third of the patients with a list and a follow-up visit
+    (1,180 of 3,543), no medication starts or ends more than 30 days after
+    the inclusion: at their follow-up visits the columns mostly repeat the
+    inclusion. A medication that ends before it starts (148) counts at no
+    visit. The 13 ends written 1950-01-02 had ended (the box "Traitement en
+    cours" was not ticked), but with no start either they give a missing
+    value, not a 1. A name that is not in medications.csv belongs to no
+    group.
+
+    on_valproate counts valproate and valpromide (Dépamide, which the body
+    turns into valproic acid; D124): 617 visit cells of 226 patients went
+    from 0 to 1, and 9 from 0 to missing (a valpromide without a start
+    date).
   start: start_date
   end: end_date
   columns:
@@ -109,7 +192,7 @@ at_visit:
     on_other_anxiolytic_hypnotic: {where: {treatment_group: other_anxiolytic_hypnotic}, label: On another anxiolytic or hypnotic at the visit}
     on_stimulant: {where: {treatment_group: stimulant}, label: On a stimulant at the visit}
     on_other_nervous_system: {where: {treatment_group: other_nervous_system}, label: On another medication of the nervous system at the visit}
-    on_valproate: {where: {molecule: valproate}, label: On valproate at the visit}
+    on_valproate: {where: {molecule: [valproate, valpromide]}, label: On valproate or valpromide at the visit}
     on_lamotrigine: {where: {molecule: lamotrigine}, label: On lamotrigine at the visit}
     on_carbamazepine: {where: {molecule: carbamazepine}, label: On carbamazepine at the visit}
     on_quetiapine: {where: {molecule: quetiapine}, label: On quetiapine at the visit}

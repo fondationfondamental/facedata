@@ -2,23 +2,66 @@ instrument: cpt3
 title: Conners' Continuous Performance Test 3 (CPT-3)
 tab: NEUROPSYCHOLOGIE
 section: CPT III
-status: draft
+status: reviewed
 notes: >
-  The third edition of the test, in the extraction from 2018 (about 507
-  visits). It is another instrument than the CPT-II (cpt2.yaml), with its
-  own columns: nothing has to be split. The dictionary names these columns
-  with a final underscore (cpt306a_) that the extraction does not have.
+  The third edition of the test, in the extraction from 2018: 526 visits
+  hold any cell (525 a T-score), 516 of them from 2022 and only 9 in 2018 to
+  2021, when the CPT-II still ran (777 visits in 2018-21, cpt2.yaml). It is
+  another instrument than the CPT-II, with its own columns: nothing has to
+  be split, and the edition is whichever block is filled. Two visits of
+  centre D (2020 and 2021) have both. The column cpt_version follows the
+  edition of the WAIS (wais3, wais4) and visit_neuropsychologie equals
+  visit: both are rightly ignored. The dictionary names these columns with a
+  final underscore (cpt306a_) that the extraction does not have.
 
   Nine measures, each with a T-score and the level printed by the report.
-  The level is filled on a third of the visits or fewer.
+  The level is filled on 17% (perseverations) to 67% (hit reaction time) of
+  the visits that have the T-score, and it is a function of the T-score: on
+  1,822 of 1,843 cells it is the level that the same T-score has for the
+  same measure. The T-score, the percentile and the level come from the
+  Conners software, and the eBipolar form has no script for them (its only
+  CPT script is the mean d-prime of the CPT-IP): nothing can be recomputed.
+  The T-score is capped at 90 by the software (35 cells, in 6 of the nine
+  measures): 90 means at least 90. A higher T-score is a more atypical
+  performance, as in the CPT-II (the T-score falls where the detectability
+  rises); in the CPT-IP of SZ a higher d-prime is a better performance. The
+  names hrt and hrt_sd are not those of the CPT-II (hit_rt, hit_rt_se): a
+  standard deviation of the reaction times is not a standard error of the
+  hits, so they are other statistics, and no CPT name is shared across
+  cohorts.
 
-  T-scores of the CPT-3 go from 20 to 90. On about 37 visits the column
-  holds something else, probably the raw value (a hit reaction time of 300
-  to 600, a detectability near 0): these cells end out_of_range.
+  Raw values typed in the T columns. On 36 visits, all of centre D (35 from
+  January to September 2022 and one in 2020), the nine T columns hold the
+  raw value of the report: a d-prime from -0.01 to 2.2, 0 to 18 omissions, 0
+  to 36 commissions, a hit reaction time of 296 to 619 ms, a hit reaction
+  time SD of 3 to 13, and so on. A valid T-score of the hit reaction time
+  never exceeds 90, so a value above 100 in cpt303a selects exactly these
+  visits (cpt3_hrt_t_typed, read a second time and not delivered). Their raw
+  values that fall outside 20 to 90 end out_of_range (312 of the 321
+  out_of_range cells). 12 raw values fall inside 20 to 90 (9 commissions, 1
+  variability, 1 block change, 1 ISI change) and would pass for T-scores:
+  they keep their value and get check_failed (cpt3_typed_raw). There is no
+  raw column to receive the raw values, so they are not delivered as such.
+  44 visits hold a value outside 20 to 90 (27 to 38 out_of_range cells per
+  column): 36 carry raw values and 8 hold 9 cells from 4 to 19, below the 20
+  of the scale.
 
 defaults: {type: number, range: [20, 90], winsor: false}
 
+checks:
+  cpt3_detectability_t: cpt3_typed_raw
+  cpt3_omissions_t: cpt3_typed_raw
+  cpt3_commissions_t: cpt3_typed_raw
+  cpt3_perseverations_t: cpt3_typed_raw
+  cpt3_hrt_t: cpt3_typed_raw
+  cpt3_hrt_sd_t: cpt3_typed_raw
+  cpt3_variability_t: cpt3_typed_raw
+  cpt3_hrt_block_change_t: cpt3_typed_raw
+  cpt3_hrt_isi_change_t: cpt3_typed_raw
+
 variables:
+  # The hit reaction time column read a second time, to find the visits whose T columns hold raw values (not delivered)
+  cpt3_hrt_t_typed: {column: cpt303a, label: "Hit reaction time - T column read again (a value above 100 is a raw value)", range: [0, 1000], keep: false}
   cpt3_detectability_t: {column: cpt306a, label: "Detectability (d') - T-score"}
   cpt3_detectability_level: {column: cpt306d, type: category, label: "Detectability (d') - level", codes: {Very Elevated: very_elevated, Elevated: elevated, High Average: high_average, Average: average, Low: low, Atypically Fast: atypically_fast, A Little Fast: a_little_fast, A Little Slow: a_little_slow, Slow: slow, Atypically Slow: atypically_slow}}
   cpt3_omissions_t: {column: cpt301a, label: "Omissions - T-score"}

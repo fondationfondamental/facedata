@@ -17,8 +17,8 @@ notes: >
   - component 2 (latency): right, 188 of 188 visits;
   - component 3 (duration): the stored score counts 0 from 7 hours, 1 at 6, 2
     at 5 and 3 below (192 of 192 visits). The publication says 0 above 7
-    hours: the reading of exactly 7 hours differs. Delivered as stored, as in
-    the other cohorts;
+    hours and does not settle exactly 7 hours. Delivered as stored, as in
+    the other cohorts (BP decision D93);
   - **component 4 (efficiency) is wrong when the patient goes to bed before
     midnight.** The EMR takes the hours in bed as the difference between the
     two clock times without crossing midnight (191 of 192 visits
@@ -45,9 +45,9 @@ notes: >
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  psqi_bedtime: {column: psqi1, type: time, label: Usual bedtime (hours)}
-  psqi_latency: {column: psqi2, type: number, label: Minutes to fall asleep, unit: min, range: [0, 600], winsor: false}
-  psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours)}
+  psqi_bedtime: {column: psqi1, type: time, label: Usual bedtime (hours), range: [0, 24]}
+  psqi_latency: {column: psqi2, type: number, label: Minutes to fall asleep, unit: min, range: [0, 240], winsor: false}
+  psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours), range: [0, 24]}
   psqi_sleep_hours: {column: psqi4, type: number, label: Hours of sleep per night, unit: h, range: [0, 24], winsor: false}
   psqi05a: {column: psqi5a, label: "PSQI item 5a"}
   psqi05b: {column: psqi5b, label: "PSQI item 5b"}
@@ -75,7 +75,7 @@ variables:
   psqi10f: {column: psqi11ea, type: text, label: "As seen by the partner: other restlessness, as written"}
 
   # Component scores as stored, 0 to 3.
-  psqi_duration: {column: psqi_duree, label: "Component 3 - sleep duration, as stored (exactly 7 hours counts 0; the published sheet counts 1)"}
+  psqi_duration: {column: psqi_duree, label: "Component 3 - sleep duration, as stored (7 hours or more counts 0)"}
   psqi_latency_stored: {column: psqi_latenc, label: Component 2 as stored, keep: false}
   psqi_efficiency_stored: {column: psqi_effic, label: Component 4 as stored (hours in bed not crossing midnight), keep: false}
   psqi_disturbances_stored: {column: psqi_tbsom, label: Component 5 as stored, keep: false}

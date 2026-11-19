@@ -31,7 +31,11 @@ notes: >
 
   The ratio of total to HDL cholesterol is recomputed from the harmonised
   values (custom function cholesterol_ratio) and compared with the stored one,
-  which the EMR computes from the numbers as typed.
+  which the EMR computes from the numbers as typed. They differ on 366
+  visits (more since 2022), and on 350 of them the stored ratio is the
+  recomputed one times 2.59 or divided by 2.59: the EMR divided a total
+  cholesterol in g/L by an HDL in mmol/L, or the other way round (1 g/L =
+  2.586 mmol/L). The recomputed ratio is the one delivered.
 
 defaults: {type: number}
 

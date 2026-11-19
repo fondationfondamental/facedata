@@ -2,31 +2,103 @@ instrument: verbal_fluency
 title: Verbal fluency, letter P and animals
 tab: NEUROPSYCHOLOGIE
 section: Fluences Verbales
-status: draft
+status: reviewed
 notes: >
   Two tasks of two minutes: words that begin with P, and names of animals.
-  About 5,830 visits. For each task: the number of correct words, its
-  z-score and percentile band, the errors, and from 2011 on the clusters and
-  switches (about 4,100 visits).
+  5,865 visits. For each task: the number of correct words, its z-score and
+  percentile band, the errors, and the clusters and switches (4,166 visits,
+  from 2009: 46 visits in 2009-10, then 198 in 2011).
 
-  Percentile bands. The column holds plain numbers, bands ("25 - 50") and
-  the two end classes (">95", "<5"); every cell is one full band. The value
-  is the lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95.
+  Percentile bands. The column holds plain numbers, bands ("25 - 50") and the
+  two end classes (">95", "<5"); every cell is one full band. The value is the
+  lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95.
 
   Rule breaks. The stored number is the sum of the derived words, the
-  intrusions and the proper names in all but 0.5% of the rows; it is
-  recomputed and compared.
+  intrusions and the proper names in all but 0.5% of the rows (24 of 5,689 for
+  the letter P, 25 of 5,586 for the animals); it is recomputed and compared.
 
-  The z-scores and the bands come from norms that are not in the project;
-  they are delivered as stored.
+  Counts of the rater. The perseverations, the intrusions, the derived words,
+  the proper names, the clusters, the mean size of a cluster and the switches
+  are counts that the rater makes on the transcript of the words: they cannot
+  be recomputed (no word sequence is stored) and are delivered as stored. No
+  identity holds among them: the switches equal the clusters minus one on 196
+  of 3,906 visits with clusters for the letter P and 149 of 3,981 for the
+  animals, and the mean size times the number of clusters exceeds the number
+  of words by more than half a word on 14 visits for the letter P and 64 for
+  the animals.
+
+  Recomputed. The z-score and the percentile band of each task are computed
+  again as the application computes them (one script for the BP and the SZ
+  forms), and the stored ones are kept only as checks (fluency_*_stored, not
+  delivered). The norm has one cell for each of three age classes (under 40,
+  40 to 59, 60 and over) and three levels of education (under 6 years, 6 to
+  11, 12 and over): the z-score is (words - mean) / SD of the cell to two
+  decimals (norms/fluency_*_z.csv), the band is the lower limit of the band
+  the words fall in (norms/fluency_*_band.csv; 0 for "<5", then 5, 10, 25, 50,
+  75, 90, 95). The tables are read with the age typed in the form (cclin01_)
+  where it is within one year of the age at the visit, and with the age at the
+  visit elsewhere, and with the years of education typed in the form
+  (cclin08_). The education edges are those of the BP and SZ script; the DR
+  script has other ones (see the DR schema). Under 6 years (29 visits with a
+  count for the letter, 27 for the animals) the script takes the lowest class,
+  and the stored values follow it (the z-score on 25 of 29 and 25 of 27
+  visits, the band on all of them).
+
+  Years of education. They are not empty on the 6 visits with a count where
+  nothing is computed: 5 cells are text (a diploma written "BAC+n", years with
+  a word) and one is out of range. They are not repaired (reading "BAC+n" as
+  years is a guess): the band gets norm_missing and the z-score is missing
+  there, where the script reads an empty education as the lowest class.
+
+  Checks. A recomputed value that differs from the stored one is flagged
+  score_mismatch (the z-score by more than 0.0101). Of the visits where both
+  exist, the z-score differs on 59 of 5,856 for the letter P (1.0%) and 65 of
+  5,840 for the animals (1.1%), the band on 41 (0.7%) and 50 (0.9%). The share
+  of visits that differ falls with the years, by period (to 2012, 2013-15,
+  2016-18, 2019-21, 2022-23, 2024 on): 1.6%, 1.3%, 1.2%, 0.9%, 0.6% and 0.4%
+  (2 of 487 from 2024). The 124 (visit, task) pairs with a z-score that
+  differs (65 visits; every band difference is one of them) are read in
+  another cell of the table: 71 in another age class (59 of them with a typed
+  age more than one year from the age at the visit), 41 in another class of
+  education (23 at 11 or 12 years), 9 in no cell, 3 in a cell that differs
+  both ways. The typed age is more than one year from the age at the visit on
+  3.5% of the visits that have one (221 of 6,302), and the script recomputes
+  only when the words are typed, not when the age or the education is edited
+  afterwards. One centre has 47 pairs of 2,037 (2.3%) with a difference,
+  against 1.5% or less in each of the others.
+
+  A stored band that is "<5" on an empty count of words (18 visits for the
+  animals) is the percentile of an empty cell, which the EMR computes as if
+  the count were 0: nothing is delivered and the row gets
+  score_not_recomputed, as it does for the few stored z-scores and bands with
+  no count or no education.
+
+  Unparsed cells. The 27 cells that stay unparsed are counts typed with a
+  decimal (26, a count of words cannot have one; on 4 of them the number
+  equals the mean cluster size of the same task) and one fraction (words of
+  the letter P).
+
+  Unexplained and left as measured (use a centre term in a pooled analysis):
+  centre steps on counts made by the rater, with no
+  known cause: the animal clusters and their mean size in centre K (228
+  visits, median 2 clusters of size 1.0 against 7 and 2.1), the switches in
+  centres C and I (median 4 and 7 for the letter P against 15 to 18
+  elsewhere), the clusters of the letter P in centre F (26 visits, median
+  10.5 against 4), and the derived words (one or more on 2% of the visits of
+  centre K, 63% and 70% in centres I and J, 22% overall).
 
 defaults: {type: item, range: [0, 30]}
 
 variables:
+  # What the norms need besides the raw score: the age and the years of education as typed in the form (the application reads
+  # its norms with them); read here a second time, not delivered
+  fluency_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
+  fluency_education: {column: cclin08_, type: number, label: "Years of education, as entered (for the norms)", range: [0, 30], winsor: false, keep: false}
+
   # Letter P
   fluency_p_words: {column: fv01_, type: number, label: "Letter P - correct words", range: [0, 80]}
-  fluency_p_z: {column: fv02_, type: number, label: "Letter P - z-score", range: [-6, 6]}
-  fluency_p_band: {column: fv03_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Letter P - percentile band"}
+  fluency_p_z_stored: {column: fv02_, type: number, label: "Letter P - z-score, as stored", range: [-6, 6], winsor: false, keep: false}
+  fluency_p_band_stored: {column: fv03_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Letter P - percentile band, as stored", keep: false}
   fluency_p_perseverations: {column: fv04_, label: "Letter P - perseverations"}
   fluency_p_derived: {column: fv05_, label: "Letter P - derived words"}
   fluency_p_intrusions: {column: fv06_, label: "Letter P - intrusions"}
@@ -38,8 +110,8 @@ variables:
 
   # Animals
   fluency_animals_words: {column: fv12_, type: number, label: "Animals - correct words", range: [0, 80]}
-  fluency_animals_z: {column: fv13_, type: number, label: "Animals - z-score", range: [-6, 6]}
-  fluency_animals_band: {column: fv14_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Animals - percentile band"}
+  fluency_animals_z_stored: {column: fv13_, type: number, label: "Animals - z-score, as stored", range: [-6, 6], winsor: false, keep: false}
+  fluency_animals_band_stored: {column: fv14_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Animals - percentile band, as stored", keep: false}
   fluency_animals_perseverations: {column: fv15_, label: "Animals - perseverations"}
   fluency_animals_derived: {column: fv16_, label: "Animals - derived words"}
   fluency_animals_intrusions: {column: fv17_, label: "Animals - intrusions"}
@@ -58,3 +130,37 @@ scores:
     label: Animals - rule breaks
     sum: [fluency_animals_derived, fluency_animals_intrusions, fluency_animals_proper_names]
     compare: fluency_animals_rule_breaks_stored
+  fluency_p_z:
+    label: Letter P - z-score (higher is more words)
+    regression: fluency_p_z
+    from: fluency_p_words
+    by: fluency_education
+    age: fluency_age
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: fluency_p_z_stored
+    compare_tolerance: 0.0101
+  fluency_p_band:
+    label: Letter P - percentile band
+    lookup: fluency_p_band
+    from: fluency_p_words
+    by: fluency_education
+    age: fluency_age
+    compare: fluency_p_band_stored
+  fluency_animals_z:
+    label: Animals - z-score (higher is more words)
+    regression: fluency_animals_z
+    from: fluency_animals_words
+    by: fluency_education
+    age: fluency_age
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: fluency_animals_z_stored
+    compare_tolerance: 0.0101
+  fluency_animals_band:
+    label: Animals - percentile band
+    lookup: fluency_animals_band
+    from: fluency_animals_words
+    by: fluency_education
+    age: fluency_age
+    compare: fluency_animals_band_stored

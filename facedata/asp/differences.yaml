@@ -10,7 +10,7 @@ identite: the diagnosis is that of the ASP cohort (confirmed or not confirmed, f
 parametres_physiques: other columns (c1extail, c1expoid); ranges that accept children; a height written in metres is converted; the head circumference and the box of the follow-up form are specific to ASP
 pression_arterielle: one lying blood pressure and one lying pulse (the thesaurus says couché), where BP also has a standing measure
 ecg: no heart rate of the ECG in this extraction, one more box (ecgcard), and no zero written for a missing interval
-tobacco: the status, the dose and the two ages only, in other columns; BP has more questions
+tobacco: the status, the pack-years and the two ages, as in BP, in other columns and with the answers coded 1 to 3; the pack-years are doubtful (O10)
 
 # bilan_biologique
 biochimie: no unit column, so the unit is read from the size of the value and the ranges of two units do not overlap; fifteen of the analytes of the other cohorts
@@ -23,17 +23,17 @@ bhcg_prolactine: prolactin only, with a unit column that holds catalogue numbers
 dosage_psychotropes: eight boxes that name the drug whose level is measured (thesaurus), a box that says whether the treatment was taken that morning, and the lamotrigine level; the other level columns are empty
 
 # neuropsychologie
-wais4_matrices: other columns; the 26 items of the subtest are recorded and their sum is compared with the stored total; no edition to choose, the WAIS-IV is the only one of the table
-wais4_similitudes: other columns; the 18 items are recorded and their sum is compared with the stored total; no edition to choose
-wais4_arithmetique: other columns; no edition to choose
-wais4_information: other columns; no edition to choose
-wais4_complement_images: other columns; no edition to choose; on six visits only
-wais4_memoire_chiffres: other columns; the two trials and the score of each forward and backward item are recorded; no edition to choose
-wais4_code_symboles_ivt: other columns; the symbol search is recorded too; the index is named wais4_ivt_index_np because the medical evaluation holds a copy under the shared name; a second set of numbers (_a)
-wais4_efficience: other columns; the indices are named with the ending _np because the medical evaluation holds a copy under the shared names; no correction of the working memory index and of the full-scale IQ is needed; a second set of numbers (_a); no two-subtest IQ
+wais4_matrices: other columns; the 26 items of the subtest are recorded and their sum is compared with the stored total; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_similitudes: other columns; the 18 items are recorded and their sum is compared with the stored total; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_arithmetique: other columns; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_information: other columns; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_complement_images: other columns; no edition column, wais_version is read from the first item of each subtest; on five visits only; no typed age (the age at the date of the assessment form is used)
+wais4_memoire_chiffres: other columns; the two trials and the score of each forward and backward item are recorded, under the BP names; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_code_symboles_ivt: other columns; the symbol search is recorded too, with a check of its raw score as in DR; the index has the shared name wais4_ivt_index and the medical evaluation's copy is named wais4_ivt_index_clinician; a second set of numbers (_a); no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
+wais4_efficience: other columns; the indices have the shared names and the medical evaluation's copy the ending _clinician; the indices are read in the table of the application from the sum of the scaled scores and the stored ones are checks (no offset, ASP stores the table value); a second set of numbers (_a), whose full-scale sum is the sum of seven subtests, computed; no edition column, wais_version is read from the first item of each subtest; no two-subtest IQ
 barona: the occupation and the education are exported as numbers, named from the thesaurus (one code of each list is not in it); one expected IQ and its difference; no edition to choose
 learning_disorders: other columns, named after each disorder; the first ten questions of DR; 9 is read as not known
-wais4_vocabulaire: other columns; no edition to choose, the WAIS-IV is the only one of the table; the scaled score and the z-score are not marked as derived from the total, which equals the sum of the items on every visit
+wais4_vocabulaire: other columns; no edition column, wais_version is read from the first item of each subtest; no typed age (the age at the date of the assessment form is used)
 
 # autoquestionnaires
 stai_ya: the answers are stored from 0 to 3 on every visit; they are read as stored, not delivered, and delivered on the BP coding once the coding of the visit is known, as in DR
@@ -41,7 +41,7 @@ epworth: the eight situations are in the columns ess01 to ess08 (delivered under
 mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence and is checked by a twin score; no mars11 (as in DR)
 asrs: other columns (asrs1 to asrs18); the screening result of BP is not extracted and the column of the stored total is empty
 fagerstrom: other columns (fag_1 to fag_6, fagerstrom_score); two questions before the test (has ever smoked, smokes now)
-eq5d: other columns; a stored index, which the other extractions do not hold
+eq5d: other columns; the stored index is the one of BP and SZ (the same index for each of the 224 health profiles shared with BP) and is a check of the computed one; ASP holds 28 stored indices above 1, out of range
 ctq: the stored sub-scores are in other columns (ctq30 to ctq38) and there is no severity class; two stored sub-scores leave out an item, so they and the stored total are checked by twin scores
 cgi_egf: the severity of the CGI and the GAF only, in other columns (gravmdi, egfval); two boxes of the follow-up form (changed since the last visit)
 

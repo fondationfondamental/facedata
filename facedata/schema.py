@@ -13,16 +13,16 @@ from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
                      "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
-                     "relatives", "per_patient", "crossed", "per_visit", "packed"}
+                     "relatives", "per_patient", "crossed", "per_visit", "packed", "uses"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
-                   "doubt", "asked_if", "separator", "parse", "note", "day"}
-SCORE_FIELDS = {"sum", "mean", "max", "lookup", "from", "by", "custom", "minus", "floor", "scale", "reverse", "min_items",
+                   "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day"}
+SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "profile", "distance", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
-                "range", "keep"}
-VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since"}
+                "range", "keep", "age", "stop_at_zero", "compare_turned", "age_date", "age_date_since"}
+VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since", "override"}
 TYPES = {"number", "item", "band", "category", "date", "time", "text"}
 
 
@@ -77,13 +77,20 @@ def load_schema(path):
             variable["range"] = to_numbers(variable["range"])
         for unit in variable.get("units", {}).values():
             unit["factor"] = to_number(unit.get("factor"))
+            unit["offset"] = to_number(unit.get("offset", "0"))
             unit["expect"] = to_numbers(unit.get("expect", []))
         if isinstance(variable.get("doubt"), dict):  # a period of dates, and the values that are doubted
             doubt = dict(variable["doubt"])
             doubt["period"] = to_dates(doubt.get("period", []))
             if "values" in doubt:
                 doubt["values"] = to_numbers(doubt["values"])
+            doubt["remove"] = doubt.get("remove") == "true"
             variable["doubt"] = doubt
+        if isinstance(variable.get("shown_if"), dict):   # {variable: the answers that show the question}
+            variable["shown_if"] = {gate: to_numbers(shown if isinstance(shown, list) else [shown])
+                                    for gate, shown in variable["shown_if"].items()}
+        if "before_visit" in variable:
+            variable["before_visit"] = variable["before_visit"] == "true"
         if "ignore_units" in variable:               # unit labels are compared in lower case
             variable["ignore_units"] = [label.lower() for label in variable["ignore_units"]]
         winsor = variable.get("winsor")
@@ -94,8 +101,12 @@ def load_schema(path):
         elif isinstance(winsor, dict):
             variable["winsor"] = {"limits": to_numbers(winsor.get("limits", []))}
         schema["variables"][name] = variable
+    if "before" in schema.get("sign", {}):               # a change of direction at a known date
+        schema["sign"]["before"] = to_dates([schema["sign"]["before"]])[0]
     for score in schema.get("scores", {}).values():
         score["keep"] = score.get("keep") != "false"
+        for field in ["stop_at_zero", "compare_turned"]:
+            score[field] = score.get(field) == "true"
         score["compare_offset"] = to_number(score.get("compare_offset", "0"))
         for field in ["min_items", "floor", "compare_tolerance"]:
             if field in score:
@@ -106,6 +117,8 @@ def load_schema(path):
             score["points"] = {to_number(answer): to_number(points) for answer, points in score["points"].items()}
         if isinstance(score.get("scale"), list):
             score["scale"] = to_numbers(score["scale"])
+        if isinstance(score.get("limits"), list):        # the bands of a z-score
+            score["limits"] = to_numbers(score["limits"])
         if "range" in score:
             score["range"] = to_numbers(score["range"])
     if "per_visit" in schema:                        # a list of the visit, not of the patient
@@ -237,8 +250,8 @@ def check_variable(name, variable, schema, columns):
         problems.append(f"{name}: range must be [low, high]")
     if "units" in variable:
         target = variable["units"].get(variable.get("unit"), {})
-        if target.get("factor") != 1.0:
-            problems.append(f"{name}: the target unit must be listed in units with factor 1")
+        if target.get("factor") != 1.0 or target.get("offset") != 0.0:
+            problems.append(f"{name}: the target unit must be listed in units with factor 1 and no offset")
         names = list(schema["variables"])
         earlier = names[:names.index(name)]          # the variables listed before this one
         for unit_name, unit in variable["units"].items():
@@ -250,21 +263,33 @@ def check_variable(name, variable, schema, columns):
                     problems.append(f"{name}: percent_of must name a number with a range, listed before {name}")
             elif not isinstance(unit["factor"], float):
                 problems.append(f"{name}: unit {unit_name} needs a factor or percent_of")
+            if not isinstance(unit["offset"], float) or ("percent_of" in unit and unit["offset"] != 0.0):
+                problems.append(f"{name}: unit {unit_name}: offset must be a number, and not on a percent_of")
     if "asked_if" in variable:
         names = list(schema["variables"])
         gate = schema["variables"].get(variable["asked_if"], {})
-        gate_takes_zero = gate.get("type") == "item" and gate.get("range", [None])[0] == 0.0
+        gate_takes_zero = gate.get("type") in ("item", "number") and gate.get("range", [None])[0] == 0.0
         takes_zero = kind in ("item", "number") and variable.get("range", [None])[0] == 0.0
         if variable["asked_if"] not in names[:names.index(name)] or not gate_takes_zero or not takes_zero:
-            problems.append(f"{name}: asked_if must name a yes/no item or a count (an item whose range starts at 0) "
+            problems.append(f"{name}: asked_if must name a yes/no item or a count (an item or a number whose range starts at 0) "
                             "listed before, on an item or a number whose range starts at 0")
+    if "box_list" in variable:
+        boxes = [other for other, spec in schema["variables"].items() if spec.get("box_list") == variable["box_list"]]
+        if kind != "item" or variable.get("range") != [0.0, 1.0] or len(boxes) < 2:
+            problems.append(f"{name}: box_list goes on a yes/no item, and names a list of two boxes or more")
+    if "shown_if" in variable:
+        gates = list(variable["shown_if"]) if isinstance(variable["shown_if"], dict) else []
+        if len(gates) != 1 or gates[0] not in list(schema["variables"])[:list(schema["variables"]).index(name)]:
+            problems.append(f"{name}: shown_if names one variable listed before, with the answers that show the question")
+    if "before_visit" in variable and kind != "date":
+        problems.append(f"{name}: before_visit goes on a date")
     if "separator" in variable and (kind != "item" or "codes" not in variable):
         problems.append(f"{name}: separator goes on an item that has codes")
     if "doubt" in variable:
         doubt = variable["doubt"]
-        is_block = isinstance(doubt, dict) and set(doubt) <= {"period", "values", "note"}
+        is_block = isinstance(doubt, dict) and set(doubt) <= {"period", "values", "note", "remove"}
         if not is_block or not is_range(doubt.get("period")) or not isinstance(doubt["period"][0], pd.Timestamp):
-            problems.append(f"{name}: doubt needs a period [first day, last day], and may have values and a note")
+            problems.append(f"{name}: doubt needs a period [first day, last day], and may have values, a note and remove")
     if "unit_rule" in variable and not hasattr(custom, variable["unit_rule"]):
         problems.append(f"{name}: there is no function '{variable['unit_rule']}' in facedata/custom.py")
     winsor = variable.get("winsor")
@@ -287,18 +312,35 @@ def check_variable(name, variable, schema, columns):
     return problems
 
 
+def check_z_score(name, score):
+    """The fields of a z-score computed with a regression, and of the band of a z-score."""
+    problems = []
+    if ("with" in score and "regression" not in score) or not isinstance(score.get("with", {}), dict):
+        problems.append(f"{name}: with goes with regression: a mapping {{term of the table: variable}}")
+    if "band_of" in score:
+        alone_or_lookup = [kind for kind in ["sum", "mean", "max", "min", "regression", "custom"] if kind in score] == []
+        limits = score.get("limits")
+        rising = isinstance(limits, list) and all(isinstance(limit, float) for limit in limits) and limits == sorted(limits)
+        if not alone_or_lookup or not rising or len(limits) == 0:
+            problems.append(f"{name}: band_of goes alone or with lookup, and needs limits, numbers in rising order")
+    elif "limits" in score:
+        problems.append(f"{name}: limits goes with band_of")
+    return problems
+
+
 def check_scores(schema):
     problems = []
-    known = set(schema["variables"])
+    known = set(schema["variables"]) | set(schema.get("uses", []))      # uses: scores that other schemas deliver
     for name, score in schema.get("scores", {}).items():
         for field in score:
             if field not in SCORE_FIELDS:
                 problems.append(f"{name}: unknown field '{field}'")
-        if len([kind for kind in ["sum", "mean", "max", "lookup", "custom"] if kind in score]) != 1:
-            problems.append(f"{name}: a score has exactly one of sum, mean, max, lookup and custom")
-        combines = "sum" in score or "mean" in score or "max" in score
+        kinds = [kind for kind in ["sum", "mean", "max", "min", "lookup", "profile", "regression", "distance", "custom"] if kind in score]
+        if len(kinds) != 1 and not (kinds == [] and "band_of" in score):
+            problems.append(f"{name}: a score has exactly one of sum, mean, max, min, lookup, regression and custom, or band_of alone")
+        combines = "sum" in score or "mean" in score or "max" in score or "min" in score
         if ("points" in score or "otherwise" in score) and not combines:
-            problems.append(f"{name}: points and otherwise go with sum, mean or max")
+            problems.append(f"{name}: points and otherwise go with sum, mean, max or min")
         points = score.get("points", {})
         if not isinstance(points, dict) or not all(isinstance(number, float) for pair in points.items() for number in pair):
             problems.append(f"{name}: points is a mapping {{answer: points}} of numbers")
@@ -306,8 +348,11 @@ def check_scores(schema):
             problems.append(f"{name}: there is no function '{score['custom']}' in facedata/custom.py")
         if "winsor" in score and not is_range(score["winsor"]):
             problems.append(f"{name}: winsor on a score must be [q_low, q_high]")
-        if ("lookup" in score) != ("from" in score):
-            problems.append(f"{name}: lookup needs from, the raw score to look up")
+        if ("lookup" in score or "regression" in score or "profile" in score or "distance" in score) != ("from" in score):
+            problems.append(f"{name}: lookup, regression and profile need from, the raw score; from goes with one of them")
+        if ("profile" in score or "distance" in score) != isinstance(score.get("from"), list) and "regression" not in score:
+            problems.append(f"{name}: a profile and a distance read a list in from, and only they do (a regression may)")
+        problems.extend(check_z_score(name, score))
         if "minus" in score and "sum" not in score:
             problems.append(f"{name}: minus goes with sum")
         if "scale" in score:
@@ -315,12 +360,23 @@ def check_scores(schema):
             two_numbers = isinstance(scale, list) and len(scale) == 2 and all(isinstance(number, float) for number in scale)
             if not two_numbers or ("sum" not in score and "mean" not in score):
                 problems.append(f"{name}: scale is [factor, offset], on a score that has sum or mean")
-        if "by" in score and "lookup" not in score:
-            problems.append(f"{name}: by goes with lookup")
-        used = score.get("sum", []) + score.get("mean", []) + score.get("max", []) + score.get("reverse", []) + score.get("minus", [])
-        for field in ["compare", "from", "by", "otherwise"]:
+        if "by" in score and "lookup" not in score and "regression" not in score:
+            problems.append(f"{name}: by goes with lookup or regression")
+        if ("age" in score or "age_date" in score) and "lookup" not in score and "regression" not in score:
+            problems.append(f"{name}: age and age_date go with lookup or regression")
+        if score["stop_at_zero"] and "sum" not in score:
+            problems.append(f"{name}: stop_at_zero goes with sum")
+        if score["compare_turned"] and "compare" not in score:
+            problems.append(f"{name}: compare_turned goes with compare")
+        used = (score.get("sum", []) + score.get("mean", []) + score.get("max", []) + score.get("min", [])
+                + score.get("reverse", []) + score.get("minus", []))
+        for field in ["compare", "by", "otherwise", "band_of", "age", "age_date"]:
             if field in score:
                 used = used + [score[field]]
+        if "from" in score:                          # one variable, or the list of a profile
+            used = used + (score["from"] if isinstance(score["from"], list) else [score["from"]])
+        if isinstance(score.get("with"), dict):
+            used = used + list(score["with"].values())
         for item in used:
             if item not in known:
                 problems.append(f"{name}: '{item}' is not a variable or an earlier score")
@@ -367,9 +423,12 @@ def check_version(schema, columns):
             problems.append(f"version: since names '{name}', which is not a version of the block")
         if pd.isna(pd.to_datetime(first_day, format="%Y-%m-%d", errors="coerce")):
             problems.append(f"version: since '{name}' needs a date written YYYY-MM-DD")
+    for name in version.get("override", {}):
+        if name not in version_names(schema):
+            problems.append(f"version: override names '{name}', which is not a version of the block")
     if columns is not None:
         used = [version["column"]] if "column" in version else []
-        for group in version.get("filled", {}).values():
+        for group in list(version.get("filled", {}).values()) + list(version.get("override", {}).values()):
             used = used + group
         for column in used:
             if column not in columns:
@@ -382,8 +441,15 @@ def check_sign(schema):
     sign = schema.get("sign")
     if sign is None:
         return problems
+    if set(sign) == {"before", "turn"}:
+        if not isinstance(sign["before"], pd.Timestamp):
+            problems.append("sign: before is a date written YYYY-MM-DD")
+        for name in sign["turn"]:
+            if name not in schema["variables"]:
+                problems.append(f"sign: '{name}' is not a variable")
+        return problems
     if set(sign) != {"relation", "by", "pairs"}:
-        problems.append("sign: needs relation, by and pairs, and nothing else")
+        problems.append("sign: needs relation, by and pairs, or before and turn, and nothing else")
         return problems
     if sign["relation"] not in ("negative", "positive"):
         problems.append("sign: relation is negative or positive")
@@ -529,8 +595,12 @@ def check_cohort(schemas):
                         sharing.setdefault(column, []).append(variable["type"])
                     elif "separator" not in variable:    # each box of a list may have its variable
                         readers.setdefault(column, []).append((edition, name, variable["keep"]))
+    for instrument, schema in schemas.items():
+        for name in schema.get("uses", []):
+            if name not in seen_outputs or seen_outputs[name] == instrument:
+                problems.append(f"{instrument}: uses '{name}', which no other schema delivers")
     for column, types in sharing.items():
-        if sorted(types) != ["band", "number"] or column in readers:
+        if sorted(types) not in (["band", "number"], ["number"]) or column in readers:        # or one number, with nothing for the bands
             problems.append(f"raw column '{column}' must be shared by one band and one number, and by nothing else")
     for column, uses in readers.items():
         delivered = [use for use in uses if use[2]]

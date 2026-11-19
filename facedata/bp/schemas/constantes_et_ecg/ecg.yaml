@@ -2,7 +2,7 @@ instrument: ecg
 title: Electrocardiogram
 tab: CONSTANTES et ECG
 section: ECG
-status: draft
+status: reviewed
 notes: >
   The intervals are in seconds in the dictionary. Part of them are written
   in milliseconds (413 for 0.413 s), more and more often since 2023, and a
@@ -12,18 +12,38 @@ notes: >
   A value of 0 stands for "not measured" in the heart rate and the three
   intervals: missing code.
 
-  The RR interval holds 25 values from 30 to 300, which fit no unit; they
-  look like heart rates typed in the wrong field and are out_of_range.
+  The RR interval holds 76 values that fit no unit: 45 under 0.3, and 25
+  from 30 to 300, which look like heart rates typed in the wrong field.
+  They are out_of_range.
 
-  QTc. The EMR computes it with Bazett's formula, QT divided by the square
-  root of RR. But it applies the formula to the numbers as typed, so when
-  QT and RR are not on the same scale the stored QTc is absurd (0.013 or
-  13): 164 stored values are out_of_range. Two columns are therefore
-  delivered. qtc_bazett is recomputed from the harmonised QT and RR (custom
-  function corrected_qt); it agrees with the stored value on 7,622 of the
-  7,668 visits where both exist, and gives a value on 124 visits where the
-  stored one is absurd or absent. qtc_stored is the stored value on the
-  harmonised scale; 759 visits have it and no RR to recompute it from.
+  The RR against the heart rate of the same ECG (decision D114 in
+  PROGRESS.md, by the project lead). The two say the same thing: RR is 60
+  divided by the heart rate. They agree within 10% on 81% of the 7,861
+  visits that have both, and differ by more than 30% on 739. Two centres
+  hold most of these: their RR fits the heart rate on 22% of their visits
+  (80% to 97% elsewhere), with a median RR of 1.1 s for a rate of 70, while
+  their QT is the one of the other centres. What they type in the RR field
+  is not known. The custom check rr_differs_from_rate flags these RR
+  (check_failed); the value is kept.
+
+  QTc. The form computes it with Bazett's formula, QT divided by the square
+  root of RR, on the numbers as typed. Two defects follow. When QT and RR
+  are not on the same scale the stored QTc is absurd (0.013 or 13): 168
+  stored values are out_of_range. And where the typed RR does not fit the
+  heart rate, the stored QTc is wrong: in the two centres above its median
+  is 0.37, against 0.40 to 0.42 elsewhere, and a third are under 0.35.
+
+  qtc_bazett is therefore computed from the harmonised QT and the heart
+  rate of the ECG (RR = 60 / rate; custom function corrected_qt), and from
+  the typed RR only where there is no heart rate (58 visits). It exists on
+  8,963 visits, against 8,470 valid stored values; in the two centres its
+  median is 0.42 and under 1% are below 0.35, as elsewhere. It differs
+  from the stored one by more than 0.03 s on 1,185 visits (score_mismatch),
+  737 of them in the two centres. qtc_stored is the stored value on the
+  harmonised scale.
+
+  The form also asks whether the ECG was sent to a cardiologist and whether
+  an opinion was requested; the extraction does not hold these two answers.
 
 defaults: {type: number, unit: s, missing: {0: not_recorded}}
 
@@ -60,9 +80,12 @@ variables:
 
 scores:
   qtc_bazett:
-    label: Corrected QT interval, Bazett's formula on the harmonised QT and RR
+    label: "Corrected QT interval (Bazett), from the QT and the heart rate of the ECG, or the RR where there is no rate"
     custom: corrected_qt
     compare: qtc_stored
-    compare_tolerance: 0.005
+    compare_tolerance: 0.03
     range: [0.2, 0.7]
     winsor: [0.01, 0.99]
+
+checks:
+  rr_interval: rr_differs_from_rate

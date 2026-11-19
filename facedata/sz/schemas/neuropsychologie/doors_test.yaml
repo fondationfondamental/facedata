@@ -2,39 +2,89 @@ instrument: doors_test
 title: Doors test (visual recognition memory)
 tab: NEUROPSYCHOLOGIE
 section: Test des portes
-status: draft
+status: reviewed
 notes: >
   Recognition of photographs of doors: part A (12 easy sets) and part B (12
   hard sets), one point per door recognised. 987 visits with a part A from
   2010 to 2018 (one in 2025).
 
-  The total is recomputed here as A + B and equals the stored one on all
-  774 visits that have both. Part B holds words on 42 visits ("NA", "non
+  The total is recomputed here as A + B and equals the stored one on all 771
+  visits that have both (the 3 other stored totals have a part out of
+  range). Part B holds words on 42 visits ("NA", "non
   réalisé", "DCM": missing codes): the part was not given, and the EMR left
   the total empty. Three scores are above 12 and out of range.
 
-  The three percentiles are bands ("10 - 25") or limits ("5") of the norms
-  by age; the share of each band is stable from one period to the next.
-  "75 - 95", wider than one band, is read as 75 or more (censored_right).
+  Percentile bands, recomputed. The percentile of part A, of part B and of
+  the total is read again in the norm tables of the application
+  (norms/doors_*_band.csv, one band for each score and age group) from the
+  score and the age typed in the form (cclin01_), where it is within one year
+  of the age at the visit, and from the age at the visit elsewhere. The value
+  is the lower limit of the band; a band wider than one step ("75 - 95") is
+  read as 75 or more and has <variable>_cens = +1 (censored_right, 83 visits
+  for part A). The stored percentiles are kept only as checks
+  (doors_*_band_stored, not delivered); a band that differs from the stored
+  one is flagged score_mismatch: 2 of 986 visits for part A, 1 of 772 for part
+  B and 1 of 769 for the total, all before 2013. The share of each band is
+  stable from one period to the next.
 
-  The percentile of part B is "<1" on 172 visits where part B is empty: the
-  EMR computed it from an empty cell, as if the score were 0 (the same
-  error as for the CVLT recency in FACE BP). So does the percentile of part
-  A on one visit. These bands keep their value and get derived_doubt. Not
-  counting them, "<1" is the percentile of 119 visits for part B.
+  The percentile of part B is "<1" on 172 visits where part B is empty: 171 of
+  the 171 visits with part A typed and part B empty, and one visit where
+  both parts are empty (its part A percentile is "<1" too). The cause is the
+  script of the form: it tests !isNaN(value), which is true for an empty
+  cell, so an empty part writes "<1" (the same error as for the CVLT recency
+  in FACE BP); the total and its percentile are blanked when either part is
+  empty. Nothing is delivered for these visits, and they get
+  score_not_recomputed (the stored value is in the flag log). Not counting
+  them, "<1" is the percentile of 119 visits for part B.
+
+  The SZ form has a box "test not done" (chk_porte_test_non_fait) that the
+  extraction does not hold (nor the boxes of the verbal fluency, the errands
+  test and the six elements test: chk_fv_, chk_com_, chk_test_6element_):
+  ask the data managers. Besides the checks above, 2 typed ages written 'NN
+  ans' and 7 stored percentiles of '>99' (a limit that the list of bands
+  does not have: part A 1, part B 2, total 4; checks, not delivered) stay
+  unparsed, and the age at the visit is used where the typed one is not
+  read. Centre C (70 visits with a total) sits below the other centres, 13
+  against 16 for the total (part A 8 against 9, part B 5 against 6), as it
+  does on the CVLT total z-score and the WAIS-III matrices z-score, where it
+  is the second lowest: a centre difference, with no step in time (the
+  yearly medians of the total are 15 to 17 from 2011 to 2017).
 
 defaults: {type: item, range: [0, 12]}
 
 variables:
+  # The age as typed in the form: the application reads the norms of the percentiles with it
+  doors_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
   doors_a: {column: portea_, label: Part A (0 to 12)}
   doors_b: {column: porteb_, label: Part B (0 to 12), missing: {dcm: not_recorded, non réalisé: not_applicable, non realisé: not_applicable}}
   doors_total_stored: {column: porte_, label: "Total, as stored", range: [0, 24], keep: false}
-  doors_a_band: {column: porteapc_, label: Part A as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_a}
-  doors_b_band: {column: portebpc_, label: Part B as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_b}
-  doors_total_band: {column: portepc_, label: Total as a percentile band, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_total}
+  doors_a_band_stored: {column: porteapc_, label: "Part A as a percentile band, as stored", type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], keep: false}
+  doors_b_band_stored: {column: portebpc_, label: "Part B as a percentile band, as stored", type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], keep: false}
+  doors_total_band_stored: {column: portepc_, label: "Total as a percentile band, as stored", type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], keep: false}
 
 scores:
   doors_total:
     label: Total (A + B, 0 to 24)
     sum: [doors_a, doors_b]
     compare: doors_total_stored
+
+  # Percentile bands, read in the norm tables of the application (norms/doors_*_band.csv) from the score and the age typed in the form.
+  # The value is the lower limit of the band; a band wider than one step has <variable>_cens = +1.
+  doors_a_band:
+    label: Part A as a percentile band
+    lookup: doors_a_band
+    from: doors_a
+    age: doors_age
+    compare: doors_a_band_stored
+  doors_b_band:
+    label: Part B as a percentile band
+    lookup: doors_b_band
+    from: doors_b
+    age: doors_age
+    compare: doors_b_band_stored
+  doors_total_band:
+    label: Total as a percentile band
+    lookup: doors_total_band
+    from: doors_total
+    age: doors_age
+    compare: doors_total_band_stored
