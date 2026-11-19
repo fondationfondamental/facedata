@@ -2,21 +2,33 @@ instrument: isf_lifetime
 title: "Suicidal ideation and attempts over the whole life (inclusion form)"
 tab: SUICIDE
 section: Intentionnalité suicidaire actuelle
-status: draft
+status: reviewed
 notes: >
   The BP schema with the codes of this extraction. Five questions on
-  suicidal ideation and attempts over the whole life, each with "when
-  last", at the inclusion visit: 452 visits. 96% and 92% of the inclusions
-  hold it until 2017, 48% to 62% since: from 2018 part of the centres only
-  fill the Columbia scale (cssrs_v0.yaml), which stays at 75% to 98% (open
-  question O25).
+  suicidal ideation and attempts over the whole life ("have you ever...",
+  form 145), each with "when last", at the inclusion visit: 452 visits.
+  The form says "ever" and prints no period.
 
-  Two forms in the same columns. The inclusion visit asks about the whole
-  life; the follow-up visits use the same columns for the time since the
-  last visit. The two are never delivered in one column: visit_form says
-  which form a visit uses (inclusion for the screening and inclusion
-  visits, follow_up for the others), and each form has its own schema and
-  its own variables.
+  Share of inclusions that hold it: 96% to 99% in 2013-2016, 73% in 2017,
+  then 45% to 72% a year. Since 2018 the Columbia scale replaces it in
+  part of the centres (cssrs_v0.yaml, which stays at 75% to 98%): about
+  14% of the inclusions of seven centres hold the ISF since 2018, against
+  84% at seven others (missing by centre, open question O25).
+
+  The data dictionary says the form is asked at "VISITES v0". It is also
+  asked at 24 and 48 months (isf_lifetime_fu.yaml). The inclusion visit and
+  the follow-up visits use the same columns, and the two are never
+  delivered in one column: visit_form says which form a visit uses
+  (inclusion for the screening and inclusion visits, follow_up for the
+  others), and each form has its own schema and its own variables. One
+  screening row holds the form (9 cells) and repeats the answers of the
+  inclusion visit of the same patient: it is delivered as a second
+  inclusion visit, because the version block is the same in every schema
+  of the cohort and cannot drop the screening visit in this one alone.
+
+  Open question O25(1), what period the answers cover, is answered by the
+  form: the wording is "ever" (lifetime). The raters read it both ways at
+  follow-up (isf_lifetime_fu.yaml).
 
   "When last" is stored 0, 1 and 2, as the dictionary says: last week,
   between two weeks and a year ago, more than a year ago. The answers of

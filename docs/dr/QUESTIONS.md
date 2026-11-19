@@ -43,19 +43,32 @@ cohort.
 **DEV-1. The three medication lists are crossed.** For a patient, the export
 writes every product (substance, generic name, strength, unit) next to every
 prescription line (form, daily dose, start, end): 2 products and 3 lines
-give 6 items, the products in alphabetical blocks and the lines in cycles.
-This holds for each of the 480 patients of the current psychotropic list,
-the 406 of the past list and the 273 of the somatic list. Which line belongs
-to which product is not in the file, and the number of units a day is
-computed for every pair. For the 194 patients who have several current
-psychotropic products, no dose and no date can be delivered.
-*Questions:* can the export write one line per prescription, as for BP and
-SZ? The past list holds one product for 404 of 406 patients, and half of the
-patients have one molecule in the current list: does the form, or the
-export, keep one line only? The class and catalogue-code lists (`cmclas`,
-`cmclascd`) do not have the length of the others.
+give 6 items, the products ordered by class and the lines in cycles. This
+holds for each of the 480 patients of the current psychotropic list, the 406
+of the past list and the 273 of the somatic list. Which line belongs to which
+product is not in the file, and the number of units a day is computed for
+every pair. For the 194 patients who have several current psychotropic
+products, no dose and no date can be delivered.
+*Answered by the code of the export (2026-11-19, D50):* the export does it,
+not the form. `face_dr_12_traitements.sql` keeps one arbitrary row per visit
+of each list (`distinct on`, no order), builds the classes from those rows
+and joins the rows to the patient by the patient alone; the forms are tables
+of rows with an add button and no limit. That is why the past list holds one
+product for 404 of 406 patients and half of the patients have one molecule in
+the current list. The class and catalogue-code lists (`cmclas`, `cmclascd`)
+hold the 8-digit catalogue code of each product of the table; 45 patients
+have codes and no substance row (products with no ATC match).
+*Request (R122):* can the export write one line per prescription, as for BP
+and SZ (drop the `distinct on`, join on the row's own product code, one item
+per row as for ASP, a left join, order by visit and row, give the visit of
+the row)? The same `distinct on` hits the hospitalisations, the day
+hospitalisations and the specialists of the care-use form. The reasons for
+stopping a treatment (`psy_arret_1` to `psy_arret_3`, `psy_arret_som_1` to
+`psy_arret_som_3`) are in the raw tables and the export does not select them
+(to add to R122). Question M65 for the data managers: how many rows does the
+lifetime table hold per patient?
 *Today:* one item per product, without dates, for the patients with several
-products; every line for the patients with one. (O27, D13)
+products; every line for the patients with one. (O27, D13, D50)
 
 **DEV-2. Three scales are stored on another coding than in BP, and their
 stored scores are computed with the BP formula.**
@@ -166,7 +179,17 @@ M57). The tables of the children and of the siblings of the family form reach
 the extraction as one record per patient and visit (`select distinct on` with
 no order, so one affected child and one affected sibling, chosen by chance):
 13 patients counted 2 or more affected children and 54 siblings, and 6 and 25
-counted a relative and have no row (R110).
+counted a relative and have no row (R110). The psychotherapy form (155) has
+sixteen kinds and a reason for the end of each therapy; the extraction holds
+fourteen kinds and no reason (R133, O33). The same `select distinct on` with
+no order keeps one arbitrary row per visit of the hospitalisations, the day
+hospitalisations and the specialists of the care-use form (R122). The
+Columbia scale has two forms in the table `cssrs` (the full one, 39 yes/no
+questions, and the simplified one of 10, chosen by `visite.SVUPDES`): 26% of
+the answered visits hold none of the 20 full-form-only fields and the
+extraction does not say which form was used (R127). A number typed "00"
+leaves the yes/no that the export computes from it empty: 47 sick-leave
+numbers (46 from 2024) and 6 numbers of general practitioner visits (R129).
 *Question:* are these fields filled in the EMR, and can they be exported?
 Can the export give every record of the children and of the siblings, as BP
 gives five sisters, five brothers, five daughters and five sons?
@@ -182,11 +205,16 @@ centres; for the others the day is the 15th, as in BP and SZ.
 **DEV-11. What the dictionary does not give.** Codes exported as numbers
 with no list: the purpose of the visit; handedness, the time since the last
 rating, the psychotropic treatment and "how long before" in the
-neuropsychology form; the two forms of the verbal fluency; the method,
-drug, consequences and trigger of the most violent and the most serious
-suicide attempt; the closest person; the place of a hospitalisation or
-consultation; the settings of ECT and TMS, the expertise of the therapist
-and the result of a psychotherapy. The lists of the medical history and the
+neuropsychology form; the two forms of the verbal fluency; the closest
+person. The lists of the settings of ECT and TMS, of the expertise of the
+therapist and of the result of a psychotherapy (forms 203 and 155, D51), of the
+method, drug, consequences and
+trigger of the most violent and the most serious suicide attempt and the
+place of a hospitalisation or consultation are not in the dictionary either,
+but forms 151, 152, 194, 203 and 155 give them (D46, D48, D51): please add them. The
+dictionary rows of the sick leave and of the care use say Y/N/NA for answers
+stored 1/0/2, and its ISF rows list the visit "v0" only while the form is
+shown at 24 and 48 months too (R130). The lists of the medical history and the
 two lists of the family (the kind of mood disorder and the suicide of a
 relative) are not in the dictionary either, but the forms give them (D34,
 D37): please add them. The dictionary names the field of the type of diabetes
@@ -197,8 +225,9 @@ column, the 64 Paykel events (the dictionary announces 61), the 17
 traumatic events, the items of the SHAPS, the SPIN and the MDQ, the two
 columns called bupropion and the two called antipsychotics in the ATHF.
 *Today:* the lists that BP has are read in the order of the BP list where
-the shares agree (handedness, type of diabetes); every other list is
-delivered as `code_N`. (O4, O8, O9, O20, O23, O25, O26, O28, O29)
+the shares agree (handedness, type of diabetes); the lists that a form gives
+are read from the form; every other list is delivered as `code_N`. (O4, O8,
+O9, O20, O23, O25, O26, O28, O29)
 
 ## 2. For the data managers
 
@@ -219,13 +248,15 @@ which centres?
 **DM-2. Other forms that thin out.** The neuropsychological assessment (three
 inclusions in four until 2020, one in two since) and the MINI (82% to 89%
 of the screening visits until 2020, 57% to 66% since); the ISF at inclusion
-(92% to 96% until 2017, about half since 2018, while the Columbia scale
-stays at 75% to 98%); three tests that stop (memory for designs, Baddeley dual task,
+(96% to 99% in 2013-2016, 73% in 2017 and 45% to 72% a year since: about 14%
+of the inclusions of seven centres since 2018 against 84% at seven others,
+while the Columbia scale stays at 75% to 98%); three tests that stop (memory for designs, Baddeley dual task,
 auditory span, between 2018 and 2021); SPIN, DETC-CAGE and PCL-S, filled by
 a few percent of the patients since 2024; and the list of current psychotropic
 treatments (79% to 94% of the patients included until 2019 have one, 50% to
 68% of those included since 2021).
-*Question:* which of these are changes of the protocol, and from when? (O22,
+*Question:* which of these are changes of the protocol, and from when? Is the ISF
+chosen per centre (M66)? (O22,
 O24, O25, O21, O30)
 
 ### Priority B
@@ -284,6 +315,17 @@ used in that centre? Does the form hold the tobacco items at every visit?
 *Today:* delivered as recorded; "non-smoker" is not read as "never smoked", an
 empty detail is missing data. (O32, D43)
 
+**DM-9. Psychotherapy.** The question "psychotherapy" and the fourteen kinds
+of the psychotherapy form disagree: at inclusion 85 of the 211 visits that
+answer no hold a kind yes and 12 of the 228 that answer yes hold every kind
+no; at follow-up 111 of 451 and 16 of 260. The form has sixteen kinds and a
+reason for the end of each therapy, which the extraction does not hold
+(R133).
+*Questions:* which of the two do the raters fill, and which is right? Can
+the two missing kinds and the reasons be exported?
+*Today:* the question is delivered as stored, the kinds as answered, and no
+"any psychotherapy" is derived. (O33, D51)
+
 ## 3. For the principal investigator
 
 ### Priority A
@@ -298,6 +340,11 @@ again at 2 and 4 years in the same columns. About the whole life, as at
 inclusion, or since the last visit? The answers show both: 26 of 44 follow-up
 visits of patients with a suicide attempt at inclusion answer "no", and 29 of
 91 "yes" are dated "more than a year ago".
+*Answered by the form (2026-11-19, D44):* form 145 says "ever" and prints no
+period, at inclusion and at 2 and 4 years alike: the answers are a yearly
+update that the raters read both ways, delivered as `isf_lifetime_fu` (no
+longer flagged, and not joined with the BP and SZ questions "since the last
+visit"). The Columbia scale (forms 150 and 230) prints no period either.
 *Answered by the forms (2026-11-19, D36):* the nine medical histories use the
 inclusion form again (form 191), with no period in the questions and no
 "change since the last visit" question: a yearly update, as in BP (D84). The
@@ -305,8 +352,8 @@ answers still differ from the inclusion ones (migraine 16 of 25 follow-up
 visits answer "no" after a "yes" at inclusion, hypertension 4 of 20, counted
 by visit). The family form has no follow-up twin: it is on the inclusion visit
 only (577 patients, one also at screening, none at 2 or 4 years).
-*Today:* the follow-up answers are delivered in columns of their own. (O25,
-O29)
+*Today:* the follow-up answers are delivered in columns of their own, with
+no flag. (O25, O29)
 
 **PI-3. MINI.** It is given again at 2 and 4 years to 89 visits: by
 protocol? Antisocial personality disorder is concluded on 6 visits, none of

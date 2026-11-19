@@ -2,23 +2,51 @@ instrument: care_changes
 title: Changes in the non-drug care
 tab: TRAITEMENTS
 section: Modification de la prise en charge non médicamenteuse
-status: draft
+status: reviewed
 notes: >
-  Asked at inclusion and at follow-up (3,156 visits, 648 yes): did the
-  non-drug care change, and for four approaches whether it started, ended,
-  or both (the cell lists the boxes ticked: one yes/no for "started" and
-  one for "ended"). "Ne sais pas" is a missing code. The details are
-  filled after a yes. The last column is free text and never appears in
-  the report.
+  Asked at inclusion and at follow-up (3,156 visits: 648 yes, 2,418 no, 90
+  "Ne sais pas"): did the non-drug care change, and for four approaches
+  whether it started, ended, or both (the cell lists the boxes ticked: one
+  yes/no for "started" and one for "ended"). "Ne sais pas" is a missing
+  code. The last column is free text and never appears in the report.
+
+  Time frame. The question has no period of its own. It sits under the
+  heading "characteristics of the disorder over the last 12 months" of the
+  inclusion form and of the yearly form, so a follow-up answer is a yearly
+  update (BP D84, R14), not strictly the time since the last visit.
+
+  Branching (decision D72). The four approaches are shown only after a yes
+  to the first question (positions 0 of it in the field table). After a
+  "no" they are blank on 2,418 of 2,418 visits and, as for every yes/no
+  box after a no, they are 0 (asked_if): 19,344 cells (2,418 visits times
+  8 variables). The approaches are the boxes of one list, ticked one by
+  one and never answered with "Non": where one is ticked (419 of the 648
+  yes visits) the empty ones are 0 too (box_list care_change_kinds; 2,250
+  cells), as the rater ticked what applied. These are sets of boxes, not
+  Oui/Non radios, so the rule of the radios (R3) does not apply. 180 yes
+  visits hold only the free text and 49 hold nothing: they stay missing. 3
+  visits that hold an approach under an empty first question stay as
+  written (decision R2). 21,594 cells in all were missing and are 0.
+
+  The 2019 step. The first question is answered on 38% of the visits up to
+  2017 (30% to 58% by year), 30% in 2018, 48% in the first half of 2019,
+  82% in the second half and 91% to 94% from 2020. Among the answered
+  visits the share of yes falls from 38% (to 2017) and 27% (2018) to 14%
+  (from the second half of 2019; 11% to 19% by year). Before mid-2019 an
+  empty cell is "no change, or not shown". In the field table the first
+  question depends on a parent, rad_tbpsychoan_modpec (and the drug
+  counterpart rad_tbpsychoan_modpec_med), that has no row of its own and
+  is not exported (request R132; question M67): the question is shown only
+  after a yes to it, which we cannot see.
 
 variables:
   care_change: {column: rad_tbpsychoan_modpec_nonmed, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Change in the non-drug care}
-  cbt_started: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Cognitive behavioural approach: started"}
-  cbt_ended: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Cognitive behavioural approach: ended"}
-  cognitive_remediation_started: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Cognitive remediation: started"}
-  cognitive_remediation_ended: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Cognitive remediation: ended"}
-  psychodynamic_started: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Psychodynamic approach: started"}
-  psychodynamic_ended: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Psychodynamic approach: ended"}
-  family_approach_started: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, label: "Family approach: started"}
-  family_approach_ended: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, label: "Family approach: ended"}
+  cbt_started: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, asked_if: care_change, box_list: care_change_kinds, label: "Cognitive behavioural approach: started"}
+  cbt_ended: {column: prdecod_modpec_tcc, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, asked_if: care_change, box_list: care_change_kinds, label: "Cognitive behavioural approach: ended"}
+  cognitive_remediation_started: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, asked_if: care_change, box_list: care_change_kinds, label: "Cognitive remediation: started"}
+  cognitive_remediation_ended: {column: prdecod_remed, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, asked_if: care_change, box_list: care_change_kinds, label: "Cognitive remediation: ended"}
+  psychodynamic_started: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, asked_if: care_change, box_list: care_change_kinds, label: "Psychodynamic approach: started"}
+  psychodynamic_ended: {column: prdecod_psychody, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, asked_if: care_change, box_list: care_change_kinds, label: "Psychodynamic approach: ended"}
+  family_approach_started: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 1, Fin: 0}, asked_if: care_change, box_list: care_change_kinds, label: "Family approach: started"}
+  family_approach_ended: {column: prdecod_fam, type: item, range: [0, 1], separator: ",", codes: {Début: 0, Fin: 1}, asked_if: care_change, box_list: care_change_kinds, label: "Family approach: ended"}
   care_change_other: {column: prdecod_modpec_autre, type: text, label: "Another change in the non-drug care, as written"}

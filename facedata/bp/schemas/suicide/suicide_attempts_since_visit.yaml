@@ -21,6 +21,14 @@ notes: >
   the code that can be read. The data agree until October 2021: a number is
   written on 147 of the 167 "yes" and on 29 of the 7,081 "no", all 0.
 
+  Time frame of the follow-up form (decision D159, rule R14a). The
+  follow-up form asks "depuis la dernière visite" on the attempt question
+  and on the three counts: its answers are about the time since the last
+  visit, not a yearly update (D84 does not apply to the suicide forms). The
+  form has no question "is there a change since the last visit?"
+  (rad_pas_dechangement is in other sections), so an empty follow-up form
+  means that the form was not done.
+
   Counts that are 0 by logic (decision D125, as D122). After a "no" to
   "attempted since the last visit" (isf05, read here and delivered as
   isf05_since_visit) the number of attempts and the violent and serious
@@ -35,6 +43,11 @@ notes: >
   after a "no" (2 of them with a number above 0, in 2024 and 2025), 7 give
   0 attempts after a "yes", and 27 "yes" have no number (13 of them in
   2020 and 2021).
+
+  Number of attempts. At inclusion one cell holds 99 and ends
+  out_of_range; at follow-up the largest number is 20. The form accepts
+  one or two digits for the three counts (0 to 99); the ranges of this
+  schema (0 to 50, 0 to 20) are plausible limits, not the form's.
 
   A period that is not delivered, the one of isf_since_visit (decisions
   D85, D88 and D125). From November 2021 to 2023 the follow-up form was not
@@ -57,13 +70,28 @@ notes: >
   project lead). 1,142 cells hold 2011-11-11, all at follow-up visits of
   one centre, from 2011 to 2023: on all but one of its follow-up forms
   until May 2022, and on 3 in November 2023. The other centres, and that
-  centre from June 2022, store 0000-00-00 (8,073 cells). It is a
-  placeholder, read as a missing code. It marks that centre's old
+  centre from June 2022, store 0000-00-00 (8,073 cells). The cause is the
+  date column of the follow-up table: it is NOT NULL with no default and
+  the follow-up form does not show it (application defect A20). 2011-11-11
+  is a placeholder, read as a missing code. It marks that centre's old
   follow-up form, but the export will blank it (R22), so it does not
-  narrow the removed period. 60 cells hold a real date: 1 in 2018, 55 in
-  the removed period, and 4 from 2024 (two centres) on visits that are
-  delivered. The date of the first attempt is delivered from the inclusion
-  visit (suicide_attempts).
+  narrow the removed period. R22 stays as written (B1 of the
+  requests, answered: blank only the 2011-11-11 placeholders; emptying the
+  whole follow-up branch would lose real dates); the delivered values do
+  not change, since the variable is not delivered (keep false).
+  60 cells hold a real date: 1 in 2018, 55 in the removed period, and 4
+  from 2024 (two centres) on visits that are delivered. The date of the
+  first attempt is delivered from the inclusion visit (suicide_attempts).
+
+  What follows the history in the form (decision D159). The sections of the
+  most violent and of the most serious attempt are no longer displayed (see
+  most_violent_attempt and most_serious_attempt, application defect A60),
+  whereas this group is. Group 5 of the form, the Suicide Intent Scale of
+  the most recent attempt (15 items, rad_SISR01 to 015, shown at follow-up
+  after a yes to "attempted since the last visit"), is displayed but none
+  of its answers is in the extraction: no export model selects it and the
+  V4.34 dictionary does not list it (request R126). The behaviour section
+  of the C-SSRS is in the same case (see cssrs_v0).
 
 version:
   name: visit_form

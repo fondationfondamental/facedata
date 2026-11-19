@@ -2,42 +2,85 @@ instrument: cssrs_fu
 title: "Columbia Suicide Severity Rating Scale, since the last visit (follow-up form)"
 tab: SUICIDE
 section: Idéation Suicidaire
-status: draft
+status: reviewed
 notes: >
-  The Columbia scale at the follow-up visits, since the last visit: 784
-  visits, 79% to 93% of the visits of each of the five main kinds (6 of
-  the 8 visits of the three others).
+  The Columbia scale at the follow-up visits, asked again at each visit: 784
+  visits, 79% to 93% of the visits of each of the five main kinds (6 of the
+  8 visits of the three others).
 
   Columbia Suicide Severity Rating Scale: five levels of ideation (yes or
   no, each with a free description), the most severe level as rated, five
-  ratings of its intensity, the suicidal behaviours (actual, interrupted
-  and aborted attempts, preparatory acts, self-injury without intent) and
-  the lethality of three attempts. BP has two forms too, cssrs_v0 and
-  cssrs_fu (BP decision D125), read from other columns, with the ideation
-  part only. BP's follow-up schema has the names of this one and stacks
-  with it (common_instruments.yaml). BP's inclusion form asks about the
-  past week, DR's about the whole life: the two inclusion schemas do not
-  stack.
+  ratings of its intensity, the suicidal behaviours (actual, interrupted and
+  aborted attempts, preparatory acts, self-injury without intent) and the
+  lethality of three attempts. BP has two forms too, cssrs_v0 and cssrs_fu
+  (BP decision D125), read from other columns, with the ideation part only.
+  BP's follow-up schema has the names of DR's cssrs_fu and stacks with it
+  (common_instruments.yaml). BP's inclusion form asks about the past week,
+  DR's about the whole life: the two inclusion schemas do not stack.
 
-  Two forms in the same columns. The inclusion visit asks about the whole
-  life; the follow-up visits use the same columns for the time since the
-  last visit. The two are never delivered in one column: visit_form says
-  which form a visit uses (inclusion for the screening and inclusion
-  visits, follow_up for the others), and each form has its own schema and
-  its own variables.
+  Two forms in the same columns. The inclusion visit and the follow-up
+  visits use the same columns. The two are never delivered in one column:
+  visit_form says which form a visit uses (inclusion for the screening and
+  inclusion visits, follow_up for the others), and each form has its own
+  schema and its own variables.
 
-  The follow-up answers are about the time since the last visit: the share
-  of "yes" to the wish to be dead goes from 77% at inclusion to 47% at
-  follow-up, and 267 of the 577 follow-up visits of patients who said yes
-  at inclusion answer no.
+  Period. Form 150 prints no period in its questions. At inclusion the
+  dictionary reads it as the whole life; at follow-up the same form is asked
+  again, a yearly update that the raters read both ways (R14c). The names
+  since_visit of cssrs_fu are kept so that the schema stacks with BP's,
+  whose form says "since the last visit".
 
-  The form follows its skips: levels 3 to 5 are asked only after a yes to
-  level 2, and after a no they are 0 (asked_if; DR decision D25).
-  cssrs03_since_visit is on 782 visits: asked on 219, 0 after a no on 563.
-  The most severe ideation as rated (cssrs06) is the highest level
-  answered yes on 198 of 244 follow-up visits, higher on 21 and lower on
-  25: it is delivered as rated. The intensity score is the sum of the five
-  ratings, as in BP.
+  Two DR forms, one table. Form 150 is the full scale (39 yes/no questions);
+  form 230 is the simplified one (10 yes/no questions), chosen by the visit
+  (the column SVUPDES of the table visite), and both write the table cssrs.
+  346 of the 1,341 answered visits (26%) hold none of the 20 fields that
+  only the full form has: 0% to 2% of the visits until 2017-Q3, 37% to 56% a
+  year in 2018-2022 and 36% to 51% in 2023-2026; one centre fills the
+  simplified form almost only (68 of its 78 visits), and 34 visits (13 at
+  inclusion and 21 at follow-up) from 2024 hold only the ten answers. The
+  extraction does not say which form a visit used (request R127: the svupdes
+  column), so on a simplified visit an empty full-form field is "not asked",
+  not "no". No earlier note of the package mentioned the simplified visits.
+
+  The form follows its skips. Levels 3 to 5 are asked only after a yes to
+  level 2, and after a no they are 0 (asked_if; DR decision D25): of the 533
+  visits that answer no to levels 1 and 2, 1 holds an answer to levels 3 to
+  5. The number of actual, of interrupted and of aborted attempts is asked
+  only after a yes to its question (asked_if, review of the tab). After a no
+  it is blank, except the number of actual attempts (cssrs14) up to 2017,
+  when a stored 0 sits on 426 of 487 no-visits (4 of 572 since 2018): the
+  three counts are now 0 after a no, as in BP (+2,497 cells; 9 counts above
+  0 under a no stay as written). The aborted-attempt question (cssrs18) and
+  the counts of interrupted and aborted attempts exist from late 2017: 1.2%
+  of the visits before 2017-10 hold the question, 94.6% from 2018-01 (an
+  empty cell before that is "not asked").
+
+  The most severe ideation as rated (cssrs06) runs from 1 to 5. A 0 is
+  out_of_range (8 cells at inclusion): the zeros sit next to a yes to the
+  wish to be dead on 10 of 10 visits and to level 2 on 5 of 10, so they are
+  not "no ideation". The dates of the three attempts are dates before the
+  visit (before_visit): a date on the day of the visit or later is
+  out_of_range. The lethality scales are 0 to 5 (actual) and 0 to 2
+  (potential). The potential lethality has no shown_if: the C-SSRS rates it
+  for an attempt that caused no damage, but 233 of the 365 filled cells sit
+  under a non-zero actual lethality. The summary question "suicidal
+  behaviour observed during the evaluation" (cssrs21) is the rater's own
+  summary: it is no on 183 of the 214 visits that answer it and say yes to
+  an actual, interrupted, aborted or preparatory behaviour (31 yes); it is
+  delivered as rated. The Columbia lists of DR are numeric form keys read as
+  numbers, not code_N cells (0 code_N cells in the cssrs and sisv columns).
+
+  The intensity score is the sum of the five ratings, as in BP.
+
+  At follow-up the share of "yes" to the wish to be dead is 47% against 77%
+  at inclusion, and 267 of the 577 follow-up visits of patients who said yes
+  at inclusion answer no. cssrs03_since_visit is on 782 visits: asked on
+  219, 0 after a no on 563. The most severe ideation as rated (cssrs06) is
+  the highest level answered yes on 198 of 244 follow-up visits, higher on
+  21 and lower on 25: it is delivered as rated. The dates of the attempts at
+  follow-up do not hold "since the last visit": 37 of the 55 most-recent and
+  36 of the 44 first-attempt dates are older than the previous visit (no
+  date is on the day of the visit or later).
 
 version:
   name: visit_form
@@ -76,20 +119,20 @@ variables:
   cssrs_reasons_since_visit: {column: cssrs12, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - since the last visit"}
   cssrs_attempt_since_visit: {column: cssrs13, label: "Actual suicide attempt - since the last visit"}
   cssrs13_since_visit_text: {column: cssrs13a, type: text, label: "Description, as written"}
-  cssrs_n_attempts_since_visit: {column: cssrs14, range: [0, 50], label: "Number of actual attempts - since the last visit"}
+  cssrs_n_attempts_since_visit: {column: cssrs14, range: [0, 50], label: "Number of actual attempts - since the last visit", asked_if: cssrs_attempt_since_visit}
   cssrs_self_injury_since_visit: {column: cssrs15, label: "Non-suicidal self-injurious behaviour - since the last visit"}
   cssrs_interrupted_since_visit: {column: cssrs16, label: "Interrupted attempt - since the last visit"}
   cssrs16_since_visit_text: {column: cssrs16a, type: text, label: "Description, as written"}
-  cssrs_n_interrupted_since_visit: {column: cssrs17, range: [0, 50], label: "Number of interrupted attempts - since the last visit"}
+  cssrs_n_interrupted_since_visit: {column: cssrs17, range: [0, 50], label: "Number of interrupted attempts - since the last visit", asked_if: cssrs_interrupted_since_visit}
   cssrs_aborted_since_visit: {column: cssrs18, label: "Aborted attempt - since the last visit"}
   cssrs18_since_visit_text: {column: cssrs18a, type: text, label: "Description, as written"}
-  cssrs_n_aborted_since_visit: {column: cssrs19, range: [0, 50], label: "Number of aborted attempts - since the last visit"}
+  cssrs_n_aborted_since_visit: {column: cssrs19, range: [0, 50], label: "Number of aborted attempts - since the last visit", asked_if: cssrs_aborted_since_visit}
   cssrs_preparatory_since_visit: {column: cssrs20, label: "Preparatory acts or behaviour - since the last visit"}
   cssrs20_since_visit_text: {column: cssrs20a, type: text, label: "Description, as written"}
-  cssrs_behaviour_since_visit: {column: cssrs21, label: "Suicidal behaviour present - since the last visit"}
-  cssrs_recent_attempt_date_since_visit: {column: cssrs22c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most recent attempt"}
-  cssrs_lethal_attempt_date_since_visit: {column: cssrs23c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the most lethal attempt"}
-  cssrs_first_attempt_date_since_visit: {column: cssrs24c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], label: "Date of the first attempt"}
+  cssrs_behaviour_since_visit: {column: cssrs21, label: "Suicidal behaviour observed during the evaluation, as the rater summarised it - since the last visit"}
+  cssrs_recent_attempt_date_since_visit: {column: cssrs22c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], before_visit: true, label: "Date of the most recent attempt"}
+  cssrs_lethal_attempt_date_since_visit: {column: cssrs23c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], before_visit: true, label: "Date of the most lethal attempt"}
+  cssrs_first_attempt_date_since_visit: {column: cssrs24c_qsdtc, type: date, range: [1920-01-01, 2026-12-31], before_visit: true, label: "Date of the first attempt"}
   cssrs_recent_lethality_since_visit: {column: cssrs22c, range: [0, 5], label: "Most recent attempt: actual lethality (0 no physical damage to 5 death)"}
   cssrs_lethal_lethality_since_visit: {column: cssrs23c, range: [0, 5], label: "Most lethal attempt: actual lethality (0 to 5)"}
   cssrs_first_lethality_since_visit: {column: cssrs24c, range: [0, 5], label: "First attempt: actual lethality (0 to 5)"}

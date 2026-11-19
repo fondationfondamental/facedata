@@ -2,24 +2,49 @@ instrument: medication_classes
 title: Number of medications of each class in the list of the patient
 tab: TRAITEMENTS
 section: Nombre de traitements psychotropes présents AU MOMENT DE LA VISITE
-status: draft
+status: reviewed
 level: patient
 notes: >
   Six counts that the export computes from the medication list: how many
   antipsychotics, antidepressants, anxiolytics, anticholinergic
   correctors, mood stabilisers and hypnotics it holds.
 
-  One value per patient, not per visit (decision D19 in PROGRESS.md). The
-  dictionary calls them the treatments "at the time of the visit", but each
-  count is the same on every row of a patient, like the lists: it counts
-  the whole history. What a patient takes at a visit is in
-  medications_at_visit (medications.yaml). The counts are empty for the
-  378 patients who have no list.
+  What a count counts (decision D72; this answers the former open question
+  O25). It is the number of distinct product NAMES, as typed in the list,
+  that match a fixed list of name patterns (face_sz_11_traitements.sql:
+  COUNT(DISTINCT name) with ILIKE patterns, 29 for the antipsychotics, 25
+  for the antidepressants, 13 for the anxiolytics, 4 for the
+  anticholinergic correctors, 10 for the mood stabilisers and 9 for the
+  hypnotics). It is not a count of molecules, nor of the treatments of a
+  visit: two spellings of one product count twice, and a product that no
+  pattern names counts for nothing. The six counts are reproduced from the
+  names of the list for 1,975 of 1,975 patients.
 
-  The classes are those of the export, whose rule is not in the dictionary:
-  the number of antipsychotics equals the number of medications that
-  facedata/medications.csv puts in the two antipsychotic groups for 1,391
-  of 1,975 patients.
+  What the patterns miss and mix. 480 of the 10,188 rows of the seven
+  psychotropic groups of facedata/medications.csv (356 patients) fall in
+  no class (168 benzodiazepines, 126 second-generation and 34
+  first-generation antipsychotics, 78 anticonvulsants, 61 antidepressants,
+  13 other anxiolytics or hypnotics). The anxiolytic count is 0 for 112 of
+  the 696 patients who have a benzodiazepine in the list, and the hypnotic
+  count is 0 for 52 of the 271 patients who have another anxiolytic or
+  hypnotic. The antipsychotic count exceeds the number of distinct
+  molecules of the two antipsychotic groups for 588 of the 1,961 patients
+  who have one (the same molecule under several names). The classes are
+  not the groups of the table: the anxiolytics are 812 benzodiazepine rows
+  and 82 rows of other anxiolytics, the hypnotics 269 rows of other
+  anxiolytics or hypnotics and 54 benzodiazepines, the anticholinergics
+  438 of the 487 rows of other nervous system drugs, the mood stabilisers
+  166 lithium rows and 451 of the 529 anticonvulsant rows.
+
+  One value per patient, not per visit (decision D19 in PROGRESS.md). The
+  dictionary calls them the treatments "at the time of the visit", but
+  each count is the same on every row of a patient, like the lists: it
+  counts the whole list, not the visit. What a patient takes at a visit is
+  in medications_at_visit (medications.yaml). The counts are empty for the
+  378 patients who have no list. SZ has no question on the classes taken
+  in the whole life: the table medicament_lifetime of the application
+  holds the columns rad_psylifetime_* (as in BP), but no form of SZ shows
+  them.
 
   The six yes/no columns of the same classes (psychotic, depress, anxiolyt,
   antichol, thymoreg, hypnot) are ignored: each is 1 where the count is
@@ -27,9 +52,9 @@ notes: >
   where nothing is known.
 
 variables:
-  n_listed_antipsychotics: {column: psychotic_nb, type: item, range: [0, 30], label: "Number of antipsychotics of the first or second generation in the medication list of the patient"}
-  n_listed_antidepressants: {column: depress_nb, type: item, range: [0, 30], label: "Number of antidepressants in the medication list of the patient"}
-  n_listed_anxiolytics: {column: anxiolyt_nb, type: item, range: [0, 30], label: "Number of anxiolytics in the medication list of the patient"}
-  n_listed_anticholinergics: {column: antichol_nb, type: item, range: [0, 30], label: "Number of anticholinergic correctors in the medication list of the patient"}
-  n_listed_mood_stabilisers: {column: thymoreg_nb, type: item, range: [0, 30], label: "Number of mood stabilisers in the medication list of the patient"}
-  n_listed_hypnotics: {column: hypnot_nb, type: item, range: [0, 30], label: "Number of hypnotics in the medication list of the patient"}
+  n_listed_antipsychotics: {column: psychotic_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as antipsychotics (29 name patterns of the export) in the medication list of the patient"}
+  n_listed_antidepressants: {column: depress_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as antidepressants (25 name patterns of the export) in the medication list of the patient"}
+  n_listed_anxiolytics: {column: anxiolyt_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as anxiolytics (13 name patterns of the export) in the medication list of the patient"}
+  n_listed_anticholinergics: {column: antichol_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as anticholinergic correctors (4 name patterns of the export) in the medication list of the patient"}
+  n_listed_mood_stabilisers: {column: thymoreg_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as mood stabilisers (10 name patterns of the export) in the medication list of the patient"}
+  n_listed_hypnotics: {column: hypnot_nb, type: item, range: [0, 30], label: "Number of distinct product names matched as hypnotics (9 name patterns of the export) in the medication list of the patient"}

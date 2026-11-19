@@ -2,16 +2,27 @@ instrument: treatment_help
 title: Help with taking the treatment
 tab: TRAITEMENTS
 section: TRAITEMENTS
-status: draft
+status: reviewed
 notes: >
-  Who helps the patient take the treatment: nobody, the family, the
-  outpatient clinic or the hospital, a nurse at home. Several boxes can be
-  ticked, so each is one yes/no (4,222 visits, inclusion and follow-up;
-  2,977 alone). The frequency is asked when the clinic or the hospital
-  helps (517 visits).
+  Who helps the patient take the treatment: nobody ("Autonome"), the
+  family, the outpatient clinic or the hospital, a nurse at home. Several
+  boxes can be ticked, so each is one yes/no (4,222 of the 4,941 inclusion
+  and follow-up visits). "Autonome" is ticked on 2,977 visits and with
+  another help on 166 of them, so the variable is
+  treatment_help_autonomous (it was named treatment_help_alone: the values
+  are the same).
+
+  The question has no period: it is the state at the visit, asked at
+  inclusion (2,009 answers) and at every yearly visit (2,213).
+
+  The frequency is asked when the clinic or the hospital helps (the third
+  box of the list in the field table): it is filled on 511 of the 523
+  visits where that box is ticked, and on 6 visits where it is not (5 of
+  them with the whole question empty, all from one centre, 2011 to 2015):
+  kept as recorded (decision R2, no shown_if).
 
 variables:
-  treatment_help_alone: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 1, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 0}, label: "Taking the treatment: takes the treatment alone"}
+  treatment_help_autonomous: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 1, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 0}, label: "Taking the treatment: autonomous (the box can also be ticked with another help)"}
   treatment_help_family: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 1, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 0}, label: "Taking the treatment: helped by the family"}
   treatment_help_clinic: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 1, "IDE au domicile": 0}, label: "Taking the treatment: helped at the outpatient clinic or the hospital"}
   treatment_help_nurse: {column: chk_aide_prise_tt, type: item, range: [0, 1], separator: ",", codes: {"Autonome": 0, "Aide familiale": 0, "Aide au CMP ou à l'hôpital": 0, "IDE au domicile": 1}, label: "Taking the treatment: helped by a nurse at home"}

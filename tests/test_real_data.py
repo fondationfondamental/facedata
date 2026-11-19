@@ -383,6 +383,9 @@ def test_care_and_sick_leave(result, qc):
     assert (qc.loc["n_hospitalisations_v0", "n_valid"], qc.loc["n_hospitalisations_fu", "n_valid"]) == (5065, 8415)
     assert round(data["n_hospitalisations_v0"].mean(), 1) == 2.5 and round(data["n_hospitalisations_fu"].mean(), 2) == 0.17
     assert not (data["n_hospitalisations_v0"].notna() & data["n_hospitalisations_fu"].notna()).any()
+    # The lists of the forms stop at 20 hospitalisations: the range is 0 to 20 and no count is out of range (D161).
+    counts = ["n_hospitalisations_v0", "n_hospitalisations_12m", "n_hospitalisations_fu"]
+    assert qc.loc[counts, "out_of_range"].sum() == 0 and data[counts].max().max() == 20
     # "<5" as the age at the first hospitalisation is mostly chosen by patients never hospitalised: missing (D123).
     assert (qc.loc["n_hospitalisations_v0", "censored_right"], qc.loc["first_hospitalisation_age", "censored_left"]) == (25, 0)
     # A total is 0 where its count is 0; the 12-month count is 0 after no mood episode in the year (D123).
@@ -416,6 +419,8 @@ def test_treatments(result, qc):
     groups = items["treatment_group"].value_counts()
     assert (groups["lithium"], groups["anticonvulsant"], groups["antidepressant"], len(groups)) == (2992, 5120, 4807, 10)
     assert (qc.loc["start_date", "n_valid"], qc.loc["end_date", "n_valid"], qc.loc["end_date", "missing_code"]) == (22608, 10890, 11868)
+    # A start of 0000-00-00 is "Aucune date indiquée" (128 running treatments) and joins the 20 placeholders of 1950-01-01 (D167).
+    assert (qc.loc["start_date", "missing_code"], qc.loc["start_date", "out_of_range"]) == (148, 2)
     # "Traitement en cours" is written 0000-00-15 or 0000-00-00: running. An end before the start is flagged (D124).
     assert (result.flags.loc[result.flags["variable"] == "end_date", "detail"] == "running").sum() == 11855
     assert qc.loc["end_date", "check_failed"] == 148
@@ -443,6 +448,10 @@ def test_treatment_forms(result, qc):
     # Months of exposure: a list that stops at 240, and 0 where the patient never took the class.
     assert (qc.loc["lithium_months", "n_valid"], qc.loc["lithium_months", "censored_right"], patients["lithium_months"].max()) == (2185, 35, 240)
     assert (patients.loc[patients["ever_lithium"] == 0, "lithium_months"] == 0).all()
+    # The same in the six classes: a total of exposure is 0 after a "no" (D122, D166): 5,143 patient-class cells; one anticonvulsant patient keeps months typed after a "no".
+    classes = ["antidepressant", "antipsychotic_1g", "antipsychotic_2g", "anxiolytic_hypnotic", "lithium", "anticonvulsant"]
+    assert sum(int(((patients["ever_" + name] == 0) & (patients[name + "_months"] == 0)).sum()) for name in classes) == 5143
+    assert sum(int(((patients["ever_" + name] == 0) & (patients[name + "_months"] > 0)).sum()) for name in classes) == 1
     assert (qc.loc["ever_non_drug_treatment", "n_valid"], round(patients["ever_cbt"].mean(), 2)) == (1250, 0.16)
     # The follow-up form: boxes are 0 after a "no" to the first question.
     assert (qc.loc["non_drug_treatment_fu", "n_valid"], round(data["non_drug_treatment_fu"].mean(), 2)) == (9304, 0.34)
@@ -535,8 +544,12 @@ def test_suicide(result, qc):
     assert (qc.loc["violent_method_since_visit", "n_valid"], qc.loc["serious_method_since_visit", "n_valid"]) == (16, 24)
     # The forms of 2009-2010 saved the first option of the lists they hid: not answers (shown_if).
     assert tab["not_shown"].sum() == 241
-    assert (qc.loc["cssrs01_inclusion", "n_valid"], qc.loc["cssrs01_since_visit", "n_valid"]) == (1251, 2355)
-    assert (qc.loc["cssrs_intensity_inclusion", "n_valid"], qc.loc["cssrs_intensity_since_visit", "n_valid"]) == (434, 588)
+    # The inclusion answers are about the past week and are named so (D158); no name of the tab ends in _inclusion any more.
+    past_week = ["cssrs0%d" % number for number in range(1, 6)] + ["cssrs_most_severe", "cssrs_frequency", "cssrs_duration", "cssrs_control", "cssrs_deterrents", "cssrs_reasons", "cssrs_intensity"]
+    assert all(name + "_past_week" in qc.index for name in past_week) and not any(name.startswith("cssrs") and name.endswith("_inclusion") for name in qc.index)
+    assert (qc.loc["cssrs01_past_week", "n_valid"], qc.loc["cssrs01_since_visit", "n_valid"]) == (1251, 2355)
+    assert (qc.loc["cssrs_most_severe_past_week", "n_valid"], qc.loc["cssrs_most_severe_since_visit", "n_valid"]) == (250, 428)
+    assert (qc.loc["cssrs_intensity_past_week", "n_valid"], qc.loc["cssrs_intensity_since_visit", "n_valid"]) == (434, 588)
 
 
 def test_family_history(result, qc):

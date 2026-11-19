@@ -34,9 +34,11 @@ notes: >
   as written.
 
   The export keeps only the digits of the number and the duration (since
-  January 2026): a text answer has its digits run together ("1,5" gives
-  15), and an answer with no digit becomes empty, so no cell is flagged
-  unparsed. This is to be asked in the second batch of export requests.
+  January 2026; ebipolar_trt_sem.sql lines 51-61): a text answer has its
+  digits run together ("1,5" gives 15), and an answer with no digit becomes
+  empty, so no cell is flagged unparsed. R128 asks the export to keep the
+  text as typed: weeks above 99 are 29, above 260 are 2 (the largest is
+  880,410), and all 70 above 52 are dated 2021 or earlier.
 
   Hard limits. A number above 52 is out of range (1 cell). A duration above
   104 weeks (two years) is out of range (22 cells, D123). The 20 of 120 to

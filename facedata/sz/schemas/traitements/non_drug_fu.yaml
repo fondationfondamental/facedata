@@ -2,25 +2,43 @@ instrument: non_drug_fu
 title: Non-drug treatments since the last visit
 tab: TRAITEMENTS
 section: Traitement non pharmacologique
-status: draft
+status: reviewed
 notes: >
   At the follow-up visits, never at the inclusion: did the patient have a
-  non-drug treatment since the last visit, then one yes/no per treatment.
-  2,297 visits answer the first question (836 yes, 40 "Ne sais pas"). 1 is
-  yes, 0 is no; "Ne sais pas" is a missing code.
+  non-drug treatment since the last visit (R14a: the question says "depuis
+  la dernière visite"; a follow-up answer here is about that period, as in
+  BP), then one yes/no per treatment. 2,297 visits answer the first
+  question (836 yes, 1,421 no, 40 "Ne sais pas"). 1 is yes, 0 is no; "Ne
+  sais pas" is a missing code.
 
   The treatments are answered after a yes to the first question, and the
   five contents of the cognitive behavioural therapy after a yes to that
-  therapy (last answered in July 2019). After a "no" they are delivered as 0
-  (asked_if).
+  therapy (last answered between March and July 2019). After a "no" they
+  are delivered as 0 (asked_if). Under a "no" the treatments are empty on
+  1,419 of 1,421 visits (2 answers to "another treatment" stand there),
+  and under an empty first question on 2,644 of 2,644; no content of the
+  cognitive behavioural therapy stands under a "no" or an empty answer to
+  it.
 
-  Boxes of one list (box_list, D124). After a yes, some raters tick only the
-  treatments received and leave the other boxes empty. An empty box beside a
-  ticked box of the same list is read as no: 722 boxes on 163 visits among
-  the seven treatments of the current form, and 138 boxes on 56 visits among
+  Boxes of one list (box_list, D124 and D131, kept by decision of the
+  project lead: R13). After a yes, some raters tick only the treatments
+  received and leave the other boxes empty. An empty box beside a ticked
+  box of the same list is read as no: 722 boxes on 163 visits among the
+  seven treatments of the current form, and 138 boxes on 56 visits among
   the five contents of the cognitive behavioural therapy, a list of their
-  own. Where all seven treatments are empty after a yes (50 visits), they
-  stay missing. 79 visits say yes and then no to all seven; they are
+  own (the 67 visits where the therapy itself is read as no add 335
+  contents that are 0 by asked_if: 473 cells of the contents in all). The
+  boxes are Oui/Non radios, which R3 would leave missing; the rule stays
+  as decided. How safe it is: on 60 of the 163 visits the rater also
+  answered an explicit "Non" to another treatment, and the zeros of those
+  visits are 114 of the 722 (16%: electroconvulsive therapy 35 of 133,
+  magnetic stimulation 31 of 133, cognitive behavioural therapy 15 of 67,
+  cognitive remediation 5 of 77, psychodynamic approach 9 of 96, family
+  therapy 11 of 114, family psychoeducation 8 of 102): there a blank may
+  be an unanswered box. On the 103 other visits no explicit "Non" stands
+  next to the ticks (for the contents of the therapy, 20 of the 56 visits
+  hold one). Where all seven treatments are empty after a yes (50 visits),
+  they stay missing. 79 visits say yes and then no to all seven; they are
   delivered as recorded.
 
   "Another treatment" is not in the list: the form dropped it in 2019. It
@@ -28,13 +46,30 @@ notes: >
   answer it: since then it is 0 after a "no" to the first question and
   missing after a yes.
 
-  The same questions as in FACE BP for the first one, the electroconvulsive
-  therapy, the magnetic stimulation, the cognitive behavioural therapy and
-  "another treatment", under the same names, in columns without the suffix
-  _sem. The SZ form has no number of sessions and no dates, and asks about
-  cognitive remediation, the psychodynamic approach, family therapy and
-  family psychoeducation instead of the psychoeducation group and the IPSRT
-  of BP.
+  Sessions, dates and groups are in the application and not in the
+  extraction (decision D73, request R125). The table of the follow-up form
+  (psy_traitement_semestriel_sz) holds the number of sessions for the
+  electroconvulsive therapy, the magnetic stimulation, "other" and the
+  cognitive remediation, a start and an end date for 12 kinds (the
+  electroconvulsive therapy, the magnetic stimulation, "other", the five
+  contents of the cognitive behavioural therapy, the cognitive
+  remediation, the psychodynamic approach, the family therapy and the
+  family psychoeducation), the sets "in group / individually" for the five
+  contents and the remediation, and the text of the tool of the
+  remediation. The clean model eschizo_trt_sem reads them (so do the
+  production lists of columns in source/fond_yaml), but face_sz_11 selects
+  only the PROCCUR_ answers. The field table of the dump lists 8 fields of
+  the block only, and is older than the table. So "no sessions and no
+  dates in the form", written here before, was wrong: the form can hold
+  them.
+
+  The same questions as in FACE BP for the first one, the
+  electroconvulsive therapy, the magnetic stimulation, the cognitive
+  behavioural therapy and "another treatment", under the same names, in
+  columns without the suffix _sem. The SZ form asks about cognitive
+  remediation, the psychodynamic approach, family therapy and family
+  psychoeducation instead of the psychoeducation group and the IPSRT of
+  BP.
 
 variables:
   non_drug_treatment_fu: {column: rad_non_pharmacologique, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Had a non-drug treatment since the last visit"}

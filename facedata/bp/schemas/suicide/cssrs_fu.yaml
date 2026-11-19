@@ -12,12 +12,21 @@ notes: >
 
   One schema per form (decision D125 in PROGRESS.md). The application has
   one C-SSRS form for the inclusion and the follow-up visits; its
-  instruction sets the period: the past week at an initial evaluation, the
-  time since the last visit at a follow-up. The inclusion answers are
-  cssrs_v0. visit_form says which form a visit used; it is read from the
-  visit label. The names are those of the DR follow-up schema, and the two
-  are stacked with care (common_instruments.yaml); DR also has the
+  instruction sets the period ("Depuis la semaine dernière pour une
+  évaluation initiale ou depuis la dernière visite lors d'un suivi"): the
+  past week at an initial evaluation, the time since the last visit at a
+  follow-up. The inclusion answers are cssrs_v0 (variables in _past_week,
+  decision D158). visit_form says which form a visit used; it is read from
+  the visit label. The names are those of the DR follow-up schema, and the
+  two are stacked with care (common_instruments.yaml); DR also has the
   behaviour section.
+
+  Time frame (decision D159, rule R14a). The follow-up answers are about
+  the time since the last visit, as the instruction says: they are not a
+  yearly update (D84 does not apply to the suicide forms). The suicide
+  forms have no question "is there a change since the last visit?"
+  (rad_pas_dechangement is in other sections), so an empty follow-up form
+  means that the form was not done, not "no change".
 
   2,355 visits answer the first question (2,406 any question): 3 in 2019
   and 2020, 37 in 2021, 471 to 564 a year in 2022 to 2025 and 285 in 2026
@@ -32,25 +41,50 @@ notes: >
   the wish to be dead is yes on 25% (2022) and 26% (2023) of the visits,
   against 30% to 35% from 2024.
 
+  The C-SSRS takes the place of the five suicide questions at three centres
+  from 2022 (one centre) or 2024 (two). At one more centre the whole tab is
+  empty at most visits of 2023: 148 of its 191 follow-up visits hold
+  neither the five questions nor the C-SSRS (77%, against 27% to 36% in
+  each of 2019 to 2022 and 2024), and 137 of these 148 visits hold a MADRS
+  (at the other centres, 35 of the 248 visits that hold neither do): the
+  visit took place and the tab was left empty (O40, DM-6).
+
   Questions 3 to 5 (a method, an intent, a plan) are asked only after a yes
   to question 2. After a no they are 0 (asked_if): 1,949 visits. They were
   asked on 415 to 417 visits.
 
-  The most severe ideation (428 visits) and the five intensity ratings (598
-  to 613) are to be rated after a yes to question 1 or 2 (718 visits). The
-  application does not enforce it: 40 visits rate them although both
-  questions are no, and 23 of them get an intensity sum; delivered as
-  rated. After a yes, the most severe ideation is empty on 312 of the 718
-  visits and the five ratings on 141. The most severe ideation as rated is
-  the highest question answered yes on 241 of 406 visits, higher on 106
-  and lower on 59; on 33 visits it names a level 3 to 5 although question 2
-  is no. It is delivered as rated.
+  The most severe ideation (428 visits; range 1 to 5) and the five
+  intensity ratings (598 to 613) are to be rated after a yes to question 1
+  or 2 (718 visits). The application does not enforce it: 40 visits rate
+  the most severe ideation or an intensity item although both questions
+  are no (33 an intensity item), and 23 of them get an intensity sum;
+  delivered as rated. After a yes, the most severe ideation is empty on 312
+  of the 718 visits and the five ratings on 141. The most severe ideation
+  as rated differs from the highest question answered yes on 187 of the 428
+  visits that rate it: on 21 every question is no and on 1 none is
+  answered, and of the 406 with a yes it is the highest on 241, higher on
+  106 and lower on 59; on 33 visits it names a level 3 to 5 although
+  question 2 is no. It is delivered as rated.
 
   Intensity: code 0 of controllability ("does not try to control") and of
   deterrents and reasons ("does not apply") is not the mild end of the
   scale. The sum counts it as 0, the official rule (33, 72 and 84 cells;
   127 of the 588 sums hold one). The sum is given where the five ratings
   are: 588 visits, 2 to 25, median 12.
+
+  What the extraction does not hold (decision D159). After these questions
+  the form has a behaviour section: non-suicidal self-injury, interrupted
+  and aborted attempts with their counts, preparatory acts, and the
+  observed and potential lethality of the most recent, the most lethal and
+  the first attempt, with their dates. The application stores it in
+  psy_suicide and psy_suicide_semestriel (rad_cssrs15, 16, 18 and 20,
+  cssrs17 and 19, the lethality items 22c to 27c); the clean models of the
+  export read it, face_bp_5_suicide.sql does not select it and the V4.34
+  dictionary does not list it (request R126). The seed of the form has no
+  rows for rad_cssrs13 and 14, the parents of the dates: a dangling
+  parent. The deterrents item (radhtml_cssrs11) carries the text of the
+  controllability question above its options (application defect A59): the
+  rating is delivered as rated.
 
 version:
   name: visit_form

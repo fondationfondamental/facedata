@@ -1,24 +1,43 @@
 instrument: non_drug_fu
-title: "Non-drug treatments since the last visit (follow-up form)"
+title: "Non-drug treatments, asked again at a follow-up visit (follow-up form)"
 tab: TRAITEMENTS
 section: TRAITEMENTS NON PHARMACOLOGIQUES
-status: draft
+status: reviewed
 notes: >
-  The BP schema with the questions of this extraction: electroconvulsive
-  therapy, transcranial magnetic stimulation and psychotherapy since the
-  last visit, at the follow-up visits: 819 visits (84% to 91% of the visits
-  of each kind). Electroconvulsive therapy on 134 of 810 visits, TMS on 64
-  of 804.
+  Electroconvulsive therapy (ECT), transcranial magnetic stimulation (TMS)
+  and psychotherapy, asked again at the follow-up visits: 819 visits (84% to
+  91% of the visits of each kind). ECT on 134 of 810 visits, TMS on 64 of
+  804.
+
+  The question has no period. Form 203 asks the same questions, with no
+  time frame, at the inclusion visit and at every follow-up visit, and the
+  raters read them both ways. The BP and SZ forms say "since the last
+  visit"; here the answer is a yearly update (asked again at the follow-up
+  visit), never "since the last visit". The names ect_fu and tms_fu are kept
+  for the join with BP and SZ, whose question says "since the last visit"
+  (the catalogue notes it). Neither reading holds alone. Not "ever": 101
+  of the 151 follow-up visits of patients who had had ECT at inclusion
+  answer no. Not "since the last visit": of the 106 ECT start dates typed at
+  follow-up, 42 are more than a year before the visit and 68 before the
+  previous visit, and for the supportive therapy 92 of 141 are more than a
+  year before. And 71 of the 579 follow-up visits of patients who said no to
+  ECT at inclusion say yes: new treatments, which either reading allows.
 
   Two forms in the same columns: the whole life at the inclusion visit, the
-  time since the last visit at follow-up (of the 151 follow-up visits of
-  patients who had had electroconvulsive therapy at inclusion, 101 answer
-  no). visit_form says which form a visit uses, and each form has its own
-  schema, as in BP.
+  question asked again at follow-up. visit_form says which form a visit
+  uses, and each form has its own schema, as in BP.
 
-  Answers are 0, 1 and 2: 2 is "not known" (missing_code). The kind of
-  stimulation is stored as a code that the dictionary does not explain
-  (open question O28).
+  Answers are 0, 1 and 2: 2 is "not known" (missing_code). The codes of the
+  form (203) are decoded as in non_drug_lifetime.yaml: kind of ECT
+  stimulation 1 unilateral right, 2 bilateral; mean seizure longer than 25
+  seconds an item (2 not known: 31 of the 123 answers); kind of TMS
+  stimulation 1 high frequency, 2 low frequency, 0 not known (26 of 61
+  answers). The count "more than 30 sessions" of the
+  high-frequency TMS is shown only after type 1, the low-frequency count
+  and the 30,000 question only after type 2 (shown_if; no cell changes; the
+  30,000 question has 4 answers "not known", missing_code).
+  The question on psychotherapy (TT_PSYCHO) is a question of its own: the
+  fourteen kinds of psychotherapies_fu.yaml disagree with it (see there).
 
 version:
   name: visit_form
@@ -38,18 +57,18 @@ version:
 defaults: {type: item, range: [0, 1], versions: [follow_up]}
 
 variables:
-  ect_fu: {column: proccur_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy since the last visit"}
-  ect_sessions_fu: {column: ect_procprfn, type: number, range: [0, 365], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy since the last visit: number of sessions"}
-  ect_start_date_fu: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: start"}
-  ect_end_date_fu: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: end"}
-  ect_stimulation_fu: {column: prlat_ect, type: category, codes: {"1": code_1, "2": code_2}, label: "Electroconvulsive therapy since the last visit: kind of stimulation (code)"}
-  ect_seizure_over_25s_fu: {column: prdostxt_ect, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Electroconvulsive therapy since the last visit: mean seizure on the EEG longer than 25 seconds (code)"}
-  tms_fu: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation since the last visit"}
-  tms_sessions_fu: {column: tms_procprfn_nb, type: number, range: [0, 365], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation since the last visit: number of sessions"}
-  tms_start_date_fu: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: start"}
-  tms_end_date_fu: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: end"}
-  tms_stimulation_fu: {column: prlat_tms, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Transcranial magnetic stimulation since the last visit: kind of stimulation (code)"}
-  tms_high_frequency_over_30_fu: {column: tms_procprfn_hf, label: "TMS since the last visit, high frequency: more than 30 sessions"}
-  tms_low_frequency_over_30_fu: {column: tms_procprfn_bf, label: "TMS since the last visit, low frequency: more than 30 sessions"}
-  tms_30000_stimulations_fu: {column: prdostxt_tms, label: "TMS since the last visit: 30,000 stimulations or more delivered"}
-  psychotherapy_fu: {column: proccur_trtpsyt, missing: {"2": unknown}, label: "Psychotherapy since the last visit"}
+  ect_fu: {column: proccur_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy, asked again at a follow-up visit (the question has no period)"}
+  ect_sessions_fu: {column: ect_procprfn, type: number, range: [0, 365], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy, asked again at follow-up: number of sessions"}
+  ect_start_date_fu: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy, asked again at follow-up: start"}
+  ect_end_date_fu: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy, asked again at follow-up: end"}
+  ect_stimulation_fu: {column: prlat_ect, type: category, codes: {"1": unilateral_right, "2": bilateral}, label: "Electroconvulsive therapy, asked again at follow-up: kind of stimulation"}
+  ect_seizure_over_25s_fu: {column: prdostxt_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy, asked again at follow-up: mean seizure on the EEG longer than 25 seconds"}
+  tms_fu: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation, asked again at a follow-up visit (the question has no period)"}
+  tms_sessions_fu: {column: tms_procprfn_nb, type: number, range: [0, 365], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation, asked again at follow-up: number of sessions"}
+  tms_start_date_fu: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation, asked again at follow-up: start"}
+  tms_end_date_fu: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation, asked again at follow-up: end"}
+  tms_stimulation_fu: {column: prlat_tms, type: category, codes: {"1": high_frequency, "2": low_frequency}, missing: {"0": unknown}, label: "Transcranial magnetic stimulation, asked again at follow-up: kind of stimulation"}
+  tms_high_frequency_over_30_fu: {column: tms_procprfn_hf, shown_if: {tms_stimulation_fu: [high_frequency]}, label: "TMS, asked again at follow-up, high frequency: more than 30 sessions"}
+  tms_low_frequency_over_30_fu: {column: tms_procprfn_bf, shown_if: {tms_stimulation_fu: [low_frequency]}, label: "TMS, asked again at follow-up, low frequency: more than 30 sessions"}
+  tms_30000_stimulations_fu: {column: prdostxt_tms, missing: {"2": unknown}, shown_if: {tms_stimulation_fu: [low_frequency]}, label: "TMS, asked again at follow-up: 30,000 stimulations or more delivered"}
+  psychotherapy_fu: {column: proccur_trtpsyt, missing: {"2": unknown}, label: "Psychotherapy, asked again at a follow-up visit (the question has no period)"}

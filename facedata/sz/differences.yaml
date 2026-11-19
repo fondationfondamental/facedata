@@ -42,7 +42,7 @@ wais4_code_symboles_ivt: coding in columns named sdmt01..., the index in ivt01_w
 
 # SUICIDE
 isf_since_visit: no doubtful period, the share of attempts since the last visit does not rise in 2022 and 2023 as it does in BP
-suicide_attempts_since_visit: no doubtful period, as for isf_since_visit
+suicide_attempts_since_visit: no doubtful period, as for isf_since_visit; the variable that read the date of the first attempt at follow-up is not kept (the follow-up table of the application has no such column)
 
 # SUBSTANCES ET COMORBIDITE
 anxiety_v0: another form, where each disorder comes after a screening question; the form has no age at onset; the panic disorder is one question, with or without agoraphobia (the type list is not exported); the obsessional disorder, the obsessive-compulsive disorder and the generalised anxiety (a screening question and the disorder) are named for the fields that the export writes in their columns (R114)
@@ -54,15 +54,15 @@ tobacco: five more questions (cigarettes per day in the last 12 months, age at t
 
 # PERINATALITE, SOIN SUIVI HOSP ARRET TRAVAIL, SOCIAL - PERINATALITE
 perinatal: no birth length, head circumference or Apgar score; the weight is in the column poidsna; four questions of 2017 and the events of the pregnancy are added; 999 is a missing code
-hospitalisations_v0: other columns and questions (the first hospitalisation, the first episode, ever hospitalised); the past year is in hospitalisations_12m, asked at every visit
+hospitalisations_v0: other columns and questions (the first hospitalisation, the first episode, ever hospitalised); the block is hidden after the age answer "Pas d'hospitalisations" (a hidden gate lists the other 88 answers) and ever hospitalised is derived by the export from the number; the past year is in hospitalisations_12m, asked at every visit
 recommendations: two more kinds of recommendation, medico-social and somatic
 sick_leave_v0: three of the five BP questions, in columns of their own
-sick_leave_fu: other columns; the somatic sick leaves of the past 12 months are added; the length may reach 160 weeks; 999 is a missing code
+sick_leave_fu: other columns; the somatic sick leaves of the past 12 months are added; the length reaches 200 weeks at most (one more cell holds the code 999); 999 is a missing code
 social: the columns that SZ holds; the way of living is in the column vie; children, months in the job and income level are added; the income code 7 is 'no income' on the SZ form and 'other' on the BP form (D37); maristat and saltyp lose answers in the export (O22)
 
 # TRAITEMENTS
 medications: no stored daily dose to compare with (the package computes it, as in BP); the interval in weeks and the name, ATC code and active principle of the drug list of the EMR are added
-non_drug_fu: the columns have no suffix _sem; no number of sessions and no dates; other treatments are asked (cognitive remediation, psychodynamic approach, family therapy and psychoeducation)
+non_drug_fu: the columns have no suffix _sem; the sessions, the dates and the group or individual sets that the SZ form holds are not in the extraction (R125); other treatments are asked (cognitive remediation, psychodynamic approach, family therapy and psychoeducation)
 
 # ANTECEDENTS: the SZ history form is shorter (one question 'treated' per disease, no date of onset, no 'controlled') and its sections hold other diseases
 neurological_history_v0: the shorter SZ history form; the export swaps the two migraine columns, so they are read the other way round (R107)

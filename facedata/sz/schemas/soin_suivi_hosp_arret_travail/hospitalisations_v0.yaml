@@ -2,7 +2,7 @@ instrument: hospitalisations_v0
 title: Psychiatric hospitalisations over the whole life (inclusion)
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: HOSPITALISATION
-status: draft
+status: reviewed
 notes: >
   Asked at the inclusion visit: the age at the first hospitalisation for a
   psychotic disorder, its length and the length of the hospitalisations of
@@ -14,22 +14,74 @@ notes: >
   the first episode, which BP does not, and names its columns otherwise.
   The BP names are kept where the question is the same.
 
-  The age holds "Pas d'hospitalisations" on 397 visits (a missing code:
-  not applicable), "Ne sais pas" on 37 and a value under a limit on 18
-  (censored_left). The number and the total length hold "more than" on 20
-  and 105 visits (censored_right: the form stops at 20 times and 30
-  months) and "Ne sais pas" on 44 and 110. The two lengths in weeks stop at
-  50. 1,812 of 1,867 patients were hospitalised at least once; 44 of them
-  have the number "Ne sais pas", which the export writes as a yes (R73),
-  and 37 of these 44 give an age at the first hospitalisation.
+  The age is the gate of the block (decision D70). Its list has 89
+  answers: "Pas d'hospitalisations" first, then 88 others (the ages 5 to
+  89, "<5", ">89" and "Ne sais pas"). The form shows the number of
+  hospitalisations, their total length in months, the length of the first
+  one and the weeks of the first episode only after one of the 88 others
+  (field table of the diagnosis form, positions 1 to 88 of the age). The
+  gate is asked the other way round, a question shown for any answer but
+  one, so it is read once more as a hidden variable that lists the 88
+  answers (hospitalised_by_age, keep false; SCHEMA_SPEC section 4, R16),
+  and the questions it hides get asked_if on it. An empty age stays
+  missing.
+
+  The age holds "Pas d'hospitalisations" on 397 inclusion visits (a
+  missing code: not applicable), "Ne sais pas" on 37 and a value under a
+  limit on 18 (censored_left); ">89" does not occur. On the 397 the export
+  leaves the number empty on 384 visits and holds 0 on 13, the total
+  length empty on 385, and the weeks of the first episode and the length
+  of the first hospitalisation empty on all 397. The number, the total
+  length and the weeks of the first episode are 0 there (asked_if, as
+  decision D122): 384, 388 and 397 cells were missing. The length of the
+  first hospitalisation is a detail of a stay that did not take place and
+  stays missing (as every detail after a no). 28 of the 397 also say yes
+  to the hospitalisations of the past year (hospitalisations_12m),
+  delivered as written. 51 inclusion visits hold no age at all: 25 of them
+  hold a number (2 above 0) and 21 a total length, kept as recorded
+  (decision R2, no shown_if).
+
+  The number and the total length hold "more than" on 20 and 105 visits
+  (censored_right: the form stops at 20 times and 30 months) and "Ne sais
+  pas" on 44 and 110. The two lengths in weeks stop at 50. The ranges are
+  those of the form (months 0 to 30, weeks 0 to 50); no cell lay beyond.
+
+  Ever hospitalised is not asked. The export derives it from the number
+  (face_sz_10: empty if the number is empty, N if it is 0, else Y), so a
+  "Ne sais pas" in the number becomes a yes (R73, R134). The variable is
+  listed after the number, with derived_from: the 44 visits that hold Y
+  with no number get derived_doubt, and no value changes (37 of the 44
+  give an age at the first hospitalisation). With the gate it is 0 after
+  "Pas d'hospitalisations": 1,812 of 2,251 inclusion visits (80.5%) were
+  hospitalised at least once, where only the visits with a number counted
+  before (1,812 of 1,867, 97%).
 
   The hospitalisations of the past year, asked at every visit, are in
   hospitalisations_12m.yaml. There is no hospitalisations_fu in SZ.
 
 variables:
+  # Hidden gate (SCHEMA_SPEC section 4, a gate that the form asks the other way round): the age at the first
+  # hospitalisation says whether the block of hospitalisations is shown. 0 = "Pas d'hospitalisations", 1 = any
+  # other answer (the 85 ages from 5 to 89, "<5", ">89", "Ne sais pas"); an empty cell stays missing.
+  hospitalised_by_age:
+    column: agedebut_hospitalisation_first
+    type: item
+    range: [0, 1]
+    codes: {"pas d'hospitalisations": 0, "Ne sais pas": 1, "<5": 1, ">89": 1,
+      "5": 1, "6": 1, "7": 1, "8": 1, "9": 1, "10": 1, "11": 1, "12": 1, "13": 1, "14": 1,
+      "15": 1, "16": 1, "17": 1, "18": 1, "19": 1, "20": 1, "21": 1, "22": 1, "23": 1, "24": 1,
+      "25": 1, "26": 1, "27": 1, "28": 1, "29": 1, "30": 1, "31": 1, "32": 1, "33": 1, "34": 1,
+      "35": 1, "36": 1, "37": 1, "38": 1, "39": 1, "40": 1, "41": 1, "42": 1, "43": 1, "44": 1,
+      "45": 1, "46": 1, "47": 1, "48": 1, "49": 1, "50": 1, "51": 1, "52": 1, "53": 1, "54": 1,
+      "55": 1, "56": 1, "57": 1, "58": 1, "59": 1, "60": 1, "61": 1, "62": 1, "63": 1, "64": 1,
+      "65": 1, "66": 1, "67": 1, "68": 1, "69": 1, "70": 1, "71": 1, "72": 1, "73": 1, "74": 1,
+      "75": 1, "76": 1, "77": 1, "78": 1, "79": 1, "80": 1, "81": 1, "82": 1, "83": 1, "84": 1,
+      "85": 1, "86": 1, "87": 1, "88": 1, "89": 1}
+    keep: false
+    label: "Hospitalised in psychiatry, from the age at the first hospitalisation (0 = no hospitalisation chosen, 1 = any age or unknown)"
   first_hospitalisation_age: {column: agedebut_hospitalisation_first, type: number, unit: years, range: [5, 90], missing: {"pas d'hospitalisations": not_applicable}, winsor: false, label: Age at the first hospitalisation for a psychotic disorder}
-  first_hospitalisation_weeks: {column: hodur_hospitalisation_first, type: number, unit: weeks, range: [0, 60], winsor: false, label: Length of the first hospitalisation for a psychotic disorder}
-  first_episode_hospitalisation_weeks: {column: hodur_hospitalisation_fe, type: number, unit: weeks, range: [0, 60], winsor: false, label: Total length of the hospitalisations for the first psychotic episode}
-  ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Has ever been hospitalised in psychiatry, at inclusion"}
-  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 50], winsor: false, label: "Number of psychiatric hospitalisations over the whole life, at inclusion"}
-  hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 600], winsor: false, label: "Total length of the psychiatric hospitalisations over the whole life, at inclusion"}
+  first_hospitalisation_weeks: {column: hodur_hospitalisation_first, type: number, unit: weeks, range: [0, 50], winsor: false, label: Length of the first hospitalisation for a psychotic disorder}
+  first_episode_hospitalisation_weeks: {column: hodur_hospitalisation_fe, type: number, unit: weeks, range: [0, 50], winsor: false, asked_if: hospitalised_by_age, label: Total length of the hospitalisations for the first psychotic episode}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 20], winsor: false, asked_if: hospitalised_by_age, label: "Number of psychiatric hospitalisations over the whole life, at inclusion"}
+  ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: hospitalised_by_age, derived_from: n_hospitalisations_v0, label: "Has ever been hospitalised in psychiatry, at inclusion (derived by the export from the number)"}
+  hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 30], winsor: false, asked_if: n_hospitalisations_v0, label: "Total length of the psychiatric hospitalisations over the whole life, at inclusion"}

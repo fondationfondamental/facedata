@@ -2,7 +2,7 @@ instrument: suicide_attempts
 title: History of suicide attempts over the whole life (inclusion visit)
 tab: SUICIDE
 section: Histoire des conduites suicidaires (VIE ENTIERE ou depuis la DERNIERE VISITE)
-status: draft
+status: reviewed
 notes: >
   Date of the first attempt, number of attempts, and whether some were
   violent (firearm, hanging, jump...) or serious without being violent
@@ -12,19 +12,39 @@ notes: >
   code (9 violent and 25 serious answers; 1 number of attempts holds NSP).
 
   Two forms in the same columns, as in BP (BP decision D86). The inclusion
-  form asks "how many times have you attempted suicide" and the date of the
-  first attempt; the follow-up form asks the same numbers "since the last
-  visit" and has no date of the first attempt (read in the form definitions
-  of the application in November 2026). The follow-up visits are another
-  instrument, suicide_attempts_since_visit.
+  form asks "how many times have you attempted suicide" and the date of
+  the first attempt; the follow-up form asks the same numbers "since the
+  last visit" (R14a) and has no date of the first attempt: the follow-up
+  table of the application has no such column (field table and DDL of
+  eSchizo, read in November 2026), and the export reads the date from the
+  inclusion table only. The follow-up visits are another instrument,
+  suicide_attempts_since_visit.
 
-  Counts that are 0 by logic, as in BP (BP decision D125). The SZ inclusion
-  form shows the history of attempts only after a yes to "have you ever
-  attempted suicide" (isf05, delivered as isf05_lifetime). The number of
-  attempts is 0 after a no (1,528 inclusions get their 0 this way), the
-  violent and serious attempts are 0 after 0 attempts, and their numbers 0
-  after a no. n_attempts is on 2,169 inclusions. The forms of 2012 and 2013
-  typed 0 after a no themselves (22 inclusions).
+  What the SZ form does not give. The inclusion form also asks "how many
+  times in the last 12 months" (histts_nb12mois, shown after the same
+  yes): the clean model stages it, the export does not select it, so it is
+  not delivered (request R131). It is not n_suicide_attempts_12m of
+  psychosis_course.yaml, which is another question (the diagnosis form,
+  rad_tbpsychoan_ts_nb, past year). SZ has no C-SSRS (the field table of
+  the SZ suicide form holds 23 fields, that of FACE BP 73) and no SIS
+  items. The blocks of BP on the most violent and the most serious attempt
+  (method, lethality, trigger) were never on the SZ forms: the DDL of the
+  two tables holds their columns, and two dates (date_histts_tsvioldate,
+  date_histts_tsgravdate), but the field table lists only an orphan
+  trigger question (rad_ts_grav_decl). So SZ has no most_violent_attempt
+  or most_serious_attempt schema.
+
+  Counts that are 0 by logic, as in BP (BP decision D125). The SZ
+  inclusion form shows the history of attempts only after a yes to "have
+  you ever attempted suicide" (isf05, delivered as isf05_lifetime). The
+  number of attempts is 0 after a no (1,528 inclusions get their 0 this
+  way), the violent and serious attempts are 0 after 0 attempts, and their
+  numbers 0 after a no. n_attempts is on 2,169 inclusions. 26 of the 1,551
+  inclusions that say no hold an answer typed in the part of the form that
+  follows, 25 of them from 2011 to 2014 (the number of attempts on 23, 0
+  on 22 and above 0 on 1; the violent or serious question on 22 and 23),
+  and 1 from 2021 (a number of violent attempts): kept as recorded
+  (decision R2, no shown_if).
 
   Date of the first attempt, on 562 inclusions. A date on or after the
   inclusion visit is delivered as missing (before_visit, BP D125): 61 cells
@@ -37,7 +57,6 @@ notes: >
   number cannot be read (unparsed). One number of violent attempts is
   above the number of attempts.
 
-  The BP schema, unchanged.
 
 version:
   name: visit_form

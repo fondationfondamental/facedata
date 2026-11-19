@@ -12,11 +12,16 @@ notes: >
 
   One schema per form (decision D125 in PROGRESS.md). The application has
   one C-SSRS form for the inclusion and the follow-up visits; its
-  instruction sets the period: the past week at an initial evaluation, the
-  time since the last visit at a follow-up. The follow-up answers are
-  cssrs_fu. visit_form says which form a visit used; it is read from the
-  visit label. The DR inclusion form asks about the whole life: the two
-  inclusion schemas are not stacked.
+  instruction sets the period ("Depuis la semaine dernière pour une
+  évaluation initiale ou depuis la dernière visite lors d'un suivi"): the
+  past week at an initial evaluation, the time since the last visit at a
+  follow-up. The follow-up answers are cssrs_fu. visit_form says which form
+  a visit used; it is read from the visit label. The names say the period
+  (decision D158): the variables of this schema end in _past_week (they
+  ended in _inclusion), those of cssrs_fu in _since_visit, and DR's
+  inclusion variables in _lifetime, because the DR inclusion form asks
+  about the whole life: the same questions over another period are another
+  notion, so the two inclusion schemas are not stacked.
 
   1,251 visits answer the first question (1,277 any question): 6 in 2019
   and 2020, 34 in 2021, then 168 to 350 a year (2026 to November). From
@@ -45,21 +50,38 @@ notes: >
   sums of 2026 (15 of 80 in 2022); without them it is 11 to 14 in each
   year from 2022.
 
-  The most severe ideation (250 visits) and the five intensity ratings (441
-  to 455) are to be rated after a yes to question 1 or 2 (481 visits). The
-  application does not enforce it: 38 visits rate them although both
-  questions are no, and 27 of them get an intensity sum; delivered as
-  rated. After a yes, the most severe ideation is empty on 248 of the 481
-  visits and the five ratings on 61. The most severe ideation as rated is
-  the highest question answered yes on 142 of 233 visits, higher on 60 and
-  lower on 31; on 27 visits it names a level 3 to 5 although question 2 is
-  no. It is delivered as rated.
+  The most severe ideation (250 visits; range 1 to 5, the extraction holds
+  no 0) and the five intensity ratings (441 to 455) are to be rated after a
+  yes to question 1 or 2 (481 visits). The application does not enforce it:
+  38 visits rate the most severe ideation or an intensity item although
+  both questions are no (34 an intensity item), and 27 of them get an
+  intensity sum; delivered as rated. After a yes, the most severe ideation
+  is empty on 248 of the 481 visits and the five ratings on 61. The most
+  severe ideation as rated differs from the highest question answered yes
+  on 108 of the 250 visits that rate it: on 17 every question is no, and of
+  the 233 with a yes it is the highest on 142, higher on 60 and lower on
+  31; on 27 visits it names a level 3 to 5 although question 2 is no. It
+  is delivered as rated.
 
   Intensity: code 0 of controllability ("does not try to control") and of
   deterrents and reasons ("does not apply") is not the mild end of the
   scale. The sum counts it as 0, the official rule (13, 36 and 37 cells;
   65 of the 434 sums hold one). The sum is given where the five ratings
   are: 434 visits, 3 to 25, median 14.
+
+  What the extraction does not hold (decision D159). After these questions
+  the form has a behaviour section: non-suicidal self-injury, interrupted
+  and aborted attempts with their counts, preparatory acts, and the
+  observed and potential lethality of the most recent, the most lethal and
+  the first attempt, with their dates. The application stores it in
+  psy_suicide and psy_suicide_semestriel (rad_cssrs15, 16, 18 and 20,
+  cssrs17 and 19, the lethality items 22c to 27c); the clean models of the
+  export read it, face_bp_5_suicide.sql does not select it and the V4.34
+  dictionary does not list it (request R126). The seed of the form has no
+  rows for rad_cssrs13 and 14, the parents of the dates: a dangling
+  parent. The deterrents item (radhtml_cssrs11) carries the text of the
+  controllability question above its options (application defect A59): the
+  rating is delivered as rated.
 
 version:
   name: visit_form
@@ -92,19 +114,19 @@ version:
 defaults: {type: item, range: [0, 1], versions: [inclusion]}
 
 variables:
-  cssrs01_inclusion: {column: css0101, codes: {Oui: 1, Non: 0}, label: "Wish to be dead - at inclusion"}
-  cssrs02_inclusion: {column: css0102, codes: {Oui: 1, Non: 0}, label: "Non-specific active suicidal thoughts - at inclusion"}
-  cssrs03_inclusion: {column: css0103, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a method, without intent - at inclusion", asked_if: cssrs02_inclusion}
-  cssrs04_inclusion: {column: css0104, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with some intent to act, without a plan - at inclusion", asked_if: cssrs02_inclusion}
-  cssrs05_inclusion: {column: css0105, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a plan and intent - at inclusion", asked_if: cssrs02_inclusion}
-  cssrs_most_severe_inclusion: {column: css0106, range: [1, 5], label: "Most severe ideation, as rated (1 to 5) - at inclusion"}
-  cssrs_frequency_inclusion: {column: css0108, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - at inclusion"}
-  cssrs_duration_inclusion: {column: css0109, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - at inclusion"}
-  cssrs_control_inclusion: {column: css0110, range: [0, 5], label: "Intensity: controllability (1 easily to 5 unable, 0 does not try) - at inclusion"}
-  cssrs_deterrents_inclusion: {column: css0111, range: [0, 5], label: "Intensity: deterrents (1 definitely stopped to 5 did not stop at all, 0 does not apply) - at inclusion"}
-  cssrs_reasons_inclusion: {column: css0112, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - at inclusion"}
+  cssrs01_past_week: {column: css0101, codes: {Oui: 1, Non: 0}, label: "Wish to be dead - in the past week"}
+  cssrs02_past_week: {column: css0102, codes: {Oui: 1, Non: 0}, label: "Non-specific active suicidal thoughts - in the past week"}
+  cssrs03_past_week: {column: css0103, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a method, without intent - in the past week", asked_if: cssrs02_past_week}
+  cssrs04_past_week: {column: css0104, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with some intent to act, without a plan - in the past week", asked_if: cssrs02_past_week}
+  cssrs05_past_week: {column: css0105, codes: {Oui: 1, Non: 0}, label: "Active suicidal ideation with a plan and intent - in the past week", asked_if: cssrs02_past_week}
+  cssrs_most_severe_past_week: {column: css0106, range: [1, 5], label: "Most severe ideation, as rated (1 to 5) - in the past week"}
+  cssrs_frequency_past_week: {column: css0108, range: [1, 5], label: "Intensity: frequency (1 less than once a week to 5 many times a day) - in the past week"}
+  cssrs_duration_past_week: {column: css0109, range: [1, 5], label: "Intensity: duration (1 a few seconds or minutes to 5 more than 8 hours) - in the past week"}
+  cssrs_control_past_week: {column: css0110, range: [0, 5], label: "Intensity: controllability (1 easily to 5 unable, 0 does not try) - in the past week"}
+  cssrs_deterrents_past_week: {column: css0111, range: [0, 5], label: "Intensity: deterrents (1 definitely stopped to 5 did not stop at all, 0 does not apply) - in the past week"}
+  cssrs_reasons_past_week: {column: css0112, range: [0, 5], label: "Intensity: reasons for ideation (1 only to get attention to 5 only to end the pain, 0 does not apply) - in the past week"}
 
 scores:
-  cssrs_intensity_inclusion:
-    label: "C-SSRS intensity of ideation: sum of the five ratings - at inclusion"
-    sum: [cssrs_frequency_inclusion, cssrs_duration_inclusion, cssrs_control_inclusion, cssrs_deterrents_inclusion, cssrs_reasons_inclusion]
+  cssrs_intensity_past_week:
+    label: "C-SSRS intensity of ideation: sum of the five ratings - in the past week"
+    sum: [cssrs_frequency_past_week, cssrs_duration_past_week, cssrs_control_past_week, cssrs_deterrents_past_week, cssrs_reasons_past_week]

@@ -2,7 +2,7 @@ instrument: sick_leave_fu
 title: Sick leave at follow-up
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: LES 12 DERNIERS MOIS // DEPUIS LA DERNIERE VISITE
-status: draft
+status: reviewed
 notes: >
   At the follow-up visits (about 2,250): sick leave for a psychiatric
   disorder since the last visit, and for a somatic disorder in the past 12
@@ -10,10 +10,20 @@ notes: >
   "Non applicable" (no job: 941 answers) and "Ne sais pas" (287 for the
   somatic leaves) are missing codes; so is 999 in a number or a length.
 
-  The psychiatric question is the one of FACE BP (the same field of the
-  application, the same words) and has the BP names (BP D123). SZ adds the
-  somatic sick leaves of the past 12 months, under names of its own. After
-  a "no", the number and the length are 0 (asked_if), as in BP.
+  Two time frames in one form. The psychiatric question is "since the last
+  visit" and is the one of FACE BP (the same field of the application, the
+  same words), under the BP names (BP D123). The somatic one is "in the
+  last 12 months" and is added by SZ under names of its own. After a "no",
+  the number and the length are 0 (asked_if), as in BP.
+
+  Weeks. For the psychiatric leaves the follow-up export keeps only the
+  digits of the text typed, run together, and an empty cell where there is
+  no digit (eschizo_trt_sem.sql, lines 45-55; request R128): 5 lengths are
+  above 99 weeks (104, 152, 156, 200 and the code 999). 3 are above the
+  limit of this schema (104) and out of range; 999 is a missing code, also
+  once in the number. The somatic length is not stripped: 3 durations
+  written in words are unparsed and 1 number written with a decimal comma
+  is repaired.
 
 variables:
   sick_leave_fu: {column: hooccur_arret_travailpsy_spv, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Sick leave for a psychiatric disorder since the last visit}

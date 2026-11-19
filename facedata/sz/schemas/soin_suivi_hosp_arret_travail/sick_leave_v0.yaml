@@ -2,14 +2,18 @@ instrument: sick_leave_v0
 title: Sick leave at inclusion
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: ACTUEL
-status: draft
+status: reviewed
 notes: >
   At the inclusion visit (about 1,880): is the patient on sick leave now,
   was the patient on sick leave in the past year, and for how many weeks.
   "Non applicable" (the patient has no job: 992 answers) is a missing
   code. After a yes the weeks are filled on 197 of 247 visits; after a no
-  they are 0 (asked_if, 616 visits), as in FACE BP. 11 values above 52
-  weeks are out of range.
+  they are 0 (asked_if, 616 visits), as in FACE BP.
+
+  Weeks. 11 values are above 52: 3 equal 53, which the limit of this
+  schema keeps, and 8 (72 to 180) are above it and out of range; 4
+  durations written in words cannot be read (unparsed), and "NC" and "NSP"
+  are missing codes (2).
 
   SZ reads the past year from the social form; FACE BP reads it from its
   inclusion diagnosis form. FACE BP also asks the number of sick leaves and

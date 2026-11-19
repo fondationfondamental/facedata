@@ -2,26 +2,49 @@ instrument: most_serious_attempt
 title: "The most serious suicide attempt"
 tab: SUICIDE
 section: Columbia TS la plus grave
-status: draft
+status: reviewed
 notes: >
-  The BP schema, with codes instead of labels. The method of the most
-  serious attempt, the drugs taken, the consequences and the trigger: 70
-  visits.
+  The most serious non-violent suicide attempt of the whole life (form 151,
+  "section à coter uniquement pour la tentative de suicide la plus grave et
+  non violente"): its method (drugs with or without a sedative effect, or
+  cutting), the kind of drug, its medical consequences on a scale that has
+  its own wording for each method, and whether an event triggered it, with
+  which one. Delivered as categories on the names of the BP schema;
+  "triggered" as 1 (yes) and 0 (no), 2 ("not known") a missing code. 70
+  visits: the method is sedative drugs on 61, other drugs or substances on 7
+  and cutting on 2. The form is shown after a yes to serious attempts (ISF9)
+  at the inclusion visit and at 24 and 48 months (config/global.php, visit
+  types 2, 6, 8) and is filled on 55 of the 66 visits with ISF9 yes and on
+  11 of the 102 with ISF9 no. One schema for all visits (58 inclusion and 12
+  follow-up visits hold it): the form is the same at follow-up.
 
-  The dictionary gives no code. The method is 1 on 61 visits, 2 on 7 (in
-  BP, sedative drugs 80%, other drugs 13%, cutting 7%), which fits the
-  order of the BP list; the kind of drug and the trigger do not fit it (the
-  second trigger of the BP list, 21% there, is rare here). Each value is
-  delivered as code_N until the lists are known (open question O25).
+  Decoded (review of the tab). The dictionary gives no list; the codes are
+  the keys of the lists of form 151, read on the names of the BP schema.
+  Cross-tabs agree with the form: every drug type, effect and trigger is
+  filled under the method that shows it (0 cells under another method, 0
+  triggers after a "no") and the trigger is given on 31 of the 31 visits
+  that say yes. The lethality scales are BP's in the same order, up to the
+  last level that this form offers (8 levels for the sedative drugs, 4 for
+  the other drugs, 5 for cutting): the BP level "death" is not in the DR
+  form. A drug type "Inconnu" (code 9 for the sedative drugs, 8 for the
+  others) is a missing code (3 and 1 cells). The trigger has one kind more
+  than BP, "other, specify" (code 10, other_specified, 3 cells); "other
+  interpersonal factor" (code 2) is 4 of the 31 triggers, so it is not rare
+  here (BP 21% of its triggers). The earlier note that the lists could not
+  be named is answered by the form (open question O25(3)).
+
+  No shown_if: the forms of 2009-2010 that saved the first option of the
+  hidden lists in BP do not exist in this cohort, and the DR data hold no
+  cell under a method that does not show it (BP D125).
 
 defaults: {type: category}
 
 variables:
-  serious_method_code: {column: ltsg01, label: "Method of the most serious attempt (codes that the dictionary does not explain)", codes: {"1": code_1, "2": code_2, "3": code_3}}
-  serious_sedative_type_code: {column: ltsg02, label: Kind of drug with a sedative effect (code), codes: {"1": code_1, "2": code_2, "3": code_3, "7": code_7, "9": code_9, "10": code_10}}
-  serious_non_sedative_type_code: {column: ltsg03, label: Kind of drug or substance without a sedative effect (code), codes: {"1": code_1, "2": code_2, "3": code_3, "8": code_8}}
-  serious_sedative_lethality_code: {column: ltsg04, label: Consequences of the attempt with sedative drugs (code), codes: {"2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6, "7": code_7, "8": code_8}}
-  serious_non_sedative_lethality_code: {column: ltsg05, label: Consequences of the attempt with other drugs or substances (code), codes: {"1": code_1, "3": code_3, "4": code_4}}
-  serious_cutting_lethality_code: {column: ltsg06, label: Consequences of the cutting (code), codes: {"1": code_1, "4": code_4}}
+  serious_method: {column: ltsg01, label: Method of the most serious attempt, codes: {"1": sedative_drugs, "2": non_sedative_drugs_or_substances, "3": cutting}}
+  serious_sedative_type: {column: ltsg02, label: Kind of drug with a sedative effect, missing: {"9": unknown}, codes: {"1": antipsychotic, "2": antidepressant, "3": benzodiazepine_or_hypnotic, "4": recreational_drug, "5": alcohol, "6": gas, "7": other_prescription, "8": over_the_counter_sedative, "10": anticonvulsant}}
+  serious_non_sedative_type: {column: ltsg03, label: Kind of drug or substance without a sedative effect, missing: {"8": unknown}, codes: {"1": other_prescription, "2": over_the_counter_drug, "3": other_substance, "4": recreational_drug, "5": lithium, "6": anticholinergic, "7": appetite_suppressant}}
+  serious_sedative_lethality: {column: ltsg04, label: Consequences of the attempt with sedative drugs, codes: {"1": fully_conscious, "2": conscious_drowsy, "3": lethargic, "4": asleep_easily_roused, "5": coma_withdraws_from_pain, "6": coma_no_withdrawal, "7": coma_most_reflexes_absent, "8": coma_all_reflexes_absent}}
+  serious_non_sedative_lethality: {column: ltsg05, label: Consequences of the attempt with other drugs or substances, codes: {"1": none_or_minimal, "2": emergency_or_outpatient_treatment, "3": hospitalisation, "4": major_systemic_effects}}
+  serious_cutting_lethality: {column: ltsg06, label: Consequences of the cutting, codes: {"1": scratches, "2": moderate_bleeding, "3": major_vein_bleeding, "4": major_blood_loss, "5": severe_blood_loss_vital_damage}}
   serious_triggered: {column: ltsg07, type: item, range: [0, 1], missing: {"2": unknown}, label: A precise event seems to have triggered the attempt}
-  serious_trigger_code: {column: ltsg08, label: Kind of trigger (code), codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "6": code_6, "8": code_8, "10": code_10}}
+  serious_trigger: {column: ltsg08, label: External trigger of the attempt, codes: {"1": partner, "2": other_interpersonal, "3": work, "4": life_event, "5": health, "6": other, "7": cannot_be_assessed, "8": sexual_abuse, "9": physical_abuse, "10": other_specified}}

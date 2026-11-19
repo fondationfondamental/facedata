@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-13, DEV-14, DEV-15, DM-8, O32, O33, O34, O35, O36, O37), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -205,14 +205,28 @@ are read the other way round. (O19 answered, O24, D50, D60)
 **DEV-10. Values written where nothing was measured, or not for the visit.**
 (1) The percentile of part B of the doors test is "<1" on 172 visits where
 part B is empty: computed from an empty cell, as if the score were 0 (the
-same error as for the CVLT recency in FACE BP). (2) The twelve columns
-"psychotropic treatments at the time of the visit" (`psychotic`,
-`psychotic_nb` and the others) are the same on every row of a patient: they
-describe the whole medication list, not the visit.
-*Question:* can (1) be left empty, and is (2) intended?
+same error as for the CVLT recency in FACE BP). (2) *Answered by the
+export model on 2026-11-19 (D72).* The twelve columns "psychotropic
+treatments at the time of the visit" (`psychotic`, `psychotic_nb` and the
+others) are the same on every row of a patient because the export computes
+them from the whole medication list: the six counts are `COUNT(DISTINCT name)`
+of the product names, as typed, that match fixed name patterns
+(`face_sz_11_traitements.sql`, 29 patterns for the antipsychotics, 25, 13, 4,
+10 and 9 for the other classes), and the six yes/no columns are derived from
+the counts. The patterns miss 480 of the 10,188 psychotropic rows of the list
+(356 patients), and a count is of names, not of molecules or of treatments of
+the visit. (3) The lifetime hospitalisation yes/no (`hooccur_hospitalisation_lt`)
+is derived by the export from the number of hospitalisations: empty if the
+number is empty, "N" if 0, else "Y", so "Ne sais pas" in the number becomes "Y"
+on 44 inclusion visits (37 of them give an age at the first hospitalisation).
+*Question:* can (1) be left empty, and can (3) leave an unknown number as an
+unknown (R73 and R134 of the requests: map "Pas d'hospitalisations" to "N" and
+a "Ne sais pas" to empty)?
 *Today:* (1) the 172 bands are kept and flagged; (2) the six counts are
-delivered once per patient, and what a patient takes at a visit is computed
-from the dates of the list. (D14, O25, D19)
+delivered once per patient with a label that says what they count, and what a
+patient takes at a visit is computed from the dates of the list; (3) the 44
+cells are flagged `derived_doubt` and delivered as extracted. (D14, D19, D70,
+D72)
 
 **DEV-11. `empjob`, the class of the job.** One code, 5, on 41 rows: the
 defect found in FACE BP, where the list of the form is looked up in the
@@ -352,8 +366,11 @@ of the whole life nor strictly an answer about the time since the last visit.
 **DM-9. The table of medication names.** `facedata/medications.csv` gives the
 molecule, the ATC code and a group for 250 names. It was written by hand and
 has still to be read by a pharmacist. The ATC code that the EMR gives for
-3,313 medications of this extraction agrees with it on 3,305. 158
-medications of 11,038 keep an unknown name. (D19; BP O36)
+3,322 medications of this extraction agrees with it on 3,314; of the 8
+others, 7 are rows of Valdoxan (2011 to 2014) whose product in the EMR list is
+a nicotine patch (the product chosen and the name typed disagree; the table
+follows the name), and 1 is a gabapentin row with an old code. 149
+medications of 11,038 keep an unknown name. (D19, D73; BP O36)
 
 ## 3. For the principal investigator
 
@@ -470,3 +487,58 @@ it is delivered as extracted: an empty cell is not "no" (D65; compare BP O40).
 whole-life values (22 from 41 to 60, 22 from 61 to 100, 5 above 100) and 5 of
 the last 12 months. Is the unit a glass per day, or per week? Today they are out
 of range and delivered as missing (range 0 to 40; D66).
+
+## Added by the CARE AND TREATMENTS review of 2026-11-19
+
+**DEV-16. Columns that the application and the clean models hold and the
+export drops (for the EMR developers and whoever writes the export).** (1)
+The care-use block of the follow-up form (general practitioner, psychiatrist,
+psychologist, nurse interviews, specialists, others, psychiatric and somatic
+emergencies without admission, non-psychiatric care, examinations): 36 columns
+are read by `eschizo_trt_sem.sql`, none is selected by `face_sz_10` (R124).
+(2) The non-drug treatments of the follow-up form: the sessions of the
+electroconvulsive therapy, the magnetic stimulation, "other" and the cognitive
+remediation, the start and end dates of 12 kinds, the group or individual sets
+and the tool of the remediation are in the table and in the clean model, and
+`face_sz_11` selects only the `PROCCUR_*` answers (R125). (3) The number of
+attempts in the last 12 months of the inclusion form (`histts_nb12mois`) is
+staged in `eschizo_suicide.sql` and not selected by `face_sz_5` (R131). (4) The
+parent question of the care changes (`rad_tbpsychoan_modpec`, `_med`) has no row
+in the field table and is not exported (R132, see O39). (5) The follow-up
+number and weeks of psychiatric sick leave are stripped of every non-digit by
+`eschizo_trt_sem.sql` (lines 45-55): "2-3" becomes 23, and 5 weeks are above 99
+(R128).
+*Question:* can they be exported, and is (5) intended?
+*Today:* none of them is delivered; the notes of `hospitalisations_12m`,
+`non_drug_fu`, `suicide_attempts` and `care_changes` say so. (D70, D73, D69,
+D72, D71)
+
+**The 12-month block of the follow-up form (O38, for the data managers).** The
+hospitalisations of the follow-up form (hospitalised full time, number, weeks,
+reason) are worded "au cours de l'année écoulée" at every visit, but the
+answers follow the time since the previous visit: the share of yes is 17% of
+1,469 answered visits up to 420 days after the previous one and 23% of 868
+later ones, where the somatic sick leave of the same form, worded 12 months, is
+7% in both. Is the block meant to cover the time since the last visit, as in
+FACE BP? Today it is read as "since the last visit" at follow-up (D70).
+
+**The parent of the care changes (O39, for the data managers).** The question
+"change of the non-drug care" (`care_changes`) depends in the field table on
+`rad_tbpsychoan_modpec`, which has no row and is not exported (R132). It is
+answered on 38% of the visits to 2017 and on 82% to 94% from the second half of
+2019, and the share of yes among the answered visits falls from 38% to 14%. Was
+the parent question removed in mid-2019, and what does an empty answer before
+that mean (M67 of the requests)? Today an empty cell before mid-2019 is "no
+change, or not shown" and the section is delivered as a yearly update (D72).
+
+**The history of treatments of the medication lists (O40, for the data managers).**
+The medication list of a patient is the whole history typed at the inclusion
+visit and added to afterwards. For the patients included from 2018 it holds
+fewer past treatments: per patient with a list, the rows started before the
+inclusion visit are 5.0 to 5.9 for the inclusions of 2011 to 2017 and 2.5 to
+4.0 from 2018, and the rows already ended at the inclusion are 2.6 to 3.5 and
+0.4 to 1.4; the share of patients with a list moves little. The six counts of
+`medication_classes` fall with the lists (2.8 to 3.5 antipsychotic names per
+patient with a list for the inclusions of 2011 to 2017, 1.6 to 2.5 from 2018).
+Did the form or the practice stop asking for the history of treatments in
+2018? Today the lists are delivered as typed (D74).

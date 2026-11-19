@@ -2,17 +2,26 @@ instrument: hospitalisations_since_visit
 title: "Hospitalisations since the last visit, for depression and for another reason"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: HOSPITALISATION
-status: draft
+status: reviewed
 notes: >
   Hospitalisations since the last visit, counted apart for depression and
   for another reason, with their total length in months: 800 follow-up
-  visits (83% to 96% of the visits of each kind). A hospitalisation for
-  depression on 182 of 792 visits. Not in BP or SZ in this form.
+  visits (83% to 96% of the visits of each kind). The form is form 183,
+  section "DEPUIS DERNIERE VISITE" (the title of the block says since the
+  last visit, so the name is right). A hospitalisation for depression on 182
+  of 792 visits. Not in BP or SZ in this form.
+
+  The total length is asked after the number of hospitalisations: asked_if,
+  so it is 0 after a count of 0 (+5 cells for depression and +3 for another
+  reason). It is typed in a box that keeps digits only, so a decimal comma
+  is lost and "0,25" is stored "025": "025" and "05" are read as 0.25 and
+  0.5 month (codes; 5 cells). No censoring: the months are typed numbers
+  (maximum 45).
 
 defaults: {type: number, winsor: false}
 
 variables:
   n_hospitalisations_depression_fu: {column: nboccur_hospitalisation_dep, range: [0, 50], label: "Number of hospitalisations for depression since the last visit"}
-  hospitalisation_months_depression_fu: {column: hodur_hospitalisation_dep, unit: months, range: [0, 60], label: "Total length of the hospitalisations for depression since the last visit"}
+  hospitalisation_months_depression_fu: {column: hodur_hospitalisation_dep, unit: months, range: [0, 60], asked_if: n_hospitalisations_depression_fu, codes: {"025": 0.25, "05": 0.5, "035": 0.35}, label: "Total length of the hospitalisations for depression since the last visit"}
   n_hospitalisations_other_fu: {column: nboccur_hospitalisation_hdep, range: [0, 50], label: "Number of hospitalisations for another reason since the last visit"}
-  hospitalisation_months_other_fu: {column: hodur_hospitalisation_hdep, unit: months, range: [0, 60], label: "Total length of the hospitalisations for another reason since the last visit"}
+  hospitalisation_months_other_fu: {column: hodur_hospitalisation_hdep, unit: months, range: [0, 60], asked_if: n_hospitalisations_other_fu, codes: {"025": 0.25, "05": 0.5, "035": 0.35}, label: "Total length of the hospitalisations for another reason since the last visit"}

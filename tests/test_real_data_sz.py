@@ -299,6 +299,11 @@ def test_medical_evaluation_care_and_social(result, qc):
     assert (qc.loc["n_psychotic_episodes", "n_valid"], data["symptom_persecution_ever"].sum(), data["violence_verbal"].sum()) == (1899, 1807, 925)
     assert shape_of(qc, "SOIN SUIVI HOSP ARRET TRAVAIL") == (27, 5, 0, 25)
     assert (qc.loc["first_hospitalisation_age", "n_valid"], qc.loc["hospitalisation_months_v0", "censored_right"], qc.loc["hospitalised_12m", "n_valid"]) == (1868, 105, 4494)
+    # The lifetime block is hidden after "Pas d'hospitalisations" (D70): 0 on the 384, 384, 388 and 397 cells that the form hides; "ever hospitalised" is derived from the number by the export (44 "Ne sais pas" read as yes).
+    assert [qc.loc[name, "n_valid"] for name in ["ever_hospitalised_v0", "n_hospitalisations_v0", "hospitalisation_months_v0", "first_episode_hospitalisation_weeks"]] == [2251, 2207, 2040, 1670]
+    assert (data["ever_hospitalised_v0"].sum(), qc.loc["ever_hospitalised_v0", "derived_doubt"]) == (1812, 44)
+    # The number and the weeks of the past year are 0 after a "no" (D70): +3,257 and +3,258 cells.
+    assert [qc.loc[name, "n_valid"] for name in ["n_hospitalisations_12m", "hospitalisation_weeks_12m"]] == [4435, 4374]
     # The psychiatric sick leave since the last visit is the BP question, under the BP names; 0 after a "no" (BP D123).
     assert [qc.loc[name, "n_valid"] for name in ["sick_leave_fu", "n_sick_leaves_fu", "sick_leave_weeks_fu", "sick_leave_weeks_12m"]] == [1306, 1288, 1281, 800]
     assert (data.loc[data["sick_leave_fu"] == 0, "sick_leave_weeks_fu"] == 0).all()
@@ -330,7 +335,10 @@ def test_treatments(result, qc):
     # The counts of the export are one value per patient, not per visit.
     assert patients["n_listed_antipsychotics"].notna().sum() == 1975 and "n_listed_antipsychotics" not in data.columns
     assert (qc.loc["non_drug_treatment_fu", "n_valid"], data["non_drug_treatment_fu"].sum(), data["cbt_fu"].sum()) == (2257, 836, 376)
-    assert (data["treatment_help_alone"].sum(), data["care_change"].sum()) == (2977, 648)
+    assert (data["treatment_help_autonomous"].sum(), data["care_change"].sum()) == (2977, 648)
+    # The eight started/ended boxes of the care changes are 0 after a "no" and beside a ticked approach (D72): 2,418 + 422 visits, +21,594 cells.
+    boxes = [f"{kind}_{when}" for kind in ["cbt", "cognitive_remediation", "psychodynamic", "family_approach"] for when in ["started", "ended"]]
+    assert [int(qc.loc[name, "n_valid"]) for name in boxes] == [2840] * 8
 
 
 def test_medical_and_family_history(result, qc):

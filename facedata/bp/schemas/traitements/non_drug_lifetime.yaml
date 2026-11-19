@@ -34,13 +34,17 @@ notes: >
   dates stay missing: they are details of a treatment that did not take
   place.
 
-  Boxes of one list (box_list, D124). After a yes, some raters tick only the
-  kinds received and leave the other boxes empty. An empty box beside a
-  ticked box of the six is read as no, and its number of sessions as 0: 308
-  boxes of 96 patients (95 answered yes to the first question, one left it
-  empty). Where all six boxes are empty after a yes (4 patients), they stay
-  missing. 12 patients answer yes and then no to all six kinds; they are
-  delivered as recorded.
+  Boxes of one list (box_list, D124; kept by the project lead when the tab
+  was reviewed again, R13). After a yes, some raters tick only the kinds
+  received and leave the other boxes empty. An empty box beside a ticked box
+  of the six is read as no, and its number of sessions as 0: 308 boxes of 96
+  patients (95 answered yes to the first question, one left it empty). The
+  boxes are Oui/Non radio buttons, so an empty one is not certain to be a
+  no: 47 of the 95 patients who answered yes hold an explicit "Non" on
+  another kind, and the 71 empty boxes of those patients (23% of the 303
+  zeros after a yes) may be unanswered. Where all six boxes are empty after
+  a yes (4 patients), they stay missing. 12 patients answer yes and then no
+  to all six kinds; they are delivered as recorded.
 
   IPSRT format. A closed list of the form (En groupe, En individuel, several
   allowed), delivered as two yes/no boxes, ipsrt_group and ipsrt_individual,
@@ -69,8 +73,11 @@ notes: >
   45% to 52% in 2016-2023 and 59% from 2024; it goes from 23% to 79% between
   the centres with 50 answers or more.
 
-  The kind of "another treatment" is free text, delivered as written: the
-  name of a method of therapy, most often.
+  Kinds. CBT, psychoeducation groups and IPSRT are specific therapies, not
+  aggregates of every psychotherapy: a patient in another therapy belongs
+  to "another". The kind of "another treatment" is free text, delivered as
+  written: the name of a method of therapy, most often (see non_drug_fu.yaml
+  for the kinds the follow-up texts name).
 
 variables:
   ever_non_drug_treatment: {column: rad_non_pharmacologique_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has ever had a non-drug treatment"}
@@ -96,8 +103,8 @@ variables:
   psychoeducation_end_date: {column: prendtc_psychoed_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoeducation group: end"}
 
   ever_ipsrt: {column: proccur_ipsrt_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: ever_non_drug_treatment, box_list: non_drug_kinds, label: "Interpersonal and social rhythm therapy: ever"}
-  ipsrt_group: {column: prdecod_iprst_lt, type: item, range: [0, 1], separator: ",", codes: {En groupe: 1, En individuel: 0}, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: in a group"}
-  ipsrt_individual: {column: prdecod_iprst_lt, type: item, range: [0, 1], separator: ",", codes: {En groupe: 0, En individuel: 1}, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: individual sessions"}
+  ipsrt_group: {column: prdecod_iprst_lt, type: item, range: [0, 1], separator: ",", codes: {En groupe: 1, En individuel: 0}, missing: {Ne sais pas: unknown}, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: in a group"}
+  ipsrt_individual: {column: prdecod_iprst_lt, type: item, range: [0, 1], separator: ",", codes: {En groupe: 0, En individuel: 1}, missing: {Ne sais pas: unknown}, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: individual sessions"}
   ipsrt_sessions: {column: prdur_ipsrt_lt, type: number, range: [0, 1500], winsor: false, asked_if: ever_ipsrt, label: "Interpersonal and social rhythm therapy: number of sessions"}
   ipsrt_start_date: {column: prstdtc_ipsrt_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy: start"}
   ipsrt_end_date: {column: prendtc_ipsrt_lt, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy: end"}

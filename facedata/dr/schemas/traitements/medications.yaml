@@ -2,39 +2,58 @@ instrument: medications
 title: "Psychotropic treatments recorded as current, one row per treatment"
 tab: TRAITEMENTS
 section: PSYCHOTROPE ACTUEL
-status: draft
+status: reviewed
 level: list
 notes: >
-  The BP list with the columns of this extraction: the psychotropic
-  treatments recorded as current (PSYCHOTROPE ACTUEL), one row per treatment
-  in the table treatments, where the column list says "medications". 480
-  patients have a list (85% of the patients included until 2017, 58% of
-  those included since 2024; 46% to 97% by centre).
+  The psychotropic treatments recorded as current (PSYCHOTROPE ACTUEL), one
+  row per treatment in the table treatments, where the column list says
+  "medications". The variables keep the names of the BP and SZ lists with
+  one exception: substance_name, not medication. BP and SZ deliver the
+  product as it was typed (a trade name with its strength: a digit in 64% of
+  the BP names); here the export writes the name of the substance of the
+  drug catalogue (nomsubstance), with no digit on any of the 817 rows and a
+  salt in brackets on 15% (123 rows). It is another notion than the typed
+  product, so it has its own name. 480 patients have a list (85% of the
+  patients included until 2017, 58% of those included since 2024; 46% to
+  97% by centre).
 
-  The lists are crossed by the export. In BP and SZ, item 1 of each list
-  describes the same treatment. Here the export writes every product of the
-  patient (substance, generic name, strength, unit) next to every
-  prescription line (form, daily dose, start, end): a patient with 2
-  products and 3 lines has 6 items, the products in blocks and the lines in
-  cycles, on each of the patients of the three lists. The products are in
-  alphabetical order, and nothing says which line belongs to which product.
-  The number of units a day is the daily dose of one line over the strength
-  of one product, computed for every pair: most of these numbers mean
-  nothing.
+  The export crosses the lists (request R122). This is the answer to DEV-1:
+  the export does it, not the form. Forms 157 (current) and 158 (somatic)
+  are a table of rows that belong to the form of the visit (Tableau,
+  multiple), form 156 (past) is a table shown by patient; each has an add
+  button and no limit of rows. face_dr_12_traitements.sql keeps one
+  arbitrary row of each list per visit (distinct on (usubjid, visitnum)
+  with no order, lines 6-8), builds the classes from those rows (94-100) and
+  joins the rows to the patient by the patient alone (161-162, 324-325,
+  482-483), with the arrays ordered by class (128-157, 290-319, 449-478):
+  P products and L lines give P x L items, written on every visit of the
+  patient (672-682). Nothing says which line belongs to which product. The
+  number of units a day is the daily dose of one line over the strength of
+  one product, computed for every pair: most of these numbers mean nothing.
+  The raw table also holds three columns that look like the reasons for
+  stopping (psy_arret_1 to 3; the form has a "Motif(s)" column) and that the
+  export does not select.
 
   What is delivered (field crossed, SCHEMA_SPEC section 15). A patient with
   one product keeps every line. A patient with several products keeps one
   item per product, without form, dose or date (list_crossed on these
-  variables): the molecules are known, their dates are not. The class and
-  catalogue-code columns (cmclas, cmclascd) are lists of another length and
-  are not read (ignored.yaml). Open question O27, to send first.
+  variables): the molecules are known, their dates are not. In the file
+  there are 1,852 items; the 286 patients with one product hold 332 of
+  them, the 194 patients with several products 1,520, which become 485
+  items: 817 items delivered. Dates are tied to a product for the 286
+  one-product patients only; 20 of the 194 other patients have all their
+  products in one group, and nothing safe can be added in the code. The
+  class and catalogue-code columns (cmclas, cmclascd) are lists of another
+  length, not in the order of the products, and are not read (ignored.yaml).
+  Eight patients have catalogue (CIS) codes but no substance row (products
+  with no ATC match), and 40 more have fewer substances than codes. When the
+  export is corrected (one array item per row, as in ASP; a left join; order
+  by visit and row; the visit of the row exported) the list becomes
+  per_visit and the crossing note goes.
 
-  The same list is on every row of a patient: it is the history, not the
-  treatment of the visit. Dates are written day/month/year.
-
-  In numbers: 1,852 items in the file; 286 patients have one product (332
-  items, with their lines) and 194 have several (485 items, one per
-  product, with no date): 817 items delivered.
+  The list of a patient is the same on every row of the patient, but it is
+  not a history of the past: the rows are the current treatments of the
+  visits, pooled by the export. Dates are written day/month/year.
 
   Molecule and group. The generic name of the catalogue (cmdecod) is looked
   up in the table medications.csv, shared by the cohorts; eleven generic
@@ -43,7 +62,18 @@ notes: >
   second-generation antipsychotic, 51 lithium; the most frequent molecules
   are venlafaxine, clomipramine, lithium and lamotrigine. Half of the
   patients have one molecule only, which is few for this cohort: the list
-  may not hold every current treatment (O27).
+  may not hold every current treatment (the crossing loses the products
+  with no ATC match).
+
+  Doses. daily_dose is the daily dose in mg as typed: the forms title the
+  field "posologie journalière en mg" (the column is headed "doses
+  journalières cumulées"). The unit of the strength is mg on 780 of the 817
+  rows and g on 17. Median doses by molecule (7 to 12 doses each) are in the
+  range of BP and SZ: lithium 900 (BP 1000), fluoxetine 40 (20), sertraline
+  100 (50), quetiapine 400 (300). units_per_day is derived by the export:
+  the typed dose divided by the number of the strength (lines 134-150),
+  which is wrong for strengths in g, in µg or in units, and meaningless for
+  crossed pairs. No treatment ends before it starts (check end_date).
 
 crossed: [psycho_act_cmtrt, psycho_act_cmdecod, psycho_act_cmdose, psycho_act_cmdosu]
 
@@ -54,7 +84,7 @@ names:
   gives: [molecule, atc, treatment_group]
 
 variables:
-  medication: {column: psycho_act_cmtrt, type: text, label: "Substance, as the drug catalogue names it"}
+  substance_name: {column: psycho_act_cmtrt, type: text, label: "Name of the substance, as the drug catalogue writes it (no strength)"}
   generic_name: {column: psycho_act_cmdecod, type: text, label: "Generic name, as the drug catalogue writes it"}
   molecule: {column: molecule, type: text, label: Molecule}
   atc: {column: atc, type: text, label: ATC code of the molecule}
@@ -78,8 +108,11 @@ variables:
   strength: {column: psycho_act_cmdose, type: text, label: "Strength of one unit, as written"}
   dose_unit: {column: psycho_act_cmdosu, type: text, label: "Unit of the strength, as written"}
   form: {column: psycho_act_cmdosfrm, type: text, label: "Form, as written"}
-  units_per_day: {column: psycho_act_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (the daily dose over the strength)"}
-  daily_dose: {column: psycho_act_cmdostot, type: number, range: [0, 5000], winsor: false, label: Total daily dose (in the unit of the strength)}
+  units_per_day: {column: psycho_act_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (derived: the typed dose divided by the number of the strength; wrong for g, µg and UI strengths)"}
+  daily_dose: {column: psycho_act_cmdostot, type: number, range: [0, 5000], winsor: false, label: "Daily dose in mg, as typed"}
+
+checks:
+  end_date: end_before_start
 
 at_visit:
   title: Psychotropic treatments on the day of the visit
@@ -94,9 +127,19 @@ at_visit:
     only (see medications.yaml): for a patient with several products the
     answer is 0 when no product of the list is in the group, and missing when
     one is, because its dates are lost. So "on an antidepressant" is known on
-    973 visits (yes on 286) of 1,836 that have a list. Use the table
-    treatments to know which molecules a patient has; use these columns only
-    where they are filled.
+    972 visits (yes on 286) of the 1,836 visits of the patients who have a
+    list, and "on lithium" is 1 on 19 visits although 51 patients list it:
+    a 0 means that no listed product is in the group, not that the patient
+    took none. The lifetime list (medications_lifetime.yaml, 233 treatments
+    with an end date) is not read here. Use the table treatments to know
+    which molecules a patient has; use these columns only where they are
+    filled.
+
+    on_valproate counts valproate and valpromide (Dépamide, which the body
+    turns into valproic acid), as in BP and SZ. One valpromide in the list
+    of a patient with several products has no dates, so the 6 visit cells of
+    this patient went from 0 to missing (no cell went from 0 to 1). The list
+    holds 5 valproate and 1 valpromide items, for 5 patients.
   start: start_date
   end: end_date
   columns:
@@ -109,7 +152,7 @@ at_visit:
     on_other_anxiolytic_hypnotic: {where: {treatment_group: other_anxiolytic_hypnotic}, label: On another anxiolytic or hypnotic at the visit}
     on_stimulant: {where: {treatment_group: stimulant}, label: On a stimulant at the visit}
     on_other_nervous_system: {where: {treatment_group: other_nervous_system}, label: On another medication of the nervous system at the visit}
-    on_valproate: {where: {molecule: valproate}, label: On valproate at the visit}
+    on_valproate: {where: {molecule: [valproate, valpromide]}, label: On valproate or valpromide at the visit}
     on_lamotrigine: {where: {molecule: lamotrigine}, label: On lamotrigine at the visit}
     on_carbamazepine: {where: {molecule: carbamazepine}, label: On carbamazepine at the visit}
     on_quetiapine: {where: {molecule: quetiapine}, label: On quetiapine at the visit}
