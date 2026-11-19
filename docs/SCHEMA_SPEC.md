@@ -54,6 +54,8 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
 | `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
 | `uses` | no | Names of variables or scores that other schemas of the cohort deliver; a score of this schema may add up, average or look up from them (section 8, "A score built on the scores of other schemas") |
+| `implausible_visits` | no | A whole number, 2 or more: a visit with that many `out_of_range` values in the instrument is a shifted record (a block of results typed in the wrong fields); its other values are not delivered either and get `visit_removed` (section 4, "A visit whose block is shifted") |
+| `implausible_pool` | no | With `implausible_visits`: a name; the instruments of the cohort that carry the same name pool their `out_of_range` counts, and a visit whose pooled count reaches the number is shifted in every one of them |
 | `crossed`, `per_visit`, `packed` | no | With `level: list`: lists that the export crossed, lists of the visit, records packed in one cell (section 15) |
 | `relatives` | no | With `level: relatives`, required: the prefix of the raw columns of each relative, and who the relative is (section 16) |
 | `per_patient` | no | With `level: relatives`: the yes/no columns of the patients table computed from the rows of the relatives (section 16) |
@@ -248,6 +250,27 @@ relative_substance:
 - Several variables may read the same column this way: this is the one case,
   with `shared`, where a raw column feeds several delivered variables.
 
+### A visit whose block is shifted
+
+In two centres a block of laboratory results was typed in the wrong fields
+(the blood count appears as the iron, the HbA1c or the AST). Most of the cells
+fall outside their hard range and are removed, but a few fall inside and would
+be delivered as real results. `implausible_visits: 3` on the instrument says:
+a visit with three or more `out_of_range` values in this instrument is a
+shifted record; every value of the instrument on that visit is set to missing
+and gets `visit_removed`, with the number of impossible values as detail. No
+centre is named: the rule reads the content, and a record with three impossible
+values is not reliable whatever its centre. Use it on a schema with many
+numeric variables, and say in the notes how many visits it removes.
+
+A shifted block usually spreads over several instruments of a tab (the blood
+count lands in the biochemistry, the liver panel and the drug levels at once),
+and each of them holds one or two impossible values only. `implausible_pool:
+biology` on each of them, with the same `implausible_visits`, counts the
+impossible values of the whole pool on each visit: a visit that reaches the
+number loses its values in every instrument of the pool. The instruments of the
+pool are read once to count and once to deliver.
+
 ## 5. Units
 
 ```yaml
@@ -315,7 +338,7 @@ read as no label at all, so that the magnitude decides without a flag on
 every cell.
 
 ```yaml
-ignore_units: [mg/L]        # the default label of the form; no prolactin is in mg/L
+ignore_units: [mg/L]        # the default label of the form; a value of 0.2 or more is not in mg/L
 ```
 
 Do not use it for a default label that names the usual unit: that label is

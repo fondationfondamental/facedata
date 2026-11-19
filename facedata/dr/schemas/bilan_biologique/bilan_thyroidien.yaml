@@ -2,16 +2,48 @@ instrument: bilan_thyroidien
 title: Thyroid tests
 tab: BILAN BIOLOGIQUE
 section: Bilan Thyroïdie
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  TSH, free T3 and free T4, on about 1,150 visits. 36 free T4 were typed on
-  another scale and are brought back (unit_inferred); 21 free T3 and 15 free
-  T4 are impossible.
+  TSH, free T3 and free T4, on about 1,160 visits.
+
+  The eCEDR form offers a choice of unit for each of the three (TSH:
+  microUI/mL, pmol/L or mUI/L; free T3: pmol/L or pg/mL; free T4: pmol/L or
+  ng/dL), but the extraction does not carry it (request R31): the size of the
+  value decides, as in BP and SZ. 36 free T4 are read as ng/dL by their size
+  and brought back (unit_inferred), 6 of them on the shifted visits below. A 0
+  typed where nothing was measured is out of range.
 
   The unit column of an analyte holds the default label of the form on every
-  row that has any blood result (1,254 rows, 54 of them with no result at
-  all), so it says nothing: the size of the value decides, as in BP and SZ. A
-  0 typed where nothing was measured is out of range.
+  row that has any result of the tab (1,254 rows) and on no other, so it says
+  nothing.
+
+  21 free T3 and 15 free T4 are impossible, all on the visits of one centre
+  whose block of results was typed in the wrong fields, shifted by seven
+  fields of the eCEDR table (30 visits dated up to 2022, see the blood-count
+  schema): the free T3 and the free T4 there have the size of a basophil and
+  an eosinophil count, the TSH that of a neutrophil count, which is inside its
+  range. At most two of the three numbers are impossible on a visit, so the
+  schema alone could not tell a shifted visit. It belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells); this schema loses 43 cells on
+  27 visits: 28 on 22 visits of the block (22 TSH and 6 free T4, the 6 read as
+  ng/dL above) and 15 on 5 other visits.
+
+  The 1% and 99% winsorising turns a clinical tail into the cut value, and
+  only the hard range removes impossible values.
+
+  Centre step of the free T3: one centre has a median of 3.25 pmol/L against
+  4.4 for all (-1.04 interquartile range, 44 results, groups of 20 results
+  or more) and the oldest patients (median age 68 against 53 years); the
+  pg/mL choice of the form is not exported (R31) and its window overlaps
+  that of pmol/L, so the size of the values cannot tell whether results were
+  typed in pg/mL, and the cause is not known. Of the 36 free T4 read as
+  ng/dL, 27 are of one centre and 6 of the shifted centre, so the unit that
+  the export does not carry follows the centre.
 
   Same instrument as in FACE BP.
 

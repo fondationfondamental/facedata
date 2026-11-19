@@ -2,7 +2,9 @@ instrument: bilan_hepatique
 title: Liver tests
 tab: BILAN BIOLOGIQUE
 section: Bilan hépatique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -13,14 +15,43 @@ notes: >
   unlikely under its label). A value that fits no scale is left as it is and
   the hard range decides (out_of_range).
 
-  Bilirubin in µmol/L and in mg/L are on almost the same scale (factor 1.71),
-  so only the label can tell them apart: 182 results are labelled mg/L. The
-  form also offers "mmol/L" (28 results); a bilirubin of 7 mmol/L does not
-  exist, so that label is read as µmol/L. 360 results are left-censored
-  ("<8", "<3").
+  Bilirubin in µmol/L and in mg/L are on almost the same scale (factor
+  1.71), so only the label can tell them apart: 184 results are labelled
+  mg/L. The form also offers "mmol/L" (29 results, A24 in
+  EXPORT_REQUESTS.md); a bilirubin of 7 mmol/L does not exist, so that label
+  is read as µmol/L. 360 results are left-censored ("<8", "<3").
 
   Alkaline phosphatase: 37 results between 0.2 and 5 are in µkat/L (1 µkat/L
   = 60 UI/L).
+
+  A bilirubin of 0 is nothing measured, as for the prolactin (decision
+  D130): 19 results, 18 of them in one centre in 2016 and 2017, are missing
+  (missing code, not_recorded) in place of a delivered 0. A 0 of the ALT or
+  the GGT (one each) was already out_of_range, because the hard range of the
+  enzymes starts at 1: the delivered value is the same, missing.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie): a visit with three or more
+  impossible values over the seven laboratory schemas of BP loses all its
+  values here too and gets visit_removed. The pool removes 29 visits in all
+  (998 cells); this schema loses 123 cells on 27 visits (alkaline phosphatase
+  24, AST 25, ALT 25, bilirubin 23, GGT 26): 84 on 18 visits of the shifted
+  block of one centre and 39 on 9 other visits. This schema alone would remove
+  none: the 9 impossible values (including the 2 zeros above) are on 9
+  different visits. The 4 block visits that escape the pool (see biochimie)
+  still deliver 19 values here.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so a
+  clinical tail becomes the cut value (in BP an AST above 61 UI/L, an ALT
+  above 99, a GGT above 176, an alkaline phosphatase above 135 and a bilirubin
+  above 28 µmol/L are delivered as those values: 232 to 268 enzyme values and
+  125 bilirubin values are clipped), while the hard range ([1, 3000] for the
+  transaminases and the GGT, [10, 1000] for the phosphatase, [0, 500] for the
+  bilirubin) is what removes impossible values.
+
+  Two bilirubin results carry a unit label that the schema does not know and
+  a value that fits both µmol/L and mg/L: they are unit_unknown and
+  delivered as missing.
 
 defaults: {type: number}
 
@@ -62,6 +93,7 @@ variables:
       µmol/L: {factor: 1, expect: [0, 500], aliases: [mmol/L]}
       mg/L: {factor: 1.71, expect: [0, 300]}
     range: [0, 500]
+    missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
     note: The lower tail is censored, so only the upper tail is winsorised.
 

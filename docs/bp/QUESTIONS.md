@@ -112,6 +112,7 @@ with the project lead.
 | PI-13 and O51, empty boxes of the use of care (2026-11-18) | Read as no beside a ticked box, as for the non-drug treatments: 2,106 boxes and 2,106 numbers become 0, no written value changes; a box whose number was typed is left as written | D131 |
 | PI-10, standard scores of the neuropsychological tests (2026-11-18) | Computed again from the raw scores with the tables of the application's scripts for the TMT, the WAIS-III and WAIS-IV subtests and indices, the Stroop, the fluency, the spatial span, the SCIP and the errands; the stored scores are checks and their differences are flagged. Not done: LIS, Barona, fNART. The tables are the application's and are not checked against the manuals (DM-4) | D135 |
 | NEUROPSYCHOLOGIE tab review, four cohorts (2026-11-19, D138 to D143) | Every neuropsychological test of BP, SZ, DR and ASP was read against the form, the application script and the data, and recomputed where its rule is known: the WAIS family with one similarities, total and table rule (SZ edition O16 closed; BP vocabulary row 25-29 from ASP; ASP age at the form date and shared index names), TMT, errands (years of education), CPT checks, CVLT discriminability, the DR tests (D2, Baddeley, RL/RI-16, auditory span, designs) from the DR script tables, Barona, fNART, LIS and SSTICS (new expected-value and distance scores). The tables are compared across the four applications and not checked against the manuals (DM-4 stays open). 79 of the 83 schemas of the tab are `reviewed` |
+| BILAN BIOLOGIQUE tab review, four cohorts (2026-11-19, D144) | The 35 schemas were read against the forms, the application scripts and the data. No unit mismatch between cohorts. A shifted block of lab results (one BP centre to 2023, one DR centre to 2022) is removed by a pooled data rule (`implausible_pool`: BP 29 visits, DR 35); the clipping of lab tails is kept (the project lead's choice); prolactin typed in mg/L, glucose in mg/dL, DR vitamin D code 2 and ASP code 64387 are read; zeros that mean not measured are missing codes; the notes carry the causes of the lipid ratio mismatches, the clearance, the unmarked CRP limits and the form caps. All 35 schemas are `reviewed`; open points (iron in micrograms per decilitre at one centre, DR prolactin of two centres, SZ vitamin D of one centre, the ASP CRP, clozapine of 1 to 19) wait on the centres (requests R102 to R106) |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -152,9 +153,9 @@ still to do.
   `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134); NEUROPSYCHOLOGIE, the 20 drafts of the
   tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
-  ASP social cognition, for gaps with no known cause). 99 of 135 are
-  reviewed; the 36 others are drafts (ANTECEDENTS 20, SUBSTANCES ET
-  COMORBIDITE 9, BILAN BIOLOGIQUE 6, MAThyS). Each
+  ASP social cognition, for gaps with no known cause). BILAN BIOLOGIQUE, the 6 drafts of the tab (D144, with the 28 schemas of the
+  same tab in SZ, DR and ASP). 105 of 135 are reviewed; the 30 others are
+  drafts (ANTECEDENTS 20, SUBSTANCES ET COMORBIDITE 9, MAThyS). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read

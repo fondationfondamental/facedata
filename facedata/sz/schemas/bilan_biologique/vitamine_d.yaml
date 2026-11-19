@@ -2,7 +2,7 @@ instrument: vitamine_d
 title: Vitamin D
 tab: BILAN BIOLOGIQUE
 section: BILAN BIOLOGIQUE
-status: draft
+status: reviewed
 notes: >
   25-hydroxyvitamin D, measured from 2013, and three questions that go
   with it: the time spent outdoors, the skin phototype and a supplement in
@@ -10,15 +10,25 @@ notes: >
   many patients, so they are kept per visit.
 
   The unit is not recorded: the dictionary gives none, and the unit column
-  (vitd_lborresu) holds one cell. Most centres have a median of 38 to 65,
-  the size of results in nmol/L. One centre has a median of 24 and a third
-  of its results under 30 (2% to 12% elsewhere), the size of results in
-  ng/mL. The value is delivered as written, with no unit: the results of
-  two centres may not be on the same scale (open question O7 in
-  PROGRESS.md).
+  (vitd_lborresu) holds one cell. Among the nine centres with 30 results or
+  more, eight have a median of 37 to 65, the size of results in nmol/L, with
+  8% to 38% of their results under 30. One centre (311 results) has a median
+  of 24 and 66% of its results under 30, the size of results in ng/mL. That
+  holds in 2015 to 2021 (258 results, median 22, 72% under 30) and from 2024
+  (29 results, median 28, 59% under 30), but not in 2022 (24 results, median
+  64, 12% under 30). The factor 2.496 (1 ng/mL in nmol/L) brings its median
+  of 2015 to 2021 to 55, against 52 in the other centres in the same years
+  (53 over all years): the two readings agree. A second centre has medians
+  of 31 and 29 in 2016 and 2017 (108 results, about half under 30) and 36 to
+  56 in its other years with 9 results or more: a spell in ng/mL is possible
+  there too. The value is delivered as written, with no unit, and no
+  variable in nmol/L is delivered: the centres must say in which unit and in
+  which period each of them reported (open question O7 in PROGRESS.md).
 
-  11 results are written with "<" (censored_left). Two results of 0 are
-  out of range.
+  11 results are written with "<" (censored_left). Two results of 0 are out
+  of range. The clip at the 99th percentile turns a high clinical value into
+  the cut value (27 results); the hard range, 1 to 400, is what removes
+  impossible values.
 
 variables:
   vitamin_d_as_written:

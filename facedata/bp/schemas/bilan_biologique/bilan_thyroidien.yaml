@@ -2,7 +2,9 @@ instrument: bilan_thyroidien
 title: Thyroid tests
 tab: BILAN BIOLOGIQUE
 section: Bilan thyroidien
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -17,9 +19,37 @@ notes: >
   the same scale, with the same median: the default label "µUI/L" is a
   misprint for µUI/mL, which is the same as mUI/L. They are one unit here.
 
-  Free T4: 116 results between 0.3 and 4 are in ng/dL (1 ng/dL = 12.87
-  pmol/L). Free T3 and free T4 in pg/mL overlap the pmol/L scale and are
-  recognised by their label only.
+  Free T4: 107 results between 0.3 and 3 are in ng/dL (1 ng/dL = 12.87
+  pmol/L): 100 under the default pmol/L label and 7 labelled ng/dL. The 10
+  results between 3 and 4 fit ng/dL and pg/mL alike, so they keep their
+  pmol/L label. Free T3 and free T4 in pg/mL overlap the pmol/L scale and
+  are recognised by their label only.
+
+  The TSH field of the form rejects a value above 10 (A27 in
+  EXPORT_REQUESTS.md): BP has 44 TSH above 10 among 8,608 results before
+  2022 and none among 3,443 from 2022. The TSH tail from 2022 is capped by
+  the form, so a mean, a share above a limit or a maximum is not comparable
+  before and after 2022. A TSH of 0 is nothing measured (one result):
+  missing code, not_recorded, in place of the delivered clip value.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie). With three analytes it could not use
+  the rule alone (a visit would need all three impossible), but the pool
+  counts the impossible values of the seven laboratory schemas of BP: a visit
+  with three or more loses its TSH, free T3 and free T4 and gets
+  visit_removed. The pool removes 29 visits in all (998 cells); this schema
+  loses 49 cells on 25 visits (TSH 23, free T3 7, free T4 19). In the shifted
+  block of one centre the free T3 is impossible (a blood-count value above 30
+  pmol/L) on 19 of the 24 visits; the TSH and the free T4 of the 20 block
+  visits that the pool removes go with them, and the 4 that escape hold none
+  of the three.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so a
+  clinical tail becomes the cut value (in BP a TSH above 7.9 mUI/L is
+  delivered as 7.9, a free T3 above 7.2 pmol/L as 7.2 and a free T4 above 21.6
+  pmol/L as 21.6: 223 to 258 values per analyte are clipped, and from 2022 the
+  form already caps the TSH at 10), while the hard range ([0, 150], [1.5, 30]
+  and [3, 100]) is what removes impossible values.
 
 defaults: {type: number}
 
@@ -32,6 +62,7 @@ variables:
     units:
       mUI/L: {factor: 1, expect: [0, 150], aliases: [µUI/L, microUI/ml, µUI/mL]}
     range: [0, 150]
+    missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured
 
   free_t3:
     label: Free T3

@@ -2,16 +2,33 @@ instrument: bilan_urinaire
 title: Urine drug screen
 tab: BILAN BIOLOGIQUE
 section: Bilan Urinaire
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  A urine drug screen: done on 250 of the 831 visits where the question is
-  answered, then four results, 1 for positive and 0 for negative: cannabis
-  (9 positive), benzodiazepines (60), psychostimulants (5) and opiates (7).
+  A urine drug screen: the question "test done" is answered on 807 visits, 228
+  yes, then four results, 1 for positive and 0 for negative: cannabis (3
+  positive of 228), benzodiazepines (42 of 227), psychostimulants (5 of 226)
+  and opiates (6 of 227). The coding is plausible (benzodiazepines are
+  positive on 19% of the results, cannabis on 1%). The test is done in
+  practice in a few centres: four give 212 of the 228 yes answers (93%).
 
   The columns of the psychostimulants and of the opiates hold a number that is
-  not 0 or 1 on 20 and 22 visits (5.1 on five of them): it looks like another
-  urine result typed in these fields. These cells are removed (unparsed or
-  out_of_range; open question O12 in PROGRESS.md).
+  not 0 or 1 on 20 and 22 visits, all of one centre, up to 2022 (the opiates:
+  numbers of 4.2 to 6.9, nearly all with decimals): it looks like another
+  urine result typed in these fields. These cells are removed: 31 are unparsed
+  (27 numbers with decimals and 4 written "<" a number: none is a whole
+  answer) and 11 are out_of_range (open question O12 in PROGRESS.md).
+
+  This schema belongs to the pool biology (implausible_visits: 3,
+  implausible_pool: biology; see the blood-count schema): a visit with three
+  or more impossible values over the eleven laboratory schemas of DR loses all
+  its values and gets visit_removed. The pool removes 35 visits in all (1,403
+  cells); this schema loses 55 answers on 26 visits: 48 on 23 visits of the
+  block, whose 0 and 1 answers look like results and would be delivered (26 of
+  the 83 positive results among them), and 7 on 3 other visits. The odd cells
+  above count in the pool only through their out_of_range values (the decimals
+  are counted as unparsed, which the rule does not count).
 
   A section of the TRD dictionary only.
 

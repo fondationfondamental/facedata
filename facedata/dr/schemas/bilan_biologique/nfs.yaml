@@ -2,21 +2,57 @@ instrument: nfs
 title: Full blood count (NFS)
 tab: BILAN BIOLOGIQUE
 section: NFS
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  The blood count: thirteen values on about 1,150 visits.
+  The blood count: thirteen values on about 1,140 visits.
 
   For the haematocrit and the MCHC the form has a choice of unit, exported as
   a code: 1 is % and 2 L/L for the haematocrit (205 results converted), 1 is
   g/dL and 2 g/L for the MCHC (287 converted). The other values have the
-  default label only: 26 haemoglobins are in g/L, almost all in two centres,
-  and 28 neutrophils and 26 basophils are written as a percentage or per mm3
-  (unit_inferred).
+  default label only: 26 haemoglobins are read as g/L (22 of them on the
+  shifted visits below, 4 in one other centre), and 28 neutrophils and 26
+  basophils are written as a percentage or per mm3 (unit_inferred).
 
-  A 0 is typed where nothing was measured on 91 cells of the MCV, the MCH,
-  the platelets and the red cells, most of them in one centre: out_of_range.
-  The white-cell differential does not add up to the leukocytes on 23 visits
-  (check_failed).
+  In one centre the results of one laboratory block were typed in the wrong
+  fields, shifted by seven fields of the eCEDR table, on 30 visits dated up to
+  2022 (the unit field of the vitamin results holds a number on 23 of them,
+  see vitamines_cortisol). Here they show as a 0 for the MCV, the MCH, the
+  MCHC and the platelets (115 cells: 29, 30, 26 and 30), a number other than
+  the code 1 or 2 in the unit cell of the MCHC (19 visits), and red cells or
+  basophils out of range. Every laboratory schema of DR carries
+  `implausible_visits: 3` and `implausible_pool: biology`: the impossible
+  values (out_of_range) of the eleven schemas are counted on each visit, and a
+  visit with three or more loses all its values in every schema of the pool
+  and gets visit_removed, with the number of impossible values as detail
+  (section 4 of SCHEMA_SPEC.md). The pool removes 35 visits in all (1,403
+  cells): the 30 visits of the block (4 to 18 impossible values each; none
+  escapes, and no other visit of that centre holds more than one impossible
+  value) and 5 visits of 5 other centres (3 to 10 impossible values, 3 of them
+  spread over several schemas and 2 with 3 in the biochemistry alone). This
+  schema loses 180 cells on 29 visits: 124 on 24 visits of the block (among
+  them 22 of the 26 haemoglobins read as g/L) and 56 on 5 other visits. The
+  results of the block that fall inside their range are as wrong as those that
+  do not.
+
+  A 0 is not "nothing measured" here, as it is for the prolactin: all 115 are
+  on these 30 visits and none is left once they are removed. They stay
+  out_of_range because they count towards the rule: read as a missing code
+  they would not, and the pool would catch only 23 of the 30 block visits.
+
+  The white-cell differential does not add up to the leukocytes on 22 of 1,113
+  visits (2.0%, check_failed); the check is right.
+
+  The 1% and 99% winsorising turns a clinical tail into the cut value, and
+  only the hard range removes impossible values.
+
+  Centre step of the basophils: one centre has a median of 0.00 G/L against
+  0.04 for all (-1.0 interquartile range, 147 results, groups of 20 results
+  or more), which fits a laboratory that writes them with one decimal (13
+  distinct values, 92% on a grid of 0.1, 108 results exactly 0); two other
+  centres have 26 of 65 and 13 of 55 results exactly 0, and the others 0% to
+  3%.
 
   Same instrument as in FACE BP.
 

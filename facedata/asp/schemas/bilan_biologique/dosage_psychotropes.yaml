@@ -2,23 +2,29 @@ instrument: dosage_psychotropes
 title: "Plasma levels of psychotropic drugs"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
   The section of the drug levels is almost empty in this cohort. Eight boxes
   (psychotrop_1 to psychotrop_8: which level was asked for) are filled on 546
-  inclusion visits and are 0 on all of them but a few; a box before them (cmyn,
-  from 2020) is yes on 7 of 118 visits. Of the five levels, only the
-  lamotrigine has a value, on fewer than five visits; the lithium, the
-  carbamazepine, the oxcarbazepine and the valproate columns are empty
-  (ignored.yaml).
+  inclusion visits and 59 follow-up visits and are 0 on all of them but two
+  (the Lamictal box on two inclusion visits): 544 of the 546 inclusion visits
+  carry no information. A box before them (cmyn, from 2020) is yes on 7 of 118
+  visits. Of the five levels, only the lamotrigine has a value, on those two
+  visits, and one of the two is out of range; the lithium, the carbamazepine,
+  the oxcarbazepine and the valproate columns are empty (ignored.yaml).
 
-  The order of the boxes is that of the level columns (lithium after the box 2,
-  carbamazepine after 3, oxcarbazepine after 4, valproate after 7, lamotrigine
-  after 8); the thesaurus names the eight boxes, the drug whose level is
-  measured: Téralithe 250, Téralithe LP 400, Tégrétol, Trileptal, Dépakine,
-  Dépakote, Dépamide, Lamictal. The first box (cmyn) says whether the patient
-  took the treatment on the morning of the sample. Same instrument name as in
-  FACE BP and DR, with this cohort's columns.
+  The order of the boxes is that of the level columns (lithium after the box
+  2, carbamazepine after 3, oxcarbazepine after 4, valproate after 7,
+  lamotrigine after 8); the thesaurus names the eight boxes, the drug whose
+  level is measured: Téralithe 250, Téralithe LP 400, Tégrétol, Trileptal,
+  Dépakine, Dépakote, Dépamide, Lamictal. The first box (cmyn) says whether
+  the patient took the treatment on the morning of the sample. Same instrument
+  name as in FACE BP and DR, with this cohort's columns.
+
+  The clip at the 1% and 99% percentiles turns a clinical tail into the cut
+  value and the hard range removes impossible values; here no value is clipped
+  and one is out of range.
+
 defaults: {type: number}
 
 variables:

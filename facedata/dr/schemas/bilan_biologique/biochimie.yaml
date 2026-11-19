@@ -2,31 +2,71 @@ instrument: biochimie
 title: Blood biochemistry
 tab: BILAN BIOLOGIQUE
 section: Bilan Biologique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   The sixteen analytes of the BP schema, with two more that the TRD form has:
   ferritin (from 2017) and the kind of CRP assay. Blood results exist at the
-  inclusion and follow-up visits (about 1,150 visits).
+  inclusion and follow-up visits (about 1,200 visits).
 
   The unit column of an analyte holds the default label of the form on every
-  row that has any blood result (1,254 rows, 54 of them with no result at
-  all), so it says nothing: the size of the value decides, as in BP and SZ. A
-  0 typed where nothing was measured is out of range.
+  row that has any result of the tab (1,254 rows) and on no other, so it says
+  nothing: the size of the value decides, as in BP and SZ. A 0 typed where
+  nothing was measured is out of range.
 
   59 results were typed on another scale and are brought back (unit_inferred):
   17 phosphates, 10 glucoses in g/L, 7 creatinines, 7 calciums and others; 10
   are kept with a doubt.
 
   CRP: 80 results are given as "less than" a limit; they keep the limit and
-  the mark (crp_cens). The kind of assay is a code, 1 on 766 results and 2 on
-  379; the dictionary names the two kinds (CRP, high-sensitivity CRP) without
+  the mark (crp_cens). The kind of assay is a code, 1 on 740 results and 2 on
+  377; the dictionary names the two kinds (CRP, high-sensitivity CRP) without
   saying which code is which (open question O11 in PROGRESS.md).
 
-  HbA1c: 22 values are out of range as percentages, 18 of them in one
-  centre; 19 have the size of a result in mmol/mol (IFCC, 18 to 52) and are
-  converted with the IFCC-NGSP master equation, % = 0.09148 x mmol/mol +
-  2.152 (unit_inferred; 3.8% to 6.9%). The others (0 and a value of seven
-  digits) stay out of range. O11 asks the centre to confirm the unit.
+  The creatinine clearance is typed, not computed: the form only shows the
+  Cockcroft-Gault formula as a help text. The typed values agree within 10%
+  with the formula (age, weight, sex and creatinine of the visit) on 44% of
+  917 visits.
+
+  HbA1c: 22 values are out of range as percentages; 19 have the size of a
+  result in mmol/mol (IFCC, 18 to 52) and are converted with the IFCC-NGSP
+  master equation, % = 0.09148 x mmol/mol + 2.152 (unit_inferred; 3.8% to
+  6.9%), and a 20th, of 18, is kept as a percentage with a doubt (unit_doubt).
+  The others (0 and a value of seven digits) stay out of range. 19 of these 20
+  values are on the shifted visits of one centre (see the blood-count schema),
+  where the HbA1c is 24 at the median against 5.5 elsewhere: it is the block
+  typed in the wrong field, not a result in mmol/mol (open question O11 in
+  PROGRESS.md). The pool removes these visits and their 19 values: only 1 of
+  the 20 is still delivered.
+
+  On the 30 shifted visits the glucose is out of range 13 times (it has the
+  size of a platelet count), and nothing else of this schema is impossible: no
+  visit holds more than one impossible value here, so this schema alone would
+  not remove them. This schema belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells); this schema loses 407 cells on
+  29 visits: 341 on 24 visits of the block and 66 on 5 other visits. The 5
+  other visits are of 5 other centres: 4 hold 3 to 5 impossible values in this
+  schema (two of them also in the lipid schema) and the fifth holds one in
+  each of the biochemistry, the blood count and the vitamins.
+
+  The 1% and 99% winsorising turns a clinical tail into the cut value, and
+  only the hard range removes impossible values.
+
+  Steps between centres or years of 0.75 interquartile range or more (groups
+  of 20 results or more; the cause is not known, an assay or a population):
+  chloride, one centre at 102 mmol/L against 105 for all (-1.0, that is 3
+  mmol/L, 72 results); calcium, the year 2013 at 2.235 mmol/L against 2.34
+  (-0.75, 44 results) and one centre at 2.44 (0.71, 75 results); albumin,
+  two centres at 39 g/L against 43 (-1.0, 49 and 39 results) and the year
+  2024 at 40 (-0.75, 30 results), where 53% of the results are those of a
+  centre that appears in 2023 and has a median of 39 against 43.5 for the
+  others; ferritin, one centre at 105.5 µg/L against 47 (0.81, 38 results).
+  CRP: 35 of the 1,140 results are exactly 0 and are delivered as missing
+  (BP D101), 27 of them dated 2013 to 2015.
 
   Same instrument as in FACE BP, with ferritin and the kind of CRP.
 

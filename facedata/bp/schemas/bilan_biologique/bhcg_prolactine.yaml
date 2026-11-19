@@ -2,7 +2,9 @@ instrument: bhcg_prolactine
 title: Beta-hCG and prolactin
 tab: BILAN BIOLOGIQUE
 section: bHCG
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -13,10 +15,16 @@ notes: >
   unlikely under its label). A value that fits no scale is left as it is and
   the hard range decides (out_of_range).
 
-  Beta-hCG is a pregnancy test: more than half of the results are a
-  detection limit ("<2", "<5"), and 417 are 0. In 55 rows the censoring mark
-  sits in the unit column ("inf"). A few labels are words ("negatif",
-  "enceinte"); the value beside them is read on the usual scale.
+  Beta-hCG is a pregnancy test: of 3,768 results, 2,094 (56%) are a
+  detection limit, 2,039 written "<" and 55 with the mark in the unit column
+  ("inf") and the limit in the result column. The limits run from 0.1 to 12,
+  the commonest being 2 (898 results), 5 (406) and 1 (377). 7 results are
+  ">". 420 are 0 (419 typed 0 and one "<0") and are delivered as 0. 24 rows
+  carry a word in the unit column ("negatif", "enceinte", "inferieur",
+  "nf"...) and none of them holds a result: they are empty. Men give 86
+  results. A hCG above 25 (37 visits) goes with a high prolactin: 15 of
+  these visits have a prolactin typed and 11 deliver one, with a median of
+  32 ng/mL against 11 for all results.
 
   Prolactin: a 0 is "nothing measured", not a result (19 cells, now a missing
   code instead of out_of_range; decision D130).
@@ -28,34 +36,77 @@ notes: >
 
   The extraction has the unit column of the form (prolctn_lborresu) and the
   unit choice itself (rad_prolactine, not read). They agree wherever a unit
-  was chosen. On 4,668 of the 6,523 results nobody chose one, and the unit
-  column holds the form's default label, "mg/L". No prolactin is in mg/L, so
-  that label is ignored (ignore_units).
+  was chosen. On 4,682 of the 6,567 results the unit column holds the form's
+  default label, "mg/L" (295 of them have it chosen, A23 in
+  EXPORT_REQUESTS.md, with a median of 12.7: ng/mL values). The results
+  under that label are on the ng/mL or the mUI/L scale, with one exception
+  (below), so the label is ignored (ignore_units).
 
-  A chosen unit is believed (1,855 results): ng/mL or µg/L up to 500, mUI/L
+  A chosen unit is believed (1,885 results): ng/mL or µg/L up to 500, mUI/L
   from 30 on. The 34 results of 100 and more written in ng/mL or µg/L stay
   as they are; 31 of them are women's, as one expects of a truly high
   prolactin.
 
   Where no unit was chosen, the function prolactin_unit of custom.py decides:
 
-  - under 30, the result is ng/mL (3,822); from 500 on, mUI/L (73);
+  - under 0.2, the result is mg/L (44, see below); from 0.2 to 30, ng/mL
+    (3,770, among them 3 under 0.5 that end out_of_range); from 500 on,
+    mUI/L (73);
   - in between, the centre's other results within 180 days decide. In ng/mL
     2 results in 100 reach 100. Where a quarter or more of them do, the
-    centre was reporting in mUI/L: a result of 100 to 500 is mUI/L (248),
-    and one of 30 to 100 cannot be told (34);
-  - elsewhere a result of 30 to 100 is ng/mL (351), and one of 100 to 500
-    cannot be told (140).
+    centre was reporting in mUI/L: a result of 100 to 500 is mUI/L (250),
+    and one of 30 to 100 cannot be told (35);
+  - elsewhere a result of 30 to 100 is ng/mL (350), and one of 100 to 500
+    cannot be told (141).
 
-  The 174 results that cannot be told are missing, with unit_unknown. Open
+  The 176 results that cannot be told are missing, with unit_unknown. Open
   question O20 in PROGRESS.md.
 
-  Two checks of the rule. The centre with the most results reported in
-  mUI/L during two periods, where its median as written is between 190 and
-  320; after the rule its median is between 9 and 15 in every half-year.
-  And men are 37% of the results read as mUI/L by the period, as among the
-  results labelled mUI/L (36%), against 9% of the high results written in
-  ng/mL and 16% of the 140 that cannot be told: those are a mixture.
+  Two checks of the rule. The centre with the most results reported in mUI/L
+  during two periods, where its median as written is between 165 and 320;
+  after the rule its median is between 9 and 15 in every half-year. And men
+  are 38% of the 250 results read as mUI/L by the period, as among the 176
+  results labelled mUI/L (40%), against 9% of the 34 high results written in
+  ng/mL and 17% of the 141 that cannot be told: those are a mixture.
+
+  A result typed in mg/L (decision D144). 44 results under the label mg/L
+  lie under 0.2: 43 from 0.0005 up, with three or four decimals for most of
+  them, and one lower. They are ng/mL values written in the default unit
+  (x1000: median 11 ng/mL; for the 22 whose patient has other results, 0.9
+  times the patient's median), and they were out_of_range as ng/mL. The
+  function prolactin_unit answers mg/L for a result under 0.2, and the unit
+  mg/L (factor 1000, expect 0.0005 to 0.2) reads it, with unit_inferred,
+  since the label itself is ignored. 43 results are now delivered; the one
+  under 0.0005 stays out_of_range (x1000 would be under 0.5). 3 results of
+  0.2 to 0.5 stay out_of_range as ng/mL: x1000 would be 200 to 500 ng/mL,
+  above the 99th percentile of the cohort (88 ng/mL). They are left, not
+  read as doubtful, since a result under an ignored label can only be
+  unit_inferred.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie): a visit with three or more
+  impossible values over the seven laboratory schemas of BP loses all its
+  values here too and gets visit_removed. The pool removes 29 visits in all
+  (998 cells); this schema loses 14 cells on 12 visits (hCG 12, prolactin 2: 6
+  on the shifted block of one centre, 8 on other visits). None of the removed
+  hCG is a 0, so the 420 zeros are still delivered, and none of the 4 block
+  visits that escape the pool holds a result here.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so
+  a clinical tail becomes the cut value (in BP an hCG above 22.2 UI/L, which
+  is a pregnancy, is delivered as 22.2 and a prolactin above 88.5 ng/mL as
+  88.5: 38 and 126 values are clipped, so the delivered hCG tells positive
+  or not, not the level), while the hard range ([0, 300000] for the hCG,
+  [0.5, 500] for the prolactin) is what removes impossible values.
+
+  Centre and year steps (qc site_shift and year_shift, read on 2026-11-19):
+  the hCG median is 0 to 5 by centre and 0.1 to 2 by year (up to 3.0 and 1.9
+  IQR from the overall median of 2, IQR 1), with no unit involved, because
+  each laboratory writes a negative result its own way: 56% of the results
+  are detection limits ("<5" in the centre whose median is 5, "<2" in four
+  others), 420 are typed 0 (37% of the results of one centre) and two
+  centres type 0.1. A median or a mean of the hCG therefore measures a limit
+  or a habit, not a level: it is read with hcg_cens and left as measured.
 
 defaults: {type: number}
 
@@ -81,6 +132,7 @@ variables:
     units:
       ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L]}
       mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l]}
+      mg/L: {factor: 1000, expect: [0.0005, 0.2]}
     unit_rule: prolactin_unit
     range: [0.5, 500]
     missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured (BP D130)

@@ -2,11 +2,27 @@ instrument: irm
 title: Structural brain MRI
 tab: BILAN BIOLOGIQUE
 section: Imagerie Cérébrale Structurelle IRM
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  Whether a structural brain MRI was done (85 yes of 962 answers) and its
-  date, given for 55 of them. 17 cells of the yes/no column hold another
-  number and are removed (open question O12 in PROGRESS.md).
+  Whether a structural brain MRI was done (84 yes of 957 answers) and its
+  date, given for 55 of the 84: the date exists only for a yes. The answer is
+  not a default but depends strongly on the centre, from 1 yes of 153 answers
+  in one centre to 26 of 41 in another, so the rates are not comparable
+  between centres. 35 of the 55 dates are more than 90 days from the visit
+  date (5 are after it): past exams, which is expected.
+
+  17 cells of the yes/no column hold another number and are removed (15
+  out_of_range, 2 unparsed; open question O12 in PROGRESS.md). All are on
+  visits of the one centre whose block of results is shifted (30 visits, see
+  the blood-count schema), and none of these visits has a date. This schema
+  belongs to the pool biology (implausible_visits: 3, implausible_pool:
+  biology; see the blood-count schema): a visit with three or more impossible
+  values over the eleven laboratory schemas of DR loses all its values and
+  gets visit_removed. The pool removes 35 visits in all (1,403 cells); the odd
+  cells of the block are already removed, so this schema loses 5 answers on 5
+  other visits and none on the block.
 
   A section of the TRD dictionary only.
 

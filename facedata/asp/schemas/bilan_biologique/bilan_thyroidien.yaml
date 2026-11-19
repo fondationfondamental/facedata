@@ -2,13 +2,20 @@ instrument: bilan_thyroidien
 title: "Thyroid: TSH"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  TSH, on 469 inclusion visits. Same analyte, name and target unit as in FACE
-  DR; the free T3 and T4 are not in this extraction.
+  TSH, on 469 inclusion visits and 49 follow-up visits. Same analyte, name and
+  target unit as in FACE DR; the free T3 and T4 are not in this extraction.
 
-  Its unit column holds the catalogue number 67405 on 515 results and
-  67434 on a few: both are on the same scale (mUI/L and µUI/mL).
+  Its unit column holds a catalogue number: 67405 (mUI/L, µUI/ml on the form)
+  on 512 results and 67434 on 6. The form prints pmol/L for 67434, but its 6
+  results have the size of the others (median 1.4 against 1.7), so both
+  numbers are read as mUI/L (67434 is an alias). 515 rows carry the number
+  67405, 3 of them with no result.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (10 of the 517 values here); the hard range is what removes
+  impossible values (1 result here, above 150).
 
 defaults: {type: number}
 

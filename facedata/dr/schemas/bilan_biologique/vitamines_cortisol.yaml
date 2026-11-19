@@ -2,26 +2,66 @@ instrument: vitamines_cortisol
 title: Vitamin B12, folates and morning cortisol
 tab: BILAN BIOLOGIQUE
 section: Bilan Biologique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  Vitamin B12, folates and morning cortisol, on about 1,050 visits each. For
-  each the form has a choice of unit, exported as a code.
+  Vitamin B12, folates and morning cortisol, on 1,059, 1,055 and 1,017 visits.
+  For each the form has a choice of unit, exported as a code.
 
-  Vitamin B12, delivered in pmol/L: code 2 (pg/mL) and code 3 (ng/L) are the
-  same scale, 685 results converted; code 4 is pmol/L. Code 1, "pg/L", has a
-  median of 272, which fits both scales: 27 results have no unit
-  (unit_unknown). 24 values are impossible, 21 of them in one centre.
+  Vitamin B12, delivered in pmol/L: code 2 (pg/mL, 408 results) and code 3
+  (ng/L, 295) are the same scale, 685 results converted; code 4 is pmol/L
+  (323). Code 5, "mmol/L" (6 results, median 275, that of code 4, 271), is
+  read as pmol/L, as the "mmol/L" codes of folates, cortisol and vitamin D are
+  read as the molar unit of their scale (5 delivered, 1 impossible). Code 1,
+  "pg/L" (27 results), has a median of 272, equal to code 4; read as pg/mL it
+  would be 201. It fits both scales, so 22 results have no unit (unit_unknown)
+  and 5 are impossible; which unit is meant is open (O10 in PROGRESS.md), with
+  low confidence either way. 24 values are impossible, 21 of them on the
+  shifted visits (below).
 
-  Folates, delivered in nmol/L: code 2 is ng/mL, and code 1, "ng/L", is read
-  as ng/mL too (a folate level of 6 ng/L does not exist; its median, 6.5, is
-  that of code 2, 6.2): 580 results converted. Code 3 is nmol/L and code 4,
-  "mmol/L", is read as nmol/L (median 12.7 against 13.8). 16 results of one
-  centre have no usable code (unit_unknown) and 28 values are impossible.
+  Folates, delivered in nmol/L: code 2 is ng/mL (521 results), and code 1,
+  "ng/L" (77), is read as ng/mL too (a folate level of 6 ng/L does not exist;
+  its median, 6.5, is that of code 2, 6.2): 580 results converted. Code 3 is
+  nmol/L (419) and code 4, "mmol/L" (17), is read as nmol/L (median 12.7
+  against 13.8). 16 results of the shifted visits have no usable code
+  (unit_unknown) and 28 values are impossible.
 
-  Cortisol, delivered in nmol/L: code 1 nmol/L, code 4 "mmol/L" read as
-  nmol/L (median 362 against 392), code 2 nmol/dL, code 3 ng/mL, code 5
-  µg/dL: 143 results converted, 15 read in another unit than their label,
-  27 impossible (open question O10 in PROGRESS.md).
+  Cortisol, delivered in nmol/L: code 1 nmol/L (804, median 392), code 4
+  "mmol/L" read as nmol/L (32, median 363), code 3 ng/mL (51, x2.759) and code
+  5 µg/dL (67, x27.59): the converted medians, 352 and 356, are close to that
+  of code 1, which confirms both factors. Code 2, "nmol/dL" (42 results, x10),
+  fits neither scale: 28 are between 5 and 30 (the size of µg/dL: x10 gives a
+  median of 165 and x27.59 gives 456, against 392) and 14 are 149 or more (the
+  size of nmol/L or ng/mL, median 331); for the 42 together x10 gives 192 and
+  x27.59 gives 528. They are left as the label says (29 converted, 1 read by
+  its size, 12 impossible): note only. The dictionary labels the cortisol unit
+  "Unité des folates", a copy of the folates label. 143 results are converted,
+  15 are read by their size (unit_inferred: 13 have a number in place of the
+  code, on the shifted visits, and 2 do not fit their label) and 27 values are
+  impossible, 8 of them on the shifted visits.
+
+  Shifted visits. A number in place of the unit code marks 23 of the 30 visits
+  of one centre, up to 2022, whose block of results is shifted (see the
+  blood-count schema): the unit field holds a number on 22 visits for
+  cortisol, 21 for folates and 9 for vitamin D, and the values beside it
+  (median 1.2 for cortisol, 1.1 for B12, 3.4 for folates) are those of another
+  analyte. The impossible values are removed by the ranges, but 11 cortisol
+  and 5 folate values of these visits fall in the plausible range once read by
+  their size and would be delivered. This schema belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells), among them all 30 visits of the
+  block; this schema loses 29 cells on 17 visits: the 11 cortisol and 5 folate
+  values of the block, and 4 B12, 4 cortisol and 5 folate values on 5 other
+  visits.
+
+  Values are winsorised at the 1st and 99th percentiles: the tails become the
+  cut values (B12 98 and 653 pmol/L, folates 3.9 and 56.7 nmol/L, cortisol 63
+  and 782 nmol/L; 19, 19 and 20 cells), so a clinical tail turns into the cut
+  value, and the hard ranges (B12 50 to 1,500, folates 2 to 100, cortisol 30
+  to 1,500) remove the impossible values.
 
   Analytes that FACE BP and FACE SZ do not have.
 
@@ -34,7 +74,7 @@ variables:
     unit_column: vitb12_lborresu
     unit: pmol/L
     units:
-      pmol/L: {factor: 1, expect: [50, 1500], aliases: ["4"]}
+      pmol/L: {factor: 1, expect: [50, 1500], aliases: ["4", "5"]}
       pg/mL: {factor: 0.7378, expect: [70, 2000], aliases: ["2", "3"]}
     range: [50, 1500]
   folates:

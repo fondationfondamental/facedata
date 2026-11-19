@@ -2,7 +2,9 @@ instrument: nfs
 title: Full blood count (NFS)
 tab: BILAN BIOLOGIQUE
 section: NFS
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -13,19 +15,20 @@ notes: >
   unlikely under its label). A value that fits no scale is left as it is and
   the hard range decides (out_of_range).
 
-  Haemoglobin. Almost all of the 13,435 results are labelled g/dL, but 473 of
-  them are 50 or more: they are g/L. They come mostly from two centres
+  Haemoglobin. Almost all of the 13,505 results are labelled g/dL, but 476
+  of them are 50 or more: they are g/L. They come mostly from two centres
   between 2010 and 2022, mixed cell by cell with correctly scaled values, so
   a rule by centre or period would not work. The magnitude decides. Twelve
   cells are labelled mmol/L but hold values from 12 to 96; that label is not
   listed, so it counts as unknown and the magnitude decides.
 
-  Haematocrit: 477 results are fractions (0.41 for 41%), and 58 have lost
-  their decimal point (411 for 41.1). MCHC: 550 results are in g/L. The
+  Haematocrit: 480 results are fractions (0.41 for 41%), and 58 have lost
+  their decimal point (411 for 41.1). MCHC: 554 results are in g/L. The
   default labels of MCH and MCHC say "%"; the values are pg and g/dL.
 
   Counts per mm3. Leukocytes, platelets and the five kinds of white cells
-  are sometimes written per mm3 (5300 for 5.3 G/L), about 35 visits each.
+  are sometimes written per mm3 (5300 for 5.3 G/L): 38 leukocyte results, 20
+  platelet results and 40 to 51 results of each kind of white cell.
 
   White cells in percent (decision D30 in PROGRESS.md). Some results are
   percentages of the leukocytes instead of counts: about 40 visits have the
@@ -34,9 +37,9 @@ notes: >
   label or by its size: a value too large to be a count (25 G/L of
   neutrophils, 12 of lymphocytes, 2.5 of monocytes, 1.5 of eosinophils, 0.3
   of basophils) is one. It is converted with the leukocytes of the same
-  visit, value x leukocytes / 100: 844 results (461 basophils, 128
-  monocytes, 108 eosinophils, 84 lymphocytes, 63 neutrophils). Thirteen
-  more cannot be converted, because the visit has no valid leukocyte count
+  visit, value x leukocytes / 100: 845 results (462 basophils, 128
+  monocytes, 108 eosinophils, 84 lymphocytes, 63 neutrophils). Thirteen more
+  cannot be converted, because the visit has no valid leukocyte count
   (unit_unknown).
 
   The limits were checked against the visit totals: with the other four
@@ -44,23 +47,57 @@ notes: >
   it is a percentage? For eosinophils the two scales overlap. From 1.5 on,
   the visit adds up as a percentage far more often than as a count (75
   visits against 9), so the value is read as one, with unit_doubt up to 5.
-  Under 1.5 it stays a count, although about 65 values between 0.6 and 1.5
-  only add up as percentages: their visit fails the check below.
+  Under 1.5 it stays a count, although on 65 of the 376 visits with an
+  eosinophil result of 0.6 to 1.5 the five kinds add up to the leukocytes
+  only if that result is a percentage: those visits fail the check below and
+  the value is left as it is (an eosinophil count of 0.6 to 1.5 G/L is
+  possible, so the size alone does not decide).
 
-  The custom check differential_differs flags the visits where the five
-  kinds do not add up to the leukocytes within 10% (check_failed, on
-  leukocytes): 222 visits. The kinds add up on 98% of the complete visits
-  (96% before the percentages were converted).
+  The custom check differential_differs flags the visits where the five kinds
+  do not add up to the leukocytes within 10% (check_failed, on leukocytes):
+  221 of the 13,223 complete visits, 152 of them with the kinds adding up to
+  more than the leukocytes and 69 to less. The kinds add up on 98% of the
+  complete visits (96% before the percentages were converted). The failures
+  show no step between the periods (1.3% to 2.2% in each) and are 9.6% in one
+  centre against 0% to 4.3% in the other centres of 100 visits or more. The
+  tolerance of 10% is sound: at 5% 359 visits would fail, at 15% 149.
 
   MCV: 31 results between 5 and 13 have a misplaced decimal point (9.07 for
   90.7). MCH: 10 results are in fmol.
 
-  Platelets: 58 results of 0.98 to 9.8 (28 of them in 2012, in four centres,
-  from 2011 to 2013 mostly) are counts typed in hundreds of G/L, as in 2.47
-  x 10^5 per mm3: the unit "x100 G/L" reads them (unit_inferred; median 252
-  G/L after the conversion, as for the whole cohort; decision D130). Four
-  results stay out_of_range: 0.24, 0.39 and 0.43 (below 0.5, which would be
-  24 to 43 G/L) and a count of 2,950,000 per mm3.
+  Platelets: 58 results of 0.98 to 9.8 (52 of them in one centre; 47 of the
+  58 from 2011 to 2013, 28 in 2012) are counts typed in hundreds of G/L, as
+  in 2.47 x 10^5 per mm3: the unit "x100 G/L" reads them (unit_inferred;
+  median 252 G/L after the conversion, as for the whole cohort; decision
+  D130). Four results stay out_of_range: 0.24, 0.39 and 0.43 (below 0.5,
+  which would be 24 to 43 G/L) and a count of 2,950,000 per mm3.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie): a visit with three or more
+  impossible values over the seven laboratory schemas of BP loses all its
+  values here too and gets visit_removed. The pool removes 29 visits in all
+  (998 cells); this schema loses 239 cells on 29 visits (143 on 20 visits of
+  the shifted block of one centre, 96 on 9 other visits). The 4 block visits
+  that escape the pool (see biochimie) still deliver 25 values here.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so a
+  clinical tail becomes the cut value (in BP a haemoglobin below 11.0 g/dL is
+  delivered as 11.0, a neutrophil count below 1.48 G/L as 1.48, a platelet
+  count above 445 G/L as 445 and a leukocyte count above 13.5 G/L as 13.5: 246
+  to 266 values per variable are clipped), while the hard range ([5, 25] for
+  the haemoglobin, [0, 25] for the neutrophils, [10, 1500] for the platelets)
+  is what removes impossible values.
+
+  Centre and year steps (qc site_shift and year_shift, read on 2026-11-19),
+  with no unit involved and no known cause: 2,068 basophil results (15%) are
+  exactly 0, 53% of the results of one centre and 32% of another against 0%
+  to 6% in 11 of the other 12 centres, and 55% of the results of 2010
+  against 2% of 2025, so the basophil median is 0 in the first centre and in
+  2010 (1.0 IQR below the overall 0.04 G/L, IQR 0.04) and 0.03 in the second
+  (0.25 IQR); the MCHC of one centre of 2024 to 2026 (43 results) has a
+  median of 32.3 g/dL against 33.6 (1.1 IQR below, IQR 1.2), with 15 of its
+  values at the lower clip and an ordinary haemoglobin and haematocrit. Both
+  are left as measured.
 
 defaults: {type: number}
 

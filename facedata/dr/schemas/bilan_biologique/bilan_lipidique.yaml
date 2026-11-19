@@ -2,18 +2,41 @@ instrument: bilan_lipidique
 title: Blood lipids
 tab: BILAN BIOLOGIQUE
 section: Bilan Lipidique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   HDL, LDL, total cholesterol and triglycerides, and the ratio of total to HDL
   cholesterol computed from the harmonised values; the TRD extraction stores
   no ratio.
 
   For HDL and LDL the form has a choice of unit, exported as a code: 1 is g/L
-  and 2 mmol/L (the median HDL is 0.54 with code 1 and 1.39 with code 2). 207
-  HDL and 270 LDL results are converted from g/L (unit_converted). 27 HDL and
-  24 LDL values are impossible, almost all in one centre. Total cholesterol
-  has the default label only: 29 results fit g/L better than mmol/L and are
-  kept with a doubt (unit_doubt), 6 are converted.
+  and 2 mmol/L (the median HDL is 0.54 with code 1 and 1.39 with code 2, the
+  median LDL 1.25 and 3.49). 207 HDL and 270 LDL results are converted from
+  g/L (unit_converted). Total cholesterol has the default label only: 29
+  results fit g/L better than mmol/L and are kept with a doubt (unit_doubt), 6
+  are converted.
+
+  The LDL is not computed by the form, but it is a calculated value: it is
+  within 0.15 mmol/L of total cholesterol - HDL - triglycerides / 2.2 on 94.5%
+  of the 1,061 visits with triglycerides below 4.5 mmol/L (values before
+  winsorising).
+
+  27 HDL and 24 LDL values are impossible, 23 and 22 of them on the visits of
+  one centre whose block of results was typed in the wrong fields, shifted by
+  seven fields of the eCEDR table (30 visits dated up to 2022, see the
+  blood-count schema). On 21 of them the unit cell of the HDL holds a number
+  other than the code 1 or 2. This schema belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells); this schema loses 45 cells on
+  25 visits: 36 on 21 visits of the block, which leaves no lipid value on the
+  30 block visits, and 9 on 4 other visits (two of them hold 3 and 4
+  impossible values of the 4 lipids, with 5 and 3 in the biochemistry).
+
+  The 1% and 99% winsorising turns a clinical tail into the cut value, and
+  only the hard range removes impossible values.
 
   Same instrument as in FACE BP, without the stored ratio.
 

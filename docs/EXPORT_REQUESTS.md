@@ -1764,3 +1764,17 @@ Counts only, never codes. Each item says which requests it informs.
 - **A42.** Type 5 has no form list but holds forms, and gets scheduled labels. Count: at least 1 certain; up to 3,352 candidates.
 - **A43.** The social form's numeric checks (durations, household size) run in the browser only; the check at submit is commented out. Where: verifications.php line 280; affiche_formulaire.inc.php (compare2). Count: 5 household sizes and 5 durations out of range.
 - **A44.** The two Apgar fields accept any text: peri_naissapgar1 and peri_naissapgar5 are varchar(50) with no minimum, maximum or check. Make them an integer 0-10. Where: ebipolar_data.sql, psy_histoire_medicale_nom_champ ids 188 and 189. Count: 3 cells above 10 (2009, 2014).
+
+## Batch 2 (2026-11-19): biology tab
+
+Requests found by the review of the BILAN BIOLOGIQUE tab (BP D144, SZ D49, DR D33, ASP D30). Same conventions as batch 1; the numbers continue it.
+
+| # | Title | Files (short) | Cohorts | Changes values | Priority | Answers |
+|---|---|---|---|---|---|---|
+| R102 | Export the sampling date and place, ferritin and corrected calcium of the biology form | ebipolar and eschizo biology tables; the BILAN BIOLOGIQUE dictionary | BP, SZ | no | medium | none |
+| R103 | Check the column order of the biology tables of one centre in BP (to 2023) and one centre in DR (to 2022): blood-count values sit in the iron, HbA1c, AST, ALT, TSH and glucose fields (DR: shifted by 7 fields) | face_bp biology models; the eCEDR biology table | BP, DR | yes | medium | D144 |
+| R104 | Export the unit choices of the DR drug levels (fluoxetine, venlafaxine, clomipramine) | ecedr psychotropes table | DR | no | low | none |
+| R105 | The DR application writes unit code 1 (ng/mL) on every prolactin result with no unit chosen (script_unit.php): export the unit only when it was chosen, or tell us which results carry the back-fill | ecedr prolactin fields | DR | no | medium | D144 |
+| R106 | The vitamin D unit by centre in SZ (one centre writes ng/mL, the form has no unit) | eschizo vitamin D field | SZ | no | low | SZ O7 |
+
+Questions for the data managers: M50, does the DR prolactin of centres with many results of 100 or more come from mUI/L typed under the first option? M51, is the ASP CRP a high-sensitivity CRP, in mg/L or mg/dL (the form label reads mmol/L)? M52, why does a lithium, valproate or oxcarbazepine level appear without its box ticked in the shifted visits of DR?

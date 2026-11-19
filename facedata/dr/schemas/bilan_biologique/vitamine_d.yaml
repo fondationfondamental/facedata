@@ -2,19 +2,48 @@ instrument: vitamine_d
 title: Vitamin D
 tab: BILAN BIOLOGIQUE
 section: Bilan Biologique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   25-hydroxy vitamin D, on 1,025 visits, delivered in nmol/L.
 
-  The form has a choice of five units, exported as a code: 1 nmol/L, 2 ng/L,
-  3 µg/L, 4 mmol/L, 5 ng/mL. Codes 3 and 5 are the same scale (median 22):
-  198 results are converted to nmol/L. Code 4 is read as nmol/L: no vitamin D
-  is counted in mmol/L, and its median (62) is that of code 1 (64). Code 2,
-  ng/L, holds two kinds of values: 41 in the thousands, which are true ng/L
-  and are converted, and 80 of a size (median 35) that can be nmol/L or ng/mL
-  as well; these cannot be told apart and are removed (open question O10 in
-  PROGRESS.md). Once harmonised, the yearly median stays between 49 and 67
-  nmol/L from 2012 to 2026.
+  The form has a choice of five units, exported as a code: 1 nmol/L, 2 ng/L, 3
+  µg/L, 4 mmol/L, 5 ng/mL. Codes 3 and 5 are the same scale (quartiles 15, 22
+  and 31): 198 results are converted to nmol/L. Code 4 is read as nmol/L: no
+  vitamin D is counted in mmol/L, and its median (62) is that of code 1 (64).
+
+  Code 2, "ng/L", holds 109 values of two kinds. 41 are 3,000 or more: true
+  ng/L, read by their size and converted (unit_inferred). 68 are below 1,000
+  and have the quartiles of ng/mL (16, 23.5 and 31, against 15, 22 and 31 for
+  codes 3 and 5) and not those of nmol/L (43, 64 and 84, code 1): the label
+  names the wrong unit. The alias "2" of the ng/mL unit reads them as ng/mL:
+  60 are converted (unit_converted: a label that fits is believed), 2 of 160
+  or more fit only nmol/L and are read as such (unit_inferred), and 6 below
+  0.2 stay out_of_range. The 59 results that were removed before and are
+  delivered now have a median of 60 nmol/L (quartiles 49 and 79), against 64
+  for code 1. Open question O10 in PROGRESS.md: did the centres mean ng/mL?
+
+  Once harmonised, the yearly median stays between 47 and 67 nmol/L from 2013
+  to 2026 (years with 10 results or more).
+
+  Values are winsorised at the 1st and 99th percentiles: the 20 cells in the
+  tails become the cut values (11.7 and 168 nmol/L), so a clinical tail turns
+  into the cut value, and the hard range of 8 to 400 removes the impossible
+  values.
+
+  A number typed in the unit field marks 23 of the 30 visits of one centre
+  whose block of results is shifted (see the blood-count schema): 14 hold an
+  impossible vitamin D, removed by the range, and none holds a vitamin D that
+  would be delivered. This schema belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells); this schema loses 4 cells on 4
+  of the 5 other visits and none on the block.
+
+  The 41 results read as ng/L by their size are all of one centre, dated
+  2014 to 2016 (26 in 2015).
 
   FACE SZ has the same instrument without a unit: its values are delivered as
   written and must not be compared with these.
@@ -29,6 +58,6 @@ variables:
     unit: nmol/L
     units:
       nmol/L: {factor: 1, expect: [8, 400], aliases: ["1", "4"]}
-      ng/mL: {factor: 2.496, expect: [3, 160], aliases: ["3", "5"]}
-      ng/L: {factor: 0.002496, expect: [3000, 160000], aliases: ["2"]}
+      ng/mL: {factor: 2.496, expect: [3, 160], aliases: ["3", "5", "2"]}      # "2" is the form's "ng/L", read as ng/mL (see the notes)
+      ng/L: {factor: 0.002496, expect: [3000, 160000]}                        # no alias: only the size of a value finds it
     range: [8, 400]

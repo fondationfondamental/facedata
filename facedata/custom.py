@@ -130,7 +130,8 @@ def prolactin_unit(values, keys):
     """Unit of the prolactin results for which nobody chose a unit on the form.
 
     ng/mL and mUI/L overlap: 1 ng/mL is 21.2 mUI/L. A result under 30 can
-    only be ng/mL, and a result of 500 or more is mUI/L. In between, the
+    only be ng/mL (one under 0.2 is mg/L typed in the default unit), and a
+    result of 500 or more is mUI/L. In between, the
     centre's other results of the time decide. In ng/mL about 2 results in
     100 reach 100; in mUI/L most do. So where a quarter or more of the
     centre's other results within 180 days reach 100, the centre was
@@ -155,6 +156,7 @@ def prolactin_unit(values, keys):
 
     unit = pd.Series(np.nan, index=values.index, dtype=object)
     unit = unit.mask(values < 30, "ng/mL")
+    unit = unit.mask(values < 0.2, "mg/L")            # typed in the default unit of the form, x1000 (D144)
     unit = unit.mask((values >= 30) & (values < 100) & ~in_mui_period, "ng/mL")
     unit = unit.mask((values >= 100) & (values < 500) & in_mui_period, "mUI/L")
     unit = unit.mask(values >= 500, "mUI/L")

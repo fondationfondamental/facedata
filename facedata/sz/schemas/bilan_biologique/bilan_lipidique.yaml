@@ -2,7 +2,7 @@ instrument: bilan_lipidique
 title: Lipids
 tab: BILAN BIOLOGIQUE
 section: BILAN BIOLOGIQUE
-status: draft
+status: reviewed
 notes: >
   The four lipids of FACE BP with the same units and limits, and the ratio
   of total to HDL cholesterol, recomputed from the harmonised values and
@@ -12,16 +12,40 @@ notes: >
   mmol/L, 14 are out of range. Total cholesterol: 46 results fit g/L under
   the label mmol/L (11 unit_inferred, 35 unit_doubt). LDL: 17 unit_doubt.
 
-  The stored ratio is not the ratio of the two stored values on 157 visits
-  of 3,578 (4%), more and more often since 2019 (17 to 25 a year from
-  2022). 48 of them are visits where a value was on another scale, the BP
-  case. Others hold another ratio (LDL over HDL on 15 visits, total over
-  LDL on 12) or a number off by 1 or more: on part of the visits the ratio
-  looks typed by hand. The recomputed ratio is delivered and the 157 get
-  score_mismatch.
+  The stored ratio is the one the EMR computes from the two numbers as
+  typed, on key-up, with no unit. It differs from the ratio of the two typed
+  numbers on 120 of 3,172 visits (3.8%, against 19 of 12,648 in BP, 0.15%),
+  103 of them since 2022; two centres carry 48 and 29 of the 120. It differs
+  from the ratio of the two harmonised values on 157 of 3,578 visits (4.4%,
+  score_mismatch). 44 of these hold the ratio of numbers typed in two units
+  (a value on another scale, the BP case: on 37 the stored value is the
+  recomputed one times 2.59 or divided by it). 13 hold LDL over HDL and 9
+  total over LDL (16 and 13 before the 44 are taken out). 91 are not
+  explained: 78 date from 2022 or later, 46 are in one centre, and the
+  stored value is off by more than 1 on 32. The centres should be asked.
+  That any of them was typed by hand is not proven. The recomputed ratio is
+  delivered and the 157 get score_mismatch.
 
-  Same instrument as in FACE BP. The unit chosen on the form for LDL
-  (rad_chol_hll in BP) is not in the SZ extraction.
+  LDL is not exported with its unit (export request R27; BP has the choice
+  in rad_chol_hll). Typed LDL from 1.0 up to 1.8, where a result in g/L
+  would fall, is 7.7% of the 3,530 SZ results, against 8.2% of the 9,575 BP
+  results with no choice (6.3% where mmol/L was chosen, 55% where g/L was
+  chosen): there is no sign of a large group in g/L, at most about 3% of the
+  results (100). The 2 results labelled g/L are converted. LDL is a
+  calculated value: it is within 0.15 mmol/L of total - HDL - triglycerides
+  / 2.2 on 86.8% of the 3,424 visits with triglycerides under 4.5 mmol/L
+  (unwinsorised values).
+
+  The clip at the 1st and 99th percentile turns a clinical tail into the cut
+  value, on 66 to 72 results per variable; the hard range is what removes
+  impossible values.
+
+  Same instrument as in FACE BP.
+
+  The 14 visits where the ratio cannot be recomputed (score_not_recomputed;
+  50 in BP): on 10 both fields are typed but the HDL (8) or the total
+  cholesterol (2) was removed as impossible, and 4 have an empty typed field
+  beside a stored ratio, the stale ratio that the form keeps.
 
 defaults: {type: number}
 

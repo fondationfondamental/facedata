@@ -785,3 +785,78 @@ def test_a_score_can_add_up_the_scores_of_another_schema(folder):
     assert flags_of(result, "doubled") == [("P2", "V0", "score_mismatch"), ("P3", "V0", "score_not_recomputed")]
     only = run_cohort(folder / "extraction.tsv", folder / "schemas", instruments=["aaa_doubled"])
     assert only.data["doubled"].isna().all()                        # the schema it uses is not loaded: nothing to add up
+
+
+SHIFTED = """
+instrument: shifted
+title: Shifted
+tab: TEST
+section: Shifted
+status: draft
+implausible_visits: 2
+defaults: {type: item, range: [0, 10]}
+variables:
+  a: {column: ca}
+  b: {column: cb}
+  c: {column: cc}
+  d: {column: cd}
+"""
+
+SHIFTED_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tca\tcb\tcc\tcd
+P1\tV0\t2\t1\t2016-01-10\t01\t5\t5\t5\t1
+P2\tV0\t2\t2\t2016-02-01\t02\t50\t60\t5\t7
+P3\tV0\t2\t3\t2016-03-01\t02\t5\t99\t5\t1
+"""
+
+
+def test_a_visit_with_several_impossible_values_is_a_shifted_block(folder):
+    """implausible_visits: the in-range values of a visit with that many out_of_range values are not delivered either."""
+    (folder / "schemas" / "tab" / "demo.yaml").unlink()                        # the demo schema reads other columns
+    (folder / "schemas" / "tab" / "shifted.yaml").write_text(SHIFTED, encoding="utf-8")
+    (folder / "extraction.tsv").write_text(SHIFTED_EXTRACTION, encoding="utf-8")
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas", instruments=["shifted"])
+    data = result.data.set_index("usubjid")
+    assert list(data.loc["P1", ["a", "b", "c", "d"]]) == [5, 5, 5, 1]
+    assert data.loc["P2", ["a", "b", "c", "d"]].isna().all()                    # two impossible values: c and d are not delivered either
+    assert list(data.loc["P3", ["a", "c", "d"]]) == [5, 5, 1] and pd.isna(data.loc["P3", "b"])    # one impossible value: only that one
+    removed = result.flags[result.flags["flag"] == "visit_removed"]
+    assert sorted(removed["variable"]) == ["c", "d"] and set(removed["usubjid"]) == {"P2"}
+
+
+POOL_A = """
+instrument: pool_a
+title: Pool A
+tab: TEST
+section: Pool A
+status: draft
+implausible_visits: 3
+implausible_pool: block
+defaults: {type: item, range: [0, 10]}
+variables:
+  a: {column: ca}
+  b: {column: cb}
+  c: {column: cc}
+"""
+
+POOL_B = POOL_A.replace("pool_a", "pool_b").replace("Pool A", "Pool B").replace("  a: {column: ca}\n  b: {column: cb}\n  c: {column: cc}", "  d: {column: cd}\n  e: {column: ce}")
+
+POOL_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tca\tcb\tcc\tcd\tce
+P1\tV0\t2\t1\t2016-01-10\t01\t5\t5\t5\t1\t2
+P2\tV0\t2\t2\t2016-02-01\t02\t50\t60\t5\t70\t2
+P3\tV0\t2\t3\t2016-03-01\t02\t50\t5\t5\t1\t2
+"""
+
+
+def test_the_impossible_values_of_a_pool_of_instruments_add_up(folder):
+    """implausible_pool: two impossible values in one instrument and one in another make a shifted visit in both."""
+    (folder / "schemas" / "tab" / "demo.yaml").unlink()
+    (folder / "schemas" / "tab" / "pool_a.yaml").write_text(POOL_A, encoding="utf-8")
+    (folder / "schemas" / "tab" / "pool_b.yaml").write_text(POOL_B, encoding="utf-8")
+    (folder / "extraction.tsv").write_text(POOL_EXTRACTION, encoding="utf-8")
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    data = result.data.set_index("usubjid")
+    assert list(data.loc["P1", ["a", "b", "c", "d", "e"]]) == [5, 5, 5, 1, 2]
+    assert data.loc["P2", ["a", "b", "c", "d", "e"]].isna().all()               # 3 impossible values in all: c and e are removed too
+    assert list(data.loc["P3", ["b", "c", "d", "e"]]) == [5, 5, 1, 2]           # one impossible value: only that one
+    removed = result.flags[result.flags["flag"] == "visit_removed"]
+    assert sorted(removed["variable"]) == ["c", "e"] and set(removed["usubjid"]) == {"P2"}

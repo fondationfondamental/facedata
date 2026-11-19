@@ -2,19 +2,36 @@ instrument: bhcg_prolactine
 title: Prolactin
 tab: BILAN BIOLOGIQUE
 section: BILAN BIOLOGIQUE
-status: draft
+status: reviewed
 notes: >
   Prolactin, read like in FACE BP (the SZ extraction has no beta-hCG).
 
-  The unit column holds mUI/L on 676 results, ng/ml on 714, and the form's
-  default label mg/L, which nobody chose, on the others: that label is
-  ignored, as in BP (decision D31 of the BP file). 633 results are
-  converted from mUI/L. Where no unit was chosen, the rule of BP (custom
-  function prolactin_unit: the size of the value, then the other results of
-  the centre at that time) reads 130 results as mUI/L and leaves 162 that
-  fit both units (unit_unknown, missing). 36 results labelled mUI/L fit
-  ng/mL better (unit_doubt). 67 are out of range and 15 are written with
-  "<" (censored_left).
+  The unit column holds mUI/L on 678 results (two of them misspelt) and
+  ng/mL or µg/L on 718 (two misspelt). The form's default label mg/L, which
+  nobody chose, is on the other 1,818 of the 3,214 results: that label is
+  ignored, as in BP (decision D31 of the BP file), and a misspelt label
+  counts as no label. 633 results are converted from mUI/L. Where no unit
+  was chosen, the rule of BP (custom function prolactin_unit: the size of
+  the value, then the other results of the centre at that time) reads 130
+  results as mUI/L and leaves 162 that fit both units (unit_unknown,
+  missing). 36 results labelled mUI/L fit ng/mL better (unit_doubt). 15 are
+  written with "<" (censored_left).
+
+  Typed in mg/L: 56 results lie between 0.0007 and 0.19, all under the
+  default label, 52 of them with three or four decimals (0.022 for 22
+  ng/mL). They are ng/mL written in mg/L: the unit mg/L (factor 1000, window
+  0.0005 to 0.2, as in BP) reads them, the rule prolactin_unit names it for
+  a value under 0.2, and they get unit_inferred. Before, they were out of
+  range. Their median is 13 ng/mL, against 15 for all results. Ten more lie
+  between 0.2 and 0.5: 6 under the default label and 4 with a unit chosen on
+  the form (3 ng/mL, 1 mUI/L). Read as mg/L they would be 235 to 490 ng/mL,
+  where 6 of the 718 results labelled ng/mL are 200 or more: they are not
+  converted and stay out of range. One more result is out of range (over
+  10,000, it fits no unit).
+
+  The clip at the 1st and 99th percentile turns a clinical tail into the cut
+  value (60 results here); the hard range, 0.5 to 500 ng/mL, is what removes
+  impossible values.
 
   Same instrument as in FACE BP, with the SZ column of the result.
 
@@ -30,6 +47,7 @@ variables:
     units:
       ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L]}
       mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l]}
+      mg/L: {factor: 1000, expect: [0.0005, 0.2]}      # 0.022 for 22 ng/mL: typed in mg/L with 3 or 4 decimals
     unit_rule: prolactin_unit
     range: [0.5, 500]
     missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured (BP D130)

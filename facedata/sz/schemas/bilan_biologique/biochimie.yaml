@@ -2,24 +2,43 @@ instrument: biochimie
 title: Biochemistry (uric acid, CRP, glucose, HbA1c)
 tab: BILAN BIOLOGIQUE
 section: BILAN BIOLOGIQUE
-status: draft
+status: reviewed
 notes: >
   Four analytes of the BP biochemistry, with the same units and limits. The
   result is in the column named for the analyte (urate, crp, gluc, hba1c)
   and the unit label in <analyte>_lborresu.
 
-  The unit column holds the form's default label on every visit of the
-  tab, also on the 400 to 930 visits that have no result (as in BP), so a
-  label says little: the unit is checked against the size of the value.
+  The unit column holds the form's default label on the 4,065 visits of the
+  form, also on the visits that have no result (502 for CRP, 745 for uric
+  acid, 926 for glucose and 2,211 for HbA1c; as in BP), so a label says
+  little: the unit is checked against the size of the value.
 
   Uric acid: 22 results fit another unit than their label (mg/L, mg/dL or
-  mmol/L): 10 unit_inferred, 12 unit_doubt. CRP: 334 results are written
-  with "<" (censored_left) and one with ">". Glucose: 66 results labelled
-  g/L are converted; 17 labelled mmol/L can only be g/L (unit_inferred), 3
-  are doubtful and 3 are out of range. HbA1c: five results labelled % are
-  33 to 44, which is mmol/mol (IFCC): they are converted with % = 0.09148 x
-  mmol/mol + 2.152 (unit_inferred; 5.2% to 6.2%, within 0.3 point of the
-  patient's other results in the median); one 0 stays out of range.
+  mmol/L): 10 unit_inferred, 12 unit_doubt. Glucose: 66 results labelled g/L
+  are converted; 17 labelled mmol/L can only be g/L (unit_inferred) and 3
+  are doubtful. 3 more, labelled mmol/L, lie between 45 and 100: they are
+  mg/dL (factor 0.05551, unit_inferred), where they were out of range (two
+  are low and are delivered as the cut value of the 1% clip). The window of
+  mg/dL, 45 to 720, lies above the end of the mmol/L scale (its hard range
+  stops at 40) and no result lies between 25 and 45, so it takes no mmol/L
+  value. HbA1c: five results labelled % are 33 to 44, which is mmol/mol
+  (IFCC): they are converted with % = 0.09148 x mmol/mol + 2.152
+  (unit_inferred; 5.2% to 6.2%, within 0.3 point of the patient's other
+  results in the median); one 0 stays out of range.
+
+  CRP: 477 of the 3,563 results (13%) are exactly 0, written 0 or 00. No
+  assay gives 0: it is a result below a limit that was not written,
+  delivered as missing (missing code unknown, as in BP D101). One centre
+  holds 290 of them (73% of its results) and 39 results of exactly 5 with no
+  mark; apart from them it has a single result between 0 and 5 and none
+  between 5 and 6, so its limit looks written as 0 or as an unmarked 5. An
+  unmarked limit is delivered as a measured value: 94 results of exactly 5
+  carry no "<" in the whole cohort, 31 carry one. 334 results are written
+  with "<" (censored_left) and one with ">".
+
+  The clip at the 1st and 99th percentile (CRP: the 99th only) turns a
+  clinical tail into the cut value, on 31 to 65 results per analyte; the
+  hard range is what removes impossible values.
 
   Same instrument as in FACE BP, with four of its sixteen analytes.
 
@@ -59,6 +78,7 @@ variables:
     units:
       mmol/L: {factor: 1, expect: [2.5, 40]}
       g/L: {factor: 5.551, expect: [0.3, 2.5]}
+      mg/dL: {factor: 0.05551, expect: [45, 720]}      # 90 for 5 mmol/L; from 45 (2.5 mmol/L) up to 720 (40 mmol/L, the end of the hard range): no mmol/L value can lie there
     range: [1.5, 40]
 
   hba1c:
