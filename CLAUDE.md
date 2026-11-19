@@ -15,7 +15,7 @@ instrument. Specs live in `docs/` and are the source of truth:
 - Special cases belong in a YAML schema, never in code. If code needs
   `if instrument == ...`, the schema spec is missing a field: change the spec.
 - The generic code (`facedata/*.py`, plots and report included) has a budget of
-  about 3,600 lines; it was 3,518 on 2026-11-18. Adding an instrument adds a
+  about 3,600 lines; it was 3,587 on 2026-11-19. Adding an instrument adds a
   YAML file and, rarely, one small function in `facedata/custom.py`.
 - Change `docs/SCHEMA_SPEC.md` before changing what a schema field means.
 

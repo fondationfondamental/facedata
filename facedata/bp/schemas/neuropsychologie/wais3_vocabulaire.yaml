@@ -19,24 +19,32 @@ notes: >
   stored one is still compared with it, with that offset of -3, so that only
   the 3 rows that differ for another reason get score_mismatch.
 
-  The stored scaled score is right (decision D19 in PROGRESS.md, which
-  replaces D11). In the EMR the psychologist enters the items, and the
-  application reads the scaled score in the norm table from the raw total
-  and the patient's age; the field cannot be typed in. The norm table
-  (norms/wais3_vocabulary.csv, not part of the repository) confirms it:
-  applied to the sum of the 33 items it gives the stored scaled score on
-  1,191 of 1,210 rows, and applied to the stored total on 198 only. So the
-  EMR used the true total, and only the total column of the extraction is 3
-  points too low.
+  The scaled score is read in the application's own norm table (decision
+  D19 in PROGRESS.md, which replaces D11). In the EMR the psychologist enters the
+  items, and the application reads the scaled score in the table from the
+  raw total and the age typed in the form (cclin01_); the field cannot be
+  typed in. The table (norms/wais3_vocabulary.csv, not part of the
+  repository) applied to the sum of the 33 items gives the stored scaled
+  score, so the EMR used the true total and only the total column of the
+  extraction is 3 points too low.
 
-  The scaled score and its z-score are delivered as stored. A check score
-  reads the scaled score in the norm table again; on the 19 rows where it
-  differs, both get derived_doubt. For 12 of these rows an age one year off
-  explains the difference: the export gives the date of birth to the month
-  only, so the age band can be wrong near a birthday.
+  Since the decision of 18 November 2026 the scaled score is recomputed from
+  the sum of the 33 items and delivered; the stored scaled score and z-score
+  are read as checks (keep: false), and a difference is score_mismatch on the
+  delivered score. The table is read with the typed age where it is within one year
+  of the age at the visit, else with the age at the visit (age:
+  wais3_vocab_age). The z-score is (scaled score - 10) / 3, the stored one
+  is rounded to two decimals (tolerance 0.006). The earlier design delivered
+  the stored scores, checked them with the table read with the age at the
+  visit, and gave derived_doubt to both on the 20 rows where the check
+  differed; derived_from is gone. On the 1,210 visits that have a stored
+  and a recomputed scaled score, 11 differ (8 to 2012, 3 in 2013-2015); on
+  8 of them the typed age is more than a year from the age at the visit,
+  and read with the typed age as it stands the table gives the stored
+  score on all but 4 visits. The z-score differs on 11 visits.
 
-  The table is cited as "Wechsler, 1997" and has not been checked against
-  the French manual yet.
+  The table is the one cited as "Wechsler, 1997"; the spreadsheet of that
+  name has the same cells as the scripts of the EMR.
 
 version:
   name: wais_version
@@ -80,9 +88,10 @@ variables:
   wais3_vocab32: {column: vocab32_wais3, label: Vocabulary item 32}
   wais3_vocab33: {column: vocab33_wais3, label: Vocabulary item 33}
 
-  wais3_vocab_total_stored: {column: vocabtot_wais3, label: Raw total as stored (wrong), range: [0, 66], keep: false}
-  wais3_vocab_scaled:       {column: vocabstd_wais3, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_vocab_scaled_check}
-  wais3_vocab_z:            {column: vocabcr_wais3,  label: Scaled score as a z-score, type: number, range: [-3, 3.34], winsor: false, derived_from: wais3_vocab_scaled_check}
+  wais3_vocab_age:           {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its table with"}
+  wais3_vocab_total_stored:  {column: vocabtot_wais3, label: Raw total as stored (wrong), range: [0, 66], keep: false}
+  wais3_vocab_scaled_stored: {column: vocabstd_wais3, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_vocab_z_stored:      {column: vocabcr_wais3,  label: "Scaled score as a z-score, as stored", type: number, range: [-3, 3.34], winsor: false, keep: false}
 
 scores:
   wais3_vocab_total:
@@ -96,9 +105,16 @@ scores:
           wais3_vocab31, wais3_vocab32, wais3_vocab33]
     compare: wais3_vocab_total_stored
     compare_offset: -3
-  # Consistency check only: the scaled score read again in the norm table.
-  wais3_vocab_scaled_check:
+  wais3_vocab_scaled:
+    label: Age-scaled score (mean 10 and SD 3)
     lookup: wais3_vocabulary
     from: wais3_vocab_total
-    compare: wais3_vocab_scaled
-    keep: false
+    age: wais3_vocab_age
+    range: [1, 19]
+    compare: wais3_vocab_scaled_stored
+  wais3_vocab_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_vocab_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_vocab_z_stored
+    compare_tolerance: 0.006

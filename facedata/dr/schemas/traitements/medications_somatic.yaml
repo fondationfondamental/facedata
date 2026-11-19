@@ -38,10 +38,10 @@ crossed: [psycho_som_cmtrt, psycho_som_cmdecod, psycho_som_cmdose, psycho_som_cm
 variables:
   medication: {column: psycho_som_cmtrt, type: text, label: "Substance, as the drug catalogue names it"}
   generic_name: {column: psycho_som_cmdecod, type: text, label: "Generic name, as the drug catalogue writes it"}
-  start_date: {column: psycho_som_cmstdtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: Start of the treatment}
+  start_date: {column: psycho_som_cmstdtc, type: date, range: [1951-01-01, 2026-12-31], missing: {"/": not_recorded}, label: Start of the treatment}
   end_date: {column: psycho_som_cmendtc, type: date, range: [1950-01-01, 2026-12-31], missing: {"/": not_recorded}, label: End of the treatment}
   strength: {column: psycho_som_cmdose, type: text, label: "Strength of one unit, as written"}
   dose_unit: {column: psycho_som_cmdosu, type: text, label: "Unit of the strength, as written"}
   form: {column: psycho_som_cmdosfrm, type: text, label: "Form, as written"}
   units_per_day: {column: psycho_som_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (the daily dose over the strength)"}
-  daily_dose: {column: psycho_som_cmdostot, type: number, range: [0, 10000], winsor: false, label: Total daily dose (in the unit of the strength)}
+  daily_dose: {column: psycho_som_cmdostot, type: number, range: [0, 5000], winsor: false, label: Total daily dose (in the unit of the strength)}

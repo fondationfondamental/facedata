@@ -17,6 +17,18 @@ notes: >
   read as 0 there: with no unscheduled care, there was no emergency
   consultation of a psychiatrist, and their number is 0.
 
+  Empty boxes beside a ticked one (decision D131, was O51). The boxes are
+  Oui/Non radio buttons, and on 824 visits of the usual part a rater ticked
+  some and left others empty (461 of them also hold an explicit "Non"). The
+  empty ones are almost always the kinds of care that few patients receive
+  (the psychiatrist box is empty on 3% of these visits, the others on 42% to
+  57%), so they are read as no, as for the non-drug treatments (D124):
+  box_list, in the usual part (five boxes) and in the unscheduled part (six
+  boxes, the emergency room included). 2,106 boxes and 2,106 numbers of
+  consultations become 0; no value written changes. A box whose number was
+  typed is left as written (the number is shown only after a yes). A visit
+  with every box empty keeps them missing.
+
   Where the first question of the usual part is not answered, 10 visits
   still hold boxes (42 answers, 17 of them yes), delivered as written;
   their numbers are read as usual (11 written after a yes, 25 read as 0
@@ -75,27 +87,27 @@ notes: >
 
 variables:
   care_usual: {column: rad_recours_soin_psy, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used care for the psychiatric disorder since the last visit, usual follow-up"}
-  care_gp: {column: hooccur_psy_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a general practitioner"}
+  care_gp: {column: hooccur_psy_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, box_list: care_usual_kinds, label: "Usual follow-up: consulted a general practitioner"}
   n_care_gp: {column: nboccur_psy_generaliste, type: number, range: [0, 365], winsor: false, asked_if: care_gp, label: "Usual follow-up: number of consultations, general practitioner"}
-  care_psychiatrist: {column: hooccur_psy_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a psychiatrist"}
+  care_psychiatrist: {column: hooccur_psy_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, box_list: care_usual_kinds, label: "Usual follow-up: consulted a psychiatrist"}
   n_care_psychiatrist: {column: nboccur_psy_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: care_psychiatrist, label: "Usual follow-up: number of consultations, psychiatrist"}
-  care_psychologist: {column: hooccur_psy_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted a psychologist"}
+  care_psychologist: {column: hooccur_psy_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, box_list: care_usual_kinds, label: "Usual follow-up: consulted a psychologist"}
   n_care_psychologist: {column: nboccur_psy_psychologue, type: number, range: [0, 365], winsor: false, asked_if: care_psychologist, label: "Usual follow-up: number of consultations, psychologist"}
-  care_specialist: {column: hooccur_psy_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: consulted one or more medical specialists for the disorder or its treatment"}
+  care_specialist: {column: hooccur_psy_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, box_list: care_usual_kinds, label: "Usual follow-up: consulted one or more medical specialists for the disorder or its treatment"}
   n_care_specialist: {column: nboccur_psy_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: care_specialist, label: "Usual follow-up: number of consultations, medical specialists for the disorder or its treatment"}
-  care_other: {column: hooccur_psy_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, label: "Usual follow-up: other consultations for the disorder or its treatment (dietician, nurse...)"}
+  care_other: {column: hooccur_psy_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_usual, box_list: care_usual_kinds, label: "Usual follow-up: other consultations for the disorder or its treatment (dietician, nurse...)"}
   n_care_other: {column: nboccur_psy_autres, type: number, range: [0, 365], winsor: false, asked_if: care_other, label: "Usual follow-up: number of other consultations for the disorder or its treatment (dietician, nurse...)"}
 
   care_urgent: {column: rad_recours_soin_urgence, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Used unscheduled or emergency care since the last visit"}
-  urgent_gp: {column: hooccur_urgence_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a general practitioner"}
+  urgent_gp: {column: hooccur_urgence_generaliste, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Unscheduled care: consulted a general practitioner"}
   n_urgent_gp: {column: nboccur_urg_generaliste, type: number, range: [0, 365], winsor: false, asked_if: urgent_gp, label: "Unscheduled care: number of consultations, general practitioner"}
-  urgent_psychiatrist: {column: hooccur_urgence_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a psychiatrist"}
+  urgent_psychiatrist: {column: hooccur_urgence_psychiatre, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Unscheduled care: consulted a psychiatrist"}
   n_urgent_psychiatrist: {column: nboccur_urg_psychiatre, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychiatrist, label: "Unscheduled care: number of consultations, psychiatrist"}
-  urgent_psychologist: {column: hooccur_urgence_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted a psychologist"}
+  urgent_psychologist: {column: hooccur_urgence_psychologue, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Unscheduled care: consulted a psychologist"}
   n_urgent_psychologist: {column: nboccur_urg_psychologue, type: number, range: [0, 365], winsor: false, asked_if: urgent_psychologist, label: "Unscheduled care: number of consultations, psychologist"}
-  urgent_specialist: {column: hooccur_urgence_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: consulted one or more medical specialists for the disorder or its treatment"}
+  urgent_specialist: {column: hooccur_urgence_plusieurs, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Unscheduled care: consulted one or more medical specialists for the disorder or its treatment"}
   n_urgent_specialist: {column: nboccur_urg_plusieurs, type: number, range: [0, 365], winsor: false, asked_if: urgent_specialist, label: "Unscheduled care: number of consultations, medical specialists for the disorder or its treatment"}
-  urgent_other: {column: hooccur_urgence_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Unscheduled care: other consultations for the disorder or its treatment (dietician, nurse...)"}
+  urgent_other: {column: hooccur_urgence_autres, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Unscheduled care: other consultations for the disorder or its treatment (dietician, nurse...)"}
   n_urgent_other: {column: nboccur_urg_autres, type: number, range: [0, 365], winsor: false, asked_if: urgent_other, label: "Unscheduled care: number of other consultations for the disorder or its treatment (dietician, nurse...)"}
-  emergency_room: {column: hooccur_urg_sans_hosp, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, label: "Went to an emergency room for the psychiatric disorder, without admission"}
+  emergency_room: {column: hooccur_urg_sans_hosp, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: care_urgent, box_list: care_urgent_kinds, label: "Went to an emergency room for the psychiatric disorder, without admission"}
   n_emergency_room: {column: nboccur_urg_sans_hosp, type: number, range: [0, 365], winsor: false, asked_if: emergency_room, label: "Number of visits to an emergency room without admission"}

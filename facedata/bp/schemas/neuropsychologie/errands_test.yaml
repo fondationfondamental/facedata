@@ -19,15 +19,44 @@ notes: >
   band, and a band wider than one step has <variable>_cens = +1. About 35
   cells per measure are a number that is no limit and stay unparsed.
 
-  z-scores exist from 2022 only (about 30 visits); "." is a missing code.
-  They are typed by hand and are not delivered (period_removed, the typed
-  value kept in the flag log). In FACE SZ, where about 520 visits have them,
-  each z-score is one straight line of its raw score per level of education
-  (median distance 0.03 to 0.16), falling as the raw score rises: a higher
-  z-score is a better performance. Of the BP z-scores, a third follow that
-  line, a third follow it with the opposite sign, and a third follow
-  neither, by centre (one centre writes the opposite sign, another a mixture)
-  and in every year; a cell does not tell which convention it holds (D126).
+  z-scores exist from 2022 only on about 30 visits; "." is a missing code.
+  They are typed by hand, and they mix two sign conventions (decision D126:
+  a third follow one straight line of the raw score per level of education,
+  a third follow it with the opposite sign, a third follow neither, by
+  centre and in every year). They were withdrawn; they are now replaced by
+  the recomputed values below, and the typed ones are only a check.
+
+  Recomputed. The percentile bands and the z-scores of the five measures
+  (time, detours, late trips, logical errors, total of the three kinds of
+  errors) are computed again from the raw counts, as the script of the
+  application computes them, with the tables that FACE SZ uses
+  (norms/errands_*_band.csv and errands_*_z.csv). The typed bands and z-scores
+  are kept only as checks (errands_*_band_stored, errands_*_z_stored, not
+  delivered). The band is the lower limit of the band the count falls in, in
+  the table of the level of education (below the baccalauréat, or from it);
+  a band wider than one step has <variable>_cens = +1. The z-score is
+  (mean - count) / SD in the cell of the level of education and of the age
+  (20 to 40 years, 41 to 60), so that a higher z-score is a better
+  performance; the time is cut to whole minutes first, as the application
+  does. The age is the one typed in the form (cclin01_) where it is within
+  one year of the age at the visit, and the age at the visit elsewhere. The
+  application computes nothing under 20 or over 60 years: no z-score is
+  delivered there (about 60 visits with a count; the bands do not depend on
+  the age and are delivered). It computes nothing without the level of
+  education (comnsc_, filled on 597 of the 813 visits with a count): a
+  missing level gives no band (norm_missing, 202 to 224 visits per measure,
+  mostly from 2022) and no z-score. A typed value on such a visit is flagged
+  score_not_recomputed (79 to 94 bands, 3 to 5 z-scores per measure).
+
+  Checks. A band that differs from the typed one is flagged score_mismatch:
+  on 53 of 423 visits for the time (12.5%), 36 of 431 for the detours, 37 of
+  426 for the late trips, 69 of 422 for the logical errors (16.4%) and 34 of
+  427 for the total (8.0%): the bands are typed by hand, all the differences
+  are from 2019 on, nearly all from 2022. The z-scores are delivered on 518
+  to 533 visits per measure (536 visits in all, from 2018), against 33 with
+  a typed one. Of the 21 to 25 typed ones that can be compared, 4 to 10 are
+  the recomputed value with the opposite sign (sign_flipped, compare_turned),
+  7 to 14 follow neither (score_mismatch), and the 3 to 10 others agree.
 
   errands_order is the order in which the patient ran the errands, as
   typed.
@@ -41,21 +70,25 @@ variables:
     type: category
     label: Level of education used for the norms
     codes: {">= baccalaureat": baccalaureat_or_more, "< baccalaureat": below_baccalaureat}
+  # What the norms need: the level of education as a number (0 below the baccalauréat, 1 from it) and the age as typed in the form,
+  # which the application reads its norms with (it computes nothing under 20 or over 60); read again here, not delivered
+  errands_level: {column: comnsc_, type: item, range: [0, 1], codes: {">= baccalaureat": 1, "< baccalaureat": 0}, label: "Level of education used for the norms (1 from the baccalauréat)", keep: false}
+  errands_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
   errands_minutes: {column: com01_, type: number, label: Time taken (minutes), range: [0, 60]}
-  errands_minutes_band: {column: com01s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Time taken - percentile band}
-  errands_minutes_z: {column: com01s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, doubt: {period: [2022-01-01, 2099-12-31], remove: true, note: typed z-scores mix two sign conventions}, label: Time taken - z-score}
+  errands_minutes_band_stored: {column: com01s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Time taken - percentile band, as stored", keep: false}
+  errands_minutes_z_stored: {column: com01s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, winsor: false, label: "Time taken - z-score, as stored", keep: false}
   errands_detours: {column: com02_, label: Useless detours}
-  errands_detours_band: {column: com02s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Useless detours - percentile band}
-  errands_detours_z: {column: com02s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, doubt: {period: [2022-01-01, 2099-12-31], remove: true, note: typed z-scores mix two sign conventions}, label: Useless detours - z-score}
+  errands_detours_band_stored: {column: com02s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Useless detours - percentile band, as stored", keep: false}
+  errands_detours_z_stored: {column: com02s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, winsor: false, label: "Useless detours - z-score, as stored", keep: false}
   errands_late_trips: {column: com03_, label: Trips that miss an opening hour}
-  errands_late_trips_band: {column: com03s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Trips that miss an opening hour - percentile band}
-  errands_late_trips_z: {column: com03s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, doubt: {period: [2022-01-01, 2099-12-31], remove: true, note: typed z-scores mix two sign conventions}, label: Trips that miss an opening hour - z-score}
+  errands_late_trips_band_stored: {column: com03s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Trips that miss an opening hour - percentile band, as stored", keep: false}
+  errands_late_trips_z_stored: {column: com03s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, winsor: false, label: "Trips that miss an opening hour - z-score, as stored", keep: false}
   errands_logic_errors: {column: com04_, label: Logical errors}
-  errands_logic_errors_band: {column: com04s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Logical errors - percentile band}
-  errands_logic_errors_z: {column: com04s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, doubt: {period: [2022-01-01, 2099-12-31], remove: true, note: typed z-scores mix two sign conventions}, label: Logical errors - z-score}
+  errands_logic_errors_band_stored: {column: com04s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Logical errors - percentile band, as stored", keep: false}
+  errands_logic_errors_z_stored: {column: com04s2_, type: number, range: [-10, 10], missing: {".": not_recorded}, winsor: false, label: "Logical errors - z-score, as stored", keep: false}
   errands_errors_stored: {column: com04s3_, label: Total errors as stored, range: [0, 30], keep: false}
-  errands_errors_band: {column: com04s4_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: Total errors - percentile band}
-  errands_errors_z: {column: com04s5_, type: number, range: [-10, 10], missing: {".": not_recorded}, doubt: {period: [2022-01-01, 2099-12-31], remove: true, note: typed z-scores mix two sign conventions}, label: Total errors - z-score}
+  errands_errors_band_stored: {column: com04s4_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Total errors - percentile band, as stored", keep: false}
+  errands_errors_z_stored: {column: com04s5_, type: number, range: [-10, 10], missing: {".": not_recorded}, winsor: false, label: "Total errors - z-score, as stored", keep: false}
   errands_order: {column: com05_, type: text, label: "Order of the errands, as typed"}
 
 scores:
@@ -63,3 +96,98 @@ scores:
     label: Total errors (detours, late trips and logical errors)
     sum: [errands_detours, errands_late_trips, errands_logic_errors]
     compare: errands_errors_stored
+
+  # Percentile bands and z-scores, recomputed as the application does (norms/errands_*.csv): the bands from the count or the time and the
+  # level of education, the z-scores, (mean - score) / SD, also from the typed age (20 to 40 or 41 to 60 years), so that a higher
+  # z-score is a better performance. The total of errors is the one of the three kinds.
+  # The application cuts the time to whole minutes before it computes the z-score (5.5 minutes count 5): norms/errands_minutes_whole.csv
+  errands_minutes_whole:
+    label: Time taken, whole minutes
+    lookup: errands_minutes_whole
+    from: errands_minutes
+    keep: false
+  errands_minutes_band:
+    label: Time taken - percentile band
+    lookup: errands_minutes_band
+    from: errands_minutes
+    by: errands_level
+    compare: errands_minutes_band_stored
+  errands_minutes_z:
+    label: Time taken - z-score (higher is better)
+    regression: errands_minutes_z
+    from: errands_minutes_whole
+    by: errands_level
+    age: errands_age
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: errands_minutes_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  errands_detours_band:
+    label: Useless detours - percentile band
+    lookup: errands_detours_band
+    from: errands_detours
+    by: errands_level
+    compare: errands_detours_band_stored
+  errands_detours_z:
+    label: Useless detours - z-score (higher is better)
+    regression: errands_detours_z
+    from: errands_detours
+    by: errands_level
+    age: errands_age
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: errands_detours_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  errands_late_trips_band:
+    label: Trips that miss an opening hour - percentile band
+    lookup: errands_late_trips_band
+    from: errands_late_trips
+    by: errands_level
+    compare: errands_late_trips_band_stored
+  errands_late_trips_z:
+    label: Trips that miss an opening hour - z-score (higher is better)
+    regression: errands_late_trips_z
+    from: errands_late_trips
+    by: errands_level
+    age: errands_age
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: errands_late_trips_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  errands_logic_errors_band:
+    label: Logical errors - percentile band
+    lookup: errands_logic_errors_band
+    from: errands_logic_errors
+    by: errands_level
+    compare: errands_logic_errors_band_stored
+  errands_logic_errors_z:
+    label: Logical errors - z-score (higher is better)
+    regression: errands_logic_errors_z
+    from: errands_logic_errors
+    by: errands_level
+    age: errands_age
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: errands_logic_errors_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  errands_errors_band:
+    label: Total errors - percentile band
+    lookup: errands_errors_band
+    from: errands_errors
+    by: errands_level
+    compare: errands_errors_band_stored
+  errands_errors_z:
+    label: Total errors - z-score (higher is better)
+    regression: errands_errors_z
+    from: errands_errors
+    by: errands_level
+    age: errands_age
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: errands_errors_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true

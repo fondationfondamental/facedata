@@ -158,20 +158,21 @@ def test_neuropsychology(result, qc):
     assert (table["instrument"].nunique(), len(table)) == (16, 373)
     flags = result.flags[result.flags["variable"].isin(table.index)]
     # The total of the errands test is recomputed as in BP: 2 stored totals differ, 1 has an item missing.
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 731, "winsorised": 25, "out_of_range": 17, "score_mismatch": 2,
-                                                      "score_not_recomputed": 1}
+    actual_flags = flags["flag"].value_counts().to_dict()
+    assert actual_flags == {"missing_code": 731, "score_mismatch": 377, "score_not_recomputed": 96, "out_of_range": 22, "censored_left": 14,
+                            "winsorised": 12, "norm_missing": 10, "censored_right": 7}      # the WAIS-IV scores are read in the tables (D135); the coding raw score is the boxes filled minus the errors (D136), the index sums are recomputed (D137)
     # The WAIS-IV item by item: every stored total is the sum of its items, and the digit span total of its three parts.
     wais = result.flags[result.flags["variable"].str.startswith("wais4_")]
-    assert "score_mismatch" not in set(wais["flag"])
+    assert not any(name.endswith("_total") for name in wais.loc[wais["flag"] == "score_mismatch", "variable"])      # every stored total is the sum of its items
     valid = {name: int(data[name].notna().sum()) for name in ["wais4_mat_total", "wais4_simil_total", "wais4_vocab_total", "wais4_bd_total", "wais4_ds_total", "wais4_pc_total"]}
     assert valid == {"wais4_mat_total": 286, "wais4_simil_total": 293, "wais4_vocab_total": 212, "wais4_bd_total": 215, "wais4_ds_total": 293, "wais4_pc_total": 5}
     assert ((data["wais4_mat_z"] - (data["wais4_mat_scaled"] - 10) / 3).abs().max() < 0.011)             # the z-score of a scaled score
     # Two sources for an index: the neuropsychology form (_np) and the copy of the clinician in the medical evaluation.
     both = data["wais4_icv_index_np"].notna() & data["wais4_icv_index"].notna()
-    assert (data["wais4_icv_index_np"].notna().sum(), both.sum(), (data.loc[both, "wais4_icv_index_np"] == data.loc[both, "wais4_icv_index"]).sum()) == (205, 187, 161)
+    assert (data["wais4_icv_index_np"].notna().sum(), both.sum(), (data.loc[both, "wais4_icv_index_np"] == data.loc[both, "wais4_icv_index"]).sum()) == (205, 187, 162)
     assert (data["barona_expected_qit"].notna().sum(), data["barona_qit_difference"].notna().sum()) == (241, 131)
     difference = (data["barona_expected_qit"] - data["wais4_qit_np"] - data["barona_qit_difference"]).abs()
-    assert difference.notna().sum() == 131 and difference.max() < 0.2                                    # expected minus measured
+    assert difference.notna().sum() == 130 and (difference < 0.2).sum() == 122                          # expected minus measured: 8 follow the stored IQ, not the recomputed one (D137)
     assert (data["trbapp01"].notna().sum(), (data["trbapp01"] == 1).sum(), qc.loc["trbapp01", "missing_code"]) == (746, 71, 55)
     assert (data["lis_total"].notna().sum(), data["face_emotion_total"].notna().sum(), data["errands_time"].notna().sum()) == (698, 701, 563)
 
@@ -179,10 +180,11 @@ def test_neuropsychology(result, qc):
 def test_new_questionnaires(result, qc):
     data, flags = result.data, result.flags
     table = qc[qc["tab"] == "autoquestionnaires"]
-    assert (table["instrument"].nunique(), len(table)) == (29, 1216)             # the ADOS total of the summary line is not delivered
+    assert (table["instrument"].nunique(), len(table)) == (29, 1217)      # the ADOS total of the summary line is not delivered
+    assert (qc.loc["eq5d_index", "n_valid"], qc.loc["eq5d_index", "score_mismatch"], qc.loc["asrs_parta", "n_valid"]) == (1020, 0, 579)
     counts = flags[flags["variable"].isin(table.index)]["flag"].value_counts().to_dict()
     # 14,724 scores typed without their items, and 2,964 totals built on them; 767 stored scores whose items are incomplete.
-    assert counts == {"score_as_stored": 17688, "missing_code": 1457, "score_not_recomputed": 767, "score_mismatch": 749, "out_of_range": 59}
+    assert counts == {"score_as_stored": 17688, "missing_code": 1457, "score_not_recomputed": 773, "score_mismatch": 749, "out_of_range": 31}
     mismatch = lambda name: int(((flags["variable"] == name) & (flags["flag"] == "score_mismatch")).sum())
     # A score typed without any of its items is kept as stored.
     kept = {name: (int(qc.loc[name, "n_valid"]), int(qc.loc[name, "score_as_stored"])) for name in ["adi_a1", "raads_social", "gsq_total", "bdi_total", "adhdrs_total", "cdi_total", "staic_trait"]}
@@ -231,7 +233,7 @@ def test_old_questionnaires(result, qc):
     assert (table["instrument"].nunique(), len(table)) == (28, 1772)
     counts = flags[flags["variable"].isin(table.index)]["flag"].value_counts()
     assert "unknown_code" not in counts and "unparsed" not in counts
-    assert (counts["score_mismatch"], counts["missing_code"], counts["score_as_stored"]) == (550, 405, 99)
+    assert (counts["score_mismatch"], counts["missing_code"], counts["score_as_stored"]) == (547, 405, 99)
     mismatch = lambda name: int(qc.loc[name, "score_mismatch"])
     # The scores that are right as stored: recomputed, no difference.
     right = ["abc_irritability", "cca_pragmatic_skills", "cshq_total", "hama_total", "hamd_total", "lsas_anxiety_total", "rbsr_total", "spq_total", "tas_total", "dcdq_total"]
@@ -249,7 +251,7 @@ def test_old_questionnaires(result, qc):
     assert forms == {"communication_checklist_form": 21, "srs_relative_form": 3}      # three visits with SRS answers and an impossible date: no age
     # PSQI: the components 4, 5 and 7 are recomputed; the stored ones do not cross midnight or do not follow the items.
     psqi = {name: (int(qc.loc[name, "n_valid"]), mismatch(name)) for name in ["psqi_latency_component", "psqi_efficiency", "psqi_disturbances", "psqi_dysfunction", "psqi_total"]}
-    assert psqi == {"psqi_latency_component": (189, 0), "psqi_efficiency": (193, 94), "psqi_disturbances": (200, 158), "psqi_dysfunction": (201, 98), "psqi_total": (182, 147)}
+    assert psqi == {"psqi_latency_component": (189, 0), "psqi_efficiency": (193, 91), "psqi_disturbances": (200, 158), "psqi_dysfunction": (201, 98), "psqi_total": (182, 147)}
     assert data["psqi_total"].median() == 7
     # An instrument on a handful of visits is read with types and ranges only.
     rare = table[table["instrument"].isin(["aim", "als", "anhedonia", "asq", "atac", "bis_old_form", "tci"])]

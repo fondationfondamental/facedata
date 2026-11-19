@@ -22,7 +22,7 @@ notes: >
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours)}
+  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours), range: [0, 24]}
   psqi_latency:
     column: psqi02
     type: number
@@ -33,8 +33,8 @@ variables:
       "min x 60": {factor: 0.0166667, expect: [240.01, 1260]}
       "min x 60, long": {factor: 0.0166667, expect: [1440, 4501]}
     range: [0, 240]
-  psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours)}
-  psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night}
+  psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours), range: [0, 24]}
+  psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night, range: [0, 24]}
   psqi05a: {label: "Vous n’êtes pas arrivé(e) à vous endormir en 30 minutes"}
   psqi05b: {label: "Vous vous êtes réveillé(e) au milieu de la nuit ou plus tôt que..."}
   psqi05c: {label: "Vous avez dû vous lever pour aller aux toilettes"}
@@ -60,7 +60,7 @@ variables:
   psqi10e_text: {column: psqi10e, type: text, label: "As seen by the partner: other restlessness, as written"}
 
   # Component scores as stored, 0 to 3.
-  psqi_efficiency: {column: psqi11, label: Component 4 - habitual sleep efficiency}
+  psqi_efficiency_stored: {column: psqi11, label: Component 4 as stored (hours in bed from the bedtime typed as written), keep: false}
   psqi_duration: {column: psqi12, label: "Component 3 - sleep duration, as stored (7 hours or more counts 0)"}
   psqi_disturbances: {column: psqi13, label: Component 5 - sleep disturbances}
   psqi_latency_stored: {column: psqi14, label: Component 2 as stored, keep: false}
@@ -72,6 +72,10 @@ scores:
     label: Component 2 - sleep latency
     custom: psqi_latency
     compare: psqi_latency_stored
+  psqi_efficiency:
+    label: Component 4 - habitual sleep efficiency
+    custom: psqi_efficiency
+    compare: psqi_efficiency_stored
   psqi_total:
     label: PSQI total (0 to 21, higher is worse)
     sum: [psqi06, psqi_latency_component, psqi_duration, psqi_efficiency,

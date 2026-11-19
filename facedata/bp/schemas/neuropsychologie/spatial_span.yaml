@@ -7,17 +7,40 @@ notes: >
   The psychologist taps blocks in a sequence that the patient repeats, in
   the same order (forward) and then in reverse (backward). Eight items of
   two trials for each order; the test stops after two failures on an item,
-  so the last items are often empty. About 5,215 visits.
+  so the last items are often empty. About 5,235 visits.
 
   An item score is the number of its trials passed (0 to 2): this holds in
-  every row. The raw score of an order is the sum of its item scores, an
-  empty item counting 0 (0 to 16); the stored one equals it on 99.5% of the
-  visits and is compared. The total is the sum of the two orders (0 to 32),
-  compared with the stored total.
+  every row. The raw score of an order is the sum of its item scores up to
+  the first item scored 0 (stop_at_zero: the application does not count
+  what is typed after the first failed item), an empty item before it
+  counting 0 (0 to 16). It equals the stored one on every visit that has
+  both (5,222 forward, 5,216 backward, 5,200 for the total of the two
+  orders, 0 to 32); the plain sum of all the items differed on 0.5% of the
+  visits.
 
-  The scaled scores (1 to 19) come from the norms of the manual and are
-  delivered as stored. Each z-score is the scaled score brought to mean 0
-  and SD 1, (scaled - 10) / 3, in every row.
+  Recomputed. The scaled scores (1 to 19) and their z-scores are computed
+  again as the application computes them, and the stored values are kept
+  only as checks (*_stored, not delivered). The scaled score is read in the
+  table of the manual (norms/spatial_*_scaled.csv, twelve age groups) from
+  the raw score and the age typed in the form (cclin01_) where it is within
+  one year of the age at the visit, and the age at the visit elsewhere. The
+  z-score is the scaled score brought to mean 0 and SD 1, (scaled - 10) / 3.
+  A scaled score that differs from the stored one is flagged score_mismatch
+  (the z-score within 0.0101), and so is its z-score.
+
+  Checks. The scaled score differs from the stored one on 44 of 5,237 visits
+  for the forward order (0.8%), 44 of 5,233 for the backward order and 62 of
+  5,232 for the total (1.2%); the z-score differs on the same visits. About
+  half of them (24, 23 and 27) are visits whose typed age is more than a
+  year from the age at the visit, mostly by one scaled point, where the
+  application read the table with the typed age and the package with the
+  age at the visit; 15, 17 and 32 are visits whose ages agree and whose
+  stored scaled score is 2 to 15 points from the table's value for the
+  stored raw score (it does not follow its raw score); 5, 4 and 3 differ by
+  one point. The differences are spread over the periods (0.6 to 1.4% of
+  the visits in each) and over the centres. One
+  visit has a stored scaled score where no raw score can be computed
+  (score_not_recomputed).
 
 defaults: {type: item, range: [0, 1]}
 
@@ -73,29 +96,74 @@ variables:
   spatial_backward_item7: {column: msi07_, label: "Backward - item 7 score", range: [0, 2]}
   spatial_backward_item8: {column: msi08_, label: "Backward - item 8 score", range: [0, 2]}
 
-  # Scores as stored
+  # The age as typed in the form: the application reads its scaled scores with it, not with the age at the visit
+  spatial_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
+
+  # Scores as stored: compared with the recomputed ones, not delivered
   spatial_forward_stored: {column: msdtot_, label: Forward raw score as stored, range: [0, 16], keep: false}
   spatial_backward_stored: {column: msitot_, label: Backward raw score as stored, range: [0, 16], keep: false}
   spatial_total_stored: {column: mstbrut_, label: Total raw score as stored, range: [0, 32], keep: false}
-  spatial_forward_scaled: {column: msdstd_, label: Forward scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_forward}
-  spatial_forward_z: {column: msdcr_, type: number, label: Forward scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_forward}
-  spatial_backward_scaled: {column: msistd_, label: Backward scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_backward}
-  spatial_backward_z: {column: msicr_, type: number, label: Backward scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_backward}
-  spatial_total_scaled: {column: mststd_, label: Total scaled score (mean 10 and SD 3), range: [1, 19], derived_from: spatial_total}
-  spatial_total_z: {column: mstcr_, type: number, label: Total scaled score as a z-score, range: [-3, 3], winsor: false, derived_from: spatial_total}
+  spatial_forward_scaled_stored: {column: msdstd_, label: Forward scaled score as stored, range: [1, 19], keep: false}
+  spatial_forward_z_stored: {column: msdcr_, type: number, label: Forward z-score as stored, range: [-3, 3], winsor: false, keep: false}
+  spatial_backward_scaled_stored: {column: msistd_, label: Backward scaled score as stored, range: [1, 19], keep: false}
+  spatial_backward_z_stored: {column: msicr_, type: number, label: Backward z-score as stored, range: [-3, 3], winsor: false, keep: false}
+  spatial_total_scaled_stored: {column: mststd_, label: Total scaled score as stored, range: [1, 19], keep: false}
+  spatial_total_z_stored: {column: mstcr_, type: number, label: Total z-score as stored, range: [-3, 3], winsor: false, keep: false}
 
 scores:
+  # Raw scores: the items added in the order of the test, up to the first item scored 0 (the test stops there)
   spatial_forward:
     label: Forward raw score (0 to 16)
     sum: [spatial_forward_item1, spatial_forward_item2, spatial_forward_item3, spatial_forward_item4, spatial_forward_item5, spatial_forward_item6, spatial_forward_item7, spatial_forward_item8]
+    stop_at_zero: true
     min_items: 1
     compare: spatial_forward_stored
   spatial_backward:
     label: Backward raw score (0 to 16)
     sum: [spatial_backward_item1, spatial_backward_item2, spatial_backward_item3, spatial_backward_item4, spatial_backward_item5, spatial_backward_item6, spatial_backward_item7, spatial_backward_item8]
+    stop_at_zero: true
     min_items: 1
     compare: spatial_backward_stored
   spatial_total:
     label: Total raw score (0 to 32)
     sum: [spatial_forward, spatial_backward]
     compare: spatial_total_stored
+
+  # Scaled scores, read in the norm tables of the manual (norms/spatial_*_scaled.csv) from the raw score and the age
+  # typed in the form, then the z-score of the scaled score, (scaled - 10) / 3
+  spatial_forward_scaled:
+    label: Forward scaled score (mean 10 and SD 3)
+    lookup: spatial_forward_scaled
+    from: spatial_forward
+    age: spatial_age
+    compare: spatial_forward_scaled_stored
+  spatial_forward_z:
+    label: Forward scaled score as a z-score
+    sum: [spatial_forward_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: spatial_forward_z_stored
+    compare_tolerance: 0.0101
+  spatial_backward_scaled:
+    label: Backward scaled score (mean 10 and SD 3)
+    lookup: spatial_backward_scaled
+    from: spatial_backward
+    age: spatial_age
+    compare: spatial_backward_scaled_stored
+  spatial_backward_z:
+    label: Backward scaled score as a z-score
+    sum: [spatial_backward_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: spatial_backward_z_stored
+    compare_tolerance: 0.0101
+  spatial_total_scaled:
+    label: Total scaled score (mean 10 and SD 3)
+    lookup: spatial_total_scaled
+    from: spatial_total
+    age: spatial_age
+    compare: spatial_total_scaled_stored
+  spatial_total_z:
+    label: Total scaled score as a z-score
+    sum: [spatial_total_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: spatial_total_z_stored
+    compare_tolerance: 0.0101

@@ -17,8 +17,28 @@ notes: >
   compared. "DCM" is written in the error columns of one visit and stays
   unparsed.
 
-  The z-scores and the bands come from norms that are not in the project;
-  they are delivered as stored.
+  Recomputed. The z-score and the percentile band of each task are computed
+  again as the application computes them (one script for the BP and the SZ
+  forms), and the stored ones are kept only as checks (fluency_*_stored, not
+  delivered). The norm has one cell for each of three age classes (under 40,
+  40 to 59, 60 and over) and three levels of education (under 6 years, 6 to
+  11, 12 and over): the z-score is (words - mean) / SD of the cell to two
+  decimals (norms/fluency_*_z.csv), the band is the lower limit of the band
+  the words fall in (norms/fluency_*_band.csv; 0 for "<5", then 5, 10, 25,
+  50, 75, 90, 95). The tables are read with the age typed in the form
+  (cclin01_) where it is within one year of the age at the visit, and with
+  the age at the visit elsewhere, and with the years of education typed in
+  the form (cclin08_), filled on every visit that has a count.
+
+  Checks. A recomputed value that differs from the stored one is flagged
+  score_mismatch (the z-score by more than 0.0101). Of the visits where both
+  exist, the z-score differs on 18 of 1,398 for the letter P and 18 of 1,394
+  for the animals (1.3%), the band on 12 of each (0.9%); the differences
+  are on visits until 2018 and one from 2024. A stored band that is "<5" on
+  an empty count of words (7 visits for the animals, 2 for the letter P) is
+  the percentile of an empty cell, which the EMR computes as if the count
+  were 0: nothing is delivered and the row gets score_not_recomputed, as it
+  does for the 2 stored z-scores with no count.
 
   Same instrument as in FACE BP, without the clusters and the switches,
   which the SZ extraction does not hold.
@@ -26,18 +46,23 @@ notes: >
 defaults: {type: item, range: [0, 30]}
 
 variables:
+  # What the norms need besides the raw score: the age and the years of education as typed in the form (the application reads
+  # its norms with them); read here a second time, not delivered
+  fluency_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
+  fluency_education: {column: cclin08_, type: number, label: "Years of education, as entered (for the norms)", range: [0, 30], winsor: false, keep: false}
+
   # Letter P
   fluency_p_words: {column: fv01_, type: number, label: "Letter P - correct words", range: [0, 80]}
-  fluency_p_z: {column: fv02_, type: number, label: "Letter P - z-score", range: [-6, 6]}
-  fluency_p_band: {column: fv03_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Letter P - percentile band"}
+  fluency_p_z_stored: {column: fv02_, type: number, label: "Letter P - z-score, as stored", range: [-6, 6], winsor: false, keep: false}
+  fluency_p_band_stored: {column: fv03_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Letter P - percentile band, as stored", keep: false}
   fluency_p_perseverations: {column: fv04_, label: "Letter P - perseverations"}
   fluency_p_derived: {column: fv05_, label: "Letter P - derived words"}
   fluency_p_intrusions: {column: fv06_, label: "Letter P - intrusions"}
   fluency_p_proper_names: {column: fv07_, label: "Letter P - proper names"}
   fluency_p_rule_breaks_stored: {column: fv08_, label: "Letter P - rule breaks as stored", keep: false}
   fluency_animals_words: {column: fv12_, type: number, label: "Animals - correct words", range: [0, 80]}
-  fluency_animals_z: {column: fv13_, type: number, label: "Animals - z-score", range: [-6, 6]}
-  fluency_animals_band: {column: fv14_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Animals - percentile band"}
+  fluency_animals_z_stored: {column: fv13_, type: number, label: "Animals - z-score, as stored", range: [-6, 6], winsor: false, keep: false}
+  fluency_animals_band_stored: {column: fv14_, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Animals - percentile band, as stored", keep: false}
   fluency_animals_perseverations: {column: fv15_, label: "Animals - perseverations"}
   fluency_animals_derived: {column: fv16_, label: "Animals - derived words"}
   fluency_animals_intrusions: {column: fv17_, label: "Animals - intrusions"}
@@ -52,3 +77,37 @@ scores:
     label: Animals - rule breaks
     sum: [fluency_animals_derived, fluency_animals_intrusions, fluency_animals_proper_names]
     compare: fluency_animals_rule_breaks_stored
+  fluency_p_z:
+    label: Letter P - z-score (higher is more words)
+    regression: fluency_p_z
+    from: fluency_p_words
+    by: fluency_education
+    age: fluency_age
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: fluency_p_z_stored
+    compare_tolerance: 0.0101
+  fluency_p_band:
+    label: Letter P - percentile band
+    lookup: fluency_p_band
+    from: fluency_p_words
+    by: fluency_education
+    age: fluency_age
+    compare: fluency_p_band_stored
+  fluency_animals_z:
+    label: Animals - z-score (higher is more words)
+    regression: fluency_animals_z
+    from: fluency_animals_words
+    by: fluency_education
+    age: fluency_age
+    range: [-6, 6]
+    winsor: [0.01, 0.99]
+    compare: fluency_animals_z_stored
+    compare_tolerance: 0.0101
+  fluency_animals_band:
+    label: Animals - percentile band
+    lookup: fluency_animals_band
+    from: fluency_animals_words
+    by: fluency_education
+    age: fluency_age
+    compare: fluency_animals_band_stored

@@ -17,7 +17,18 @@ notes: >
   this table.
 
   Each index is one function of its sum of scaled scores on every visit, as a
-  norm table gives it. The indices need that table: delivered as stored.
+  norm table gives it. The sums of scaled scores come from subtests that are in other schemas: they
+  are recomputed from the scaled scores that those schemas deliver (uses)
+  and the stored sums are checks (wais4_*_sum_scaled_stored, not delivered).
+  Verbal comprehension is similarities + vocabulary + information,
+  perceptual reasoning block design + matrices + visual puzzles, working
+  memory digit span + arithmetic, the full scale the ten core subtests; the
+  sets (_a) are 1.5 x (similarities + information) and 1.5 x (matrices +
+  picture completion). The stored sums differ from the recomputed ones on 5
+  to 13 visits per sum, each on a visit where a stored scaled score differs
+  from the table (score_mismatch). The full-scale sum of the second set (6
+  visits) is delivered as stored: its formula is not the seven subtests of
+  the first and no other one was found.
 
   **Two sources for the same index.** The clinician copies the indices into
   the medical evaluation (schema wais4_indices, about 995 visits), where they
@@ -35,27 +46,172 @@ notes: >
   Same instrument as in FACE SZ and DR, in other columns and with other
   names for the indices.
 
+  Indices. They are read in the tables of the manual and delivered (decision
+  of the project lead for the standard scores of the neuropsychological
+  tests), from the sum of the recomputed scaled scores of each index
+  (norms/wais4_icv.csv, wais4_irp.csv, wais4_imt.csv and wais4_qit.csv, with
+  their wais4_*_percentile.csv; the tables are the same in the four
+  applications). The stored indices and percentile ranks are
+  wais4_*_index_np_stored, wais4_*_index_a_stored, wais4_qit_np_stored,
+  wais4_qit_a_stored and wais4_*_percentile_*_stored, not delivered. No
+  correction is needed (unlike the SZ working memory index and full-scale IQ).
+  A sum follows the scaled scores recomputed in the other schemas of this
+  cohort.
+
+  Verified: on every visit that has both (205 verbal comprehension, 202
+  perceptual reasoning, 207 working memory, 196 full-scale IQ for the first
+  set; 207, 6 and 6 for the second set) the stored index is the table value
+  and the stored percentile rank is the table's, to 0.051: no score_mismatch
+  and no norm_missing. A percentile of 0.1 or 99.9 is censored
+  (wais4_*_percentile_cens).
+
+uses: [wais4_simil_scaled, wais4_vocab_scaled, wais4_info_scaled, wais4_bd_scaled, wais4_mat_scaled, wais4_vp_scaled, wais4_pc_scaled, wais4_ds_scaled, wais4_arith_scaled, wais4_code_scaled, wais4_symbol_scaled]
 defaults: {type: number, winsor: false}
 
 variables:
-  wais4_icv_sum_scaled: {column: icv_sum_std, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores"}
-  wais4_icv_index_np: {column: icv_indice, range: [40, 160], label: "WAIS-IV verbal comprehension index, neuropsychology form"}
-  wais4_icv_percentile: {column: icv_rang, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank"}
-  wais4_icv_sum_scaled_a: {column: icv_sum_std_a, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores, second set (_a)"}
-  wais4_icv_index_a: {column: icv_indice_a, range: [40, 160], label: "WAIS-IV verbal comprehension index, second set (_a)"}
-  wais4_icv_percentile_a: {column: icv_rang_a, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank, second set (_a)"}
-  wais4_irp_sum_scaled: {column: irp_sum_std, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores"}
-  wais4_irp_index_np: {column: irp_indice, range: [40, 160], label: "WAIS-IV perceptual reasoning index, neuropsychology form"}
-  wais4_irp_percentile: {column: irp_rang, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank"}
-  wais4_irp_sum_scaled_a: {column: irp_sum_std_a, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores, second set (_a)"}
-  wais4_irp_index_a: {column: irp_indice_a, range: [40, 160], label: "WAIS-IV perceptual reasoning index, second set (_a)"}
-  wais4_irp_percentile_a: {column: irp_rang_a, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank, second set (_a)"}
-  wais4_imt_sum_scaled: {column: imt_sum_std, range: [2, 38], label: "WAIS-IV working memory, sum of scaled scores"}
-  wais4_imt_index_np: {column: imt_indice, range: [40, 160], label: "WAIS-IV working memory index, neuropsychology form"}
-  wais4_imt_percentile: {column: imt_rang, range: [0, 100], label: "WAIS-IV working memory index, percentile rank"}
-  wais4_qit_sum_scaled: {column: qi_sum_std, range: [10, 190], label: "WAIS-IV full scale, sum of scaled scores"}
-  wais4_qit_np: {column: qi_indice, range: [40, 160], label: "WAIS-IV full-scale IQ, neuropsychology form"}
-  wais4_qit_percentile: {column: qi_rang, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank"}
+  wais4_icv_sum_scaled_stored: {column: icv_sum_std, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores, as stored", keep: false}
+  wais4_icv_index_np_stored: {column: icv_indice, range: [40, 160], label: "WAIS-IV verbal comprehension index, neuropsychology form as stored", keep: false}
+  wais4_icv_percentile_stored: {column: icv_rang, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank as stored", keep: false}
+  wais4_icv_sum_scaled_a_stored: {column: icv_sum_std_a, range: [3, 57], label: "WAIS-IV verbal comprehension, sum of scaled scores, second set (_a), as stored", keep: false}
+  wais4_icv_index_a_stored: {column: icv_indice_a, range: [40, 160], label: "WAIS-IV verbal comprehension index, second set (_a) as stored", keep: false}
+  wais4_icv_percentile_a_stored: {column: icv_rang_a, range: [0, 100], label: "WAIS-IV verbal comprehension index, percentile rank, second set (_a) as stored", keep: false}
+  wais4_irp_sum_scaled_stored: {column: irp_sum_std, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores, as stored", keep: false}
+  wais4_irp_index_np_stored: {column: irp_indice, range: [40, 160], label: "WAIS-IV perceptual reasoning index, neuropsychology form as stored", keep: false}
+  wais4_irp_percentile_stored: {column: irp_rang, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank as stored", keep: false}
+  wais4_irp_sum_scaled_a_stored: {column: irp_sum_std_a, range: [3, 57], label: "WAIS-IV perceptual reasoning, sum of scaled scores, second set (_a), as stored", keep: false}
+  wais4_irp_index_a_stored: {column: irp_indice_a, range: [40, 160], label: "WAIS-IV perceptual reasoning index, second set (_a) as stored", keep: false}
+  wais4_irp_percentile_a_stored: {column: irp_rang_a, range: [0, 100], label: "WAIS-IV perceptual reasoning index, percentile rank, second set (_a) as stored", keep: false}
+  wais4_imt_sum_scaled_stored: {column: imt_sum_std, range: [2, 38], label: "WAIS-IV working memory, sum of scaled scores, as stored", keep: false}
+  wais4_imt_index_np_stored: {column: imt_indice, range: [40, 160], label: "WAIS-IV working memory index, neuropsychology form as stored", keep: false}
+  wais4_imt_percentile_stored: {column: imt_rang, range: [0, 100], label: "WAIS-IV working memory index, percentile rank as stored", keep: false}
+  wais4_qit_sum_scaled_stored: {column: qi_sum_std, range: [10, 190], label: "WAIS-IV full scale, sum of scaled scores, as stored", keep: false}
+  wais4_qit_np_stored: {column: qi_indice, range: [40, 160], label: "WAIS-IV full-scale IQ, neuropsychology form as stored", keep: false}
+  wais4_qit_percentile_stored: {column: qi_rang, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank as stored", keep: false}
   wais4_qit_sum_scaled_a: {column: qi_sum_std_a, range: [10, 190], label: "WAIS-IV full scale, sum of scaled scores, second set (_a)"}
-  wais4_qit_a: {column: qi_indice_a, range: [40, 160], label: "WAIS-IV full-scale IQ, second set (_a)"}
-  wais4_qit_percentile_a: {column: qi_rang_a, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank, second set (_a)"}
+  wais4_qit_a_stored: {column: qi_indice_a, range: [40, 160], label: "WAIS-IV full-scale IQ, second set (_a) as stored", keep: false}
+  wais4_qit_percentile_a_stored: {column: qi_rang_a, range: [0, 100], label: "WAIS-IV full-scale IQ, percentile rank, second set (_a) as stored", keep: false}
+
+scores:
+  wais4_icv_sum_scaled:
+    label: Verbal comprehension, sum of the scaled scores (similarities + vocabulary + information)
+    sum: [wais4_simil_scaled, wais4_vocab_scaled, wais4_info_scaled]
+    range: [3, 57]
+    compare: wais4_icv_sum_scaled_stored
+  wais4_icv_sum_scaled_a:
+    label: Verbal comprehension, second set (_a), 1.5 x (similarities + information)
+    sum: [wais4_simil_scaled, wais4_info_scaled]
+    scale: [1.5, 0]
+    range: [3, 57]
+    compare: wais4_icv_sum_scaled_a_stored
+  wais4_irp_sum_scaled:
+    label: Perceptual reasoning, sum of the scaled scores (block design + matrices + visual puzzles)
+    sum: [wais4_bd_scaled, wais4_mat_scaled, wais4_vp_scaled]
+    range: [3, 57]
+    compare: wais4_irp_sum_scaled_stored
+  wais4_irp_sum_scaled_a:
+    label: Perceptual reasoning, second set (_a), 1.5 x (matrices + picture completion)
+    sum: [wais4_mat_scaled, wais4_pc_scaled]
+    scale: [1.5, 0]
+    range: [3, 57]
+    compare: wais4_irp_sum_scaled_a_stored
+  wais4_imt_sum_scaled:
+    label: Working memory, sum of the scaled scores (digit span + arithmetic)
+    sum: [wais4_ds_scaled, wais4_arith_scaled]
+    range: [2, 38]
+    compare: wais4_imt_sum_scaled_stored
+  wais4_qit_sum_scaled:
+    label: Full scale, sum of the scaled scores of the ten core subtests
+    sum: [wais4_simil_scaled, wais4_vocab_scaled, wais4_info_scaled, wais4_bd_scaled, wais4_mat_scaled, wais4_vp_scaled, wais4_ds_scaled, wais4_arith_scaled, wais4_code_scaled, wais4_symbol_scaled]
+    range: [10, 190]
+    compare: wais4_qit_sum_scaled_stored
+  wais4_icv_index_np:
+    label: WAIS-IV verbal comprehension index, neuropsychology form, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_icv
+    from: wais4_icv_sum_scaled
+    range: [45, 155]
+    compare: wais4_icv_index_np_stored
+  wais4_icv_percentile:
+    label: WAIS-IV verbal comprehension index, percentile rank, neuropsychology form, read in the table of the manual
+    lookup: wais4_icv_percentile
+    from: wais4_icv_sum_scaled
+    range: [0, 100]
+    compare: wais4_icv_percentile_stored
+    compare_tolerance: 0.051
+  wais4_icv_index_a:
+    label: WAIS-IV verbal comprehension index, second set (_a), read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_icv
+    from: wais4_icv_sum_scaled_a
+    range: [45, 155]
+    compare: wais4_icv_index_a_stored
+  wais4_icv_percentile_a:
+    label: WAIS-IV verbal comprehension index, percentile rank, second set (_a), read in the table of the manual
+    lookup: wais4_icv_percentile
+    from: wais4_icv_sum_scaled_a
+    range: [0, 100]
+    compare: wais4_icv_percentile_a_stored
+    compare_tolerance: 0.051
+  wais4_irp_index_np:
+    label: WAIS-IV perceptual reasoning index, neuropsychology form, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_irp
+    from: wais4_irp_sum_scaled
+    range: [45, 155]
+    compare: wais4_irp_index_np_stored
+  wais4_irp_percentile:
+    label: WAIS-IV perceptual reasoning index, percentile rank, neuropsychology form, read in the table of the manual
+    lookup: wais4_irp_percentile
+    from: wais4_irp_sum_scaled
+    range: [0, 100]
+    compare: wais4_irp_percentile_stored
+    compare_tolerance: 0.051
+  wais4_irp_index_a:
+    label: WAIS-IV perceptual reasoning index, second set (_a), read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_irp
+    from: wais4_irp_sum_scaled_a
+    range: [45, 155]
+    compare: wais4_irp_index_a_stored
+  wais4_irp_percentile_a:
+    label: WAIS-IV perceptual reasoning index, percentile rank, second set (_a), read in the table of the manual
+    lookup: wais4_irp_percentile
+    from: wais4_irp_sum_scaled_a
+    range: [0, 100]
+    compare: wais4_irp_percentile_a_stored
+    compare_tolerance: 0.051
+  wais4_imt_index_np:
+    label: WAIS-IV working memory index, neuropsychology form, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_imt
+    from: wais4_imt_sum_scaled
+    range: [50, 150]
+    compare: wais4_imt_index_np_stored
+  wais4_imt_percentile:
+    label: WAIS-IV working memory index, percentile rank, neuropsychology form, read in the table of the manual
+    lookup: wais4_imt_percentile
+    from: wais4_imt_sum_scaled
+    range: [0, 100]
+    compare: wais4_imt_percentile_stored
+    compare_tolerance: 0.051
+  wais4_qit_np:
+    label: WAIS-IV full-scale IQ, neuropsychology form, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_qit
+    from: wais4_qit_sum_scaled
+    range: [40, 160]
+    compare: wais4_qit_np_stored
+  wais4_qit_percentile:
+    label: WAIS-IV full-scale IQ, percentile rank, neuropsychology form, read in the table of the manual
+    lookup: wais4_qit_percentile
+    from: wais4_qit_sum_scaled
+    range: [0, 100]
+    compare: wais4_qit_percentile_stored
+    compare_tolerance: 0.051
+  wais4_qit_a:
+    label: WAIS-IV full-scale IQ, second set (_a), read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_qit
+    from: wais4_qit_sum_scaled_a
+    range: [40, 160]
+    compare: wais4_qit_a_stored
+  wais4_qit_percentile_a:
+    label: WAIS-IV full-scale IQ, percentile rank, second set (_a), read in the table of the manual
+    lookup: wais4_qit_percentile
+    from: wais4_qit_sum_scaled_a
+    range: [0, 100]
+    compare: wais4_qit_percentile_a_stored
+    compare_tolerance: 0.051

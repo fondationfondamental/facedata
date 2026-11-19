@@ -192,7 +192,7 @@ eq5d:
     it is one table: each of the 876 BP, 603 SZ and 248 ASP health profiles
     has one index, and the 446 profiles shared by BP and SZ and the 224 shared
     by BP and ASP have the same index in both (checked 2026-11-18). ASP holds
-    28 indices above 1, which no value set gives; they are out of range.
+    28 indices above 1, which no value set gives; they are out of range. The index delivered is the table's value, read from the five answers in the four cohorts (BP D133), so it is on one value set everywhere; DR, which stores none, now has it.
 
 fagerstrom:
   title: Fagerström Test for Nicotine Dependence (6 items)
@@ -376,15 +376,20 @@ tmt:
   title: Trail Making Test, parts A and B
   domain: Neuropsychology
   schemas: {bp: tmt, sz: tmt, dr: tmt}
-  stack: with care
-  use: [tmt_a_time, tmt_b_time, tmt_ba_time, tmt_a_errors, tmt_b_errors, tmt_a_time_z, tmt_b_time_z]
+  stack: "yes"
+  use: [tmt_a_time, tmt_b_time, tmt_ba_time, tmt_a_errors_z, tmt_b_errors_z, tmt_a_time_z, tmt_b_time_z, tmt_ba_time_z, tmt_a_time_band, tmt_b_time_band]
   note: >
-    The times and the errors stack as they are. The z-scores follow one sign in
-    the three cohorts once delivered (a higher z is a better performance): the
-    centres did not all write them with the same sign, and the package turns the
-    ones it can tell; a visit flagged sign_doubt is left as written. The
-    z-scores come from the norm tables of the centres. The percentile bands of
-    the errors need the years of education, which SZ records until 2015 only.
+    The times stack as they are. The z-scores and the time bands are computed
+    again from the raw scores in the three cohorts with the table of the
+    application's script (BP D135): z = (mean - raw) / SD for the age and the
+    years of education, so a higher z is a better performance and the sign is
+    the same everywhere; the age is the one typed in the form where it is within
+    a year of the age at the visit. The stored z-scores are checks: where a centre
+    wrote the opposite sign (13% of the BP visits, mostly before 2013, one SZ centre
+    in 2011-2012, three z-scores of DR in every year) the cell gets sign_flipped,
+    elsewhere a difference is a score_mismatch. A visit with no education has no
+    z-score. The raw error counts differ: BP and SZ store the corrected and the
+    uncorrected, DR a typed total and four kinds.
 
 verbal_fluency:
   title: Verbal fluency, letter P and animals
@@ -408,7 +413,13 @@ cvlt:
   note: >
     The raw scores stack, and so do the z-scores and the bands: in both
     cohorts they are computed again with the regressions of the norms, from
-    the raw score, the age, the years of education and the sex.
+    the raw score, the age, the years of education and the sex. The percentile
+    bands of the twelve measures that have a table (serial clustering too,
+    since BP D129) are read in the same tables from the raw score and the age,
+    with one rule for ties (the lowest band it can be, `_cens` = 1), so a band
+    of BP and a band of SZ are on one scale. The semantic clustering index is
+    out of range from 8 on in both (a typed count, BP D130); a few counts
+    between 4 and 8 cannot be told from an index.
 
 errands_test:
   title: Errands test (Test des commissions)
@@ -419,10 +430,12 @@ errands_test:
   note: >
     The four counts of errors and their sum are in the three cohorts (from 2017
     or 2018; in BP on inclusions from 2021). The time, the z-scores and the
-    bands are in BP and SZ. Only SZ delivers the z-scores (about 520 visits,
-    a higher z-score is better): the 30 typed in BP mix two sign conventions
-    and are not delivered (BP D126). In ASP the test is one of several in the
-    schema executive_functions.
+    bands are in BP and SZ and are computed again from the raw counts with the
+    same tables in both (BP D135; a higher z-score is better; the age typed in
+    the form, 20 to 60 years, and the education class are needed, so about a
+    quarter of the visits have none). The z-scores typed in BP mix two sign
+    conventions (BP D126) and are only checks. In ASP the test is one of several
+    in the schema executive_functions.
 
 wais3_matrices:
   title: WAIS-III matrix reasoning
@@ -543,8 +556,10 @@ wais4_efficience:
     indices and the full-scale IQ in SZ and ASP. In ASP the indices of this
     form are named with the ending _np (wais4_imt_index_np ...), because the
     shared names hold the copy of the medical evaluation: rename them before
-    stacking, or use wais4_indices. In SZ the stored working memory index and
-    full-scale IQ are corrected.
+    stacking, or use wais4_indices. The indices are read in the table of the application from the sum of the
+    scaled scores (BP D135): SZ stores the working memory index 0.7 and the full-scale IQ 2.9 below it,
+    which are read with an offset and are checks; the sums are as stored in SZ and ASP and
+    recomputed in DR.
 
 wais4_indices:
   title: WAIS-IV indices and full-scale IQ under the shared names

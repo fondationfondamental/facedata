@@ -2,19 +2,20 @@ instrument: mdq
 title: Mood Disorder Questionnaire (MDQ)
 tab: AUTO-QUESTIONNAIRES
 section: MDQ
-status: draft
+status: reviewed
 notes: >
-  Filled once per patient, at the screening visit (2,537 patients).
+  Filled once per patient, at the screening visit (2,553 patients, all at the screening visit).
   Thirteen yes/no questions on past periods of elation (1 = yes), then two
   questions: did several of these happen during the same period (mdq14), and
   how much of a problem they were (mdq15, 0 none to 3 serious).
 
   The stored total (mdqtot) equals the number of "yes" among the thirteen
-  questions in all but 2 of 2,447 rows.
+  questions in all but 3 of 2,482 rows.
 
   The screening result (mdq_) is delivered as stored. It is positive when
-  the total is 7 or more, mdq14 is yes and mdq15 is 2 or more: this rule
-  gives the stored result in every row.
+  the total is 7 or more, mdq14 is yes and mdq15 is 2 or more: this rule gives the stored result on the 2,485 visits with all 15 answers.
+  On 28 visits mdq14 or mdq15 is empty and the stored result is negative,
+  although 19 have 7 yes or more (export request R88).
 
 defaults: {type: item, range: [0, 1]}
 

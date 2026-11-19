@@ -37,3 +37,17 @@ scores:
   asrs_total:
     label: ASRS total (18 items)
     sum: [asrs01, asrs02, asrs03, asrs04, asrs05, asrs06, asrs07, asrs08, asrs09, asrs10, asrs11, asrs12, asrs13, asrs14, asrs15, asrs16, asrs17, asrs18]
+
+  asrs_a123:
+    label: ASRS part A, items 1 to 3 at "sometimes" or more (0 to 3)
+    sum: [asrs01, asrs02, asrs03]
+    points: {"0": 0, "1": 0, "2": 1, "3": 1, "4": 1}
+    keep: false
+  asrs_a456:
+    label: ASRS part A, items 4 to 6 at "often" or more (0 to 3)
+    sum: [asrs04, asrs05, asrs06]
+    points: {"0": 0, "1": 0, "2": 0, "3": 1, "4": 1}
+    keep: false
+  asrs_parta:
+    label: ASRS part A, number of items past their threshold (0 to 6; 4 or more is a positive screen)
+    sum: [asrs_a123, asrs_a456]

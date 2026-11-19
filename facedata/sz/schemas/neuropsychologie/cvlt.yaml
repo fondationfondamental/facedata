@@ -64,7 +64,7 @@ variables:
   cvlt_short_cued: {column: cvlt09_, label: Short-delay cued recall}
   cvlt_long_free: {column: avl01135_, label: Long-delay free recall}
   cvlt_long_cued: {column: cvlt11_, label: Long-delay cued recall}
-  cvlt_semantic: {column: cvlt12_, type: number, label: Semantic clustering index, range: [-5, 50]}
+  cvlt_semantic: {column: cvlt12_, type: number, label: Semantic clustering index, range: [-5, 8]}
   cvlt_serial: {column: cvlt13_, type: number, label: Serial clustering index, range: [-15, 50]}
   cvlt_perseverations: {column: cvlt14_, label: Perseverations, range: [0, 50]}
   cvlt_intrusions: {column: cvlt15_, label: Intrusions, range: [0, 50]}
@@ -96,7 +96,7 @@ variables:
   cvlt_bias_z_stored: {column: cvlt21z_, type: number, label: "Response bias, z-score as stored", range: [-1000, 1000], missing: {inf: not_recorded, -inf: not_recorded, xxx: not_recorded, dcm: not_recorded, nf: not_recorded}, winsor: false, keep: false}
 
   # A percentile band at every age
-  cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], label: "Serial clustering, percentile band"}
+  cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_serial, from: cvlt_serial, label: "Serial clustering, percentile band"}
   cvlt_perseverations_band: {column: cvlt14z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_perseverations, from: cvlt_perseverations, label: "Perseverations, percentile band"}
   cvlt_intrusions_band: {column: cvlt15z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_intrusions, from: cvlt_intrusions, label: "Intrusions, percentile band"}
   cvlt_hits_band: {column: cvlt16z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_hits, from: cvlt_hits, label: "Correct recognitions, percentile band"}

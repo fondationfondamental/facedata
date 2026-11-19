@@ -14,12 +14,23 @@ notes: >
   time + alternation (862 of 862). The total error score is inefficiency +
   rule breaks + errors of interpretation + errors of execution (850 of 853).
 
-  Five z-scores are delivered as stored; the dictionary labels one and
-  leaves four without a label (elem616_, elem620_, elem623_, elem625_). In
-  the data each is a straight line of the score before it, one value per
-  score: points (rising), inefficiency, rule breaks, errors of execution
-  and total error score (falling: a negative z-score is a worse result).
-  They are doubted where their score is not the sum of its parts.
+  Five z-scores. The dictionary labels one and leaves four without a label
+  (elem616_, elem620_, elem623_, elem625_). They are computed again as the
+  application computes them, from the score before each: z = (score - mean) /
+  SD for the points and (mean - score) / SD for the inefficiency, the rule
+  breaks, the errors of execution and the total error score, so that a
+  higher z-score is a better result; one mean and one SD per measure, the
+  same at every age (norms/six_elements_*_z.csv). The stored z-scores are kept
+  only as checks (six_elements_*_z_stored, not delivered); a recomputed
+  z-score that differs from the stored one by more than 0.0101 is flagged
+  score_mismatch (the opposite sign, sign_flipped). The z-score follows the
+  recomputed score (the sum of its parts), so a stored total that is not the
+  sum no longer makes the z-score doubtful (derived_doubt). The recomputed
+  z-score differs from the stored one on 1 of 862 visits for the points, none
+  of 807 for the inefficiency, none of 858 for the rule breaks, none of 862
+  for the errors of execution and 3 of 851 for the total error score. A
+  stored z-score with no usable score is flagged score_not_recomputed (4, 1,
+  0, 2 and 2 visits).
 
   A few cells hold impossible values (a route score of 1010, a z-score of
   -637) and are out of range.
@@ -47,18 +58,18 @@ variables:
   six_elements_sums_a: {column: elem611_, label: Score of sums A}
   six_elements_sums_b: {column: elem612_, label: Score of sums B}
   six_elements_points_stored: {column: elem613_, label: "Points score, as stored", range: [0, 1110], keep: false}
-  six_elements_points_z: {column: elem614_, label: Points score as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_points}
+  six_elements_points_z_stored: {column: elem614_, label: "Points score as a z-score, as stored", type: number, range: [-10, 10], winsor: false, keep: false}
   six_elements_inefficiency: {column: elem615_, label: Inefficiency score, range: [0, 20]}
-  six_elements_inefficiency_z: {column: elem616_, label: Inefficiency score as a z-score, type: number, range: [-10, 10], winsor: false}
+  six_elements_inefficiency_z_stored: {column: elem616_, label: "Inefficiency score as a z-score, as stored", type: number, range: [-10, 10], winsor: false, keep: false}
   six_elements_breaks_time: {column: elem617_, label: Rule breaks - time, range: [0, 5]}
   six_elements_breaks_alternation: {column: elem618_, label: Rule breaks - alternation, range: [0, 10]}
   six_elements_breaks_stored: {column: elem619_, label: "Rule breaks - total, as stored", range: [0, 15], keep: false}
-  six_elements_breaks_z: {column: elem620_, label: Total of rule breaks as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_breaks}
+  six_elements_breaks_z_stored: {column: elem620_, label: "Total of rule breaks as a z-score, as stored", type: number, range: [-10, 10], winsor: false, keep: false}
   six_elements_errors_interpretation: {column: elem621_, label: Errors of interpretation, range: [0, 9]}
   six_elements_errors_execution: {column: elem622_, label: Errors of execution, range: [0, 9]}
-  six_elements_errors_execution_z: {column: elem623_, label: Errors of execution as a z-score, type: number, range: [-10, 10], winsor: false}
+  six_elements_errors_execution_z_stored: {column: elem623_, label: "Errors of execution as a z-score, as stored", type: number, range: [-10, 10], winsor: false, keep: false}
   six_elements_error_score_stored: {column: elem624_, label: "Total error score, as stored", range: [0, 53], keep: false}
-  six_elements_error_score_z: {column: elem625_, label: Total error score as a z-score, type: number, range: [-10, 10], winsor: false, derived_from: six_elements_error_score}
+  six_elements_error_score_z_stored: {column: elem625_, label: "Total error score as a z-score, as stored", type: number, range: [-10, 10], winsor: false, keep: false}
   six_elements_instructions: {column: elem626_, label: Number of times the instructions were looked at, range: [0, 10]}
   six_elements_dependence: {column: elem627_, label: Dependence on the examiner (free text), type: text}
   six_elements_description: {column: elem628_, label: What the patient did (free text), type: text}
@@ -78,3 +89,46 @@ scores:
     sum: [six_elements_inefficiency, six_elements_breaks, six_elements_errors_interpretation,
           six_elements_errors_execution]
     compare: six_elements_error_score_stored
+
+  # z-scores recomputed as the application does: (mean - score) / SD for the measures where a low score is better, (score - mean) / SD
+  # for the points, with one mean and one SD per measure, the same at every age (norms/six_elements_*_z.csv)
+  six_elements_points_z:
+    label: Points score as a z-score
+    regression: six_elements_points_z
+    from: six_elements_points
+    range: [-10, 10]
+    compare: six_elements_points_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  six_elements_inefficiency_z:
+    label: Inefficiency score as a z-score
+    regression: six_elements_inefficiency_z
+    from: six_elements_inefficiency
+    range: [-10, 10]
+    compare: six_elements_inefficiency_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  six_elements_breaks_z:
+    label: Total of rule breaks as a z-score
+    regression: six_elements_breaks_z
+    from: six_elements_breaks
+    range: [-10, 10]
+    compare: six_elements_breaks_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  six_elements_errors_execution_z:
+    label: Errors of execution as a z-score
+    regression: six_elements_errors_execution_z
+    from: six_elements_errors_execution
+    range: [-10, 10]
+    compare: six_elements_errors_execution_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true
+  six_elements_error_score_z:
+    label: Total error score as a z-score
+    regression: six_elements_error_score_z
+    from: six_elements_error_score
+    range: [-10, 10]
+    compare: six_elements_error_score_z_stored
+    compare_tolerance: 0.0101
+    compare_turned: true

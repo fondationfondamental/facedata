@@ -21,6 +21,25 @@ notes: >
   Same instrument as in FACE BP, without the symbol search, which the SZ
   extraction does not hold, and without the confidence interval.
 
+  Scaled score, z-score and index. They are recomputed and delivered (decision
+  of the project lead for the standard scores of the neuropsychological
+  tests). The coding raw score is computed as the boxes filled minus the errors
+  (decision D136, as in BP, DR and ASP); it equals the stored one on all 504
+  visits. The scaled score is read in the WAIS-IV coding table of the application (norms/wais4_code.csv) from the raw
+  score, and the z-score is (scaled score - 10) / 3. The table is read with
+  the age typed in the form (cclin01_) where it is within 1 year of the age at
+  the visit, and with the age at the visit elsewhere. This extraction has no
+  symbol search: the sum of scaled scores of the index is twice the coding
+  scaled score (the stored sum is that on every visit), delivered as
+  wais4_ivt_sum_scaled, and the index and its percentile rank are read from it
+  in the index tables (norms/wais4_ivt.csv and wais4_ivt_percentile.csv). A
+  percentile of 0.1 or 99.9 is a censored value (wais4_ivt_percentile_cens).
+  The stored values are wais4_*_stored, not delivered.
+
+  Verified on the 504 visits that have both: the coding scaled score differs
+  on 2 (0.4%, 2016 to 2018 and 2024), and so do its z-score, the sum, the
+  index and the percentile rank. No raw score gives norm_missing.
+
 version:
   name: wais_version
   column: wais_version
@@ -29,11 +48,54 @@ version:
 defaults: {type: item, versions: [wais4]}
 
 variables:
+  wais4_code_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_code_filled: {column: sdmt0104_w, label: Coding - boxes filled, range: [0, 135]}
   wais4_code_errors: {column: sdmt0102_w, label: Coding - boxes filled incorrectly, range: [0, 135]}
-  wais4_code_raw: {column: sdmt0103_w, label: Coding - raw score, range: [0, 135]}
-  wais4_code_scaled: {column: sdmt0101_w, label: Coding - age-scaled score, range: [1, 19]}
-  wais4_code_z: {column: sdmt0105_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
-  wais4_ivt_sum_scaled: {column: ivt04_wais4, label: Sum of the two scaled scores, range: [2, 38]}
-  wais4_ivt_index: {column: ivt01_wais4, label: Processing speed index, range: [50, 150]}
-  wais4_ivt_percentile: {column: ivt02_wais4, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}
+  wais4_code_raw_stored: {column: sdmt0103_w, label: "Coding - raw score as stored (the application stopped taking the errors off at some date)", range: [0, 135], keep: false}
+  wais4_code_scaled_stored: {column: sdmt0101_w, label: Coding - age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_code_z_stored: {column: sdmt0105_w, label: Coding - scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
+  wais4_ivt_sum_scaled_stored: {column: ivt04_wais4, label: Sum of the two scaled scores as stored, range: [2, 38], keep: false}
+  wais4_ivt_index_stored: {column: ivt01_wais4, label: Processing speed index as stored, range: [50, 150], keep: false}
+  wais4_ivt_percentile_stored: {column: ivt02_wais4, label: Percentile rank of the index as stored, type: number, range: [0, 100], winsor: false, keep: false}
+
+scores:
+  wais4_code_raw:
+    label: Coding - raw score, the boxes filled minus the boxes filled incorrectly (the boxes filled correctly)
+    sum: [wais4_code_filled]
+    minus: [wais4_code_errors]
+    range: [0, 135]
+    compare: wais4_code_raw_stored
+    versions: [wais4]
+  wais4_code_scaled:
+    label: Coding - age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_code
+    from: wais4_code_raw
+    age: wais4_code_age_entered
+    range: [1, 19]
+    compare: wais4_code_scaled_stored
+  wais4_code_z:
+    label: Coding - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_code_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_code_z_stored
+    compare_tolerance: 0.006
+  wais4_ivt_sum_scaled:
+    label: Sum of the scaled scores, twice the coding one (the SZ extraction has no symbol search)
+    sum: [wais4_code_scaled]
+    scale: [2, 0]
+    range: [2, 38]
+    compare: wais4_ivt_sum_scaled_stored
+  wais4_ivt_index:
+    label: Processing speed index, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_ivt
+    from: wais4_ivt_sum_scaled
+    range: [50, 150]
+    compare: wais4_ivt_index_stored
+  wais4_ivt_percentile:
+    label: Percentile rank of the index, read in the table of the manual
+    lookup: wais4_ivt_percentile
+    from: wais4_ivt_sum_scaled
+    range: [0, 100]
+    compare: wais4_ivt_percentile_stored
+    compare_tolerance: 0.051

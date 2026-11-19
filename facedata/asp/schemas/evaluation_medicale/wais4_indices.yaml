@@ -21,10 +21,16 @@ notes: >
 
   An instrument of the ASP cohort only.
 
+  Not recomputed. The medical evaluation holds no sum of scaled scores, so no
+  index of this schema can be read in a table here; they stay as stored. The
+  same indices, recomputed from the sums of the neuropsychology form, are in
+  wais4_efficience.yaml (wais4_*_index_np); where both exist they are the
+  stored values of that form, which equal the table on every visit.
+
 variables:
   wais4_done: {column: wai4, type: item, range: [0, 1], label: "This edition was used (WAIS-IV)"}
-  wais4_icv_index: {column: wai4icv, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, verbal comprehension index"}
-  wais4_irp_index: {column: wai4irp, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, perceptual reasoning index"}
-  wais4_imt_index: {column: wai4imt, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, working memory index"}
-  wais4_ivt_index: {column: wai4ivt, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, processing speed index"}
+  wais4_icv_index: {column: wai4icv, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, verbal comprehension index"}
+  wais4_irp_index: {column: wai4irp, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, perceptual reasoning index"}
+  wais4_imt_index: {column: wai4imt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, working memory index"}
+  wais4_ivt_index: {column: wai4ivt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, processing speed index"}
   wais4_qit: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale iq"}

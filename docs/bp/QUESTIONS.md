@@ -39,14 +39,14 @@ of today. Neither says how a form looked in 2012 or in early 2022.
 
 **What is not here.** Only counts are given, never a patient. The centres
 are not named, because this repository is public: their codes can be given
-on request. 53 of the 135 schemas are reviewed; the others are drafts until
+on request. 79 of the 135 schemas are reviewed; the others are drafts until
 the review of their tab (PI-12).
 
 | Section | Open | Who closes it |
 |---|---|---|
-| 1. To read in the application | 1 | The project, in the source code and on the development instance |
+| 1. To read in the application | 0 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 5 | The project lead and the principal investigator |
+| 3. Choices of method | 1 | The project lead and the principal investigator |
 | 4. For the data managers, the centres and the developers | 17 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
@@ -107,6 +107,11 @@ with the project lead.
 | DEV-6, dated list of the changes of rule | What the code can tell (its history starts in 2024): 2024-07-25, 1000-01-01 written in every empty date; 2024-08-02, CVLT regression of the patients of 70 and over corrected; the TMT "<5" is a defect of today's script | D98 |
 | DM-11, does the export remove the patients who object? (2026-11-18) | No step of the export reads the answer "objects"; it removes the records with a tutelle or minor form (`formoppos` 3 or 4) or under sauvegarde de justice (PROTEC 3), row by row. The project lead decided not to use the opposition answer: nothing is asked of the export | D119 |
 | DEV-11, how the export decides between DSM-IV and DSM-5 (2026-11-18) | From the content of the two inclusion records: DSM5 when the DSM-5 record holds one of five lifetime answers, else DSM4; follow-ups never get one. Of the 849 empty inclusions, 202 are centre C's, whose DSM-5 table is missing from the export. Asked of the export: R20, R68 to R70. In the package, a placeholder date no longer counts as a filled form, and the follow-ups keep the switch date of 2022 | D119, D122 |
+| DEV-8 and O28, the CVLT serial-clustering table and the tie rule (2026-11-18) | The script of the application holds the exact limits (decimals from 40 to 69 years), the same in the BP and the eSchizo forms. The band is recomputed from the raw index like the eleven others; 784 BP bands change (692 written 99 become "95 or higher"). The tie rule is an accident of the loop: the CVLT script advances while the score is above a limit (so it stops at the highest percentile), the TMT script while it is at or above (the lowest); nothing says it is meant. The package keeps one rule | D129 |
+| PI-8, plausible limits (2026-11-18) | Read with the limits table and the cross-cohort screen: one hard range per variable shared by two cohorts (a test fails on a new difference); the hard range is applied to times (a night of 90 hours was delivered); an index of semantic clustering of 8 or more is a typed count; platelets in hundreds of G/L are recovered; a prolactin of 0 is "nothing measured"; HbA1c in mmol/mol is converted (D127) | D130 |
+| PI-13 and O51, empty boxes of the use of care (2026-11-18) | Read as no beside a ticked box, as for the non-drug treatments: 2,106 boxes and 2,106 numbers become 0, no written value changes; a box whose number was typed is left as written | D131 |
+| PI-10, standard scores of the neuropsychological tests (2026-11-18) | Computed again from the raw scores with the tables of the application's scripts for the TMT, the WAIS-III and WAIS-IV subtests and indices, the Stroop, the fluency, the spatial span, the SCIP and the errands; the stored scores are checks and their differences are flagged. Not done: LIS, Barona, fNART. The tables are the application's and are not checked against the manuals (DM-4) | D135 |
+| PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
 
@@ -117,24 +122,7 @@ the source code first, then checked on a form of the development instance.
 
 ### Priority B
 
-- [ ] **DEV-8. Norms in the application's code.** (O28, O12, D43, D45)
-  - Done: (2) the CVLT regressions that give the z-scores are read and
-    used (D108).
-  - To read: (1) the exact limits of the CVLT serial-clustering percentile
-    table: the note gives whole numbers and the index has decimals, so 9% of
-    our bands differ from the stored ones. The script holds the limits
-    (whole numbers under 40 and from 70, decimals from 40 to 69) and the
-    rule it applies between two limits: the band can be rebuilt from it.
-    (3) The tables of the other tests (section 5). (4) When several limits
-    of a table fall on the same raw score, the application writes the
-    highest percentile for the CVLT (99) and the lowest for the TMT
-    (`>10`): is that written on purpose?
-  - Today: eleven CVLT bands and four TMT error bands are recomputed from
-    the note, and the twelve CVLT z-scores from the regressions; the
-    serial-clustering band and the z-scores of the other tests are as
-    stored.
-  - A table found in the code goes to `norms/`, outside the repository. It
-    feeds PI-10 and DM-4.
+Nothing open today. The norms of the other tests (PI-10, DM-4) wait on their tables and on the manuals.
 
 ### Priority C
 
@@ -146,53 +134,10 @@ its findings here.
 ## 3. Choices of method
 
 For the project lead and the principal investigator. Each has a default
-that the package follows today. PI-8, PI-10 and PI-12 are pieces of work
-that are decided and still to do.
+that the package follows today. PI-12 is a piece of work that is decided and
+still to do.
 
 ### Priority B
-
-- [ ] **PI-13. Use of care at follow-up: an empty box beside a ticked one.**
-  (O51, D123)
-  - `care_use` is on the same follow-up form as the non-drug treatments,
-    and clinicians tick only the kinds of care received after a yes: about
-    820 visits have an empty box beside a ticked one.
-  - Question: read these empty boxes as "no", as `box_list` does for the
-    non-drug treatments (D124)?
-  - Today: they are missing.
-
-- [ ] **PI-14. Dates of the most recent mood episode later than the
-  inclusion visit.** (O53)
-  - The most recent episode recorded at inclusion starts after the
-    inclusion visit on 114 visits (95 DSM-IV, 19 DSM-5; 37 of them within
-    a month) and ends after it on 212 (179 and 33). Most are less than a
-    year after the visit.
-  - Question: are they dates typed wrongly (delivered as missing, like the
-    first suicide attempt with `before_visit`, D125), the end of an episode
-    that was still running (kept), or a form filled in later than its visit
-    date (kept, flagged)?
-  - Today: delivered as written.
-
-- [ ] **PI-8. Plausible limits and extreme values: a table to read.** (D52,
-  D54, D79, D107)
-  - Each measure has hard limits; a value outside is delivered as missing
-    with a `danger` flag. Inside the limits, measures are brought back to
-    their 1st and 99th percentiles (flag `winsorised`); counts of events and
-    birth measures are not, and `load(..., winsorise=False)` keeps the
-    tails.
-  - The table is written: `reports/bp/limits.csv` (outside git), one line
-    per variable that has limits: the limits, the values delivered, the
-    values outside and three percentiles. 2,663 values are outside, on 191
-    variables.
-  - To do: read it, and say which limits to change.
-
-- [ ] **PI-10. Standard scores of the neuropsychological tests: stored, or
-  recomputed with one set of norms?** See section 5. Today a standard score
-  is recomputed only where a table is available; the others are as the
-  application stored them, with the norms it used at the time. Done for
-  the CVLT on 2026-11-17 (D108): its z-scores are computed again from the
-  regressions of the application's script. The other tests (TMT times,
-  WAIS, Stroop, fluency, spans): still to choose; their scripts hold norm
-  tables too.
 
 ### Priority C
 
@@ -203,7 +148,7 @@ that are decided and still to do.
   (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
   four reviewed (D124); SUICIDE, ten reviewed after the splits by form
   (D125); with the audit of the four cohorts, `errands_test` (D126) and
-  `biochimie` (D127). 53 of 135 are reviewed; the 82 others are drafts. Each
+  `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134). 79 of 135 are reviewed; the 56 others are drafts (ANTECEDENTS 20, NEUROPSYCHOLOGIE 19, SUBSTANCES ET COMORBIDITE 9, BILAN BIOLOGIQUE 6, MAThyS). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -385,6 +330,12 @@ source, in the export or in the application. Still to send.
   | RR values that look like heart rates | 25 |
   | The five kinds of white cells do not add up to the leukocytes | 222 visits |
   | Pack-years typed freely: above 200, words, fractions | 29 + 34, and 101 "NA" |
+  | CVLT semantic clustering: a count typed in place of the index, mostly one centre in 2012-2013 (D130, DM-15) | 216 above 8; about 50 whole numbers between 4 and 8 stay |
+  | Platelets typed in hundreds of G/L (2.47 for 247), four centres, 2011-2013 (read, D130) | 58 |
+  | Prolactin of 0 where nothing was measured (a missing code, D130) | 19 |
+  | HbA1c typed in mmol/mol under the label % (converted, D127) | 8 |
+  | PSQI hours of sleep above 24 or an impossible time of day (removed, D130) | 3 + 2 |
+  | PSQI bedtime typed on a 12-hour clock, 11:00 for 23:00 (efficiency corrected, D132) | 554 |
   | Numbers of consultations typed as words (the follow-up sick-leave number and duration lose their words in the export, which runs the digits together: 880,410 weeks is the export's, D123) | 193 cells |
   | Birth weights typed as a gestational age, or months instead of weeks | 12 and 14 |
   | CPT-II values of 1,000 or more, counts above the number of targets | 57 cells |
@@ -509,15 +460,22 @@ source, in the export or in the application. Still to send.
     patient who left: M8.
   - Today: loaded as extracted.
 
-- [ ] **DM-15. CVLT semantic clustering: another quantity typed in 2012
-  and 2013.** (O49, D108) In 2012 and 2013, 23% of the indices are above 4
-  and 24% are whole numbers, against 2% to 7% and 2% to 6% in the other
-  periods, in eight centres. A clustering index has decimals and stays
-  low; these values look like a number of clusters. Which quantity was
-  typed, and can the index be rebuilt from it? Their identifiers can be
+- [ ] **DM-15. CVLT semantic clustering: counts typed in place of the
+  index.** (O49, D108, D130) A clustering index has decimals and stays low
+  (median 2.3). In 2012 and 2013, 23% of the values are above 4 and 24% are
+  whole numbers, against 2% to 7% and 2% to 6% in the other periods; 96% of
+  the 2012-2013 visits of one centre hold such a value (median 12, a
+  correlation of 0.36 with the total recall), and the habit goes on at a
+  lower rate in other years (83 values above 7 outside 2012-2013) and in
+  SZ (18). By band of the index, the share of whole numbers is 2% to 3% up
+  to 4, 17% to 37% from 4 to 6 and above 50% from 6 on: a number of
+  clusters is typed. Which quantity is it, and can the index be rebuilt
+  (it needs the words recalled in each category)? Their identifiers can be
   given on request.
-  - Today: the index is delivered as recorded; its z-score and its band
-    are missing on 104 visits (`out_of_range`).
+  - Today: an index of 8 or more is `out_of_range` (216 BP, 17 SZ values);
+    its z-score and band are missing; between 4 and 8 a few counts remain
+    that cannot be told from an index (D130).
+  - It changes: with the answer, the 233 values come back as indices.
 
 - [ ] **DM-16. CVLT recency: two lines of the norm to confirm with the
   manual, and to correct in the application.** (O50, D109) The raw recency
@@ -607,7 +565,7 @@ source, in the export or in the application. Still to send.
   | Read in the code: CVLT z-score of trials 1 to 5 computed with the coefficients of the age and of the sex exchanged: the patients of 70 and over until the correction of 2024-08-02, and visits of 2013 and 2014. The values stay wrong in the database; the package computes them again (D98, D108) | 232 values |
   | CVLT z-scores computed with no sex, most in 2012 and 2015 (D108) | 105 values of trials 1 to 5, about 50 for five other measures |
   | Read in the code: the ALS-18 form prints "19" for its last question; a WURS form of 28 questions exists beside the one of 25 (D97) | |
-  | Two centres still enter the MAThyS in the direction of the old form (DM-12) | About 175 visits |
+  | Two centres still enter the MAThyS in the direction of the old form (DM-12; 215 visits from 2023, measured again on 2026-11-18) | About 215 visits |
 
   Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the names (R57, R62, R97, R98), the WAIS-IV digit span and vocabulary columns (R59 to R61), the WAIS-III vocabulary total (R60), the PSQI minutes (R49), one row per visit and form (R18, R21, R100). The damaged characters come from the transfer of a patient between centres (A2). The `_n1` MADRS and YMRS are, by the forms, the mood rated at the neuropsychological testing when the last rating is more than a week old: kept in the export (R58, M37); D27 is to be read again with the tab NEUROPSYCHOLOGIE.
 
@@ -623,7 +581,14 @@ source, in the export or in the application. Still to send.
 
 A standard score is only as good as the norm behind it. This table says, for
 each test, where the standard scores come from and what is missing to check
-or recompute them (DEV-8, DM-4, PI-10).
+them (DM-4). Since D135 (2026-11-18) the standard scores of the TMT, the
+WAIS-III and WAIS-IV subtests and indices, the Stroop, the fluency, the spatial
+span, the SCIP and the errands are not "stored" any more: they are computed
+again from the raw scores with the tables of the application's scripts, and the
+column "What was checked" below is what the stored values were found to follow
+(the figures of D135 replace the earlier ones). The CPT, the COBRA, the LIS, the
+Barona and the fNART are as stored. The tables themselves are the application's
+and have not been checked against the manuals.
 
 | Test | Standard scores delivered | Where they come from | What was checked | What is needed |
 |---|---|---|---|---|

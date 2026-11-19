@@ -130,11 +130,14 @@ notes: >
   a higher one), as for the TMT errors. Where no limits coincide the band
   of the table is the one the EMR wrote on 98% to 100% of the visits.
 
-  Serial clustering is the exception: its band stays as the EMR wrote it.
-  The note gives its table in whole numbers although the index has
-  decimals, and the bands read in it differ from the EMR's on 9% of the
-  visits. Its best scores are therefore still written 99 (open question
-  O28 in PROGRESS.md).
+  Serial clustering is read in its table too (decision D129). The EMR note
+  gave it in whole numbers although the index has decimals; the script of
+  the application holds the exact limits, with decimals from 40 to 69 years,
+  and the same table in the BP and in the SZ form. Of the 4,970 BP visits
+  with an index, an age and a band, the script's rule gives the stored band
+  on 96.5%; the others are bands computed before the index was changed.
+  The table gives one rule for every year and both cohorts, with the same
+  tie rule as the eleven others.
 
   What remains between the two sources of a mixed band. For the four
   delayed recalls, 18% to 27% of the bands read in the table are open
@@ -158,9 +161,18 @@ notes: >
   is the cause, not the formula. In 2012 and 2013, 23% of the indices are
   above 4 and 24% are whole numbers, against 2% to 7% and 2% to 6% in the
   other periods: another quantity was typed in that field, probably a
-  number of clusters (open question O49 in PROGRESS.md). The index itself
-  is delivered as recorded; its z-score and its band are missing on these
-  visits.
+  number of clusters (open question O49 in PROGRESS.md). Checked on
+  2026-11-18 (decision D130): 96% of the 2012-2013 visits of one centre hold
+  such a value (median 12 against 2.3, a correlation of 0.36 with the total
+  recall), and the habit goes on at a lower rate in other years and in SZ.
+  By band of the index the share of whole numbers is 2% to 3% up to 4,
+  17% to 37% from 4 to 6 and above 50% from 6 on. An index of 8 or more is
+  far beyond the 99th percentile of the norm and is mostly a count: the hard
+  range stops at 8 (it was 50), the same in SZ, so 216 BP and 17 SZ values
+  are out_of_range (the typed text stays in the flag log) and so are their
+  z-scores and bands. Between 4 and 8 a few counts remain (whole numbers
+  cannot be told from an index there); the index cannot be rebuilt from the
+  counts, which is asked of the data managers (DM-15).
 
 defaults: {type: item, range: [0, 16]}
 
@@ -177,7 +189,7 @@ variables:
   cvlt_short_cued: {column: cvlt09_, label: Short-delay cued recall}
   cvlt_long_free: {column: cvlt10_, label: Long-delay free recall}
   cvlt_long_cued: {column: cvlt11_, label: Long-delay cued recall}
-  cvlt_semantic: {column: cvlt12_, type: number, label: Semantic clustering index, range: [-5, 50]}
+  cvlt_semantic: {column: cvlt12_, type: number, label: Semantic clustering index, range: [-5, 8]}
   cvlt_serial: {column: cvlt13_, type: number, label: Serial clustering index, range: [-15, 50]}
   cvlt_perseverations: {column: cvlt14_, label: Perseverations, range: [0, 50]}
   cvlt_intrusions: {column: cvlt15_, label: Intrusions, range: [0, 50]}
@@ -209,7 +221,7 @@ variables:
   cvlt_bias_z_stored: {column: cvlt21z_, type: number, label: "Response bias, z-score as stored", range: [-1000, 1000], missing: {inf: not_recorded, -inf: not_recorded}, winsor: false, keep: false}
 
   # A percentile band at every age
-  cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], label: "Serial clustering, percentile band"}
+  cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_serial, from: cvlt_serial, label: "Serial clustering, percentile band"}
   cvlt_perseverations_band: {column: cvlt14z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_perseverations, from: cvlt_perseverations, label: "Perseverations, percentile band"}
   cvlt_intrusions_band: {column: cvlt15z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_intrusions, from: cvlt_intrusions, label: "Intrusions, percentile band"}
   cvlt_hits_band: {column: cvlt16z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_hits, from: cvlt_hits, label: "Correct recognitions, percentile band"}

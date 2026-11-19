@@ -19,6 +19,20 @@ notes: >
 
   FACE BP does not have this subtest.
 
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_arithmetic.csv) from the raw total of the items, and the
+  z-score is (scaled score - 10) / 3. The table is read with the age typed in
+  the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where
+  it is within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97 have
+  a typed age more than 1 year away). The stored scores are
+  wais4_arith_scaled_stored and wais4_arith_z_stored, not delivered. Verified:
+  the scaled score differs from the stored one on 2 of the 451 visits that
+  have both, and so does its z-score (score_mismatch, 2016 to 2018 and from
+  2024); no total gives norm_missing.
+
 version:
   name: wais_version
   column: wais_version
@@ -27,6 +41,7 @@ version:
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
 variables:
+  wais4_arith_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_arith01: {column: arith01_w, label: Arithmetic item 1}
   wais4_arith02: {column: arith02_w, label: Arithmetic item 2}
   wais4_arith03: {column: arith03_w, label: Arithmetic item 3}
@@ -50,8 +65,8 @@ variables:
   wais4_arith21: {column: arith21_w, label: Arithmetic item 21}
   wais4_arith22: {column: arith22_w, label: Arithmetic item 22}
   wais4_arith_total_stored: {column: arithtot_w, label: Raw total as stored, range: [0, 22], keep: false}
-  wais4_arith_scaled: {column: arithstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_arith_total}
-  wais4_arith_z: {column: arithcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_arith_total}
+  wais4_arith_scaled_stored: {column: arithstd_w, label: Age-scaled score (mean 10 and SD 3) as stored, range: [1, 19], keep: false}
+  wais4_arith_z_stored: {column: arithcr_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais4_arith_total:
@@ -63,3 +78,17 @@ scores:
           wais4_arith21, wais4_arith22]
     min_items: 1
     compare: wais4_arith_total_stored
+  wais4_arith_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_arithmetic
+    from: wais4_arith_total
+    age: wais4_arith_age_entered
+    range: [1, 19]
+    compare: wais4_arith_scaled_stored
+  wais4_arith_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_arith_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_arith_z_stored
+    compare_tolerance: 0.006

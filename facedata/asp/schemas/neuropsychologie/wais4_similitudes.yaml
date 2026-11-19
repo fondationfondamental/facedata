@@ -15,13 +15,28 @@ notes: >
   this table.
 
   Checked on every visit: the stored total is the sum of the items, and the
-  z-score is the scaled score minus 10, over 3. The scaled score needs the norm
-  tables of the test, which are not available: it is delivered as stored.
+  stored z-score is the scaled score minus 10, over 3.
 
   The stored total equals the sum of the items on 293 of the 293 visits that
   hold every item.
 
   Same instrument and output names as in FACE SZ, in other columns.
+
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_similarities.csv) from the raw total, and the z-score is
+  (scaled score - 10) / 3. The plain table is used, the same as in BP, SZ and
+  DR (the ASP table of this subtest only differs from it from 80 years on, and
+  no visit has that age). The form has no typed age in this cohort: the table
+  is read with the age at the visit (the visits are of patients from 15.9 to
+  65 years; the one of 15.9 years is below the first age of the tables and
+  gets norm_missing). The stored scores are wais4_simil_scaled_stored and
+  wais4_simil_z_stored, not delivered. Verified: the scaled score differs from
+  the stored one on 9 of the 292 visits that have both (3.1%, score_mismatch),
+  and so does its z-score; 1 visit is not recomputed (the patient of 15.9
+  years). The BP and SZ stored scores that follow the script error of those
+  applications (an empty age read as 16) are not found here.
 
 defaults: {type: item, range: [0, 2]}
 
@@ -45,8 +60,8 @@ variables:
   wais4_simil17: {column: wais_sim17, label: "WAIS-IV similarities, item 17"}
   wais4_simil18: {column: wais_sim18, label: "WAIS-IV similarities, item 18"}
   wais4_simil_total: {column: wais_simtot, range: [0, 36], label: "WAIS-IV similarities, total as stored"}
-  wais4_simil_scaled: {column: wais_simstd, range: [1, 19], label: "WAIS-IV similarities, scaled score"}
-  wais4_simil_z: {column: wais_simcr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV similarities, z-score of the scaled score"}
+  wais4_simil_scaled_stored: {column: wais_simstd, range: [1, 19], label: "WAIS-IV similarities, scaled score as stored", keep: false}
+  wais4_simil_z_stored: {column: wais_simcr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV similarities, z-score of the scaled score as stored", keep: false}
 
 scores:
   wais4_simil_total_check:
@@ -54,3 +69,16 @@ scores:
     sum: [wais4_simil01, wais4_simil02, wais4_simil03, wais4_simil04, wais4_simil05, wais4_simil06, wais4_simil07, wais4_simil08, wais4_simil09, wais4_simil10, wais4_simil11, wais4_simil12, wais4_simil13, wais4_simil14, wais4_simil15, wais4_simil16, wais4_simil17, wais4_simil18]
     compare: wais4_simil_total
     keep: false
+  wais4_simil_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_similarities
+    from: wais4_simil_total
+    range: [1, 19]
+    compare: wais4_simil_scaled_stored
+  wais4_simil_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_simil_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_simil_z_stored
+    compare_tolerance: 0.006

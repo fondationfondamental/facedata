@@ -66,7 +66,7 @@ def test_scores_agree_with_the_stored_ones(result, qc):
     # A check that is not delivered files its mismatch under the stored value it checks (wais4_ds_total).
     expected = {"wais4_ds_total": 13, "wais3_vocab_total": 3, "wais4_vocab_total": 3, "wais4_mat_total": 1}
     if (NORMS / "wais3_vocabulary.csv").exists():      # the norm table is not part of the repository
-        expected["wais3_vocab_scaled_check"] = 20
+        expected["wais3_vocab_scaled"] = 11              # the scaled score is read in the table from the recomputed total (D135)
     for name, count in expected.items():
         assert mismatches.get(name) == count, name
 
@@ -82,17 +82,16 @@ def test_biology(qc):
 
 def test_derived_values_and_sign(result, qc):
     if (NORMS / "wais3_vocabulary.csv").exists():      # the norm table is not part of the repository
-        assert qc.loc["wais3_vocab_scaled", "derived_doubt"] == 20
-        wais_check = result.flags[result.flags["variable"] == "wais3_vocab_scaled_check"]
-        assert "norm_missing" not in set(wais_check["flag"])          # every WAIS-III visit is in the table
-    assert qc.loc["wais4_ds_scaled", "derived_doubt"] == 13
+        assert (qc.loc["wais3_vocab_scaled", "derived_doubt"], qc.loc["wais3_vocab_scaled", "norm_missing"]) == (0, 0)   # read in the table, not derived (D135)
+    assert qc.loc["wais4_ds_scaled", "derived_doubt"] == 0
     flipped = qc.loc[(qc["sign_flipped"] > 0) & (qc["instrument"] == "tmt"), "sign_flipped"].to_dict()
-    assert flipped == {"tmt_a_time_z": 777, "tmt_a_errors_z": 770, "tmt_b_time_z": 768,
-                       "tmt_b_errors_z": 758, "tmt_ba_time_z": 769}
-    # The only other values turned are the eight MAThyS items of the old form (D91).
-    assert set(qc.loc[(qc["sign_flipped"] > 0) & (qc["instrument"] != "tmt"), "instrument"]) == {"mathys"}
-    assert (qc["sign_flipped"] > 0).sum() == 13
-    assert qc.loc["tmt_a_time_z", "sign_doubt"] == 194
+    # The TMT z-scores are computed again; a stored one with the other sign is `sign_flipped`, no value is turned (D135).
+    assert flipped == {"tmt_a_time_z": 740, "tmt_a_errors_z": 756, "tmt_b_time_z": 740,
+                       "tmt_b_errors_z": 739, "tmt_ba_time_z": 743}
+    # The only other values turned are the eight MAThyS items of the old form (D91), and the typed errands z-scores.
+    assert set(qc.loc[(qc["sign_flipped"] > 0) & (qc["instrument"] != "tmt"), "instrument"]) == {"mathys", "errands_test"}
+    assert (qc["sign_flipped"] > 0).sum() == 18
+    assert qc.loc["tmt_a_time_z", "sign_doubt"] == 0                   # the per-centre sign search is gone
 
 
 def test_nothing_disappears_silently():
@@ -171,6 +170,8 @@ def test_bilan_biologique(qc):
     assert (qc.loc["creatinine_clearance", "missing_code"], qc.loc["creatinine_clearance", "censored_right"]) == (246, 177)
     assert (qc.loc["hcg", "censored_left"], qc.loc["hcg", "unit_inferred"]) == (2094, 0)
     assert qc.loc["cholesterol_hdl_ratio", "n_valid"] == 13199
+    # Platelets typed in hundreds of G/L (2.47 for 247) are read as such; a prolactin of 0 is "nothing measured" (D130).
+    assert (qc.loc["platelets", "unit_inferred"], qc.loc["platelets", "out_of_range"], qc.loc["prolactin", "missing_code"]) == (79, 4, 19)
     # HbA1c in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D127).
     assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "out_of_range"]) == (8, 32)
 
@@ -202,7 +203,14 @@ def test_auto_questionnaires(result, qc):
     assert mathys.loc[new_form, "mathys17"].corr(with_it[new_form]) < -0.3
     # PSQI: minutes written x 60 are converted; bedtimes typed as minutes are out of range.
     assert (qc.loc["psqi_latency", "unit_inferred"], qc.loc["psqi_latency", "out_of_range"]) == (279, 83)
-    assert (qc.loc["psqi_latency_component", "score_mismatch"], qc.loc["psqi_total", "score_mismatch"]) == (234, 233)
+    assert (qc.loc["psqi_latency_component", "score_mismatch"], qc.loc["psqi_total", "score_mismatch"]) == (234, 725)       # the efficiency is recomputed, with the 12-hour bedtimes corrected (BP D132)
+    assert (qc.loc["psqi_efficiency", "n_valid"], qc.loc["psqi_efficiency", "score_mismatch"], qc.loc["psqi_efficiency", "score_not_recomputed"]) == (16676, 521, 24)
+    # The EQ-5D index is the table of the application, from the five answers (D133); the part A of the ASRS and the criteria of the STOP-BANG are counted.
+    assert (qc.loc["eq5d_index", "n_valid"], qc.loc["eq5d_index", "score_mismatch"]) == (12668, 0)
+    assert (qc.loc["asrs_parta", "n_valid"], qc.loc["stopbang_count7", "n_valid"]) == (1320, 4032)
+    assert (qc.loc["bis10_general", "score_not_recomputed"], qc.loc["bis12_general", "score_not_recomputed"], qc.loc["bis10_general", "score_mismatch"]) == (27, 7, 0)
+    # Hours of sleep and times of day are from 0 to 24 hours: 3 nights of more than 24 hours are impossible (D130).
+    assert qc.loc["psqi_sleep_hours", "out_of_range"] == 3
     # ALS, WURS and AIM: two forms each, told apart by what only the long questionnaires of the visit have.
     data = result.data
     assert data["als_form"].value_counts().to_dict() == {"als54": 4696, "als18": 1456}
@@ -231,16 +239,16 @@ def test_auto_questionnaires(result, qc):
 
 def test_neuropsychologie(result, qc):
     # Percentile bands: every time and fluency cell is read.
-    assert (qc.loc["tmt_a_time_band", "n_valid"], qc.loc["tmt_a_time_band", "unparsed"]) == (5892, 0)
-    assert (qc.loc["tmt_ba_time_band", "n_valid"], qc.loc["tmt_ba_time_band", "censored_left"]) == (5896, 72)
+    assert (qc.loc["tmt_a_time_band", "n_valid"], qc.loc["tmt_a_time_band", "unparsed"]) == (5914, 0)
+    assert (qc.loc["tmt_ba_time_band", "n_valid"], qc.loc["tmt_ba_time_band", "censored_left"]) == (5856, 0)         # the bands are read in the table: no open band at the low end
     # The TMT error bands are read in the norm tables, with the errors, the age and the years of education.
     assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (5860, 8)
-    assert (qc.loc["tmt_a_errors_band", "censored_right"], qc.loc["tmt_b_errors_band", "censored_right"]) == (5309, 4722)
+    assert (qc.loc["tmt_a_errors_band", "censored_right"], qc.loc["tmt_b_errors_band", "censored_right"]) == (5309, 4724)
     band = result.data["tmt_a_errors_band"].dropna()
     years = result.data["visit_date"].dt.year[band.index]
     shares = [(band[(years >= low) & (years <= high)] >= 10).mean() for low, high in [(2009, 2015), (2016, 2021), (2022, 2026)]]
     assert max(shares) - min(shares) < 0.10              # one rule for every year (the stored cells moved by 0.75)
-    assert (qc.loc["fluency_p_band", "n_valid"], qc.loc["fluency_p_band", "censored_right"]) == (5864, 0)
+    assert (qc.loc["fluency_p_band", "n_valid"], qc.loc["fluency_p_band", "censored_right"]) == (5857, 0)
     # CVLT: the z-scores are computed again with the regressions of the norms, the same rule in every year.
     assert (qc.loc["cvlt_total_1_5_z", "n_valid"], qc.loc["cvlt_total_1_5_z", "out_of_range"]) == (5834, 0)     # 241 stored ones were above 5
     assert (qc.loc["cvlt_total_1_5_z", "score_mismatch"], qc.loc["cvlt_total_1_5_z", "norm_missing"]) == (380, 8)
@@ -256,7 +264,9 @@ def test_neuropsychologie(result, qc):
     recency_z = result.data["cvlt_recency_z"]
     means = [recency_z[(age >= low) & (age < high)].mean() for low, high in [(0, 40), (40, 70), (70, 200)]]
     assert max(means) - min(means) < 0.4                     # as the application computes it: 0.05, -0.82 and -3.71
-    assert (qc.loc["cvlt_semantic_z", "n_valid"], qc.loc["cvlt_semantic_z", "out_of_range"]) == (2578, 104)  # the raw index is not an index there
+    assert (qc.loc["cvlt_semantic_z", "n_valid"], qc.loc["cvlt_semantic_z", "out_of_range"]) == (2578, 13)
+    # An index of 8 or more is a typed count, not an index: out of range, with its z-score and band (D130).
+    assert (qc.loc["cvlt_semantic", "out_of_range"], qc.loc["cvlt_semantic_band", "norm_missing"]) == (216, 15)
     assert not [name for name in result.data.columns if name.startswith("cvlt") and name.endswith("_stored")]
     # CVLT: one band for every age, read in the percentile table where the norms have one, the band of the z-score elsewhere.
     assert (qc.loc["cvlt_trial5_band", "n_valid"], qc.loc["cvlt_trial5_band", "band_from_z"]) == (5847, 72)
@@ -264,18 +274,19 @@ def test_neuropsychologie(result, qc):
     # In the table a perfect recall is "this band or a higher one".
     assert (qc.loc["cvlt_trial5_band", "censored_right"], qc.loc["cvlt_trial5_band", "norm_missing"]) == (1608, 1)
     assert (result.data["cvlt_trial5_band"] == 99).sum() == 0            # the EMR wrote 99 for 1,598 perfect recalls
-    assert (qc.loc["cvlt_serial_band", "n_valid"], qc.loc["cvlt_serial_band", "censored_right"]) == (4971, 0)   # as the EMR wrote it
+    # Serial clustering is read in the table of the application's script too (D129): its ties are open bands.
+    assert (qc.loc["cvlt_serial_band", "n_valid"], qc.loc["cvlt_serial_band", "censored_right"], qc.loc["cvlt_serial_band", "norm_missing"]) == (4970, 625, 1)
     assert (qc.loc["cvlt_trial1_band", "n_valid"], qc.loc["cvlt_trial1_band", "band_from_z"]) == (5841, 5841)
     assert (qc.loc["cvlt_total_1_5_band", "n_valid"], qc.loc["cvlt_total_1_5_band", "band_from_z"]) == (5834, 5834)
     assert (qc.loc["cvlt_total_1_5", "n_valid"], qc.loc["cvlt_total_1_5", "score_mismatch"]) == (5842, 54)
     # Scores recomputed from the items.
-    assert (qc.loc["stroop_interference", "n_valid"], qc.loc["stroop_interference", "score_mismatch"]) == (5793, 29)
-    assert (qc.loc["spatial_total", "n_valid"], qc.loc["spatial_total", "score_mismatch"]) == (5234, 41)
+    assert (qc.loc["stroop_interference", "n_valid"], qc.loc["stroop_interference", "score_mismatch"]) == (5796, 54)
+    assert (qc.loc["spatial_total", "n_valid"], qc.loc["spatial_total", "score_mismatch"]) == (5234, 0)          # the total stops at the first failure: its 41 doubtful sums are gone (D135)
     assert (qc.loc["cobra_total", "n_valid"], qc.loc["cobra_total", "score_mismatch"]) == (596, 0)
     assert (qc.loc["errands_errors", "n_valid"], qc.loc["errands_errors", "score_mismatch"]) == (808, 9)
-    # The typed z-scores of the errands test mix two sign conventions: none is delivered (D126).
+    # The typed z-scores of the errands test mix two sign conventions (D126): they are checks, the z-scores are computed again (D135).
     errands_z = ["errands_minutes_z", "errands_detours_z", "errands_late_trips_z", "errands_logic_errors_z", "errands_errors_z"]
-    assert (qc.loc[errands_z, "n_valid"].sum(), qc.loc[errands_z, "period_removed"].sum()) == (0, 140)
+    assert (qc.loc[errands_z, "n_valid"].sum(), qc.loc[errands_z, "period_removed"].sum()) == (2640, 0)
     # CPT-3: about 37 visits hold something else than a T-score.
     assert (qc.loc["cpt3_omissions_t", "n_valid"], qc.loc["cpt3_omissions_t", "out_of_range"]) == (488, 37)
     assert result.data["handedness"].value_counts().to_dict() == {"right": 5468, "left": 570, "both": 121}

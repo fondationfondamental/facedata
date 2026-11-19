@@ -55,8 +55,12 @@ notes: >
   MCV: 31 results between 5 and 13 have a misplaced decimal point (9.07 for
   90.7). MCH: 10 results are in fmol.
 
-  Platelets: about 65 results between 0.1 and 13 fit no scale (they may be a
-  mean platelet volume typed in the wrong field) and end out_of_range.
+  Platelets: 58 results of 0.98 to 9.8 (28 of them in 2012, in four centres,
+  from 2011 to 2013 mostly) are counts typed in hundreds of G/L, as in 2.47
+  x 10^5 per mm3: the unit "x100 G/L" reads them (unit_inferred; median 252
+  G/L after the conversion, as for the whole cohort; decision D130). Four
+  results stay out_of_range: 0.24, 0.39 and 0.43 (below 0.5, which would be
+  24 to 43 G/L) and a count of 2,950,000 per mm3.
 
 defaults: {type: number}
 
@@ -195,6 +199,7 @@ variables:
     unit: G/L
     units:
       G/L: {factor: 1, expect: [10, 1500], aliases: [Giga/L]}
+      "x100 G/L": {factor: 100, expect: [0.5, 10]}      # 2.47 for 247 G/L, as in 2.47 x 10^5 per mm3 (BP D130)
       "/mm3": {factor: 0.001, expect: [10000, 1500000], aliases: ["/mm"]}
     range: [10, 1500]
 

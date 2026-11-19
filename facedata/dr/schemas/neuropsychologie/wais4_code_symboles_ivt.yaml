@@ -16,16 +16,52 @@ notes: >
   block gives wais_version = wais4 on the 731 visits that hold a subtest,
   so that the column exists as in BP and SZ.
 
-  Coding, raw score. Where a box is filled incorrectly (76 visits), the
-  stored raw score is the boxes filled minus the errors on 58 visits and
-  the boxes filled on 17: the centres do not all count the same way. It is
-  delivered as stored, with the two counts next to it. The Symbol Search
+  Coding, raw score. Where a box is filled incorrectly (76 visits), the stored
+  raw score is the boxes filled minus the errors on 58 visits and the boxes
+  filled on 17: the centres do not all count the same way. It is computed,
+  as the boxes filled minus the errors, with the two counts next to it. The
+  application stored the boxes filled alone from 2021 (its WAIS-IV form
+  calls that field the boxes filled correctly and the raw score equal to
+  it), but the data say that the clinicians go on typing all the boxes,
+  errors included: at the same age and the same symbol search score, one
+  more error goes with 0.85 fewer boxes in the typed total up to 2021, when
+  it is all the boxes, with 0.21 fewer from 2021 (BP), against 1.85 fewer
+  for a count of correct boxes; DR and ASP, whose forms always had the new
+  wording, give 0.12 and 0.09 fewer. The stored raw score therefore gives
+  credit for the errors; the stored value is wais4_code_raw_stored, not
+  delivered (decision D136). 40 raw scores change: 17 lose the errors, 21
+  have no errors typed and 2 have more errors than boxes (out of range):
+  they get no raw score (score_not_recomputed). The Symbol Search
   raw score is the correct answers minus the incorrect ones on every
   visit; 5 of them are negative and out of range.
 
-  The sum of the two scaled scores is right on all but 2 visits
-  (score_mismatch on the check score). The confidence interval of the
-  index is a text ("86-104").
+  Scaled scores, z-scores and index. They are recomputed and delivered
+  (decision of the project lead for the standard scores of the
+  neuropsychological tests). The raw scores stay as delivered, except the coding raw score (above). The
+  scaled scores are read in the WAIS-IV tables of the application
+  (norms/wais4_code.csv and wais4_symbol.csv) from the raw scores, and the
+  z-scores are (scaled score - 10) / 3. The plain table that the other cohorts
+  use is used here too, not the table of the DR script: where the script has
+  another value (a typo), the stored score is flagged. The DR coding script
+  puts the ages 18 and 19 in the band of 16 and 17: 1 of the 720 visits has a
+  coding score that this changes. The table is read with the age typed in the
+  form (cclin01, delivered as neuropsy_age by neuropsy_conditions) where it is
+  within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (digit span: 626 of the 669 visits use the typed age, 43 have a
+  typed age more than 1 year away). The sum of the two recomputed scaled
+  scores is delivered as wais4_ivt_sum_scaled, and the index and its
+  percentile rank are read from it in the index tables (norms/wais4_ivt.csv
+  and wais4_ivt_percentile.csv). A percentile of 0.1 or 99.9 is a censored
+  value (wais4_ivt_percentile_cens). The stored values are wais4_*_stored, not
+  delivered. The confidence interval of the index is a text ("86-104")
+  delivered as stored.
+
+  Verified on the visits that have both. Coding scaled score: 17 of 720 differ and 23 are not recomputed
+  (score_not_recomputed; 13 and 2 before the coding raw score was computed
+  again); its z-score 17 of 717. Symbol search scaled score: 10 of 708 differ and 6 more are not
+  recomputed because the raw score is out of range; its z-score 9 of 697. Sum of scaled scores: 20 of 705 differ and 27 are not recomputed; the index
+  and the percentile rank differ on the same 20. The mismatches are spread over
+  2013 to 2026 (11 before 2019); no raw score gives norm_missing.
 
 version:
   name: wais_version
@@ -36,27 +72,84 @@ version:
 defaults: {type: item, versions: [wais4]}
 
 variables:
+  wais4_code_age_entered: {column: cclin01, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
+
   # Coding (Code)
   wais4_code_filled: {column: code01, label: Coding - boxes filled,             range: [0, 135]}
   wais4_code_errors: {column: code02, label: Coding - boxes filled incorrectly, range: [0, 135]}
-  wais4_code_raw:    {column: code03, label: Coding - raw score,                range: [0, 135]}
-  wais4_code_scaled: {column: code04, label: Coding - age-scaled score,         range: [1, 19]}
-  wais4_code_z:      {column: code05, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_code_raw_stored: {column: code03, label: "Coding - raw score as stored (the application stopped taking the errors off at some date)", range: [0, 135], keep: false}
+  wais4_code_scaled_stored: {column: code04, label: Coding - age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_code_z_stored: {column: code05, label: Coding - scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
   # Symbol search (Symboles)
   wais4_symbol_correct: {column: symbol01, label: Symbol search - correct answers,   range: [0, 60]}
   wais4_symbol_errors:  {column: symbol02, label: Symbol search - incorrect answers, range: [0, 60]}
   wais4_symbol_raw:     {column: symbol03, label: Symbol search - raw score,         range: [0, 60]}
-  wais4_symbol_scaled:  {column: symbol04, label: Symbol search - age-scaled score,  range: [1, 19]}
-  wais4_symbol_z:       {column: symbol05, label: Symbol search - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_symbol_scaled_stored: {column: symbol04, label: Symbol search - age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_symbol_z_stored: {column: symbol05, label: Symbol search - scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
   # Processing speed index (IVT)
-  wais4_ivt_sum_scaled: {column: ivt04, label: Sum of the two scaled scores, range: [2, 38]}
-  wais4_ivt_index:      {column: ivt01, label: Processing speed index,      range: [50, 150]}
-  wais4_ivt_percentile: {column: ivt02, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}
+  wais4_ivt_sum_scaled_stored: {column: ivt04, label: Sum of the two scaled scores as stored, range: [2, 38], keep: false}
+  wais4_ivt_index_stored: {column: ivt01, label: Processing speed index as stored, range: [50, 150], keep: false}
+  wais4_ivt_percentile_stored: {column: ivt02, label: Percentile rank of the index as stored, type: number, range: [0, 100], winsor: false, keep: false}
   wais4_ivt_interval:   {column: ivt03, label: 95% confidence interval of the index, type: text}
 
 scores:
-  # Consistency checks only.
+  # Consistency check only.
   wais4_symbol_raw_check: {sum: [wais4_symbol_correct], minus: [wais4_symbol_errors], compare: wais4_symbol_raw, keep: false, versions: [wais4]}
-  wais4_ivt_sum_check: {sum: [wais4_code_scaled, wais4_symbol_scaled], compare: wais4_ivt_sum_scaled, keep: false, versions: [wais4]}
+  wais4_code_raw:
+    label: Coding - raw score, the boxes filled minus the boxes filled incorrectly (the boxes filled correctly)
+    sum: [wais4_code_filled]
+    minus: [wais4_code_errors]
+    range: [0, 135]
+    compare: wais4_code_raw_stored
+    versions: [wais4]
+  wais4_code_scaled:
+    label: Coding - age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_code
+    from: wais4_code_raw
+    age: wais4_code_age_entered
+    range: [1, 19]
+    compare: wais4_code_scaled_stored
+  wais4_code_z:
+    label: Coding - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_code_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_code_z_stored
+    compare_tolerance: 0.006
+  wais4_symbol_scaled:
+    label: Symbol search - age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_symbol
+    from: wais4_symbol_raw
+    age: wais4_code_age_entered
+    range: [1, 19]
+    compare: wais4_symbol_scaled_stored
+  wais4_symbol_z:
+    label: Symbol search - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_symbol_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_symbol_z_stored
+    compare_tolerance: 0.006
+  wais4_ivt_sum_scaled:
+    label: Sum of the two scaled scores
+    sum: [wais4_code_scaled, wais4_symbol_scaled]
+    range: [2, 38]
+    compare: wais4_ivt_sum_scaled_stored
+    versions: [wais4]
+  wais4_ivt_index:
+    label: Processing speed index, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_ivt
+    from: wais4_ivt_sum_scaled
+    range: [50, 150]
+    compare: wais4_ivt_index_stored
+    versions: [wais4]
+  wais4_ivt_percentile:
+    label: Percentile rank of the index, read in the table of the manual
+    lookup: wais4_ivt_percentile
+    from: wais4_ivt_sum_scaled
+    range: [0, 100]
+    compare: wais4_ivt_percentile_stored
+    compare_tolerance: 0.051
+    versions: [wais4]

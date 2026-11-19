@@ -481,7 +481,7 @@ of a visit without a date, get `sign_doubt`.
 ### Step 9: range
 
 A value outside the schema's hard `range` is impossible. It becomes missing
-with `out_of_range`. It is never clipped into range. Dates have a range too:
+with `out_of_range`. It is never clipped into range. Times (hours) and dates have a range too:
 a date before the cohort existed, or far in the future, is impossible.
 
 A schema can also name a period in which a column is not reliable (`doubt`).

@@ -267,10 +267,14 @@ def psqi_efficiency(values, keys=None):
 
     The hours asleep over the hours in bed, from the bedtime to the rising
     time across midnight: 85% or more counts 0, 75% to 84% counts 1, 65% to
-    74% counts 2, less counts 3.
+    74% counts 2, less counts 3. A bedtime from 6:00 to 17:00 with more than
+    16 hours in bed is a bedtime typed on a 12-hour clock (11:00 for 23:00):
+    12 hours are added to it (554 BP visits, 3.3%).
     """
     in_bed = (values["psqi_rising_time"] - values["psqi_bedtime"]) % 24
-    efficiency = 100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)
+    clock_of_12 = values["psqi_bedtime"].between(6, 17, inclusive="left") & (in_bed > 16)
+    in_bed = in_bed.where(~clock_of_12, in_bed - 12)
+    efficiency = (100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)).round(6)       # 75.0 and not 74.99999999999999
     points = (efficiency < 85).astype(float) + (efficiency < 75) + (efficiency < 65)
     return points.where(efficiency.notna())
 

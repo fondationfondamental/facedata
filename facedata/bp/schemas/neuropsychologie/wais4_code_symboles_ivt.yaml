@@ -17,6 +17,47 @@ notes: >
   The confidence interval of the index (ivt03_w) is text such as "90-105"
   and is delivered as text.
 
+  Scaled scores, z-scores and index. They are recomputed and delivered
+  (decision of the project lead for the standard scores of the
+  neuropsychological tests). The raw scores stay as delivered, except the coding raw score (below). The
+  scaled scores are read in the WAIS-IV tables of the application
+  (norms/wais4_code.csv and wais4_symbol.csv) from the raw scores, and the
+  z-scores are (scaled score - 10) / 3. The table is read with the age typed
+  in the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions)
+  where it is within 1 year of the age at the visit, and with the age at the
+  visit elsewhere. The sum of the two recomputed scaled scores is delivered as
+  wais4_ivt_sum_scaled, and the index and its percentile rank are read from it
+  in the index tables (norms/wais4_ivt.csv and wais4_ivt_percentile.csv, the
+  same in the four applications). A percentile of 0.1 or 99.9 is a censored
+  value (wais4_ivt_percentile_cens). The stored values are wais4_*_stored, not
+  delivered. The confidence interval is delivered as stored: it comes with the stored index and cannot be recomputed here (it is a text).
+
+  Verified on the visits that have both. Coding scaled score: 119 of 4,674 differ (2.5%; 42 before the coding raw
+  score was computed again), and its z-score too. Symbol search scaled score: 33 of 4,670,
+  and 7 more are not recomputed because the raw score is out of range
+  (score_not_recomputed). Sum of scaled scores: 124 of 4,661 differ and 9 are not recomputed; the
+  index differs on the same 124, the percentile rank on 120.
+  The mismatches are spread over 2013 to 2026 (2013 to 2021 mostly) and over
+  the centres; no raw score gives norm_missing.
+
+  Coding raw score. It is computed: the boxes filled minus the boxes filled
+  incorrectly, as the application did until 2021 (302 of the 480 visits with
+  errors); since then it stores the boxes filled alone (178 visits). The
+  application stored the boxes filled alone from 2021 (its WAIS-IV form
+  calls that field the boxes filled correctly and the raw score equal to
+  it), but the data say that the clinicians go on typing all the boxes,
+  errors included: at the same age and the same symbol search score, one
+  more error goes with 0.85 fewer boxes in the typed total up to 2021, when
+  it is all the boxes, with 0.21 fewer from 2021 (BP), against 1.85 fewer
+  for a count of correct boxes; DR and ASP, whose forms always had the new
+  wording, give 0.12 and 0.09 fewer. The stored raw score therefore gives
+  credit for the errors; the stored value is wais4_code_raw_stored, not
+  delivered (decision D136). 184 raw scores change, 85 scaled scores and
+  z-scores, 84 sums and indices; 5 visits have no errors or no boxes typed
+  and get no raw score (score_not_recomputed). The stored scaled score
+  follows the stored raw score, so it now differs from the delivered one on
+  the visits whose errors were not taken off.
+
 version:
   name: wais_version
   column: wais_version
@@ -25,22 +66,79 @@ version:
 defaults: {type: item, versions: [wais4]}
 
 variables:
+  wais4_code_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
+
   # Coding (Code)
   wais4_code_filled: {column: code01_w, label: Coding - boxes filled,             range: [0, 135]}
   wais4_code_errors: {column: code02_w, label: Coding - boxes filled incorrectly, range: [0, 135]}
-  wais4_code_raw:    {column: code03_w, label: Coding - raw score,                range: [0, 135]}
-  wais4_code_scaled: {column: code04_w, label: Coding - age-scaled score,         range: [1, 19]}
-  wais4_code_z:      {column: code05_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_code_raw_stored: {column: code03_w, label: "Coding - raw score as stored (the application stopped taking the errors off at some date)", range: [0, 135], keep: false}
+  wais4_code_scaled_stored: {column: code04_w, label: Coding - age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_code_z_stored:      {column: code05_w, label: Coding - scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
   # Symbol search (Symboles)
   wais4_symbol_correct: {column: symbol01_w, label: Symbol search - correct answers,   range: [0, 60]}
   wais4_symbol_errors:  {column: symbol02_w, label: Symbol search - incorrect answers, range: [0, 60]}
   wais4_symbol_raw:     {column: symbol03_w, label: Symbol search - raw score,         range: [0, 60]}
-  wais4_symbol_scaled:  {column: symbol04_w, label: Symbol search - age-scaled score,  range: [1, 19]}
-  wais4_symbol_z:       {column: symbol05_w, label: Symbol search - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais4_symbol_scaled_stored: {column: symbol04_w, label: Symbol search - age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_symbol_z_stored:      {column: symbol05_w, label: Symbol search - scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
   # Processing speed index (IVT)
-  wais4_ivt_sum_scaled: {column: ivt04_w, label: Sum of the two scaled scores, range: [2, 38]}
-  wais4_ivt_index:      {column: ivt01_w, label: Processing speed index,      range: [50, 150]}
-  wais4_ivt_percentile: {column: ivt02_w, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false}
-  wais4_ivt_interval:   {column: ivt03_w, label: 95% confidence interval of the index, type: text}
+  wais4_ivt_sum_scaled_stored: {column: ivt04_w, label: Sum of the two scaled scores as stored, range: [2, 38], keep: false}
+  wais4_ivt_index_stored:      {column: ivt01_w, label: Processing speed index as stored, range: [50, 150], keep: false}
+  wais4_ivt_percentile_stored: {column: ivt02_w, label: Percentile rank of the index as stored, type: number, range: [0, 100], winsor: false, keep: false}
+  wais4_ivt_interval:          {column: ivt03_w, label: 95% confidence interval of the index, type: text}
+
+scores:
+  wais4_code_raw:
+    label: Coding - raw score, the boxes filled minus the boxes filled incorrectly (the boxes filled correctly)
+    sum: [wais4_code_filled]
+    minus: [wais4_code_errors]
+    range: [0, 135]
+    compare: wais4_code_raw_stored
+    versions: [wais4]
+  wais4_code_scaled:
+    label: Coding - age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_code
+    from: wais4_code_raw
+    age: wais4_code_age_entered
+    range: [1, 19]
+    compare: wais4_code_scaled_stored
+  wais4_code_z:
+    label: Coding - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_code_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_code_z_stored
+    compare_tolerance: 0.006
+  wais4_symbol_scaled:
+    label: Symbol search - age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_symbol
+    from: wais4_symbol_raw
+    age: wais4_code_age_entered
+    range: [1, 19]
+    compare: wais4_symbol_scaled_stored
+  wais4_symbol_z:
+    label: Symbol search - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_symbol_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_symbol_z_stored
+    compare_tolerance: 0.006
+  wais4_ivt_sum_scaled:
+    label: Sum of the two scaled scores
+    sum: [wais4_code_scaled, wais4_symbol_scaled]
+    range: [2, 38]
+    compare: wais4_ivt_sum_scaled_stored
+  wais4_ivt_index:
+    label: Processing speed index, read in the table of the manual from the sum of the scaled scores
+    lookup: wais4_ivt
+    from: wais4_ivt_sum_scaled
+    range: [50, 150]
+    compare: wais4_ivt_index_stored
+  wais4_ivt_percentile:
+    label: Percentile rank of the index, read in the table of the manual
+    lookup: wais4_ivt_percentile
+    from: wais4_ivt_sum_scaled
+    range: [0, 100]
+    compare: wais4_ivt_percentile_stored
+    compare_tolerance: 0.051

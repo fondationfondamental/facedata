@@ -18,6 +18,16 @@ notes: >
 
   FACE BP does not have this subtest.
 
+  Scaled score and z-score (decision of 18 November 2026). Recomputed from
+  the raw total in the application's own norm table (norms/wais3_letter_number.csv,
+  12 age groups read from the scripts of the EMR; not part of the
+  repository) and delivered; the stored ones are read as checks (keep:
+  false) and a difference is score_mismatch on the delivered score. The EMR
+  read its table with the age typed in the form (cclin01_); the package
+  uses that age where it is within one year of the age at the visit, else
+  the age at the visit (age: wais3_lns_age). The z-score is (scaled score - 10) / 3
+  (tolerance 0.006). On the 477 visits that have both, 2 differ, both with a typed age more than a year from the age at the visit (read with the typed age as it stands the table gives the stored score on all 477). The z-score differs on the same 2. No visit of this subtest has WAIS-IV data.
+
 version:
   name: wais_version
   column: wais_version
@@ -55,8 +65,9 @@ variables:
   wais3_lns06: {column: slc06_wais3, label: "Letter-number sequencing item 6 (trials passed)", range: [0, 3]}
   wais3_lns07: {column: slc07_wais3, label: "Letter-number sequencing item 7 (trials passed)", range: [0, 3]}
   wais3_lns_total_stored: {column: slctot_wais3, label: Raw total as stored, range: [0, 21], keep: false}
-  wais3_lns_scaled: {column: slcstd_wais3, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais3_lns_total}
-  wais3_lns_z: {column: slccr_wais3, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais3_lns_total}
+  wais3_lns_age: {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its table with"}
+  wais3_lns_scaled_stored: {column: slcstd_wais3, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_lns_z_stored: {column: slccr_wais3, label: "Scaled score as a z-score, as stored", type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais3_lns_total:
@@ -65,3 +76,16 @@ scores:
           wais3_lns07]
     min_items: 1
     compare: wais3_lns_total_stored
+  wais3_lns_scaled:
+    label: Age-scaled score (mean 10 and SD 3)
+    lookup: wais3_letter_number
+    from: wais3_lns_total
+    age: wais3_lns_age
+    range: [1, 19]
+    compare: wais3_lns_scaled_stored
+  wais3_lns_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_lns_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_lns_z_stored
+    compare_tolerance: 0.006

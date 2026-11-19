@@ -697,3 +697,91 @@ def test_boxes_of_a_list_hidden_answers_and_dates_before_the_visit(tmp_path):
     # A "no" of a removed period is no answer: nothing after it becomes 0, and the empty cell is not flagged.
     assert list(data["count_later"][:3]) == [0, 0, 2] and pd.isna(data["count_later"][3])
     assert flags_of(result, "count_later") == []
+
+
+def test_a_time_outside_its_hours_is_impossible(tmp_path):
+    """The hard range holds for a time too: 90 hours of sleep and a bedtime of 25:30 end out_of_range (BP D130)."""
+    schema = """
+instrument: sleep
+title: Sleep
+tab: TEST
+section: Sleep
+status: draft
+defaults: {type: item, range: [0, 3]}
+variables:
+  bedtime: {column: bed, type: time, range: [0, 24]}
+  sleep_hours: {column: sleep, type: time, range: [0, 24]}
+"""
+    extraction = "usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tbed\tsleep\nP1\tV0\t2\t1\t2015-01-10\t01\t23:30\t7:30\nP2\tV0\t2\t2\t2016-02-01\t02\t25:30\t90:00\nP3\tV0\t2\t3\t2016-03-01\t02\t24:00\t\n"
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "sleep.yaml").write_text(schema, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    result = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas")
+    data = result.data.set_index("usubjid")
+    assert list(data["bedtime"]) == pytest.approx([23.5, float("nan"), 24.0], nan_ok=True)    # 24:00 is midnight
+    assert data["sleep_hours"].notna().tolist() == [True, False, False]
+    assert flags_of(result, "bedtime") == [("P2", "V0", "out_of_range")]
+    assert flags_of(result, "sleep_hours") == [("P2", "V0", "out_of_range")]
+
+
+def test_an_empty_box_with_a_typed_count_is_not_a_no(tmp_path):
+    """A box beside a ticked one is a no, unless a count that hangs on it was typed: it is shown only after a yes."""
+    extraction = ("usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tany\tect\ttms\tect_n\n"
+                  "P1\tV0\t2\t1\t2015-01-10\t01\tOui\t\tOui\t\n"         # tms ticked, ect left empty: a no, 0 sessions
+                  "P2\tV0\t2\t2\t2015-01-11\t01\tOui\t\tOui\t3\n"        # the same, but 3 sessions were typed for ect
+                  "P3\tV0\t2\t3\t2015-01-12\t01\tOui\tOui\t\t4\n")       # ect ticked: its 4 sessions as written
+    schema = """
+instrument: boxes
+title: Boxes
+tab: TEST
+section: Boxes
+status: draft
+defaults: {type: item, range: [0, 1]}
+variables:
+  any_treatment: {column: any, codes: {Oui: 1, Non: 0}}
+  ect: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  tms: {codes: {Oui: 1, Non: 0}, asked_if: any_treatment, box_list: kinds}
+  ect_sessions: {column: ect_n, range: [0, 365], asked_if: ect}
+"""
+    (tmp_path / "schemas" / "tab").mkdir(parents=True)
+    (tmp_path / "schemas" / "tab" / "boxes.yaml").write_text(schema, encoding="utf-8")
+    (tmp_path / "extraction.tsv").write_text(extraction, encoding="utf-8")
+    data = run_cohort(tmp_path / "extraction.tsv", tmp_path / "schemas").data
+    assert data["ect"][0] == 0 and data["ect_sessions"][0] == 0
+    assert pd.isna(data["ect"][1]) and data["ect_sessions"][1] == 3          # left as written: not turned into a no
+    assert data["ect"][2] == 1 and data["tms"][2] == 0 and data["ect_sessions"][2] == 4
+
+
+USES = """
+instrument: aaa_doubled
+title: Doubled
+tab: TEST
+section: Doubled
+status: draft
+uses: [total]
+defaults: {type: item, range: [0, 20]}
+variables:
+  dbl_stored: {column: dbl, keep: false}
+scores:
+  doubled: {sum: [total], scale: [2, 0], range: [0, 20], compare: dbl_stored}
+"""
+
+USES_EXTRACTION = """usubjid\tvisit\tid_visit\tvisitnum\tsvdtc\tsiteid\tit1\tit2\ttot\tglu\tglu_unit\tdbl
+P1\tV0\t2\t1\t2016-01-10\t01\t1\t2\t3\t5\tmmol/L\t6
+P2\tV0\t2\t2\t2016-02-01\t02\t2\t2\t4\t5\tmmol/L\t9
+P3\tV0\t2\t3\t2016-03-01\t02\t1\t\t1\t5\tmmol/L\t4
+"""
+
+
+def test_a_score_can_add_up_the_scores_of_another_schema(folder):
+    """A schema with `uses` runs last (its file name sorts first here) and reads the delivered scores of the others."""
+    (folder / "schemas" / "tab" / "aaa_doubled.yaml").write_text(USES, encoding="utf-8")
+    (folder / "extraction.tsv").write_text(USES_EXTRACTION, encoding="utf-8")
+    result = run_cohort(folder / "extraction.tsv", folder / "schemas")
+    data = result.data.set_index("usubjid")
+    assert data["total"].fillna(-1).tolist() == [3, 4, -1]          # P3 lacks an item
+    assert data["doubled"].fillna(-1).tolist() == [6, 8, -1]
+    assert "total" in result.data.columns and "dbl_stored" not in result.data.columns
+    assert flags_of(result, "doubled") == [("P2", "V0", "score_mismatch"), ("P3", "V0", "score_not_recomputed")]
+    only = run_cohort(folder / "extraction.tsv", folder / "schemas", instruments=["aaa_doubled"])
+    assert only.data["doubled"].isna().all()                        # the schema it uses is not loaded: nothing to add up

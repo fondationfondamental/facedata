@@ -11,7 +11,23 @@ notes: >
   but the items and the norms differ. This schema reads the WAIS-IV visits;
   wais3_matrices.yaml reads the others.
 
-  The stored raw total equals the sum of the items on every row.
+  The stored raw total equals the sum of the items on 4,292 of the 4,293
+  visits that have both (one score_mismatch, 2016 to 2018).
+
+  Scaled score and z-score. They are recomputed and delivered, not taken as
+  stored (decision of the project lead for the standard scores of the
+  neuropsychological tests): the scaled score is read in the WAIS-IV table of
+  the application (norms/wais4_matrices.csv, the same table in the four
+  applications) from the raw total, and the z-score is (scaled score - 10) /
+  3. The table is read with the age typed in the form (cclin01_, delivered as
+  neuropsy_age by neuropsy_conditions) where it is within 1 year of the age at
+  the visit, and with the age at the visit elsewhere. Of the 4,298 visits with
+  a total, 4,175 use the typed age, 116 have a typed age more than 1 year away
+  and 7 have none usable. The stored scores are read as
+  wais4_mat_scaled_stored and wais4_mat_z_stored, which are not delivered, and
+  compared: of the 4,293 visits that have both, 37 differ (score_mismatch,
+  0.9%, in every period from 2013 and in most centres), on the scaled score
+  and on its z-score. No raw total gives norm_missing.
 
 version:
   name: wais_version
@@ -48,9 +64,10 @@ variables:
   wais4_mat25: {column: mat25_w, label: Matrices item 25}
   wais4_mat26: {column: mat26_w, label: Matrices item 26}
 
-  wais4_mat_total_stored: {column: mat_tot_w, label: Raw total as stored, range: [0, 26], keep: false}
-  wais4_mat_scaled:       {column: mat_std_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_mat_total}
-  wais4_mat_z:            {column: mat_cr_w,  label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_mat_total}
+  wais4_mat_age_entered:   {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
+  wais4_mat_total_stored:  {column: mat_tot_w, label: Raw total as stored, range: [0, 26], keep: false}
+  wais4_mat_scaled_stored: {column: mat_std_w, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_mat_z_stored:      {column: mat_cr_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais4_mat_total:
@@ -61,3 +78,17 @@ scores:
           wais4_mat19, wais4_mat20, wais4_mat21, wais4_mat22, wais4_mat23, wais4_mat24,
           wais4_mat25, wais4_mat26]
     compare: wais4_mat_total_stored
+  wais4_mat_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_matrices
+    from: wais4_mat_total
+    age: wais4_mat_age_entered
+    range: [1, 19]
+    compare: wais4_mat_scaled_stored
+  wais4_mat_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_mat_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_mat_z_stored
+    compare_tolerance: 0.006

@@ -35,6 +35,25 @@ notes: >
 
   The Barona expected verbal and performance IQs are in barona.yaml.
 
+  IQs and working memory index (decision of 18 November 2026). The three
+  sums of scaled scores are delivered as stored (the subtests are in other
+  schemas). Each IQ and the index is recomputed from its sum in the
+  application's own age-free table (norms/wais3_qiv.csv, wais3_qip.csv,
+  wais3_qit.csv and wais3_imt_index.csv, read from the scripts of the EMR;
+  not part of the repository) and delivered; the stored values are read as
+  checks (keep: false) and a difference is score_mismatch on the delivered
+  value. The verbal IQ agrees with the stored one on 528 of 528 visits and
+  the performance IQ on 539 of 539; the working memory index differs on 2 of
+  469. The full-scale IQ (ei06_wais3, open question O14) is not in the
+  extraction; it is now delivered as wais3_qit, read in the table from the
+  total sum (524 visits), and it equals the Barona expected IQ minus the
+  stored difference on 504 of 504 visits that have both. The percentile
+  ranks and the confidence intervals of the verbal and performance IQs and
+  the percentile of the index are delivered as stored and get derived_doubt
+  where the stored IQ or index differs from the recomputed one (2 visits,
+  the working memory percentile); those of the full-scale IQ stay as
+  stored, there is no stored IQ to compare with.
+
 version:
   name: wais_version
   column: wais_version
@@ -46,20 +65,43 @@ variables:
   wais3_qiv_sum_scaled: {column: ei01_wais3, label: "Verbal sum of scaled scores (2 x similarities + 2 x information + arithmetic + digit span)", range: [6, 114]}
   wais3_qip_sum_scaled: {column: ei02_wais3, label: "Performance sum of scaled scores (2 x picture completion + 2 x matrices + coding)", range: [5, 95]}
   wais3_qit_sum_scaled_stored: {column: ei03_wais3, label: "Total sum of scaled scores, as stored", range: [11, 209], keep: false}
-  wais3_qiv: {column: ei04_wais3, label: Estimated verbal IQ, range: [45, 155]}
-  wais3_qiv_percentile: {column: ei10_wais3, label: Percentile rank of the verbal IQ, type: number, range: [0, 100], winsor: false}
-  wais3_qiv_interval: {column: ei11_wais3, label: 95% confidence interval of the verbal IQ, type: text}
-  wais3_qip: {column: ei05_wais3, label: Estimated performance IQ, range: [45, 155]}
-  wais3_qip_percentile: {column: ei12_wais3, label: Percentile rank of the performance IQ, type: number, range: [0, 100], winsor: false}
-  wais3_qip_interval: {column: ei13_wais3, label: 95% confidence interval of the performance IQ, type: text}
+  wais3_qiv_stored: {column: ei04_wais3, label: Estimated verbal IQ as stored, range: [45, 155], keep: false}
+  wais3_qiv_percentile: {column: ei10_wais3, label: Percentile rank of the verbal IQ, type: number, range: [0, 100], winsor: false, derived_from: wais3_qiv}
+  wais3_qiv_interval: {column: ei11_wais3, label: 95% confidence interval of the verbal IQ, type: text, derived_from: wais3_qiv}
+  wais3_qip_stored: {column: ei05_wais3, label: Estimated performance IQ as stored, range: [45, 155], keep: false}
+  wais3_qip_percentile: {column: ei12_wais3, label: Percentile rank of the performance IQ, type: number, range: [0, 100], winsor: false, derived_from: wais3_qip}
+  wais3_qip_interval: {column: ei13_wais3, label: 95% confidence interval of the performance IQ, type: text, derived_from: wais3_qip}
   wais3_qit_percentile: {column: ei14_wais3, label: Percentile rank of the full-scale IQ, type: number, range: [0, 100], winsor: false}
   wais3_qit_interval: {column: ei15_wais3, label: 95% confidence interval of the full-scale IQ, type: text}
   wais3_imt_sum_scaled: {column: ei07_wais3, label: "Working memory sum of scaled scores (digit span + arithmetic + letter-number sequencing)", range: [3, 57]}
-  wais3_imt_index: {column: mem_travail_indice_wais3, label: Working memory index, range: [45, 155]}
-  wais3_imt_percentile: {column: ei09_wais3, label: Percentile rank of the working memory index, type: number, range: [0, 100], winsor: false}
+  wais3_imt_index_stored: {column: mem_travail_indice_wais3, label: Working memory index as stored, range: [45, 155], keep: false}
+  wais3_imt_percentile: {column: ei09_wais3, label: Percentile rank of the working memory index, type: number, range: [0, 100], winsor: false, derived_from: wais3_imt_index}
 
 scores:
   wais3_qit_sum_scaled:
     label: Total sum of scaled scores (verbal + performance)
     sum: [wais3_qiv_sum_scaled, wais3_qip_sum_scaled]
     compare: wais3_qit_sum_scaled_stored
+  wais3_qiv:
+    label: Estimated verbal IQ
+    lookup: wais3_qiv
+    from: wais3_qiv_sum_scaled
+    range: [45, 155]
+    compare: wais3_qiv_stored
+  wais3_qip:
+    label: Estimated performance IQ
+    lookup: wais3_qip
+    from: wais3_qip_sum_scaled
+    range: [45, 155]
+    compare: wais3_qip_stored
+  wais3_qit:
+    label: Estimated full-scale IQ (not in the extraction, O14)
+    lookup: wais3_qit
+    from: wais3_qit_sum_scaled
+    range: [45, 155]
+  wais3_imt_index:
+    label: Working memory index
+    lookup: wais3_imt_index
+    from: wais3_imt_sum_scaled
+    range: [45, 155]
+    compare: wais3_imt_index_stored

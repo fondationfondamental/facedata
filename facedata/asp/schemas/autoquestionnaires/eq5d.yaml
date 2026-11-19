@@ -8,9 +8,11 @@ notes: >
   index, at the inclusion visit: 913 visits (268 children), from 2013 to 2026.
 
   Same instrument as in FACE BP, SZ and DR (five levels), in other columns
-  (mobility, selfcare, activity, pain, anxiety, eq_vas). The index
-  (eq5d_score), which the other extractions do not hold, needs a value set
-  that is not available: it is delivered as stored. It lies between -0.6 and 1
+  (mobility, selfcare, activity, pain, anxiety, eq_vas). The index (eq5d_score) is the one of BP and SZ: the table of the
+  application's script gives the same value for each profile they share (BP
+  D133). It is read from the five answers (the stored index is a check:
+  score_mismatch) and 45 visits that have the five answers and no stored
+  index get one. It lies between -0.6 and 1
   on 980 of 1008 visits; the others hold values up to several hundreds, an
   index typed without its decimal point or another number (out_of_range).
 
@@ -23,4 +25,11 @@ variables:
   eq5d0204: {column: pain, label: "Douleurs, gêne"}
   eq5d0205: {column: anxiety, label: "Anxiété, dépression"}
   eq5d_vas: {column: eq_vas, type: number, label: "Health today, visual scale", range: [0, 100], winsor: false}
-  eq5d_index: {column: eq5d_score, type: number, label: "EQ-5D index, as stored", range: [-0.6, 1], winsor: false}
+  eq5d_index_stored: {column: eq5d_score, type: number, label: "EQ-5D index, as stored", range: [-0.6, 1], winsor: false, keep: false}
+
+scores:
+  eq5d_index:
+    label: EQ-5D-5L index (the table of the application's script, one value per combination of the five answers)
+    profile: eq5d_index
+    from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]
+    compare: eq5d_index_stored

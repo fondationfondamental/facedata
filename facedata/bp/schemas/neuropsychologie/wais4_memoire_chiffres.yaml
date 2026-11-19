@@ -26,8 +26,28 @@ notes: >
   each order is compared with the sum of its item scores, an empty item
   counting 0: they agree on 99.7% of the visits.
 
-  The z-scores of the longest spans come from norms that are not in the
-  project and are delivered as stored.
+  The z-scores of the three longest spans are computed with the mean and the
+  standard deviation of the age group (norms/wais4_ds_forward_span_z.csv and
+  the two others, a regression with the age coefficient 0), compared with the
+  stored z-scores to 0.011 because they have two decimals.
+
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_digit_span.csv) from the raw total mcodemp_w, and the z-score
+  is (scaled score - 10) / 3. The table is read with the age typed in the form
+  (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it is
+  within 1 year of the age at the visit, and with the age at the visit
+  elsewhere. Of the 4,675 visits with a total, 4,533 use the typed age, 135
+  have a typed age more than 1 year away and 7 have none usable (a text such
+  as '38 ans'). The stored scores are wais4_ds_scaled_stored,
+  wais4_ds_z_stored and the three wais4_ds_*_span_z_stored, not delivered.
+  Verified on the visits that have both: the scaled score differs on 45 of
+  4,675 (1.0%), its z-score on the same 45, the forward span z-score on 47 of
+  4,675, the backward on 57 of 4,675 and the sequencing on 47 of 4,667
+  (score_mismatch, 2013 to 2026). The z-scores of the spans are delivered on a
+  few more visits (4,687, 4,684 and 4,673) than the stored ones. No raw total
+  gives norm_missing.
 
 version:
   name: wais_version
@@ -45,12 +65,13 @@ variables:
   wais4_ds_backward_span:   {column: empdid_w,      label: Longest backward span,                       range: [0, 9]}
   wais4_ds_sequencing_span: {column: wais_mc_cro_w, label: Longest sequencing span,                     range: [0, 9]}
   wais4_ds_span_difference: {column: nbrut_w,       label: Forward span minus backward span,            range: [-9, 9]}
-  wais4_ds_scaled:          {column: nstand_w,      label: Age-scaled score (mean 10 and SD 3),         range: [1, 19], derived_from: wais4_ds_total_check}
-  wais4_ds_z:               {column: vstand_w,      label: Scaled score as a z-score, type: number,     range: [-3, 3], winsor: false, derived_from: wais4_ds_total_check}
+  wais4_ds_age_entered:     {column: cclin01_,      label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
+  wais4_ds_scaled_stored:   {column: nstand_w, label: Age-scaled score as stored, range: [1, 19], keep: false}
+  wais4_ds_z_stored:        {column: vstand_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
-  wais4_ds_forward_span_z: {column: wais_mc_end_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest forward span as a z-score}
-  wais4_ds_backward_span_z: {column: wais_mc_env_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest backward span as a z-score}
-  wais4_ds_sequencing_span_z: {column: wais_mc_cro_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest sequencing span as a z-score}
+  wais4_ds_forward_span_z_stored: {column: wais_mc_end_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest forward span as a z-score as stored, winsor: false, keep: false}
+  wais4_ds_backward_span_z_stored: {column: wais_mc_env_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest backward span as a z-score as stored, winsor: false, keep: false}
+  wais4_ds_sequencing_span_z_stored: {column: wais_mc_cro_std_w, type: number, range: [-5, 5], missing: {inf: not_recorded}, label: Longest sequencing span as a z-score as stored, winsor: false, keep: false}
   # Forward: two trials per item (1 = correct), then the item scores
   wais4_ds_forward_1a: {column: mcod0101_w, label: "Forward - item 1, trial 1", range: [0, 1]}
   wais4_ds_forward_1b: {column: mcod0102_w, label: "Forward - item 1, trial 2", range: [0, 1]}
@@ -151,3 +172,41 @@ scores:
     min_items: 1
     compare: wais4_ds_sequencing_raw
     keep: false
+  wais4_ds_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_digit_span
+    from: wais4_ds_total
+    age: wais4_ds_age_entered
+    range: [1, 19]
+    compare: wais4_ds_scaled_stored
+  wais4_ds_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_ds_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_ds_z_stored
+    compare_tolerance: 0.006
+  wais4_ds_forward_span_z:
+    label: Longest forward span as a z-score, computed with the mean and SD of the age group
+    regression: wais4_ds_forward_span_z
+    from: wais4_ds_forward_span
+    age: wais4_ds_age_entered
+    range: [-5, 5]
+    compare: wais4_ds_forward_span_z_stored
+    compare_tolerance: 0.011
+  wais4_ds_backward_span_z:
+    label: Longest backward span as a z-score, computed with the mean and SD of the age group
+    regression: wais4_ds_backward_span_z
+    from: wais4_ds_backward_span
+    age: wais4_ds_age_entered
+    range: [-5, 5]
+    compare: wais4_ds_backward_span_z_stored
+    compare_tolerance: 0.011
+  wais4_ds_sequencing_span_z:
+    label: Longest sequencing span as a z-score, computed with the mean and SD of the age group
+    regression: wais4_ds_sequencing_span_z
+    from: wais4_ds_sequencing_span
+    age: wais4_ds_age_entered
+    range: [-5, 5]
+    compare: wais4_ds_sequencing_span_z_stored
+    compare_tolerance: 0.011

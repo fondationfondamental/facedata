@@ -16,6 +16,24 @@ notes: >
   named sdmt01... The symbol search and the processing speed index of the
   WAIS-III are not in the SZ extraction.
 
+  Raw score, scaled score and z-score (decision of 18 November 2026). The
+  stored raw score is delivered as it is and checked: it is the boxes filled
+  minus the boxes filled incorrectly on all 572 visits that have the three
+  values. The scaled score is recomputed from it in the application's own
+  norm table (norms/wais3_code.csv, 12 age groups read from the scripts of
+  the EMR; not part of the repository) and delivered; the stored scaled
+  score and z-score are read as checks (keep: false) and a difference is
+  score_mismatch on the delivered score. The EMR read its table with the age
+  typed in the form (cclin01_); the package uses that age where it is within
+  one year of the age at the visit, else the age at the visit (age:
+  wais3_code_age). The z-score is (scaled score - 10) / 3 (tolerance 0.006).
+  On the 572 visits the scaled score differs from the stored one on 21: 18
+  are among the 33 visits labelled WAIS-III that were given the WAIS-IV
+  (question DM-2, O16), where the stored score is probably the WAIS-IV one, and
+  3 are not (2 have a typed age more than a year from the age at the visit;
+  read with the typed age as it stands the table gives the stored score on
+  all but 19). The z-score differs on 22 of the 570 visits that have one.
+
 version:
   name: wais_version
   column: wais_version
@@ -24,8 +42,31 @@ version:
 defaults: {type: item, versions: [wais3]}
 
 variables:
+  # The age typed in the form: the EMR read the norm table with it
+  wais3_code_age: {column: cclin01_, type: number, range: [15, 100], winsor: false, keep: false, label: "Age typed in the form, the age the EMR read its table with"}
   wais3_code_filled: {column: sdmt0104_w, label: Coding - boxes filled, range: [0, 133]}
   wais3_code_errors: {column: sdmt0102_w, label: Coding - boxes filled incorrectly, range: [0, 133]}
   wais3_code_raw: {column: sdmt0103_w, label: Coding - raw score, range: [0, 133]}
-  wais3_code_scaled: {column: sdmt0101_w, label: Coding - age-scaled score, range: [1, 19]}
-  wais3_code_z: {column: sdmt0105_w, label: Coding - scaled score as a z-score, type: number, range: [-3, 3], winsor: false}
+  wais3_code_scaled_stored: {column: sdmt0101_w, label: Coding - age-scaled score as stored, range: [1, 19], keep: false}
+  wais3_code_z_stored: {column: sdmt0105_w, label: "Coding - scaled score as a z-score, as stored", type: number, range: [-3, 3], winsor: false, keep: false}
+
+scores:
+  # Consistency check only: the stored raw score must be the boxes filled minus the boxes filled incorrectly.
+  wais3_code_raw_check:
+    sum: [wais3_code_filled]
+    minus: [wais3_code_errors]
+    compare: wais3_code_raw
+    keep: false
+  wais3_code_scaled:
+    label: Coding - age-scaled score
+    lookup: wais3_code
+    from: wais3_code_raw
+    age: wais3_code_age
+    range: [1, 19]
+    compare: wais3_code_scaled_stored
+  wais3_code_z:
+    label: Coding - scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais3_code_scaled]
+    scale: [0.3333333, -3.3333333]
+    compare: wais3_code_z_stored
+    compare_tolerance: 0.006

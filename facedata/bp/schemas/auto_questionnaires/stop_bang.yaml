@@ -2,17 +2,22 @@ instrument: stop_bang
 title: STOP-BANG, risk of obstructive sleep apnoea
 tab: AUTO-QUESTIONNAIRES
 section: APNEES DU SOMMEIL
-status: draft
+status: reviewed
 notes: >
-  Added in 2021. Seven yes/no questions (1 = yes): snoring, tiredness,
+  First filled in November 2020; regular from 2021. Seven yes/no questions (1 = yes): snoring, tiredness,
   observed apnoea, blood pressure, body mass index above 35, age above 50,
   neck size. The eighth criterion is male sex; its column (apnee08) is filled
   on two visits only and is not read (ignored.yaml).
 
-  The risk class is delivered as the EMR wrote it. It follows the number of
-  criteria met, male sex included: low up to 2, high from 5 on. With 3 or 4
-  criteria the class is intermediate or high, depending on which criteria
-  are met.
+  The risk class is delivered as the EMR wrote it. It is the rule of the
+  application, not the published count: the seven questions are added
+  without male sex; high from 5 of them, or from 2 of the first 4 with male
+  sex, a body mass index above 35 or a large neck; intermediate from 3; low
+  below. It differs from the published rule (male sex counted in the total)
+  on 182 of 3,939 visits (4.6%), mostly men with 2 criteria shown as low. On
+  26 visits the stored class does not follow the application's own rule
+  (score computed on a click, D106). stopbang_count7 is the number of the
+  seven criteria met (add 1 for male sex for the published total of 0 to 8).
 
   A few cells hold "d?AOS": the apostrophe was damaged by the export.
 
@@ -40,3 +45,8 @@ variables:
       "Risque élevé d’AOS": high
       "Risque élevé d'AOS": high
       "Risque élevé d?AOS": high
+
+scores:
+  stopbang_count7:
+    label: STOP-BANG, number of the seven criteria met (0 to 7; add 1 for male sex)
+    sum: [apnee01, apnee02, apnee03, apnee04, apnee05, apnee06, apnee07]

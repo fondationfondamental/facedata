@@ -113,7 +113,7 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, unit: years, range: [0, 90], winsor: false, missing: {"<5": unknown}, label: "Age at the first hospitalisation"}
+  first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, unit: years, range: [5, 90], winsor: false, missing: {"<5": unknown}, label: "Age at the first hospitalisation"}
   n_hospitalisations_v0: {column: nboccur_hospitalisation, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations over the life, at inclusion"}
   hospitalisation_months_v0: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, asked_if: n_hospitalisations_v0, label: "Total duration of the hospitalisations over the life, at inclusion"}
 

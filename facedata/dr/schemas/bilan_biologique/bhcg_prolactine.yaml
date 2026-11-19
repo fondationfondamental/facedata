@@ -9,6 +9,8 @@ notes: >
   Beta-hCG: 308 results, 289 of them for women; 38 are given as "less than" a
   limit and keep their mark.
 
+  Prolactin: a 0 is "nothing measured" (35 cells, a missing code since BP D130).
+
   Prolactin: the form has a choice of unit, exported as a code: 1 is ng/mL
   (351 results), 2 µUI/mL (232), 3 µg/L, the same scale as ng/mL (79). 223
   results are converted from mUI/L, 13 have a size that does not fit their
@@ -44,3 +46,4 @@ variables:
       mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l, "2"]}
     unit_rule: prolactin_unit
     range: [0.5, 500]
+    missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured (BP D130)

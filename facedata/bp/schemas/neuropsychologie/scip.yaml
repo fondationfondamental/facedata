@@ -8,11 +8,22 @@ notes: >
   visits). The SCIP has three parallel forms; scip_form says which one was
   given.
 
-  Each subtest has a raw score and a z-score from the norms, delivered as
-  stored. The limits are those of the test: 30 for verbal learning, 24 for
-  working memory, 10 for the delayed recall and 30 for the visuomotor
-  task. A few delayed recalls are above 10 and end out_of_range. The
-  dictionary writes "/24" for three subtests that have another maximum.
+  Each subtest has a raw score and a z-score. The z-score is computed again
+  as the application computes it, z = (raw score - mean) / SD with one mean
+  and one SD per subtest, the same at every age (norms/scip_*_z.csv, the
+  same for the three forms), and the stored z-score is kept only as a check
+  (scip_*_z_stored, not delivered). A recomputed z-score that differs from
+  the stored one by more than 0.0101 is flagged score_mismatch. It agrees
+  on 227 to 230 visits per subtest; the stored z-score differs on one visit
+  for the working memory and the verbal fluency (the same visit, from 2024)
+  and on none for the other three. A stored z-score with no usable raw
+  score is flagged score_not_recomputed (one visit for the verbal learning,
+  whose raw score is empty, two for the delayed recall, whose raw score is
+  above 10). The limits of
+  the test are 30 for verbal learning, 24 for working memory, 10 for the
+  delayed recall and 30 for the visuomotor task. A few delayed recalls are
+  above 10 and end out_of_range. The dictionary writes "/24" for three
+  subtests that have another maximum.
 
   The hour of the testing (rad_heure_passation_), listed in this section of
   the dictionary, is in neuropsy_conditions.yaml.
@@ -22,12 +33,55 @@ defaults: {type: item}
 variables:
   scip_form: {column: rad_scipv_, label: Form of the SCIP given (1 to 3), range: [1, 3]}
   scip_verbal_learning: {column: scipv01a_, label: Verbal learning - raw score, range: [0, 30]}
-  scip_verbal_learning_z: {column: scipv01b_, type: number, label: Verbal learning - z-score, range: [-10, 10]}
+  scip_verbal_learning_z_stored: {column: scipv01b_, type: number, label: "Verbal learning - z-score, as stored", range: [-10, 10], winsor: false, keep: false}
   scip_working_memory: {column: scipv02a_, label: Working memory - raw score, range: [0, 24]}
-  scip_working_memory_z: {column: scipv02b_, type: number, label: Working memory - z-score, range: [-10, 10]}
+  scip_working_memory_z_stored: {column: scipv02b_, type: number, label: "Working memory - z-score, as stored", range: [-10, 10], winsor: false, keep: false}
   scip_verbal_fluency: {column: scipv03a_, label: Verbal fluency - raw score, range: [0, 60]}
-  scip_verbal_fluency_z: {column: scipv03b_, type: number, label: Verbal fluency - z-score, range: [-10, 10]}
+  scip_verbal_fluency_z_stored: {column: scipv03b_, type: number, label: "Verbal fluency - z-score, as stored", range: [-10, 10], winsor: false, keep: false}
   scip_delayed_recall: {column: scipv04a_, label: Delayed verbal recall - raw score, range: [0, 10]}
-  scip_delayed_recall_z: {column: scipv04b_, type: number, label: Delayed verbal recall - z-score, range: [-10, 10]}
+  scip_delayed_recall_z_stored: {column: scipv04b_, type: number, label: "Delayed verbal recall - z-score, as stored", range: [-10, 10], winsor: false, keep: false}
   scip_visuomotor: {column: scipv05a_, label: Visuomotor tracking - raw score, range: [0, 30]}
-  scip_visuomotor_z: {column: scipv05b_, type: number, label: Visuomotor tracking - z-score, range: [-10, 10]}
+  scip_visuomotor_z_stored: {column: scipv05b_, type: number, label: "Visuomotor tracking - z-score, as stored", range: [-10, 10], winsor: false, keep: false}
+
+scores:
+  # z = (raw score - mean) / SD with one mean and one SD for each subtest, the same at every age (norms/scip_*_z.csv)
+  scip_verbal_learning_z:
+    label: Verbal learning - z-score
+    regression: scip_verbal_learning_z
+    from: scip_verbal_learning
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: scip_verbal_learning_z_stored
+    compare_tolerance: 0.0101
+  scip_working_memory_z:
+    label: Working memory - z-score
+    regression: scip_working_memory_z
+    from: scip_working_memory
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: scip_working_memory_z_stored
+    compare_tolerance: 0.0101
+  scip_verbal_fluency_z:
+    label: Verbal fluency - z-score
+    regression: scip_verbal_fluency_z
+    from: scip_verbal_fluency
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: scip_verbal_fluency_z_stored
+    compare_tolerance: 0.0101
+  scip_delayed_recall_z:
+    label: Delayed verbal recall - z-score
+    regression: scip_delayed_recall_z
+    from: scip_delayed_recall
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: scip_delayed_recall_z_stored
+    compare_tolerance: 0.0101
+  scip_visuomotor_z:
+    label: Visuomotor tracking - z-score
+    regression: scip_visuomotor_z
+    from: scip_visuomotor
+    range: [-10, 10]
+    winsor: [0.01, 0.99]
+    compare: scip_visuomotor_z_stored
+    compare_tolerance: 0.0101

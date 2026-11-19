@@ -16,37 +16,144 @@ notes: >
   digit span exist only in it. No other edition of the scale is recorded in
   this table.
 
-  Coding: the raw score is the number of boxes filled on 276 of 277 visits,
-  errors not taken off. Symbol search: the raw score is the correct answers
+  Coding: the stored raw score is the number of boxes filled, errors not taken
+  off, on every visit; it is computed again as the boxes filled minus the
+  errors. The application stored the boxes filled alone from 2021 (its
+  WAIS-IV form calls that field the boxes filled correctly and the raw score
+  equal to it), but the data say that the clinicians go on typing all the
+  boxes, errors included: at the same age and the same symbol search score,
+  one more error goes with 0.85 fewer boxes in the typed total up to 2021,
+  when it is all the boxes, with 0.21 fewer from 2021 (BP), against 1.85
+  fewer for a count of correct boxes; DR and ASP, whose forms always had the
+  new wording, give 0.12 and 0.09 fewer. The stored raw score therefore
+  gives credit for the errors; the stored value is wais4_code_raw_stored,
+  not delivered (decision D136). 25 raw scores change, 13 scaled scores; 5
+  visits have more errors than boxes (out of range) and get no raw score. Symbol search: the raw score is the correct answers
   minus the errors on 273 of 274. The z-scores are the scaled score minus
   10, over 3, on every visit.
 
-  The index is one function of the sum of the two scaled scores on every visit.
-  The clinician copies it into the medical evaluation (wais4_ivt_index, schema
-  wais4_indices): the two agree on 185 of the 207 visits that hold both. The
-  index of this form is therefore named wais4_ivt_index_np. The second set (_a)
-  is the index of the abbreviated form (thesaurus), equal to the first on few
-  visits.
+  The index is one function of the sum of the two scaled scores on every
+  visit. The clinician copies it into the medical evaluation (wais4_ivt_index,
+  schema wais4_indices): the two agree on 185 of the 207 visits that hold
+  both. The index of this form is therefore named wais4_ivt_index_np. The
+  second set (_a) is the index of the abbreviated form (thesaurus): its sum of
+  scaled scores is twice the coding scaled score, and the index is read from
+  it in the same table.
 
   Same instrument as in FACE SZ and DR, in other columns; the index has
   another name here, and the second set is specific to ASP.
+
+  Scaled scores, z-scores and indices. They are recomputed and delivered
+  (decision of the project lead for the standard scores of the
+  neuropsychological tests). The raw scores stay as delivered, except the coding raw score (above). The scaled scores are read in the
+  WAIS-IV tables of the application (norms/wais4_code.csv and
+  wais4_symbol.csv) from the raw scores, and the z-scores are (scaled score -
+  10) / 3. The form has no typed age in this cohort: the tables are read with
+  the age at the visit (15.9 to 65 years; the visit of 15.9 years gets
+  norm_missing). The sum of the two recomputed scaled scores is delivered as
+  wais4_ivt_sum_scaled and the index (wais4_ivt_index_np) and the percentile
+  rank are read from it in the index tables (norms/wais4_ivt.csv and
+  wais4_ivt_percentile.csv); the second set (_a) is read the same way from
+  twice the coding scaled score. A percentile of 0.1 or 99.9 is a censored
+  value (wais4_ivt_percentile_cens, wais4_ivt_percentile_a_cens). The stored
+  values are wais4_*_stored, not delivered.
+
+  Verified on the visits that have both. Coding scaled score: 9 of 275 differ
+  (3.3%, score_mismatch, 6 from 2024), and its z-score too; symbol search
+  scaled score 5 of 273. First set: sum 10 of 266, index 10 of 266, percentile
+  rank 9 of 264. Second set (_a): sum 9 of 274, index 9 of 274, percentile
+  rank 9 of 261 (before the coding raw score was computed again; after it:
+  coding scaled score 14 and 6 not recomputed, first-set sum and index 15
+  and 6, second set 14 and 7). One visit is not recomputed (the patient of 15.9 years; two
+  for the second set).
 
 defaults: {type: item}
 
 variables:
   wais4_code_filled: {column: wais_cod_tot, range: [0, 135], label: "WAIS-IV coding, boxes filled"}
   wais4_code_errors: {column: wais_cod_err, range: [0, 135], label: "WAIS-IV coding, errors"}
-  wais4_code_raw: {column: wais_cod_brut, range: [0, 135], label: "WAIS-IV coding, raw score"}
-  wais4_code_scaled: {column: wais_cod_std, range: [1, 19], label: "WAIS-IV coding, scaled score"}
-  wais4_code_z: {column: wais_cod_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV coding, z-score of the scaled score"}
+  wais4_code_raw_stored: {column: wais_cod_brut, label: "Coding - raw score as stored (the application stopped taking the errors off at some date)", range: [0, 135], keep: false}
+  wais4_code_scaled_stored: {column: wais_cod_std, range: [1, 19], label: "WAIS-IV coding, scaled score as stored", keep: false}
+  wais4_code_z_stored: {column: wais_cod_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV coding, z-score of the scaled score as stored", keep: false}
   wais4_symbol_correct: {column: wais_symb_tot, range: [0, 60], label: "WAIS-IV symbol search, correct answers"}
   wais4_symbol_errors: {column: wais_symb_err, range: [0, 60], label: "WAIS-IV symbol search, errors"}
   wais4_symbol_raw: {column: wais_symb_brut, range: [0, 60], label: "WAIS-IV symbol search, raw score"}
-  wais4_symbol_scaled: {column: wais_symb_std, range: [1, 19], label: "WAIS-IV symbol search, scaled score"}
-  wais4_symbol_z: {column: wais_symb_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV symbol search, z-score of the scaled score"}
-  wais4_ivt_sum_scaled: {column: ivt_sum_std, range: [2, 38], label: "WAIS-IV processing speed, sum of the two scaled scores"}
-  wais4_ivt_index_np: {column: ivt_indice, range: [50, 150], label: "WAIS-IV processing speed index, neuropsychology form"}
-  wais4_ivt_percentile: {column: ivt_rang, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank"}
-  wais4_ivt_sum_scaled_a: {column: ivt_sum_std_a, range: [2, 38], label: "WAIS-IV processing speed, sum of scaled scores, second set (_a)"}
-  wais4_ivt_index_a: {column: ivt_indice_a, range: [50, 150], label: "WAIS-IV processing speed index, second set (_a)"}
-  wais4_ivt_percentile_a: {column: ivt_rang_a, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank, second set (_a)"}
+  wais4_symbol_scaled_stored: {column: wais_symb_std, range: [1, 19], label: "WAIS-IV symbol search, scaled score as stored", keep: false}
+  wais4_symbol_z_stored: {column: wais_symb_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV symbol search, z-score of the scaled score as stored", keep: false}
+  wais4_ivt_sum_scaled_stored: {column: ivt_sum_std, range: [2, 38], label: "WAIS-IV processing speed, sum of the two scaled scores as stored", keep: false}
+  wais4_ivt_index_np_stored: {column: ivt_indice, range: [50, 150], label: "WAIS-IV processing speed index, neuropsychology form as stored", keep: false}
+  wais4_ivt_percentile_stored: {column: ivt_rang, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank as stored", keep: false}
+  wais4_ivt_sum_scaled_a_stored: {column: ivt_sum_std_a, range: [2, 38], label: "WAIS-IV processing speed, sum of scaled scores, second set (_a) as stored", keep: false}
+  wais4_ivt_index_a_stored: {column: ivt_indice_a, range: [50, 150], label: "WAIS-IV processing speed index, second set (_a) as stored", keep: false}
+  wais4_ivt_percentile_a_stored: {column: ivt_rang_a, type: number, range: [0, 100], winsor: false, label: "WAIS-IV processing speed index, percentile rank, second set (_a) as stored", keep: false}
+
+scores:
+  wais4_code_raw:
+    label: Coding - raw score, the boxes filled minus the boxes filled incorrectly (the boxes filled correctly)
+    sum: [wais4_code_filled]
+    minus: [wais4_code_errors]
+    range: [0, 135]
+    compare: wais4_code_raw_stored
+  wais4_code_scaled:
+    label: WAIS-IV coding, scaled score, read in the table of the manual
+    lookup: wais4_code
+    from: wais4_code_raw
+    range: [1, 19]
+    compare: wais4_code_scaled_stored
+  wais4_code_z:
+    label: WAIS-IV coding, z-score of the scaled score
+    sum: [wais4_code_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_code_z_stored
+    compare_tolerance: 0.006
+  wais4_symbol_scaled:
+    label: WAIS-IV symbol search, scaled score, read in the table of the manual
+    lookup: wais4_symbol
+    from: wais4_symbol_raw
+    range: [1, 19]
+    compare: wais4_symbol_scaled_stored
+  wais4_symbol_z:
+    label: WAIS-IV symbol search, z-score of the scaled score
+    sum: [wais4_symbol_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_symbol_z_stored
+    compare_tolerance: 0.006
+  wais4_ivt_sum_scaled:
+    label: WAIS-IV processing speed, sum of the two scaled scores
+    sum: [wais4_code_scaled, wais4_symbol_scaled]
+    range: [2, 38]
+    compare: wais4_ivt_sum_scaled_stored
+  wais4_ivt_index_np:
+    label: WAIS-IV processing speed index, neuropsychology form, read in the table of the manual
+    lookup: wais4_ivt
+    from: wais4_ivt_sum_scaled
+    range: [50, 150]
+    compare: wais4_ivt_index_np_stored
+  wais4_ivt_percentile:
+    label: WAIS-IV processing speed index, percentile rank, read in the table of the manual
+    lookup: wais4_ivt_percentile
+    from: wais4_ivt_sum_scaled
+    range: [0, 100]
+    compare: wais4_ivt_percentile_stored
+    compare_tolerance: 0.051
+  wais4_ivt_sum_scaled_a:
+    label: WAIS-IV processing speed, sum of scaled scores of the second set (_a), twice the coding score
+    sum: [wais4_code_scaled]
+    scale: [2, 0]
+    range: [2, 38]
+    compare: wais4_ivt_sum_scaled_a_stored
+  wais4_ivt_index_a:
+    label: WAIS-IV processing speed index, second set (_a), read in the table of the manual
+    lookup: wais4_ivt
+    from: wais4_ivt_sum_scaled_a
+    range: [50, 150]
+    compare: wais4_ivt_index_a_stored
+  wais4_ivt_percentile_a:
+    label: WAIS-IV processing speed index, percentile rank, second set (_a), read in the table of the manual
+    lookup: wais4_ivt_percentile
+    from: wais4_ivt_sum_scaled_a
+    range: [0, 100]
+    compare: wais4_ivt_percentile_a_stored
+    compare_tolerance: 0.051

@@ -53,6 +53,7 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `checks` | no | Names of functions in `facedata/custom.py` (section 10) |
 | `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
 | `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
+| `uses` | no | Names of variables or scores that other schemas of the cohort deliver; a score of this schema may add up, average or look up from them (section 8, "A score built on the scores of other schemas") |
 | `crossed`, `per_visit`, `packed` | no | With `level: list`: lists that the export crossed, lists of the visit, records packed in one cell (section 15) |
 | `relatives` | no | With `level: relatives`, required: the prefix of the raw columns of each relative, and who the relative is (section 16) |
 | `per_patient` | no | With `level: relatives`: the yes/no columns of the patients table computed from the rows of the relatives (section 16) |
@@ -68,7 +69,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `column` | all | Raw column. Default: the output name. A list of columns when the extraction moved the variable to another column (see below) |
 | `label` | all | Short label for the report |
 | `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
-| `range` | number, item, date | `[min, max]`: hard limits, in the target unit. Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD` |
+| `range` | number, item, date, time | `[min, max]`: hard limits, in the target unit (hours for a time: `[0, 24]` for a time of day or a duration of a day). Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD`. A schema that gives `item` defaults must give a `time` its own range |
 | `codes` | category, item, number, band | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). For a band: `{raw: band}`, a label that the export cut short is written out in full before parsing (`{"25-5": "25-50"}`, section 6). Matching ignores case and surrounding spaces |
 | `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded`, `running` (an end date not reached: the treatment was running when it was typed), `as_needed` (a dose taken as needed). A schema may name the codes of its scale (`code_994` of the ADI-R) |
 | `unit` | number | Target unit of the output |
@@ -88,7 +89,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
 | `asked_if` | item, number | Name of a yes/no variable or of a count (an item or a number whose range starts at 0) listed before. The question is asked only after a yes to it (or a count above 0), or its answer is 0 when that count is 0: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
-| `box_list` | item | Name of a list of yes/no boxes shown together. Once every box is read, an empty box beside a box of the same list that is 1 is 0: the rater ticked what applied (section 4) |
+| `box_list` | item | Name of a list of yes/no boxes shown together. Once every box is read, an empty box beside a box of the same list that is 1 is 0: the rater ticked what applied. Not where a count that hangs on the box (`asked_if`) was typed: the count is shown only after a yes, so that box is left as written (section 4) |
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
 | `shown_if` | all | `{variable: [answers]}`: the form shows the question only when that variable, listed before, holds one of the answers. Elsewhere a filled cell is a value the form wrote by itself: it becomes missing and gets `not_shown` (section 4) |
 | `before_visit` | date | `true`: the date is of an event before the visit (a first attempt asked at inclusion). A date on the day of the visit or later becomes missing and gets `out_of_range` |
@@ -106,7 +107,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `band` | Percentile bands (`25 - 50`, `>95`) | lower limit of the band, as a float | never |
 | `category` | Coded answers | harmonised label | never |
 | `date` | Dates, written `YYYY-MM-DD` or `DD/MM/YYYY`; a part that is not known is `00` or left out (`06/2018`, `2018`) | date | never |
-| `time` | Clock times and durations written `HH:MM` or `HH:MM:SS` | hours as float | never |
+| `time` | Clock times and durations written `HH:MM` or `HH:MM:SS` | hours as float; hard `range` applied | never |
 | `text` | Free text | cleaned string | never |
 
 More types are added only when an instrument needs one (lists for
@@ -183,7 +184,10 @@ tms_fu: {column: proccur_tms_sem, type: item, range: [0, 1], codes: {Oui: 1, Non
   applied once all of them are read, and then `asked_if` again, so that the
   number of sessions of a box read as no is 0 too.
 - A visit where every box is empty keeps them missing: nothing says what
-  was received. A box that holds a missing code stays missing.
+  was received. A box that holds a missing code stays missing. A box whose
+  count was typed (a variable with `asked_if` on it that holds a value) is not
+  read as a no either: the count is shown only after a yes, so the cell is
+  left as written.
 - As with `asked_if`, these zeros get no flag and count as filled cells.
   The notes of the schema say how many visits are concerned (decision D124).
 
@@ -626,7 +630,10 @@ Rules:
   instrument was not administered. "Nothing" means the columns that the
   schema's own variables read: a column of another instrument listed under
   `filled` does not give a version to a visit where the instrument is empty.
-  A placeholder date (1000-01-01, 0000-00-00) counts as nothing (D122).
+  A placeholder date (1000-01-01, 0000-00-00) counts as nothing (D122). A
+  variable that a score reads only as its `age` or its `by` (the typed age and
+  the education of a norm table, filled at every testing whatever the test) is
+  not a datum of the instrument either.
 - A visit with data but a version code that is not listed gets
   `version_unknown`. So does a visit dated before the `since` day of the
   edition that its columns give.
@@ -664,6 +671,7 @@ scores:
 |---|---|
 | `sum`, `mean`, `max` or `min` | The variables to combine: added, averaged, the highest of them (the ADI-R counts the higher of two mannerism items) or the lowest (the age at the first mood episode is the earliest of three ages). Scores defined higher up in the file may be used too |
 | `lookup` and `from` | Instead of `sum` or `mean`: the score is read in a norm table. `lookup` names the table, `from` the raw score to look up, and `by` a second variable the table depends on (see below) |
+| `profile` and `from` | Instead of `sum` or `mean`: the score is read in a table with one line per combination of answers (the EQ-5D index of the five answers). `profile` names the table, `from` lists the variables whose answers make the profile, written one after another (`11235`); a missing answer or a profile that the table does not hold gives a missing score, and the second gets `norm_missing` (see below) |
 | `regression`, `from` and `with` | Instead of `sum` or `mean`: a z-score computed with the regression of a norm table. `regression` names the table, `from` the raw score and `with` the other variables of the regression (see below) |
 | `band_of` and `limits` | The percentile band of a z-score, alone or to complete a `lookup` (see below) |
 | `custom` | Instead of `sum` or `mean`: the name of a function of `facedata/custom.py` that computes the score from the instrument's values, when it is a formula (a body mass index, a corrected QT interval) |
@@ -677,6 +685,9 @@ scores:
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept. Where the stored score exists, is not delivered (`keep: false`) and the score cannot be recomputed, the row gets `score_not_recomputed`. A check score (`keep: false`) that compares a delivered variable files its `score_mismatch` under that variable |
 | `otherwise` | With `sum`, `mean`, `max` or `min`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
+| `age` | With `lookup`, `regression`: the variable that holds the age typed in the form. The EMR reads its norms with the age typed in the form, which is sometimes wrong; the table is read with that age where it is within 1 year of the age at the visit, and with the age at the visit elsewhere or where nothing was typed. A variable of the same schema, usually `keep: false` (section 8) |
+| `stop_at_zero` | With `sum`: the items are added in the order listed, and the items after the first one scored 0 are not counted (a span: the test stops at the first failure) |
+| `compare_turned` | With `compare`: a stored value equal to the score with the opposite sign is not a mismatch; it gets `sign_flipped`. For a z-score that a centre wrote with the opposite sign in some years |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
 | `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
 | `label`, `range`, `keep` | As for variables. `keep: false` makes a score a pure consistency check |
@@ -743,6 +754,67 @@ Use it in one of two ways. As a check (`keep: false` and `compare`), when the
 EMR already stores the standard score: the stored one is delivered, and the
 rows where the table disagrees are flagged. Or as the delivered score, when
 the extraction has none.
+
+### Norm tables without an age, a second variable for a regression
+
+A table with no `age_min` and `age_max` holds at every age, and a visit
+without a date is still read: it turns the sum of scaled scores into an
+index. A line with `cens` -1 is "this band or a lower one" (`censored_left`),
++1 "or a higher one".
+
+A `regression` can depend on a second variable like a `lookup` (`by`, with
+`by_min` and `by_max` in the table); a visit without that variable has no score and
+has `norm_missing`, where the EMR silently took the lowest class. Its `with` is optional. A norm given as a
+mean and a standard deviation for each cell is a regression with `age` 0, the
+mean as `intercept` and, for a score that is better when it is low (a time, a
+number of errors), the standard deviation written negative in `sd`, so that
+z = (mean - raw) / sd is positive for a good performance.
+
+### A score read in a table of profiles
+
+The EQ-5D index is not a formula of the five answers: the application reads
+it in a table of the 3,125 combinations. The table is a file of the norms
+folder with two columns, `profile` (the five answers written one after
+another, from 11111 to 55555) and `value`:
+
+```yaml
+scores:
+  eq5d_index:
+    label: EQ-5D-5L index
+    profile: eq5d_index                # norms/eq5d_index.csv
+    from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]
+    compare: eq5d_index_stored
+```
+
+The answers are items of whole numbers. A visit with one answer missing has no
+index and no flag; an answer profile that the table does not hold (an answer
+outside 1 to 5) is missing and gets `norm_missing`. A stored index is
+compared as for any score (`compare`), so that a stored value that is not the
+table's is `score_mismatch`.
+
+### A score built on the scores of other schemas
+
+An index of the WAIS-IV is the sum of the scaled scores of subtests that each
+have their own schema. `uses` lists the names of those scores; they are read
+from the columns that the other schemas deliver, so a score of this schema can
+add them up. The schemas that have `uses` run after all the others, and the
+used columns are the delivered ones (recomputed, in their range):
+
+```yaml
+uses: [wais4_simil_scaled, wais4_info_scaled]
+scores:
+  wais4_icv_sum_scaled:
+    label: Verbal comprehension, sum of the scaled scores
+    sum: [wais4_simil_scaled, wais4_info_scaled]
+    scale: [1.5, 0]
+    compare: wais4_icv_sum_scaled_stored
+```
+
+A name in `uses` must be a variable or a score that another schema of the
+cohort delivers (`check_cohort`). When the schema that gives it is not loaded
+(`load(instruments=[...])`), the column is empty and so is the score. A stored
+value that cannot be recomputed is flagged `score_not_recomputed`, as for any
+score with `compare`.
 
 ### A z-score computed with a regression
 
@@ -835,9 +907,11 @@ A z-score outside its `range` is missing, and so is its band.
 ### Stored values derived from a stored score
 
 Next to a raw total, the extraction often stores values that the EMR computed
-from it: an age-scaled score, a z-score, a percentile. They cannot be
-recomputed without the norm tables, so they are delivered as stored. But when
-the stored total is wrong, they are wrong too. `derived_from` says so:
+from it: an age-scaled score, a z-score, a percentile. Where the norm tables
+are known they are computed again (`lookup`, `regression`, section 8: the
+recomputed value is delivered and the stored one is a check). Where they are
+not, the stored value is delivered. But when the stored total is wrong, they
+are wrong too. `derived_from` says so:
 
 ```yaml
 variables:
@@ -859,9 +933,9 @@ wrong in a known way, and what was derived from it carries the error.
 Check first that the value really was derived from the stored score. The
 WAIS-III vocabulary scaled score looked like it; the norm table showed that
 the EMR had used the true total, and that only the total column of the
-extraction was wrong. Its schema now names the norm-table check instead:
-`derived_from: wais3_vocab_scaled_check` flags the scaled score where the
-table gives another value.
+extraction was wrong. Its scaled score is now read in the norm table from the
+recomputed total (BP D135), and the stored one is a check that says
+`score_mismatch` where the table gives another value.
 
 `derived_from` can also name a variable: the raw score next to its
 percentile. The EMR sometimes computes a percentile from an empty cell, as
@@ -1045,6 +1119,7 @@ the list is not empty.
   box of the same list.
 - Scores refer to variables or earlier scores that exist; reversed items have a `range`.
 - `derived_from` names a score that has `compare`, or another variable of the schema.
+- `uses` names variables or scores that another schema of the cohort delivers; a score may add up, average or look up from them.
 - `checks` names variables or scores of the schema and functions that exist
   in `facedata/custom.py`.
 - `scale` is two numbers, on a score that has `sum` or `mean`.

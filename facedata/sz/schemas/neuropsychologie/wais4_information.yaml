@@ -20,6 +20,20 @@ notes: >
 
   FACE BP does not have this subtest.
 
+  Scaled score and z-score. They are recomputed and delivered (decision of the
+  project lead for the standard scores of the neuropsychological tests): the
+  scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_information.csv) from the raw total of the items, and the
+  z-score is (scaled score - 10) / 3. The table is read with the age typed in
+  the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where
+  it is within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97 have
+  a typed age more than 1 year away). The stored scores are
+  wais4_info_scaled_stored and wais4_info_z_stored, not delivered. Verified:
+  the scaled score differs on 5 of the 458 visits that have both
+  (score_mismatch, 4 in 2013 to 2015, where the stored total is also one point
+  higher on 6 visits), and so does its z-score; no total gives norm_missing.
+
 version:
   name: wais_version
   column: wais_version
@@ -28,6 +42,7 @@ version:
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
 variables:
+  wais4_info_age_entered: {column: cclin01_, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_info01: {column: infor01_w, label: Information item 1}
   wais4_info02: {column: infor02_w, label: Information item 2}
   wais4_info03: {column: infor03_w, label: Information item 3}
@@ -55,8 +70,8 @@ variables:
   wais4_info25: {column: infor25_w, label: Information item 25}
   wais4_info26: {column: infor26_w, label: Information item 26}
   wais4_info_total_stored: {column: infortot_w, label: Raw total as stored, range: [0, 26], keep: false}
-  wais4_info_scaled: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3), range: [1, 19], derived_from: wais4_info_total}
-  wais4_info_z: {column: inforcr_w, label: Scaled score as a z-score, type: number, range: [-3, 3], winsor: false, derived_from: wais4_info_total}
+  wais4_info_scaled_stored: {column: inforstd_w, label: Age-scaled score (mean 10 and SD 3) as stored, range: [1, 19], keep: false}
+  wais4_info_z_stored: {column: inforcr_w, label: Scaled score as a z-score as stored, type: number, range: [-3, 3], winsor: false, keep: false}
 
 scores:
   wais4_info_total:
@@ -68,3 +83,17 @@ scores:
           wais4_info25, wais4_info26]
     min_items: 1
     compare: wais4_info_total_stored
+  wais4_info_scaled:
+    label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
+    lookup: wais4_information
+    from: wais4_info_total
+    age: wais4_info_age_entered
+    range: [1, 19]
+    compare: wais4_info_scaled_stored
+  wais4_info_z:
+    label: Scaled score as a z-score, (scaled score - 10) / 3
+    sum: [wais4_info_scaled]
+    scale: [0.3333333, -3.3333333]
+    range: [-3, 3]
+    compare: wais4_info_z_stored
+    compare_tolerance: 0.006

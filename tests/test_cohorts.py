@@ -113,10 +113,17 @@ def delivered(cohort):
             outputs[name] = {"kind": "number" if kind in NUMBERS else kind, "level": level,
                              "unit": spec.get("unit", "") if kind == "number" else None,
                              "labels": set(spec.get("codes", {}).values()) if kind == "category" else set(),
-                             "codes": answers(spec)}
+                             "codes": answers(spec), "range": hard_range(spec, kind)}
             for column in spec.get("columns", []):
                 readers.setdefault(column, set()).add(name)
     return outputs, readers
+
+
+def hard_range(spec, kind):
+    """The hard limits of a measurement or a date as text ("0.0 to 90.0"), or None when it has none."""
+    if kind not in NUMBERS | {"date"} or "range" not in spec:
+        return None
+    return " to ".join(str(limit) for limit in spec["range"])
 
 
 def answers(spec):
@@ -134,6 +141,9 @@ def what_differs(one, other):
     # A form with more boxes is the same question; two lists that each have labels of their own are not.
     if not (one["labels"] <= other["labels"] or other["labels"] <= one["labels"]):
         differing.append("labels")
+    # One variable, one hard limit: a value that one cohort removes as impossible must not be kept by another.
+    if one["range"] is not None and other["range"] is not None and one["range"] != other["range"]:
+        differing.append("range")
     # The same answer must become the same thing: 1 is not "right" in one cohort and "left" in the other.
     if any(one["codes"][token] != other["codes"][token] for token in set(one["codes"]) & set(other["codes"])):
         differing.append("codes")
@@ -141,10 +151,13 @@ def what_differs(one, other):
 
 
 def test_what_differs():
-    glucose = {"kind": "number", "level": "visit", "unit": "mmol/L", "labels": set(), "codes": {}}
+    glucose = {"kind": "number", "level": "visit", "unit": "mmol/L", "labels": set(), "codes": {}, "range": "1.5 to 40.0"}
     assert what_differs(glucose, dict(glucose)) == []
+    assert what_differs(glucose, {**glucose, "range": "1.0 to 40.0"}) == ["range"]
+    assert what_differs(glucose, {**glucose, "range": None}) == []                  # no limit is not another limit
+    assert hard_range({"range": [0.0, 90.0]}, "item") == "0.0 to 90.0" and hard_range({"range": [0.0, 1.0]}, "category") is None
     assert what_differs(glucose, {**glucose, "unit": "g/L", "level": "patient"}) == ["level", "unit"]
-    short = {"kind": "category", "level": "visit", "unit": None, "labels": {"yes", "no"}, "codes": {"1": "yes", "2": "no"}}
+    short = {"kind": "category", "level": "visit", "unit": None, "labels": {"yes", "no"}, "codes": {"1": "yes", "2": "no"}, "range": None}
     assert what_differs(short, {**short, "labels": {"yes", "no", "unknown"}}) == []         # one more box
     assert what_differs(short, {**short, "labels": {"code_1", "code_2"}}) == ["labels"]
     assert what_differs(short, {**short, "codes": {"1": "no", "2": "yes"}}) == ["codes"]   # the same labels, read the other way
@@ -178,3 +191,17 @@ def test_the_cohorts_can_be_stacked():
     no_longer_true = [column for column in listed["columns"] if column not in other_names]
     no_longer_true = no_longer_true + [name for name in listed["names"] if name not in other_content]
     assert no_longer_true == [], "listed in shared_names.yaml, but the cohorts now agree"
+
+
+def test_a_time_has_a_range_of_hours():
+    """The hard range is applied to times too: a time of day or a night's sleep is from 0 to 24 hours.
+
+    A schema with item defaults would give a time the range of its items (0 to 3), so each time sets its own.
+    """
+    wrong = {}
+    for cohort in COHORTS:
+        for schema in load_schemas(PACKAGE / cohort / "schemas").values():
+            for name, spec in schema["variables"].items():
+                if spec["type"] == "time" and spec.get("range") != [0.0, 24.0]:
+                    wrong[f"{cohort} {name}"] = spec.get("range")
+    assert wrong == {}, "a time needs range: [0, 24]"

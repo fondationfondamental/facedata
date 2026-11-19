@@ -18,7 +18,8 @@ from facedata.tokens import EMPTY_DATE, PLACEHOLDER_DATES
 def detect_version(raw, keys, schema):
     """The edition or form of the instrument used at each visit."""
     version = schema["version"]
-    columns = sorted({column for variable in schema["variables"].values() for column in variable["columns"]})
+    norm_inputs = {score[field] for score in schema.get("scores", {}).values() for field in ("age", "by") if field in score}
+    columns = sorted({column for name, variable in schema["variables"].items() if name not in norm_inputs for column in variable["columns"]})
     has_data = ((raw[columns] != "") & (raw[columns] != EMPTY_DATE) & ~raw[columns].isin(PLACEHOLDER_DATES)).any(axis=1)
     flags = []
     if "filled" in version:
@@ -339,6 +340,8 @@ def combine_items(values, score, schema):
         table[item] = low + high - table[item]
     if "points" in score:
         table = table.replace(score["points"])
+    if score.get("stop_at_zero"):                      # a span: the items after the first failure are not counted
+        table = table.mask((table == 0).cummax(axis=1).shift(1, axis=1, fill_value=False).astype(bool), 0)
     enough = table.notna().sum(axis=1) >= score.get("min_items", len(items))
     if "max" in score:
         result = table.max(axis=1)
@@ -391,7 +394,9 @@ def look_up(raw, age, table, name, by=None):
     if table is not None:
         years = np.floor(age)                          # completed years
         for line in table.itertuples():
-            fits = years.between(line.age_min, line.age_max) & raw.between(line.raw_min, line.raw_max)
+            fits = raw.between(line.raw_min, line.raw_max)
+            if "age_min" in table.columns:             # a table with no age holds at every age
+                fits = fits & years.between(line.age_min, line.age_max)
             if by is not None:
                 fits = fits & np.floor(by).between(line.by_min, line.by_max)
             result = result.mask(fits, line.value)
@@ -400,8 +405,24 @@ def look_up(raw, age, table, name, by=None):
     flags = stack_flags([
         make_flags(raw.notna() & result.isna(), name, "norm_missing", detail),
         make_flags(cens == 1, name, "censored_right", "this band or a higher one"),
+        make_flags(cens == -1, name, "censored_left", "this band or a lower one"),
     ])
     return result, cens, flags
+
+
+def read_profile(answers, table, name):
+    """A score read in a table with one line per combination of answers: the EQ-5D index of five answers.
+
+    table: columns profile (the answers written one after another, 11235) and value.
+    A missing answer gives no score and no flag; a profile the table lacks gets norm_missing.
+    """
+    result = pd.Series(np.nan, index=answers.index)
+    complete = answers.notna().all(axis=1)
+    if table is not None and complete.any():
+        key = answers[complete].astype(int).astype(str).agg("".join, axis=1)
+        result[complete] = key.map(dict(zip(table["profile"].astype(str), table["value"])))
+    detail = "the norm table was not found" if table is None else "this combination of answers is not in the norm table"
+    return result, make_flags(complete & result.isna(), name, "norm_missing", detail)
 
 
 def band_from_table(text, values, cens, flags, name, variable, age, others, norms):
@@ -424,7 +445,19 @@ def band_from_table(text, values, cens, flags, name, variable, age, others, norm
     return values, cens, flags
 
 
-def regress(raw, age, table, terms, name):
+def norm_age(values, score, age):
+    """The age a norm table is read with: the age typed in the form (score field age) where it is within 1 year of the age at the visit.
+
+    The EMR reads its norms with the typed age, which is sometimes a typing error;
+    where it is far from the age at the visit, or empty, the age at the visit is used.
+    """
+    if "age" not in score:
+        return age
+    typed = values[score["age"]]
+    return typed.where(typed.notna() & (age.isna() | ((typed - age).abs() <= 1)), age)
+
+
+def regress(raw, age, table, terms, name, by=None):
     """A z-score from the regression of a norm table: (raw score - expected score) / sd.
 
     table: one line per age group (age_min, age_max, intercept, age, one
@@ -441,13 +474,16 @@ def regress(raw, age, table, terms, name):
         years = np.floor(age)                          # completed years
         for line in table.itertuples():
             fits = years.between(line.age_min, line.age_max)
+            if by is not None:                         # a second variable, as for a lookup
+                fits = fits & np.floor(by).between(line.by_min, line.by_max)
             expected = line.intercept + line.age * years
             for term, others in terms.items():
                 expected = expected + getattr(line, term) * others
             result = result.mask(fits, (raw - expected) / line.sd)
             in_table = in_table | fits
     detail = "the norm table was not found" if table is None else "a variable of the regression is missing"
-    flags = make_flags(raw.notna() & in_table & result.isna(), name, "norm_missing", detail)
+    no_by = by.isna() if by is not None else False       # no education: no score, and a flag whatever the age
+    flags = make_flags(raw.notna() & ((in_table & result.isna()) | no_by), name, "norm_missing", detail)
     return result.round(2), flags
 
 
@@ -479,16 +515,20 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
         if "lookup" in score:
             by = values[score["by"]] if "by" in score else None
             table = (norms or {}).get(score["lookup"])
-            result, censoring, lookup_flags = look_up(values[score["from"]], age, table, name, by)
+            result, censoring, lookup_flags = look_up(values[score["from"]], norm_age(values, score, age), table, name, by)
             if "band_of" in score:                     # an age the table does not have: the band of the z-score
                 result, lookup_flags = complete_with_z(result, lookup_flags, values[score["band_of"]], score["limits"], name)
             flags.append(lookup_flags)
             if cens is not None and (censoring != 0).any():
                 cens[name] = censoring
+        elif "profile" in score:                       # a value read in a table of profiles of answers
+            result, profile_flags = read_profile(values[score["from"]], (norms or {}).get(score["profile"]), name)
+            flags.append(profile_flags)
         elif "regression" in score:                    # a z-score from the regression of a norm table
-            terms = {term: values[variable] for term, variable in score["with"].items()}
+            terms = {term: values[variable] for term, variable in score.get("with", {}).items()}
             table = (norms or {}).get(score["regression"])
-            result, regression_flags = regress(values[score["from"]], age, table, terms, name)
+            by = values[score["by"]] if "by" in score else None
+            result, regression_flags = regress(values[score["from"]], norm_age(values, score, age), table, terms, name, by)
             flags.append(regression_flags)
         elif "band_of" in score:                       # the band of a z-score, with no table
             nothing = pd.Series(np.nan, index=values.index)
@@ -518,6 +558,8 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             tolerance = score.get("compare_tolerance", 0.01)
             stored_differs[name] = both & ((stored - result).abs() > tolerance)
             unexplained = both & ((stored - result - score["compare_offset"]).abs() > tolerance)
+            turned = both & score.get("compare_turned", False) & ((stored + result).abs() <= tolerance) & (result.abs() > tolerance)
+            unexplained = unexplained & ~turned
             detail = "stored " + stored.astype(str) + ", computed " + result.astype(str)
             stored_is_delivered = specs[score["compare"]].get("keep", True)
             is_check = not score.get("keep", True)
@@ -526,6 +568,7 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             doubted_below = specs[score["compare"]].get("derived_from") == name
             where = score["compare"] if stored_is_delivered and is_check and not doubted_below else name
             flags.append(make_flags(unexplained, where, "score_mismatch", detail))
+            flags.append(make_flags(turned, where, "sign_flipped", "stored with the opposite sign: " + detail))
             if not is_check and not stored_is_delivered:     # neither is delivered on these rows: say what was stored
                 alone = stored.notna() & result.isna()
                 flags.append(make_flags(alone, name, "score_not_recomputed", "stored " + stored.astype(str)))

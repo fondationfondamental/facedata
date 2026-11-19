@@ -86,8 +86,9 @@ def answer_by_logic(values, filled, name, variable, schema=None):
     """An empty cell whose answer is known is 0: after a "no" to the question it hangs on (asked_if).
 
     With the schema, also an empty box beside a ticked box of its list
-    (box_list): the rater ticked what applied. Returns the values and which
-    cells now hold an answer.
+    (box_list): the rater ticked what applied, unless a count that hangs on
+    the box was typed (it is shown only after a yes). Returns the values and
+    which cells now hold an answer.
     """
     empty = ~filled[name]
     answered = pd.Series(False, index=values.index)
@@ -96,14 +97,17 @@ def answer_by_logic(values, filled, name, variable, schema=None):
     if schema is not None and "box_list" in variable:
         others = [other for other, spec in schema["variables"].items()
                   if other != name and spec.get("box_list") == variable["box_list"]]
-        answered = answered | (empty & (values[others] == 1).any(axis=1))
+        counts = [filled[other] for other, spec in schema["variables"].items() if spec.get("asked_if") == name]
+        typed = pd.concat(counts, axis=1).any(axis=1) if counts else pd.Series(False, index=values.index)
+        answered = answered | (empty & (values[others] == 1).any(axis=1) & ~typed)
     return values[name].mask(answered, 0), filled[name] | answered
 
 
-def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True):
+def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True, delivered=None):
     """Run every step for one instrument.
 
     limits: winsor limits of an earlier load. norms: the norm tables.
+    delivered: the columns the other schemas deliver, for a schema that has `uses`.
     winsorise_values: False leaves the tails of the continuous variables as they are.
 
     Returns a dict: values (one column per variable and score), cens, version,
@@ -151,7 +155,7 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
         flags.append(sign_flags)
 
     for name, variable in schema["variables"].items():
-        if "range" in variable and variable["type"] in ("number", "item", "date"):
+        if "range" in variable and variable["type"] in ("number", "item", "date", "time"):
             values[name], range_flags = check_range(values[name], name, variable)
             flags.append(range_flags)
         if variable.get("before_visit"):             # a date that cannot be on the day of its visit or later
@@ -161,6 +165,8 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
             values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
             flags.append(doubt_flags)
     cens = cens.where(values[cens.columns].notna(), 0)
+    if "uses" in schema:                              # scores that other schemas deliver, an empty column if they are not loaded
+        values[schema["uses"]] = (values if delivered is None else delivered).reindex(columns=schema["uses"])
 
     values, score_flags = compute_scores(values, schema, version, keys["age"], norms, cens, keys)
     flags.append(score_flags)
@@ -344,7 +350,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
     all_qc = []
     lists = []                                           # the items of each list instrument
     relatives = pd.DataFrame(columns=["usubjid", "relative"])
-    for schema in schemas.values():
+    for schema in sorted(schemas.values(), key=lambda schema: "uses" in schema):     # a schema that uses others runs last
         if "derived_from" in schema:                     # computed with the instrument it comes from
             continue
         if schema.get("level") == "relatives":
@@ -362,7 +368,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_flags.append(flags)
             all_qc.extend(qc)
             continue
-        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values)
+        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values, data)
         table = delivered_columns(schema, result)
         for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
             data[column] = data[column].fillna(table[column])

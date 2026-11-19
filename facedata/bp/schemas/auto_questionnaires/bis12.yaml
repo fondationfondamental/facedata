@@ -2,7 +2,7 @@ instrument: bis12
 title: Barratt Impulsiveness Scale, BIS-12 (12 items)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire BIS10 (version long 34 items)
-status: draft
+status: reviewed
 notes: >
   BIS-10 and BIS-12 are two instruments. An error in the EMR stored the
   answers of the 12-item BIS-12 (used from 2021 on) in twelve of the columns
@@ -36,8 +36,11 @@ notes: >
   only, whereas bis1038 to bis1040 are filled with one decimal on every
   visit that has the twelve items, from 2009 on (all 4,581 complete BIS-10
   visits). They are written by the score step of the data managers.
-  The stored behavioural and general means are rounded to one decimal and are
-  not compared.
+  The stored behavioural and general means are rounded to one decimal: they
+  are compared with a tolerance of 0.051 (the general score with an offset
+  of 0.5). The export also writes a score when an item is missing, as the
+  sum of the answers present (10 stored scores; one stored total of 5 is
+  below the declared range).
 
   Not read. On these visits the EMR also filled bis10_imp_mot, bis10_imp_att,
   bis10_imp_pla, bis10_score_total and bis11, using the 4, 4, 4, 12 and 9
@@ -95,7 +98,12 @@ scores:
   bis12_behavioural:
     label: Behavioural impulsivity (mean of 7 items)
     mean: [bis12_02, bis12_06, bis12_07, bis12_08, bis12_10, bis12_11, bis12_12]
+    compare: bis12_behavioural_stored
+    compare_tolerance: 0.051
 
   bis12_general:
     label: General impulsivity (mean of the cognitive and behavioural scores)
     mean: [bis12_cognitive, bis12_behavioural]
+    compare: bis12_general_stored
+    compare_offset: 0.5
+    compare_tolerance: 0.08

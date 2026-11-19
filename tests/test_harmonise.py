@@ -7,7 +7,7 @@ import pytest
 from facedata import custom
 from facedata.harmonise import (censoring_from_units, check_range, collapse_patient_level,
                                 compute_scores, convert_units, detect_version, doubt_period, fix_sign,
-                                look_up, regress, winsorise)
+                                look_up, norm_age, read_profile, regress, winsorise)
 from helpers import flagged, make_keys, texts
 
 GLUCOSE = {
@@ -141,6 +141,18 @@ def test_version_from_a_column():
     version, flags = detect_version(raw, keys, schema)
     assert list(version[:2]) == ["wais3", "wais4"] and version[2:].isna().all()
     assert flagged(flags, "version_unknown") == [2]      # data, but a code that is not listed
+
+
+def test_the_age_and_education_of_a_norm_table_are_not_data_of_the_instrument():
+    """The typed age and education are filled at every testing: a visit of another test is not an unknown version."""
+    raw = pd.DataFrame({"ver": ["", "WAIS4", ""], "x": ["", "5", "7"], "age": ["30", "31", "32"], "edu": ["12", "12", "12"]})
+    keys = make_keys(["A", "B", "C"], [0, 0, 0], ["2015-01-01"] * 3)
+    schema = {"version": {"name": "fluency_form", "column": "ver", "codes": {"WAIS4": "form_1"}},
+              "variables": {"x": {"columns": ["x"]}, "typed_age": {"columns": ["age"]}, "education": {"columns": ["edu"]}},
+              "scores": {"z": {"regression": "table", "from": "x", "age": "typed_age", "by": "education"}}}
+    version, flags = detect_version(raw, keys, schema)
+    assert list(version[:2]) == [None, "form_1"] or (pd.isna(version[0]) and version[1] == "form_1")
+    assert flagged(flags, "version_unknown") == [2]       # a value of the instrument and no form: row 0 has only the norm inputs
 
 
 def test_a_placeholder_date_does_not_make_a_visit_filled():
@@ -536,6 +548,16 @@ def test_psqi_components_follow_the_published_classes():
     assert list(custom.psqi_dysfunction(values)[:3]) == [0.0, 1.0, 3.0] and pd.isna(custom.psqi_dysfunction(values)[3])
 
 
+def test_psqi_efficiency_corrects_a_bedtime_typed_on_a_12_hour_clock():
+    """11:00 to 7:00 is 20 hours in bed, which is impossible: the bedtime was 23:00 (BP D132). A day sleeper is left alone."""
+    values = pd.DataFrame({"psqi_bedtime": [23.0, 11.0, 8.0, 10.0], "psqi_rising_time": [7.0, 7.0, 18.0, 6.0],
+                           "psqi_sleep_hours": [7.0, 7.0, 7.0, 7.0]})
+    efficiency = custom.psqi_efficiency(values)
+    assert list(efficiency) == [0.0, 0.0, 2.0, 0.0]        # 7 of 8 hours twice; 7 of 10 hours by day is 70%; 10:00 to 6:00 is 8 hours too
+    on_75 = pd.DataFrame({"psqi_bedtime": [23.0], "psqi_rising_time": [7.0 + 1 / 3], "psqi_sleep_hours": [7.0]})
+    assert custom.psqi_efficiency(on_75)[0] == 1.0         # 7 of 8.333 hours is 84%: a float error must not move 75% either way
+
+
 def test_psqi_latency_puts_minutes_and_item_5a_in_classes():
     values = pd.DataFrame({"psqi_latency": [10.0, 20.0, 45.0, 90.0, np.nan, 30.0],
                            "psqi05a": [0.0, 0.0, 2.0, 3.0, 1.0, np.nan]})
@@ -631,3 +653,47 @@ def test_a_custom_score_can_use_the_key_columns():
     values, flags = compute_scores(pd.DataFrame(index=keys.index), schema, keys=keys)
     assert list(values["age_at_inclusion"][:3]) == [41, 41, 41]          # the age at V0, also on the other rows
     assert pd.isna(values["age_at_inclusion"][3])                         # no inclusion visit
+
+
+def test_a_score_read_in_a_table_of_profiles():
+    """The EQ-5D index of the five answers is the line of a table (SCHEMA_SPEC, section 8)."""
+    table = pd.DataFrame({"profile": [11111, 11112, 12345], "value": [1.0, 0.9, -0.2]})
+    answers = pd.DataFrame({"a": [1.0, 1.0, 1.0, np.nan, 1.0], "b": [1.0, 1.0, 2.0, 1.0, 1.0], "c": [1.0, 1.0, 3.0, 1.0, 1.0],
+                            "d": [1.0, 1.0, 4.0, 1.0, 1.0], "e": [1.0, 2.0, 5.0, 1.0, 3.0]})
+    result, flags = read_profile(answers, table, "eq5d_index")
+    assert list(result[:3]) == pytest.approx([1.0, 0.9, -0.2])
+    assert result[3:].isna().all()                          # an answer is missing, then a profile the table lacks
+    assert flagged(flags, "norm_missing") == [4]            # only the second: a missing answer is no flag
+    none, no_table = read_profile(answers, None, "eq5d_index")
+    assert none.isna().all() and flagged(no_table, "norm_missing") == [0, 1, 2, 4]
+
+
+def test_norm_age_prefers_the_typed_age_unless_it_is_far_from_the_visit_age():
+    values = pd.DataFrame({"typed": [40.0, 45.0, np.nan, 30.0]})
+    visit_age = pd.Series([41.0, 41.0, 41.0, np.nan])
+    used = norm_age(values, {"age": "typed"}, visit_age)
+    assert list(used) == [40.0, 41.0, 41.0, 30.0]       # within a year; a typing error; nothing typed; no date
+    assert norm_age(values, {}, visit_age) is visit_age
+
+
+def test_a_regression_by_a_second_variable_with_a_mean_and_a_standard_deviation_per_cell():
+    """z = (mean - raw) / sd with a negative sd in the table: a time is better when it is low."""
+    table = pd.DataFrame({"age_min": [20, 20], "age_max": [60, 60], "by_min": [0, 12], "by_max": [11, 99],
+                          "intercept": [50.0, 40.0], "age": [0.0, 0.0], "sd": [-10.0, -10.0]})
+    raw = pd.Series([40.0, 40.0, 60.0])
+    z, flags = regress(raw, pd.Series([30.0, 30.0, 30.0]), table, {}, "tmt_z", by=pd.Series([8.0, 14.0, 14.0]))
+    assert list(z) == [1.0, 0.0, -2.0]
+    assert flagged(flags, "norm_missing") == []
+    z, flags = regress(raw, pd.Series([30.0, 30.0, 30.0]), table, {}, "tmt_z", by=pd.Series([8.0, np.nan, 14.0]))
+    assert pd.isna(z[1]) and flagged(flags, "norm_missing") == [1]        # no education: no score and a flag
+
+
+def test_a_sum_that_stops_at_the_first_failure_and_a_stored_score_with_the_opposite_sign():
+    schema = {"variables": {"i1": {}, "i2": {}, "i3": {}, "i4": {}, "stored": {}},
+              "scores": {"span": {"sum": ["i1", "i2", "i3", "i4"], "stop_at_zero": True},
+                         "z": {"sum": ["i1"], "compare": "stored", "compare_offset": 0.0, "compare_turned": True}}}
+    values = pd.DataFrame({"i1": [1.0, 1.0, 1.0], "i2": [1.0, 0.0, 1.0], "i3": [1.0, 1.0, 0.0], "i4": [0.0, 1.0, 1.0], "stored": [1.0, -1.0, 5.0]})
+    values, flags = compute_scores(values, schema)
+    assert list(values["span"]) == [3.0, 1.0, 2.0]       # 1, 1, 1, 0; 1, 0 and the 1 after the 0 is not counted; 1, 1, 0 and the 1 after it
+    assert flagged(flags, "sign_flipped") == [1]          # stored -1 for a score of 1
+    assert flagged(flags, "score_mismatch") == [2]

@@ -13,15 +13,15 @@ from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
                      "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
-                     "relatives", "per_patient", "crossed", "per_visit", "packed"}
+                     "relatives", "per_patient", "crossed", "per_visit", "packed", "uses"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
                    "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day"}
-SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
+SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "profile", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
-                "range", "keep"}
+                "range", "keep", "age", "stop_at_zero", "compare_turned"}
 VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since"}
 TYPES = {"number", "item", "band", "category", "date", "time", "text"}
 
@@ -105,6 +105,8 @@ def load_schema(path):
         schema["sign"]["before"] = to_dates([schema["sign"]["before"]])[0]
     for score in schema.get("scores", {}).values():
         score["keep"] = score.get("keep") != "false"
+        for field in ["stop_at_zero", "compare_turned"]:
+            score[field] = score.get(field) == "true"
         score["compare_offset"] = to_number(score.get("compare_offset", "0"))
         for field in ["min_items", "floor", "compare_tolerance"]:
             if field in score:
@@ -313,8 +315,8 @@ def check_variable(name, variable, schema, columns):
 def check_z_score(name, score):
     """The fields of a z-score computed with a regression, and of the band of a z-score."""
     problems = []
-    if ("regression" in score) != ("with" in score) or not isinstance(score.get("with", {}), dict):
-        problems.append(f"{name}: regression comes with with, a mapping {{term of the table: variable}}")
+    if ("with" in score and "regression" not in score) or not isinstance(score.get("with", {}), dict):
+        problems.append(f"{name}: with goes with regression: a mapping {{term of the table: variable}}")
     if "band_of" in score:
         alone_or_lookup = [kind for kind in ["sum", "mean", "max", "min", "regression", "custom"] if kind in score] == []
         limits = score.get("limits")
@@ -328,12 +330,12 @@ def check_z_score(name, score):
 
 def check_scores(schema):
     problems = []
-    known = set(schema["variables"])
+    known = set(schema["variables"]) | set(schema.get("uses", []))      # uses: scores that other schemas deliver
     for name, score in schema.get("scores", {}).items():
         for field in score:
             if field not in SCORE_FIELDS:
                 problems.append(f"{name}: unknown field '{field}'")
-        kinds = [kind for kind in ["sum", "mean", "max", "min", "lookup", "regression", "custom"] if kind in score]
+        kinds = [kind for kind in ["sum", "mean", "max", "min", "lookup", "profile", "regression", "custom"] if kind in score]
         if len(kinds) != 1 and not (kinds == [] and "band_of" in score):
             problems.append(f"{name}: a score has exactly one of sum, mean, max, min, lookup, regression and custom, or band_of alone")
         combines = "sum" in score or "mean" in score or "max" in score or "min" in score
@@ -346,8 +348,10 @@ def check_scores(schema):
             problems.append(f"{name}: there is no function '{score['custom']}' in facedata/custom.py")
         if "winsor" in score and not is_range(score["winsor"]):
             problems.append(f"{name}: winsor on a score must be [q_low, q_high]")
-        if ("lookup" in score or "regression" in score) != ("from" in score):
-            problems.append(f"{name}: lookup and regression need from, the raw score; from goes with one of them")
+        if ("lookup" in score or "regression" in score or "profile" in score) != ("from" in score):
+            problems.append(f"{name}: lookup, regression and profile need from, the raw score; from goes with one of them")
+        if ("profile" in score) != isinstance(score.get("from"), list):
+            problems.append(f"{name}: a profile reads a list in from, and only a profile does")
         problems.extend(check_z_score(name, score))
         if "minus" in score and "sum" not in score:
             problems.append(f"{name}: minus goes with sum")
@@ -356,13 +360,21 @@ def check_scores(schema):
             two_numbers = isinstance(scale, list) and len(scale) == 2 and all(isinstance(number, float) for number in scale)
             if not two_numbers or ("sum" not in score and "mean" not in score):
                 problems.append(f"{name}: scale is [factor, offset], on a score that has sum or mean")
-        if "by" in score and "lookup" not in score:
-            problems.append(f"{name}: by goes with lookup")
+        if "by" in score and "lookup" not in score and "regression" not in score:
+            problems.append(f"{name}: by goes with lookup or regression")
+        if "age" in score and "lookup" not in score and "regression" not in score:
+            problems.append(f"{name}: age goes with lookup or regression")
+        if score["stop_at_zero"] and "sum" not in score:
+            problems.append(f"{name}: stop_at_zero goes with sum")
+        if score["compare_turned"] and "compare" not in score:
+            problems.append(f"{name}: compare_turned goes with compare")
         used = (score.get("sum", []) + score.get("mean", []) + score.get("max", []) + score.get("min", [])
                 + score.get("reverse", []) + score.get("minus", []))
-        for field in ["compare", "from", "by", "otherwise", "band_of"]:
+        for field in ["compare", "by", "otherwise", "band_of", "age"]:
             if field in score:
                 used = used + [score[field]]
+        if "from" in score:                          # one variable, or the list of a profile
+            used = used + (score["from"] if isinstance(score["from"], list) else [score["from"]])
         if isinstance(score.get("with"), dict):
             used = used + list(score["with"].values())
         for item in used:
@@ -580,6 +592,10 @@ def check_cohort(schemas):
                         sharing.setdefault(column, []).append(variable["type"])
                     elif "separator" not in variable:    # each box of a list may have its variable
                         readers.setdefault(column, []).append((edition, name, variable["keep"]))
+    for instrument, schema in schemas.items():
+        for name in schema.get("uses", []):
+            if name not in seen_outputs or seen_outputs[name] == instrument:
+                problems.append(f"{instrument}: uses '{name}', which no other schema delivers")
     for column, types in sharing.items():
         if sorted(types) not in (["band", "number"], ["number"]) or column in readers:        # or one number, with nothing for the bands
             problems.append(f"raw column '{column}' must be shared by one band and one number, and by nothing else")
