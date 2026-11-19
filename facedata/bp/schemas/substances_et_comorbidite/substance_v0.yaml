@@ -2,7 +2,7 @@ instrument: substance_v0
 title: Substance use disorders (inclusion visit)
 tab: SUBSTANCES ET COMORBIDITE
 section: Troubles liés à une SUBSTANCE AU COURS DE LA VIE
-status: draft
+status: reviewed
 notes: >
   One yes/no question (does the patient have, or have they had, a substance
   use disorder), then for each of eight substances: a box, the type (abuse
@@ -11,40 +11,142 @@ notes: >
   in months. Yes/no answers are delivered as 1 and 0; "unknown" (U) is a
   missing code.
 
+  The form. The same questions are in the three tables of the application
+  that hold them: the DSM-IV and the DSM-5 diagnosis forms of the inclusion
+  visit and the comorbidity form of the yearly visits (which has a longer
+  text for the duration and no "<5" or ">89" in its list of ages). The export
+  takes each column from the first of the three that holds a value. There is
+  one gate, "does the patient have, or have they had, a substance use
+  disorder" (rad_tb_subst), then one set of eight boxes
+  (chk_substances_type): alcohol; sedatives, hypnotics, anxiolytics
+  (benzodiazepines and related); cannabis; stimulants (amphetamines,
+  Ritalin, appetite suppressants); opiates (heroin, opium, methadone);
+  cocaine (cocaine, coca leaf, crack); hallucinogens / PCP (angel dust, LSD,
+  mushrooms, mescaline, MDMA, psilocybin); another substance (solvents,
+  glue, gas, paint, nitrous oxide, poppers). A ticked box opens four
+  questions: the type (abuse or dependence), the symptoms in the past month,
+  the age at onset and the cumulated duration. There is no shortcut.
+
   Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
   The same questions are asked at the inclusion visit and at the yearly
-  visits, with the same wording: the form asks "does the patient have, or have they had, a substance use disorder", under the title "over the whole life".
-  The yearly form is the inclusion form again, shown after one more
-  question, "no change since the last visit?", which the extraction does
-  not hold (read in the application in November 2026, decision D84 in
-  PROGRESS.md). A yearly answer is an update given at that visit; the
-  project lead reads it as an answer about the time since the last visit. The data show it: at inclusion the
-  question is about the whole life, and of the patients answered "yes" then,
-  40% are answered "no" a year or more later, in every centre and every
-  period (37% of the patients have a disorder at inclusion, 23% at the
-  yearly visits). The details given after a yes still describe the whole
-  life at the yearly visits (same ages at onset, same cumulated durations).
-  The two are therefore delivered as separate columns, ending in _v0
-  (inclusion visit) and _fu (yearly visits);
-  visit_form says which form a visit used and is read from the visit
-  label.
+  visits, with the same wording: the form asks "does the patient have, or
+  have they had, a substance use disorder", under the title "over the whole
+  life". The yearly form is the inclusion form again, shown after one more
+  question, "no change since the last visit?", which the extraction does not
+  hold (read in the application in November 2026, decision D84 in
+  PROGRESS.md; R65 of EXPORT_REQUESTS.md): an empty yearly section may mean
+  "no change". A yearly answer is an update given at that visit: neither a
+  history of the whole life nor strictly an answer about the time since the
+  last visit. The data show it. The first question is yes for 37% of the
+  answers at inclusion (1,966 of 5,254) and 23% at the yearly visits (1,077
+  of 4,590). Of the 1,390 answers given at a yearly visit more than nine
+  months after a "yes" at inclusion, 41% are "no": 39% of the 818 first
+  answers, 25% to 46% by centre (the 8 centres with 20 first answers or
+  more) and 33% to 41% by period. At a yearly visit the age at onset is the
+  one of the inclusion visit in 66% of the pairs (381 of 577) and the
+  duration, as typed, in 38% (153 of 407). The two are therefore delivered
+  as separate columns, ending in _v0 (inclusion visit) and _fu (yearly
+  visits); visit_form says which form a visit used and is read from the
+  visit label. The follow-up version also holds the 3,352 six-monthly
+  visits (11,686 visits, of which 8,334 are yearly); they hold no answer of
+  this section but one.
 
   The first question is read in rad_tb_subst_raw. The column rad_tb_subst is
   a copy of it written as 0 and 1, in which the "unknown" answers (95
   rows) are left empty on purpose (answer of the data managers, decision
-  D74 in PROGRESS.md); it is not loaded.
+  D74 in PROGRESS.md); it is not loaded. The dictionary has no row for
+  rad_tb_subst_raw, says Y/N/U for the eight SUOCCUR_ rows where the values
+  are 0 and 1 (empty for unknown), and gives to ABUDEP_autre the label of the
+  duration (R119 of EXPORT_REQUESTS.md).
 
-  The boxes are 0 where the first answer is no: the export writes them. They
-  are empty on 29 visits where it is yes.
+  The boxes. The export writes 0 in the eight boxes where the first answer is
+  no (3,288 of 3,288 inclusion visits and 3,513 of 3,513 follow-up visits)
+  and leaves them empty where it is unknown or empty: asked_if says so, and
+  no cell changes. Among the 9,815 visits that hold boxes none has some boxes
+  filled and others empty, so there is no box_list. 14 inclusion visits and
+  15 yearly visits answer yes and tick no box: their boxes stay missing.
 
-  Durations. Typed in months; a few cells hold words or a fraction and end
-  unparsed. "ne sa" (a cut "ne sais pas") is a missing code. A duration
-  above 840 months (70 years) is out of range (2 cells). 40 durations are
-  longer than the time between the age at onset and the visit; they are
-  delivered as written.
+  The details after a box. The type, the symptoms of the past month, the age
+  and the duration are blank after a "no" to the first question in 99.94% of
+  the cells at inclusion and 99.98% at the yearly visits (64 and 25 filled
+  cells of 105,216 and 112,416). 214 delivered cells hold a detail under a
+  box that is 0 or empty (180 at inclusion, 34 yearly): under a box of 0,
+  129 and 31 (62 and 23 of them after a "no" to the first question), under
+  an empty box 51 and 3 (the first answer is then empty or unknown). 129 of
+  the 180 at inclusion are from the visits of 2010 to 2014, the old form.
+  They are kept as recorded: no shown_if, which would blank the 214 cells,
+  among them the 54 under an empty parent, whose values stay as recorded
+  (decision D145 in PROGRESS.md).
+
+  Empty details under a ticked box. A ticked box often has empty details, and
+  an empty detail is not "not asked". At inclusion the type is empty for 22%
+  of the 3,308 ticked boxes, the symptoms of the past month for 30%, the age
+  for 28% and the duration for 42%; at the yearly visits for 21%, 25%, 42%
+  and 54% of 1,588 boxes. All four are empty on 596 ticked boxes at
+  inclusion (18%) and 263 at the yearly visits (17%). The form shows the four
+  questions after every ticked box, so this is not "not asked": at inclusion
+  all four are empty on 5% to 9% of the boxes of each year from 2011 to 2016
+  and on 32% to 40% of those of 2018 to 2021. It is a practice of the
+  centres, unexplained: the type is empty on 4% to 67% of the ticked boxes by
+  centre at inclusion (centres with 25 boxes or more).
+
+  What the export loses. The ages at onset are cast as whole numbers
+  (^[0-9]+$): "Ne sais pas", "<5" and ">89" become empty, so an empty age
+  under a ticked box mixes unknown and unanswered, and the delivered ages (7
+  to 67 at inclusion, 12 to 68 yearly, no 99) are not all the answers (R117
+  of EXPORT_REQUESTS.md). The substance-induced disorder block of the form
+  (rad_tb_substind, chk_tb_substind_sub, chk_tb_substind_typ,
+  rad_tb_substindpres) is neither in the dictionary nor in the extraction
+  (R117).
+
+  The first question from 2022, by centre (O40; R20 and R65 of
+  EXPORT_REQUESTS.md). It is empty on 14% of the inclusion visits up to 2021
+  (683 of 4,979) and on 35% from 2022 (537 of 1,519); at the yearly visits on
+  37% (2,037 of 5,499) and then 58% (1,637 of 2,835). Three centres make the
+  step at inclusion (centre C 100% empty from 2022 against 21% before,
+  centre A 89% against 20%, centre B 32% against 3%) and five at the yearly
+  visits (H 88% against 12%, A 87% against 51%, B 82% against 30%, F 64%
+  against 26%, I 39% against 7%). The first question is also empty while
+  another comorbidity question of the same visit is answered on 129
+  inclusion visits and 63 yearly visits (up to 14 a year at inclusion, up to
+  16 yearly, no rise in 2022). Where it is answered, the share of "yes" goes
+  from 26% to 52% between the 14 centres with 40 answers or more at inclusion
+  and from 13% to 42% between 11 centres at the yearly visits; the alcohol
+  "symptoms in the past month" are yes for 11% to 41% (inclusion) and 30% to
+  64% (yearly) of the answers by centre (20 answers or more): unexplained.
+
+  Durations. Typed in months; the inclusion block is read from the diagnosis
+  forms, where the text has at most 5 characters (varchar(5)), and the yearly
+  block from the comorbidity form (varchar(50); the longest text has 21
+  characters). A few cells hold words, a fraction or a cut text and end
+  unparsed (26: 17 at inclusion, 9 yearly). "ne sa" (a cut "ne sais pas") is
+  a missing code. A duration above 840 months (70 years) is out of range (2
+  cells, both at inclusion). The numbers are winsorised like every number (38
+  cells: 29 and 9). Some typed durations are longer than the time from the
+  age at onset to the visit: 111 at inclusion and 50 yearly, 42 and 16 with
+  12 months of margin; 6 at inclusion are longer than the age of the
+  patient. None is removed. The past-month answers of the inclusion visits
+  are typed "Oui" or "Non" in 151 cells (2009 to 2022; the codes cover them)
+  and "Ne sais pas" in 2 (a missing code).
 
   Abuse and dependence are the DSM-IV names. They are used in every year,
-  also for the patients evaluated with DSM-5 criteria.
+  also for the patients evaluated with DSM-5 criteria. The six substances
+  shared with SZ have the same names; SZ builds its block differently from
+  other forms of the application (see the catalogue).
+
+  Spreads of the QC table (decision D157 in PROGRESS.md). The share of the yearly visits that answer
+  the first question is 36% to 45% in 2010-2013, 55% in 2014, 66% to 71% in 2015-2019, 60% to 62% in
+  2020-2021 and 37% to 45% from 2022; until 2013 centre D held the tab (one of the four gates) on
+  none of its 143 yearly visits and centres C, E and K on 15% to 19%, and these four hold it on 51%
+  to 57% of their yearly visits in 2014-2018. The yes/no variables whose median is 1 in some years
+  or centres (shift of 1) are shares of "yes" around one half: besides the first question and the
+  alcohol "past month" by centre above, the alcohol "past month" at the yearly visits is "yes" for
+  26% to 55% by year and the cannabis one for 23% to 50% by year (groups of 20 answers or more). The
+  duration of the alcohol disorder is a number typed freely (interquartile range of about 100
+  months) on small groups: at inclusion its median goes from 30 to 143 months between years (20 to
+  84 answers a year; 143 in 2026 on 20 answers, 82 in 2024, 66 in 2013) and at the yearly visits
+  from 36 to 105 months between the 7 centres with 20 answers or more, one centre being at 105: a
+  spread with no step, unexplained.
 
 version:
   name: visit_form
@@ -78,49 +180,49 @@ defaults: {versions: [inclusion]}
 variables:
   substance_disorder_v0: {column: rad_tb_subst_raw, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has or has had a substance use disorder (abuse or dependence), at inclusion"}
 
-  alcohol_disorder_v0: {column: suoccur_alcool, type: item, range: [0, 1], label: "Alcohol: abuse or dependence, at inclusion"}
+  alcohol_disorder_v0: {column: suoccur_alcool, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Alcohol: abuse or dependence, at inclusion"}
   alcohol_type_v0: {column: type_alcool, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Alcohol: abuse or dependence, which, at inclusion"}
   alcohol_last_month_v0: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: symptoms in the past month, at inclusion"}
   alcohol_onset_age_v0: {column: agedebut_alcool, type: item, range: [0, 90], label: "Alcohol: age at onset, at inclusion"}
   alcohol_months_v0: {column: sudur_alcool, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Alcohol: cumulated duration of the disorder over the life, at inclusion"}
 
-  sedative_disorder_v0: {column: suoccur_sedatif, type: item, range: [0, 1], label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, at inclusion"}
+  sedative_disorder_v0: {column: suoccur_sedatif, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Sedatives, hypnotics, anxiolytics (benzodiazepines and related): abuse or dependence, at inclusion"}
   sedative_type_v0: {column: type_sedatif, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, which, at inclusion"}
   sedative_last_month_v0: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: symptoms in the past month, at inclusion"}
   sedative_onset_age_v0: {column: agedebut_sedatif, type: item, range: [0, 90], label: "Sedatives, hypnotics, anxiolytics: age at onset, at inclusion"}
   sedative_months_v0: {column: sudur_sedatif, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Sedatives, hypnotics, anxiolytics: cumulated duration of the disorder over the life, at inclusion"}
 
-  cannabis_disorder_v0: {column: suoccur_cannabis, type: item, range: [0, 1], label: "Cannabis: abuse or dependence, at inclusion"}
+  cannabis_disorder_v0: {column: suoccur_cannabis, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Cannabis: abuse or dependence, at inclusion"}
   cannabis_type_v0: {column: type_cannabis, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Cannabis: abuse or dependence, which, at inclusion"}
   cannabis_last_month_v0: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: symptoms in the past month, at inclusion"}
   cannabis_onset_age_v0: {column: agedebut_cannabis, type: item, range: [0, 90], label: "Cannabis: age at onset, at inclusion"}
   cannabis_months_v0: {column: sudur_cannabis, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Cannabis: cumulated duration of the disorder over the life, at inclusion"}
 
-  stimulant_disorder_v0: {column: suoccur_stimulants, type: item, range: [0, 1], label: "Stimulants: abuse or dependence, at inclusion"}
+  stimulant_disorder_v0: {column: suoccur_stimulants, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Stimulants (amphetamines, Ritalin, appetite suppressants): abuse or dependence, at inclusion"}
   stimulant_type_v0: {column: type_stimulants, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Stimulants: abuse or dependence, which, at inclusion"}
   stimulant_last_month_v0: {column: abudep_stimulants, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Stimulants: symptoms in the past month, at inclusion"}
   stimulant_onset_age_v0: {column: agedebut_stimulants, type: item, range: [0, 90], label: "Stimulants: age at onset, at inclusion"}
   stimulant_months_v0: {column: sudur_stimulants, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Stimulants: cumulated duration of the disorder over the life, at inclusion"}
 
-  opiate_disorder_v0: {column: suoccur_opiaces, type: item, range: [0, 1], label: "Opiates: abuse or dependence, at inclusion"}
+  opiate_disorder_v0: {column: suoccur_opiaces, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Opiates (heroin, opium, methadone): abuse or dependence, at inclusion"}
   opiate_type_v0: {column: type_opiaces, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Opiates: abuse or dependence, which, at inclusion"}
   opiate_last_month_v0: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: symptoms in the past month, at inclusion"}
   opiate_onset_age_v0: {column: agedebut_opiaces, type: item, range: [0, 90], label: "Opiates: age at onset, at inclusion"}
   opiate_months_v0: {column: sudur_opiaces, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Opiates: cumulated duration of the disorder over the life, at inclusion"}
 
-  cocaine_disorder_v0: {column: suoccur_cocaine, type: item, range: [0, 1], label: "Cocaine: abuse or dependence, at inclusion"}
+  cocaine_disorder_v0: {column: suoccur_cocaine, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Cocaine (cocaine, coca leaf, crack): abuse or dependence, at inclusion"}
   cocaine_type_v0: {column: type_cocaine, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Cocaine: abuse or dependence, which, at inclusion"}
   cocaine_last_month_v0: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: symptoms in the past month, at inclusion"}
   cocaine_onset_age_v0: {column: agedebut_cocaine, type: item, range: [0, 90], label: "Cocaine: age at onset, at inclusion"}
   cocaine_months_v0: {column: sudur_cocaine, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Cocaine: cumulated duration of the disorder over the life, at inclusion"}
 
-  hallucinogen_disorder_v0: {column: suoccur_hallucinogenes, type: item, range: [0, 1], label: "Hallucinogens: abuse or dependence, at inclusion"}
+  hallucinogen_disorder_v0: {column: suoccur_hallucinogenes, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Hallucinogens / PCP (angel dust, LSD, mushrooms, mescaline, MDMA, psilocybin): abuse or dependence, at inclusion"}
   hallucinogen_type_v0: {column: type_hallucinogenes, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Hallucinogens: abuse or dependence, which, at inclusion"}
   hallucinogen_last_month_v0: {column: abudep_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Hallucinogens: symptoms in the past month, at inclusion"}
   hallucinogen_onset_age_v0: {column: agedebut_hallucinogenes, type: item, range: [0, 90], label: "Hallucinogens: age at onset, at inclusion"}
   hallucinogen_months_v0: {column: sudur_hallucinogenes, type: number, unit: months, range: [0, 840], missing: {"ne sa": unknown}, label: "Hallucinogens: cumulated duration of the disorder over the life, at inclusion"}
 
-  other_substance_disorder_v0: {column: suoccur_autre, type: item, range: [0, 1], label: "Another substance: abuse or dependence, at inclusion"}
+  other_substance_disorder_v0: {column: suoccur_autre, type: item, range: [0, 1], asked_if: substance_disorder_v0, label: "Another substance (solvents, glue, gas, paint, nitrous oxide, poppers): abuse or dependence, at inclusion"}
   other_substance_name_v0: {column: sutrt_autre, type: text, label: "Another substance: which one, as written, at inclusion"}
   other_substance_type_v0: {column: type_autre, type: category, codes: {Abus: abuse, "Dépendance": dependence}, label: "Another substance: abuse or dependence, which, at inclusion"}
   other_substance_last_month_v0: {column: abudep_autre, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another substance: symptoms in the past month, at inclusion"}

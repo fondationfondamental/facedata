@@ -2,25 +2,56 @@ instrument: somatoform_fu
 title: Somatoform disorders (yearly follow-up visits)
 tab: SUBSTANCES ET COMORBIDITE
 section: Trouble SOMATOFORME
-status: draft
+status: reviewed
 notes: >
-  Whether the patient has a current somatoform disorder, which one, the age
-  at onset and whether symptoms were present in the past month. Yes/no
-  answers are delivered as 1 and 0; "unknown" (U) is a missing code.
+  Whether the patient has a current somatoform disorder, which one, the age at onset and whether
+  symptoms were present in the past month. Yes/no answers are delivered as 1 and 0; "unknown" (U) is a
+  missing code.
 
-  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
-  The same questions are asked at the inclusion visit and at the yearly
-  visits, with the same wording: the form asks "does the patient have a current somatoform disorder".
-  The yearly form is the inclusion form again, shown after one more
-  question, "no change since the last visit?", which the extraction does
-  not hold (read in the application in November 2026, decision D84 in
-  PROGRESS.md). A yearly answer is an update given at that visit; the
-  project lead reads it as an answer about the time since the last visit. The data show it: 3.6% of the
-  patients have a somatoform disorder at inclusion, 1.7% at the yearly
-  visits; of the patients who had one at inclusion, 74% are answered "no" a
-  year or more later. The two are therefore delivered as separate columns,
-  ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form says which form a visit used and is read from the
-  visit label.
+  Where the block comes from. It sits in three tables of the application: the DSM-IV diagnosis form
+  (psy_diag_psychiatrique), the DSM-5 diagnosis form (psy_diag_psychiatriquedsm5) and the yearly
+  comorbidity form (psy_troubles_comorbides, the only one with the question "no change since the last
+  visit?", rad_pas_dechangement). The export takes each column from the first non-empty of the three.
+  Apart from the age of the eating disorder (eating_disorder_v0) and the two panic type boxes
+  (anxiety_v0) the three are identical, so there is no split by version (decision D153 in
+  PROGRESS.md).
+
+  Two forms in the same columns (decisions D49, D50 and D84 in PROGRESS.md). The same questions are
+  asked at the inclusion visit and at the yearly visits, never at the six-monthly ones, with the same
+  wording: the form asks "does the patient have a current somatoform disorder". The yearly form is the
+  inclusion form again, shown after one more question, "no change since the last visit?", which the
+  extraction does not hold (read in the application in November 2026, decision D84 in PROGRESS.md). A
+  yearly answer is an update given at that visit: neither a history of the whole life nor strictly an
+  answer about the time since the last visit. The data show that the two differ: 3.6% of the patients
+  have a somatoform disorder at inclusion, 1.7% at the yearly visits; of the patients answered "yes"
+  at inclusion, the first answer given a year or more later is "no" for 74% (59 of 80). The two are
+  therefore delivered as separate columns, ending in _v0 (inclusion visit) and _fu (yearly visits);
+  visit_form says which form a visit used and is read from the visit label.
+
+  The follow-up version holds 11,686 visits, of which 3,352 are six-monthly visits: 1 of them holds
+  the tab, and the screening visits never do. somatoform_disorder_fu is answered (yes, no or unknown)
+  on 4,628 of the 11,686 visits (40%), which is 56% of the 8,334 yearly visits.
+
+  The ages at onset are cast with ^[0-9]+$ by the export, so "Ne sais pas", "<5" and ">89" become
+  empty (request R117): an empty age under a "yes" mixes unknown and not answered.
+
+  Years and centres (O40, R20). The whole tab is often left empty: the four gates (anxiety,
+  substances, eating disorders, somatoform disorders) are all empty on 1,091 of the 6,498 inclusion
+  visits (17%; 453 of the 1,127 inclusions of 2022 to 2024) and on 3,611 of the 8,334 yearly visits
+  (43%: at a yearly visit an empty section may mean "no change"). Four centres stop holding the tab.
+  Share of their inclusions with the four gates empty, up to 2018, 2019-2021 and 2022-2024: centre A
+  9%, 33% and 87%; centre C 17%, 27% and 100%; centre B 1%, 8% and 35%; centre I 2%, 20% and 58%. A
+  gate that is empty while another is answered is rare (4.2% of the inclusion visits and 2.3% of the
+  yearly ones) and flat by year: there is no shortcut pattern as in the history tab (D83). The values
+  are delivered as recorded: an empty gate is missing, not "no".
+
+  Spreads of the QC table (decision D157 in PROGRESS.md). The share of the yearly visits that hold
+  something of the tab (one of the four gates) is 37% to 48% in 2010-2013, 55% in 2014, 67% to 73%
+  in 2015-2019, 61% to 62% in 2020-2021 and 39% to 47% from 2022: until 2013 centre D held it on
+  none of its 143 yearly visits and centres C, E and K on 15% to 19%, and these four hold it on 51%
+  to 57% of their yearly visits in 2014-2018; the decline from 2022 is the one above. The "symptoms
+  in the past month" have a median of 1 in some centres (shift of 1): the share of "yes" is 45% to
+  85% in the three centres with 20 answers or more at inclusion (22 to 40 answers), around one half.
 
 version:
   name: visit_form

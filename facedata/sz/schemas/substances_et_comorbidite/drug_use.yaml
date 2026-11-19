@@ -2,96 +2,134 @@ instrument: drug_use
 title: Use of sedatives, heroin, cocaine, opiates and other products
 tab: SUBSTANCES ET COMORBIDITE
 section: Sédatifs
-status: draft
+status: reviewed
 notes: >
   One question opens five sections: sedatives, heroin, crack or cocaine,
-  opiates and other products. For each, has the patient ever used it (more
-  than ten times), how (smoked, sniffed, injected, oral, sublingual: one
-  yes/no per way, several can be ticked), the amounts and frequencies over
+  opiates and other products. For each, has the patient used it more than ten
+  times in their life (the question says "plus de dix fois dans votre vie",
+  as for alcohol and cannabis), how (smoked, sniffed, injected, oral,
+  sublingual: one yes/no per way, several can be ticked; the list of the form
+  has no "sniffed" for the sedatives, whose 118 answers are oral, smoked or
+  sublingual), the amounts and frequencies in the periods of heaviest use over
   the whole life and in the last 12 months, the age at the first use, the
-  longest abstinence, the family history and a craving score. The opiates
-  have no amounts; the other products have a name, amounts and
-  frequencies only.
+  longest abstinence, the family history and a craving score (the maximum in
+  the last week). The opiates have no amounts; the other products have a name,
+  amounts and frequencies only.
 
-  The opening question (rad_add_4) is not in the dictionary: its label is
-  read from the data. It is answered on 3,436 visits (481 yes), and the
-  five sections are filled only after a yes (456 visits). After a "no" the
-  five "has ever used" are delivered as 0 (asked_if). 77 of 212 later
-  answers of patients who said yes at inclusion are no.
+  The opening question (rad_add_4) is not in the dictionary: its label is read
+  from the form. It is answered on 3,436 visits (481 yes), and the five
+  sections are filled only after a yes (456 of the 481 visits for sedatives,
+  heroin, opiates and other products, 459 for cocaine; none after a no). After
+  a "no" the five "more than ten times" are delivered as 0 (asked_if). The
+  same question also hides the boxes of use disorder of four of the
+  substances in substance_v0.yaml and substance_fu.yaml. 77 of the 212 later
+  answers (36%) of the patients who said yes at inclusion are no (sedatives 53
+  of 84, cocaine 23 of 88, opiates 4 of 25, heroin 2 of 14).
 
-  Asked at inclusion and at follow-up, from 2012. The questions about the
-  whole life keep that meaning at follow-up: the share of patients who
-  have ever used is the same at the two (see the notes below), unlike the
-  questions on a use disorder (substance_v0.yaml). The details are filled
-  after a yes. 999 and 9999 mean "does not know" in an amount or a
-  duration, 99 in an age. "Ne sais pas" is a missing code. The number of
-  times per week is filled when the frequency is "1 to 7 times a week".
+  Asked at inclusion and at yearly visits, used from 2015 and not from 2012:
+  the opening question is answered on 9% of the inclusion visits of 2012, 18%
+  of 2014, 47% of 2015 and 84% to 93% from 2016 (the same pattern as alcohol,
+  alcohol_use.yaml). The questions about the whole life keep that meaning at
+  follow-up on average only: the share of yes is the same at the two, but a
+  third of the later answers of the patients who said yes at inclusion are no.
+  The details are filled after a yes. 999 and 9999 mean "does not know" in an
+  amount or a duration, 99 in an age. "Ne sais pas" is a missing code. The
+  number of times per week is filled when the frequency is "1 to 7 times a
+  week" (378 of 387 answers) and after "less than weekly" on none: not
+  encoded. At 12 months "less than weekly" mostly means no use: the amount
+  is 0 on 32 of 33 sedative answers, 27 of 33 heroin, 98 of 138 cocaine and 55
+  of 67 other products.
 
-  Amounts are tablets or capsules per day (sedatives), grams per day
-  (heroin, cocaine) and standard units per day (other products). The
-  sections are small: 126 patients-visits with sedatives, 55 with heroin,
-  254 with cocaine, 73 with opiates, 186 with another product.
+  Not asked, not no. The questions at the end of each section (age at the
+  first use, longest abstinence, family history, craving) are shown only with
+  two or more DSM-5 criteria, a count that is in another tab (the dsm5_
+  schemas of auto_questionnaire). Age at the first use, filled on 0 of 41
+  sedative visits with none or one criterion and on 82% of 60 with two or
+  more; heroin 0 of 15 and 21 of 23; cocaine 0 of 94 and 83% of 98; opiates 0
+  of 18 and 91% of 34. An empty cell means "not asked"; it is not encoded.
 
-  rad_add_heroin7a (38 cells, yes or no, after heroin) is a question that
-  the dictionary does not have: it is ignored (open question O21). The
-  criteria of a use disorder are in the dsm5_* schemas of
-  auto_questionnaire.
+  Amounts are tablets or capsules per day (sedatives), grams per day (heroin,
+  cocaine) and standard units per day (other products). The sections are
+  small: 126 patients-visits with sedatives, 55 with heroin, 254 with cocaine,
+  73 with opiates, 186 with another product. In the form the details of the
+  other product are shown by a question that is not in the extraction
+  (rad_add_autre4e2): the amount is filled on 71 of the 186 visits that say
+  yes and the name on 179 (export request R116). The questions of the form on
+  a drug treatment of the use disorder and on a hospitalisation for withdrawal
+  (yes, number, age at the first) are not in the extraction for any of the
+  five sections (export request R120). Ages are plausible: the first use is at
+  14 or later and none is above the patient's age.
+
+  rad_add_heroin7a (24 inclusion and 14 follow-up answers, yes or no) is the
+  question "a symptom of a use disorder over the whole life" for heroin, the
+  counterpart of the boxes of substance_v0.yaml, which has no heroin box. It
+  is not read (ignored.yaml; open question O21). The criteria of a use
+  disorder are in the dsm5_* schemas of auto_questionnaire.
+
+  One centre's step in the sedatives: the question "more than ten times" is
+  yes on 12% to 13% of the answers of 2014 and 2015, 7% of 2016 and 2% to 4%
+  from 2017. Before 2017 it comes mostly from one centre (37 yes on its 241
+  answers, 15%; 10 on the 296 answers of the other centres, 3%), and from 2017
+  it is 3% in that centre (17 of 580) as in the others (62 of 2,294): no known
+  cause (the boxes of substance_v0.yaml show it too). Cocaine smoked (crack)
+  is ticked on 20% of the cocaine sections of 2014-19, 30% of 2020-22 and 40%
+  from 2023, and on 10% to 50% by centre (centres with 20 answers or more): no
+  known cause. Two amounts of 99 grams of cocaine a day are out of range.
 
 variables:
-  illicit_drugs_ever: {column: rad_add_4, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has ever used illicit drugs or misused medications: opens the questions on sedatives, heroin, cocaine, opiates and other products"}
+  illicit_drugs_over_ten_times: {column: rad_add_4, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Illicit drugs, or medicines taken without a prescription (sedatives, benzodiazepines, crack, cocaine, amphetamines, heroin, buprenorphine, methadone, hallucinogens, other products): more than ten times in your life; opens the questions on sedatives, heroin, cocaine, opiates and other products"}
 
-  sedative_ever: {column: suoccur_sedatiflt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_ever, label: "Sedatives: has ever used"}
+  sedative_over_ten_times: {column: suoccur_sedatiflt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_over_ten_times, label: "Sedatives: more than ten times in your life"}
   sedative_route_smoked: {column: sudosfrm_sedatiflt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 1, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Sedatives: smoked"}
-  sedative_route_sniffed: {column: sudosfrm_sedatiflt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 1, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Sedatives: sniffed"}
   sedative_route_injected: {column: sudosfrm_sedatiflt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 1, Orale: 0, Sub-lingual: 0}, label: "Sedatives: injected"}
   sedative_route_oral: {column: sudosfrm_sedatiflt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 1, Sub-lingual: 0}, label: "Sedatives: oral"}
   sedative_route_sublingual: {column: sudosfrm_sedatiflt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 1}, label: "Sedatives: sublingual"}
-  sedative_dose_lifetime: {column: sudose_sedatiflt, type: number, unit: tablets per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Sedatives: amount per day of use, in the periods of use over the whole life"}
-  sedative_frequency_lifetime: {column: sudosfrq_sedatiflt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Sedatives: frequency in the periods of use over the whole life"}
-  sedative_times_per_week_lifetime: {column: sudosfrq_sedatifltnb, type: item, range: [1, 7], label: "Sedatives: times per week in the periods of use"}
+  sedative_dose_lifetime: {column: sudose_sedatiflt, type: number, unit: tablets per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Sedatives: amount per day of use, in the periods of heaviest use over the whole life"}
+  sedative_frequency_lifetime: {column: sudosfrq_sedatiflt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Sedatives: frequency of use in the periods of heaviest use over the whole life"}
+  sedative_times_per_week_lifetime: {column: sudosfrq_sedatifltnb, type: item, range: [1, 7], label: "Sedatives: times per week in the periods of heaviest use"}
   sedative_dose_12m: {column: sudose_sedatifly, type: number, unit: tablets per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Sedatives: amount per day of use in the last 12 months"}
   sedative_frequency_12m: {column: sudosfrq_sedatifly, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Sedatives: frequency in the last 12 months"}
   sedative_times_per_week_12m: {column: sudosfrq_sedatiflynb, type: item, range: [1, 7], label: "Sedatives: times per week in the last 12 months"}
   sedative_first_age: {column: agedebut_sedatiflt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Sedatives: age at the first use"}
   sedative_max_abstinence: {column: durabsti_sedatiflt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Sedatives: longest abstinence"}
   sedative_family_history: {column: atcd1deg_sedatiflt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Sedatives: first-degree relative with a use disorder"}
-  sedative_craving_score: {column: craving_sedatiflt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Sedatives: craving (0 never to 10 all the time)"}
+  sedative_craving_score: {column: craving_sedatiflt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Sedatives: maximum craving in the last week (0 never to 10 all the time)"}
 
-  heroin_ever: {column: suoccur_heroinelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_ever, label: "Heroin: has ever used"}
+  heroin_over_ten_times: {column: suoccur_heroinelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_over_ten_times, label: "Heroin: more than ten times in your life"}
   heroin_route_smoked: {column: sudosfrm_heroinelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 1, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Heroin: smoked"}
   heroin_route_sniffed: {column: sudosfrm_heroinelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 1, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Heroin: sniffed"}
   heroin_route_injected: {column: sudosfrm_heroinelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 1, Orale: 0, Sub-lingual: 0}, label: "Heroin: injected"}
   heroin_route_oral: {column: sudosfrm_heroinelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 1, Sub-lingual: 0}, label: "Heroin: oral"}
   heroin_route_sublingual: {column: sudosfrm_heroinelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 1}, label: "Heroin: sublingual"}
-  heroin_dose_lifetime: {column: sudose_heroinelt, type: number, unit: grams per day, range: [0, 20], missing: {999: unknown, 9999: unknown}, label: "Heroin: amount per day of use, in the periods of use over the whole life"}
-  heroin_frequency_lifetime: {column: sudosfrq_heroinelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Heroin: frequency in the periods of use over the whole life"}
-  heroin_times_per_week_lifetime: {column: sudosfrq_heroineltnb, type: item, range: [1, 7], label: "Heroin: times per week in the periods of use"}
+  heroin_dose_lifetime: {column: sudose_heroinelt, type: number, unit: grams per day, range: [0, 20], missing: {999: unknown, 9999: unknown}, label: "Heroin: amount per day of use, in the periods of heaviest use over the whole life"}
+  heroin_frequency_lifetime: {column: sudosfrq_heroinelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Heroin: frequency of use in the periods of heaviest use over the whole life"}
+  heroin_times_per_week_lifetime: {column: sudosfrq_heroineltnb, type: item, range: [1, 7], label: "Heroin: times per week in the periods of heaviest use"}
   heroin_dose_12m: {column: sudose_heroinely, type: number, unit: grams per day, range: [0, 20], missing: {999: unknown, 9999: unknown}, label: "Heroin: amount per day of use in the last 12 months"}
   heroin_frequency_12m: {column: sudosfrq_heroinely, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Heroin: frequency in the last 12 months"}
   heroin_times_per_week_12m: {column: sudosfrq_heroinelynb, type: item, range: [1, 7], label: "Heroin: times per week in the last 12 months"}
   heroin_first_age: {column: agedebut_heroinelt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Heroin: age at the first use"}
   heroin_max_abstinence: {column: durabsti_heroinelt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Heroin: longest abstinence"}
   heroin_family_history: {column: atcd1deg_heroinelt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Heroin: first-degree relative with a use disorder"}
-  heroin_craving_score: {column: craving_heroinelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Heroin: craving (0 never to 10 all the time)"}
+  heroin_craving_score: {column: craving_heroinelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Heroin: maximum craving in the last week (0 never to 10 all the time)"}
 
-  cocaine_ever: {column: suoccur_cocainelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_ever, label: "Crack or cocaine: has ever used"}
+  cocaine_over_ten_times: {column: suoccur_cocainelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_over_ten_times, label: "Crack or cocaine: more than ten times in your life"}
   cocaine_route_smoked: {column: sudosfrm_cocainelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 1, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Crack or cocaine: smoked"}
   cocaine_route_sniffed: {column: sudosfrm_cocainelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 1, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Crack or cocaine: sniffed"}
   cocaine_route_injected: {column: sudosfrm_cocainelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 1, Orale: 0, Sub-lingual: 0}, label: "Crack or cocaine: injected"}
   cocaine_route_oral: {column: sudosfrm_cocainelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 1, Sub-lingual: 0}, label: "Crack or cocaine: oral"}
   cocaine_route_sublingual: {column: sudosfrm_cocainelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 1}, label: "Crack or cocaine: sublingual"}
-  cocaine_dose_lifetime: {column: sudose_cocainelt, type: number, unit: grams per day, range: [0, 40], missing: {999: unknown, 9999: unknown}, label: "Crack or cocaine: amount per day of use, in the periods of use over the whole life"}
-  cocaine_frequency_lifetime: {column: sudosfrq_cocainelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Crack or cocaine: frequency in the periods of use over the whole life"}
-  cocaine_times_per_week_lifetime: {column: sudosfrq_cocaineltnb, type: item, range: [1, 7], label: "Crack or cocaine: times per week in the periods of use"}
+  cocaine_dose_lifetime: {column: sudose_cocainelt, type: number, unit: grams per day, range: [0, 40], missing: {999: unknown, 9999: unknown}, label: "Crack or cocaine: amount per day of use, in the periods of heaviest use over the whole life"}
+  cocaine_frequency_lifetime: {column: sudosfrq_cocainelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Crack or cocaine: frequency of use in the periods of heaviest use over the whole life"}
+  cocaine_times_per_week_lifetime: {column: sudosfrq_cocaineltnb, type: item, range: [1, 7], label: "Crack or cocaine: times per week in the periods of heaviest use"}
   cocaine_dose_12m: {column: sudose_cocainely, type: number, unit: grams per day, range: [0, 40], missing: {999: unknown, 9999: unknown}, label: "Crack or cocaine: amount per day of use in the last 12 months"}
   cocaine_frequency_12m: {column: sudosfrq_cocainely, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Crack or cocaine: frequency in the last 12 months"}
   cocaine_times_per_week_12m: {column: sudosfrq_cocainelynb, type: item, range: [1, 7], label: "Crack or cocaine: times per week in the last 12 months"}
   cocaine_first_age: {column: agedebut_cocainelt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Crack or cocaine: age at the first use"}
   cocaine_max_abstinence: {column: durabsti_cocainelt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Crack or cocaine: longest abstinence"}
   cocaine_family_history: {column: atcd1deg_cocainelt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Crack or cocaine: first-degree relative with a use disorder"}
-  cocaine_craving_score: {column: craving_cocainelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Crack or cocaine: craving (0 never to 10 all the time)"}
+  cocaine_craving_score: {column: craving_cocainelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Crack or cocaine: maximum craving in the last week (0 never to 10 all the time)"}
 
-  opiate_ever: {column: suoccur_opiacelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_ever, label: "Opiates (buprenorphine, methadone, codeine...): has ever used"}
+  opiate_over_ten_times: {column: suoccur_opiacelt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_over_ten_times, label: "Opiates (buprenorphine, methadone, codeine...): more than ten times in your life"}
   opiate_route_smoked: {column: sudosfrm_opiacelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 1, Sniffée: 0, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Opiates (buprenorphine, methadone, codeine...): smoked"}
   opiate_route_sniffed: {column: sudosfrm_opiacelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 1, Injectée: 0, Orale: 0, Sub-lingual: 0}, label: "Opiates (buprenorphine, methadone, codeine...): sniffed"}
   opiate_route_injected: {column: sudosfrm_opiacelt, type: item, range: [0, 1], separator: ",", codes: {Fumée: 0, Sniffée: 0, Injectée: 1, Orale: 0, Sub-lingual: 0}, label: "Opiates (buprenorphine, methadone, codeine...): injected"}
@@ -100,13 +138,13 @@ variables:
   opiate_first_age: {column: agedebut_opiacelt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Opiates (buprenorphine, methadone, codeine...): age at the first use"}
   opiate_max_abstinence: {column: durabsti_opiacelt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Opiates (buprenorphine, methadone, codeine...): longest abstinence"}
   opiate_family_history: {column: atcd1deg_opiacelt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Opiates (buprenorphine, methadone, codeine...): first-degree relative with a use disorder"}
-  opiate_craving_score: {column: craving_opiacelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Opiates (buprenorphine, methadone, codeine...): craving (0 never to 10 all the time)"}
+  opiate_craving_score: {column: craving_opiacelt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Opiates (buprenorphine, methadone, codeine...): maximum craving in the last week (0 never to 10 all the time)"}
 
-  other_product_ever: {column: suoccur_autre_produitlt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_ever, label: "Other products: has ever used"}
+  other_product_over_ten_times: {column: suoccur_autre_produitlt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: illicit_drugs_over_ten_times, label: "Other products: more than ten times in your life"}
   other_product_name: {column: sutrt_autre_produit, type: text, label: "Other products: which one, as written"}
-  other_product_dose_lifetime: {column: sudose_autre_produitlt, type: number, unit: standard units per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Other products: amount per day of use, in the periods of use over the whole life"}
-  other_product_frequency_lifetime: {column: sudosfrq_autre_produitlt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Other products: frequency in the periods of use over the whole life"}
-  other_product_times_per_week_lifetime: {column: sudosfrq_autre_produitltnb, type: item, range: [1, 7], label: "Other products: times per week in the periods of use"}
+  other_product_dose_lifetime: {column: sudose_autre_produitlt, type: number, unit: standard units per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Other products: amount per day of use, in the periods of heaviest use over the whole life"}
+  other_product_frequency_lifetime: {column: sudosfrq_autre_produitlt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Other products: frequency of use in the periods of heaviest use over the whole life"}
+  other_product_times_per_week_lifetime: {column: sudosfrq_autre_produitltnb, type: item, range: [1, 7], label: "Other products: times per week in the periods of heaviest use"}
   other_product_dose_12m: {column: sudose_autre_produitly, type: number, unit: standard units per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Other products: amount per day of use in the last 12 months"}
   other_product_frequency_12m: {column: sudosfrq_autre_produitly, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Other products: frequency in the last 12 months"}
   other_product_times_per_week_12m: {column: sudosfrq_autre_produitlynb, type: item, range: [1, 7], label: "Other products: times per week in the last 12 months"}

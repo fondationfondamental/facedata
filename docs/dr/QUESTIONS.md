@@ -253,6 +253,37 @@ relatives at 0. Were these forms opened and saved without being filled?
 family form that holds only boxes at 0 counts as no answer in the per-patient
 columns. (O29)
 
+**DM-7. Cannabis and the DETC-CAGE.** "Consommez-vous du cannabis ?" asks
+about the present. It is answered at inclusion (429 of 634 visits), at 2
+years (92 of 146) and at 4 years (57 of 69), and at none of the 702 visits
+of 6, 12, 18 and 30 months, although the tobacco status of the same nurse's
+record is filled on 84% of them. The dictionary lists visit v0 only and the
+codes Y, N and U (the data are 1 and 0). The question is empty on 11% to 33%
+of the inclusions a year since 2016. The four DETC-CAGE items are shown only
+after a yes (21 of the 24 yes, none of the 558 no), but they are also filled
+on 79 of the 100 CAGE forms whose opening question is empty (all 2012 to
+2016), and they ask "have you ever..." under a question about the present.
+*Questions:* is the question asked at those three visits only, and is it
+still part of the protocol? Do the forms 103 and 119 (the items with no
+opening question) explain the 79 forms? Does a patient who stopped cannabis
+skip the CAGE by design?
+*Today:* 1 yes, 0 no, an empty answer is missing data; the CAGE items are
+delivered as recorded. (O31, D42)
+
+**DM-8. Tobacco of the nurse's record.** Since 2021 the non-smokers are 64%
+of the visits against 50% until 2020 (the same at inclusion and at follow-up,
+9 of 12 centres up), and the details are given less often: pack-years valid
+for 76% of the smokers against 93%, the status filled on 76% of the inclusions
+against 90%. One centre holds no tobacco status and no cannabis answer at any
+of its 70 visits since 2017. The dictionary lists the four tobacco items for
+the inclusion, 6 months and 1 year; they are filled at 18 months, 2 and 4
+years too.
+*Questions:* is the fall of the smokers real, or is the status answered with
+less care as the record is filled less? Is the nurse's record hidden or not
+used in that centre? Does the form hold the tobacco items at every visit?
+*Today:* delivered as recorded; "non-smoker" is not read as "never smoked", an
+empty detail is missing data. (O32, D43)
+
 ## 3. For the principal investigator
 
 ### Priority A

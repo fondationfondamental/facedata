@@ -462,6 +462,26 @@ def test_a_no_to_more_than_20_sick_leaves_is_read_as_yes():
     assert pd.isna(custom.sick_leave_more_than_20(values)[4])
 
 
+def test_panic_disorder_is_missing_where_only_agoraphobia_can_have_ticked_it():
+    """The export ticks the panic box for "Agoraphobie sans trouble panique" too: no panic detail and an agoraphobia box is not panic (D151)."""
+    values = pd.DataFrame({"panic_disorder_stored_v0": [1.0, 1.0, 1.0, 1.0, 0.0, np.nan],
+                           "agoraphobia_v0": [1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
+                           "panic_onset_age_v0": [np.nan, 25.0, np.nan, np.nan, np.nan, np.nan],
+                           "panic_last_month_v0": [np.nan, np.nan, 0.0, np.nan, np.nan, np.nan]})
+    panic = custom.panic_unless_agoraphobia_only(values)
+    assert pd.isna(panic[0])                                     # agoraphobia ticked, nothing about a panic disorder
+    assert list(panic[1:5]) == [1.0, 1.0, 1.0, 0.0]              # an age or a past-month answer, or no agoraphobia: as stored
+    assert pd.isna(panic[5])                                     # not asked stays missing
+    follow_up = values.rename(columns=lambda name: name.replace("_v0", "_fu"))
+    assert list(custom.panic_unless_agoraphobia_only(follow_up).isna()) == [True, False, False, False, False, True]
+    # As a score with its stored box: the cell that goes missing says that a stored 1 existed.
+    schema = {"variables": {name: {} for name in values}, "scores": {"panic_disorder_v0": {
+        "custom": "panic_unless_agoraphobia_only", "compare": "panic_disorder_stored_v0", "compare_offset": 0.0}}}
+    schema["variables"]["panic_disorder_stored_v0"] = {"keep": False}
+    values, flags = compute_scores(values, schema)
+    assert flagged(flags, "score_not_recomputed") == [0] and flagged(flags, "score_mismatch") == []
+
+
 def test_corrected_qt_uses_the_heart_rate_of_the_ecg():
     """RR is 60 / heart rate; the typed RR is used only where there is no heart rate."""
     values = pd.DataFrame({"qt_interval": [0.4, 0.4, 0.4, 0.4], "rr_interval": [1.0, 1.44, np.nan, 0.64],

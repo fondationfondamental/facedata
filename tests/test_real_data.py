@@ -309,14 +309,26 @@ def test_substances_and_comorbidity(result, qc):
         assert not (data[name + "_v0"].notna() & data[name + "_fu"].notna()).any(), name
     # The boxes of the anxiety disorders are exported only after a yes; after a no they are read as 0,
     # like those of the substances. Both are then shares among all the patients.
-    assert (qc.loc["panic_disorder_v0", "n_valid"], qc.loc["alcohol_disorder_v0", "n_valid"]) == (5148, 5240)
-    assert 0.15 < data["panic_disorder_v0"].mean() < 0.16 and 0.25 < data["alcohol_disorder_v0"].mean() < 0.26
-    assert (data["anxiety_disorder_v0"].isna() & data["panic_disorder_v0"].notna()).sum() == 3    # boxes typed without the first answer
-    assert qc.loc["panic_disorder_v0", "n_info"] == 0                  # no flag: no cell was changed
+    assert (qc.loc["panic_disorder_v0", "n_valid"], qc.loc["alcohol_disorder_v0", "n_valid"]) == (4942, 5240)
+    assert 0.12 < data["panic_disorder_v0"].mean() < 0.13 and 0.25 < data["alcohol_disorder_v0"].mean() < 0.26
+    assert (data["anxiety_disorder_v0"].isna() & data["panic_disorder_v0"].notna()).sum() == 2    # boxes typed without the first answer
+    assert qc.loc["panic_disorder_v0", "n_info"] == 0                  # no info flag: the score_not_recomputed flag is a danger flag
+    # Panic disorder is a score (D151): the export's box also matches "agoraphobia without panic disorder", so it is
+    # missing where the agoraphobia box is ticked and no panic detail is filled, with the stored 1 in the flag log.
+    assert (qc.loc["panic_disorder_v0", "score_not_recomputed"], qc.loc["panic_disorder_fu", "score_not_recomputed"]) == (206, 156)
+    assert (qc.loc["panic_disorder_fu", "n_valid"], qc.loc["alcohol_disorder_fu", "n_valid"]) == (4391, 4575)
+    # The eight substance boxes hang on the first question (D154): 0 after a "no" on every visit that has one, and
+    # missing after a "yes" that ticks no box (14 inclusion visits, 15 yearly visits).
+    substances = ["alcohol", "sedative", "cannabis", "stimulant", "opiate", "cocaine", "hallucinogen", "other_substance"]
+    for ending, after_no, yes_and_no_box in [("v0", 3288, 14), ("fu", 3513, 15)]:
+        boxes = data[[name + "_disorder_" + ending for name in substances]]
+        gate = data["substance_disorder_" + ending]
+        assert (gate == 0).sum() == after_no and (boxes[gate == 0] == 0).all().all()
+        assert ((gate == 1) & boxes.isna().all(axis=1)).sum() == yes_and_no_box
     # Panic disorder: the two detail columns of the form are read as one.
     assert (qc.loc["panic_onset_age_v0", "n_valid"], tab["column_conflict"].sum()) == (415, 5)
     # Tobacco: pack-years typed freely.
-    assert qc.loc["tobacco_status", "n_valid"] == 16352
+    assert (qc.loc["tobacco_status", "n_valid"], qc.loc["tobacco_status", "missing_code"]) == (16352, 85)
     pack = qc.loc["pack_years"]
     assert (pack["n_valid"], pack["missing_code"], pack["unparsed"], pack["out_of_range"]) == (6335, 101, 34, 29)
     assert tab.loc[tab.index.str.contains("_months_"), "out_of_range"].sum() == 2

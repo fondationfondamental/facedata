@@ -2,15 +2,33 @@ instrument: eating_disorder_v0
 title: Eating disorder at inclusion
 tab: SUBSTANCES ET COMORBIDITE
 section: Trouble du comportement alimentaire
-status: draft
+status: reviewed
 notes: >
   Asked at the inclusion visit only (2,147 visits, 219 yes): whether the
   patient has an eating disorder, which one, whether symptoms were present
   in the past month and the age at onset. "U" is a missing code.
 
-  The BP schema; the age at onset is in the column agedebutca here. The SZ
-  extraction has no answer at the follow-up visits, so there is no
-  eating_disorder_fu.
+  The BP schema; the age at onset is in the column agedebutca here. The
+  yearly form asks the first question, the type and the past month too, but
+  the export does not read them: 2,588 yearly visits hold no cell of eating
+  or anxiety detail, so there is no eating_disorder_fu (request R115).
+
+  The gate stays as it is: the type, the past month and the age are details
+  of the disorder and stay missing after a no. Under a yes the type is empty
+  on 1% of the visits (3 of 219), the past month on 28% and the age at onset
+  on 41%. The age at onset was asked until 2019 and not since 2020: it is
+  filled on 129 of 157 yes visits to 2019 (86% to 2018, 36% in 2019), then on
+  1 of 62. The field table of the form (psy_diag_psychiatrique_sz_nom_champ)
+  has no field for it, although the table has the column: the same cliff as
+  in BP. The SZ form has five types; "Night eating syndrome" exists in the BP
+  form only, so that code is never found here. The yes share of the first
+  question differs by centre, from 4% to 29% (ten centres with 20 answers or
+  more).
+
+  By year, the yes share of the first question is 7% of the visits to 2013,
+  17% in 2014-16 (20% in 2015 and 21% in 2016), 11% in 2017-19 and 7% to 8%
+  since 2020. It is higher in 2014-16 than before in six of the seven centres
+  that have 20 answers in both periods: no known cause.
 
 version:
   name: visit_form

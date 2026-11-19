@@ -2,11 +2,45 @@ instrument: cannabis
 title: "Cannabis"
 tab: SUBSTANCES
 section: CANNABIS
-status: draft
+status: reviewed
 notes: >
-  One question, "do you use cannabis" (1 yes, 0 no): 582 visits, yes on 24.
-  Not in BP or SZ in this form. In the extraction from 2013 (42% of the
-  inclusions until 2014, 65% to 83% since).
+  One question, "Consommez-vous du cannabis ?" (do you use cannabis?, 1 yes,
+  0 no): CURRENT use, in the present tense, and not use at any time of the
+  life. It opens the four DETC-CAGE items of the nurse's record (`DCCAN`
+  of form 112). The export names the column like the lifetime questions of
+  the other cohorts (`suoccur_cannabis_lt`) and the dictionary lists Y, N
+  and U for visit v0 only, but the values are 1 and 0 (never unknown).
+
+  Asked at inclusion (429 of 634 visits answered), at 2 years (92 of 146) and
+  at 4 years (57 of 69), plus 4 answers at other visits (3 years, 5 years,
+  screening); never at 6, 12, 18 or 30 months (0 of 702 visits), although
+  the nurse's record is filled at those visits (the tobacco status is, on
+  84%). 582 answers, yes on 24 (22 at inclusion, 5%, and 2 at 2 years): the
+  share is small because the question is about the present, so a 0 does not
+  mean "never used". In the extraction from June 2013 (0 of 6 inclusions of
+  2012). Answered on 43%, 45% and 45% of the inclusions of 2013, 2014 and
+  2015, then on 67% to 89% a year from 2016 (80%, 81% and 73% in 2016-18,
+  2019-21 and 2022-26). An empty cell is "not answered": 11% to 33% of the
+  inclusion visits a year since 2016, and 23%, 31% and 37% of the visits at 2
+  and 4 years in 2016-18, 2019-21 and 2022-26 (0% to 69% by year, on 1 to 34
+  visits): a drift, not a step. The yes share of the inclusions by year (the
+  years with 20 answers or more) stays between 0% and 12%, with no trend. By centre the
+  question is answered on 62% to 100% of the inclusions since 2016 in 13
+  centres and on 10% in the 14th (31 inclusions), which holds no cannabis
+  answer and no tobacco status at any of its 70 visits since 2017: a centre
+  habit, no cause known (DM-7, DM-8).
+
+  Not joinable with the other cohorts. SZ asks "more than ten times in your
+  life" (about half of the inclusions say yes); BP and ASP deliver a cannabis
+  use disorder (abuse or dependence) from their substance forms. Do not stack
+  them with this variable.
+
+  The DETC-CAGE items (instrument `detc_cage`, AUTO-QUESTIONNAIRES) are filled
+  on 21 of the 24 yes and on 79 of the 100 CAGE forms that have this question
+  empty (all dated 2012 to 2016); under a no on none of the 558 (the form hides
+  and clears them unless "yes" is ticked; the forms 103 and 119, two other
+  versions of the nurse's record, hold the four items and no opening
+  question). The CAGE belongs to the review of that tab (O31).
 
 variables:
-  cannabis_use: {column: suoccur_cannabis_lt, type: item, range: [0, 1], label: Uses cannabis}
+  cannabis_current: {column: suoccur_cannabis_lt, type: item, range: [0, 1], label: "Uses cannabis now (Consommez-vous du cannabis ?)"}

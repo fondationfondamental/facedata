@@ -2,25 +2,52 @@ instrument: tea_coffee
 title: Tea and coffee
 tab: SUBSTANCES ET COMORBIDITE
 section: The
-status: draft
+status: reviewed
 notes: >
-  Cups per day and frequency of tea and of coffee, over the whole life and
-  in the last 12 months. Asked at inclusion and at follow-up from 2012
-  (about 2,600 visits each). 999 means "does not know". A few amounts are
-  out of range (365 cups of coffee a day on 3 visits: a number per year).
+  Cups per day and frequency of tea and of coffee, over the whole life (in
+  the periods of heaviest use, "périodes de consommation maximales" in the
+  form) and in the last 12 months. 2,572 visits answer for tea and 2,665 for
+  coffee. The form is asked at inclusion and at yearly visits, from 2015 and
+  not from 2012: the tea questions are answered on 7% of the inclusion visits
+  of 2012, 16% of 2014, 42% of 2015 and 71% to 79% of 2016 to 2018.
 
-  sudosnb_cafelt, the times per week for coffee, is not in the dictionary;
-  it is filled with the frequency "1 to 7 times a week", as its tea
-  counterpart is.
+  There is no gate: a patient who does not drink tea or coffee answers 0 cups
+  (0 on 41% of the 2,572 lifetime answers for tea and 19% of the 2,665 for
+  coffee). The frequency "less than weekly" includes the non-consumers: 813 of
+  the 1,246 tea answers of that frequency have 0 cups (361 of 548 for coffee);
+  use the number of cups to tell a consumer from a non-consumer. The number of
+  times per week is filled after "1 to 7 times a week" and, in the whole-life
+  questions, on 6 of 1,079 tea answers and 3 of 1,980 coffee answers that do
+  not say weekly: a shown_if would blank those cells, so there is none.
+
+  The frequency category of the last 12 months (weekly, less than weekly) is
+  not in the extraction, for tea and for coffee. The dictionary maps two form
+  fields to the same name (SUDOSFRQ_theLY and SUDOSFRQ_cafeLY: the category and
+  the number of times per week), and only the numbers 1 to 7 are exported (841
+  cells for tea, 1,965 for coffee); they are delivered as the times per week
+  of the last 12 months (export request R118). 999 means "does not know". A
+  few amounts are out of range (365 cups of coffee a day on 3 visits: a number
+  per year).
+
+  sudosnb_cafelt, the times per week for coffee, is not in the dictionary; it
+  is filled with the frequency "1 to 7 times a week", as its tea counterpart
+  is.
+
+  The cups differ by centre: the median of tea over the whole life is 1 cup in
+  five centres and 0 in the five others (means from 0.7 to 1.6), and the
+  median of coffee in the last 12 months is 1 in three centres and 2 or 3 in
+  the others; by year the means are stable (tea 1.2 to 1.5 over the whole
+  life, coffee 2.2 to 2.7 in the last 12 months): centre habit or practice, no
+  known cause.
 
 variables:
-  tea_cups_lifetime: {column: sudose_thelt, type: number, unit: cups per day, range: [0, 30], missing: {999: unknown, 9999: unknown}, label: "Tea: cups per day of use, in the periods of use over the whole life"}
-  tea_frequency_lifetime: {column: sudosfrq_thelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Tea: frequency in the periods of use over the whole life"}
-  tea_times_per_week_lifetime: {column: sudosfrq_theltnb, type: item, range: [1, 7], label: "Tea: times per week in the periods of use"}
+  tea_cups_lifetime: {column: sudose_thelt, type: number, unit: cups per day, range: [0, 30], missing: {999: unknown, 9999: unknown}, label: "Tea: cups per day of use, in the periods of heaviest use over the whole life"}
+  tea_frequency_lifetime: {column: sudosfrq_thelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Tea: frequency of use in the periods of heaviest use over the whole life"}
+  tea_times_per_week_lifetime: {column: sudosfrq_theltnb, type: item, range: [1, 7], label: "Tea: times per week in the periods of heaviest use"}
   tea_cups_12m: {column: sudose_thely, type: number, unit: cups per day, range: [0, 30], label: "Tea: cups per day of use in the last 12 months"}
-  tea_times_per_week_12m: {column: sudosfrq_thely, type: item, range: [1, 7], label: "Tea: times per week in the last 12 months"}
-  coffee_cups_lifetime: {column: sudose_cafelt, type: number, unit: cups per day, range: [0, 40], missing: {999: unknown, 9999: unknown}, label: "Coffee: cups per day of use, in the periods of use over the whole life"}
-  coffee_frequency_lifetime: {column: sudosfrq_cafelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Coffee: frequency in the periods of use over the whole life"}
-  coffee_times_per_week_lifetime: {column: sudosnb_cafelt, type: item, range: [1, 7], label: "Coffee: times per week in the periods of use"}
+  tea_times_per_week_12m: {column: sudosfrq_thely, type: item, range: [1, 7], label: "Tea: times per week in the last 12 months (the number only: the frequency category of the form is not exported)"}
+  coffee_cups_lifetime: {column: sudose_cafelt, type: number, unit: cups per day, range: [0, 40], missing: {999: unknown, 9999: unknown}, label: "Coffee: cups per day of use, in the periods of heaviest use over the whole life"}
+  coffee_frequency_lifetime: {column: sudosfrq_cafelt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Coffee: frequency of use in the periods of heaviest use over the whole life"}
+  coffee_times_per_week_lifetime: {column: sudosnb_cafelt, type: item, range: [1, 7], label: "Coffee: times per week in the periods of heaviest use"}
   coffee_cups_12m: {column: sudose_cafely, type: number, unit: cups per day, range: [0, 40], label: "Coffee: cups per day of use in the last 12 months"}
-  coffee_times_per_week_12m: {column: sudosfrq_cafely, type: item, range: [1, 7], label: "Coffee: times per week in the last 12 months"}
+  coffee_times_per_week_12m: {column: sudosfrq_cafely, type: item, range: [1, 7], label: "Coffee: times per week in the last 12 months (the number only: the frequency category of the form is not exported)"}

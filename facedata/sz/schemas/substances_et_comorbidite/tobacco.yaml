@@ -2,20 +2,66 @@ instrument: tobacco
 title: Tobacco
 tab: SUBSTANCES ET COMORBIDITE
 section: Tabac
-status: draft
+status: reviewed
 notes: >
-  Smoking status, pack-years and the ages at which daily smoking started
-  and stopped (the BP schema), and five questions that the SZ form adds
-  from 2012: cigarettes per day in the last 12 months, age at the first
-  cigarette, longest abstinence in months, a first-degree relative with a
-  tobacco use disorder, and a craving score from 0 to 10. Asked at
-  inclusion and at follow-up (4,439 visits with a status: 2,087 current
-  smokers, 614 ex-smokers, 1,728 non-smokers, 10 unknown).
+  Smoking status, pack-years and the ages at which the patient started and
+  stopped smoking (the BP schema), and five questions that the SZ form adds:
+  cigarettes per day in the last 12 months, age at the first cigarette,
+  longest abstinence in months, a first-degree relative with a tobacco use
+  disorder, and a craving score from 0 to 10 (the maximum in the last week).
+  Asked at inclusion and at follow-up (4,439 visits with a status: 2,087
+  current smokers, 614 ex-smokers, 1,728 non-smokers, 10 unknown, a missing
+  code). The status is the one of the day of the visit and the details are
+  cumulative over the life, so there is one form, as in BP (decision D49).
 
-  999 and 9999 mean "does not know" in the pack-years and in the
-  abstinence (21 cells), 99 in an age. Five pack-years of 365 and a few
-  other values above 200 are out of range. The Fagerström test is in
-  auto_questionnaire/fagerstrom.yaml.
+  A non-smoker has no detail. The form hides the whole tobacco block for a
+  non-smoker, the five questions of SZ included, and the export leaves the
+  cells empty (never 0): under "Non fumeur" none of the three core details is
+  filled, and 10 cells of the five questions are, on 5 of the 1,728 visits (2
+  of the 5 patients are smokers or ex-smokers at another visit). They are kept
+  as recorded (no shown_if). The details
+  are filled for the smokers and ex-smokers only: pack-years for 70% of the
+  current smokers and 62% of the ex-smokers, the start age 82% and 77%, the
+  stop age 77% of the ex-smokers.
+
+  The five questions are asked only of current and ex-smokers and used from
+  2015, not from 2012: they are filled on 3% to 13% of the visits of the
+  current and ex-smokers in 2012 to 2014, 46% to 48% in 2015 and 65% to 89%
+  since. They come as a block: all five are filled on 1,499 of the 2,701
+  smoker visits. Among the ex-smokers the number of cigarettes per day in the
+  last 12 months is 0 for 74% of the answers (314 of 422).
+
+  "Non fumeur" is not "never smoked". Between two consecutive visits that
+  have a status, an ex-smoker is a non-smoker on 65 of 310 pairs and a current
+  smoker on 32 of 996; a non-smoker is a current or ex-smoker on 77 of 872. In
+  39 of the 41 such pairs that carry a start age the start age is at or before
+  the age at the earlier visit, so the earlier "Non fumeur" was wrong. 52
+  patients start again after an ex-smoker visit.
+  Never derive 0 pack-years from "Non fumeur". Pack-years fall between two
+  consecutive values on 25% of 687 pairs (11% by more than 5), and the start
+  age changes in 52% of the 510 patients with two or more values: the details
+  are not kept from one visit to the next.
+
+  999 and 9999 mean "does not know" in the pack-years and in the abstinence
+  (22 cells: 8 and 14), 99 in an age (2 cells, in the age at the first
+  cigarette only). 14 pack-years above 200 are out of range (5 of them are
+  365), and 4 cigarettes a day above 100. The pack-years, the cigarettes per
+  day and the abstinence are winsorised at the 1st and 99th percentiles, as
+  everywhere (18, 16 and 15 cells change; the largest pack-year delivered is
+  86): they are not delivered as written. 2 start ages and 1 age at the first
+  cigarette are above the patient's age.
+
+  The questions of the form on the age of the strongest dependence and on a
+  drug treatment of the tobacco use disorder are not in the extraction (export
+  request R120). The Fagerström test is in auto_questionnaire/fagerstrom.yaml.
+
+  By year the status drifts without a step: current smokers are 53% of the
+  visits of 2014-16, 52% of 2017-19, 43% of 2020-22 and 36% from 2023,
+  ex-smokers 9%, 13%, 18% and 20% (3% to 23% by centre). Among the smokers the
+  median of cigarettes per day is 15 to 2019 and 10 since 2020, and the
+  longest abstinence, a question over the whole life, has a median of 1 month
+  to 2019, 2 in 2020-22 and 6 from 2023 (0 to 5 by centre); the family history
+  is yes on 41% to 83% by centre: no known cause.
 
 variables:
   tobacco_status:
@@ -27,8 +73,8 @@ variables:
   pack_years: {column: sudose_cigarettes_lt, type: number, unit: pack-years, range: [0, 200], missing: {999: unknown, 9999: unknown}, label: Pack-years}
   smoking_start_age: {column: agedebut_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient started smoking}
   smoking_stop_age: {column: agefin_cigarettes_lt, type: item, range: [0, 90], label: Age when the patient stopped smoking}
-  cigarettes_per_day: {column: sudose_cigarettes_ly, type: number, range: [0, 100], label: Cigarettes smoked per day on average in the last 12 months}
-  first_cigarette_age: {column: agedebut_cigarettes_ly, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: Age at the first cigarette}
-  smoking_max_abstinence: {column: durabsti_cigarettes_lt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: Longest abstinence from tobacco over the whole life}
+  cigarettes_per_day_12m: {column: sudose_cigarettes_ly, type: number, range: [0, 100], label: Cigarettes smoked per day on average in the last 12 months}
+  tobacco_first_age: {column: agedebut_cigarettes_ly, type: item, range: [0, 70], missing: {99: unknown, 999: unknown}, label: Age at the first cigarette}
+  tobacco_max_abstinence: {column: durabsti_cigarettes_lt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: Longest abstinence from tobacco over the whole life}
   tobacco_family_history: {column: atcd1deg_cigarettes_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: First-degree relative with a tobacco use disorder}
-  tobacco_craving: {column: craving_cigarettes_lt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: Craving for tobacco (0 never to 10 all the time)}
+  tobacco_craving_score: {column: craving_cigarettes_lt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: Maximum craving for tobacco in the last week (0 never to 10 all the time)}

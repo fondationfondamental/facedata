@@ -635,17 +635,25 @@ anxiety_v0:
   note: >
     The diagnoses and "in the last month" are under the same names. The SZ form
     is another one: each disorder comes after a screening question, there is no
-    age at onset, and the box of the panic disorder with agoraphobia is lost.
-    DR assesses the same disorders with the MINI at the screening visit (other
-    variables, not stacked); ASP has its own form.
+    age at onset. The SZ export wires other form fields into some columns, so
+    the SZ variables are named for what they hold (R114): its panic_disorder_v0
+    is the panic disorder with or without agoraphobia; the panic types of BP
+    are not delivered (they hold the social phobia, R113) and BP's
+    panic_disorder_v0 is corrected where only an agoraphobia can have ticked
+    it. DR assesses the same disorders with the MINI at the screening visit
+    (other variables, not stacked); ASP has its own form.
 
 anxiety_fu:
-  title: Anxiety disorders since the last visit
+  title: Anxiety disorders at the yearly visits
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: anxiety_fu, sz: anxiety_fu}
   stack: with care
   use: [anxiety_disorder_fu]
-  note: The SZ follow-up form holds the first question only (any anxiety disorder since the last visit).
+  note: >
+    The yearly form is the inclusion form asked again: its answer is a yearly
+    update (BP D84), not strictly the time since the last visit. The SZ
+    extraction holds the first question only (any anxiety disorder): the
+    questions of the yearly form are not exported (R115).
 
 substance_v0:
   title: Substance use disorders at inclusion
@@ -656,26 +664,38 @@ substance_v0:
   note: >
     The disorder, 'in the last month' and the age at onset of each substance are
     under the same names. In SZ the first question (any substance use disorder)
-    is 'not known' on most inclusions and cannot be used; the boxes of each
-    substance are complete from 2015. SZ has no type of disorder (abuse or
-    dependence) and no duration, and six substances. DR uses the MINI and ASP
-    its own form (other variables, not stacked).
+    is derived by the export, not asked: 'not known' on 975 of 1,583 inclusions,
+    it cannot be used (R116); the boxes mean 'a symptom of a use disorder (at
+    least one DSM-5 criterion)'; the sedative, opiate, cocaine and hallucinogen
+    boxes are 0 after a 'no' to the opening drug question; the module is used
+    from 2015. SZ has no type of disorder (abuse or dependence) and no duration,
+    and six substances. DR uses the MINI and ASP its own form (other variables,
+    not stacked): ASP's alcohol_first_age, cannabis_first_age and
+    cocaine_first_age are the onset of the disorder, as the _onset_age
+    variables here, and are renamed in the review of its tab.
 
 substance_fu:
-  title: Substance use disorders since the last visit
+  title: Substance use disorders at the yearly visits
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: substance_fu, sz: substance_fu}
   stack: with care
   use: [substance_disorder_fu, alcohol_disorder_fu, cannabis_disorder_fu]
-  note: As at inclusion; SZ has no type of disorder and no duration.
+  note: >
+    As at inclusion, asked again at the yearly visit: an answer is a yearly
+    update (BP D84). The first question is the clinician's answer ('Oui' where
+    any box is yes). SZ has no type of disorder and no duration.
 
 eating_disorder_v0:
   title: Eating disorders at inclusion
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: eating_disorder_v0, sz: eating_disorder_v0}
-  stack: "yes"
+  stack: with care
   use: [eating_disorder_v0, eating_disorder_type_v0, eating_disorder_last_month_v0, eating_disorder_onset_age_v0]
-  note: Four questions, the same in both cohorts.
+  note: >
+    Four questions, the same in both cohorts. The onset age is missing from the
+    DSM-5 diagnosis forms (BP: filled on 84% of the DSM-4 visits and on 2 of 232
+    DSM-5 visits; SZ: to 2019, A57); 'Night eating syndrome' exists in the BP
+    DSM-5 form only.
 
 tobacco:
   title: Tobacco
@@ -687,31 +707,13 @@ tobacco:
     The status (non-smoker, smoker, ex-smoker), the pack-years and the two ages
     are in the four cohorts, with the same three answers. ASP records tobacco
     from 2020, and its pack-years are doubtful (ASP O10): compare the
-    pack-years of BP, SZ and DR only. SZ asks five more questions.
+    pack-years of BP, SZ and DR only. 'Non fumeur' is not 'never smoked': a
+    patient answers non-smoker at one visit and smoker or ex-smoker at another
+    (about 12% of the non-smoker visits of BP follow a visit of a smoker), so
+    no pack-year is 0 by derivation. SZ asks five more questions, from 2015.
 
-alcohol_use:
-  title: Alcohol, age at the first use
-  domain: Diagnosis, comorbidities and substances
-  schemas: {sz: alcohol_use, asp: substance_use}
-  stack: with care
-  use: [alcohol_first_age]
-  note: One variable in common. The other questions on alcohol are not the same in the two cohorts.
 
-cannabis_use:
-  title: Cannabis, age at the first use
-  domain: Diagnosis, comorbidities and substances
-  schemas: {sz: cannabis_use, asp: substance_use}
-  stack: with care
-  use: [cannabis_first_age]
-  note: One variable in common. The other questions on cannabis are not the same in the two cohorts.
 
-drug_use:
-  title: Cocaine, age at the first use
-  domain: Diagnosis, comorbidities and substances
-  schemas: {sz: drug_use, asp: substance_use}
-  stack: with care
-  use: [cocaine_first_age]
-  note: One variable in common. The other questions on drugs are not the same in the two cohorts.
 
 first_episode_age:
   title: Age at the first episode of the disorder

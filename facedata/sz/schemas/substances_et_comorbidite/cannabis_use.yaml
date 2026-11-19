@@ -2,36 +2,75 @@ instrument: cannabis_use
 title: Cannabis use
 tab: SUBSTANCES ET COMORBIDITE
 section: Cannabis
-status: draft
+status: reviewed
 notes: >
-  Has the patient ever used cannabis, the amounts (joints per day of use)
-  and frequencies over the whole life and in the last 12 months, the age
-  at the first use, the longest abstinence, the family history and a
-  craving score. 3,451 visits; 50% have ever used at inclusion and 46% at
-  follow-up (80 of 725 later answers of patients who said yes at inclusion
-  are no).
+  Has the patient used cannabis more than ten times in their life, the amounts
+  (joints per day of use) and frequencies over the whole life (in the periods
+  of heaviest use, "périodes de consommation maximales" in the form) and in
+  the last 12 months, the age at the first use, the longest abstinence, the
+  family history and a craving score. 3,451 visits answer the first question;
+  50% say yes at inclusion and 46% at follow-up. The question is "more than
+  ten times in your life", not "ever": about 70% of the inclusion answers have
+  used cannabis at least once (the patients who say no and are not primary
+  abstainers have used it one to ten times). The patients who say no are asked
+  a second question, whether they never used it at all (cannabis_never_once).
+  It is shown after a no only, so after a yes it is delivered as 0 (asked_if
+  on a hidden variable that reads the first answer the other way round and is
+  not delivered): 1,661 cells missing become 0.
 
-  Asked at inclusion and at follow-up, from 2012. The questions about the
-  whole life keep that meaning at follow-up: the share of patients who
-  have ever used is the same at the two (see the notes below), unlike the
-  questions on a use disorder (substance_v0.yaml). The details are filled
-  after a yes. 999 and 9999 mean "does not know" in an amount or a
-  duration, 99 in an age. "Ne sais pas" is a missing code. The number of
-  times per week is filled when the frequency is "1 to 7 times a week".
+  Asked at inclusion and at yearly visits, used from 2015 and not from 2012:
+  the first question is answered on 6% of the inclusion and yearly visits of
+  2012, 16% of 2014, 52% of 2015 and 83% of 2016. The questions about the
+  whole life keep that meaning at follow-up on average only: the share of yes
+  is the same at the two, but 80 of the 725 later answers (11%) of the
+  patients who said yes at inclusion are no (55 of 748 the other way round).
+  At follow-up the age at onset of the disorder equals the age given at
+  inclusion in 119 of 169 pairs (substance_fu.yaml); it is below the age at
+  the first use on none of 685 pairs. The details are filled after a yes. 999
+  and 9999 mean "does not know" in an amount or a duration, 99 in an age.
+  "Ne sais pas" is a missing code.
+
+  Not asked, not no. The questions at the end of the section (age at the first
+  use, longest abstinence, family history of a use disorder, craving) are
+  shown only with two or more DSM-5 criteria, a count that is in another tab
+  (auto_questionnaire/dsm5_cannabis.yaml): they are filled on 1 of 433 visits
+  with none or one criterion and on 80% to 85% of 835 with two or more. An
+  empty cell means "not asked"; it is not encoded.
+
+  The number of times per week is filled after "1 to 7 times a week" (98% of
+  1,143 answers for the whole life) and after "less than weekly" on none of
+  144: not encoded. "Less than weekly" holds the non-users of the last 12
+  months: 763 of the 887 answers of that frequency have an amount of 0 (use
+  the amount, not the frequency, to tell a user from a non-user).
 
   The twelve criteria of a cannabis use disorder are in
-  auto_questionnaire/dsm5_cannabis.yaml.
+  auto_questionnaire/dsm5_cannabis.yaml. The questions of the form on a drug
+  treatment of the cannabis use disorder and on a hospitalisation for
+  withdrawal (yes, number, age at the first) are not in the extraction (export
+  request R120).
+
+  By year, "never once" is delivered as yes (0 after a yes to the first
+  question included) on 32% of the answers of 2014-16, 24% of 2017-19, 27% of
+  2020-22 and 37% from 2023 (in one centre from 12% to 33% between 2017-19 and
+  2023-26). The frequency of the last 12 months is "weekly" on 32% of the
+  answers of 2014-16, 27% of 2017-19 and 22% since 2020 (12% to 36% in the
+  three centres with 150 answers or more), and the longest abstinence (months,
+  a question over the whole life) has a median of 13 to 16 to 2019 and 24
+  since (10 to 33 by centre); the family history is yes on 14% to 44% by
+  centre: no known cause. Two longest abstinences above 2,000 months are out
+  of range.
 
 variables:
-  cannabis_ever: {column: suoccur_cannabislt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: has ever used"}
-  cannabis_never_once: {column: suncf_cannabislt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Cannabis: not one use in the whole life (asked after a no)"}
-  cannabis_dose_lifetime: {column: sudose_cannabislt, type: number, unit: joints per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Cannabis: amount per day of use, in the periods of use over the whole life"}
-  cannabis_frequency_lifetime: {column: sudosfrq_cannabislt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Cannabis: frequency in the periods of use over the whole life"}
-  cannabis_times_per_week_lifetime: {column: sudosfrq_cannabisltnb, type: item, range: [1, 7], label: "Cannabis: times per week in the periods of use"}
+  cannabis_over_ten_times: {column: suoccur_cannabislt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: more than ten times in your life"}
+  cannabis_not_over_ten_times: {column: suoccur_cannabislt, type: item, range: [0, 1], codes: {Y: 0, N: 1}, keep: false, label: "Cannabis: ten times or fewer in your life (the answer of cannabis_over_ten_times read the other way round; not delivered, the gate of cannabis_never_once)"}
+  cannabis_never_once: {column: suncf_cannabislt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: cannabis_not_over_ten_times, label: "Cannabis: not one use in the whole life (primary abstinence; asked after a no to more than ten times)"}
+  cannabis_dose_lifetime: {column: sudose_cannabislt, type: number, unit: joints per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Cannabis: amount per day of use, in the periods of heaviest use over the whole life"}
+  cannabis_frequency_lifetime: {column: sudosfrq_cannabislt, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Cannabis: frequency of use in the periods of heaviest use over the whole life"}
+  cannabis_times_per_week_lifetime: {column: sudosfrq_cannabisltnb, type: item, range: [1, 7], label: "Cannabis: times per week in the periods of heaviest use"}
   cannabis_dose_12m: {column: sudose_cannabisly, type: number, unit: joints per day, range: [0, 50], missing: {999: unknown, 9999: unknown}, label: "Cannabis: amount per day of use in the last 12 months"}
   cannabis_frequency_12m: {column: sudosfrq_cannabisly, type: category, codes: {"1 à 7 fois par semaine": weekly, "Moins d'une fois par semaine": less_than_weekly}, label: "Cannabis: frequency in the last 12 months"}
   cannabis_times_per_week_12m: {column: sudosfrq_cannabislynb, type: item, range: [1, 7], label: "Cannabis: times per week in the last 12 months"}
   cannabis_first_age: {column: agedebut_cannabislt, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at the first use"}
   cannabis_max_abstinence: {column: durabsti_cannabislt, type: number, unit: months, range: [0, 720], missing: {999: unknown, 9999: unknown}, label: "Cannabis: longest abstinence"}
   cannabis_family_history: {column: atcd1deg_cannabislt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Cannabis: first-degree relative with a use disorder"}
-  cannabis_craving_score: {column: craving_cannabislt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Cannabis: craving (0 never to 10 all the time)"}
+  cannabis_craving_score: {column: craving_cannabislt, type: item, range: [0, 10], codes: {"0 Jamais": 0, "10 Tout le temps": 10}, label: "Cannabis: maximum craving in the last week (0 never to 10 all the time)"}

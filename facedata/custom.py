@@ -101,6 +101,17 @@ def sick_leave_more_than_20(values, keys=None):
     return stored.mask((stored == 0) & (values["n_sick_leaves_12m"] == 20), 1.0)
 
 
+def panic_unless_agoraphobia_only(values, keys=None):
+    """Panic disorder: the stored box, but missing where only agoraphobia can have ticked it (D151).
+
+    The export ticks the box with ILIKE '%Trouble panique%', which also matches "Agoraphobie sans trouble
+    panique": the agoraphobia box is 1 and no panic detail is filled. The twins end in _v0 and _fu.
+    """
+    end = "_fu" if "panic_disorder_stored_fu" in values else "_v0"
+    no_detail = values["panic_onset_age" + end].isna() & values["panic_last_month" + end].isna()
+    return values["panic_disorder_stored" + end].mask((values["agoraphobia" + end] == 1) & no_detail)
+
+
 def rr_differs_from_rate(values):
     """The RR interval typed in the form against the heart rate of the same ECG.
 
