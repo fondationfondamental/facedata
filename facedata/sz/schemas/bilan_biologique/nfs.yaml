@@ -2,22 +2,33 @@ instrument: nfs
 title: Blood count
 tab: BILAN BIOLOGIQUE
 section: BILAN BIOLOGIQUE
-status: draft
+status: reviewed
 notes: >
   Seven of the thirteen values of the BP blood count, with the same units
   and limits: leukocytes, erythrocytes, haemoglobin, neutrophils,
   eosinophils, mean cell volume and platelets.
 
-  Haemoglobin: 32 results are in g/L under the label g/dL (148 for 14.8).
-  Leukocytes (5) and platelets (3) per mm3. Neutrophils: 20 results typed
-  as a percentage of the leukocytes and 3 per mm3. Eosinophils: 37 results
-  could be a percentage (unit_doubt). Mean cell volume: 16 results ten
-  times too small, 9 out of range.
+  Haemoglobin: 32 results are in g/L under the label g/dL (148 for 14.8), 2
+  labelled g/L are converted and 2 labelled mmol/L are read in g/dL by their
+  size. Leukocytes (5) and platelets (3) per mm3; 2 platelet counts are
+  written in hundreds of G/L (2.5 for 250, as in 2.5 x 10^5 per mm3, BP
+  D130) and read with the unit x100 G/L (unit_inferred). Neutrophils: 20
+  results typed as a percentage of the leukocytes and 3 per mm3.
+  Eosinophils: 37 results could be a percentage (unit_doubt), 2 are read as
+  a percentage and 2 per mm3 (unit_inferred). Mean cell volume: 16 results
+  ten times too small. 15 results are out of range: 1 leukocytes, 1
+  erythrocytes, 4 haemoglobin and 9 mean cell volume.
+
+  The clip at the 1st and 99th percentile turns a clinical tail into the cut
+  value, on 36 to 74 results per variable; the hard range is what removes
+  impossible values.
 
   Same instrument as in FACE BP, without the six values that the SZ
   extraction does not hold (haematocrit, basophils, lymphocytes, monocytes,
   MCH, MCHC). The BP check that the five kinds of white cells add up to the
-  leukocytes cannot be made with two kinds.
+  leukocytes cannot be made with two kinds. The weaker test that neutrophils
+  plus eosinophils do not exceed 1.1 times the leukocytes fails on 8 of
+  3,630 visits (unwinsorised values).
 
 defaults: {type: number}
 

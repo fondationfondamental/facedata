@@ -13,7 +13,7 @@ from facedata.tokens import KEY_COLUMNS
 
 INSTRUMENT_FIELDS = {"instrument", "title", "tab", "section", "status", "level", "notes",
                      "defaults", "version", "variables", "scores", "sign", "checks", "names", "at_visit",
-                     "relatives", "per_patient", "crossed", "per_visit", "packed", "uses"}
+                     "relatives", "per_patient", "crossed", "per_visit", "packed", "uses", "implausible_visits", "implausible_pool"}
 REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables"]
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
@@ -546,6 +546,10 @@ def check_schema(schema, columns=None):
         problems.append("status is draft or reviewed")
     if schema.get("level", "visit") not in ("visit", "patient", "list", "relatives"):
         problems.append("level is visit, patient, list or relatives")
+    if "implausible_visits" in schema and not str(schema["implausible_visits"]).isdigit() or str(schema.get("implausible_visits", "2")) in ("0", "1"):
+        problems.append("implausible_visits is a whole number, 2 or more")
+    if "implausible_pool" in schema and "implausible_visits" not in schema:
+        problems.append("implausible_pool goes with implausible_visits")
     for name, variable in schema.get("variables", {}).items():
         problems = problems + check_variable(name, variable, schema, columns)
     if columns is not None and isinstance(schema.get("packed"), dict):

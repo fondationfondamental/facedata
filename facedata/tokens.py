@@ -51,6 +51,7 @@ SEVERITY = {
     "duplicate_row": "info",
     "winsorised": "info",
     "unit_doubt": "discrepancy",
+    "visit_removed": "discrepancy",
     "sign_doubt": "discrepancy",
     "band_middle": "discrepancy",
     "column_conflict": "discrepancy",

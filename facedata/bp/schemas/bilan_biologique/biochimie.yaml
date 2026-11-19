@@ -3,6 +3,8 @@ title: Blood biochemistry
 tab: BILAN BIOLOGIQUE
 section: Biochimie
 status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -13,50 +15,128 @@ notes: >
   unlikely under its label). A value that fits no scale is left as it is and
   the hard range decides (out_of_range).
 
-  CRP. 2,328 of 13,026 results are censored (2,323 below a limit, 5 above),
-  with 18 different detection limits from 0.1 to 60 mg/L depending on the
-  laboratory. The limit is kept as the value and crp_cens marks it. In 30
-  more rows the mark sits in the unit column ("inf") and the result column
-  holds the limit. 399 results are exactly 0: no assay measures a CRP of
+  CRP. Of 13,095 results, 2,328 are written with "<" and 5 with ">", and in
+  31 more rows the mark sits in the unit column ("inf") and the result
+  column holds the limit. There are 18 different detection limits from 0.1
+  to 60 mg/L depending on the laboratory. The limit is kept as the value and
+  crp_cens marks it. 399 results are exactly 0: no assay measures a CRP of
   0, so it is a result below a limit that was not written. They are
   delivered as missing (missing code; decision D101 in PROGRESS.md, of the
   project lead, was open question O3), in the four cohorts.
 
-  Glucose. Of 12,930 results, 354 are labelled g/L and look like g/L
+  Glucose. Of 12,993 results, 356 are labelled g/L and look like g/L
   (converted). 124 are labelled mmol/L but are too low to be mmol/L; these
   are g/L values with the wrong label (unit_inferred). 23 are possible under
-  their label but fit the other unit better (unit_doubt). 6 fit neither.
+  their label but fit the other unit better (unit_doubt). 7 fit neither (3
+  of them are 0). The unit mg/dL (60 to 400: no mmol/L result reaches it,
+  the hard range stops at 40) is listed so that a result typed in mg/dL is
+  read; none is in BP. The 4 results of 41 or more that stay out_of_range
+  are 10 times (2 of them) or about 100 times (the 2 others) the usual
+  glucose of the same patient, a misplaced decimal point, where a result in
+  mg/dL would be 18 times. The window starts at 60 because a result of 41 to
+  60 is 10 times the usual value, not a low glucose in mg/dL.
 
   Hidden scales found in the other analytes, all under the default label:
-  uric acid in mg/L (about 100 values, with a clear mode at 40 to 70), in
-  mg/dL and in mmol/L; creatinine in mg/L (76); urea in g/L (56); phosphate
-  in mg/L (about 85); calcium in mg/L (51); iron in µg/dL (about 360) and in
-  µg/L; albumin with a lost decimal point (12).
+  uric acid in mg/L (102 values, with a clear mode at 40 to 70), in mg/dL
+  (31) and in mmol/L (22); creatinine in mg/L (76); urea in g/L (56);
+  phosphate in mg/L (83) and in mg/dL (15); calcium in mg/L (51) and in
+  mEq/L (17); iron in µg/dL (362), in µg/L (57) and in mg/L (24); albumin
+  with a lost decimal point (11) or in g/dL (2).
 
-  Iron cannot always be told apart: a low iron in µg/dL (20 to 45) looks like
-  a normal iron in µmol/L and is kept as such.
+  Iron cannot always be told apart: a low iron in µg/dL (20 to 45) looks
+  like a normal iron in µmol/L and is kept as such. This happens in one
+  centre that typed µg/dL from 2013 to 2018: 59% of its 485 results of those
+  years are 50 or more (2.5% in its other years, 1.4% in the other centres)
+  and are converted, while its 198 results below 50, which would be 9 µmol/L
+  or less if they were in µg/dL, stay read as µmol/L. The delivered median
+  of that centre in those years is 19.5 µmol/L, against 16.8 for all other
+  results. Open point: ask the centre which unit it used and when.
 
-  HbA1c: eight results labelled % are 20 to 53, impossible as a percentage:
-  they are in mmol/mol (IFCC) and are converted with the IFCC-NGSP master
-  equation, % = 0.09148 x mmol/mol + 2.152 (unit_inferred; 4.0% to 7.0%).
-  32 results under 3 (a 0 and 31 of 0.2 to 3, in six centres) stay
-  out_of_range: neither a fraction (that would be under 0.2) nor the glucose
-  of the visit in g/L (7% of them within 0.05 g/L of it), so their scale is
-  unknown.
+  HbA1c: eight results labelled %, in five centres, are 20 to 53, impossible
+  as a percentage: they are in mmol/mol (IFCC) and are converted with the
+  IFCC-NGSP master equation, % = 0.09148 x mmol/mol + 2.152 (unit_inferred;
+  4.0% to 7.0%; decision D127, which recovered these mmol/mol results only).
+  32 results under 3 (a 0 and 31 of 0.2 to 3, in five centres) stay
+  out_of_range: no fraction is recovered (a fraction would be under 0.2),
+  and they are not the glucose of the visit in g/L (7% of them within 0.05
+  g/L of it), so their scale is unknown. 24 of the 31 belong to the shifted
+  block described below.
 
-  Creatinine clearance: 0 stands for "not computed" (246 cells, missing
-  code). Results such as ">90" are right-censored at the laboratory's ceiling.
+  Creatinine clearance: 0 stands for "not computed" (246 cells, missing code).
+  Results such as ">90" are right-censored at the laboratory's ceiling. The
+  form computes the clearance itself on each key-up in the creatinine field
+  (Cockcroft-Gault: 1.23 for a man or 1.04 for a woman, times the weight of
+  the nursing record of the visit, times 140 minus the age on the day of
+  typing, divided by the creatinine as typed) and writes 0 when the weight is
+  not saved (A21 in EXPORT_REQUESTS.md). A recomputation with the age at the
+  visit differs from the stored value by 10% or more on about 4,600 of 10,800
+  visits (43%): the stored clearance depends on the weight and the age that
+  the form saw. It is delivered as stored.
 
-  Centres (report page, read on 2026-11-18). No step between the years in any
-  analyte. The centres differ by their laboratories, not by a unit: two
+  Centres (report page, read on 2026-11-18). No step between the years in
+  any analyte. The centres differ by their laboratories, not by a unit: two
   centres have an albumin 3 to 4 g/L lower than the others (median 40
   against 42 to 45), the size of the gap between the two usual methods of
   measure (bromocresol purple and green); one centre has a calcium 0.1
-  mmol/L lower (2.26 against 2.30 to 2.40). The CRP falls from a median of
-  4 mg/L in 2009 to 1 to 2 from 2019, while the share given as "less than"
-  a limit stays between 4% and 20%: more sensitive assays, read with the
-  censoring column; the centre medians go from 1.1 to 3.0 mg/L, and one
-  centre gives almost only "<5".
+  mmol/L lower (2.26 against 2.30 to 2.40). The CRP falls from a median of 4
+  mg/L in 2009 to 1 to 2 from 2019, while the share of results given as
+  "less than" a limit goes from 6% to 35% by year (35% in 2009, 9% in 2013,
+  about 30% in 2017, 6% in 2026): the assays and the mix of laboratories
+  change, so the median is read with the censoring column. The centre
+  medians go from 1.1 to 3.0 mg/L, except for one centre whose median is 5:
+  it writes exactly 5 on 86% of its results and marks "<" on only 44%, so
+  its 474 unmarked results of 5 are limits delivered as measured values. No
+  rule can find them without naming the centre, so none is made: a pooled
+  analysis should treat a CRP of exactly 5 as a limit.
+
+  Shifted block and pool (implausible_visits: 3, implausible_pool: biology).
+  This schema belongs to the pool of the seven laboratory schemas of BP. The
+  impossible values (out_of_range) of the whole pool are counted on each
+  visit, and a visit with three or more loses all its values in every schema
+  of the pool and gets visit_removed, with the number of impossible values as
+  detail (section 4 of SCHEMA_SPEC.md). The rule reads the content, not the
+  centre. It removes 29 visits in all (998 cells: 992 delivered values and 6
+  of the stored cholesterol ratio, a check that is not delivered). This schema
+  loses 361 cells on the 29 visits: 246 on 20 visits of the block below and
+  115 on 9 other visits. A result of 0 counts as impossible (not the CRP and
+  the clearance, where 0 is a missing code).
+
+  The block. In one centre, from 2019 to 2023, a block of results of the form
+  was typed in the wrong fields on 24 visits: blood-count values stand as the
+  iron, the HbA1c, the calcium, the phosphate, the uric acid and the
+  clearance, and the differential count is empty on 19 of the 24 visits. The
+  iron (23 values) and the HbA1c (24) fall outside their hard range, but 91
+  values of the block (calcium, phosphate, uric acid and clearance) fall
+  inside it and would be delivered as results; the same block gives an
+  impossible free T3 on 19 of the 24 visits (see bilan_thyroidien) and fills
+  the drug levels (see dosage_psychotropes). The pool removes 20 of the 24
+  visits and 75 of those 91 values. 4 visits escape, because the iron and the
+  HbA1c, their only impossible values, make 2 and not 3: they still deliver 48
+  values here (16 of the 91 among them), 19 in bilan_hepatique, 20 in
+  bilan_lipidique, 25 in nfs and 11 in dosage_psychotropes, and none in the
+  two other schemas. The 9 other visits removed, in three other centres from
+  2011 to 2018, are another pattern: 3 to 12 impossible values spread over two
+  to four schemas (biochemistry and lipids mostly), with a blood count that is
+  filled on 8 of the 9.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so a
+  clinical tail becomes the cut value (in BP a CRP above 24.8 mg/L, a
+  creatinine above 118 µmol/L, a fasting glucose above 8.4 mmol/L, an HbA1c
+  above 8.0% and a sodium below 135 mmol/L are delivered as those values: 190
+  sodium and 276 creatinine values are clipped), while the hard range of each
+  variable is what removes impossible values (out_of_range); the load with
+  winsorise=False keeps the tails.
+
+  The form also has the ferritin, the corrected calcium, the sampling date
+  (date_prelevement, the only mandatory field) and the sampling place. None
+  of them is in the extraction: to be requested. The visit date stands for
+  the sampling date.
+
+  Chloride (qc site_shift, read on 2026-11-19): three centres (140, 240 and
+  66 results) have a median of 108, 107 and 107 mmol/L against 104 for the
+  others (1.0, 0.75 and 0.75 IQR, on an IQR of 4), their median and 5th
+  percentile both 3 to 4 mmol/L higher, with no unit conversion for chloride
+  in BP: a difference of laboratory of unknown cause, left as measured.
 
 defaults: {type: number}
 
@@ -218,6 +298,7 @@ variables:
     units:
       mmol/L: {factor: 1, expect: [2.5, 40]}
       g/L: {factor: 5.551, expect: [0.3, 2.5]}
+      mg/dL: {factor: 0.05551, expect: [60, 400]}
     range: [1.5, 40]
 
   hba1c:

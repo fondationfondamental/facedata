@@ -2,7 +2,9 @@ instrument: bilan_lipidique
 title: Blood lipids
 tab: BILAN BIOLOGIQUE
 section: Bilan lipidique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   How the units are read (the same in every schema of this tab). The unit
   column is filled by the form with a default label, also where there is no
@@ -29,13 +31,56 @@ notes: >
   Triglycerides in g/L and in mmol/L are on almost the same scale (factor
   1.129), so only the label can tell them apart.
 
-  The ratio of total to HDL cholesterol is recomputed from the harmonised
-  values (custom function cholesterol_ratio) and compared with the stored one,
-  which the EMR computes from the numbers as typed. They differ on 366
-  visits (more since 2022), and on 350 of them the stored ratio is the
-  recomputed one times 2.59 or divided by 2.59: the EMR divided a total
-  cholesterol in g/L by an HDL in mmol/L, or the other way round (1 g/L =
-  2.586 mmol/L). The recomputed ratio is the one delivered.
+  The ratio of total to HDL cholesterol is the only lipid value that the
+  form computes (A8 in EXPORT_REQUESTS.md): total divided by HDL on each
+  key-up in either field, with no unit, rounded to 2 decimals and with no
+  else branch, so that the old ratio stays when a field is emptied. It is
+  recomputed here from the harmonised values (custom function
+  cholesterol_ratio) and compared with the stored one. The stored ratio
+  equals the ratio of the numbers as typed on 12,629 of the 12,648 visits
+  that have both. It differs from the recomputed ratio on 366 visits, 349 of
+  them unit mixes (1 g/L = 2.586 mmol/L): the stored ratio is the recomputed
+  one divided by 2.586 on 170 visits (a total in g/L over an HDL in mmol/L,
+  12 to 41 in each period) and multiplied by 2.586 on 179 (a total in mmol/L
+  over an HDL in g/L: 78 in 2022-23, 81 from 2024 and 20 before 2022). The
+  mismatches are 1.3% to 1.8% of the visits to 2021, then 7.1% in 2022-23
+  and 6.8% from 2024: the unit choice of the HDL and the LDL began to be
+  filled in 2022 (1% to 2% of the HDL results to 2018, 7% in 2019-21, 88% in
+  2022-23, 97% from 2024) while the total cholesterol has no choice, so an
+  HDL chosen in g/L is divided into a total in mmol/L. In 2022-23 one centre
+  carries 45 of the 78 mismatches of the second kind. The recomputed ratio
+  is the one delivered.
+
+  The 50 visits where the ratio cannot be recomputed (score_not_recomputed):
+  28 have an HDL typed above 4, removed as impossible (not an HDL: no
+  conversion saves it), 6 have a removed total cholesterol, and 16 have an
+  empty typed field beside a stored ratio, the stale ratio that the form
+  keeps when a field is emptied.
+
+  LDL is a calculated value, not an independent measurement: it lies within
+  0.15 mmol/L of total minus HDL minus triglycerides divided by 2.2 on 90.2%
+  of the 12,568 visits with triglycerides under 4.5 mmol/L. About 9 removed
+  values of BP look like mg/dL (LDL of 100 to 200: 3, triglycerides of 60 to
+  200: 4, total cholesterol of 100 or more: 2). The form offers no mg/dL, so
+  they are left removed.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie): a visit with three or more
+  impossible values over the seven laboratory schemas of BP loses all its
+  values here too and gets visit_removed, so the ratio computed from them is
+  empty as well. The pool removes 29 visits in all (998 cells); this schema
+  loses 101 delivered cells on 27 visits (75 on 19 visits of the shifted block
+  of one centre, 26 on 8 other visits) and 6 cells of the stored ratio, which
+  is a check and not delivered; an impossible stored ratio counts in the pool
+  like any other impossible value. The 4 block visits that escape the pool
+  (see biochimie) still deliver 20 values here.
+
+  Winsorising (step 12) clips each number at its 1st and 99th percentile, so a
+  clinical tail becomes the cut value (in BP a total cholesterol above 7.94
+  mmol/L, an LDL above 5.62, triglycerides above 4.8 and a ratio above 8.35
+  are delivered as those values, and an HDL below 0.68 as 0.68: 235 to 263
+  values per variable are clipped), while the hard range (total cholesterol
+  [1.5, 15], triglycerides [0.1, 40]) is what removes impossible values.
 
 defaults: {type: number}
 

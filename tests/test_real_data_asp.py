@@ -132,7 +132,7 @@ def test_clinical_measures_and_biology(result, qc):
     flags = result.flags[result.flags["variable"].isin(set(table.index) | {"qtc_bazett", "bmi", "cholesterol_hdl_ratio"})]
     assert "unknown_code" not in set(flags["flag"]) and "unparsed" not in set(flags["flag"])
     counts = flags["flag"].value_counts()
-    assert (counts["unit_inferred"], counts["unit_converted"], counts["unit_unknown"], counts["unit_doubt"], counts["out_of_range"]) == (226, 164, 29, 7, 84)
+    assert (counts["unit_inferred"], counts["unit_converted"], counts["unit_unknown"], counts["unit_doubt"], counts["out_of_range"]) == (230, 164, 3, 7, 79)   # ALP in µkat/L and creatinine in mg/dL are read: 5 cells gained; vitamin D code 64387 is nmol/L (biology review, D144)
     # Children are measured too: the ranges of the other cohorts would refuse them.
     assert (qc.loc["height", "n_valid"], qc.loc["height", "unit_inferred"], qc.loc["height", "out_of_range"]) == (1100, 3, 9)
     assert (qc.loc["weight", "n_valid"], data["weight"].min() < 25) == (1104, True)
@@ -142,9 +142,9 @@ def test_clinical_measures_and_biology(result, qc):
     assert v0["tobacco_status"].value_counts().to_dict() == {"non_smoker": 492, "current_smoker": 49, "ex_smoker": 22}
     # No unit column for most analytes: the size of the value gives the unit.
     assert (qc.loc["haemoglobin", "n_valid"], qc.loc["haemoglobin", "unit_inferred"]) == (545, 113)              # g/L brought to g/dL
-    assert (qc.loc["glucose", "unit_inferred"], qc.loc["phosphate", "unit_inferred"], qc.loc["monocytes", "unit_inferred"]) == (8, 13, 10)
+    assert (qc.loc["glucose", "unit_inferred"], qc.loc["phosphate", "unit_inferred"], qc.loc["monocytes", "unit_inferred"]) == (8, 12, 10)   # the phosphate factor is 0.0323 (biology review, D144)
     assert (qc.loc["cholesterol", "n_valid"], qc.loc["cholesterol", "unit_converted"], qc.loc["triglycerides", "unit_converted"]) == (352, 67, 64)
-    assert (qc.loc["vitamin_d", "n_valid"], qc.loc["vitamin_d", "unit_converted"], qc.loc["vitamin_d", "unit_unknown"]) == (265, 19, 29)
+    assert (qc.loc["vitamin_d", "n_valid"], qc.loc["vitamin_d", "unit_converted"], qc.loc["vitamin_d", "unit_unknown"]) == (291, 19, 3)   # vitamin D code 64387 is read as nmol/L: 26 cells gained (biology review, D144)
     assert (qc.loc["prolactin", "n_valid"], qc.loc["prolactin", "unit_converted"]) == (104, 14)
     assert (qc.loc["crp", "censored_left"], qc.loc["crp", "missing_code"]) == (1, 45)       # a CRP of exactly 0 (BP D101)
     assert v0["mri"].value_counts().to_dict() == {"not_done": 577, "normal": 167, "abnormal": 54, "result_unknown": 36}

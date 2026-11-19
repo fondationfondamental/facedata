@@ -2,27 +2,90 @@ instrument: dosage_psychotropes
 title: Psychotropic drug levels
 tab: BILAN BIOLOGIQUE
 section: Dosage de Psychotropes
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   Drug levels measured with the blood sample: whether the treatment was taken
-  that morning (992 answers, 144 yes), the hours since the last intake (626,
-  median 12), twelve boxes that say which level was asked for, and the levels.
-  The boxes are filled on every row that has a blood result.
+  that morning (958 answers, 138 yes), the hours since the last intake (631
+  answers, 594 delivered, median 12), twelve boxes that say which level was
+  asked for, and the levels. The boxes are filled on every row that has a
+  blood result (1,254 rows). Nothing else is recorded: no dose, no time of the
+  sample.
 
-  Lithium (157 levels, median 0.72 mmol/L; mEq/L and mmol/L are the same
-  scale), valproate (17), carbamazepine (1) and oxcarbazepine (13) keep the
-  BP names and units. Valproate: 7 levels are in mmol/L and are converted to
-  mg/L. No box is ever ticked for oxcarbazepine, although 13 levels exist.
+  Lithium (146 levels, median 0.73 mmol/L; mEq/L and mmol/L are the same
+  scale), valproate (11) and carbamazepine (1) keep the BP names and units;
+  none of the 13 oxcarbazepine levels is delivered (they are all on removed
+  visits, below). Valproate: 7 levels are in mmol/L and are converted to mg/L
+  (unit_inferred). The names of the boxes are those of the treatments table,
+  except assay_divalproate (the table has valproate and valpromide, no
+  divalproate); the form has one field of valproic acid behind the three boxes
+  valproate, divalproate and valpromide, and all 11 valproate levels have one
+  of them ticked.
 
   Five antidepressant levels are TRD only: amitriptyline, clomipramine,
-  imipramine, fluoxetine and venlafaxine. The dictionary says mg/L, but each
-  holds two groups of values a thousand times apart: clomipramine has 89
-  levels of the size of mg/L and 47 of the size of µg/L. They are delivered
-  in µg/L, and those typed in mg/L are converted (unit_inferred: 209 in all).
+  imipramine, fluoxetine and venlafaxine. The dictionary says mg/L; the form
+  asks for a unit (mg/L or µg/L) for clomipramine, fluoxetine and venlafaxine,
+  and the extraction does not carry it (amitriptyline and imipramine have mg/L
+  fixed). Each drug holds two groups of values a thousand times apart:
+  clomipramine has 89 levels of the size of mg/L and 46 of the size of µg/L.
+  They are delivered in µg/L, and those typed in mg/L are converted
+  (unit_inferred: 209 in all, 201 of them still delivered); the two scales are
+  1,000 apart, so the size decides without risk.
 
-  A level of 0 means that nothing was measured and is a missing code (36
-  cells). A level is given without its box on 6 to 22 visits per drug, and a
-  box is ticked without a level on 18 to 25 visits for the antidepressants.
+  A level of 0 means that nothing was measured and is a missing code (52
+  cells: 8 for lithium, 1 for oxcarbazepine, 43 for the other drugs; the box
+  is at 0 on all but 2). The delay of 0 too (28 cells, 27 of them written 0000
+  in one centre); 5 delays above 72 hours are impossible, three of them years.
+  The delays are heaped: 42% are 12 hours and 20% are 24 hours, all in whole
+  hours.
+
+  The form shows the level of a drug only after its box is ticked (its script
+  hides the field), yet 11 levels have no box, all of them lithium. The 26
+  others (oxcarbazepine 12, valproate 6, venlafaxine 5, amitriptyline 3) were
+  all on visits of the shifted centre (below) and the pool removes them. No
+  box is ever ticked for oxcarbazepine, whose 12 levels were all in that
+  centre and have a median of 12, the usual delay: they were probably not
+  levels. A box is ticked without a level on 16, 15 and 25 visits for
+  clomipramine, fluoxetine and venlafaxine, and on 0 to 3 for the other drugs.
+  Open: shown_if on the levels (the display rule of the form is known,
+  decision D125) would remove the 11 lithium levels that have no box.
+
+  A level can be checked against the dated treatments of the cohort only for
+  3% (lithium, 5 of 146) to 27% (venlafaxine, 45 of 165) of them: the match is
+  a treatment of the same molecule, started before the visit and not ended,
+  which is found for 12 of 135 clomipramine levels, 6 of 66 fluoxetine, 2 of
+  11 valproate, 1 of 19 amitriptyline and none of the others, against 78% for
+  lithium in BP (3,642 of 4,648). The treatments of this cohort are too sparse
+  to check a level.
+
+  Shifted visits: the 30 visits of one centre, up to 2022, whose block of
+  results is shifted (see the blood-count schema; 23 of them have a number in
+  place of a unit code in the vitamin results, see vitamines_cortisol). This
+  schema belongs to the pool biology (implausible_visits: 3, implausible_pool:
+  biology; see the blood-count schema): a visit with three or more impossible
+  values over the eleven laboratory schemas of DR loses all its values and
+  gets visit_removed. The pool removes 35 visits in all (1,403 cells); this
+  schema loses 478 cells on 35 visits, boxes included: 407 on the 30 visits of
+  the block and 71 on 5 other visits. The block held 27 levels (oxcarbazepine
+  12, valproate 6, venlafaxine 5, amitriptyline 3, lithium 1), none of them
+  delivered any more; its impossible values here are numbers in a box (10),
+  years in the delay (3) and lithium levels of 35 or more (3).
+
+  Levels are winsorised at the 99th percentile only: the 5 results above it
+  become the cut value (lithium 1.32 mmol/L, clomipramine 424 µg/L, fluoxetine
+  738 µg/L and venlafaxine 742 µg/L, 2 results), so a clinical tail turns into
+  the cut value (a lithium above 1.32 is delivered as 1.32), and the hard
+  ranges remove the impossible levels (4 lithium results above 3 mmol/L).
+
+  Steps of the delay since the last intake (groups of 20 results or more;
+  the cause is not known, a habit of the centre, since the answers are
+  heaped on 12 and 24 hours): one centre has a median of 24 hours against 12
+  for all (1.12 interquartile ranges, 48 results; 56% of its answers are 24,
+  against 20% overall), and the year 2025 has 23.5 (1.07, 20 results), 70%
+  of them from a centre that appears in 2023 (median 18 hours over its 42
+  results). Two levels are unparsed (one fluoxetine and one venlafaxine): a
+  number of three digits followed by its unit, written in the level field.
 
   Same instrument as in FACE BP for the levels that BP has; the columns, the
   boxes and the antidepressants are those of the TRD form.
@@ -39,6 +102,7 @@ variables:
     label: Time since the last intake
     column: dospsy_delai
     unit: hours
+    missing: {"0": not_recorded, "0000": not_recorded}
     range: [0, 72]
     winsor: false
   assay_lithium: {column: dospsy_1, type: item, range: [0, 1], label: "Level asked for: lithium"}
@@ -61,6 +125,7 @@ variables:
     unit: mmol/L
     units:
       mmol/L: {factor: 1, expect: [0, 3], aliases: ["1", "2"]}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [0, 3]
     winsor: [0, 0.99]
   valproate:
@@ -70,19 +135,21 @@ variables:
     units:
       mg/L: {factor: 1, expect: [2, 200]}
       mmol/L: {factor: 144.2, expect: [0.05, 1.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [0, 250]
     winsor: [0, 0.99]
   carbamazepine:
     label: Carbamazepine plasma level
     column: crbmzpn
     unit: mg/L
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [0, 25]
     winsor: [0, 0.99]
   oxcarbazepine:
     label: Oxcarbazepine plasma level
     column: oxcarbaz
     unit: mg/L
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [0, 60]
     winsor: [0, 0.99]
   amitriptyline:
@@ -92,7 +159,7 @@ variables:
     units:
       µg/L: {factor: 1, expect: [5, 2500]}
       mg/L: {factor: 1000, expect: [0.005, 2.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [5, 2500]
     winsor: [0, 0.99]
   clomipramine:
@@ -102,7 +169,7 @@ variables:
     units:
       µg/L: {factor: 1, expect: [5, 2500]}
       mg/L: {factor: 1000, expect: [0.005, 2.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [5, 2500]
     winsor: [0, 0.99]
   imipramine:
@@ -112,7 +179,7 @@ variables:
     units:
       µg/L: {factor: 1, expect: [5, 2500]}
       mg/L: {factor: 1000, expect: [0.005, 2.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [5, 2500]
     winsor: [0, 0.99]
   fluoxetine:
@@ -122,7 +189,7 @@ variables:
     units:
       µg/L: {factor: 1, expect: [5, 2500]}
       mg/L: {factor: 1000, expect: [0.005, 2.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [5, 2500]
     winsor: [0, 0.99]
   venlafaxine:
@@ -132,6 +199,6 @@ variables:
     units:
       µg/L: {factor: 1, expect: [5, 2500]}
       mg/L: {factor: 1000, expect: [0.005, 2.5]}
-    missing: {"0": not_recorded}
+    missing: {"0": not_recorded, "00": not_recorded}
     range: [5, 2500]
     winsor: [0, 0.99]

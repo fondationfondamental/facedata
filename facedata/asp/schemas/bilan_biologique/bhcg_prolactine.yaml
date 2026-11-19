@@ -2,14 +2,23 @@ instrument: bhcg_prolactine
 title: "Prolactin"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  Prolactin, on 100 inclusion visits. Same analyte, name and target unit
-  (ng/mL) as in FACE SZ and DR; the beta-hCG is not in this extraction.
+  Prolactin, on 100 inclusion visits and 4 follow-up visits: the form asks for
+  it only of the patients treated with antipsychotics. Same analyte, name and
+  target unit (ng/mL) as in FACE SZ and DR; the beta-hCG is not in this
+  extraction.
 
-  Its unit column holds a catalogue number: 67306 on 88 results (median
-  12.55: ng/mL) and 67405 on 18 (median 164.45: mUI/L, the number that
-  the TSH uses). The reading of the numbers is to confirm (open question O6).
+  Its unit column holds a catalogue number, which the list of the form names:
+  67306 (µg/L, ng/ml) on 86 results (median 12.55: ng/mL) and 67405 (µUI/ml,
+  mUI/L) on 18 (median 164.45: mUI/L, the number that the TSH uses). The sizes
+  agree with the form: 14 results are converted, and 4 are of the size of the
+  other unit (unit_doubt on 3, unit_inferred on 1). No result is 0, the value
+  that BP types where nothing was measured.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (2 of the 104 values here); the hard range is what removes
+  impossible values (none here).
 
 defaults: {type: number}
 

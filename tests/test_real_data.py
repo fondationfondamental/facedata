@@ -74,7 +74,7 @@ def test_scores_agree_with_the_stored_ones(result, qc):
 def test_biology(qc):
     crp, glucose, haemoglobin = qc.loc["crp"], qc.loc["glucose"], qc.loc["haemoglobin"]
     assert (crp["n_filled"], crp["censored_left"], crp["censored_right"], crp["unparsed"]) == (13095, 2359, 5, 0)
-    assert (crp["n_valid"], crp["missing_code"]) == (12696, 399)       # a CRP of exactly 0 is not a measurement (D101)
+    assert (crp["n_valid"], crp["missing_code"]) == (12672, 399)       # a CRP of exactly 0 is not a measurement (D101); 29 shifted visits are removed (biology review, D144)
     assert (glucose["n_filled"], glucose["unit_converted"], glucose["unit_inferred"]) == (12993, 356, 124)
     assert (glucose["unit_doubt"], glucose["out_of_range"], glucose["censored_left"]) == (23, 7, 2)
     assert (haemoglobin["n_filled"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (13505, 487, 12)
@@ -161,15 +161,16 @@ def test_bilan_biologique(qc):
     assert qc.loc["ldl", "unit_converted"] == 270                  # the unit choice that the export forgets
     assert (qc.loc["haematocrit", "unit_inferred"], qc.loc["mchc", "unit_inferred"]) == (641, 604)
     # Prolactin with no unit chosen: read as mUI/L where the centre reported in it, unknown where it cannot be told.
-    assert (qc.loc["prolactin", "unit_converted"], qc.loc["prolactin", "unit_inferred"]) == (158, 332)
+    # Below 0.2 it is read as mg/L (x1000): 44 more `unit_inferred` (biology review, D144).
+    assert (qc.loc["prolactin", "unit_converted"], qc.loc["prolactin", "unit_inferred"]) == (158, 376)
     assert (qc.loc["prolactin", "unit_doubt"], qc.loc["prolactin", "unit_unknown"]) == (10, 176)
     # White cells written as percentages are converted with the leukocytes of the visit.
     assert (qc.loc["basophils", "unit_inferred"], qc.loc["basophils", "out_of_range"]) == (476, 4)
     assert (qc.loc["eosinophils", "unit_doubt"], qc.loc["neutrophils", "unit_unknown"]) == (90, 4)
-    assert qc.loc["leukocytes", "check_failed"] == 222
+    assert qc.loc["leukocytes", "check_failed"] == 221                 # (biology review, D144)
     assert (qc.loc["creatinine_clearance", "missing_code"], qc.loc["creatinine_clearance", "censored_right"]) == (246, 177)
     assert (qc.loc["hcg", "censored_left"], qc.loc["hcg", "unit_inferred"]) == (2094, 0)
-    assert qc.loc["cholesterol_hdl_ratio", "n_valid"] == 13199
+    assert qc.loc["cholesterol_hdl_ratio", "n_valid"] == 13174        # (biology review, D144)
     # Platelets typed in hundreds of G/L (2.47 for 247) are read as such; a prolactin of 0 is "nothing measured" (D130).
     assert (qc.loc["platelets", "unit_inferred"], qc.loc["platelets", "out_of_range"], qc.loc["prolactin", "missing_code"]) == (79, 4, 19)
     # HbA1c in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D127).

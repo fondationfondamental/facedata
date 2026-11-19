@@ -16,7 +16,7 @@ instrument. Specs live in `docs/` and are the source of truth:
   `if instrument == ...`, the schema spec is missing a field: change the spec.
 - The generic code (`facedata/*.py`, plots and report included) has a budget of
   about 3,700 lines (raised from 3,600 on 2026-11-19 for the expected-value and
-  distance scores); it was 3,641 on 2026-11-19. Adding an instrument adds a
+  distance scores); it was 3,667 on 2026-11-19. Adding an instrument adds a
   YAML file and, rarely, one small function in `facedata/custom.py`.
 - Change `docs/SCHEMA_SPEC.md` before changing what a schema field means.
 

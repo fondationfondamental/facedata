@@ -2,14 +2,37 @@ instrument: bilan_hepatique
 title: "Liver panel"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  Alkaline phosphatase, AST, ALT, bilirubin and GGT, on about 480 inclusion
-  visits. Same analytes, names, target units and ranges as in FACE DR.
+  Alkaline phosphatase, AST, ALT, bilirubin and GGT, on 485 inclusion visits
+  and 49 follow-up visits. Same analytes, names, target units and ranges as in
+  FACE DR.
 
-  The extraction has no unit column for these analytes (open question O6):
-  the unit is read from the size of the value, and a result that only another
-  unit explains is converted and flagged unit_inferred.
+  The cohort holds children: 37% of the 534 visits with a liver result are
+  those of a patient under 18. Their alkaline phosphatase is that of growing
+  bones, a median of 190 UI/L against 66 UI/L for the adults; their ALT and
+  GGT are lower (medians 14 against 19 and 12 against 16 UI/L).
+
+  The extraction has no unit column for these analytes (open question O6): the
+  unit is read from the size of the value, and a result that only another unit
+  explains is converted and flagged unit_inferred.
+
+  What the values show: 4 alkaline phosphatase results are under 10, which no
+  UI/L result can be: they are in µkat/L (1 µkat/L is 60 UI/L, as in BP and
+  DR) and are converted. The window of the µkat/L runs to 10, where BP and DR
+  stop at 5: one of the four sits at the top of their window, at a level (300
+  UI/L) that a child reaches.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (40 of the 2,509 values here); the hard range is what removes
+  impossible values (none here).
+
+  Steps of the alkaline phosphatase that the age explains (0.75
+  interquartile range or more, groups of 20 results or more): the centre of
+  the children (106 results, all of patients under 18, median age 11) has a
+  median of 215 UI/L against 77.5 for all (1.61 interquartile ranges) and 65
+  to 82.5 at the three other centres, and the year 2023, with 73% of its 77
+  results from patients under 18, has 183 (1.24).
 
 defaults: {type: number}
 
@@ -20,6 +43,7 @@ variables:
     unit: "UI/L"
     units:
       "UI/L": {factor: 1, expect: [10, 1000]}
+      "µkat/L": {factor: 60, expect: [0.2, 10]}      # no ALP is under 10 UI/L; BP and DR stop at 5, children reach 8
     range: [10, 1000]
   ast:
     label: AST (ASAT)

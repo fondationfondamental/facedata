@@ -2,24 +2,65 @@ instrument: biochimie
 title: "Biochemistry"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  Fifteen analytes of the blood chemistry. Same analytes, names, target units and ranges as in FACE DR
-  (and SZ for the uric acid, the CRP, the glucose and the HbA1c).
+  Fifteen analytes of the blood chemistry. Same analytes, names, target units
+  and ranges as in FACE DR (and SZ for the uric acid, the CRP, the glucose and
+  the HbA1c). The factors and the windows are those of BP (D127), but for the
+  creatinine, whose µmol/L window starts at 20 (BP: 25) for the children. The
+  scales that BP also declares and that no ASP result needs are not listed:
+  albumin in g/dL, uric acid in mmol/L, calcium and phosphate in mg/dL.
 
-  Biology starts late in this cohort: no result until 2016, then 39% of the
-  inclusions of 2021 and 26% to 44% since. 520 inclusion visits and 56 follow-up visits
-  hold at least one result.
+  Biology starts late in this cohort: no chemistry result before 2016 (the
+  blood count has one in 2015). 39% of the inclusions of 2021 and 26% to 44%
+  of those of 2022 to 2026 hold a chemistry result. Over all the visits of the
+  extraction (the screening visits hold none), a laboratory value of any kind
+  is on 0.3% of the visits of 2013-15, 6.9% of 2016-18 and 13.6% to 16.9% from
+  2019 on; why is an open question (O10, third part). 517 inclusion visits and
+  52 follow-up visits hold at least one chemistry result; a laboratory value
+  of any kind is on 22% of the inclusion visits and 15% of the follow-up
+  visits.
 
-  The extraction has no unit column for these analytes (open question O6):
-  the unit is read from the size of the value, and a result that only another
-  unit explains is converted and flagged unit_inferred.
+  The cohort holds children: 39% of the 569 visits with a chemistry result are
+  those of a patient under 18. Their creatinine and phosphate are not the
+  adults' (medians 52 against 70 µmol/L and 1.37 against 1.04 mmol/L): compare
+  the cohorts with the age in view.
 
-  What the values show: 8 glucose results in g/L, 13 phosphate results in mg/L,
-  4 creatinine results in mg/L and 5 uric acid results in mg/L or mg/dL are
-  converted. One CRP is given as "less than" a limit and keeps its mark.
-  HbA1c lists mmol/mol (IFCC) as in the other cohorts, where some centres
-  type it; no ASP result has that size.
+  The extraction has no unit column for these analytes (open question O6): the
+  unit is read from the size of the value, and a result that only another unit
+  explains is converted and flagged unit_inferred.
+
+  What the values show: 8 glucose results in g/L, 12 phosphate results in
+  mg/L, 5 creatinine results (4 in mg/L, 1 in mg/dL), 5 uric acid results in
+  mg/L or mg/dL, 2 urea results in g/L and 1 calcium result in mg/L are
+  converted. No glucose is in mg/dL (none is above 13). One phosphate result
+  is too large for the mg/L window and stays out_of_range. HbA1c lists
+  mmol/mol (IFCC) as in the other cohorts, where some centres type it; no ASP
+  result has that size.
+
+  CRP. The form prints mmol/L beside it (open question O16, point 6); the
+  values are of the size of mg/L. 45 of the 357 results (12.6%) are exactly 0
+  and are delivered as missing (BP D101): no assay gives 0. One result is
+  given as "less than" a limit and keeps its mark (crp_cens). The 312 results
+  kept are small: a median of 0.6 mg/L and 59% under 1 mg/L, against a median
+  of 2.0 to 2.3 and 20% to 29% under 1 mg/L in BP, SZ and DR. The assays are
+  probably high-sensitivity ones. Do not pool the CRP of this cohort with the
+  others without the censoring column.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (101 of the 5,533 values here); the hard range is what removes
+  impossible values (18 results).
+
+  Steps of 0.75 interquartile range or more (groups of 20 results or more):
+  the creatinine of the centre of the children is 45 µmol/L against 62.85
+  for all (-0.79, 123 results, all of patients under 18) and 62.8 to 72 at
+  the three other centres, which is the age; the chloride of the centre that
+  gives 186 of the 490 results is 102 mmol/L against 103.5 to 105 at the
+  three others (-0.67 from the overall 104) and the years 2017 to 2019 are
+  101 (-1.0, 21 to 34 results, nearly all of that centre), a step of 3
+  mmol/L between laboratories; the CRP of 2023 is 2.35 mg/L against 0.6 for
+  all (1.03, 26 results, 20 of them of one centre, 9 of 5 mg/L or more
+  against 38 of 312 overall), and the cause is not known.
 
 defaults: {type: number}
 
@@ -65,7 +106,7 @@ variables:
     unit: "mmol/L"
     units:
       "mmol/L": {factor: 1, expect: [1, 40]}
-      "g/L": {factor: 16.65, expect: [0.1, 1]}
+      "g/L": {factor: 16.65, expect: [0.1, 0.9]}
     range: [1, 40]
   uric_acid:
     label: Uric acid
@@ -81,8 +122,9 @@ variables:
     column: creat
     unit: "µmol/L"
     units:
-      "µmol/L": {factor: 1, expect: [20, 1000]}
-      "mg/L": {factor: 8.84, expect: [2, 20]}
+      "µmol/L": {factor: 1, expect: [20, 1000]}      # BP starts at 25; 20 for the children of this cohort
+      "mg/L": {factor: 8.84, expect: [3, 20]}
+      "mg/dL": {factor: 88.4, expect: [0.3, 2.5]}
     range: [20, 1000]
   creatinine_clearance:
     label: Creatinine clearance
@@ -96,8 +138,8 @@ variables:
     column: phos
     unit: "mmol/L"
     units:
-      "mmol/L": {factor: 1, expect: [0.3, 3]}
-      "mg/L": {factor: 0.03229, expect: [10, 100]}
+      "mmol/L": {factor: 1, expect: [0.3, 2.5]}
+      "mg/L": {factor: 0.0323, expect: [15, 80]}
     range: [0.3, 3]
   ferritin:
     label: Ferritin
@@ -112,7 +154,7 @@ variables:
     unit: "mmol/L"
     units:
       "mmol/L": {factor: 1, expect: [1.5, 3.5]}
-      "mg/L": {factor: 0.02495, expect: [60, 140]}
+      "mg/L": {factor: 0.02495, expect: [70, 130]}
     range: [1.5, 3.5]
   crp:
     missing: {"0": unknown, "0.0": unknown, "00": unknown}      # exactly 0: below a limit that is not written (BP D101)

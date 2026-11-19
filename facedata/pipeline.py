@@ -2,6 +2,7 @@
 
 from collections import namedtuple
 
+import numpy as np
 import pandas as pd
 
 from facedata import custom
@@ -103,11 +104,18 @@ def answer_by_logic(values, filled, name, variable, schema=None):
     return values[name].mask(answered, 0), filled[name] | answered
 
 
-def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True, delivered=None):
+def count_impossible(flags, index):
+    """The number of `out_of_range` values of each row, from the working flag tables of an instrument."""
+    flagged = stack_flags(flags if isinstance(flags, list) else [flags])
+    return flagged[flagged["flag"] == "out_of_range"].groupby("row").size().reindex(index, fill_value=0)
+
+
+def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=True, delivered=None, pooled=None):
     """Run every step for one instrument.
 
     limits: winsor limits of an earlier load. norms: the norm tables.
     delivered: the columns the other schemas deliver, for a schema that has `uses`.
+    pooled: the impossible values of each visit counted over the instruments of its pool (`implausible_pool`).
     winsorise_values: False leaves the tails of the continuous variables as they are.
 
     Returns a dict: values (one column per variable and score), cens, version,
@@ -164,6 +172,12 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
         if "doubt" in variable and not variable["doubt"].get("remove"):     # a period in which the column is doubtful
             values[name], doubt_flags = doubt_period(values[name], keys["visit_date"], name, variable["doubt"])
             flags.append(doubt_flags)
+    if "implausible_visits" in schema:               # impossible values in number: the block of this visit is shifted
+        impossible = count_impossible(flags, values.index) if pooled is None else pooled
+        shifted = impossible >= int(schema["implausible_visits"])
+        for name in schema["variables"]:
+            flags.append(make_flags(shifted & values[name].notna(), name, "visit_removed", "impossible values in this visit: " + impossible.astype(str)))
+            values.loc[shifted, name] = np.nan
     cens = cens.where(values[cens.columns].notna(), 0)
     if "uses" in schema:                              # scores that other schemas deliver, an empty column if they are not loaded
         values[schema["uses"]] = (values if delivered is None else delivered).reindex(columns=schema["uses"])
@@ -342,6 +356,11 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
                    if name in instruments or schema.get("derived_from") in instruments}
     limits = read_limits(winsor_limits)
     norms = read_norms(norms_folder)
+    pooled = {}                                          # impossible values of each visit over the instruments of a pool
+    for pool in {schema["implausible_pool"] for schema in schemas.values() if "implausible_pool" in schema}:
+        members = [schema for schema in schemas.values() if schema.get("implausible_pool") == pool]
+        counts = sum(count_impossible(run_instrument(raw, keys, member, limits, norms, winsorise_values)["flags"], raw.index) for member in members)
+        pooled.update({member["instrument"]: counts for member in members})
 
     data = keys[KEY_COLUMNS].copy()
     patients = pd.DataFrame({"usubjid": sorted(keys["usubjid"].unique())})
@@ -368,7 +387,7 @@ def run_cohort(path, schema_folder, instruments=None, winsor_limits=None, norms_
             all_flags.append(flags)
             all_qc.extend(qc)
             continue
-        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values, data)
+        result = run_instrument(raw, keys, schema, limits, norms, winsorise_values, data, pooled.get(schema["instrument"]))
         table = delivered_columns(schema, result)
         for column in table.columns.intersection(data.columns):     # a version column that another schema also gives
             data[column] = data[column].fillna(table[column])

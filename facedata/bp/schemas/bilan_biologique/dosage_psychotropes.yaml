@@ -2,26 +2,84 @@ instrument: dosage_psychotropes
 title: Plasma levels of psychotropic drugs
 tab: BILAN BIOLOGIQUE
 section: Dosage des psychotropes
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   These columns have no unit column. The dictionary gives one unit per drug;
   a few results are on the molar scale instead and are recognised by their
   size: valproate above 200 (µmol/L), carbamazepine above 16, lamotrigine
-  above 20. They are converted and flagged unit_inferred.
+  above 20. They are converted and flagged unit_inferred (5 valproate, 12
+  carbamazepine and 39 lamotrigine results).
 
   Lamotrigine cannot always be told apart: its usual levels in µmol/L (12 to
   55) overlap its high levels in mg/L. Only the values of 20 and more are
   converted.
 
-  Clozapine (65 results) is on three scales at least: µg/L, mg/L and probably
-  µmol/L. Only the first two are recognised; 31 results fit neither and end
-  out_of_range.
+  Clozapine (65 results, 3 of them 0) is on three scales at least: µg/L,
+  mg/L (13 results, read as µg/L) and probably µmol/L. Only the first two
+  are recognised; 28 results fit neither and end out_of_range, all of 1 to
+  20: 20 of them are whole numbers from 2 to 4 and come from the centre of
+  the shifted block (below), the 8 others could be µmol/L (1 µmol/L = 326.8
+  µg/L, so 1 to 5 would be 330 to 1,630 µg/L, the usual levels). Open
+  question for the laboratories. The form labels the field mmol/L, which is
+  wrong; the lamotrigine field has no unit label on the form.
 
   A level below the laboratory's limit is left-censored ("<0.1"). The upper
   tail only is winsorised.
 
   Lithium above 3 mmol/L is impossible in an outpatient and ends
   out_of_range (10 results, some with a lost decimal point).
+
+  A level of 0 is nothing measured: the laboratories write "<x" for a level
+  they cannot detect (56 lamotrigine results are written so). 41 zero levels
+  were in the extraction: 38 were delivered as 0 (lithium 7, red-cell
+  lithium 8, valproate 8, carbamazepine 4, oxcarbazepine 1, lamotrigine 10)
+  and the 3 of clozapine were out_of_range. All are now missing, with the
+  missing code not_recorded. They do not come with an undetectable level of
+  a patient on treatment: only 3 of the 7 lithium zeros, 1 of the 8
+  valproate zeros and 5 of the 10 lamotrigine zeros have a dated active
+  treatment of that molecule at the visit.
+
+  The delivered names are the molecule strings of the treatments table
+  (lithium, valproate, carbamazepine, oxcarbazepine, lamotrigine, clozapine;
+  lithium_erythrocyte is the lithium of the red cells). A level above 0 falls
+  on a day with a dated active treatment of that molecule (a treatment that
+  started on or before the visit and has no end date or an end on or after it)
+  for 78% of the lithium levels, 68% of the valproate levels (80% with
+  valpromide) and 81% of the lamotrigine levels: a level with no treatment on
+  file is not an error, since the treatment lists are incomplete.
+
+  Only the answer to "treatment taken on the morning of the sample" is
+  recorded (405 yes among 10,608 answers): the form shows the level fields
+  only after the answer no, and 8,633 of the 8,666 visits with a level have it
+  (33 have no answer, 18 of them because the pool removed the visit, and none
+  has yes). The extraction has no sampling time and no dose, so a level cannot
+  be put against the time since the last dose.
+
+  Shifted block and pool. This schema belongs to the pool biology
+  (implausible_visits: 3, see biochimie): a visit with three or more
+  impossible values over the seven laboratory schemas of BP loses all its
+  values here too and gets visit_removed. The pool removes 29 visits in all
+  (998 cells); this schema loses 105 cells on 27 visits (90 on 19 visits of
+  the shifted block of one centre, 15 on 8 other visits), among them 21
+  answers to the question on the treatment taken. On the 24 visits of the
+  block (see biochimie) the fields of the drug levels are filled as nowhere
+  else: red-cell lithium on 13 of the 24 visits (11% of the visits of the
+  other centres), valproate on 21 (10%), carbamazepine on 15 (1.5%),
+  oxcarbazepine on 17 (0.1%) and clozapine on 17 (0.2%), with levels of
+  another scale (the median valproate is 2.4 mg/L against 61 for the other
+  centres, the red-cell lithium 1.1 mmol/L against 0.28). These 66 values
+  (without the clozapine, which is out of range) are removed with their
+  visits, except 8 (4 valproate and 4 oxcarbazepine) on the 4 block visits
+  that escape the pool: they stay delivered as typed. Not repaired.
+
+  Winsorising (step 12) clips the upper tail at the 99th percentile, so a
+  clinical tail becomes the cut value (in BP a lithium above 1.31 mmol/L, a
+  valproate above 124 mg/L and a lamotrigine above 15.6 mg/L are delivered
+  as those values: 46 lithium values are clipped, so a toxic level cannot be
+  told from the 99th percentile), while the hard range (lithium [0, 3],
+  valproate [0, 250]) is what removes impossible values.
 
 defaults: {type: number}
 
@@ -40,6 +98,7 @@ variables:
       µg/L: {factor: 1, expect: [20, 3000]}
       mg/L: {factor: 1000, expect: [0.02, 1]}
     range: [20, 3000]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   lithium:
@@ -47,6 +106,7 @@ variables:
     column: lithiumplasma
     unit: mmol/L
     range: [0, 3]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   lithium_erythrocyte:
@@ -54,6 +114,7 @@ variables:
     column: lithiumintra_erythrocitaire
     unit: mmol/L
     range: [0, 3]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   valproate:
@@ -64,6 +125,7 @@ variables:
       mg/L: {factor: 1, expect: [0, 200]}
       µmol/L: {factor: 0.1442, expect: [200, 1500]}
     range: [0, 250]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   carbamazepine:
@@ -74,6 +136,7 @@ variables:
       mg/L: {factor: 1, expect: [0, 16]}
       µmol/L: {factor: 0.2363, expect: [16, 100]}
     range: [0, 25]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   oxcarbazepine:
@@ -81,6 +144,7 @@ variables:
     column: oxcarbaz
     unit: mg/L
     range: [0, 60]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]
 
   lamotrigine:
@@ -91,4 +155,5 @@ variables:
       mg/L: {factor: 1, expect: [0, 20]}
       µmol/L: {factor: 0.2561, expect: [20, 250]}
     range: [0, 30]
+    missing: {"0": not_recorded, "0.0": not_recorded, "0.00": not_recorded}      # 0 where nothing was measured
     winsor: [0, 0.99]

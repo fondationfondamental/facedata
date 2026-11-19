@@ -871,15 +871,25 @@ biochimie:
   domain: Physical examination and laboratory
   schemas: {bp: biochimie, sz: biochimie, dr: biochimie, asp: biochimie}
   stack: "yes"
-  use: [glucose, hba1c, crp, uric_acid, creatinine, sodium, potassium, urea, calcium, albumin]
+  use: [glucose, hba1c, crp, uric_acid, creatinine, sodium, potassium, urea, calcium, albumin, chloride, total_protein, phosphate, creatinine_clearance]
   note: >
     Glucose, HbA1c, CRP and uric acid are in the four cohorts; the other
-    analytes in BP, DR and ASP. Each analyte is delivered in one unit. ASP has
-    no unit column: the unit is read from the size of the value. An HbA1c
-    typed in mmol/mol (IFCC) is brought to % with the IFCC-NGSP master
-    equation in every cohort (about 30 results in BP, SZ and DR). A CRP below the
-    detection limit of its laboratory keeps the limit as its value (flag
-    censored_left), and the limits differ between laboratories.
+    analytes in BP, DR and ASP (bicarbonate and iron in BP and DR only, ferritin
+    in DR and ASP only). Each analyte is delivered in one unit, with the same
+    range in every cohort; the levels are compatible (no factor of 10 or of a
+    molar mass between cohorts). ASP has no unit column: the unit is read from
+    the size of the value, and about 40% of its laboratory visits are of children
+    under 18 (ALP, creatinine and phosphate are higher). An HbA1c typed in mmol/mol
+    (IFCC) is brought to % with the IFCC-NGSP master equation in every cohort
+    (a fraction such as 0.055 is not recovered). A CRP below the detection limit
+    of its laboratory keeps the limit as its value (flag censored_left), the limits
+    differ between laboratories, and some centres write the limit without its
+    sign: treat a CRP of exactly 5 as a limit. ASP's CRP is probably a
+    high-sensitivity CRP (median three times lower, 12.6% of zeros removed): do
+    not pool it without the censoring column. The 1% and 99% clipping turns
+    clinical tails into the cut value in every cohort. A shifted block of results
+    (blood-count values typed in the biochemistry fields) is removed in BP and DR
+    (visit_removed).
 
 bilan_lipidique:
   title: Blood lipids
@@ -887,7 +897,12 @@ bilan_lipidique:
   schemas: {bp: bilan_lipidique, sz: bilan_lipidique, dr: bilan_lipidique, asp: bilan_lipidique}
   stack: "yes"
   use: [cholesterol, hdl, ldl, triglycerides, cholesterol_hdl_ratio]
-  note: In mmol/L in the four cohorts; the ratio is recomputed.
+  note: >
+    In mmol/L in the four cohorts; the ratio is recomputed in BP, SZ (the EMR
+    computes total / HDL on key-up with no unit, so about 4% of its stored ratios
+    mix g/L and mmol/L: the delivered ratio is right and the stored one is a
+    check). LDL is a calculated value in the four cohorts (Friedewald-like), not
+    an independent measure. ASP lipids include children (29% of rows under 18).
 
 bilan_hepatique:
   title: Liver tests
@@ -895,7 +910,9 @@ bilan_hepatique:
   schemas: {bp: bilan_hepatique, dr: bilan_hepatique, asp: bilan_hepatique}
   stack: "yes"
   use: [ast, alt, ggt, alkaline_phosphatase, bilirubin]
-  note: Five analytes in the same units in the three cohorts.
+  note: >
+    Five analytes in the same units in the three cohorts. About 37% of ASP rows are
+    of children under 18, whose ALP is higher.
 
 bilan_thyroidien:
   title: Thyroid tests
@@ -903,23 +920,37 @@ bilan_thyroidien:
   schemas: {bp: bilan_thyroidien, dr: bilan_thyroidien, asp: bilan_thyroidien}
   stack: "yes"
   use: [tsh, free_t3, free_t4]
-  note: TSH is in the three cohorts; free T3 and free T4 in BP and DR.
+  note: >
+    TSH is in the three cohorts; free T3 and free T4 in BP and DR. The BP form rejects
+    a TSH above 10 from 2022, so its upper tail is capped from then. The DR forms offer
+    unit choices for TSH, T3 and T4 that the export does not carry (R31).
 
 nfs:
   title: Full blood count
   domain: Physical examination and laboratory
   schemas: {bp: nfs, sz: nfs, dr: nfs, asp: nfs}
   stack: "yes"
-  use: [leukocytes, erythrocytes, haemoglobin, platelets, neutrophils, eosinophils, mcv, lymphocytes, monocytes]
-  note: Seven values are in the four cohorts, in the same units; lymphocytes, monocytes and basophils in BP, DR and ASP.
+  use: [leukocytes, erythrocytes, haemoglobin, platelets, neutrophils, eosinophils, mcv, lymphocytes, monocytes, basophils, haematocrit, mch, mchc]
+  note: >
+    Seven values are in the four cohorts, in the same units; lymphocytes, monocytes and
+    basophils in BP, DR and ASP; haematocrit, MCH and MCHC in BP and DR. The differential
+    counts are checked against the leukocytes in BP, DR and ASP (SZ has two kinds only).
+    The 1% and 99% clipping turns clinical tails (neutropenia, thrombopenia, anaemia) into
+    the cut value.
 
 bhcg_prolactine:
   title: Prolactin and beta-hCG
   domain: Physical examination and laboratory
   schemas: {bp: bhcg_prolactine, sz: bhcg_prolactine, dr: bhcg_prolactine, asp: bhcg_prolactine}
-  stack: "yes"
+  stack: with care
   use: [prolactin, hcg]
-  note: Prolactin is in the four cohorts, in ng/mL; beta-hCG in BP and DR.
+  note: >
+    Prolactin is in the four cohorts, in ng/mL (a value typed in mg/L in the default unit of the
+    form is read x1000; the unit is unknown on about 3% of the BP and SZ results, which are not
+    delivered). In DR the results labelled ng/mL reach 100 or more on 19% of the results of two
+    centres in 2013-2015, probably mUI/L: open question. Beta-hCG is in BP and DR, mostly censored at
+    the limit of the laboratory in BP: levels are not comparable, and a value in a man or in a
+    pregnancy is not handled.
 
 vitamine_d:
   title: Vitamin D
@@ -928,8 +959,8 @@ vitamine_d:
   stack: with care
   use: [vitamin_d]
   note: >
-    vitamin_d is in nmol/L in DR and ASP. SZ records no unit and its centres do
-    not write the same one, so its value is delivered under another name
+    vitamin_d is in nmol/L in DR and ASP (DR code 2 read as ng/mL by size, ASP code 64387 read as
+    nmol/L). SZ records no unit and one centre writes ng/mL, so its value is delivered under another name
     (vitamin_d_as_written) and must not be stacked.
 
 dosage_psychotropes:
@@ -941,7 +972,8 @@ dosage_psychotropes:
   note: >
     Each cohort measures the drugs of its own treatments: lithium, valproate
     and carbamazepine are in BP and DR (few values in DR), clozapine in BP and
-    SZ, and ASP has almost no level. No drug level is in the four cohorts.
+    SZ, and ASP has almost no level. No drug level is in the four cohorts. A level of 0 is a missing code
+    (the laboratory writes '<x'). Only 'treatment taken that morning' is recorded, no sampling time and no dose.
 
 # ---------------------------------------------------------------- Medical and family history
 

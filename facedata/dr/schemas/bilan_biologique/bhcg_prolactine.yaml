@@ -2,23 +2,69 @@ instrument: bhcg_prolactine
 title: Beta-hCG and prolactin
 tab: BILAN BIOLOGIQUE
 section: BHCG
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
-  Beta-hCG and prolactin.
+  Beta-hCG and prolactin. Same instrument as in FACE BP, in the columns of the
+  TRD extraction.
 
-  Beta-hCG: 308 results, 289 of them for women; 38 are given as "less than" a
-  limit and keep their mark.
+  Beta-hCG: 308 results, 276 delivered (one is above the hard range and 31 are
+  on removed visits, see below), all of women: the 19 results of men were on
+  those visits. 38 are written "<" a limit and keep their mark. 136 (49%) are
+  0, and 127 of the 136 come from three centres: a 0 is probably how these
+  centres write a result below the detection limit, where BP writes "<" (56%
+  of its 3,768 results are censored). The levels of the two cohorts are
+  therefore not comparable at the low end.
 
-  Prolactin: a 0 is "nothing measured" (35 cells, a missing code since BP D130).
+  Prolactin: 683 results, 645 delivered. The form has a choice of unit,
+  exported as a code: 1 is ng/mL (349 results), 2 µUI/mL (229), 3 µg/L (79),
+  the same scale as ng/mL. Code 4, which the dictionary does not list, goes
+  with a result of 0 on 7 visits, and 19 results have no code. A 0 is "nothing
+  measured" (35 cells, a missing code since BP D130). 223 results are
+  converted from mUI/L, 8 have a size that does not fit their label and are
+  read in the other unit (unit_inferred), 1 is impossible (out_of_range). Two
+  results below 0.2, typed in mg/L under the label µg/L, are read as mg/L and
+  multiplied by 1,000, as in BP (no code of the form names mg/L: that unit is
+  found by the size of the value).
 
-  Prolactin: the form has a choice of unit, exported as a code: 1 is ng/mL
-  (351 results), 2 µUI/mL (232), 3 µg/L, the same scale as ng/mL (79). 223
-  results are converted from mUI/L, 13 have a size that does not fit their
-  label and are read in the other unit (unit_inferred), and 38 are
-  impossible, three quarters of them in one centre. Code 4 goes with a result
-  of 0 on 7 visits.
+  Open question for the centres. Under code 1, 66 of the 349 results are 100
+  or more (19%): 46 from one centre, 12 from another, 58 dated 2013 to 2015.
+  The script of the application that fills the unit afterwards
+  (script_unit.php) wrote code 1 on every result that had no unit chosen, so
+  code 1 is not always a choice, and these results look like mUI/L typed under
+  the first option. They are not converted, because nothing proves it. The
+  delivered 95th percentile is 172 ng/mL against 43 in BP, and 8.0% of the
+  men's results are 100 or more (BP 0%, SZ 0.8%): the upper tail of the
+  prolactin of this cohort is not comparable with BP until the centres answer.
 
-  Same instrument as in FACE BP.
+  Values are winsorised at the 1st and 99th percentiles (the hCG at the 99th
+  only, its lower tail being censored): the tails become the cut values (5
+  IU/L for the 3 highest hCG, 1.9 and 363 ng/mL for 12 prolactin results), so
+  a clinical tail turns into the cut value, and the hard ranges (0 to 300,000
+  IU/L and 0.5 to 500 ng/mL) remove the impossible values. A result above 5
+  IU/L is delivered as 5.
+
+  Shifted block and pool. A block of results is shifted on the 30 visits of
+  one centre, dated up to 2022 (see the blood-count schema): on the 23 of them
+  whose unit field holds a number, the prolactin is 0 on 22 and the hCG is 0
+  on 21 (on the 30 visits, 29 and 28). This schema belongs to the pool biology
+  (implausible_visits: 3, implausible_pool: biology; see the blood-count
+  schema): a visit with three or more impossible values over the eleven
+  laboratory schemas of DR loses all its values and gets visit_removed. The
+  pool removes 35 visits in all (1,403 cells); this schema loses 33 cells on
+  32 visits: 30 hCG and 1 prolactin on the block visits (28 of the hCG are the
+  0 above, so a 0 typed in the shifted block is no longer delivered), and 1
+  hCG and 1 prolactin on other visits. The 0 of the prolactin is a missing
+  code and was not delivered.
+
+  Year step: the 26 results of 2013 have a median of 111 ng/mL against 12.1
+  for all (7.7 interquartile ranges, groups of 20 results or more); 14 of
+  them are 100 or more (54%, against 33% of the 57 results of 2014, 24% of
+  83 in 2015 and 6% of 83 in 2016), which is the open question above, and
+  without the results of 100 or more the yearly medians stay between 9.9 and
+  13.6 ng/mL from 2013 to 2026. The centre step (0.74) is the same results:
+  45 of the 124 results of that centre are 100 or more.
 
 defaults: {type: number}
 
@@ -44,6 +90,7 @@ variables:
     units:
       ng/mL: {factor: 1, expect: [0.5, 500], aliases: [µg/L, "1", "3"]}
       mUI/L: {factor: 0.0472, expect: [30, 20000], aliases: [µIU/ml, µUI/ml, µUI/l, "2"]}
+      mg/L: {factor: 1000, expect: [0.0005, 0.2]}
     unit_rule: prolactin_unit
     range: [0.5, 500]
     missing: {"0": not_recorded, "0.0": not_recorded, "00": not_recorded}      # 0 where nothing was measured (BP D130)

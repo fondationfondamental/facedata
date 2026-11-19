@@ -128,26 +128,27 @@ def test_biology(result, qc):
     tab = result.qc[result.qc["tab"] == "BILAN BIOLOGIQUE"]
     assert (len(tab), tab["instrument"].nunique()) == (80, 11)
     assert tab["unknown_code"].sum() == 0
+    # 35 visits hold a shifted block (3 impossible values or more over the lab schemas): all their lab values are removed, 1,403 cells (biology review, D144).
     # Units chosen on the form are exported as codes: HDL, haematocrit, MCHC, prolactin and the vitamins are converted.
-    assert (qc.loc["hdl", "n_valid"], qc.loc["hdl", "unit_converted"]) == (1101, 207)
+    assert (qc.loc["hdl", "n_valid"], qc.loc["hdl", "unit_converted"]) == (1100, 207)   # (biology review, D144)
     assert (qc.loc["haematocrit", "unit_converted"], qc.loc["mchc", "unit_converted"]) == (205, 287)
     prolactin = qc.loc["prolactin"]
-    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"], prolactin["out_of_range"]) == (645, 223, 6, 3)   # the 35 zeros are missing codes (BP D130)
+    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"], prolactin["out_of_range"]) == (645, 223, 8, 1)   # the 35 zeros are missing codes (BP D130); prolactin in mg/L is read, 2 cells gained (biology review, D144)
     vitamin_d = qc.loc["vitamin_d"]
-    assert (vitamin_d["n_valid"], vitamin_d["unit_converted"], vitamin_d["out_of_range"]) == (945, 239, 80)
+    assert (vitamin_d["n_valid"], vitamin_d["unit_converted"], vitamin_d["out_of_range"]) == (1000, 258, 21)   # code 2 is read as ng/mL by the size of the value: 59 cells gained, 4 removed with their visit (biology review, D144)
     # Once in nmol/L, the vitamin D has the same level in every year.
     yearly = result.data.groupby(result.data["visit_date"].dt.year)["vitamin_d"].median().loc[2012:]
-    assert (round(yearly.min()), round(yearly.max())) == (49, 67)
-    assert (qc.loc["vitamin_b12", "unit_converted"], qc.loc["vitamin_b12", "unit_unknown"], qc.loc["folates", "unit_converted"]) == (685, 27, 580)
-    assert (qc.loc["cortisol", "n_valid"], qc.loc["cortisol", "unit_converted"]) == (988, 143)
-    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1105, 80, 3)
+    assert (round(yearly.min()), round(yearly.max())) == (47, 66)   # (biology review, D144)
+    assert (qc.loc["vitamin_b12", "unit_converted"], qc.loc["vitamin_b12", "unit_unknown"], qc.loc["folates", "unit_converted"]) == (685, 22, 580)   # B12 code 5 is read as pmol/L: 5 cells (biology review, D144)
+    assert (qc.loc["cortisol", "n_valid"], qc.loc["cortisol", "unit_converted"]) == (973, 143)   # (biology review, D144)
+    assert (qc.loc["crp", "n_valid"], qc.loc["crp", "censored_left"], qc.loc["hba1c", "out_of_range"]) == (1081, 80, 3)   # (biology review, D144)
     # HbA1c typed in mmol/mol in one centre: brought to % with the IFCC-NGSP master equation (D26).
     assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "unit_doubt"]) == (19, 1)
-    assert (qc.loc["glucose", "n_valid"], qc.loc["glucose", "unit_inferred"], qc.loc["ferritin", "n_valid"]) == (1085, 10, 460)
-    assert (qc.loc["leukocytes", "check_failed"], qc.loc["cholesterol_hdl_ratio", "n_valid"]) == (23, 1097)
+    assert (qc.loc["glucose", "n_valid"], qc.loc["glucose", "unit_inferred"], qc.loc["ferritin", "n_valid"]) == (1082, 10, 455)   # (biology review, D144)
+    assert (qc.loc["leukocytes", "check_failed"], qc.loc["cholesterol_hdl_ratio", "n_valid"]) == (22, 1096)   # (biology review, D144)
     # Drug levels: the antidepressants hold two scales a thousand times apart, delivered in µg/L.
-    assert (qc.loc["clomipramine", "n_valid"], qc.loc["clomipramine", "unit_inferred"], qc.loc["lithium", "n_valid"]) == (136, 89, 157)
-    assert (qc.loc["urine_test_done", "n_valid"], qc.loc["brain_mri_done", "n_valid"], qc.loc["brain_mri_date", "n_valid"]) == (831, 962, 55)
+    assert (qc.loc["clomipramine", "n_valid"], qc.loc["clomipramine", "unit_inferred"], qc.loc["lithium", "n_valid"]) == (135, 89, 146)   # the zeros of a drug level are missing codes (biology review, D144)
+    assert (qc.loc["urine_test_done", "n_valid"], qc.loc["brain_mri_done", "n_valid"], qc.loc["brain_mri_date", "n_valid"]) == (807, 957, 55)   # (biology review, D144)
 
 
 def test_auto_questionnaires(result, qc):

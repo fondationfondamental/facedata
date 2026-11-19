@@ -134,7 +134,7 @@ def test_biology(qc):
     crp, glucose, haemoglobin = qc.loc["crp"], qc.loc["glucose"], qc.loc["haemoglobin"]
     assert (crp["n_valid"], crp["censored_left"], crp["censored_right"]) == (3086, 334, 1)
     assert crp["missing_code"] == 477                                   # a CRP of exactly 0 is not a measurement (BP D101)
-    assert (glucose["n_valid"], glucose["unit_converted"], glucose["unit_inferred"], glucose["out_of_range"]) == (3136, 66, 17, 3)
+    assert (glucose["n_valid"], glucose["unit_converted"], glucose["unit_inferred"], glucose["out_of_range"]) == (3139, 66, 20, 0)   # the unit mg/dL is read: 3 cells gained (biology review, D144)
     # HbA1c typed in mmol/mol under the label %: brought to % with the IFCC-NGSP master equation (D41).
     assert (qc.loc["hba1c", "unit_inferred"], qc.loc["hba1c", "out_of_range"]) == (5, 1)
     assert (haemoglobin["n_valid"], haemoglobin["unit_inferred"], haemoglobin["out_of_range"]) == (3658, 34, 4)
@@ -142,8 +142,8 @@ def test_biology(qc):
     # The stored cholesterol ratio is not the ratio of the stored values on 4% of the visits.
     assert (qc.loc["cholesterol_hdl_ratio", "n_valid"], qc.loc["cholesterol_hdl_ratio", "score_mismatch"]) == (3578, 157)
     prolactin = qc.loc["prolactin"]
-    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"]) == (2985, 633, 139)
-    assert (prolactin["unit_unknown"], prolactin["unit_doubt"], prolactin["out_of_range"]) == (162, 36, 67)
+    assert (prolactin["n_valid"], prolactin["unit_converted"], prolactin["unit_inferred"]) == (3041, 633, 195)      # below 0.2 the value is mg/L: 56 cells gained (biology review, D144)
+    assert (prolactin["unit_unknown"], prolactin["unit_doubt"], prolactin["out_of_range"]) == (162, 36, 11)         # (biology review, D144)
     assert (qc.loc["clozapine", "n_valid"], qc.loc["clozapine", "unit_inferred"], qc.loc["clozapine_treated", "n_valid"]) == (592, 11, 1600)
     assert (qc.loc["vitamin_d_as_written", "n_valid"], qc.loc["vitamin_d_as_written", "censored_left"], qc.loc["vitamin_d_as_written", "out_of_range"]) == (2718, 11, 2)
     assert (qc.loc["toxo_igg_titre", "n_valid"], qc.loc["toxo_igg_titre", "censored_right"], qc.loc["toxo_serology", "n_valid"]) == (632, 16, 2828)

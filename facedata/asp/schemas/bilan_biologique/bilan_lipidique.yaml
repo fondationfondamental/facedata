@@ -2,20 +2,45 @@ instrument: bilan_lipidique
 title: "Lipid panel"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  HDL, LDL and total cholesterol and triglycerides, on about 327 inclusion
-  visits. Same analytes, names and target unit (mmol/L) as in FACE SZ and DR.
+  HDL, LDL and total cholesterol and triglycerides, on 329 inclusion visits
+  and 25 follow-up visits. Same analytes, names and target unit (mmol/L) as in
+  FACE SZ and DR.
 
   Cholesterol and triglycerides have a unit column that holds a catalogue
-  number: 64387 on 282 cholesterol results (median 4.3: mmol/L) and 42576
-  on 71 (median 1.74: g/L). The triglycerides carry the same two numbers, and
-  the two units are on the same scale, so their number is believed. HDL and
-  LDL have no unit column, and their level does not move with the number of the
-  cholesterol (HDL median 1.33 against 1.41): they are read as mmol/L.
+  number (the list of the form: 64387 is mmol/L, 42576 is g/L): 64387 on 281
+  cholesterol results (median 4.3: mmol/L) and 42576 on 71 (median 1.74: g/L).
+  The triglycerides carry the same two numbers (288 and 64), and the two units
+  are on the same scale (13% apart), so their number is believed. The two
+  columns disagree on 26 of the 351 visits that have both results (10 with
+  mmol/L on the cholesterol and g/L on the triglycerides, 16 the other way
+  round). The data support the numbers: the cholesterol has the size of its
+  own number on 23 of the 26 visits (the three others are read in mmol/L,
+  unit_inferred), and the triglycerides, read in the unit of their number, are
+  closer to 2.2 x (total - HDL - LDL) than in the other unit on 22 of the 26.
+  HDL and LDL have no unit column, and their level does not move with the
+  number of the cholesterol (HDL median 1.33 against 1.41): they are read as
+  mmol/L.
+
+  The LDL is not computed by the form, but it is a calculated value of the
+  laboratories: it is within 0.15 mmol/L of total cholesterol - HDL -
+  triglycerides / 2.2 on 91.0% of the 344 visits that have the four results
+  (all with triglycerides under 4.5 mmol/L; measured on the values before the
+  clip).
+
+  The cohort holds children: 29% of the 354 visits with a lipid result are
+  those of a patient under 18. Their total cholesterol, LDL and HDL are lower
+  than the adults' (medians 3.95 against 4.54, 2.17 against 2.51 and 1.32
+  against 1.43 mmol/L). Four HDL results are above the hard range of 4 mmol/L,
+  which is that of BP and DR: rare but not impossible values, removed.
 
   The ratio of total to HDL cholesterol is computed from the harmonised
   values, as in the other cohorts.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (36 of the 1,751 values here); the hard range is what removes
+  impossible values (5 results here, the four HDL and one triglyceride).
 
 defaults: {type: number}
 

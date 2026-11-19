@@ -2,20 +2,40 @@ instrument: nfs
 title: "Blood count"
 tab: bilan_biologique
 section: biology
-status: draft
+status: reviewed
 notes: >
-  Ten values of the blood count, on about 491 inclusion visits. Same analytes,
-  names, target units and ranges as in FACE SZ and DR.
+  Ten values of the blood count, on 499 inclusion visits and 50 follow-up
+  visits. Same analytes, names, target units and ranges as in FACE SZ and DR.
 
-  The extraction has no unit column for these analytes (open question O6):
-  the unit is read from the size of the value, and a result that only another
-  unit explains is converted and flagged unit_inferred.
+  The extraction has no unit column for these analytes (open question O6): the
+  unit is read from the size of the value, and a result that only another unit
+  explains is converted and flagged unit_inferred.
 
-  What the values show: 113 haemoglobin results are in g/L and are converted
-  to g/dL. A few differential counts are percentages of the leukocytes
-  (6 lymphocyte results of 12 or more, 10 monocyte results of 2.5 or more) and are
-  converted with the leukocytes of the visit. 13 mean corpuscular volumes are
-  under 50 fL, which no unit explains (out_of_range).
+  What the values show: the form prints g/100ml beside the haemoglobin, but
+  113 of the 547 results (20.7%) are in g/L and are converted to g/dL: one
+  haemoglobin in five has an inferred unit. A few differential counts are
+  percentages of the leukocytes (4 neutrophil, 6 basophil, 6 eosinophil, 6
+  lymphocyte and 10 monocyte results) and are converted with the leukocytes of
+  the visit. 13 mean corpuscular volumes are under 50 fL and one is above 130:
+  no unit of this schema explains them (out_of_range). 12 of the 13 lie
+  between 5 and 13, the pattern that BP reads with a "10 fL" unit (a misplaced
+  decimal point); ASP does not declare that unit.
+
+  The custom check differential_differs flags the visits where the five kinds
+  of white cells do not add up to the leukocytes within 10% (check_failed, on
+  leukocytes), as in BP and DR: 6 of the 503 visits that have the five kinds
+  and the leukocytes. It only flags; no value changes.
+
+  The default clip at the 1% and 99% percentiles turns a clinical tail into
+  the cut value (83 of the 5,215 values here); the hard range is what removes
+  impossible values (24 results here).
+
+  Centre step of the basophils: one centre has a median of 0.00 G/L against
+  0.04 for all (-1.0 interquartile range, 182 results, groups of 20 results
+  or more; 99 exactly 0, 11 distinct values, 70% on a grid of 0.1), which
+  fits a laboratory that writes them with one decimal, as in DR; the years
+  2017 to 2019 (median 0, 71% to 75% of zeros) are the years of that centre,
+  which gives 89% to 100% of their results.
 
 defaults: {type: number}
 
@@ -97,3 +117,6 @@ variables:
       "G/L": {factor: 1, expect: [10, 1500]}
       "x100 G/L": {factor: 100, expect: [0.5, 10]}      # 2.47 for 247 G/L, as in 2.47 x 10^5 per mm3 (BP D130)
     range: [10, 1500]
+
+checks:
+  leukocytes: differential_differs

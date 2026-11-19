@@ -582,6 +582,7 @@ first visit.
 | `sign_flipped` | info | A standard score written in the old sign convention was multiplied by −1 |
 | `version_inferred` | info | No version was recorded for the patient; it was taken from the inclusion date |
 | `version_overridden` | info | The form labels the visit with one edition, a column that only another edition has is filled: the visit has the other edition |
+| `visit_removed` | discrepancy | The visit has several impossible values in the instrument (`implausible_visits`): its block is shifted, so its other values are not delivered |
 | `duplicate_row` | info | A duplicated visit record was dropped |
 | `winsorised` | info | The value was clipped |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |

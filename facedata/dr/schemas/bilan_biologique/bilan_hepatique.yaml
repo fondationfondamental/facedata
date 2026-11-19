@@ -2,17 +2,43 @@ instrument: bilan_hepatique
 title: Liver tests
 tab: BILAN BIOLOGIQUE
 section: Bilan Hépatique
-status: draft
+status: reviewed
+implausible_visits: 3
+implausible_pool: biology
 notes: >
   Alkaline phosphatases, ASAT, ALAT, total bilirubin and gamma-GT, on about
-  1,150 visits. 7 alkaline phosphatases were typed on another scale
-  (unit_inferred) and 9 values are impossible; 6 results are given as "less
-  than" a limit and keep their mark.
+  1,170 visits. 7 alkaline phosphatases were typed on another scale
+  (unit_inferred); 8 alkaline phosphatases and 1 ASAT are impossible; 6
+  results are given as "less than" a limit and keep their mark (3 ASAT, 2
+  ALAT, 1 bilirubin).
 
   The unit column of an analyte holds the default label of the form on every
-  row that has any blood result (1,254 rows, 54 of them with no result at
-  all), so it says nothing: the size of the value decides, as in BP and SZ. A
-  0 typed where nothing was measured is out of range.
+  row that has any result of the tab (1,254 rows) and on no other, so it says
+  nothing: the size of the value decides, as in BP and SZ. A 0 typed where
+  nothing was measured is out of range.
+
+  On the 30 visits of one centre whose block of results was typed in the wrong
+  fields, shifted by seven fields of the eCEDR table (dated up to 2022, see
+  the blood-count schema), the ASAT, ALAT, bilirubin and GGT have the size of
+  a white-cell count, a red-cell count, a haemoglobin and a haematocrit. They
+  fall inside their ranges (22, 22, 22 and 21 results, and 12 alkaline
+  phosphatases) and would be delivered as results. This schema belongs to the
+  pool biology (implausible_visits: 3, implausible_pool: biology; see the
+  blood-count schema): a visit with three or more impossible values over the
+  eleven laboratory schemas of DR loses all its values and gets visit_removed.
+  The pool removes 35 visits in all (1,403 cells); this schema loses 124 cells
+  on 27 visits: the 99 of the block, none of which is delivered any more, and
+  25 on 5 other visits. No visit holds more than one impossible value in this
+  schema alone.
+
+  The 1% and 99% winsorising turns a clinical tail into the cut value, and
+  only the hard range removes impossible values.
+
+  Centre step of the ASAT: one centre has a median of 28.5 UI/L against 21
+  for all (0.83 interquartile range, 90 results, groups of 20 results or
+  more), and the ALAT (30.5 against 22) and the GGT (35 against 26) of the
+  same centre are the highest of the centres too, so its patients or its
+  method differ on the three enzymes; the cause is not known.
 
   Same instrument as in FACE BP.
 
