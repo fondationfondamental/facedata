@@ -2,20 +2,34 @@ instrument: hospitalisations_v0
 title: "Hospitalisations over the whole life, at inclusion"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: HOSPITALISATION
-status: draft
+status: reviewed
 notes: >
   Hospitalisations over the whole life, at the inclusion visit: 327 visits,
   about half of the inclusions (8% to 83% by centre). The SZ schema of this
   name, with the columns that this cohort has: ever hospitalised (written Y
-  and N), the age at the first hospitalisation, their number and their
-  total length in months. An age of 0 is "not recorded" (26 visits, all
-  with a number of 0). 6 ages are written "00" and are out of range: they
-  are on 6 of the 19 inclusions (15 of them from 2024) whose number is
-  "00" and whose yes/no is empty, because the export derives the yes/no
-  from the number (R73).
+  and N), the age at the first hospitalisation, their number and their total
+  length in months. The questions are those of form 116, which sits inside
+  the mood-history form and is shown only for the disorder types 1, 2, 3, 4
+  and 6 (TYPE_TROUBLE_SPE); it prints no period and is read as the whole
+  life. When the block is absent the form is not shown, which is not a "no":
+  the section is empty on 279 of the 281 inclusions where the ages of the
+  first episode are empty too.
+
+  The yes/no is computed by the export from the number (0 gives N, more than
+  0 gives Y, face_dr_11 lines 25-31). 6 ages are written "00": they are on 6
+  of the 19 inclusions (15 of them from 2024) whose number is "00" and whose
+  yes/no is empty, because the export casts the number (R73). An age of 0 or
+  00 is "not applicable" (32 cells, missing_code): all the 26 zero ages have
+  a number of 0 (the 6 "00" ages used to be out_of_range).
+
+  The total length in months is asked after the number (asked_if: 0 after a
+  count of 0, +14 cells). It is typed in a box that keeps digits only
+  (StyleChiffre), so a decimal comma is lost: "0,35" is stored "035" and is
+  read as 0.35 months (codes). The months are typed numbers, not capped
+  (maximum 72, 17 values at 20 or above): no censoring.
 
 variables:
   ever_hospitalised_v0: {column: hooccur_hospitalisation_lt, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Has ever been hospitalised, at inclusion"}
-  first_hospitalisation_age: {column: agedebut_hospitalisation_lt, type: number, unit: years, range: [5, 90], missing: {"0": not_recorded}, winsor: false, label: Age at the first hospitalisation}
-  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations over the whole life, at inclusion"}
-  hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 600], winsor: false, label: "Total length of the hospitalisations over the whole life, at inclusion"}
+  first_hospitalisation_age: {column: agedebut_hospitalisation_lt, type: number, unit: years, range: [5, 90], missing: {"0": not_applicable, "00": not_applicable}, winsor: false, label: Age at the first hospitalisation}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation_lt, type: number, range: [0, 20], winsor: false, label: "Number of hospitalisations over the whole life, at inclusion"}
+  hospitalisation_months_v0: {column: hodur_hospitalisation_lt, type: number, unit: months, range: [0, 600], winsor: false, asked_if: n_hospitalisations_v0, codes: {"025": 0.25, "05": 0.5, "035": 0.35}, label: "Total length of the hospitalisations over the whole life, at inclusion"}

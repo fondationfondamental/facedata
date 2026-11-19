@@ -2,36 +2,42 @@ instrument: medications_lifetime
 title: "Psychotropic treatment of the past, one row per treatment"
 tab: TRAITEMENTS
 section: PSYCHOTROPE LIFETIME
-status: draft
+status: reviewed
 level: list
 notes: >
   The psychotropic treatment of the past (PSYCHOTROPE LIFETIME), one row
   per treatment in the table treatments, where the column list says
-  "medications_lifetime". 406 patients, and one product for 404 of them:
-  the form or the export keeps a single past treatment per patient (open
-  question O27). Most are antidepressants (venlafaxine, fluoxetine,
-  escitalopram, clomipramine, mirtazapine).
+  "medications_lifetime". 406 patients, and one product for 404 of them: the
+  file holds a single past treatment per patient in almost every case, which
+  the form does not force (a table of rows, shown by patient, with an add
+  button and no limit of rows) and the export may cause (one arbitrary row
+  per visit is kept, lines 6-8 of face_dr_12_traitements.sql; request R122).
+  Most are antidepressants (venlafaxine, fluoxetine, escitalopram,
+  clomipramine, mirtazapine).
 
-  The lists are crossed by the export. In BP and SZ, item 1 of each list
-  describes the same treatment. Here the export writes every product of the
-  patient (substance, generic name, strength, unit) next to every
-  prescription line (form, daily dose, start, end): a patient with 2
-  products and 3 lines has 6 items, the products in blocks and the lines in
-  cycles, on each of the patients of the three lists. The products are in
-  alphabetical order, and nothing says which line belongs to which product.
-  The number of units a day is the daily dose of one line over the strength
-  of one product, computed for every pair: most of these numbers mean
-  nothing.
+  The variables keep the names of the BP and SZ lists with one exception:
+  substance_name, not medication. The export writes the name of the
+  substance of the drug catalogue (nomsubstance): no digit on any of the 408
+  rows, a salt in brackets on 12% (49 rows); BP and SZ keep the product as
+  typed, with its strength.
 
-  What is delivered (field crossed, SCHEMA_SPEC section 15). A patient with
-  one product keeps every line. A patient with several products keeps one
-  item per product, without form, dose or date (list_crossed on these
-  variables): the molecules are known, their dates are not. The class and
-  catalogue-code columns (cmclas, cmclascd) are lists of another length and
-  are not read (ignored.yaml). Open question O27, to send first.
+  The lists are crossed by the export (request R122), as in medications.yaml
+  (which gives the lines of the SQL): the export writes every product of the
+  patient next to every prescription line. Only 2 of the 406 patients have
+  two products and are affected; the other 404 keep their line. A patient
+  with several products keeps one item per product, without form, dose or
+  date (list_crossed on these variables, SCHEMA_SPEC section 15). The class
+  and catalogue-code columns (cmclas, cmclascd) are lists of another length
+  and are not read (ignored.yaml). Six patients have catalogue (CIS) codes
+  but no substance row (products with no ATC match).
 
-  The same list is on every row of a patient: it is the history, not the
-  treatment of the visit. Dates are written day/month/year.
+  The list of a patient is the history of the patient (the form is shown by
+  patient), the same on every row of the patient. Dates are written
+  day/month/year; 313 treatments have a start and 233 an end. The at-visit
+  columns of medications.yaml do not read this list. daily_dose is the daily
+  dose in mg as typed (the forms title the field "posologie journalière en
+  mg"); units_per_day is derived by the export, as in medications.yaml. No
+  treatment ends before it starts (check end_date).
 
 crossed: [psy_lifetime_cmtrt, psy_lifetime_cmdecod, psy_lifetime_cmdose, psy_lifetime_cmdosu]
 
@@ -42,7 +48,7 @@ names:
   gives: [molecule, atc, treatment_group]
 
 variables:
-  medication: {column: psy_lifetime_cmtrt, type: text, label: "Substance, as the drug catalogue names it"}
+  substance_name: {column: psy_lifetime_cmtrt, type: text, label: "Name of the substance, as the drug catalogue writes it (no strength)"}
   generic_name: {column: psy_lifetime_cmdecod, type: text, label: "Generic name, as the drug catalogue writes it"}
   molecule: {column: molecule, type: text, label: Molecule}
   atc: {column: atc, type: text, label: ATC code of the molecule}
@@ -66,5 +72,8 @@ variables:
   strength: {column: psy_lifetime_cmdose, type: text, label: "Strength of one unit, as written"}
   dose_unit: {column: psy_lifetime_cmdosu, type: text, label: "Unit of the strength, as written"}
   form: {column: psy_lifetime_cmdosfrm, type: text, label: "Form, as written"}
-  units_per_day: {column: psy_lifetime_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (the daily dose over the strength)"}
-  daily_dose: {column: psy_lifetime_cmdostot, type: number, range: [0, 5000], winsor: false, label: Total daily dose (in the unit of the strength)}
+  units_per_day: {column: psy_lifetime_cmdosfrq, type: number, range: [0, 100], winsor: false, label: "Number of units a day (derived: the typed dose divided by the number of the strength; wrong for g, µg and UI strengths)"}
+  daily_dose: {column: psy_lifetime_cmdostot, type: number, range: [0, 5000], winsor: false, label: "Daily dose in mg, as typed"}
+
+checks:
+  end_date: end_before_start

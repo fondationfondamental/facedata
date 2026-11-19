@@ -14,7 +14,9 @@ notes: >
   attempt counts). The follow-up form asks the same section about the most
   violent attempt since the last visit: those answers are
   most_violent_attempt_since_visit. visit_form says which form a visit
-  used; it is read from the visit label.
+  used; it is read from the visit label. The follow-up form asks the
+  section "depuis la dernière visite" (rule R14a, decision D159): since the
+  last visit, not a yearly update.
 
   319 methods on 321 inclusion visits, from 2009 to November 2021. The
   section left the forms during 2021: the last answer of each centre is
@@ -24,6 +26,23 @@ notes: >
   to 97% of the inclusions with a violent attempt in each period. Four
   centres never give it. 2 inclusion visits with a violent attempt answer
   "triggered" with no method.
+
+  Why the sections end in 2021 (decision D159, application defect A60). The
+  application builds a form by listing the group table of its form, and
+  the dumps of psy_suicide_groupe and psy_suicide_semestriel hold groups 1,
+  2, 3 and 5 only: the fields of group 4 (the most violent attempt) and of
+  group 6 (the most serious attempt) have no group any more and are no
+  longer displayed. Each centre runs its own copy of the application, which
+  fits the dates: at inclusion the last answer of either section is dated
+  between April 2021 and January 2022 by centre, the last serious method
+  between January 2019 and January 2022 and the last violent method between
+  October 2019 and November 2021 (the follow-up visits add the last violent
+  method in December 2021 and the last serious one in February 2022). Over
+  the two forms the method is given on 89% of the 512 visits with a serious
+  attempt up to 2021 (454) and on 2 of the 136 from 2022, and on 94% of the
+  353 visits with a violent attempt up to 2021 (332) and on none of the 108
+  from 2022. Four centres never give a method although they report yes
+  answers (14 visits with a violent attempt, 18 with a serious one).
 
   Each method has its own lethality column. The codes are short names in
   the order of the scale, from no damage to death. The code lists hold the
@@ -46,7 +65,13 @@ notes: >
   height with no method (4), a trigger without a yes (2), the lethality of
   another method (1). The 13 visits with no method, and 4 of the follow-up
   form, were the row "method empty although the lethality is filled: 17
-  visits" of DM-5, removed.
+  visits" of DM-5, removed. This is an exception to the rule of D145 that a
+  value recorded under an empty parent stays as recorded (decision D160,
+  rule R15): 97 of the 113 cells sit under an empty parent (no method, or
+  no answer to "triggered") and 16 under another answer, and 110 of the 113
+  are the first option of a hidden list (106 of them in 2009-2010), a form
+  artefact and not an answer. The hiding is kept (decision of the project
+  lead).
 
 version:
   name: visit_form

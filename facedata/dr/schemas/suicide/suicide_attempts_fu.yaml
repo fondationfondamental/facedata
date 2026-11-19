@@ -1,0 +1,61 @@
+instrument: suicide_attempts_fu
+title: "History of suicide attempts, asked again at follow-up"
+tab: SUICIDE
+section: Histoire des conduites suicidaires
+status: reviewed
+notes: >
+  The history of suicide attempts of form 145 asked again at the follow-up
+  visits (24 and 48 months mostly): 140 visits answer ISF5 (26 yes, 114 no).
+  The inclusion visit is suicide_attempts.yaml. The variables carry the
+  suffix _fu and not since_visit (R12, R14d): the DR form says "ever" and
+  prints no period at follow-up either, so these are not the BP and SZ
+  questions "since the last visit" (suicide_attempts_since_visit) and the
+  schema is not joined with them. An answer is a yearly update, asked again
+  at the follow-up visit, which the raters read both ways
+  (isf_lifetime_fu.yaml). The follow-up form has no change gate: an empty
+  form means not done.
+
+  Counts that are 0 by logic, as at inclusion. After a no to ISF5 the
+  history is empty on all 114 visits (hidden dates stored 0000-00-00: 112),
+  so the number of attempts is 0 (asked_if on the hidden copy
+  attempted_ever_fu, which isf_lifetime_fu delivers as isf05_lifetime_fu),
+  the violent and serious attempts are 0 after 0 attempts and their numbers
+  0 after a no. n_attempts_fu is on 136 visits: 22 typed (all above 0, 4 of
+  the 26 yes give none) and 114 zeros. The 124 cells of the follow-up visits
+  that used to share the inclusion columns are here (21 first-attempt dates,
+  22 numbers, 23 and 21 yes/no answers, 9 and 10 numbers, 9 and 9 dates).
+
+  The date of the first attempt is a question about the whole life: it is
+  read and checked (21 real dates) and not delivered at follow-up (keep
+  false; decision of the project lead, as BP and SZ). The dates of the most
+  violent and of the most serious attempt are delivered (9 and 9 cells); a
+  date on the day of the visit or later would be impossible (before_visit;
+  no cell concerned).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [follow_up]}
+
+variables:
+  attempted_ever_fu: {column: isf05, keep: false, label: "Has ever attempted suicide, asked again at a follow-up visit (delivered as isf05_lifetime_fu)"}
+  first_attempt_date_fu: {column: isf05_qsdtc, type: date, label: "Date of the first suicide attempt, as typed at a follow-up visit", range: [1920-01-01, 2026-12-31], keep: false}
+  n_attempts_fu: {column: isf07, label: "Number of suicide attempts, asked again at a follow-up visit", range: [0, 50], asked_if: attempted_ever_fu}
+  violent_attempts_fu: {column: isf08, label: "Has made violent suicide attempts, asked again at a follow-up visit", missing: {"2": unknown}, asked_if: n_attempts_fu}
+  n_violent_attempts_fu: {column: isf08a, label: "Number of violent suicide attempts, asked again at a follow-up visit", range: [0, 20], asked_if: violent_attempts_fu}
+  most_violent_attempt_date_fu: {column: isf08_qsdtc, type: date, label: "Date of the most violent suicide attempt, asked again at a follow-up visit", range: [1920-01-01, 2026-12-31], before_visit: true}
+  serious_attempts_fu: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care), asked again at a follow-up visit", missing: {"2": unknown}, asked_if: n_attempts_fu}
+  n_serious_attempts_fu: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care), asked again at a follow-up visit", range: [0, 20], asked_if: serious_attempts_fu}
+  most_serious_attempt_date_fu: {column: isf09_qsdtc, type: date, label: "Date of the most serious suicide attempt, asked again at a follow-up visit", range: [1920-01-01, 2026-12-31], before_visit: true}

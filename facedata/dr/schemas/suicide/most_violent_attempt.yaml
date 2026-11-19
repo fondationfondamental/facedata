@@ -2,30 +2,54 @@ instrument: most_violent_attempt
 title: "The most violent suicide attempt"
 tab: SUICIDE
 section: Columbia TS la plus violente
-status: draft
+status: reviewed
 notes: >
-  The BP schema, with codes instead of labels. The method of the most
-  violent attempt, its consequences by method, and what triggered it: 17
-  visits. Two columns are empty (ltsv03, ltsv04: ignored.yaml).
+  The most violent suicide attempt of the whole life (form 152, "méthode de
+  la TS la plus violente"): its method, its medical consequences on a scale
+  that has its own wording for each method, and whether an event triggered
+  it, with which one. Delivered as categories on the names of the BP schema;
+  "triggered" as 1 (yes) and 0 (no), 2 ("not known") a missing code. 17
+  visits (16 with a method). The form is shown after a yes to violent
+  attempts (ISF8) at visit types 2, 6 and 8 (config/global.php) and is
+  filled on 14 of the 41 visits with ISF8 yes and on 3 of the 135 with ISF8
+  no. One schema for all visits (12 inclusion, 1 screening and 4 follow-up
+  visits hold it).
 
-  The dictionary gives no code for the method, the consequences and the
-  trigger, and the order of the BP lists cannot be checked on so few
-  answers: each value is delivered as code_N (open question O25). The five
-  boxes ltsv08a to ltsv08e describe the consequences when the method is
-  "another one"; what each box means is not in the dictionary.
+  Decoded (review of the tab). The dictionary gives no list; the codes are
+  the keys of the lists of form 152, read on the names of the BP schema and
+  cross-tabbed with the method (firearm 1, immolation 2, drowning 3, jump 4,
+  hanging 5, other 6): every effect is filled under the method that shows
+  it. The scales are BP's in the same order, from level 1 to level 5 (the BP
+  level "death" is not in the DR form). The consequences of a jump (ltsv03)
+  and of a firearm (ltsv04) have no cell, but their lists are BP's: they are
+  delivered with their names, and no longer ignored.
+
+  The five boxes ltsv08a to ltsv08e are the five levels of the consequences
+  when the method is "another one" (the checkbox group SPE6 of form 152: no
+  damage or minor bruises, light injuries, moderate injuries, severe
+  injuries, life-threatening injuries); exactly one box is ticked on 8 of
+  the 8 visits with that method. The form shows them for that method only,
+  and the 45 cells of the visits with another method (9 visits, all 0) are
+  the boxes that the form saved unticked: shown_if gives them not_shown
+  (open question O25(3), what the five boxes mean, is answered by the form).
+
+  No shown_if on the other lists: the data hold no cell under a method that
+  does not show it.
 
 defaults: {type: category}
 
 variables:
-  violent_method_code: {column: ltsv01, label: "Method of the most violent attempt (codes that the dictionary does not explain)", codes: {"2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6}}
-  violent_jump_height_code: {column: ltsv02, label: Height of the jump (code), codes: {"2": code_2}}
-  violent_immolation_lethality_code: {column: ltsv05, label: Consequences of the immolation (code), codes: {"1": code_1}}
-  violent_drowning_lethality_code: {column: ltsv06, label: Consequences of the drowning (code), codes: {"1": code_1}}
-  violent_hanging_lethality_code: {column: ltsv07, label: Consequences of the hanging (code), codes: {"1": code_1, "3": code_3}}
-  violent_other_lethality_a: {column: ltsv08a, type: item, range: [0, 1], label: "Consequences when the method is another one: first box"}
-  violent_other_lethality_b: {column: ltsv08b, type: item, range: [0, 1], label: "Consequences when the method is another one: second box"}
-  violent_other_lethality_c: {column: ltsv08c, type: item, range: [0, 1], label: "Consequences when the method is another one: third box"}
-  violent_other_lethality_d: {column: ltsv08d, type: item, range: [0, 1], label: "Consequences when the method is another one: fourth box"}
-  violent_other_lethality_e: {column: ltsv08e, type: item, range: [0, 1], label: "Consequences when the method is another one: fifth box"}
+  violent_method: {column: ltsv01, label: Method of the most violent attempt, codes: {"1": firearm, "2": immolation, "3": drowning, "4": jump, "5": hanging, "6": other}}
+  violent_jump_height: {column: ltsv02, label: Height of the jump, codes: {"1": high_place, "2": moderate_height, "3": body_height}}
+  violent_jump_lethality: {column: ltsv03, label: Consequences of the jump, codes: {"1": minor_bruises, "2": sprain_or_minor_injury, "3": limb_fracture, "4": major_damage_non_vital, "5": major_damage_vital}}
+  violent_firearm_lethality: {column: ltsv04, label: Consequences of the firearm attempt, codes: {"1": no_damage, "2": powder_burns, "3": bullet_in_limb, "4": bullet_in_trunk, "5": bullet_in_head}}
+  violent_immolation_lethality: {column: ltsv05, label: Consequences of the immolation, codes: {"1": no_damage, "2": first_degree_burns, "3": second_degree_burns, "4": third_degree_burns, "5": third_degree_burns_60}}
+  violent_drowning_lethality: {column: ltsv06, label: Consequences of the drowning, codes: {"1": no_damage, "2": conscious_mild_distress, "3": conscious_minor_resuscitation, "4": conscious_major_resuscitation, "5": unconscious_resuscitation}}
+  violent_hanging_lethality: {column: ltsv07, label: Consequences of the hanging, codes: {"1": no_damage, "2": rope_burn, "3": outpatient_treatment, "4": hospital_resuscitation, "5": spinal_injury}}
+  violent_other_lethality_none_or_minor_bruises: {column: ltsv08a, type: item, range: [0, 1], shown_if: {violent_method: [other]}, label: "Consequences of an attempt by another method: no damage or minor bruises"}
+  violent_other_lethality_light_injuries: {column: ltsv08b, type: item, range: [0, 1], shown_if: {violent_method: [other]}, label: "Consequences of an attempt by another method: light injuries"}
+  violent_other_lethality_moderate_injuries: {column: ltsv08c, type: item, range: [0, 1], shown_if: {violent_method: [other]}, label: "Consequences of an attempt by another method: moderate injuries"}
+  violent_other_lethality_severe_injuries: {column: ltsv08d, type: item, range: [0, 1], shown_if: {violent_method: [other]}, label: "Consequences of an attempt by another method: severe injuries"}
+  violent_other_lethality_life_threatening: {column: ltsv08e, type: item, range: [0, 1], shown_if: {violent_method: [other]}, label: "Consequences of an attempt by another method: life-threatening injuries"}
   violent_triggered: {column: ltsv09, type: item, range: [0, 1], missing: {"2": unknown}, label: A precise event seems to have triggered the attempt}
-  violent_trigger_code: {column: ltsv10, label: Kind of trigger (code), codes: {"1": code_1, "3": code_3, "4": code_4, "6": code_6}}
+  violent_trigger: {column: ltsv10, label: External trigger of the attempt, codes: {"1": partner, "2": other_interpersonal, "3": work, "4": life_event, "5": health, "6": other, "7": cannot_be_assessed, "8": sexual_abuse, "9": physical_abuse}}

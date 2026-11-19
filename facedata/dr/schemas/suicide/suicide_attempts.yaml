@@ -1,27 +1,75 @@
 instrument: suicide_attempts
-title: "History of suicide attempts"
+title: "History of suicide attempts over the whole life (inclusion visit)"
 tab: SUICIDE
 section: Histoire des conduites suicidaires
-status: draft
+status: reviewed
 notes: >
-  The BP schema plus two dates. The history of suicide attempts: the date
-  of the first one, their number, whether some were violent or serious
-  (intensive care), how many, and the dates of the most violent and of the
-  most serious one, which BP does not have. Filled where the patient has
-  attempted suicide: 177 visits, most of them inclusions (35% of the
-  inclusions until 2014, 11% to 19% since 2021).
+  The history of suicide attempts over the whole life, as asked at the
+  inclusion visit (form 145, section "Histoire des conduites suicidaires"):
+  the date of the first attempt, their number, whether some were violent
+  (firearm, hanging, jump...) or serious without being violent (intensive
+  care after drugs or cutting), how many of each, and the dates of the most
+  violent and of the most serious one, which BP does not have. The BP schema
+  of this name plus two dates. Yes/no answers are delivered as 1 and 0; "not
+  known" (2) to the violent and serious questions is a missing code (5
+  answers).
 
-  "Violent" and "serious" have a third answer, 2 for "not known": missing
-  (9 cells). The dates are whole dates.
+  Two forms in the same columns, as in BP (BP D86). The same form is asked
+  again at the follow-up visits (24 and 48 months): those answers are the
+  instrument suicide_attempts_fu, with its own columns (until the review of
+  this tab they were in these columns: 124 cells moved). visit_form says
+  which form a visit used. The form says "ever" and prints no period.
 
-defaults: {type: item, range: [0, 1]}
+  Counts that are 0 by logic (as BP D125, D122). The form clears the whole
+  history tab after a "no" or an empty answer to ISF5 (have you ever tried
+  to kill yourself?): on the 292 inclusion visits that say no every field of
+  the history is empty (the hidden dates are stored 0000-00-00 on 252 of
+  them), and so it is on the 816 that leave ISF5 empty. The 292 "no" visits
+  therefore get the zeros that the form implies: n_attempts is 0 after a no
+  to ISF5 (asked_if on attempted_ever, a hidden copy of isf05 that
+  isf_lifetime delivers as isf05_lifetime), the violent and serious attempts
+  are 0 after 0 attempts, and the numbers of violent and of serious attempts
+  are 0 after a no to their own question. n_attempts is on 442 inclusion
+  visits: 150 typed (all above 0) and 292 zeros, against 150 before. 10 of
+  the 160 inclusion visits that say yes give no number (missing). A visit
+  that leaves ISF5 empty keeps the whole history missing. Violent attempts
+  are yes on 31 inclusion visits and serious ones on 55.
+
+  Dates of events before the visit (before_visit, as BP D125): a date on the
+  day of the visit or later is impossible and is delivered as missing with
+  out_of_range: 2 first-attempt dates and 1 date of the most serious
+  attempt. 0000-00-00, the content of a hidden or empty date field, is read
+  as an empty date (388, 505 and 482 cells of the three date columns over
+  all visits). The first-attempt date is delivered on 145 inclusion visits,
+  the most violent on 29 and the most serious on 51. One screening row holds
+  this block (8 cells, equal to the answers of the inclusion visit of the
+  same patient): it is delivered as a second inclusion visit, because the
+  version block is the same in every schema of the cohort.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
 
 variables:
-  first_attempt_date: {column: isf05_qsdtc, type: date, label: Date of the first suicide attempt, range: [1920-01-01, 2026-12-31]}
-  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50]}
-  violent_attempts: {column: isf08, label: Has made violent suicide attempts, missing: {"2": unknown}}
-  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20]}
-  most_violent_attempt_date: {column: isf08_qsdtc, type: date, label: Date of the most violent suicide attempt, range: [1920-01-01, 2026-12-31]}
-  serious_attempts: {column: isf09, label: Has made serious suicide attempts (intensive care), missing: {"2": unknown}}
-  n_serious_attempts: {column: isf09a, label: Number of serious suicide attempts, range: [0, 20]}
-  most_serious_attempt_date: {column: isf09_qsdtc, type: date, label: Date of the most serious suicide attempt, range: [1920-01-01, 2026-12-31]}
+  attempted_ever: {column: isf05, keep: false, label: "Has ever attempted suicide (delivered as isf05_lifetime)"}
+  first_attempt_date: {column: isf05_qsdtc, type: date, label: Date of the first suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}
+  n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50], asked_if: attempted_ever}
+  violent_attempts: {column: isf08, label: Has made violent suicide attempts, missing: {"2": unknown}, asked_if: n_attempts}
+  n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20], asked_if: violent_attempts}
+  most_violent_attempt_date: {column: isf08_qsdtc, type: date, label: Date of the most violent suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}
+  serious_attempts: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care)", missing: {"2": unknown}, asked_if: n_attempts}
+  n_serious_attempts: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care)", range: [0, 20], asked_if: serious_attempts}
+  most_serious_attempt_date: {column: isf09_qsdtc, type: date, label: Date of the most serious suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}

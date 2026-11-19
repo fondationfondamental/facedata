@@ -19,7 +19,10 @@ notes: >
   class, counting the treatments taken at the screening and inclusion
   visits: the answers cover the time up to the inclusion, not the whole
   life. 2,817 patients have a record of the form, and 2,641 of them answer
-  at least one class yes or no.
+  at least one class yes or no. The six questions are Oui/Non/Ne sais pas
+  radio buttons (rad_psylifetime_*), and the date and the cumulated months
+  are shown after "Oui" only (position 0 of the radio). "Anticonvulsant mood
+  stabilisers" is the application's own class ("Thymorégulateur AC").
 
   One value per patient. The extraction repeats these columns on every row
   of the patient. Where a patient has two records of the form, the export
@@ -30,9 +33,12 @@ notes: >
   Months. A list of the form that stops at 240: ">240" is read as 240 with a
   mark in the censoring column (this value or more; 190 answers). The months
   are 0 where the patient has never taken the class (asked_if); the list has
-  no answer 0. They are not winsorised. One patient has anticonvulsant
+  no answer 0. They are not winsorised. After a yes, neither the months nor
+  a date is given for 245 patients (first-generation antipsychotics) to 797
+  (anxiolytics and hypnotics) per class. One patient has anticonvulsant
   months after the answer "no", and another has anticonvulsant months and a
-  date with no answer: both are delivered as stored.
+  date with no answer: both are delivered as stored (R2); apart from them
+  the months and the dates are empty under a "no" or an empty answer.
 
   Dates. 83% fall on the 1st or the 15th of a month: the day was seldom
   known. 38% are a 1 January (14%), a 1 July (14%) or a 15 June (11%), most
@@ -47,7 +53,12 @@ notes: >
   Placeholders. The application writes 0000-00-00 in a date that was not
   typed (read as empty, 9,927 cells) and, since its version of 2024-07-25,
   which each centre got at its own date, 1000-01-01 (date_placeholder, 332
-  cells of 111 patients).
+  cells of 111 patients). The hidden date after a "no" is 0000-00-00 in
+  4,926 of the 5,144 cells (96%) and 1000-01-01 in 218, and the months are
+  blank. 272 of the 332 placeholders stand under a "no", a "Ne sais pas" or
+  an empty answer, the default of the hidden date (the date columns of the
+  table default to 1000-01-01). By the date of the inclusion visit, the 111
+  patients are 13 of 2019-2023, 9 of 2024, 36 of 2025 and 53 of 2026.
 
   Time elapsed. 162 of the 6,641 first starts (131 patients) are after the
   inclusion, 20 of them after the last visit. The months are longer than the
@@ -57,8 +68,9 @@ notes: >
   list. This is noted, not flagged (D124): the dates are often approximate
   and the form can be saved again after the inclusion.
 
-  Completeness. The form is filled for 57% of the patients included until
-  2012, 65% in 2013-2015, 39% in 2016-2018 and 22% to 29% from 2019. Three
+  Completeness. At least one class is answered yes or no for 57% of the
+  patients included until 2012, 65% in 2013-2015, 39% in 2016-2018, 29% in
+  2019-2021, 24% in 2022-2023 and 22% from 2024. Three
   centres hardly fill it. Three fill it much less after 2015 and hardly at
   all from 2019, two others hardly from 2024, while two fill it for most of
   their patients included since 2019. After a yes, the date or the months
@@ -72,7 +84,12 @@ notes: >
   two were typed separately and need not agree. Where the answer is "no",
   the table holds a medication of the class started on or before the
   inclusion for 7 (antidepressants) to 61 patients (first-generation
-  antipsychotics, anticonvulsants).
+  antipsychotics, anticonvulsants). Where the answer is "yes" and the patient
+  has a list, the list holds a medication of the class for 64%
+  (antidepressants), 40% (first-generation antipsychotics), 74%
+  (second-generation antipsychotics), 55% (anxiolytics and hypnotics), 79%
+  (lithium) and 80% (anticonvulsants) of the patients: the list is not
+  exhaustive.
 
 variables:
   ever_antidepressant: {column: cmoccur_antid, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has ever taken an antidepressant"}

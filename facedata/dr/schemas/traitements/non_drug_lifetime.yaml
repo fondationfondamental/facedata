@@ -2,26 +2,41 @@ instrument: non_drug_lifetime
 title: "Non-drug treatments over the whole life (inclusion form)"
 tab: TRAITEMENTS
 section: TRAITEMENTS NON PHARMACOLOGIQUES
-status: draft
+status: reviewed
 level: patient
 notes: >
-  The BP schema with the questions of this extraction: electroconvulsive
-  therapy, transcranial magnetic stimulation and psychotherapy over the
-  whole life, at the inclusion visit: 517 visits (72% to 89% of the
-  inclusions in every period). Electroconvulsive therapy for 87 of 504
-  patients, TMS for 48 of 498, a psychotherapy for 248 of 502.
+  Electroconvulsive therapy (ECT), transcranial magnetic stimulation (TMS)
+  and psychotherapy over the whole life, at the inclusion visit (form 203,
+  which prints no period; read as the whole life at inclusion): 517 visits
+  (72% to 89% of the inclusions in every period). ECT for 87 of 504
+  patients, TMS for 48 of 498, a psychotherapy for 248 of 502. The form is
+  a patient form (level patient): the answers are in the table patients.
 
-  Two forms in the same columns: the whole life at the inclusion visit, the
-  time since the last visit at follow-up (of the 151 follow-up visits of
-  patients who had had electroconvulsive therapy at inclusion, 101 answer
-  no). visit_form says which form a visit uses, and each form has its own
-  schema, as in BP.
+  Two forms in the same columns: the whole life at the inclusion visit, and
+  at follow-up the same questions asked again with no period (see
+  non_drug_fu.yaml; of the 151 follow-up visits of patients who had had
+  electroconvulsive therapy at inclusion, 101 answer no). visit_form says
+  which form a visit uses, and each form has its own schema, as in BP.
 
   Answers are 0, 1 and 2: 2 is "not known" (missing_code). The number of
-  sessions is 0 after a no (asked_if). The kind of stimulation and "mean
-  seizure longer than 25 seconds" are stored as codes that the dictionary
-  does not explain (open question O28). The psychotherapies are detailed in
-  psychotherapies_v0.yaml.
+  sessions is 0 after a no (asked_if); the other details stay missing after
+  a no. The codes of the form (203) are decoded. Kind of ECT stimulation: 1
+  unilateral right, 2 bilateral. Mean seizure on the EEG longer than 25
+  seconds: an item (1 yes, 0 no, 2 not known: 49 of the 81 answers at
+  inclusion, missing_code). Kind of TMS stimulation: 1 high frequency (100%
+  of the motor threshold), 2 low frequency (120%), 0 not known (21 of 46
+  answers, missing_code). The form shows the count "more than 30 sessions"
+  of the high-frequency TMS only after type 1 and the count of the
+  low-frequency TMS and "30,000 stimulations or more" only after type 2
+  (f_traitement in formulaires.js): the three variables carry shown_if on
+  the kind of stimulation. The data agree on all visits: 48 of 48
+  high-frequency counts follow type 1, 12 of 12 low-frequency counts follow
+  type 2, none follows type 0 or an empty type, so no cell changes. The
+  30,000 question has 2 answers "not known" (2, missing_code) at inclusion
+  and 4 at follow-up. The psychotherapies are detailed in
+  psychotherapies_v0.yaml; ever_psychotherapy (TT_PSYCHO) is a question of
+  its own and disagrees with the fourteen kinds there (see that schema): it
+  is delivered as stored, with no derived "any psychotherapy".
 
 version:
   name: visit_form
@@ -45,14 +60,14 @@ variables:
   ect_sessions: {column: ect_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ever_ect, label: "Electroconvulsive therapy: ever: number of sessions"}
   ect_start_date: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: ever: start"}
   ect_end_date: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: ever: end"}
-  ect_stimulation: {column: prlat_ect, type: category, codes: {"1": code_1, "2": code_2}, label: "Electroconvulsive therapy: ever: kind of stimulation (code)"}
-  ect_seizure_over_25s: {column: prdostxt_ect, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Electroconvulsive therapy: ever: mean seizure on the EEG longer than 25 seconds (code)"}
+  ect_stimulation: {column: prlat_ect, type: category, codes: {"1": unilateral_right, "2": bilateral}, label: "Electroconvulsive therapy: ever: kind of stimulation"}
+  ect_seizure_over_25s: {column: prdostxt_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy: ever: mean seizure on the EEG longer than 25 seconds"}
   ever_tms: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation: ever"}
   tms_sessions: {column: tms_procprfn_nb, type: number, range: [0, 1500], winsor: false, asked_if: ever_tms, label: "Transcranial magnetic stimulation: ever: number of sessions"}
   tms_start_date: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: ever: start"}
   tms_end_date: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: ever: end"}
-  tms_stimulation: {column: prlat_tms, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Transcranial magnetic stimulation: ever: kind of stimulation (code)"}
-  tms_high_frequency_over_30: {column: tms_procprfn_hf, label: "TMS: ever, high frequency: more than 30 sessions"}
-  tms_low_frequency_over_30: {column: tms_procprfn_bf, label: "TMS: ever, low frequency: more than 30 sessions"}
-  tms_30000_stimulations: {column: prdostxt_tms, label: "TMS: ever: 30,000 stimulations or more delivered"}
+  tms_stimulation: {column: prlat_tms, type: category, codes: {"1": high_frequency, "2": low_frequency}, missing: {"0": unknown}, label: "Transcranial magnetic stimulation: ever: kind of stimulation"}
+  tms_high_frequency_over_30: {column: tms_procprfn_hf, shown_if: {tms_stimulation: [high_frequency]}, label: "TMS: ever, high frequency: more than 30 sessions"}
+  tms_low_frequency_over_30: {column: tms_procprfn_bf, shown_if: {tms_stimulation: [low_frequency]}, label: "TMS: ever, low frequency: more than 30 sessions"}
+  tms_30000_stimulations: {column: prdostxt_tms, missing: {"2": unknown}, shown_if: {tms_stimulation: [low_frequency]}, label: "TMS: ever: 30,000 stimulations or more delivered"}
   ever_psychotherapy: {column: proccur_trtpsyt, missing: {"2": unknown}, label: "Psychotherapy: ever"}

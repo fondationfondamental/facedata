@@ -25,7 +25,7 @@ notes: >
   get unknown_code (196 different names); the 9 that have only a generic name are not flagged.
   The accents of the names are written twice over in this export; the reader puts them back.
 
-  The dose is a number whose unit is not recorded (1,143 treatments); the start is a full date
+  The daily dose (daily_dose, the thesaurus says mg a day; the DR form is in mg too) is a number typed by the rater (1,143 treatments); the start is a full date
   on 622 treatments, a month or a year on 102, and empty on 1056. still_taken is 1 on 1,447
   treatments and 0 on 184 (blank on 153). The end is typed only for a treatment that is no
   longer taken: 91 of the 184 have an end date, none of the 1,447 and none of the 153 blank. A
@@ -73,7 +73,7 @@ variables:
       other_nervous_system: other_nervous_system
       non_psychotropic: non_psychotropic
   indication: {column: indication, type: text, label: "Indication, as written"}
-  dose: {column: poso_trt, type: number, label: "Dose, in mg a day according to the thesaurus", range: [0, 5000], winsor: false}
+  daily_dose: {column: poso_trt, type: number, label: "Daily dose in mg, as typed (the thesaurus gives mg a day)", range: [0, 5000], winsor: false}
   units_per_intake: {column: cmdosu, type: number, label: "The column that the thesaurus calls unit, as stored: numbers that it does not explain", range: [0, 20], winsor: false}
   dose_frequency: {column: cmdosfrq, type: category, codes: {"1": daily, "2": monthly}, label: "The dose is taken daily or monthly"}
   start_date: {column: deb_trt, type: date, range: [1951-01-01, 2026-12-31], label: Start of the treatment}

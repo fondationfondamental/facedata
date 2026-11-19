@@ -2,7 +2,7 @@ instrument: medications
 title: Psychotropic and other medications, with their dates
 tab: TRAITEMENTS
 section: Données détaillées des traitements psychotropes AU MOMENT DE LA VISITE
-status: draft
+status: reviewed
 level: list
 notes: >
   The medications of each patient with their dates: 11,038 medications of
@@ -35,11 +35,14 @@ notes: >
 
   The SZ extraction also gives the name, the ATC code and the active
   principle of the application's own list of medications, the list the
-  form used until 2015: 3,331 of the 11,038 medications have them (3,324 of
-  the 5,898 started before 2016, 7 of the 5,140 started from 2016). They
-  are delivered next to those of the table, and they agree with it: the
-  two ATC codes are the same on 3,314 of the 3,322 medications that have
-  both.
+  form used until 2015: 3,331 of the 11,038 medications have them (3,324
+  of the 5,898 started before 2016, 7 of the 5,140 started from 2016).
+  They are delivered next to those of the table, and they agree with it:
+  the two ATC codes are the same on 3,314 of the 3,322 medications that
+  have both. The 8 that differ: 7 are rows of Valdoxan (2011 to 2014)
+  whose product in the list of the EMR is a nicotine patch (the id and the
+  name typed disagree; the table, which follows the name, is right), and 1
+  is a gabapentin row that carries an old code of the EMR.
 
   Dates. Every medication has a start date, most often with the day set to
   15 (8,785). The box "Traitement en cours" of the form hides the end date
@@ -49,7 +52,10 @@ notes: >
   today" (BP D96): both are missing with the reason running (5,246
   medications: 4,182 and 1,064). The end date is filled for 5,792
   medications. An end date before the start (41 medications) is kept and
-  gets check_failed (end_before_start). No date of 1950 occurs here: the
+  gets check_failed (end_before_start). The add form of the application
+  alerts only if the end year, month and day are each at or before those
+  of the start (A58 of EXPORT_REQUESTS.md); it catches 2 of these 41 rows,
+  and the correction page has no check. No date of 1950 occurs here: the
   missing codes 1950-01-01 and 1950-01-02 are those of one BP centre.
 
   Dose. As in BP, the form stores no strength since it took its names from
@@ -79,6 +85,15 @@ notes: >
   whether the patient was on a group or a molecule that day. The same
   columns as in BP, and four molecules more (clozapine, amisulpride,
   haloperidol, paliperidone).
+
+  Year and centre. The interval between two injections (interval_weeks)
+  goes from 2 to 4 weeks over the years because the products change, not the
+  practice: long-acting risperidone (every 2 weeks) gives way to paliperidone
+  and aripiprazole (every 4 weeks), and the median of each molecule is the
+  same in both periods. The share of strengths read from the name
+  (strength_from_name) is 8% to 59% by centre for medications started to 2014
+  and 98% to 100% from 2016: before 2015 the strength was typed in the name
+  at some centres and stored at others.
 
 names:
   column: med_psy_cmtrt

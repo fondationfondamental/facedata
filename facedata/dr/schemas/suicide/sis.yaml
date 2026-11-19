@@ -2,14 +2,31 @@ instrument: sis
 title: "Suicide Intent Scale (SIS)"
 tab: SUICIDE
 section: SIS Echelle d'intention suicidaire
-status: draft
+status: reviewed
 notes: >
   Suicide Intent Scale: fifteen items rated 0 to 2 on the circumstances of
   an attempt and on what the patient expected. Not in BP or SZ. 140 visits,
-  most of them inclusions.
+  122 of them inclusions (inclusion and screening visits) and 18 follow-up
+  visits.
 
-  The stored score (sisv16) is the sum of the fifteen items on every visit
-  (139).
+  The stored score (sisv16) is the sum of the fifteen items (the script
+  153_score.js is a plain sum) and is blank unless all fifteen are answered:
+  it is on all 139 visits that answer the fifteen items, and sis_total
+  recomputes the same 139 values (0 mismatch). One visit answers fewer than
+  fifteen items and has no score.
+
+  When the form is asked. Form 153 is shown only after a yes to ISF5
+  (attempted suicide): the 140 SIS visits all have a yes, and 46 of the 186
+  visits with a yes have no SIS (38 at inclusion, 8 at follow-up). The 18
+  SIS of follow-up visits describe an attempt that the patient dates more
+  than a year before the visit on 15 of the 18; at follow-up the form is
+  asked again (a yearly update, R14c). Of the 8 patients rated at inclusion
+  and at follow-up, 6 have answers that differ. One schema for both forms,
+  no split: the items are the same.
+
+  sis04 is the item "seeking help during or after the attempt": 0 the
+  patient told a potential rescuer, 1 contacted one without mentioning the
+  act, 2 told no one.
 
 defaults: {type: item, range: [0, 2]}
 
@@ -17,7 +34,7 @@ variables:
   sis01: {column: sisv01, label: "Isolation"}
   sis02: {column: sisv02, label: "Timing"}
   sis03: {column: sisv03, label: "Precautions against discovery"}
-  sis04: {column: sisv04, label: "Acting to get help during or after the attempt"}
+  sis04: {column: sisv04, label: "Seeking help (0 told a rescuer, 2 told no one)"}
   sis05: {column: sisv05, label: "Final acts in anticipation of death"}
   sis06: {column: sisv06, label: "Active preparation of the attempt"}
   sis07: {column: sisv07, label: "Suicide note"}

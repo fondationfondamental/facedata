@@ -16,7 +16,11 @@ notes: >
   Lists. 1,719 of the 6,498 patients have no list. The application has no
   answer for "no treatment": a patient without a list is unknown, not
   untreated. A list is held by 83% to 85% of the patients included until
-  2015 and by 60% to 63% of those included from 2022.
+  2015 and by 60% to 63% of those included from 2022. The classes of the
+  lifetime form (drug_classes_lifetime.yaml) were typed separately: of the
+  patients who answer yes to a class there and have a list, the list holds a
+  medication of the class for 40% (first-generation antipsychotics) to 80%
+  (anticonvulsants), so neither source is complete.
 
   Item. The item number is the place of the medication in the exported
   list. Until the export orders the lists (R76 of EXPORT_REQUESTS.md), it
@@ -29,7 +33,11 @@ notes: >
   underscores for a combination), its ATC code and one of ten groups:
   lithium, anticonvulsant, antipsychotic_2g, antipsychotic_1g,
   antidepressant, benzodiazepine, other_anxiolytic_hypnotic, stimulant,
-  other_nervous_system and non_psychotropic. The table was checked against
+  other_nervous_system and non_psychotropic (292 names, 156 molecules; the
+  ATC code of NOCTRAN has 5 characters, two rows, the homeopathic lithium and
+  the trace-element lithium, have none, and the review found eight misspelled
+  names: the table is shared by the cohorts, a correction goes through the
+  lead). The table was checked against
   the application's own drug list and the ATC codes of the SZ extraction
   (D102); gabapentin and pregabalin are anticonvulsants, as in the
   application (117 medications). A name that is not in the table (173
@@ -41,19 +49,31 @@ notes: >
   1950-01-01 for an unknown start and 1950-01-02 for an unknown end: they
   are missing with the reason unknown (20 starts, 13 ends). The range of
   the start begins in 1951, so two more starts of 1950 are out_of_range;
-  three other ends of 1950 are kept. The box "Traitement en cours" of the
+  three other ends of 1950 are kept. 128 starts are 0000-00-00, the empty
+  date of the form (127 of these treatments are running, one has an end
+  date): they are missing with the reason not_recorded (they were empty
+  with no flag), so the start has 148 missing codes with the 20 of 1950;
+  the application shows "Aucune date indiquée" for the 127 and "Terminé
+  le" with the end date for the one, and no value changes. The box
+  "Traitement en cours" of the
   form hides the end date and writes it 0000-00-15 on today's add page and
   0000-00-00 on the correction page; seven of the sixteen centres have
   0000-00-15, mostly for treatments started from 2016, and the nine others
   only 0000-00-00. The application shows both as running "until today"
   (D96): both are missing with the reason running (11,855 medications:
   8,738 and 3,117). The end date is filled for 10,890 medications. An end
-  date before the start (148 medications) is kept and gets check_failed
-  (end_before_start).
+  date before the start (148 medications, 147 of them with no date of 1950)
+  is kept and gets check_failed (end_before_start). The add form alerts on
+  an end before the start only if the end's year, month and day are each at
+  or before the start's, so it catches 19 of the 147; the correction page
+  has no check (A58).
 
   Dose. The form stores no strength since it took its names from the public
-  drug list in 2015 (A38 of EXPORT_REQUESTS.md): a strength is stored for
-  6,974 medications, 4 of the 11,593 started from 2016. The strength is in
+  drug list in 2015 (A38 of EXPORT_REQUESTS.md; of the two columns it
+  writes empty, only the identifier of the strength, ID_medicament_posologie,
+  is an integer and holds 0, while posologie is a varchar(255)): a
+  strength is stored for 6,974 medications, 4 of the 11,593 started from
+  2016. The strength is in
   the name of the product, and the package reads it there with the rule of
   R54: exactly one amount of a mass, not per volume, not a percentage, not
   in units (UI); a number right after another number and a space is not
@@ -67,7 +87,10 @@ notes: >
   name. By start date: 6,283 of the 7,900 started until 2013, 5,281 of the
   6,054 started from 2014 to 2017 and 7,664 of the 8,654 started from 2018;
   2,185 of the 2,225 patients with a medication started from 2018 have a
-  dose.
+  dose. The review of the tab compared the doses with the usual maximum of
+  each molecule: 46 of 15,562 doses of 24 molecules are above it, one by
+  more than twice, so no systematic error shows (the usual maxima are not in
+  the package).
 
   Stored dose. The extracted dose (the export's strength times units) is
   kept as daily_dose_stored, not delivered, and compared: 2 score_mismatch
@@ -83,9 +106,12 @@ notes: >
   is read as 0.5 (9); a decimal comma is repaired (22, format_repaired);
   29 texts with words (ranges, counts with their form) are unparsed. A
   long-acting injection has no units a day: the form records ampoules
-  every n weeks instead, which the BP export does not deliver (109
-  medications of 90 patients, none with a daily dose; kept for batch 2 of
-  the requests to the export).
+  every n weeks instead (nb_ampoule, nb_semaine), which the BP export
+  computes in its model but does not select, with the date of entry
+  (date_saisie): 109 medications of 90 patients have no dose (R123).
+  date_saisie is to be exported only once A39 is fixed (a correction sets
+  it to a fixed timestamp), which is why R76 orders the lists by start date
+  and row identifier, never by date_saisie.
 
   At a visit. The columns of medications_at_visit say, for each visit,
   whether the patient was on a group or a molecule that day: a medication
@@ -117,7 +143,7 @@ variables:
       stimulant: stimulant
       other_nervous_system: other_nervous_system
       non_psychotropic: non_psychotropic
-  start_date: {column: med_psy_cmstdtc, type: date, range: [1951-01-01, 2026-12-31], missing: {"1950-01-01": unknown}, label: Start of the treatment}
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1951-01-01, 2026-12-31], missing: {"1950-01-01": unknown, "0000-00-00": not_recorded}, label: Start of the treatment}
   end_date:
     column: med_psy_cmendtc
     type: date
@@ -167,7 +193,11 @@ at_visit:
 
     A medication without an end date is taken as still running: an end that
     was never typed keeps the patient "on" the medication at every later
-    visit. For a third of the patients with a list and a follow-up visit
+    visit. At the follow-up visits the yes of on_antidepressant,
+    on_lithium and on_antipsychotic_2g rests only on medications with no end
+    date for 78%, 88% and 79% of the cells (2,305 of 2,954, 3,827 of 4,368
+    and 3,138 of 3,984 cells supported by a medication started on or before
+    the visit). For a third of the patients with a list and a follow-up visit
     (1,180 of 3,543), no medication starts or ends more than 30 days after
     the inclusion: at their follow-up visits the columns mostly repeat the
     inclusion. A medication that ends before it starts (148) counts at no

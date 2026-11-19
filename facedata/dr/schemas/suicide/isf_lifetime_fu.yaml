@@ -1,0 +1,62 @@
+instrument: isf_lifetime_fu
+title: "Suicidal ideation and attempts, asked again at follow-up"
+tab: SUICIDE
+section: Intentionnalité suicidaire actuelle
+status: reviewed
+notes: >
+  The five questions of isf_lifetime.yaml asked again at follow-up: 140
+  visits (94 at 24 months, 42 at 48 months, 4 at other visits), most of them
+  from 2015 to 2019. Form 145 is one form, shown at the inclusion visit and
+  at the visits of 24 and 48 months (visit types 2, 6 and 8).
+
+  Another question than BP's (decision R12). The DR form says "ever" and
+  prints no period, at follow-up as at inclusion: the schema is named
+  isf_lifetime_fu and its variables isf0N_lifetime_fu, and it is not joined
+  with the BP and SZ schema isf_since_visit, whose form says "since the last
+  visit". An answer here is a yearly update: the question asked again at the
+  follow-up visit, which the raters read both ways. 26 of the 44 follow-up
+  visits of patients who said at inclusion that they had attempted suicide
+  answer "no" (read since the last visit) and 29 of the 91 "yes" to the
+  first question are dated "more than a year ago" (read as the whole life).
+  A "when" of more than a year is also valid at 24 months (the median gap
+  since the previous visit is 24.5 months): it is no longer flagged (136
+  period_doubt flags removed; the schema had flagged it). At follow-up
+  "attempted" is yes on 26 of 140 DR visits (18.6%), against 2.4% in BP and
+  SZ; of the patients yes at inclusion, the first follow-up answer is yes
+  again for 11 of 30 in DR, 117 of 1,359 in BP and 20 of 331 in SZ.
+
+  Two forms in the same columns. The inclusion visit and the follow-up
+  visits use the same columns, and the two are never delivered in one
+  column: visit_form says which form a visit uses (inclusion for the
+  screening and inclusion visits, follow_up for the others), and each form
+  has its own schema and its own variables. The follow-up form has no change
+  gate: an empty form means not done.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [follow_up]}
+
+variables:
+  isf01_lifetime_fu: {column: isf01, label: "Felt that life is not worth living - ever, asked again at a follow-up visit (the question has no period)"}
+  isf01_lifetime_fu_when: {column: isf01a, type: category, label: "Felt that life is not worth living - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf02_lifetime_fu: {column: isf02, label: "Wished to be dead - ever, asked again at a follow-up visit (the question has no period)"}
+  isf02_lifetime_fu_when: {column: isf02a, type: category, label: "Wished to be dead - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf03_lifetime_fu: {column: isf03, label: "Thought of taking own life - ever, asked again at a follow-up visit (the question has no period)"}
+  isf03_lifetime_fu_when: {column: isf03a, type: category, label: "Thought of taking own life - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf04_lifetime_fu: {column: isf04, label: "Seriously considered or planned suicide - ever, asked again at a follow-up visit (the question has no period)"}
+  isf04_lifetime_fu_when: {column: isf04a, type: category, label: "Seriously considered or planned suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}
+  isf05_lifetime_fu: {column: isf05, label: "Attempted suicide - ever, asked again at a follow-up visit (the question has no period)"}
+  isf05_lifetime_fu_when: {column: isf05a, type: category, label: "Attempted suicide - when last", codes: {"0": last_week, "1": two_weeks_to_a_year, "2": over_a_year}}

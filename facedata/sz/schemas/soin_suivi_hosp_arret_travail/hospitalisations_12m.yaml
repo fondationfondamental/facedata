@@ -1,25 +1,56 @@
 instrument: hospitalisations_12m
-title: Full-time hospitalisations in the past year
+title: "Full-time hospitalisations in the past year (at follow-up: since the last visit)"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: LES 12 DERNIERS MOIS
-status: draft
+status: reviewed
 notes: >
   Asked at inclusion and at every follow-up visit (4,513 visits): was the
-  patient hospitalised full time in the past year, how many times, for how
-  many weeks in all, and why. 36% yes at inclusion, 19% at follow-up. The
-  number, the length and the reason are filled after a yes (1,179 of 1,183).
+  patient hospitalised full time, how many times, for how many weeks in
+  all, and why. 780 of 2,173 inclusion visits say yes (36%) and 453 of
+  2,340 follow-up visits (19%); "Ne sais pas" (19) is a missing code.
 
-  "Ne sais pas" is a missing code. The length stops at 52 weeks. In FACE
-  BP the number and the length of the past year are asked at inclusion
-  only (hospitalisations_v0); the names are the same.
+  Time frame (decision D70, R14b). At inclusion the question is about the
+  past year. At follow-up the form uses the same words ("au cours de
+  l'année écoulée", under the heading "characteristics of the disorder
+  over the last 12 months") and has no change gate, but the answers follow
+  the time since the previous visit: among the answered follow-up visits
+  the share of yes is 17% for the 1,469 that come up to 420 days after the
+  previous visit and 23% for the 868 that come later (the median gap is
+  391 days), where the somatic sick leave of the same form, worded 12
+  months, stays at 7% in both. So a follow-up answer is read as "since the
+  last visit", as in BP (D54, D123); the names keep _12m, and the labels
+  say both.
+
+  The number, the length and the reason are asked after a yes. After "Non"
+  the number is filled on 4 of 3,261 visits (3 above 0), the length on 2
+  and the reason on 2; after "Oui" the number is filled on 1,179 of 1,233
+  (96%), the length on 1,142 and the reason on 1,182. The number is 0
+  after a "no", and the length is 0 where the number is 0 (asked_if, as
+  decision D122 for the whole life): 3,257 and 3,258 cells were missing, 6
+  yes visits hold the number 0 themselves. The reason is a detail and
+  stays missing after a no.
+
+  "Ne sais pas" is a missing code. The length stops at 52 weeks (the form
+  limit; none above). In FACE BP the number and the length of the past
+  year are asked at inclusion only (hospitalisations_v0); the names are
+  the same.
+
+  Care use. The follow-up form of the application also holds a block of
+  care use since the last visit (general practitioner, psychiatrist,
+  psychologist, nurse interviews, specialists, other consultations,
+  psychiatric and somatic emergencies without admission, non-psychiatric
+  care and examinations): the clean model reads 36 columns of it, but
+  face_sz_10 (line 46) selects none, so SZ has no care_use schema (request
+  R124). When it is exported, the BP care_* names are the ones to use,
+  with care_nurse as a variable of its own.
 
 variables:
-  hospitalised_12m: {column: hooccur_hospitalisationtc_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Hospitalised full time in the past year}
-  n_hospitalisations_12m: {column: nboccur_hospitalisationtc_ly, type: number, range: [0, 50], winsor: false, label: Number of hospitalisations in the past year}
-  hospitalisation_weeks_12m: {column: hodur_hospitalisationtc_ly, type: number, unit: weeks, range: [0, 52], winsor: false, label: Total length of the hospitalisations in the past year}
+  hospitalised_12m: {column: hooccur_hospitalisationtc_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Hospitalised full time (the past year at inclusion, since the last visit at follow-up)"}
+  n_hospitalisations_12m: {column: nboccur_hospitalisationtc_ly, type: number, range: [0, 20], winsor: false, asked_if: hospitalised_12m, label: "Number of hospitalisations (the past year at inclusion, since the last visit at follow-up)"}
+  hospitalisation_weeks_12m: {column: hodur_hospitalisationtc_ly, type: number, unit: weeks, range: [0, 52], winsor: false, asked_if: n_hospitalisations_12m, label: "Total length of the hospitalisations (the past year at inclusion, since the last visit at follow-up)"}
   hospitalisation_reason_12m:
     column: raison_hospitalisationtc_ly
-    label: Reason for the hospitalisation of the past year
+    label: "Reason for the hospitalisation (the past year at inclusion, since the last visit at follow-up)"
     type: category
     codes:
       Episode psychotique: psychotic_episode

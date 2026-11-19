@@ -743,14 +743,17 @@ isf_lifetime:
 isf_since_visit:
   title: Suicidal thoughts and acts since the last visit (follow-up form)
   domain: Suicide
-  schemas: {bp: isf_since_visit, sz: isf_since_visit, dr: isf_since_visit}
+  schemas: {bp: isf_since_visit, sz: isf_since_visit}
   stack: with care
   use: [isf01_since_visit, isf02_since_visit, isf03_since_visit, isf04_since_visit, isf05_since_visit]
   note: >
-    The five questions are the same. 'When' does not use the same list in the
-    three cohorts. BP does not deliver the answers of the follow-up visits of
-    November 2021 to 2023, whose form also asked about the whole life (period_removed),
-    and DR flags the answers whose period is not certain (period_doubt).
+    The five questions are the same in BP and SZ, asked since the last visit,
+    with a 'when' of two answers (last week, since the last visit). BP does not
+    deliver the answers of the follow-up visits of November 2021 to 2023, whose
+    form also asked about the whole life (period_removed). The DR form has no
+    follow-up wording: it is the inclusion form asked again at 24 and 48 months
+    (lifetime wording, raters read it both ways), delivered as isf_lifetime_fu
+    and not joined with these.
 
 cssrs_v0:
   title: C-SSRS suicidal ideation at the inclusion visit
@@ -760,7 +763,7 @@ cssrs_v0:
   note: >
     The BP inclusion form asks about the past week (some centres answer over
     a longer time), the DR one about the whole life: the same questions over
-    different periods, under other names (cssrs01_inclusion in BP,
+    different periods, under other names (cssrs01_past_week in BP,
     cssrs01_lifetime in DR). Do not stack.
 
 cssrs_fu:
@@ -774,7 +777,9 @@ cssrs_fu:
     asked since the last visit, with questions 3 to 5 at 0 after a no to
     question 2. DR also has the behaviour section. The inclusion forms
     differ in period (BP the past week, DR the whole life): cssrs_v0 is not
-    stacked.
+    stacked. About a quarter of the DR visits (from 2018) are simplified
+    visits that use a shorter form of ten questions: the extraction does not
+    tell them apart (R127).
 
 suicide_attempts:
   title: History of suicide attempts over the whole life (inclusion form)
@@ -787,10 +792,10 @@ suicide_attempts:
     serious (non-violent, intensive care) attempts. BP and SZ give 0 attempts
     after "never attempted" and 0 violent or serious attempts after 0
     attempts (BP D125); a first attempt dated on the inclusion day or later
-    is out of range. BP and SZ deliver it from the inclusion visit only,
-    where it is about the whole life; their follow-up visits are in
-    suicide_attempts_since_visit. DR still reads every visit: keep its
-    inclusion visits to stack it.
+    is out of range. The three cohorts deliver it from the inclusion visit
+    only, where it is about the whole life; the follow-up visits are in
+    suicide_attempts_since_visit in BP and SZ, and in suicide_attempts_fu in
+    DR (the lifetime form asked again at 24 and 48 months: not joined).
 
 suicide_attempts_since_visit:
   title: Suicide attempts since the last visit (follow-up form)
@@ -804,32 +809,36 @@ suicide_attempts_since_visit:
     and serious attempts after a yes to their own question: BP and SZ give 0
     after a no (BP D125). BP does not deliver the visits of November 2021 to
     2023 (period_removed): its follow-up form of that time also asked about
-    the whole life. DR has a number of attempts since the last visit
-    under the same name, n_attempts_since_visit, read from another question
-    (mood_course_fu).
+    the whole life. DR's number of attempts since the last visit, read from
+    another question (the clinician's summary of the course, mood_course_fu),
+    is n_suicide_attempts_since_visit.
 
 most_serious_attempt:
   title: The most serious suicide attempt
   domain: Suicide
   schemas: {bp: most_serious_attempt, dr: most_serious_attempt}
-  stack: "no"
+  stack: with care
+  use: [serious_method, serious_sedative_type, serious_non_sedative_type, serious_triggered, serious_trigger]
   note: >
-    The method, the lethality and the trigger are labelled lists in BP (filled
-    until 2022; the inclusion visit only, its follow-up visits are in
-    most_serious_attempt_since_visit, BP D125) and codes that the dictionary does not explain in DR (names
-    ending in _code). Only the question 'was there a trigger'
-    (serious_triggered) is comparable.
+    The method, the lethality and the trigger are labelled lists in BP and,
+    since the review of the DR forms, in DR under the same names and labels
+    (the DR lists have no 'death' option). BP is filled until 2022; the
+    inclusion visit only, its follow-up visits are in
+    most_serious_attempt_since_visit (BP D125). DR reads the attempt that
+    the inclusion visit describes.
 
 most_violent_attempt:
   title: The most violent suicide attempt
   domain: Suicide
   schemas: {bp: most_violent_attempt, dr: most_violent_attempt}
-  stack: "no"
+  stack: with care
+  use: [violent_method, violent_jump_height, violent_triggered, violent_trigger]
   note: >
     As for the most serious attempt: labelled lists in BP (filled until 2021;
     the inclusion visit only, its follow-up visits are in
-    most_violent_attempt_since_visit), unexplained codes in DR. Only the question 'was there a trigger'
-    (violent_triggered) is comparable.
+    most_violent_attempt_since_visit), the same names and labels in DR. The
+    lethality of another method is one list in BP (violent_other_lethality)
+    and five boxes in DR (violent_other_lethality_*).
 
 # ---------------------------------------------------------------- Physical examination and laboratory
 
@@ -1254,16 +1263,19 @@ medications:
   domain: Treatments
   schemas: {bp: medications, sz: medications, dr: medications, asp: medications}
   stack: with care
-  use: [medication, molecule, atc, treatment_group, start_date, end_date]
+  use: [medication, molecule, atc, treatment_group, start_date, end_date, daily_dose]
   note: >
     In the table treatments. The name, the molecule, the ATC code and the
     group come from one table of names shared by the cohorts. The lists are
     not the same thing: the treatments of the patient with their dates in BP
-    and SZ; lists that the export crossed in DR, where no dose and no date can
-    be tied to a product of a patient who has several; the treatments of each
-    visit in ASP. BP and SZ compute the daily dose in mg with the same rule
-    (the stored strength, else the one written in the name of the product:
-    BP decision D124); DR's is in the unit of its strength, and ASP has none.
+    and SZ; the treatments of each visit in ASP; in DR the current and somatic
+    lists are per visit but the export crosses the products and the lines of a
+    patient (R122), so no dose and no date can be tied to a product of a
+    patient who has several (194 patients), and its product is a substance
+    name (substance_name), not the typed product name of the other cohorts.
+    The daily dose is in mg in the four cohorts: BP and SZ compute it with the
+    same rule (the stored strength, else the one written in the name of the
+    product: BP decision D124), DR and ASP hold it as typed in mg.
 
 medications_at_visit:
   title: Psychotropic treatments on the day of the visit
@@ -1275,9 +1287,11 @@ medications_at_visit:
     Sixteen yes/no columns computed from the list of treatments and its dates,
     with the same names and groups in the three cohorts. They are missing for
     the patients who have no list (about a quarter in BP, a sixth in SZ); a
-    treatment with no end date counts at every later visit; in DR, whose lists
-    the export crossed, they are known on about half of the visits. ASP has no
-    such columns.
+    treatment with no end date counts at every later visit (78%, 88% and 79%
+    of the antidepressant, lithium and 2nd-generation antipsychotic yes of the
+    follow-up visits rest on treatments with no end date); in DR, whose lists
+    the export crossed, they are known on about half of the visits and a 0
+    means 'no listed product', not 'no'. ASP has no such columns.
 
 non_drug_lifetime:
   title: Non-drug treatments over the life
@@ -1288,17 +1302,47 @@ non_drug_lifetime:
   note: >
     In the table patients. ECT and TMS (ever, sessions, dates) are under the
     same names. BP asks the form of a part of its patients, from 2013.
-    Psychotherapies are asked by kind in BP and as one question in DR.
+    Psychotherapies are asked by kind: three in BP, sixteen in DR (one more
+    summary question that disagrees with the kinds), see psychotherapy_lifetime.
 
 non_drug_fu:
   title: Non-drug treatments since the last visit
   domain: Treatments
   schemas: {bp: non_drug_fu, sz: non_drug_fu, dr: non_drug_fu}
   stack: with care
-  use: [ect_fu, tms_fu, cbt_fu, other_therapy_fu]
+  use: [ect_fu, tms_fu]
   note: >
-    ECT and TMS since the last visit are in the three cohorts. The therapies
-    asked about are not the same list in each cohort.
+    ECT and TMS are in the three cohorts: since the last visit in BP and SZ;
+    in DR the form prints no period and is asked again at the follow-up visit
+    (an update). The therapies asked about are not the same list in each
+    cohort (see psychotherapy_fu).
+
+psychotherapy_lifetime:
+  title: Psychotherapies over the life
+  domain: Treatments
+  schemas: {bp: non_drug_lifetime, dr: psychotherapies_v0}
+  stack: with care
+  use: [ever_cbt]
+  note: >
+    Only cognitive-behavioural therapy is in both. BP asks three specific
+    therapies (CBT, psychoeducation groups, IPSRT) and an 'other' that holds
+    other kinds; DR asks sixteen kinds, each with its sessions, dates,
+    therapist and result. DR's behavioural-only and cognitive-only boxes are
+    separate from CBT. Interpersonal therapy (DR) and IPSRT (BP) are not the
+    same, nor DR 'other' and BP 'other'.
+
+psychotherapy_fu:
+  title: Psychotherapies at the follow-up visits
+  domain: Treatments
+  schemas: {bp: non_drug_fu, sz: non_drug_fu, dr: psychotherapies_fu}
+  stack: with care
+  use: [cbt_fu, other_therapy_fu]
+  note: >
+    CBT and 'other' are in the three cohorts, since the last visit in BP and
+    SZ and asked again at the follow-up visit in DR. SZ also has psychodynamic
+    and family therapy (psychodynamic_fu in DR), and its sessions and dates
+    are in the application but not exported (R125). 'Other' is the residual of
+    different lists: do not compare it.
 
 recommendations:
   title: Following of the recommendations of the first assessment
@@ -1354,9 +1398,10 @@ sick_leave_fu:
   note: >
     BP and SZ ask the same question (a sick leave for a psychiatric disorder
     since the last visit), with the number and the length in weeks, under the
-    same names; SZ adds the somatic sick leaves of the past 12 months. DR has
-    a sick-leave question and the number (its wording is not checked); its
-    length is in days, under another name.
+    same names; SZ adds the somatic sick leaves of the past 12 months. DR asks
+    no yes/no question and does not state the cause: its number and its length
+    in days are any-cause sick leave since the last visit
+    (n_sick_leaves_any_cause_fu, sick_leave_days_any_cause_fu), not joined.
 
 hospitalisations_v0:
   title: Hospitalisations before inclusion
@@ -1366,12 +1411,14 @@ hospitalisations_v0:
   use: [n_hospitalisations_v0, hospitalisation_months_v0, first_hospitalisation_age]
   note: >
     The number of hospitalisations over the life, their total length in months
-    and the age at the first one are in the three cohorts. In SZ a patient who
-    was never hospitalised has no number (not a zero). The forms stop at 20
-    times in BP and SZ, and at 20 months in BP and 30 in SZ (">20", ">30" are
-    right-censored, with a _cens column); DR has no cap (14 durations above
-    20 months). To compare, cut the number at 20 and the months at 20 in
-    every cohort. The DR form is on about half of its inclusions.
+    and the age at the first one are in the three cohorts. A patient who was
+    never hospitalised has 0 in SZ (the form hides the count after 'no
+    hospitalisation') and, where the form was answered, in the other cohorts.
+    The forms stop at 20 times in BP and SZ, and at 20 months in BP and 30 in
+    SZ (">20", ">30" are right-censored, with a _cens column); DR has no cap
+    (18 durations at or above 20 months). To compare, cut the number at 20 and
+    the months at 20 in every cohort. The DR lifetime block is in the mood form
+    and is absent where that form is not shown (empty means no form, not 'no').
 
 hospitalisations_12m:
   title: Hospitalisations in the year before the visit
@@ -1385,4 +1432,6 @@ hospitalisations_12m:
     3,261). In BP the DSM-IV form asks them only after a mood episode in the
     past year and the DSM-5 form asks every patient; after a no to any mood
     episode in the past year both are 0, and the length is 0 where the
-    number is 0 (BP D123). So BP has zeros where SZ has empty cells.
+    number is 0 (BP D123). Both cohorts give 0 after a no. The period is
+    'since the last visit' in the form of the follow-up visits, 'the past
+    year' at inclusion.

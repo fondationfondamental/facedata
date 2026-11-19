@@ -21,9 +21,10 @@ notes: >
   and is read from the visit label.
 
   Number. The form stops at 20: ">20" is read as 20 with a mark in the
-  censoring column (this value or more; 25 visits). "Ne sais pas" is a
-  missing code, here and in the age, the lifetime duration and the number
-  for the year.
+  censoring column (this value or more; 25 visits). The range is 0 to 20,
+  like the form (it was 0 to 50: no raw number is above 20, so no cell
+  changes). "Ne sais pas" is a missing code, here and in the age, the
+  lifetime duration and the number for the year.
 
   Duration, in months. A choice in a list: 0, a quarter, half or three
   quarters of a month, 1 to 20 months, more than 20 (censored at 20; 32
@@ -43,10 +44,13 @@ notes: >
   yes to "at least one mood episode in the past year"; the DSM-5 form
   (from 2020) asks every patient. After a "no" to that question both are 0
   (asked_if, D123; the question is read from rad_tb_hum_epthyman and
-  delivered in the DSM schemas): 852 numbers of DSM-IV inclusions and 29
-  of DSM-5 inclusions were empty there. A few of these zeros may be wrong:
-  on the DSM-5 form, 7 of the 158 patients with no episode who answered
-  were hospitalised in the year. The weeks are 0 where the number for the
+  delivered in the DSM schemas): 850 numbers of DSM-IV inclusions (and 2
+  of inclusions with no DSM label) and 29 of DSM-5 inclusions were empty
+  there. The DSM-5 form asks the number and the weeks of every patient, and
+  the decision is kept (D123): of the 187 DSM-5 inclusions with no episode,
+  158 typed a number and 7 of them (4%) were hospitalised in the year, so
+  one or two of the 29 zeros set here (29 numbers, 28 weeks) may be wrong.
+  The weeks are 0 where the number for the
   year is 0 (1,989 visits: 1,119 after a typed 0, 870 after a 0 given by
   the mood question). 31% of the DSM-IV numbers and 28% of the DSM-5
   numbers are above 0. A duration above 52 weeks is out of range (3 cells,
@@ -61,7 +65,10 @@ notes: >
   2022-23 and on none from 2024 (O40). Where a hospitalisation is counted,
   centre H leaves the lifetime duration empty on 33 of its 68 inclusions
   from 2022, and centre C on 102 of 449 up to 2021 (6% to 10% in the other
-  centres).
+  centres). The lifetime number is answered on 86% of the inclusions
+  dated up to 2018 and on 64% of those dated from 2022. The fall is in four
+  centres, from 77% to 0%, 77% to 12%, 90% to 59% and 97% to 77% (the first
+  two are the centres named above; O40).
 
   Delivered as written, with no flag: 5 ages at the first hospitalisation
   are 2 to 16 years above the age at inclusion (2015 to 2020), and 26 more
@@ -114,10 +121,10 @@ defaults: {versions: [inclusion]}
 
 variables:
   first_hospitalisation_age: {column: agedebut_hospitalisation, type: number, unit: years, range: [5, 90], winsor: false, missing: {"<5": unknown}, label: "Age at the first hospitalisation"}
-  n_hospitalisations_v0: {column: nboccur_hospitalisation, type: number, range: [0, 50], winsor: false, label: "Number of hospitalisations over the life, at inclusion"}
+  n_hospitalisations_v0: {column: nboccur_hospitalisation, type: number, range: [0, 20], winsor: false, label: "Number of hospitalisations over the life, at inclusion"}
   hospitalisation_months_v0: {column: hodur_hospitalisation, type: number, unit: months, range: [0, 20], winsor: false, codes: {"1/4": 0.25, "1/2": 0.5, "3/4": 0.75}, asked_if: n_hospitalisations_v0, label: "Total duration of the hospitalisations over the life, at inclusion"}
 
   # The 12 months before the inclusion visit. After a "no" to any mood episode in the past year they are 0 (D123).
   mood_episode_12m: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, keep: false, label: "At least one mood episode in the past year (delivered in the DSM schemas)"}
-  n_hospitalisations_12m: {column: nboccur_hospitalisation_ly, type: number, range: [0, 50], winsor: false, asked_if: mood_episode_12m, label: "Number of hospitalisations in the 12 months before inclusion"}
+  n_hospitalisations_12m: {column: nboccur_hospitalisation_ly, type: number, range: [0, 20], winsor: false, asked_if: mood_episode_12m, label: "Number of hospitalisations in the 12 months before inclusion"}
   hospitalisation_weeks_12m: {column: hodur_hospitalisation_ly, type: number, unit: weeks, range: [0, 52], winsor: false, asked_if: n_hospitalisations_12m, label: "Total duration of the hospitalisations in the 12 months before inclusion"}

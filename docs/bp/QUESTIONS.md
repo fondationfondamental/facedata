@@ -115,6 +115,8 @@ with the project lead.
 | BILAN BIOLOGIQUE tab review, four cohorts (2026-11-19, D144) | The 35 schemas were read against the forms, the application scripts and the data. No unit mismatch between cohorts. A shifted block of lab results (one BP centre to 2023, one DR centre to 2022) is removed by a pooled data rule (`implausible_pool`: BP 29 visits, DR 35); the clipping of lab tails is kept (the project lead's choice); prolactin typed in mg/L, glucose in mg/dL, DR vitamin D code 2 and ASP code 64387 are read; zeros that mean not measured are missing codes; the notes carry the causes of the lipid ratio mismatches, the clearance, the unmarked CRP limits and the form caps. All 35 schemas are `reviewed`; open points (iron in micrograms per decilitre at one centre, DR prolactin of two centres, SZ vitamin D of one centre, the ASP CRP, clozapine of 1 to 19) wait on the centres (requests R102 to R106) |
 | ANTECEDENTS tab review, BP (2026-11-19, D145 to D149) | The 20 schemas were read against the forms of the application, the graph of their dependencies and the data. The three retention boxes hang on the retention itself, the hormone therapy is a detail of the menopause (missing after a "no"), `nephropathy_treatment_related` is `nephropathy_lithium`, hepatitis D has its code, and the type of diabetes of a relative is shown after its box only (3 cells `not_shown`). The notes carry the yearly-update wording (D84), the shortcut "Non pour tous" and the change question that is not exported (DM-10), the placeholders by year (DEV-13), the counts measured again and, for each year or centre shift of the QC table, its cause. "More than 5" relatives is lost, not written 5 (DM-14). All 20 schemas are `reviewed`; open: PI-15 (later family answers), `frere2_suicide` (M53, DM-5), the skin Oui/Non pattern (DM-5) | D145 to D149 |
 | SUBSTANCES ET COMORBIDITE tab review, BP (2026-11-19, D150 to D157) | The 9 schemas were read against the forms and the export model of the application and the data. The two panic type columns hold social phobia (they are ignored, R113) and the panic box, which the export builds with a substring match, becomes a score missing where only the agoraphobia box can have ticked it (362 cells); the eight substance boxes hang on the first question (no cell changes); six box labels carry the form's option texts. The notes carry the three tables of the application, the yearly-update wording (R4), the export losses (the age tokens and the substance-induced block, R117; the dictionary rows, R119; the nicotine substitution, R120; the eating age missing from the DSM-5 form, A57), the details left empty under a ticked box, the whole-tab-empty steps from 2022 (O40), the tobacco status that is not "never smoked", the counts measured again and, for each year or centre shift of the QC table, its cause. All 9 schemas are `reviewed`; open: DM-6 (centres, M62), DM-7 (dictionary rows), DM-17 (gate correction, M63), PI-16 (an "ever smoked" column) | D150 to D157 |
+| SUICIDE tab re-audit, BP (2026-11-19, D158 to D160) | The ten schemas were re-read under the rules of the other cohorts, against the forms and the export models of the application, the graph of their dependencies and the data: no delivered value changes. The twelve C-SSRS inclusion variables are named for their period (`cssrs*_past_week`; DR's whole-life ones are `cssrs*_lifetime`). The notes carry the time frame of the follow-up forms ("since the last visit", not a yearly update: R14a), the reason why the sections of the most violent and most serious attempt end in 2021 (the group tables of the application lack groups 4 and 6, A60), the Suicide Intent Scale and the C-SSRS behaviour block that the extraction does not hold (R126, M64), the history of attempts shown after a "no" only from the end of 2021, the follow-up first-attempt date that the export will empty (A20, R22), the C-SSRS inconsistencies delivered as rated, the centres that leave the tab empty (O40) and the exception of the 241 `not_shown` cells (R15). All ten schemas stay `reviewed`; open: DM-6 (centres, M64), O52 | D158 to D160 |
+| SOIN SUIVI and TRAITEMENTS tabs re-audit, BP (2026-11-19, D161 to D169) | The ten schemas were re-read under the rules of the other cohorts, against the forms and the export models of the application, the graph of their dependencies and the data: no delivered value changes. The counts of hospitalisations have the range 0 to 20 of the form (0 cells); the IPSRT answer "Ne sais pas" is a missing code (0 cells); a start of 0000-00-00 is a missing code (128 more flags on `start_date`, no value). The empty boxes beside a ticked one stay no in `care_use`, `non_drug_fu` and `non_drug_lifetime`, as D124 and D131 decided, with the evidence in the notes (the explicit "Non" next to them); the cumulated months of the lifetime classes stay 0 after a "no" (5,143 cells). The notes carry the script `social_diag.php` and its 178 records (A30, answers M14 as far as the data can), "since the last visit" for the follow-up counts (R14b; median gap 321 days), the DSM-5 block that asks everyone, the weeks that the export strips of non-digits (R128), the injectable doses (R123), the end dates that the add form does not check (A58) and the non-drug columns that the export drops (R125). All ten schemas stay `reviewed`; open: DM-6 (the blank boxes of the non-drug treatments, the lifetime number of hospitalisations by centre), the causes of 24 year or centre shifts still to write in the notes (D169) | D161 to D169 |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -175,7 +177,7 @@ still to do.
   PERINATALITE, one reviewed (D117); EVALUATION MEDICALE, fifteen reviewed
   (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
   four reviewed (D124); SUICIDE, ten reviewed after the splits by form
-  (D125); with the audit of the four cohorts, `errands_test` (D126) and
+  (D125); the three care tabs read again with the other cohorts' rules (D158 to D169); with the audit of the four cohorts, `errands_test` (D126) and
   `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134); NEUROPSYCHOLOGIE, the 20 drafts of the
   tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
@@ -343,6 +345,11 @@ source, in the export or in the application. Still to send.
     the sisters, 31 for the brothers, 1 for the sons); a 5 is exactly five.
   - Still wished: one row per medication, in place of lists in one cell
     repeated on every row of the patient.
+  - Injectable treatments (D167): 109 injectables of 90 patients have no
+    dose because the number of ampoules, the number of weeks and the entry
+    date are computed in the export model and not selected (R123; the entry
+    date only after the correction of A39, which sets it to a fixed
+    timestamp).
   - "More than 5" relatives: the export loses the answer (the count is
     empty). Asked: write it 6 (R34); the package will read 6 as "more than
     5". One row per medication: not asked; the lists stay.
@@ -373,7 +380,7 @@ source, in the export or in the application. Still to send.
   | HbA1c typed in mmol/mol under the label % (converted, D127) | 8 |
   | PSQI hours of sleep above 24 or an impossible time of day (removed, D130) | 3 + 2 |
   | PSQI bedtime typed on a 12-hour clock, 11:00 for 23:00 (efficiency corrected, D132) | 554 |
-  | Numbers of consultations typed as words (the follow-up sick-leave number and duration lose their words in the export, which runs the digits together: 880,410 weeks is the export's, D123) | 193 cells |
+  | Numbers of consultations typed as words (the follow-up sick-leave number and duration lose their words in the export, which runs the digits together: 880,410 weeks is the export's, D123, R128) | 193 cells |
   | Birth weights typed as a gestational age, or months instead of weeks | 12 and 14 |
   | CPT-II values of 1,000 or more, counts above the number of targets | 57 cells |
   | CPT-3 columns that hold a raw value instead of a T-score | About 37 visits |
@@ -412,13 +419,30 @@ source, in the export or in the application. Still to send.
     copy wrote 2011-11-11 in the first-attempt date of every follow-up form
     it saved until May 2022, and its "yes" to "attempted" rose from June
     2022; D88 is kept for every centre (D125).
-  - C-SSRS at inclusion (D125): centres G and H, and partly B and D, answer
-    "yes" far more often than the other centres (wish to be dead 65% to 71%
-    of their inclusions, 31% elsewhere) and rate a higher intensity (median
-    sum 17, against 12 to 13), while their patients report a wish to die in
-    the past week as often as elsewhere (12% against 15%). The form asks
-    about the past week: do their raters ask about the whole life, as the
-    paper version does?
+  - C-SSRS at inclusion (D125, D158): centres G and H, and partly B and D,
+    answer "yes" far more often than the other centres (wish to be dead 65%
+    to 71% of their inclusions, 31% elsewhere) and rate a higher intensity
+    (median sum 17, against 12 to 13), while their patients report a wish to
+    die in the past week as often as elsewhere (12% against 15%). The
+    instruction of the form reads "Depuis la semaine dernière pour une
+    évaluation initiale ou depuis la dernière visite lors d'un suivi" and the
+    variables are named for that period (`cssrs*_past_week`): do their
+    raters ask about the whole life, as the paper version does?
+  - Suicide forms of the Columbia sections and the behaviour block (D159,
+    A60, R126, M64 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)). The
+    group tables of `psy_suicide` and `psy_suicide_semestriel` hold groups
+    1, 2, 3 and 5 only, so the sections of the most violent and of the most
+    serious attempt (groups 4 and 6) are no longer displayed: at inclusion
+    the last answer of either section per centre runs from April 2021 to
+    January 2022 (four centres never gave a method although they report yes
+    answers). Can the centres say when their copy stopped displaying them,
+    and are the Suicide Intent Scale (group 5) and the C-SSRS behaviour
+    block, which the form still shows, filled in their database?
+  - Suicide questions at follow-up, one centre (D159). In 2023, 148 of its 191
+    follow-up visits hold neither the five suicide questions nor the C-SSRS
+    (77%, against 27% to 36% in 2019-2022 and 2024) and 137 of them hold a
+    MADRS (35 of the 248 such visits at the other centres do): were the
+    forms not filled, or does its copy store them elsewhere (O40)?
   - The social tab is held by 29% and 39% of the inclusions of centre C in
     2016-18 and 2019-21 (71% to 89% before and after) and by 23% of those
     of centre F in 2019-21 (D116). Centre I left the perinatal section of
@@ -450,6 +474,25 @@ source, in the export or in the application. Still to send.
     2018, 37% in 2019-2021, 66% from 2022; C 14%, 24%, 55%; F 4%, 46%, 57%;
     I 1%, 4%, 54%; B, D and G stay at 15% or less. Do they no longer ask
     the number?
+  - Hospitalisations and sick leave at inclusion (D161, D162, O40). The
+    lifetime number of hospitalisations is answered on 86% of the inclusions
+    dated 2018 and on 64% of those dated from 2022; in four centres the
+    share falls from 77% to 0%, from 77% to 12%, from 90% to 59% and from
+    97% to 77%. After a yes to a sick leave in the past year the weeks are
+    empty on 15% of the inclusions (20% from 2022; 14 of 33 and 16 of 32
+    yes in two centres from 2022). Did these centres stop asking these
+    questions, or were the answers lost between the application and the
+    export?
+  - Non-drug treatments at follow-up (D164). On 245 of the 880 follow-up
+    visits where a rater ticked some kinds and left others empty, an
+    explicit "Non" is typed on another kind; the empty boxes of those visits
+    are 393, 11% of the 3,508 that the package reads as 0. The share of the
+    yes visits that leave a box empty rises from 11% (2011-2012) to 35% to
+    42% (2022-2025). Did the raters who typed a "Non" on some kinds leave
+    the others for "not asked"? The package keeps the rule of the project
+    lead (an empty box beside a ticked one is a no, D124); the same question
+    holds for the usual part of the use of care (363 of 824 such visits hold
+    no explicit "Non", D131).
   - Among the inclusion visits with an anxiety disorder, the stored box
     "panic disorder" is ticked on 39% until 2017 and 14% in 2025-2026 (33%
     and 13% once the visits with only the agoraphobia box are taken out:
@@ -500,7 +543,7 @@ source, in the export or in the application. Still to send.
   | NEUROPSYCHOLOGIE | The WAIS-IV digit-span summary columns have the labels of other columns. The CPT-3 names end with an underscore that the extraction does not have |
   | SUBSTANCES ET COMORBIDITE | Four anxiety columns have a row with a name only, no label, code, field or visit (rows 25 to 28: `ceoccurtrouble_panique` and three others). `ceoccurtroubpanago` and `ceoccurtroubpansago` are described as panic disorder with and without agoraphobia but hold "panic and social phobia ticked" and "panic ticked, social phobia not" (D150, R113). The label of `abudep_autre` is that of a duration; it is a yes/no. The eight `SUOCCUR_` rows of the substances say Y/N/U for values that are 0 and 1 (empty for unknown), and `rad_tb_subst_raw` has no row (D155, R119). The substance-induced disorder block of the form is in neither the dictionary nor the extraction (R117) |
   | EVALUATION MEDICALE | `age_ehman`, `age_epman`, `rad_agethym` have no label: age at the first hypomanic episode, at the first manic episode, at the first mood stabiliser (D87). `agedebutpremier_episode` is the age at the first depressive episode on the DSM-5 form (D89). `mhoccur_ehman_ly` carries the label of another variable. `cedecodtrouble_humeur_actuel` is listed twice |
-  | SOIN SUIVI HOSP ARRET TRAVAIL | Three follow-up columns of the sick leave have no label |
+  | SOIN SUIVI HOSP ARRET TRAVAIL | Three follow-up columns of the sick leave have no label. `TRTMED_DAORRES` says Y/N/U for a three-level answer (fully, partly, not followed) and the `HOOCCUR_arret_travail_*` rows say "initial visit, follow-up visits" although only the inclusion visit is filled (R130) |
   | TRAITEMENTS | The first question of the lifetime non-drug form carries the wording of the follow-up form ("depuis la dernière visite") in the application itself, and the dictionary copies it (D124). The six `CMOCCUR_*` columns and the boxes of the lifetime non-drug form hold "Oui; Non; Ne sais pas", not Y/N/U, and the 27 `_lt` rows are the patient's lifetime form, not follow-up visits. `CMDOSE` is the strength as text, empty since 2015; `CMDOSTOT` is computed by the export; an end date 0000-00-15 or 0000-00-00 is the box "Traitement en cours". The follow-up form also asks the number of CBT sessions and the start of the psychoeducation groups, which are not exported |
   | SUICIDE | At the follow-up visits ISF01 to ISF09A hold the follow-up form, asked "since the last visit", with its own answers to "when"; the labels give the inclusion wording only. ISF08 and ISF09 hold Oui / Non / Ne sais pas, not Y / N. LTSV09 is Oui / Non. The export's descriptions of CSS0108 to CSS0112 are one row off, and code 3 of CSS0108 is "par semaine" (D125) |
   | PERINATALITE | The sheet has one more column than the others, so every column is one place to the right |
@@ -620,7 +663,7 @@ source, in the export or in the application. Still to send.
   | What is written | Where | Count |
   |---|---|---|
   | `1000-01-01` in a date that was not typed | Medical history (every empty date of a form saved from 2025), relatives' birth and death dates (28,582 cells in the 52 date columns of the extraction; 23,765 first answers flagged in `relatives`), mood forms, death, change of diagnosis, referral. Written by the application since its version of 2024-07-25, in every empty date of a form that is saved (D98, D148) | 23,831 (the figure the test pins) + 28,582 + 1,136 + 488 |
-  | `2011-11-11` as the date of the first suicide attempt | Follow-up visits of one centre from 2011 to 2023 (every form it saved until May 2022); written by its copy of the follow-up form, which has no such field today (D85, D125) | 1,142 cells |
+  | `2011-11-11` as the date of the first suicide attempt | Follow-up visits of one centre from 2011 to 2023 (every form it saved until May 2022); written by its copy of the follow-up form, which has no such field today (D85, D125; A20, R22: only the placeholders are blanked, D159) | 1,142 cells |
   | "Y" or "N" on every row, whatever was answered | `mhoccur_edm_lt`, `mhoccur_ehman_lt`, `mhoccur_epman_lt`, `mhoccur_epmixt_lt` | All rows |
   | 0 or 1 on every row | Five allergic diseases; `<relative>_alcool`, `_cannabis`, `_autre_substance` (the last one is 1 on 2,709 rows where the list does not hold it) | All rows |
   | A copy of another column | `mhoccur_*_psy_spv` (three), `protec`, `visit_neuropsychologie`, `cpt_version` (WAIS labels) | All rows |

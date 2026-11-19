@@ -283,21 +283,26 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     data = result.data
     tabs = ["SUICIDE", "SUBSTANCES", "PERINATALITE", "EVALUATION MEDICALE", "SOIN SUIVI HOSP ARRET TRAVAIL", "MODULE SOCIAL ET PERINATALITE"]
     tab = result.qc[result.qc["tab"].isin(tabs)]
-    assert (len(tab), tab["instrument"].nunique()) == (286, 20)
+    assert (len(tab), tab["instrument"].nunique()) == (296, 21)
     assert (tab["unknown_code"].sum(), tab["version_unknown"].sum()) == (0, 0)
     # One column, two questions: the whole life at inclusion, the time since the last visit at follow-up. Never in one column.
     assert data["visit_form"].value_counts().to_dict() == {"inclusion": 1268, "follow_up": 924}
-    assert (qc.loc["isf01_lifetime", "n_valid"], qc.loc["isf01_since_visit", "n_valid"]) == (452, 140)
+    assert (qc.loc["isf01_lifetime", "n_valid"], qc.loc["isf01_lifetime_fu", "n_valid"]) == (452, 140)
     assert data.loc[data["visit_form"] == "follow_up", "isf01_lifetime"].notna().sum() == 0
     assert (qc.loc["n_mde_lifetime", "n_valid"], data["n_mde_lifetime"].median(), qc.loc["n_mde_since_visit", "n_valid"], data["n_mde_since_visit"].median()) == (343, 3, 809, 0)
     assert (qc.loc["cssrs01_lifetime", "n_valid"], (data["cssrs01_lifetime"] == 1).sum(), qc.loc["cssrs01_since_visit", "n_valid"], (data["cssrs01_since_visit"] == 1).sum()) == (557, 427, 784, 366)
-    # An answer about the whole life at a follow-up visit is flagged.
-    assert int(tab.loc[tab["instrument"] == "isf_since_visit", "period_doubt"].sum()) == 136
+    # The ISF asked again at 2 and 4 years says "ever" and no period (D44): it is delivered apart and no answer is flagged.
+    assert tab["period_doubt"].sum() == 0
     # Scores and counts.
     assert (qc.loc["sis_total", "n_valid"], qc.loc["sis_total", "score_mismatch"], data["sis_total"].median()) == (139, 0, 15)
     assert (qc.loc["cssrs_intensity_lifetime", "n_valid"], data["cssrs_intensity_lifetime"].median()) == (252, 14)
-    assert (qc.loc["n_attempts", "n_valid"], (data["violent_attempts"] == 1).sum(), (data["serious_attempts"] == 1).sum()) == (172, 41, 66)
-    assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (796, 44)
+    # The counts of the Columbia scale are asked after a yes (D47): 2,497 cells that were missing are 0 (654 answers before).
+    counts = qc.loc[[f"cssrs_n_{kind}_{period}" for kind in ["attempts", "interrupted", "aborted"] for period in ["lifetime", "since_visit"]], "n_valid"]
+    assert counts.tolist() == [474, 753, 483, 745, 287, 409]
+    # The history of attempts: asked after a yes to the first question (D45); the follow-up form is another schema.
+    assert (qc.loc["n_attempts", "n_valid"], (data["violent_attempts"] == 1).sum(), (data["serious_attempts"] == 1).sum()) == (442, 31, 55)
+    assert (qc.loc["n_attempts_fu", "n_valid"], (data["n_attempts_fu"] == 0).sum()) == (136, 114)
+    assert (qc.loc["n_suicide_attempts_since_visit", "n_valid"], (data["n_suicide_attempts_since_visit"] > 0).sum()) == (796, 44)
     # Codes of the dictionary, and codes that it does not give.
     assert data["tobacco_status"].value_counts().to_dict() == {"non_smoker": 701, "current_smoker": 417, "ex_smoker": 192}
     assert "legal_protection" not in data.columns            # administrative: not delivered, as in BP and SZ (BP D111, D116)
@@ -305,13 +310,20 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert data["mdd_course"].value_counts().to_dict() == {"recurrent": 509, "single_episode": 123}
     assert data["current_episode_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
     assert data["marital_status"].value_counts().to_dict() == {"couple": 399, "single": 169, "divorced": 64, "separated": 28, "widowed": 20}
-    assert data["serious_method_code"].value_counts().head(2).to_dict() == {"code_1": 61, "code_2": 7}
+    # The lists of the most serious and of the most violent attempt are read from forms 151 and 152 (D46).
+    assert data["serious_method"].value_counts().head(2).to_dict() == {"sedative_drugs": 61, "non_sedative_drugs_or_substances": 7}
+    assert data["violent_method"].value_counts().to_dict() == {"other": 8, "hanging": 3, "immolation": 2, "drowning": 2, "jump": 1}
+    assert tab["not_shown"].sum() == 45                       # the five boxes of the consequences of another method, shown for that method only
     assert data["closest_person_code"].value_counts().head(2).to_dict() == {"code_1": 330, "code_10": 117}
     # Sick leave, hospitalisations and care.
     assert (qc.loc["sick_leave_12m", "n_valid"], qc.loc["sick_leave_12m", "missing_code"], (data["sick_leave_12m"] == 1).sum(), qc.loc["sick_leave_weeks_12m", "out_of_range"]) == (433, 244, 241, 32)
-    assert (qc.loc["sick_leave_fu", "n_valid"], (data["sick_leave_fu"] == 1).sum(), qc.loc["sick_leave_days_fu", "n_valid"]) == (714, 229, 742)
+    # The form has no yes/no question and states no cause: the names say any cause (D49); the days run from 0 to 730.
+    assert (qc.loc["sick_leave_any_cause_fu", "n_valid"], (data["sick_leave_any_cause_fu"] == 1).sum(), qc.loc["sick_leave_days_any_cause_fu", "n_valid"]) == (714, 229, 738)
+    assert qc.loc["sick_leave_days_any_cause_fu", "out_of_range"] == 5
     assert (qc.loc["ever_hospitalised_v0", "n_valid"], (data["ever_hospitalised_v0"] == 1).sum(), qc.loc["n_hospitalisations_depression_fu", "n_valid"]) == (304, 259, 792)
-    assert (qc.loc["hospitalised_year", "n_valid"], (data["hospitalised_year"] == 1).sum(), (data["saw_gp"] == 1).sum(), (data["saw_psychologist"] == 1).sum()) == (996, 394, 747, 315)
+    # Care use: form 188 asked one question for the hospital and the day hospital, forms 194 and 169 two (D48).
+    assert (qc.loc["hospitalised_year", "n_valid"], (data["hospitalised_year"] == 1).sum(), (data["saw_gp"] == 1).sum(), (data["saw_psychologist"] == 1).sum()) == (712, 247, 747, 315)
+    assert (qc.loc["hospitalised_or_day_year", "n_valid"], (data["hospitalised_or_day_year"] == 1).sum()) == (284, 147)
     assert (qc.loc["cannabis_current", "n_valid"], (data["cannabis_current"] == 1).sum(), qc.loc["episode_number", "n_valid"]) == (582, 24, 220)
 
 
@@ -339,14 +351,28 @@ def test_treatments(result, qc):
     # On a treatment at the visit: known where the dates are.
     # One visit is dated 2000, before the cohort opened: it has no date, so nothing can be told for it.
     assert (data["on_antidepressant"].notna().sum(), (data["on_antidepressant"] == 1).sum(), data["on_lithium"].notna().sum()) == (972, 286, 1618)
-    # Non-drug treatments and psychotherapies: the whole life at inclusion, since the last visit at follow-up.
+    # The name of a drug is the substance of the catalogue, not the typed product (D50); the 6 valpromide cells of one patient are no longer 0.
+    assert "substance_name" in items.columns and "medication" not in items.columns
+    assert ((data["on_valproate"] == 1).sum(), data["on_valproate"].notna().sum()) == (7, 1826)
+    # Non-drug treatments and psychotherapies: the whole life at inclusion, asked again at follow-up with no period (D51).
     # The whole-life answers are asked once: they are in the patients table, as in BP.
     ever = result.patients
     assert (qc.loc["ever_ect", "n_valid"], (ever["ever_ect"] == 1).sum(), qc.loc["ect_fu", "n_valid"], (data["ect_fu"] == 1).sum()) == (504, 87, 810, 134)
     assert (qc.loc["ever_tms", "n_valid"], (ever["ever_tms"] == 1).sum(), (ever["ever_psychotherapy"] == 1).sum()) == (498, 48, 248)
-    assert (qc.loc["therapy_supportive_lifetime", "n_valid"], (data["therapy_supportive_lifetime"] == 1).sum(), (data["therapy_cbt_lifetime"] == 1).sum()) == (471, 215, 80)
+    assert (qc.loc["therapy_supportive_lifetime", "n_valid"], (ever["therapy_supportive_lifetime"] == 1).sum(), (ever["ever_cbt"] == 1).sum()) == (471, 215, 80)
     assert (qc.loc["therapy_supportive_fu", "n_valid"], (data["therapy_supportive_fu"] == 1).sum()) == (736, 241)
     assert "ever_ect" not in data.columns and qc.loc["ever_ect", "level"] == "patient"
+    assert "ever_cbt" not in data.columns and qc.loc["ever_cbt", "level"] == "patient"     # the 14 kinds are asked once: the schema is per patient
+    # The settings of the stimulation and the answers on the expertise and the result are read from forms 203 and 155; the codes
+    # "not known" (seizure 2, stimulation 0, expertise 0) are missing codes: 80 + 47 + 123 cells that were `code_N`.
+    assert ever["ect_stimulation"].value_counts().to_dict() == {"bilateral": 71, "unilateral_right": 5}
+    assert ever["tms_stimulation"].value_counts().to_dict() == {"high_frequency": 21, "low_frequency": 4}
+    assert qc.loc[["ect_seizure_over_25s", "ect_seizure_over_25s_fu", "tms_stimulation", "tms_stimulation_fu"], "n_missing_code"].tolist() == [49, 31, 21, 26]
+    therapists = qc[qc["instrument"].isin(["psychotherapies_v0", "psychotherapies_fu"]) & qc.index.str.endswith(("_therapist", "_therapist_fu"))]
+    assert (len(therapists), therapists["n_missing_code"].sum()) == (28, 123)
+    assert ever["cbt_result"].value_counts().to_dict() == {"no_improvement": 21, "minimal_improvement": 19, "certain_improvement": 16, "definite_improvement": 5, "sustained_improvement": 3}
+    # The count of high- and low-frequency sessions follow the type of stimulation, as the form wants: no cell is hidden.
+    assert qc.loc[["tms_high_frequency_over_30", "tms_low_frequency_over_30", "tms_30000_stimulations"], "not_shown"].sum() == 0
     assert (qc.loc["electronic_cigarette", "n_valid"], (data["electronic_cigarette"] == 1).sum(), (data["cpap"] == 1).sum()) == (993, 41, 35)
 
 
@@ -402,7 +428,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = dr.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2336, 39, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2338, 37, 0)
     assert counts["covered"] + counts["ignored"] == 2375
 
 

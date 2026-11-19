@@ -2,18 +2,19 @@ instrument: sick_leave_v0
 title: "Sick leave over the last twelve months and at the visit"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: LES 12 DERNIERS MOIS
-status: draft
+status: reviewed
 notes: >
   The BP schema with the codes of this extraction: sick leave over the last
   twelve months and on the day of the visit. Filled at inclusion and at the
-  visits of 2 and 4 years: 677 visits.
+  visits of 2 and 4 years: 677 visits (the social form is filled at 24 and
+  48 months too: 160 of the 677 visits). The number of sick leaves of BP is
+  not in this extraction.
 
-  Codes. The answers are 0, 1 and 2; the dictionary writes Y, N and "not
-  applicable". 2 is read as "not applicable" (patients who do not work: 484
-  cells, missing_code), 1 as yes. The number of sick leaves of BP is not in
-  this extraction. The weeks are asked only after a yes and are 0 after a
-  no (asked_if); 32 answers are above the 53 weeks of a year
-  (out_of_range).
+  Codes. The answers are 0, 1 and 2. The dictionary rows write Y, N and "not
+  applicable" for them, while the data hold 1, 0 and 2. 2 is read as "not
+  applicable" (patients who do not work: 484 cells, missing_code), 1 as yes.
+  The weeks are asked only after a yes and are 0 after a no (asked_if); 32
+  answers are above the 53 weeks of a year (out_of_range).
 
 variables:
   sick_leave_12m: {column: hooccur_arret_travail, type: item, range: [0, 1], missing: {"2": not_applicable}, label: "Sick leave in the last 12 months"}

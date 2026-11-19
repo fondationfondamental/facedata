@@ -30,12 +30,25 @@ notes: >
   pas" numbers are a social yes with no number, and numbers also appear
   after a "no" to a mood episode (723 of the 879 DSM-IV inclusions with no
   episode). The script also created DSM-IV records that hold only these
-  answers: 178 inclusions with no DSM label hold exactly its pairs (R69).
+  answers (A30 of EXPORT_REQUESTS.md): 178 inclusions with no DSM label
+  hold exactly its pairs (R69), by year 1, 3, 6, 18, 21, 18, 17, 12, 10,
+  14, 8 and 19 from 2009 to 2020, then 29 in 2021 and 2 in 2022: the script
+  last ran around the start of 2022 (M14). Its hazards: it tests
+  empty("0"), which is true in PHP, so a typed 0 (the number or the weeks)
+  is overwritten by the value of the social form; it joins the two forms by
+  patient, not by visit; and its last loop compares the number with 0
+  loosely, so a text that is no number (">20") equals 0 and gives "Non".
+  147 inclusions labelled DSM-5 also hold the pairs of the script (89 "Non"
+  with 0, 37 "Non applicable" with "NA", 21 "Oui" with "Ne sais pas");
+  127 of them are from 2022, after the script stopped, so the raters typed
+  them (the DSM-5 form asks the yes/no, then the number), 15 of the 21
+  "Oui" with "Ne sais pas" among them (R70).
 
   sick_leave_12m is a score (D123): the stored yes/no, except yes on the 8
   DSM-IV inclusions with ">20" sick leaves, where the script wrote no (PHP
   7 reads ">20" as 0). These 8 carry score_mismatch; the stored answer is
-  the check (sick_leave_12m_stored, not delivered).
+  the check (sick_leave_12m_stored, not delivered). The 2 DSM-5 inclusions
+  with ">20" are stored yes: the score agrees.
 
   A "no" gives 0 to an empty number or duration (asked_if), because no
   sick leave in the year means 0 sick leaves: 168 numbers and 1,316
@@ -44,18 +57,29 @@ notes: >
   applicable" that is 20 numbers and 80 durations (72 of them 0); after an
   empty yes/no, 49 numbers and 23 durations (12 of them 0).
 
-  Number. A list on both diagnosis forms (0 to 20, ">20", "NA", "Ne sais
-  pas"): "NA" (963 cells) and "Ne sais pas" (917) are missing codes, and
-  ">20" is censored at 20 (10 visits). Where the number is empty on both
+  Number. A count of sick leaves, in a list of both diagnosis forms (0 to
+  20, ">20", "NA", "Ne sais pas"): "NA" (963 cells) and "Ne sais pas" (917)
+  are missing codes, and ">20" is censored at 20 (10 visits: 8 DSM-IV
+  inclusions where the script stored "Non", and 2 DSM-5 inclusions that say
+  "Oui"). Where the number is empty on both
   diagnosis forms, the export takes the social form's weeks instead (R74).
   These weeks show only where they leave the list: the 40 numbers above 20
   are out of range (the range is [0, 20], D123), 2 decimals are delivered
   as numbers and 2 texts end unparsed. Smaller week values cannot be told
   from a number. Most of the 49 numbers delivered after an empty yes/no
-  are probably such weeks (46 of them from 2022).
+  are probably such weeks (46 of them from 2022). The number has two
+  parents, the 12-month block of the diagnosis forms and the social form:
+  a check that follows one parent counts the cells of the other as filled
+  under a no or an empty parent. 321 inclusions hold the current answer of
+  the social form and no yes/no for the 12 months (208 with no DSM label,
+  75 DSM-5, 38 DSM-IV); R74, which adds the social yes/no to the export,
+  would recover up to that many.
 
   Duration, in weeks. 52 (the whole year) is the most frequent answer after
-  0 (379 and 307 cells). A duration above 53 weeks cannot be about 12
+  0 (379 and 307 cells). After a yes the duration is empty on 353 of the
+  2,434 inclusions (15%; 80 of 394, 20%, from 2022) and the number on 43
+  (41 of them from 2022); in two centres the duration is empty after 14 of
+  33 and 16 of 32 yes from 2022. A duration above 53 weeks cannot be about 12
   months and is out of range (43 cells, up to 208), like the one negative
   value; 32 of these 43 patients are on sick leave at the visit, so they
   may be the length of a sick leave still running, counted from its start.

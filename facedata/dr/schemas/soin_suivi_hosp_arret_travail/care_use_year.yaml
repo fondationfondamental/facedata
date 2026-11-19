@@ -2,39 +2,76 @@ instrument: care_use_year
 title: "Use of care and help over the year"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: HOSPITALISATION COMPLETE
-status: draft
+status: reviewed
 notes: >
   Use of care and help over the year, by kind: full-time and day
-  hospitalisation, specialists, emergency department, help received at
-  home and from whom, general practitioner, psychologist, physiotherapist,
-  nurse and other professionals, each with a number of times. Not the BP
-  schema care_use, which is another questionnaire. Filled at inclusion and
-  at the visits of 1, 2 and 4 years: 997 visits (85% to 96% of the
-  inclusions in every period).
+  hospitalisation, specialists, emergency department, help received at home
+  and from whom, general practitioner, psychologist, physiotherapist, nurse
+  and other professionals, each with a number of times. Not the BP schema
+  care_use, which is another questionnaire. The form is form 194 (the only
+  one wired in config/global.php; forms 188 and 169 are older copies). It
+  asks "au cours de l'année" and is shown at the inclusion visit and at the
+  visits of 12, 24, 36 and 48 months (visit types 2, 4, 6, 7 and 8): 997
+  visits (85% to 96% of the inclusions in every period).
 
   Answers are 1 and 0, or Y and N for the general practitioner. A number of
   visits is 0 after a no (asked_if). The place of a hospitalisation or of a
-  consultation is stored as a code that the dictionary does not explain
-  (open question O26). The specialties are free texts.
+  consultation is the key of the list of the form: 1 private clinic and 2
+  hospital (hospitalisation and day hospital), and 3 town practice
+  (specialist only); 356, 146 and 697 cells are named (they were code_N).
+  The specialties are free texts.
+
+  Two forms of the hospitalisation question (csri_form, read from the
+  columns filled). Form 188 asks one question, "hospitalised, complete or
+  day hospital" (hospit): 284 of the 996 answers come from it, 262 of them
+  from 2012 to 2016, and are delivered as hospitalised_or_day_year (yes on
+  52%). Forms 194 and 169 split the question into full-time (hospit,
+  delivered as hospitalised_year: 712 answers, yes 35%) and day hospital
+  (hospitj, day_hospital_year). The two are not one variable:
+  hospitalised_year was filled on 996 visits (394 yes) and is now filled on
+  712 (247 yes), and the 284 visits of the single question are
+  hospitalised_or_day_year (147 yes). The day-hospital yes/no did not exist
+  before 2016: 19 visits of 2012 to 2016 hold day-hospital details with an
+  empty yes/no. One visit holds care use data and neither question: its form
+  is unknown (csri_form version_unknown, 1 flag).
+
+  The lists that the export crosses. The hospitalisations, the day
+  hospitalisations and the specialists are lists of the form (a Tableau with
+  an add button and no row limit). The export keeps one arbitrary row of
+  them for each visit (select distinct on (usubjid, visitnum) with no ORDER
+  BY, request R122 for the DR list tables): the specialty, the days and the
+  place of a hospitalisation and of a day hospital, the specialty and the
+  place of the specialists and n_specialist (the number of consultations)
+  are the values of one row of several, not totals. The export also casts a
+  number written 00 to an empty yes/no (R73): saw_gp is empty on 6 visits
+  where the number of general practitioner visits is 00. No sum score is
+  computed.
+
+version:
+  name: csri_form
+  filled:                                          # tested top to bottom, first match wins
+    csri_split: [hospitj]                          # forms 194 and 169: full-time and day hospital are two questions
+    csri_single: [hospit]                          # form 188: one question, "complete or day hospital"
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
   # Full-time hospitalisation
-  hospitalised_year: {column: hospit, label: "Over the year: hospitalised full time"}
+  hospitalised_year: {column: hospit, versions: [csri_split], label: "Over the year: hospitalised full time"}
+  hospitalised_or_day_year: {column: hospit, versions: [csri_single], label: "Over the year: hospitalised, full time or day hospital (one question)"}
   hospitalised_year_specialty: {column: hospit_hoterm, type: text, label: "Full-time hospitalisation: specialty, as written"}
   hospitalised_year_days: {column: hospit_hodur, type: number, unit: days, range: [0, 366], winsor: false, label: "Full-time hospitalisation: duration"}
-  hospitalised_year_place: {column: hospit_lieu, type: category, codes: {"1": code_1, "2": code_2}, label: "Full-time hospitalisation: place (code that the dictionary does not explain)"}
+  hospitalised_year_place: {column: hospit_lieu, type: category, codes: {"1": private_clinic, "2": hospital}, label: "Hospitalisation: place"}
   # Day hospital
   day_hospital_year: {column: hospitj, label: "Over the year: day hospital"}
   day_hospital_year_specialty: {column: hospitj_hoterm, type: text, label: "Day hospital: specialty, as written"}
   day_hospital_year_days: {column: hospitj_hodur, type: number, unit: days, range: [0, 366], winsor: false, label: "Day hospital: duration"}
-  day_hospital_year_place: {column: hospitj_lieu, type: category, codes: {"1": code_1, "2": code_2}, label: "Day hospital: place (code that the dictionary does not explain)"}
+  day_hospital_year_place: {column: hospitj_lieu, type: category, codes: {"1": private_clinic, "2": hospital}, label: "Day hospital: place"}
   # Specialists
   saw_specialist: {column: medspe, label: "Over the year: saw one or several specialists"}
   specialist_specialty: {column: medspe_hoterm, type: text, label: "Specialist: specialty, as written"}
   n_specialist: {column: medspe_nboccur, type: number, range: [0, 365], winsor: false, label: "Specialist: number of consultations"}
-  specialist_place: {column: medspe_lieu, type: category, codes: {"1": code_1, "2": code_2, "3": code_3}, label: "Specialist: place (code that the dictionary does not explain)"}
+  specialist_place: {column: medspe_lieu, type: category, codes: {"1": private_clinic, "2": hospital, "3": town_practice}, label: "Specialist: place"}
   # Emergency department
   emergency_year: {column: hooccur_csri_urg, label: "Over the year: went to an emergency department"}
   n_emergency: {column: nboccur_csri_urg, type: number, range: [0, 365], winsor: false, asked_if: emergency_year, label: "Emergency department: number of times"}

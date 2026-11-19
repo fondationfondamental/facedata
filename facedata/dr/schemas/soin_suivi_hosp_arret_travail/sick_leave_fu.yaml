@@ -2,15 +2,31 @@ instrument: sick_leave_fu
 title: "Sick leave since the last visit"
 tab: SOIN SUIVI HOSP ARRET TRAVAIL
 section: DEPUIS LA DERNIERE VISITE
-status: draft
+status: reviewed
 notes: >
-  Sick leave since the last visit, at the follow-up visits: 763 visits. The
-  BP schema of this name, in other columns: yes or no (written Y and N),
-  the number of sick leaves and their total length, which is in days here
-  (in weeks in BP), so the length has another name, sick_leave_days_fu. The
-  number and the days are 0 after a no (asked_if).
+  Sick leave of any cause since the last visit, at the follow-up visits: 763
+  visits (the number of sick leaves is on 761). The BP schema of this name,
+  in other columns and with other names (R12): the DR form has no yes/no
+  question and states no cause, so the names say any cause.
+
+  The number of sick leaves (n_sick_leaves_any_cause_fu) is the answer. The
+  export computes the yes/no from it (face_dr_11 lines 25-31: a number of 0
+  gives N, more than 0 gives Y), so the yes/no (sick_leave_any_cause_fu) is
+  derived from the number (derived_from); it is not an answer of the rater.
+  The 47 numbers written 00 (46 of them from 2024) leave the yes/no empty,
+  because the export casts the number (R73, DR clause): 714 yes/no answers
+  for 761 numbers. The total length is in days here (weeks in BP):
+  sick_leave_days_any_cause_fu is asked after the number (asked_if: 0 after
+  a number of 0) and has the range 0 to 730 days (it was 1,500: 5 values
+  above 730 are now out_of_range).
+
+  Of the 213 positive durations, 78 are exactly 180 days and 58 are within
+  10% of the gap since the previous visit (the median gap is 190 days): many
+  durations look like the length of the interval and not days of leave. In
+  BP 153 of the 1,669 positive durations and in SZ 17 of 223 are within 10%
+  of the gap. The days are not comparable with the weeks of BP and SZ.
 
 variables:
-  sick_leave_fu: {column: hooccur_arret_travail_spv, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Sick leave since the last visit"}
-  n_sick_leaves_fu: {column: nboccur_arret_travail_spv, type: number, range: [0, 52], winsor: false, asked_if: sick_leave_fu, label: "Number of sick leaves since the last visit"}
-  sick_leave_days_fu: {column: hodur_arret_travail_spv, type: number, unit: days, range: [0, 1500], winsor: false, asked_if: sick_leave_fu, label: "Total duration of the sick leaves since the last visit, in days"}
+  n_sick_leaves_any_cause_fu: {column: nboccur_arret_travail_spv, type: number, range: [0, 52], winsor: false, label: "Number of sick leaves since the last visit, any cause"}
+  sick_leave_any_cause_fu: {column: hooccur_arret_travail_spv, type: item, range: [0, 1], codes: {Y: 1, N: 0}, derived_from: n_sick_leaves_any_cause_fu, label: "Sick leave since the last visit, any cause (computed from the number)"}
+  sick_leave_days_any_cause_fu: {column: hodur_arret_travail_spv, type: number, unit: days, range: [0, 730], winsor: false, asked_if: n_sick_leaves_any_cause_fu, label: "Total duration of the sick leaves since the last visit, any cause, in days"}
