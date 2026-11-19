@@ -353,8 +353,8 @@ def test_treatments(result, qc):
 def test_history_and_family(result, qc):
     data, relatives, patients = result.data, result.relatives, result.patients
     tab = result.qc[result.qc["tab"] == "ANTECEDENTS"]
-    assert (len(tab), tab["instrument"].nunique()) == (405, 20)
-    assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["out_of_range"].sum()) == (1, 0, 0)
+    assert (len(tab), tab["instrument"].nunique()) == (417, 21)
+    assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["out_of_range"].sum()) == (0, 0, 0)
     # Nine histories in two forms: the inclusion visit, and the visits of 2 and 4 years. Never in one column.
     yes = {name: (int(data[name].notna().sum()), int((data[name] == 1).sum())) for name in ["hypertension_v0", "migraine_v0", "dyslipidaemia_v0", "thyroid_disorder_v0", "cancer_v0", "hypertension_fu"]}
     assert yes == {"hypertension_v0": (571, 109), "migraine_v0": (574, 112), "dyslipidaemia_v0": (572, 121), "thyroid_disorder_v0": (571, 70), "cancer_v0": (570, 31), "hypertension_fu": (130, 27)}
@@ -372,6 +372,30 @@ def test_history_and_family(result, qc):
                                                               "paternal_grandmother": 577, "paternal_grandfather": 577, "siblings": 201, "children": 85}
     assert ((relatives["relative_mood_disorder"] == 1).sum(), relatives["relative_mood_disorder"].notna().sum()) == (536, 737)
     assert relatives.loc[relatives["relative_mood_disorder"] == 1, "usubjid"].nunique() == 343
+    # The review of the tab (D34 to D40). "Not known" (0) of the type of diabetes and of the kind of thyroid disorder is a missing code.
+    assert qc.loc[["diabetes_type_v0", "thyroid_disorder_type_v0", "thyroid_disorder_type_fu"], "n_missing_code"].tolist() == [1, 7, 1]
+    # The lists that the forms explain are read with the labels of BP.
+    assert data["thyroid_disorder_induced_by_v0"].value_counts().to_dict() == {"other_treatment": 11, "lithium": 4}
+    assert data["inflammatory_bowel_disease_type_v0"].value_counts().to_dict() == {"crohn": 6, "ulcerative_colitis": 5}
+    assert data["drug_hepatitis_treatment_v0"].value_counts().to_dict() == {"antidepressant": 4, "other": 2}
+    assert data["drug_eruption_type_v0"].value_counts().to_dict() == {"simple_rash": 22, "lyell": 3}
+    # The two lipid boxes are asked after a dyslipidaemia "yes": 0 after a "no" (451 forms at inclusion, 106 at follow-up).
+    lipids = ["hypercholesterolaemia_v0", "hypertriglyceridaemia_v0", "hypercholesterolaemia_fu", "hypertriglyceridaemia_fu"]
+    assert [int(qc.loc[name, "n_valid"]) for name in lipids] == [561, 559, 129, 129]
+    assert (data.loc[data["dyslipidaemia_v0"] == 0, "hypercholesterolaemia_v0"] == 0).all()
+    # The hormonal treatment is asked of every woman, in menopause or not.
+    assert qc.loc["menopause_hormone_therapy_v0", "n_valid"] == 323
+    # The family: the suicide and the kind of mood disorder are read from the form; "not known" is a missing code.
+    assert relatives["relative_suicide"].value_counts().to_dict() == {"none": 557, "attempt": 85, "completed": 55}
+    assert relatives["relative_mood_disorder_kind"].value_counts().to_dict() == {"unipolar": 416, "bipolar": 41}
+    assert (qc.loc["relative_suicide", "n_missing_code"], qc.loc["relative_mood_disorder_kind", "n_missing_code"]) == (98, 79)
+    # The boxes of the children and of the siblings are read as a list: an empty box beside a ticked one is 0.
+    assert [int(relatives.loc[relatives["relative"] == who, "relative_alcohol"].notna().sum()) for who in ["children", "siblings"]] == [15, 40]
+    # The columns fdr_ and gp_ of the patients: 1, 0, missing.
+    per_patient = {name: (int((patients[name] == 1).sum()), int((patients[name] == 0).sum()), int(patients[name].isna().sum())) for name in patients.columns if name.startswith(("fdr_", "gp_"))}
+    assert per_patient == {"fdr_bipolar": (37, 242, 355), "fdr_depression": (259, 137, 238), "fdr_schizophrenia": (17, 342, 275), "fdr_suicide": (36, 323, 275),
+                           "fdr_suicide_attempt": (64, 308, 262), "fdr_substance": (118, 286, 230), "gp_bipolar": (3, 212, 419), "gp_depression": (74, 168, 392),
+                           "gp_schizophrenia": (3, 253, 378), "gp_suicide": (18, 236, 380), "gp_suicide_attempt": (11, 246, 377), "gp_substance": (41, 238, 355)}
 
 
 def test_coverage():

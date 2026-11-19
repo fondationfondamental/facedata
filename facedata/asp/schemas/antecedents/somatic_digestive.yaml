@@ -1,24 +1,52 @@
 instrument: somatic_digestive
-title: "Somatic history: liver and digestive tract, one row per disease"
+title: "Somatic history: liver and digestive tract, one row per visit and disease"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 level: list
 notes: >
-  The diseases of the system reported after a yes to the question
-  history_digestive: 668 diseases for 473 visits (471 patients), up to 6 for one
-  patient. One row per patient and disease in the table treatments, where the
-  column list says "somatic_digestive".
+  The diseases of the system reported after a yes to the question history_digestive_v0
+  (inclusion visit) or history_digestive_fu (yearly visit) of the instruments somatic_history_v0
+  and somatic_history_fu: 668 diseases for 473 visits (471 patients), up to 6 at one visit; 659
+  rows are of inclusion visits and 9 of yearly visits. One row per visit and disease in the
+  table treatments, where the column list says "somatic_digestive" and the column visit names
+  the visit.
 
-  The export packs the diseases of a patient in one cell, each between brackets
-  with four fields: the code of the disease in the list of the form, a free
-  text, the age of onset in years and whether it is over (0 or 1; 9 is "not
-  known"). The list of the diseases is that of the thesaurus V2.13. Fewer than five records
-  have a dash in their free text, which the reader keeps in the text. The
-  history is that of the patient: the first visit that holds it is read, and a
-  later visit that holds another list gets patient_value_varies.
+  A visit's list holds the rows typed at that visit; the lifetime history is the union of the
+  visits.
+
+  Read the list with the gate of the same visit: a gate 0 means none, an empty gate or a 9 means
+  not known. 41 of the 505 yes at inclusion have no list (8.1%) and 14 of 20 at the yearly
+  visits. 1 inclusion list sits under a gate 0 or 9, 2 at inclusion under an empty gate.
+
+  The export packs the diseases of a visit in one cell, each between brackets with four fields:
+  the code of the disease in the list of the form, a free text, the age of onset in years and
+  whether it is over (0 or 1; a 9 is "not known", delivered as missing with its reason: 240
+  cells in the eight lists). The list of the diseases is that of the thesaurus V2.13. The eight
+  somatic lists have the same shape and differ only by the packed column, the prefix of the
+  fields and the list of the codes: disease_code, disease_text, age_onset (0 to 100) and
+  disease_over. The code that means "other" is 11 in ear, nose, throat and eyes, 4 in the lungs,
+  10 in the nervous system and 9 in the five others, and the free text is filled where the code
+  is "other" (1,923 of the 1,925 "other" rows of the eight lists), so that no shown_if is
+  needed. 19 rows of the eight lists have no code, 14 of them with all four fields empty (a
+  record opened and nothing typed): the schema cannot repair them (open question O19). 3 of the
+  2,422 ages of onset are more than one year above the age of the patient at the visit (one each
+  in the heart, digestive and ear, nose, throat and eyes lists): kept as recorded.
+
+  In this list "other" is the code 9: 330 of its 331 rows have a free text, and one free text
+  sits on a row with no code. 3 rows have no code (1 with all four fields empty). Fewer than
+  five records have a dash in their free text, which the reader keeps in the text.
+
+  **Year and centre.** The age of onset is a lifetime age: its median follows the age mix of the
+  patients (children are 0% to 100% of the inclusion visits of a centre and 9% to 59% of a year)
+  and the centre. It is 3 to 21.5 years by year and 1 to 17.5 by centre (years and centres with 20
+  rows or more): 1 to 2.5 by centre among the children, 5.5 to 26 by year and 2.5 to 18 by centre
+  among the adults. "Over" is 30% to 59% by year and 30% to 62% by centre: a habit of the centre,
+  with no step in time.
 
   A section of the ASP cohort only.
+
+per_visit: true
 
 packed:
   anthepas_anthepaa_anthepag_antheparem: {fields: [digestive_code, digestive_text, digestive_age, digestive_over], text: digestive_text}

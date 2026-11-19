@@ -2,7 +2,7 @@ instrument: cardiovascular_history_v0
 title: "Medical history: cardiovascular diseases (inclusion visit)"
 tab: ANTECEDENTS
 section: Pathologies cardio-vasculaires
-status: draft
+status: reviewed
 notes: >
   Hypertension, coronary disease, myocardial infarction, heart rhythm
   disorder and "another cardiovascular disease", which is then named in a
@@ -11,9 +11,11 @@ notes: >
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The same
   questions are asked at the inclusion visit and at the yearly visits, never
-  at the six-monthly ones. At inclusion they are about the whole life. At the
+  at the six-monthly ones: the 3,352 six-monthly visits of the follow-up
+  version (11,686 visits, of which 8,334 are yearly) and the screening visits
+  never hold a cell of this section. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
-  62 of the 198 "yes" of this section that are answered again (19 of 105 for hypertension, 20 of 43 for a rhythm disorder). The
+  71 of the 200 "yes" of this section that are answered again (23 of 107 for hypertension, 22 of 43 for a rhythm disorder). The
   yearly form is the inclusion form again: the same questions, with no period
   in their wording, after one more question, "is there a change since the
   last visit?", which the extraction does not hold (read in the application
@@ -21,10 +23,13 @@ notes: >
   update given at that visit: neither a history of the whole life nor
   strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
-  says which form a visit used and is read from the visit label.
+  says which form a visit used and is read from the visit label. The
+  question "is there a change since the last visit?" is shown at the yearly
+  visit only and is not exported (rad_pas_dechangement, DM-10): an empty
+  yearly section may mean "no change".
 
   From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
-  it is answered at 87% of the inclusion visits, from 2022 at 21%, and the
+  it is answered at 88% of the inclusion visits, from 2022 at 21%, and the
   answered visits hold more "yes": 0.60 per visit against 0.15. The form has a
   shortcut at the top of the section, "Non pour tous" (no for all) or "Ne
   sais pas pour tous". In eBipolar it leaves each disease unanswered; the
@@ -38,9 +43,22 @@ notes: >
   visits until 2021 and at 5% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
-  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
-  in a date that was not typed, and from 2025 in every date of the form:
-  date_placeholder. Hard limits of the dates: 1900 to 2026.
+  asked only after a "yes" and are missing otherwise, except 5 detail cells
+  typed after a "no" (kept as recorded). 1000-01-01 is written in a date that
+  was not typed, and in every empty date of a form saved from 2025 (in the
+  nine sections together, 64% of the inclusion visits and 34% of the yearly
+  visits dated 2025 or later hold one; at inclusion 0% to 3% of the visits up
+  to 2024Q4, 28% in 2025Q1, 70% in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+  Dates and the visit. Of the 840 delivered dates of the section (both forms),
+  11 are after the visit (3 in the month of the visit, 8 later, by up to 11
+  months), 22 are on the day of the visit and 1 is before the year of birth.
+  They stay as recorded: no before_visit (decision D145 in PROGRESS.md).
+
+  Years and centres. The report panels show a centre shift of 1 for arrhythmia_treated_v0: 163
+  answers, 53% yes, and the three centres with 20 answers or more are at 35% to 50% (the other
+  centres have fewer than 20 answers each). The median of a yes/no item is 0 or 1 and flips on the
+  other side of one half: no step by year or by centre, no mixture of units.
 
 version:
   name: visit_form

@@ -21,6 +21,10 @@ these questions were written, was compared with the schemas and applied to them
 questions about the scores (DEV) stand: the thesaurus names the scores and gives no rule
 to compute them. One wrong score was found through it (DEV-5b).
 
+**Update of 2026-11-19.** The review of the history tab answered DM-3 (the boxes written
+on every row: the application saves 0 for a box that is not ticked) and added DEV-10 to
+DEV-12 and DM-8 to DM-14 (PROGRESS.md D31 to D47).
+
 ## To send at once
 
 These three answers change how every table is read. The work has started without them,
@@ -149,6 +153,28 @@ twenty exported items: are the items exported in the order of the form? (O12)
 that exist; the dose of a treatment has no unit; the amounts of the medico-economic
 form have none. 29 vitamin D results cannot be read. (D6, O10, O14, O15)
 
+**DEV-10. The lung history and the allergy.** The list of lung diseases of the history
+form offers asthma, COPD, tuberculosis and other; a fifth code, "Allergie", is commented
+out in the form and no code 5 is in the data. To 2020, 138 inclusion visits have a lung
+yes and no lung list, 110 of them with the allergy question yes; the allergy question
+itself holds only a yes or nothing until 2019. Was "Allergie" a lung code before the
+allergy question existed, and are these lung yes allergies?
+*Today:* delivered as recorded, the notes of the history say it. (D35, O18; A56 and M54 of EXPORT_REQUESTS.md)
+
+**DEV-11. Hospitalisations at the follow-up visits.** The follow-up form writes the dates
+of the start and of the end of a stay (DDEBHOSP, DFINHSOP); the export reads the year and
+the length of the inclusion form (ANDEBHOSP, DURHOSP), so the year and the length are
+blank on 8 of the 9 follow-up records. Can the export read the dates too?
+*Today:* the reason alone is delivered at follow-up. (D36, O14; R109 of EXPORT_REQUESTS.md)
+
+**DEV-12. The seizure questions and the shortcut of the history forms.** The forms of the
+history (193 at inclusion, 347 at follow-up) write the seizure questions (CRISCONV, CRISAGE,
+CRISACT, CRISFREQ) and the shortcut "no for all" (ATCDLTN) in the table `aut_atcdlt`, and the
+export reads them in `aut_c1antmed`. The seizure question is answered on 75% to 86% of the
+inclusion visits of each year 2012 to 2019, 45% in 2020, 4% in 2021 and on none from 2022.
+Can the export read the right table, and the shortcut too?
+*Today:* delivered as recorded; empty from 2021, the note says so. (D43, O21; R108 of EXPORT_REQUESTS.md)
+
 ## 2. For the data managers
 
 ### Priority A
@@ -173,6 +199,9 @@ the age at the visit, under 18 or not. Is that how the form is chosen? (D5, D8, 
 **DM-3. Boxes written on every row.** The trimester boxes, the drug classes of the
 pregnancy, the gynaecology boxes and most boxes of the medico-economic form hold a 0
 on every visit that has the form: is a 0 "no" or "not answered"? (O14, O15)
+*Answered on 2026-11-19 by the code of the application (D33).* A box that is not ticked
+is saved 0 on every save (`class.update.php`): the 0 is "not ticked", never an explicit no.
+The boxes are delivered as recorded and flagged where the question above them is empty (gynaecology D33, pregnancy D39).
 
 **DM-4. The treatments.** Is the list the treatment on the day of the visit? 259
 inclusion visits declare a current treatment and hold no list. 203 names are not in
@@ -191,6 +220,47 @@ instruments does each centre give? (D8)
 **DM-7. Values out of range**, listed with their counts in the progress file: a few
 birth weights, fifteen head circumferences at birth, 28 EQ-5D indices above 1, a few
 T-scores typed in place of raw scores of the BRIEF. (O12, O14)
+
+**DM-8. Empty rows in the lists of somatic diseases.** 19 rows of the eight lists have no
+code (in six lists), 14 of them with all four fields empty: a record opened and nothing
+typed, or a defect of the export? *Today:* delivered as rows with no value. (D35, O19; M59 of EXPORT_REQUESTS.md)
+
+**DM-9. Family history of neurodevelopmental disorders.** (a) Is a summary per patient
+wanted (a relative with an ASD, a first-degree relative with one of the nine disorders)?
+It cannot be built safely today: 191 of the 562 relatives have no relative code, and the
+question "is there a family history?" does not hide the table of the relatives (62 of the
+305 visits with a relative with a yes answer it yes, 233 leave it blank). (b) 171 of the
+387 relatives with a yes leave other answers blank (the form has radios, not boxes): is
+a blank a no or not answered? *Today:* no summary; the blanks stay missing. (D36, O20; A50 of EXPORT_REQUESTS.md)
+
+**DM-10. The ages of the milestones.** The four ages (sitting, walking, first words, first
+sentences) hang on no question of the form, and the form prints the normal age: are they meant
+to be typed for every child? 532 of the 1,588 inclusion visits with no psychomotor delay hold an
+age of sitting, and 709 of the 1,389 with no language delay an age of the first words.
+*Today:* delivered as typed. (D43, O22)
+
+**DM-11. An empty radio.** A radio left unticked is saved empty: 23 of the 98 inclusion visits
+with an infection of the pregnancy at yes and 27 of the 196 with a substance at yes have a yes
+next to an empty radio. Is an empty radio a no or not answered? (Same question as DM-9 (b).)
+*Today:* missing. (D40, O23)
+
+**DM-12. The follow-up form 244.** Its three "change since the last visit" boxes (pregnancy,
+first acquisitions, epilepsy) are filled on 147, 111 and 116 follow-up visits, from 2014 to 2020
+(2019 for the last two), and the form is out of the menu of the application. When was it
+retired? *Today:* delivered as recorded; they gate nothing. (D38, O24)
+
+**DM-13. The folic acid of the pregnancy.** Among the answers yes and no the share of yes is
+32% to 36% in 2013 and 2014, 13% to 20% from 2016 to 2020 and 42% to 44% in 2021 and 2022, and
+8% to 54% by centre; in one centre it goes from 48% to 3% and then 0%, in another from 33% to
+69%, among the children and among the adults. Was the question reworded, or did a centre change
+how the answer is entered? *Today:* delivered as recorded and stated in the note; `pregnancy` is
+`reviewed` all the same (a documented step with no known cause does not block). (D47, O25)
+
+**DM-14. The allergy question of the history.** Yes for 14% to 16% of the inclusion visits of
+2021 to 2023 and 28% to 34% from 2024, in each of the five centres with 20 answers in both
+periods, where the other questions change little. Was the allergy question or the way it is
+shown changed at the end of 2023? *Today:* delivered as recorded and stated in the note; `somatic_history_v0`
+is `reviewed` all the same (a documented step with no known cause does not block). (D47, O26)
 
 ## 3. For the principal investigator
 

@@ -2,28 +2,51 @@ instrument: other_history_v0
 title: "Other history, at inclusion"
 tab: ANTECEDENTS
 section: Autres pathologies
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  inclusion visit: 589 visits (88% to 96% of the inclusions in every period).
+  inclusion visit: gate answered on 570 of the 589 visits that hold the form
+  (87% to 92% of the inclusions in every period from 2013); 18 forms hold only
+  the cancer boxes below, set to 0 by the form.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no; 2 is "Ne sais pas" on the questions
+  that offer it: HIV, hepatitis, a serious operation, a genetic disease, an
+  eye disease and another somatic disease; at follow-up the same without HIV
+  and hepatitis, with open-angle glaucoma and cataract), where BP has words.
+  "Treated" and "controlled" are in columns named _tr_mhdecod and _eq_mhdecod.
+  Dates are whole dates.
 
-  Cancers are boxes that the form sets to 0 on every row (flagged
-  derived_doubt where the question "a cancer" is empty); two kinds are
-  added to those of BP, urological cancers and malignant blood diseases.
-  The virus of a chronic hepatitis follows the dictionary (1 B, 2 C, 3 D).
-  A serious operation has a third answer, 2, "not known". Two columns on
-  the treatment of a glaucoma are empty (ignored.yaml).
+  Cancers are boxes that the form sets to 0 on every saved form (flagged
+  derived_doubt where the question "a cancer" is empty); two kinds are added
+  to those of BP, urological cancers and malignant blood diseases. The virus
+  of a chronic hepatitis follows the form (1 B, 2 C, 3 D). Two columns on the
+  treatment of a glaucoma are empty (ignored.yaml). A click on the cancer
+  question hides the kinds but not the text under "other cancers", and the
+  glaucoma chain has three levels: one-level cascade (decision D36). Of the 25
+  follow-up visits of patients with a serious operation at inclusion, 20
+  answer no.
+
+  Year and centre (report). The share of eye disease is 0% to 42% by centre
+  (14 centres, chi-square p < 0.0001; six centres have 5% or less) and 7% to
+  26% by year with no trend: a difference of centres (rater habit or case
+  mix, the data cannot tell), not a step in time. No other yes/no question of
+  the form with a yes share above 3% differs between centres or years
+  beyond chance.
 
 version:
   name: visit_form

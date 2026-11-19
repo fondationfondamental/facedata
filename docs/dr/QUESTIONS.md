@@ -110,9 +110,12 @@ differ are flagged.
 MINI (the boxes "current, past, recurrent" of the depressive episode, the
 conclusion on the mood disorders, the 39 substances), in the traumatic
 events (the impact of each event), in the medical history (causes of a drug
-eruption, cancers, allergic diseases) and in the family form (substances and
-cardiovascular risk factors of each relative), a column holds 0 on every row
-where the form exists, also where the question was not asked. For the MINI
+eruption, causes of a urinary retention, cancers, allergic diseases) and in
+the family form (substances and cardiovascular risk factors of the parents and
+the grandparents: six rows per patient, on all 577 forms), a column holds 0 on
+every row where the form exists, also where the question was not asked. The
+children and the siblings of the family form do not have it: their unticked
+boxes are empty. For the MINI
 this hides the answer: 158 visits meet the criteria of a current depressive
 episode with the box "current" at 0.
 *Question:* can the export leave these cells empty where the question has
@@ -154,9 +157,21 @@ columns) is empty on every row, while 284 of 634 patients never came back.
 One depressive episode per visit is exported, although the form numbers the
 episodes. The dates of birth of the relatives are empty. Four columns
 (`etat_epi_maj`, `fetat_epi_edm`, `etat_epi_depress`, `etat_sui_nb`) are
-copies of other columns at follow-up.
+copies of other columns at follow-up. The follow-up form of the medical
+history (191) has a date for another cardiovascular disease that the inclusion
+form lacks, and the extraction has no column for it (about 4 cells; R111).
+The text of another autoimmune disease is empty on all 7 yes at inclusion (the
+form declares its box digits-only, like a count: is it typed there? A49,
+M57). The tables of the children and of the siblings of the family form reach
+the extraction as one record per patient and visit (`select distinct on` with
+no order, so one affected child and one affected sibling, chosen by chance):
+13 patients counted 2 or more affected children and 54 siblings, and 6 and 25
+counted a relative and have no row (R110).
 *Question:* are these fields filled in the EMR, and can they be exported?
-(O2, O26, O29)
+Can the export give every record of the children and of the siblings, as BP
+gives five sisters, five brothers, five daughters and five sons?
+*Today:* one arbitrary row per group; the per-patient columns of the family
+are 1 or missing when a patient counted 2 or more. (O2, O26, O29)
 
 **DEV-10. Date of birth.** The real day is exported for 88 patients of two
 centres; for the others the day is the 15th, as in BP and SZ.
@@ -171,9 +186,13 @@ neuropsychology form; the two forms of the verbal fluency; the method,
 drug, consequences and trigger of the most violent and the most serious
 suicide attempt; the closest person; the place of a hospitalisation or
 consultation; the settings of ECT and TMS, the expertise of the therapist
-and the result of a psychotherapy; the kind of mood disorder and the suicide
-of a relative; several lists of the medical history. Wordings that are
-missing: the 53 Amiel-Lebigre events and the four codes of their second
+and the result of a psychotherapy. The lists of the medical history and the
+two lists of the family (the kind of mood disorder and the suicide of a
+relative) are not in the dictionary either, but the forms give them (D34,
+D37): please add them. The dictionary names the field of the type of diabetes
+of the siblings `ATCDFAMCV_FRATRIE_TYPDIAB` and the application
+`ATCDFAMCV_ENFANT_TYPDIAB` (form 165 line 133): the export maps it correctly.
+Wordings that are missing: the 53 Amiel-Lebigre events and the four codes of their second
 column, the 64 Paykel events (the dictionary announces 61), the 17
 traumatic events, the items of the SHAPS, the SPIN and the MDQ, the two
 columns called bupropion and the two called antipsychotics in the ATHF.
@@ -226,6 +245,14 @@ a blood count was not measured (91 cells, one centre); sick leave above 53
 weeks in a year on 32 answers; time spent sitting above 24 hours a day on
 103 answers (the week?). (O11, O26, O21)
 
+**DM-6. Forms saved blank.** At inclusion 17 to 19 forms of the medical
+history hold only the boxes at 0 (the gate of the section and every question
+empty), and 19 forms of the family hold nothing but the boxes of the
+relatives at 0. Were these forms opened and saved without being filled?
+*Today:* delivered as recorded; the boxes are flagged `derived_doubt`, and a
+family form that holds only boxes at 0 counts as no answer in the per-patient
+columns. (O29)
+
 ## 3. For the principal investigator
 
 ### Priority A
@@ -235,11 +262,18 @@ SHAPS used in published work on FACE DR?** They are wrong in the extraction
 (DEV-2, DEV-4): the CTQ neglect scores and total, every BIS-10 score, the
 MARS total (which counts poor adherence) and the SHAPS score. (O17, O18)
 
-**PI-2. Questions asked again at follow-up.** The five ISF questions and the
-nine medical histories are asked again at 2 and 4 years in the same columns.
-About the whole life, as at inclusion, or since the last visit? The answers
-show both: 26 of 44 follow-up visits of patients with a suicide attempt at
-inclusion answer "no", and 29 of 91 "yes" are dated "more than a year ago".
+**PI-2. Questions asked again at follow-up.** The five ISF questions are asked
+again at 2 and 4 years in the same columns. About the whole life, as at
+inclusion, or since the last visit? The answers show both: 26 of 44 follow-up
+visits of patients with a suicide attempt at inclusion answer "no", and 29 of
+91 "yes" are dated "more than a year ago".
+*Answered by the forms (2026-11-19, D36):* the nine medical histories use the
+inclusion form again (form 191), with no period in the questions and no
+"change since the last visit" question: a yearly update, as in BP (D84). The
+answers still differ from the inclusion ones (migraine 16 of 25 follow-up
+visits answer "no" after a "yes" at inclusion, hypertension 4 of 20, counted
+by visit). The family form has no follow-up twin: it is on the inclusion visit
+only (577 patients, one also at screening, none at 2 or 4 years).
 *Today:* the follow-up answers are delivered in columns of their own. (O25,
 O29)
 

@@ -2,23 +2,56 @@ instrument: gynaecological_history_v0
 title: "Gynaecological history, at inclusion"
 tab: ANTECEDENTS
 section: Antécédents gynécologiques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  inclusion visit: 331 visits (45% to 59% of the inclusions in every period).
+  inclusion visit: 331 of the 370 women (89%; 87% to 91% in every period from
+  2013).
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  Asked of women: about half of the inclusions. The numbers of pregnancies, births, miscarriages and terminations are numbers, as in BP.
+  The section is hidden on the screen for men only; its fields are posted
+  blank, so no man holds a value (0 of 264 men at inclusion, 0 of 366 follow-
+  up rows): a filter on sex is enough, and the audit's "empty under a yes"
+  figure for men is a denominator artefact. The numbers of pregnancies,
+  births, miscarriages and terminations are numbers, as in BP; raters typed 0
+  for the children on 58 to 60 of the 64 forms with no pregnancy and left 4
+  empty, which asked_if on the number of pregnancies reads as 0 (16 cells).
+  Two forms with no pregnancy hold a positive miscarriage or termination
+  count: kept as recorded.
+
+  Hormonal treatment is asked of every woman, whether or not she is in
+  menopause (the form does not tie the two): there is no asked_if on it, and
+  14 of the 30 yes at inclusion are women who answered no to the menopause.
+  Its start date is filled on 26 of the 30. The form is answered only at
+  yearly visits: 87 of the 141 women's visits at 2 and 4 years.
+
+  Year and centre (report). The share of menopause falls from 73% of the
+  women in 2013 to 18% to 35% in 2024 to 2026: it follows the age of the
+  women who are included (mean age 57 in 2013, 43 to 47 in 2023 to 2026;
+  no menopause below 40 years, 9% at 41 to 50, 77% at 51 to 60, 97% above),
+  not a change of the form or of the export. The medians of the number of
+  live births are 1 or 2 in groups of 20 to 42 women, with no trend. By
+  centre the share of menopause is 36% to 67% in the eight centres with 20
+  answers or more, which chance explains (chi-square p = 0.16).
 
 version:
   name: visit_form
@@ -43,9 +76,9 @@ variables:
   n_miscarriages_v0: {column: spabortn_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_v0, label: "Number of miscarriages, at inclusion"}
   n_abortions_v0: {column: nb_ivg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_v0, label: "Number of voluntary terminations of pregnancy, at inclusion"}
   n_medical_terminations_v0: {column: nb_itg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_v0, label: "Number of terminations of pregnancy for a medical reason, at inclusion"}
-  menopause_v0: {column: menostat_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Menopause, at inclusion"}
+  menopause_v0: {column: menostat_rporres, type: item, range: [0, 1], label: "Menopause, at inclusion"}
   menopause_date_v0: {column: menostat_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: date, at inclusion"}
-  menopause_hormone_therapy_v0: {column: hormonal_rporres, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: menopause_v0, label: "Menopause: hormone therapy, at inclusion"}
+  menopause_hormone_therapy_v0: {column: hormonal_rporres, type: item, range: [0, 1], label: "Hormonal treatment (asked whether or not in menopause), at inclusion"}
   menopause_hormone_therapy_start_v0: {column: hormonal_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: start of the hormone therapy, at inclusion"}
-  gynaecological_disease_v0: {column: gyneco_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gynaecological disease other than a cancer, at inclusion"}
+  gynaecological_disease_v0: {column: gyneco_rporres, type: item, range: [0, 1], label: "Gynaecological disease other than a cancer, at inclusion"}
   gynaecological_disease_text_v0: {column: gynecosp_rporres, type: text, label: "Gynaecological disease: which one, as written, at inclusion"}

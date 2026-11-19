@@ -2,7 +2,7 @@ instrument: endocrine_history_fu
 title: "Medical history: endocrine and metabolic diseases (yearly follow-up visits)"
 tab: ANTECEDENTS
 section: Pathologies endocriniennes et métaboliques
-status: draft
+status: reviewed
 notes: >
   Diabetes and its type, thyroid disorder, dyslipidaemia and its type, and
   "another endocrine disease", which is then named in a free text delivered
@@ -13,13 +13,20 @@ notes: >
   Thyroid disorder. The answer is in a column named dysthyro_mhoccur_tt.
   Then: hypothyroidism or hyperthyroidism, a date of onset for each, treated,
   controlled, and whether the disorder was induced by lithium or by another
-  treatment (answered for a third of the patients who have one).
+  treatment. The date of onset of each kind is shown under its type: 11
+  dates are typed under an empty type (7 under a "no" to the disorder, 2
+  under a "yes", 2 with the disorder not answered); they stay as recorded, no
+  shown_if (decision D145 in PROGRESS.md). "Induced by" is empty under a "yes"
+  for 70% of the inclusion visits and 64% of the yearly ones: an empty cell
+  cannot be told from "not asked" and must not be read as "not induced".
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The same
   questions are asked at the inclusion visit and at the yearly visits, never
-  at the six-monthly ones. At inclusion they are about the whole life. At the
+  at the six-monthly ones: the 3,352 six-monthly visits of the follow-up
+  version (11,686 visits, of which 8,334 are yearly) and the screening visits
+  never hold a cell of this section. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
-  96 of the 399 "yes" of this section that are answered again (1 of 30 for diabetes, 24 of 153 for a thyroid disorder, 57 of 193 for a dyslipidaemia). The
+  115 of the 403 "yes" of this section that are answered again (1 of 31 for diabetes, 30 of 154 for a thyroid disorder, 67 of 195 for a dyslipidaemia). The
   yearly form is the inclusion form again: the same questions, with no period
   in their wording, after one more question, "is there a change since the
   last visit?", which the extraction does not hold (read in the application
@@ -27,7 +34,10 @@ notes: >
   update given at that visit: neither a history of the whole life nor
   strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
-  says which form a visit used and is read from the visit label.
+  says which form a visit used and is read from the visit label. The
+  question "is there a change since the last visit?" is shown at the yearly
+  visit only and is not exported (rad_pas_dechangement, DM-10): an empty
+  yearly section may mean "no change".
 
   From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
   it is answered at 88% of the inclusion visits, from 2022 at 30%, and the
@@ -37,16 +47,33 @@ notes: >
   application saves it and the extraction does not hold it (read in the
   application in November 2026). An empty section is therefore most often a
   "no for all". From 2022 the
-  share of "yes" among the answers (23.4% against 8.1%) is therefore not a
+  share of "yes" among the answers (23.5% against 8.1%) is therefore not a
   prevalence. The values are delivered as recorded: an empty section is
   missing, not "no". Once the shortcut is exported, a "no for all" will
   give 0 to each disease of the section. The yearly visits answer the section at 32% of the
   visits until 2021 and at 8% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
-  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
-  in a date that was not typed, and from 2025 in every date of the form:
-  date_placeholder. Hard limits of the dates: 1900 to 2026.
+  asked only after a "yes" and are missing otherwise, except 6 detail cells
+  typed after a "no" (kept as recorded). 1000-01-01 is written in a date that
+  was not typed, and in every empty date of a form saved from 2025 (in the
+  nine sections together, 64% of the inclusion visits and 34% of the yearly
+  visits dated 2025 or later hold one; at inclusion 0% to 3% of the visits up
+  to 2024Q4, 28% in 2025Q1, 70% in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+  Dates and the visit. Of the 1,598 delivered dates of the section (both
+  forms), 19 are after the visit (10 in the month of the visit, 9 later, by up
+  to 8 months) and 58 are on the day of the visit. They stay as recorded: no
+  before_visit (decision D145 in PROGRESS.md).
+
+  Years and centres. Three items show a shift. dyslipidaemia_controlled_v0 (0.5 by year): 36% yes,
+  21% to 50% by year (16 years) and 18% to 48% by centre (10 centres), no step. At the yearly visits
+  dyslipidaemia_treated_fu (363 answers, 36% yes) and dyslipidaemia_controlled_fu (335, 34%) show a
+  shift of 1 by year and by centre: the share of yes falls from 51% and 46% in 2015-2016 to 31% and
+  34% in 2017-2018 and 25% and 22% in 2019-2021, and the centres range from 14% to 57% and from 18%
+  to 55%. It follows which centres answer: two centres at 18% and 8% yes (treated; 13% and 16% for
+  controlled) hold 75 of the 137 answers of 2019-2021 (71 of 125 for controlled) and 3 of the 102 of
+  2015-2016. It is a spread between centres, not a change of the form.
 
 version:
   name: visit_form

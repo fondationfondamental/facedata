@@ -2,7 +2,7 @@ instrument: gynaecological_history_fu
 title: "Medical history: pregnancies, menopause and gynaecological diseases (yearly follow-up visits)"
 tab: ANTECEDENTS
 section: Antécédents gynécologiques
-status: draft
+status: reviewed
 notes: >
   Numbers of pregnancies, children born alive, miscarriages, voluntary
   terminations and terminations for a medical reason; menopause, its date
@@ -10,36 +10,62 @@ notes: >
   named in a free text delivered as written. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
   missing code.
 
-  Numbers. "Aucune" is 0. The four other numbers are 0 without being asked
-  when the number of pregnancies is 0 (asked_if). One answer is ">15", which
-  is not a number: unparsed. Of the women who answer, 1,345 of 3,439 have had
-  no pregnancy at inclusion.
+  Numbers. "Aucune" and "Aucun(e)" are an answer: 0. The four other numbers
+  are 0 when the number of pregnancies is 0 (asked_if): the form has no gate
+  on them, so this zero is by logic and a typed number stays (decision D122
+  in PROGRESS.md). One answer is ">15", which is not a number: unparsed. Of
+  the women who answer, 1,349 of 3,450 have had no pregnancy at inclusion.
+  The births, miscarriages and terminations add up to more than the
+  pregnancies on 154 inclusion rows and 55 yearly rows where the five numbers
+  are typed: they stay as recorded.
 
-  Menopause. The hormone therapy is asked only after a "yes": it is 0 after
-  a "no" (asked_if).
+  Menopause. The hormone therapy and its start date hang on the menopause:
+  they are typed after a "yes" only (never after a "no": 0 of 2,766 inclusion
+  rows and 0 of 888 yearly rows), and the therapy is missing otherwise, not 0
+  (no asked_if: it is a detail of the menopause, not a count or a box). The
+  therapy is answered for 570 of the 670 menopause "yes" at inclusion and 190
+  of 253 at the yearly visits. The start date hangs on the menopause, not on
+  the hormone answer: it is empty under a menopause "yes" for 84% of the
+  inclusion rows and 90% of the yearly rows, hormone therapy or not.
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The section
   is filled at the inclusion visit and at the yearly visits, and delivered as
   separate columns ending in _v0 and _fu, like the other sections of the
   medical history; visit_form says which form a visit used. Here the two
   mostly agree: the number of pregnancies given at a yearly visit is the one
-  of the inclusion visit for 582 of 712 women, higher for 89 and lower for
-  41, and a menopause is almost never taken back (5 of 133). Only the
-  gynaecological disease behaves like the diseases of the other sections: 50
-  of the 104 "yes" answered again are then "no" (the yearly form is the inclusion form again, decision D84).
+  of the inclusion visit for 582 of 708 women, higher for 70 and lower for
+  56, and a menopause is almost never taken back (6 of 134). Only the
+  gynaecological disease behaves like the diseases of the other sections: 62
+  of the 105 "yes" answered again are then "no" (the yearly form is the inclusion form again, decision D84).
+  The six-monthly visits (3,352 visits of the follow-up version, 8,334 of
+  its 11,686 being yearly) and the screening visits never hold a cell of this
+  section. The question "is there a change since the last visit?" is shown at
+  the yearly visit only and is not exported (rad_pas_dechangement, DM-10): an
+  empty yearly section may mean "no change".
 
   This section is not emptied in 2022 like the others, because it has no
   "no for all" shortcut (decision D83 in PROGRESS.md):
-  it is answered at 84% of the inclusion visits of women until 2021 and at 78% from
+  it is answered at 87% of the inclusion visits of women until 2021 and at 80% from
   2022, with the same share of "yes" among the answers (12.4% and 12.5%). The
-  yearly visits answer it at 27% of the visits until 2021 and at 13% from 2022.
+  yearly visits answer it at 28% of the visits of women until 2021 and at 15% from 2022.
 
-  Men. The section is also filled for 200 men, almost always with "none" and
-  "no"; 3 have a pregnancy and 5 a menopause. These answers are kept as
-  recorded: filter on the sex of the patient.
+  Men. The form shows the section to everyone: 203 of the 2,389 inclusion
+  rows of men and 60 of their 3,095 yearly rows hold a cell of it, almost
+  always with "none" and "no"; 3 have a pregnancy and 5 a menopause at
+  inclusion. These answers are kept as recorded: filter on the sex of the
+  patient.
 
-  Dates. 1000-01-01 is written in a date that was not typed, and from 2025
-  in every date of the form: date_placeholder. Hard limits: 1900 to 2026.
+  Dates. 1000-01-01 is written in a date that was not typed, and in every
+  empty date of a form saved from 2025 (in the nine sections together, 64% of
+  the inclusion visits and 34% of the yearly visits dated 2025 or later hold
+  one; at inclusion 0% to 3% of the visits up to 2024Q4, 28% in 2025Q1, 70%
+  in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits: 1900 to 2026.
+  Four dates are on the day of the visit and none is after it.
+
+  Years and centres. The report panels show a shift of 0.5 for the numbers of pregnancies and of
+  live births. The interquartile range is 2 and the median is 1 pregnancy and 0 live births at
+  inclusion (1 and 1 at the yearly visits); the median of a year or of a centre is one more or one
+  less: a difference of parity between the populations, no step.
 
 version:
   name: visit_form
@@ -78,7 +104,7 @@ variables:
   n_medical_terminations_fu: {column: nb_itg_rporres, type: item, range: [0, 30], codes: {Aucune: 0, Aucun: 0}, asked_if: n_pregnancies_fu, label: "Number of terminations of pregnancy for a medical reason, at follow-up"}
   menopause_fu: {column: menostat_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Menopause, at follow-up"}
   menopause_date_fu: {column: menostat_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: date, at follow-up"}
-  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: menopause_fu, label: "Menopause: hormone therapy, at follow-up"}
+  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Menopause: hormone therapy, at follow-up"}
   menopause_hormone_therapy_start_fu: {column: hormonal_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: start of the hormone therapy, at follow-up"}
   gynaecological_disease_fu: {column: gyneco_rporres, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gynaecological disease other than a cancer, at follow-up"}
   gynaecological_disease_text_fu: {column: gynecosp_rporres, type: text, label: "Gynaecological disease: which one, as written, at follow-up"}

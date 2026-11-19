@@ -71,22 +71,22 @@ non_drug_fu: the columns and the questions of this cohort (ECT and TMS with thei
 neurological_history_v0: the answers are numbers; 'treated' and 'controlled' are in columns named _tr_mhdecod and _eq_mhdecod
 neurological_history_fu: the answers are numbers; 'treated' and 'controlled' are in columns named _tr_mhdecod and _eq_mhdecod
 cardiovascular_history_v0: the answers are numbers; no date for another cardiovascular disease
-cardiovascular_history_fu: the answers are numbers; no date for another cardiovascular disease
-endocrine_history_v0: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions; codes for the types
-endocrine_history_fu: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions; codes for the types
-skin_history_v0: the answers are numbers; the causes of a drug eruption are four boxes; codes for the type of eruption
-skin_history_fu: the answers are numbers; the causes of a drug eruption are four boxes; codes for the type of eruption
+cardiovascular_history_fu: the answers are numbers; no date for another cardiovascular disease (form 191 has one that the extraction does not hold)
+endocrine_history_v0: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions (after a no they are 0 here, missing in BP); no text for another endocrine disease; the types are stored as numbers and read on the BP labels, with 0 for "not known"
+endocrine_history_fu: the answers are numbers; one date for the thyroid disorder; the kind of dyslipidaemia is two yes/no questions (after a no they are 0 here, missing in BP); no text for another endocrine disease; the types are stored as numbers and read on the BP labels, with 0 for "not known"
+skin_history_v0: the answers are numbers; the causes of a drug eruption are four boxes; the type of eruption is stored as a number and read on the BP labels
+skin_history_fu: the answers are numbers; the causes of a drug eruption are four boxes; the type of eruption is stored as a number and read on the BP labels
 urinary_history_v0: the answers are numbers; the causes of a urinary retention are three boxes
 urinary_history_fu: the answers are numbers; the causes of a urinary retention are three boxes
-gynaecological_history_v0: the answers are numbers
-gynaecological_history_fu: the answers are numbers
-digestive_history_v0: the answers are numbers; codes for the kind of bowel disease and of treatment
-digestive_history_fu: the answers are numbers; codes for the kind of bowel disease and of treatment
+gynaecological_history_v0: the answers are numbers; the section is hidden for men and holds no answer for them (BP holds a cell for 203 of its 2,389 men's inclusion rows); the counts are typed numbers; the hormonal treatment is asked whether or not in menopause (as in BP, no gate on the menopause)
+gynaecological_history_fu: the answers are numbers; the section is hidden for men and holds no answer for them (BP holds a cell for 203 of its 2,389 men's inclusion rows); the counts are typed numbers; the hormonal treatment is asked whether or not in menopause (as in BP, no gate on the menopause)
+digestive_history_v0: the answers are numbers; the kind of bowel disease and the treatment behind a drug hepatitis are stored as numbers and read on the BP labels
+digestive_history_fu: the answers are numbers; the kind of bowel disease and the treatment behind a drug hepatitis are stored as numbers and read on the BP labels
 allergic_history_v0: the answers are numbers; the five diseases are boxes in columns of their own
 allergic_history_fu: the answers are numbers; the five diseases are boxes in columns of their own
 other_history_v0: the answers are numbers; the cancers are boxes in columns of their own, with two more kinds; the virus is coded 1, 2, 3
 other_history_fu: the answers are numbers; the cancers are boxes in columns of their own, with two more kinds; the virus is coded 1, 2, 3
-family_structure: the psychiatric history and the cardiovascular risk factors are two questions; children and siblings are counted as groups
-family_history: the children and the siblings are each one row; the disorders are separate yes/no questions and coded lists; no per-patient summary
+family_structure: the psychiatric history and the cardiovascular risk factors are two questions (BP asks one question per relative); children and siblings are counted as groups, with the number affected by each of the two questions
+family_history: the children and the siblings are each one arbitrary affected relative of the group (BP has a row per sister, brother, daughter and son); the disorders are separate yes/no questions, the kind of mood disorder and the suicide are read from the form with the labels of BP; the boxes of the parents and grandparents are 0 on every saved form; the per-patient columns fdr_ and gp_ are computed from the counts of the psychiatric history
 cssrs_v0: the inclusion form of this cohort asks about the whole life (BP the past week), under other names; the behaviour section, the lethality ratings, the dates and the descriptions are added; the screening visit is an inclusion visit
 cssrs_fu: the behaviour section, the lethality ratings, the dates and the descriptions are added; the columns are named cssrs; the screening visit is an inclusion visit

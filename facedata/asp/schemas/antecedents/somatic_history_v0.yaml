@@ -1,0 +1,165 @@
+instrument: somatic_history_v0
+title: "Somatic history at inclusion: the questions"
+tab: antecedents
+section: history
+status: reviewed
+notes: >
+  One yes/no question per body system, then gynaecology, genetic diseases, other diseases and
+  allergy: 2,060 inclusion visits (815 of children), from 2009, and 72 yearly follow-up visits,
+  from 2014, hold an answer; the screening visits hold none. The inclusion form (form 193) and
+  the form of the yearly visits (form 347) use the same columns, so they are delivered as two
+  instruments, somatic_history_v0 (inclusion visit) and somatic_history_fu (yearly visits);
+  visit_form says which form a visit used and is read from the visit label, as in BP. A 9 is
+  "not known" and is delivered as missing with its reason.
+
+  Two forms in the same columns. The form 347 is the form 193 with one question added, "change
+  since the last visit for the whole medical history" (atcdchang), and the shortcut "Non pour
+  tous les critères" (ATCDLTN, not in the extraction) left out. A yearly answer is an update
+  given at that visit (BP decision D84): neither a history of the whole life nor strictly an
+  answer about the time since the last visit. Of the 146 yearly answers to a question answered
+  yes at inclusion, 45 are no (31%; the first answer of each patient and question: 40 of 126).
+
+  The change question exists in the yearly form only: somatic_history_changed_fu holds 202 no
+  and 42 yes. After a yes all 42 visits hold at least one answered question; after a no 28 of
+  202 (14%) do, and one holds all twelve: a "no change" does not make the questions below it no,
+  and they are left as recorded. The 174 others leave the whole section empty, so an empty
+  yearly section may mean "no change": it stays missing. The question is required and gates
+  nothing. The inclusion visits hold 747 answers to it (723 dated 2014 to 2020) although the
+  form 193 has no such question (it is commented out there): they are read and not delivered
+  (somatic_history_changed_v0, keep: false). The change boxes of the other sections (groschang,
+  acqchang and esichang of the form 244, answered to 2019 (groschang to 2020) and retired from the
+  menu of the application (request A51); genchang of the form 247) gate nothing
+  either.
+
+  The twelve gates: the eight body systems that have a list, then allergy, gynaecology, genetic
+  diseases and other diseases. They are root questions of the form, with no question above them,
+  so no asked_if and no shown_if. 289 inclusion visits (12.5%) answer only 1 to 10 of the 11
+  gates other than allergy. A yes is given at inclusion for 1,040 visits (ear, nose, throat and
+  eyes), 584 (bones, joints and skin), 505 (digestive), 460 (lungs), 286 (nervous system), 169
+  (heart), 154 (endocrine) and 24 (cancer), and at the yearly visits for 33, 25, 20, 19, 15, 3,
+  6 and 0.
+
+  The lists. After a yes the diseases of each of these eight systems are typed in a list: the
+  instruments somatic_ent, somatic_cardiac, somatic_pulmonary, somatic_rheumatology,
+  somatic_digestive, somatic_endocrine, somatic_neurological and somatic_cancer, one row per
+  visit and disease in the table treatments. Read a list with the gate of the same visit: 0
+  means none, an empty gate or a 9 means not known. 17 inclusion lists sit under a gate 0 or 9
+  (out of 12,678 such gates; 0 of 288 at the yearly visits) and 7 under an empty gate (6 at
+  inclusion, 1 at a yearly visit). 350 of the 3,222 yes at inclusion have no list (10.9%: lungs
+  153 of 460, of which 138 of 289 to 2020 and 15 of 171 from 2021; the other systems 5.9% to
+  9.5%), and 69 of the 121 yes at the yearly visits.
+
+  The details. The free text, the age of onset and "over" of the genetic diseases and of the
+  other diseases, and the free text and the age of onset of the allergy, are asked after a yes:
+  none is filled under a no, a 9 or an empty gate, so they stay missing there and are never 0.
+
+  Gynaecology. The gate is answered for men too (1,055 no and 10 yes at inclusion; 493 no and
+  231 yes for women): filter on the sex of the patient. The five boxes (gynaecology_has_periods,
+  _menopause, _pregnancies, _miscarriage and _stillbirth) are boxes of the form: a box that is
+  not ticked is saved 0 on every save (class.update.php), so they hold a 0 or a 1 on every visit
+  that has the form (2,070 inclusion visits and 246 yearly visits). A 0 means "not ticked",
+  never an explicit no (decision D33; the question DM-3 is closed). They are delivered as
+  recorded and get derived_doubt (derived_from the gate) where the gate is empty: 2,430 flags on
+  486 visits (281 at inclusion, 205 at the yearly visits). A box is 1 under a gate that is not
+  yes on one box of one visit only. The counts and the ages (n_pregnancies, n_miscarriages,
+  n_stillbirths and the ages at the first periods, at the last periods, at the first pregnancy,
+  miscarriage and stillbirth) are blank when their box is not ticked: none of the 8 pairs of a
+  box and its count or age holds a value under an unticked box. They get no asked_if, because
+  the 0 of a box is not a no. The counts are limited to 0 to 30 as in BP and the ages to 0 to 99
+  (two characters in the form).
+
+  Allergy. The gate holds only 1 or nothing until 2019 (the first 0 is in 2017, 7 are in 2019
+  and 42 in 2020). Its free text is empty on 168 of the 173 yes to 2019 and filled on 230 of the
+  244 from 2021; its age of onset is filled on 88 of the 173 and on 100 of the 244. The probable
+  cause: the form 193 has the lung code 5 "Allergie" commented out, and no code 5 appears in the
+  data; to 2020, 138 inclusion visits have a lung yes and no lung list, 110 of them with the
+  allergy gate yes, so the lung history is probably contaminated by allergies (open question
+  O18; request A56, question M54 of EXPORT_REQUESTS.md).
+
+  The shortcut. "Non pour tous les critères" (or "Non connu pour tous") of the form 193 ticks no
+  (or not known) on the twelve gates and on the question on seizures (script of the form); the
+  extraction does not hold the shortcut itself (request R108). The twelve gates are all 0 on 305 inclusion
+  visits (0.4% of the answered visits to 2019, 10% in 2020, 28% to 31% in 2021 to 2023, 17% to
+  21% from 2024; four of the eight centres hold 92% of them) and all 9 on 30. The yes per
+  answered visit falls from about 3 (2011 to 2016) to 1.3 to 1.5 in 2021 to 2023 and is 1.8 to
+  2.2 from 2024: the share of yes of the years is not a prevalence and is not comparable across
+  years. The values are delivered as recorded; an all-0 section cannot be told from a real "no
+  for all".
+
+  Names. The variables are named from the dictionary label and from the names of BP (decision
+  D31), with the ending _v0 or _fu of the form as in BP; names only, the columns are those of
+  the extraction.
+
+  **Year and centre.** The share of yes of the gates changes with the year and the centre
+  (inclusion visits; years and centres with 20 answers or more): ear, nose, throat and eyes 36% to
+  78% by year and 24% to 87% by centre; digestive 14% to 58% and 16% to 57%; bones, joints and
+  skin 21% to 47% and 10% to 67%; allergy 14% to 100% and 12% to 67%. Three causes act together:
+  the shortcut, the age mix (children are 0% to 100% of the inclusion visits of a centre and 9% to
+  59% of a year, and have fewer yes) and the habit of the centre.
+
+  The fall of the yes is gradual from 2017, not only in 2021 to 2023. On the visits that answer at
+  least eight of the eleven gates other than allergy, every answer is 0 on 2% to 11% of the visits
+  of 2013 to 2016, 20% to 24% of 2017 to 2020, 34% to 37% of 2021 to 2023 and 23% to 31% from
+  2024, and the yes per visit is 2.5 to 3.2 in 2013 to 2016, 2.4 in 2017, 1.9 to 2.0 in 2018 to
+  2020, 1.2 to 1.5 in 2021 to 2023 and 1.5 to 2.0 from 2024. The count of the twelve gates above
+  shows the shortcut from 2020 only because the allergy gate holds no 0 before. The date of the
+  first use of the shortcut is not in the extraction (ATCDLTN is not exported: request R108). A
+  second step has no known cause: the allergy gate rises from 14% to 16% of the visits of 2021 to
+  2023 to 28% to 34% from 2024 (18% to 36% on the visits that are not all 0, and in each of the
+  five centres with 20 answers in both periods), where the other gates change by -0.04 to +0.10
+  (open question O26).
+
+  A section of the ASP cohort only.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  somatic_history_changed_v0: {column: atcdchang, type: item, range: [0, 1], keep: false, label: "Medical history: change since the last visit, as typed at inclusion and not delivered (0 no, 1 yes)"}
+  history_ent_v0: {column: antorl, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: ear, nose, throat and eyes, at inclusion (0 no, 1 yes)"}
+  history_cardiac_v0: {column: antcardi, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: heart and vessels, at inclusion (0 no, 1 yes)"}
+  history_pulmonary_v0: {column: antpulm, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: lungs, at inclusion (0 no, 1 yes)"}
+  history_allergy_v0: {column: antalrgi, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: allergy, at inclusion (0 no, 1 yes)"}
+  history_rheumatology_v0: {column: antrhum, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: bones, joints and skin, at inclusion (0 no, 1 yes)"}
+  history_digestive_v0: {column: anthepa, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: liver and digestive tract, at inclusion (0 no, 1 yes)"}
+  history_endocrine_v0: {column: antendo, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: endocrine glands, at inclusion (0 no, 1 yes)"}
+  history_neurological_v0: {column: antneuro, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: nervous system, at inclusion (0 no, 1 yes)"}
+  history_cancer_v0: {column: antcanc, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: cancer, at inclusion (0 no, 1 yes)"}
+  history_gynaecology_v0: {column: gynco, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: gynaecology, at inclusion (0 no, 1 yes)"}
+  gynaecology_has_periods_v0: {column: gynco_1, type: item, range: [0, 1], derived_from: history_gynaecology_v0, label: "Gynaecology and obstetrics: has periods (box), at inclusion (0 no, 1 yes)"}
+  gynaecology_menopause_v0: {column: gynco_2, type: item, range: [0, 1], derived_from: history_gynaecology_v0, label: "Gynaecology and obstetrics: menopause reached (box), at inclusion (0 no, 1 yes)"}
+  gynaecology_pregnancies_v0: {column: gynco_3, type: item, range: [0, 1], derived_from: history_gynaecology_v0, label: "Gynaecology and obstetrics: pregnancies (box), at inclusion (0 no, 1 yes)"}
+  gynaecology_miscarriage_v0: {column: gynco_4, type: item, range: [0, 1], derived_from: history_gynaecology_v0, label: "Gynaecology and obstetrics: spontaneous miscarriage (box), at inclusion (0 no, 1 yes)"}
+  gynaecology_stillbirth_v0: {column: gynco_5, type: item, range: [0, 1], derived_from: history_gynaecology_v0, label: "Gynaecology and obstetrics: death in utero (box), at inclusion (0 no, 1 yes)"}
+  age_menarche_v0: {column: gynrega, type: number, unit: years, range: [7, 20], winsor: false, label: "Age at the first periods, years, at inclusion"}
+  age_menopause_v0: {column: menopa, type: number, range: [0, 99], winsor: false, label: "Age at the last periods, years, at inclusion"}
+  n_pregnancies_v0: {column: gyngrost, type: number, range: [0, 30], winsor: false, label: "Pregnancies, number, at inclusion"}
+  age_first_pregnancy_v0: {column: gyngrosa, type: number, range: [0, 99], winsor: false, label: "Age at the first pregnancy, years, at inclusion"}
+  n_miscarriages_v0: {column: gynfc, type: number, range: [0, 30], winsor: false, label: "Miscarriages, number, at inclusion"}
+  age_first_miscarriage_v0: {column: gynfca, type: number, range: [0, 99], winsor: false, label: "Age at the first miscarriage, years, at inclusion"}
+  n_stillbirths_v0: {column: miut, type: number, range: [0, 30], winsor: false, label: "Deaths in utero, number, at inclusion"}
+  age_first_stillbirth_v0: {column: miua, type: number, range: [0, 99], winsor: false, label: "Age at the first death in utero, years, at inclusion"}
+  history_genetic_disease_v0: {column: malgen, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: genetic disease, at inclusion (0 no, 1 yes)"}
+  genetic_disease_text_v0: {column: malgenc, type: text, label: "Genetic disease, which, free text, at inclusion"}
+  genetic_disease_age_onset_v0: {column: malgena, type: number, range: [0, 99], winsor: false, label: "Genetic disease, age of onset, at inclusion"}
+  genetic_disease_over_v0: {column: malgerem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Genetic disease, over, at inclusion (0 no, 1 yes)"}
+  history_other_disease_v0: {column: autrmal, type: item, range: [0, 1], missing: {"9": unknown}, label: "History: other disease, at inclusion (0 no, 1 yes)"}
+  other_disease_text_v0: {column: autrmalc, type: text, label: "Other disease, which, free text, at inclusion"}
+  other_disease_age_onset_v0: {column: autmala, type: number, range: [0, 99], winsor: false, label: "Other disease, age of onset, at inclusion"}
+  other_disease_over_v0: {column: autrmrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Other disease, over, at inclusion (0 no, 1 yes)"}
+  allergy_text_v0: {column: antalrgi_p, type: text, label: "Allergy, which, free text, at inclusion"}
+  allergy_age_onset_v0: {column: antalrgi_agedebut, type: number, range: [0, 99], winsor: false, label: "Allergy, age of onset, at inclusion"}

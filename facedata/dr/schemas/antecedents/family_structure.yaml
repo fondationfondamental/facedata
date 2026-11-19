@@ -2,7 +2,7 @@ instrument: family_structure
 title: "Family: who has a psychiatric history, children and siblings"
 tab: ANTECEDENTS
 section: Mère
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient, in the table patients: for the mother, the father
@@ -10,7 +10,11 @@ notes: >
   illness (1 yes, 0 no, 2 "not known": 808 cells, missing_code); whether
   the patient has children and brothers or sisters, how many of them have
   such a history, and how many have cardiovascular risk factors. Asked
-  once, at the inclusion visit: 553 patients.
+  once, at the inclusion visit, with no follow-up twin: the family form was
+  saved for 577 patients (91% of 634; 88% to 96% per period of inclusion
+  from 2013, 6 of 6 before), 553 of whom answered the question on the mother
+  (532 yes or no, 21 not known), 558 at least one question of this schema.
+  19 forms hold only the boxes of family_history, set to 0.
 
   Not the BP question. BP asks one question per relative, "a psychiatric
   disorder, a substance, a suicide attempt or a cardiovascular risk
@@ -21,6 +25,32 @@ notes: >
   523. The numbers about the children and the siblings are 0 when the
   patient has none (asked_if). The four dates of birth of the form are
   empty in the extraction (ignored.yaml).
+
+  The counts. Of the 371 patients who have children, the number with a
+  psychiatric history is left empty for 26 (82 have at least one), the number
+  with cardiovascular risk factors for 36 (12 have at least one). Of the 480
+  who have brothers or sisters, the number of them is left empty for 57, the
+  number with a psychiatric history for 44 (181 have at least one) and the
+  number with cardiovascular risk factors for 64 (75 have at least one); 6 of
+  them answer "yes" and count 0 brothers and sisters. Where both are given, no
+  count of affected relatives is above the number of brothers and sisters. These counts are
+  the ones of the per-patient columns fdr_ and gp_ of family_history: an
+  empty count leaves them missing, and the row of the children or of the
+  siblings in family_history is one arbitrary affected relative of the group.
+
+  Year and centre (report). The psychiatric history of the mother and of the
+  father, and the counts of the siblings, have a shift in the report because
+  a yes/no item or a small count moves its median when the share of a group
+  of 20 to 60 patients crosses one half. By year the share of mothers with a
+  history is 25% to 62% with no trend (chi-square p = 0.03) and that of
+  fathers 18% to 43% (p = 0.21); the number of brothers and sisters has a
+  median of 1 to 2 and a mean of 1.5 to 3.1 by year, and the number with a
+  psychiatric history a mean of 0.4 to 0.7. By centre the share of mothers
+  is 23% to 61% (p = 0.19, chance); one centre, the largest, has a history
+  for 54% of the fathers in each of three periods (50%, 50%, 57%) against
+  17% to 33% in the 13 others (p = 0.02, 14 centres): a difference of
+  centres (rater habit or case mix, the data cannot tell), not a step in
+  time. Use the centre when comparing the share of 1.
 
 defaults: {type: item}
 

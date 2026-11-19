@@ -2,29 +2,46 @@ instrument: psychiatric_care
 title: "Family history and psychiatric care: the questions"
 tab: antecedent_famille_psy
 section: history
-status: draft
+status: reviewed
 notes: >
-  Whether a relative has a neurodevelopmental disorder, the first contact with
-  psychiatry and its age, hospitalisations and a current treatment:
-  1927 inclusion visits (689 of children) and 235 follow-up visits, from 2011 to 2026.
+  Whether a relative has a neurodevelopmental disorder, the first contact with psychiatry and
+  its age, hospitalisations and a current treatment: 1,927 inclusion visits (689 of children),
+  from 2009, and 235 follow-up visits, from 2014.
 
-  Named from the column names and checked against the thesaurus V2.13
-  (PROGRESS.md D14). The family question (atcdfam) is on 795 inclusion visits,
-  from 2019: yes for 110, not known (9) for 70. The relatives are described in
-  the instrument family_neurodevelopment, the hospitalisations in
-  hospitalisations and the treatments in medications, one row each in the table
-  treatments. A hospitalisation is reported on 422 visits and a current
-  treatment on 715 inclusion visits.
+  Named from the column names and checked against the thesaurus V2.13 (PROGRESS.md D14). A
+  hospitalisation is reported on 422 visits (413 at inclusion) and a current treatment on 715
+  inclusion visits. The hospitalisations are described in the instrument hospitalisations and
+  the treatments in medications, one row each in the table treatments.
 
-  genchang is a box of the follow-up form.
+  The family question. atcdfam (family_neurodevelopmental_history) is on 795 inclusion visits,
+  from 2017 (5 visits to 2018, 13 in 2019, 27 in 2020, 42% to 65% of the visits from 2021): yes
+  for 110, no for 615, not known (9) for 70. It is not a gate of the relatives (see
+  family_neurodevelopment, where it is compared with the table: 62 of the 305 visits with a
+  relative with a yes have it yes). family_history_changed (genchang, form 247) is a box of the
+  follow-up form: 161 no and 23 yes on 184 follow-up visits; the form holds nothing else to
+  enter after a yes, and the box gates nothing.
 
-  A section of the ASP cohort only.
+  The age at the first contact is typed as years (agecons) and months (ageconsm) in two boxes.
+  ageconsm is the months part of an age: it is filled on 225 cells, 222 of them on the 1,224
+  visits that give the years (92 zeros, 127 values 1 to 11 and 6 above 11, kept as recorded).
+  The empty cell next to the years means no extra months, so the variable has no asked_if and no
+  shown_if.
+
+  **Year and centre.** The age at the first contact is a lifetime age: its median follows the age
+  mix of the patients (children are 0% to 100% of the inclusion visits of a centre and 9% to 59%
+  of a year). It is 4 to 17 years by year and 7 to 23 by centre (years and centres with 20 values
+  or more): 3 to 10 and 3 to 8 among the children, 13 to 20 and 14 to 23 among the adults. The
+  median of the months part (0 to 6) depends on who types the zeros (92 of 225 values). The
+  current treatment is yes for 32% to 50% of the visits by year and 31% to 60% by centre, with no
+  step.
+
+  An instrument of the ASP cohort only.
 
 variables:
-  genchang: {column: genchang, type: item, label: "Family history: change since the last visit, follow-up visits only (0 no, 1 yes)", range: [0, 1]}
+  family_history_changed: {column: genchang, type: item, label: "Family history: change since the last visit, follow-up visits only (0 no, 1 yes)", range: [0, 1]}
   family_neurodevelopmental_history: {column: atcdfam, type: item, label: "A relative with a neurodevelopmental disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   psychiatric_contact: {column: contpsy, type: item, label: "Earlier contact with psychiatry (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   age_first_psychiatric_contact: {column: agecons, type: number, label: "Age at the first contact with psychiatry, years", unit: years, range: [0, 70], winsor: false}
-  age_first_psychiatric_contact_months: {column: ageconsm, type: number, label: "Age at the first contact with psychiatry, months (as stored)", range: [0, 99], winsor: false}
+  age_first_psychiatric_contact_months: {column: ageconsm, type: number, label: "Age at the first contact with psychiatry: months part, 0 to 11, typed next to the years", range: [0, 99], winsor: false}
   psychiatric_hospitalisation: {column: hospicour, type: item, label: "Psychiatric hospitalisation (0 no, 1 yes)", range: [0, 1]}
   current_treatment: {column: trtcour, type: item, label: "A current treatment (0 no, 1 yes)", range: [0, 1]}

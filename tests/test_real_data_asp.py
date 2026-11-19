@@ -261,27 +261,27 @@ def test_old_questionnaires(result, qc):
 def test_history_family_and_treatments(result, qc):
     data, lists, flags = result.data, result.treatments, result.flags
     table = qc[qc["tab"].isin(["antecedents", "antecedent_famille_psy"])]
-    assert (table["instrument"].nunique(), len(table)) == (17, 240)
+    assert (table["instrument"].nunique(), len(table)) == (18, 273)
     birth = result.patients                                                        # the answers about the birth: one row per patient
     v0 = data[data["visit"] == "V0"].merge(birth[["usubjid", "neonatal_hospitalisation"]], on="usubjid")
     # Yes/no questions with a 9 for "not known": read as missing with its reason.
     asked = {name: (int(v0[name].notna().sum()), int((v0[name] == 1).sum()), int(qc.loc[name, "missing_code"]))
-             for name in ["miscarriage_before", "folic_acid", "neonatal_hospitalisation", "language_delay", "history_ent", "psychiatric_contact"]}
+             for name in ["miscarriage_before", "folic_acid", "neonatal_hospitalisation", "language_delay", "history_ent_v0", "psychiatric_contact"]}
     assert asked == {"miscarriage_before": (1647, 379, 385), "folic_acid": (1187, 362, 790), "neonatal_hospitalisation": (1843, 168, 148), "language_delay": (1804, 415, 87),
-                     "history_ent": (1970, 1040, 57), "psychiatric_contact": (1867, 1374, 12)}
+                     "history_ent_v0": (1970, 1040, 57), "psychiatric_contact": (1867, 1374, 12)}
     # The names of BP for the birth; a weight typed in kilograms is converted.
     assert (birth["gestational_age"].notna().sum(), birth["gestational_age"].median(), birth["birth_weight"].notna().sum(), birth["birth_weight"].median()) == (1709, 39, 1257, 3300)
     assert ((v0["sudden_complex_language"] == 1).sum(), v0["sudden_complex_language"].notna().sum()) == (253, 1722)   # not a loss of language
     assert (qc.loc["birth_weight", "unit_inferred"], qc.loc["birth_weight", "out_of_range"], data["age_first_words"].median()) == (1, 3, 17)
     # Records packed in one cell are opened: one row per disease, relative or hospitalisation.
     assert lists["list"].value_counts().to_dict() == {
-        "medications": 1784, "somatic_ent": 1650, "somatic_rheumatology": 797, "somatic_digestive": 665, "hospitalisations": 584, "family_neurodevelopment": 562,
-        "somatic_pulmonary": 346, "somatic_neurological": 328, "somatic_cardiac": 196, "somatic_endocrine": 171, "somatic_cancer": 22}
+        "medications": 1784, "somatic_ent": 1658, "somatic_rheumatology": 805, "somatic_digestive": 668, "hospitalisations": 588, "family_neurodevelopment": 562,
+        "somatic_pulmonary": 346, "somatic_neurological": 329, "somatic_cardiac": 196, "somatic_endocrine": 171, "somatic_cancer": 22}
     relatives = lists[lists["list"] == "family_neurodevelopment"]
     assert ((relatives["relative_asd"] == 1).sum(), (relatives["relative_adhd"] == 1).sum(), relatives["usubjid"].nunique()) == (186, 149, 434)
     assert relatives["relative"].value_counts().to_dict() == {"brother": 143, "mother": 67, "sister": 62, "father": 61, "son": 24, "daughter": 14}
     stays = lists[lists["list"] == "hospitalisations"]
-    assert (stays["usubjid"].nunique(), stays["hospitalisation_days"].median(), stays["hospitalisation_year"].notna().sum()) == (388, 21, 342)
+    assert (stays["usubjid"].nunique(), stays["hospitalisation_days"].median(), stays["hospitalisation_year"].notna().sum()) == (388, 21, 343)
     # The treatments are the list of the visit: one row per visit and treatment, the molecule from the name or the generic name.
     drugs = lists[lists["list"] == "medications"]
     assert (drugs.groupby(["usubjid", "visit"]).ngroups, drugs["usubjid"].nunique(), drugs["molecule"].notna().sum()) == (966, 896, 1523)

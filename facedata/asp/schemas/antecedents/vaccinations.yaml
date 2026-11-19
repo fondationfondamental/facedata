@@ -2,30 +2,46 @@ instrument: vaccinations
 title: "Vaccinations"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 notes: >
-  Seven lines of the vaccination record, each with a code and a box:
-  529 inclusion visits (356 of children) and 7 follow-up visits, from 2013 to 2026.
+  Seven lines of the vaccination record, each with a vaccine and a box done or
+  not done: 529 inclusion visits (356 of children) and 7 follow-up visits (2014
+  and 2015), from 2009 to 2026.
 
-  Each line names a vaccine from the list of the thesaurus (diphtheria,
-  tetanus, poliomyelitis, pertussis, BCG, measles, rubella); the code 8 is not
-  in that list and is delivered as code_8 (O16). The box (vaccinnf) is 1 on
-  almost every visit that holds the line.
+  The record is a free table, not a questionnaire: each line is a select of the
+  vaccine and a Fait / non fait radio, and nothing in the form hangs one line on
+  another, so there is no gate and no `asked_if`. Each line names a vaccine of
+  the list of the form: diphtheria, tetanus, poliomyelitis, pertussis, BCG,
+  measles, rubella and the code 8, "vaccin antivariolique", delivered as
+  smallpox (24 lines on 23 inclusion visits of 2009 to 2019; the list of the
+  current inclusion form has it commented out). 3420 lines hold a vaccine, on 523
+  visits.
+
+  The box (vaccine_i_done) is done 1 or not done 0: 3375 lines are done and 29
+  not done; 32 lines hold a vaccine and no box, and 16 lines a box and no
+  vaccine (14 of them the first line). A line is a position in the table, not
+  a vaccine: the code equals the number of the line on 1748 of the 3420 lines
+  (51%), and 95 visits repeat a vaccine on two lines. Read the vaccines of a visit as a set over the
+  seven lines, not line by line.
+
+  **Year and centre.** The share of inclusion visits with a vaccination line is 36% for the
+  children and 12% for the adults and moves from year to year with no lasting step: 7% to 57% by
+  year among the children and 1% to 41% among the adults (years with 30 visits or more).
 
   A section of the ASP cohort only.
 
 variables:
-  vaccin1: {column: vaccin1, type: category, label: "Vaccination record, line 1: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin2: {column: vaccin2, type: category, label: "Vaccination record, line 2: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin3: {column: vaccin3, type: category, label: "Vaccination record, line 3: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin4: {column: vaccin4, type: category, label: "Vaccination record, line 4: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin5: {column: vaccin5, type: category, label: "Vaccination record, line 5: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin6: {column: vaccin6, type: category, label: "Vaccination record, line 6: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccin7: {column: vaccin7, type: category, label: "Vaccination record, line 7: the vaccine (the code 8 is not documented)", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": code_8}}
-  vaccinnf1: {column: vaccinnf1, type: item, label: "Vaccination record, box of the line 1 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf2: {column: vaccinnf2, type: item, label: "Vaccination record, box of the line 2 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf3: {column: vaccinnf3, type: item, label: "Vaccination record, box of the line 3 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf4: {column: vaccinnf4, type: item, label: "Vaccination record, box of the line 4 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf5: {column: vaccinnf5, type: item, label: "Vaccination record, box of the line 5 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf6: {column: vaccinnf6, type: item, label: "Vaccination record, box of the line 6 (0 no, 1 yes)", range: [0, 1]}
-  vaccinnf7: {column: vaccinnf7, type: item, label: "Vaccination record, box of the line 7 (0 no, 1 yes)", range: [0, 1]}
+  vaccine_1: {column: vaccin1, type: category, label: "Vaccination record, line 1: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_2: {column: vaccin2, type: category, label: "Vaccination record, line 2: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_3: {column: vaccin3, type: category, label: "Vaccination record, line 3: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_4: {column: vaccin4, type: category, label: "Vaccination record, line 4: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_5: {column: vaccin5, type: category, label: "Vaccination record, line 5: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_6: {column: vaccin6, type: category, label: "Vaccination record, line 6: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_7: {column: vaccin7, type: category, label: "Vaccination record, line 7: the vaccine", codes: {"1": diphtheria, "2": tetanus, "3": poliomyelitis, "4": pertussis, "5": tuberculosis_bcg, "6": measles, "7": rubella, "8": smallpox}}
+  vaccine_1_done: {column: vaccinnf1, type: item, label: "Vaccination record, line 1: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_2_done: {column: vaccinnf2, type: item, label: "Vaccination record, line 2: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_3_done: {column: vaccinnf3, type: item, label: "Vaccination record, line 3: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_4_done: {column: vaccinnf4, type: item, label: "Vaccination record, line 4: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_5_done: {column: vaccinnf5, type: item, label: "Vaccination record, line 5: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_6_done: {column: vaccinnf6, type: item, label: "Vaccination record, line 6: vaccine done (1) or not done (0)", range: [0, 1]}
+  vaccine_7_done: {column: vaccinnf7, type: item, label: "Vaccination record, line 7: vaccine done (1) or not done (0)", range: [0, 1]}

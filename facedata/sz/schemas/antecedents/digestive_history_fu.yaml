@@ -2,15 +2,55 @@ instrument: digestive_history_fu
 title: Liver and digestive history, at follow-up
 tab: ANTECEDENTS
 section: Pathologies hépato-gastro-entérologiques
-status: draft
+status: reviewed
 notes: >
-  Diarrhoea and constipation are SZ questions, asked from 2012 with their
-  details from 2015.
+  Diarrhoea and constipation are SZ questions, asked from 2015-02 (4 earlier
+  visits hold an answer), centre by centre between 2015-02 and 2015-10 like
+  the autoimmune diseases.
 
-  The questions of the inclusion form, asked again at part of the follow-up
-  visits (about 400, 5% to 40% of the visits of a year), where they seem to
-  be about the time since the last visit: see the schema of the inclusion
-  form, whose notes hold for this one.
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+  At inclusion one centre ticks "treated" on 21% of the yes answers of the whole
+  medical history (54 of 262 answers), the other centres on 45% to 63% (53%
+  pooled, 679 of 1,293): a habit of that centre, which makes the site shift of
+  the "treated" columns of this section and, with the mix of centres in groups
+  of 20 to 30 answers, their year shift. The follow-up answers are too few per
+  centre to show it.
+
+  Two forms in the same columns, as in FACE BP (BP decisions D59 and D84; here
+  decisions D20 and D56 in PROGRESS.md). The same questions are asked at the
+  inclusion visit and at the yearly follow-up visits (every follow-up visit of
+  the extraction is a yearly one; the 1,675 screening records hold no cell of
+  the section). At inclusion they are about the whole life. At the yearly
+  visits a disease answered yes at inclusion is most often answered no (39 of
+  47 follow-up answers for a head injury, 43 of 54 for acne). The yearly form
+  is the inclusion form again, with no period in the wording of its questions,
+  after one more question that the extraction does not hold: "Pas de
+  changement de l'histoire somatique depuis la dernière visite?"
+  (rad_pas_dechangement, shown at the yearly visit only; export request R78).
+  An empty follow-up section may therefore mean "no change". A yearly answer
+  is an update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are
+  delivered as separate columns ending in _v0 and _fu; visit_form says which
+  form a visit used.
+
+  From 2022 the section is answered at 42% of the inclusion visits, against
+  83% from 2016 to 2021 (and 0% to 88% by centre since 2022), while the share
+  of all included patients with a disease of the section does not change
+  (17%): the shortcut "Non pour tous" of the section stopped copying "no" to
+  each disease (script defect, A31 of EXPORT_REQUESTS.md); the extraction does
+  not hold the shortcut (R78); an empty section is missing, not no; values as
+  recorded (decision D51, open question O26). Do not compute a prevalence on
+  the inclusions from 2022: among the answered visits the share with a disease
+  doubles (21% to 40%).
+
+  At follow-up the section is held by 380 of the 2,588 yearly visits (2% to
+  41% of the yearly visits of a year from 2012); the other yearly visits leave
+  it empty, which may mean "no change" (see the two forms above).
+
+  The SZ form is shorter than the BP one: one question "treated" per disease,
+  and no date of onset and no "controlled". The names are those of BP where
+  the question is the same.
 
 version:
   name: visit_form
@@ -43,12 +83,12 @@ defaults: {versions: [follow_up]}
 
 variables:
   inflammatory_bowel_disease_fu: {column: inflachro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease, at follow-up"}
-  inflammatory_bowel_disease_type_fu: {column: inflachro_mhmodify, type: category, codes: {"Maladie de Crohn": crohn, "Rectocolite hémorragique": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: which, at follow-up"}
+  inflammatory_bowel_disease_type_fu: {column: inflachro_mhmodify, type: category, codes: {"Maladie de Crohn": crohn, "Rectocolite hémorragique": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: type, at follow-up"}
   inflammatory_bowel_disease_treated_fu: {column: inflachro_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic inflammatory bowel disease: treated, at follow-up"}
   cirrhosis_fu: {column: cirrhose_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis, at follow-up"}
   cirrhosis_treated_fu: {column: cirrhose_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cirrhosis: treated, at follow-up"}
-  peptic_ulcer_fu: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer, at follow-up"}
-  peptic_ulcer_treated_fu: {column: ulcgasduo_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Peptic ulcer: treated, at follow-up"}
+  peptic_ulcer_fu: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gastric or duodenal ulcer, at follow-up"}
+  peptic_ulcer_treated_fu: {column: ulcgasduo_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Gastric or duodenal ulcer: treated, at follow-up"}
   drug_hepatitis_fu: {column: hepmedic_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug-induced hepatitis, at follow-up"}
   diarrhoea_fu: {column: diarrhee_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea, at follow-up"}
   diarrhoea_treated_fu: {column: diarrhee_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diarrhoea: treated, at follow-up"}

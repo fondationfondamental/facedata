@@ -2,27 +2,48 @@ instrument: skin_history_v0
 title: "Skin history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies dermatologiques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  inclusion visit: 589 visits (88% to 96% of the inclusions in every period).
+  inclusion visit: gate answered on 569 of the 589 visits that hold the form
+  (87% to 92% of the inclusions in every period from 2013); 19 forms hold only
+  the four boxes below, set to 0 by the form.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no; 2 is "Ne sais pas" on the questions
+  that offer it: the six lithium questions and the valproate question of form
+  164; only the valproate question in form 191), where BP has words. "Treated"
+  and "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  The causes of a drug eruption are four boxes that the form sets to
-  0 on every row: they are flagged derived_doubt where the question on the
-  drug eruption is empty. The type of the eruption is a code that the
-  dictionary does not explain. The questions on lithium (psoriasis, acne)
-  and on valproate (hair loss) are those of BP.
+  The causes of a drug eruption are four boxes that the form sets to 0 on
+  every saved form: they are flagged derived_doubt where the question on the
+  drug eruption is empty. The type of the eruption is 1 simple eruption, 2
+  Lyell, 3 Stevens-Johnson (forms 164 and 191), as in BP (25 cells at
+  inclusion, 1 at follow-up). The questions on lithium (psoriasis, acne) and
+  on valproate (hair loss) are those of BP, and keep asked_if: after a no the
+  child boxes are empty on most forms, and zeros typed under a no stay as
+  recorded.
+
+  Of the follow-up visits of patients with a drug eruption at inclusion, 9 of
+  9 answer no; hair loss 14 of 14. Load order of the form (static reading):
+  the two children of each lithium or valproate question are also listed under
+  the disease question, so a page opened with the disease yes shows them again
+  although the lithium question is not yes (decision D36).
 
 version:
   name: visit_form
@@ -62,7 +83,7 @@ variables:
   eczema_controlled_v0: {column: eczema_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Eczema: controlled, at inclusion"}
   drug_eruption_v0: {column: toxidermi_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Drug eruption, at inclusion"}
   drug_eruption_start_v0: {column: toxidermi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug eruption: date of onset, at inclusion"}
-  drug_eruption_type_code_v0: {column: toxidermi_mhterm, type: category, codes: {"1": code_1, "2": code_2}, label: "Drug eruption: type, at inclusion"}
+  drug_eruption_type_v0: {column: toxidermi_mhterm, type: category, codes: {"1": simple_rash, "2": lyell, "3": stevens_johnson}, label: "Drug eruption: type, at inclusion"}
   drug_eruption_antibiotic_v0: {column: toxidermi_1_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_v0, label: "Drug eruption, the drug: an antibiotic, at inclusion"}
   drug_eruption_nsaid_v0: {column: toxidermi_2_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_v0, label: "Drug eruption, the drug: an anti-inflammatory drug, at inclusion"}
   drug_eruption_anticonvulsant_v0: {column: toxidermi_3_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_v0, label: "Drug eruption, the drug: an anticonvulsant, at inclusion"}

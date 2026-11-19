@@ -1,24 +1,52 @@
 instrument: somatic_ent
-title: "Somatic history: ear, nose, throat and eyes, one row per disease"
+title: "Somatic history: ear, nose, throat and eyes, one row per visit and disease"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 level: list
 notes: >
-  The diseases of the system reported after a yes to the question
-  history_ent: 1658 diseases for 987 visits (979 patients), up to 7 for one
-  patient. One row per patient and disease in the table treatments, where the
-  column list says "somatic_ent".
+  The diseases of the system reported after a yes to the question history_ent_v0 (inclusion
+  visit) or history_ent_fu (yearly visit) of the instruments somatic_history_v0 and
+  somatic_history_fu: 1,658 diseases for 987 visits (979 patients), up to 7 at one visit; 1,640
+  rows are of inclusion visits and 18 of yearly visits. One row per visit and disease in the
+  table treatments, where the column list says "somatic_ent" and the column visit names the
+  visit.
 
-  The export packs the diseases of a patient in one cell, each between brackets
-  with four fields: the code of the disease in the list of the form, a free
-  text, the age of onset in years and whether it is over (0 or 1; 9 is "not
-  known"). The list of the diseases is that of the thesaurus V2.13. Fewer than five records
-  have a dash in their free text, which the reader keeps in the text. The
-  history is that of the patient: the first visit that holds it is read, and a
-  later visit that holds another list gets patient_value_varies.
+  A visit's list holds the rows typed at that visit; the lifetime history is the union of the
+  visits.
+
+  Read the list with the gate of the same visit: a gate 0 means none, an empty gate or a 9 means
+  not known. 68 of the 1,040 yes at inclusion have no list (6.5%) and 20 of 33 at the yearly
+  visits. 2 inclusion lists sit under a gate 0 or 9.
+
+  The export packs the diseases of a visit in one cell, each between brackets with four fields:
+  the code of the disease in the list of the form, a free text, the age of onset in years and
+  whether it is over (0 or 1; a 9 is "not known", delivered as missing with its reason: 240
+  cells in the eight lists). The list of the diseases is that of the thesaurus V2.13. The eight
+  somatic lists have the same shape and differ only by the packed column, the prefix of the
+  fields and the list of the codes: disease_code, disease_text, age_onset (0 to 100) and
+  disease_over. The code that means "other" is 11 in ear, nose, throat and eyes, 4 in the lungs,
+  10 in the nervous system and 9 in the five others, and the free text is filled where the code
+  is "other" (1,923 of the 1,925 "other" rows of the eight lists), so that no shown_if is
+  needed. 19 rows of the eight lists have no code, 14 of them with all four fields empty (a
+  record opened and nothing typed): the schema cannot repair them (open question O19). 3 of the
+  2,422 ages of onset are more than one year above the age of the patient at the visit (one each
+  in the heart, digestive and ear, nose, throat and eyes lists): kept as recorded.
+
+  In this list "other" is the code 11: 530 of its 531 rows have a free text. 10 rows have no
+  code (9 with all four fields empty). Fewer than five records have a dash in their free text,
+  which the reader keeps in the text.
+
+  **Year and centre.** The age of onset is a lifetime age: its median follows the age mix of the
+  patients (children are 0% to 100% of the inclusion visits of a centre and 9% to 59% of a year)
+  and the centre. It is 3 to 11 years by year and 4 to 10 by centre (years and centres with 20
+  rows or more): 3 to 5 and 3 to 4.5 among the children, 3.5 to 11 and 5 to 11 among the adults.
+  "Over" is 31% to 58% by year and 21% to 55% by centre: a habit of the centre, with no step in
+  time.
 
   A section of the ASP cohort only.
+
+per_visit: true
 
 packed:
   antorls_orla_orlag_orlrem: {fields: [ent_code, ent_text, ent_age, ent_over], text: ent_text}

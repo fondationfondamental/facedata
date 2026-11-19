@@ -2,22 +2,33 @@ instrument: other_history_fu
 title: "Other history, at follow-up"
 tab: ANTECEDENTS
 section: Autres pathologies
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  visits of 2 and 4 years: 131 visits. The questions and what is specific
-  to this cohort are described in other_history_v0.yaml.
+  visits of 2 and 4 years: 131 visits. The questions and what is specific to
+  this cohort are described in other_history_v0.yaml.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no; 2 is "Ne sais pas" on the questions
+  that offer it: HIV, hepatitis, a serious operation, a genetic disease, an
+  eye disease and another somatic disease; at follow-up the same without HIV
+  and hepatitis, with open-angle glaucoma and cataract), where BP has words.
+  "Treated" and "controlled" are in columns named _tr_mhdecod and _eq_mhdecod.
+  Dates are whole dates.
 
 version:
   name: visit_form

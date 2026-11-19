@@ -2,25 +2,40 @@ instrument: urinary_history_v0
 title: "Urinary history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies des voies urinaires
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  inclusion visit: 589 visits (88% to 96% of the inclusions in every period).
+  inclusion visit: gate answered on 570 of the 589 visits that hold the form
+  (87% to 92% of the inclusions in every period from 2013); 18 forms hold only
+  the three boxes below, set to 0 by the form.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no; 2 is "Ne sais pas" on the questions
+  that offer it: the question on a nephropathy linked to lithium; no cell
+  holds a 2), where BP has words. "Treated" and "controlled" are in columns
+  named _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
 
-  The causes of a urinary retention are three boxes that the form
-  sets to 0 on every row: flagged derived_doubt where the question on the
-  retention is empty.
+  The question on a nephropathy linked to a past or current treatment names
+  lithium in the form: nephropathy_lithium (BP: the same name). The causes of
+  a urinary retention are three boxes that the form sets to 0 on every saved
+  form: flagged derived_doubt where the question on the retention is empty. In
+  the form they hang on "started under a treatment", itself under the
+  retention (a chain of two levels, see the one-level cascade in decision
+  D36); the schema keeps the retention as the gate of the doubt.
 
 version:
   name: visit_form
@@ -44,7 +59,7 @@ variables:
   nephropathy_start_v0: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Nephropathy: date of onset, at inclusion"}
   nephropathy_treated_v0: {column: nephropat_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: treated, at inclusion"}
   nephropathy_controlled_v0: {column: nephropat_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: controlled, at inclusion"}
-  nephropathy_treatment_related_v0: {column: nephropat_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: probably linked to a past or current treatment, at inclusion"}
+  nephropathy_lithium_v0: {column: nephropat_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: probably linked to a past or current treatment by lithium, at inclusion"}
   prostate_adenoma_v0: {column: adenompro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma, at inclusion"}
   prostate_adenoma_start_v0: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Prostate adenoma: date of onset, at inclusion"}
   prostate_adenoma_treated_v0: {column: adenompro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma: treated, at inclusion"}

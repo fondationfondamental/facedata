@@ -2,22 +2,31 @@ instrument: endocrine_history_fu
 title: "Endocrine history, at follow-up"
 tab: ANTECEDENTS
 section: Pathologies endocriniennes et métaboliques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  visits of 2 and 4 years: 130 visits. The questions and what is specific
-  to this cohort are described in endocrine_history_v0.yaml.
+  visits of 2 and 4 years: 130 visits. The questions and what is specific to
+  this cohort are described in endocrine_history_v0.yaml.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
 version:
   name: visit_form
@@ -37,22 +46,22 @@ version:
 defaults: {versions: [follow_up]}
 
 variables:
-  diabetes_fu: {column: diabete_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes, at follow-up"}
+  diabetes_fu: {column: diabete_mhoccur, type: item, range: [0, 1], label: "Diabetes, at follow-up"}
   diabetes_start_fu: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at follow-up"}
-  diabetes_treated_fu: {column: diabete_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: treated, at follow-up"}
-  diabetes_controlled_fu: {column: diabete_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: controlled, at follow-up"}
-  diabetes_type_fu: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, label: "Diabetes: type, at follow-up"}
-  thyroid_disorder_fu: {column: dysthyro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder, at follow-up"}
-  thyroid_disorder_type_fu: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism, "0": code_0}, label: "Thyroid disorder: type, at follow-up"}
-  thyroid_disorder_treated_fu: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: treated, at follow-up"}
-  thyroid_disorder_induced_by_code_fu: {column: dysthyro_mhdecod, type: category, codes: {"1": code_1, "2": code_2}, label: "Thyroid disorder: induced by a treatment, at follow-up"}
-  thyroid_disorder_controlled_fu: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: controlled, at follow-up"}
-  dyslipidaemia_fu: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia, at follow-up"}
+  diabetes_treated_fu: {column: diabete_tr_mhdecod, type: item, range: [0, 1], label: "Diabetes: treated, at follow-up"}
+  diabetes_controlled_fu: {column: diabete_eq_mhdecod, type: item, range: [0, 1], label: "Diabetes: controlled, at follow-up"}
+  diabetes_type_fu: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, missing: {"0": unknown}, label: "Diabetes: type, at follow-up"}
+  thyroid_disorder_fu: {column: dysthyro_mhoccur, type: item, range: [0, 1], label: "Thyroid disorder, at follow-up"}
+  thyroid_disorder_type_fu: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism}, missing: {"0": unknown}, label: "Thyroid disorder: type, at follow-up"}
+  thyroid_disorder_treated_fu: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], label: "Thyroid disorder: treated, at follow-up"}
+  thyroid_disorder_induced_by_fu: {column: dysthyro_mhdecod, type: category, codes: {"1": lithium, "2": other_treatment}, label: "Thyroid disorder: induced by a treatment, at follow-up"}
+  thyroid_disorder_controlled_fu: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], label: "Thyroid disorder: controlled, at follow-up"}
+  dyslipidaemia_fu: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], label: "Dyslipidaemia, at follow-up"}
   dyslipidaemia_start_fu: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at follow-up"}
-  dyslipidaemia_treated_fu: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: treated, at follow-up"}
-  dyslipidaemia_controlled_fu: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: controlled, at follow-up"}
-  other_endocrine_fu: {column: autendoc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another endocrine disease, at follow-up"}
+  dyslipidaemia_treated_fu: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: treated, at follow-up"}
+  dyslipidaemia_controlled_fu: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: controlled, at follow-up"}
+  other_endocrine_fu: {column: autendoc_mhoccur, type: item, range: [0, 1], label: "Another endocrine disease, at follow-up"}
   other_endocrine_start_fu: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at follow-up"}
   thyroid_disorder_start_fu: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Thyroid disorder: date of onset, at follow-up"}
-  hypercholesterolaemia_fu: {column: cholester_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypercholesterolaemia, at follow-up"}
-  hypertriglyceridaemia_fu: {column: tryglicer_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypertriglyceridaemia, at follow-up"}
+  hypercholesterolaemia_fu: {column: cholester_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_fu, label: "Dyslipidaemia: hypercholesterolaemia, at follow-up"}
+  hypertriglyceridaemia_fu: {column: tryglicer_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_fu, label: "Dyslipidaemia: hypertriglyceridaemia, at follow-up"}

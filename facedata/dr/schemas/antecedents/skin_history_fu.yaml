@@ -2,22 +2,32 @@ instrument: skin_history_fu
 title: "Skin history, at follow-up"
 tab: ANTECEDENTS
 section: Pathologies dermatologiques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  visits of 2 and 4 years: 131 visits. The questions and what is specific
-  to this cohort are described in skin_history_v0.yaml.
+  visits of 2 and 4 years: 131 visits. The questions and what is specific to
+  this cohort are described in skin_history_v0.yaml.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no; 2 is "Ne sais pas" on the questions
+  that offer it: the six lithium questions and the valproate question of form
+  164; only the valproate question in form 191), where BP has words. "Treated"
+  and "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
 version:
   name: visit_form
@@ -57,7 +67,7 @@ variables:
   eczema_controlled_fu: {column: eczema_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Eczema: controlled, at follow-up"}
   drug_eruption_fu: {column: toxidermi_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Drug eruption, at follow-up"}
   drug_eruption_start_fu: {column: toxidermi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug eruption: date of onset, at follow-up"}
-  drug_eruption_type_code_fu: {column: toxidermi_mhterm, type: category, codes: {"1": code_1, "2": code_2}, label: "Drug eruption: type, at follow-up"}
+  drug_eruption_type_fu: {column: toxidermi_mhterm, type: category, codes: {"1": simple_rash, "2": lyell, "3": stevens_johnson}, label: "Drug eruption: type, at follow-up"}
   drug_eruption_antibiotic_fu: {column: toxidermi_1_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_fu, label: "Drug eruption, the drug: an antibiotic, at follow-up"}
   drug_eruption_nsaid_fu: {column: toxidermi_2_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_fu, label: "Drug eruption, the drug: an anti-inflammatory drug, at follow-up"}
   drug_eruption_anticonvulsant_fu: {column: toxidermi_3_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: drug_eruption_fu, label: "Drug eruption, the drug: an anticonvulsant, at follow-up"}

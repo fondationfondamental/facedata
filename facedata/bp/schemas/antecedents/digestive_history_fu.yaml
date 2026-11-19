@@ -2,7 +2,7 @@ instrument: digestive_history_fu
 title: "Medical history: diseases of the liver and the digestive tract (yearly follow-up visits)"
 tab: ANTECEDENTS
 section: Pathologies hépato-gastro-entérologiques
-status: draft
+status: reviewed
 notes: >
   Chronic inflammatory bowel disease and its type (Crohn's disease,
   ulcerative colitis), cirrhosis, gastric or duodenal ulcer, and drug-induced
@@ -12,9 +12,11 @@ notes: >
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The same
   questions are asked at the inclusion visit and at the yearly visits, never
-  at the six-monthly ones. At inclusion they are about the whole life. At the
+  at the six-monthly ones: the 3,352 six-monthly visits of the follow-up
+  version (11,686 visits, of which 8,334 are yearly) and the screening visits
+  never hold a cell of this section. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
-  39 of the 79 "yes" of this section that are answered again. The
+  39 of the 80 "yes" of this section that are answered again. The
   yearly form is the inclusion form again: the same questions, with no period
   in their wording, after one more question, "is there a change since the
   last visit?", which the extraction does not hold (read in the application
@@ -22,7 +24,10 @@ notes: >
   update given at that visit: neither a history of the whole life nor
   strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
-  says which form a visit used and is read from the visit label.
+  says which form a visit used and is read from the visit label. The
+  question "is there a change since the last visit?" is shown at the yearly
+  visit only and is not exported (rad_pas_dechangement, DM-10): an empty
+  yearly section may mean "no change".
 
   From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
   it is answered at 87% of the inclusion visits, from 2022 at 16%, and the
@@ -39,9 +44,17 @@ notes: >
   visits until 2021 and at 3% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
-  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
-  in a date that was not typed, and from 2025 in every date of the form:
-  date_placeholder. Hard limits of the dates: 1900 to 2026.
+  asked only after a "yes" and are missing otherwise, except 4 detail cells
+  typed after a "no" (kept as recorded). 1000-01-01 is written in a date that
+  was not typed, and in every empty date of a form saved from 2025 (in the
+  nine sections together, 64% of the inclusion visits and 34% of the yearly
+  visits dated 2025 or later hold one; at inclusion 0% to 3% of the visits up
+  to 2024Q4, 28% in 2025Q1, 70% in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+  Dates and the visit. Of the 318 delivered dates of the section (both forms),
+  1 is after the visit (1 later, by 3 months) and 1 is on the day of the
+  visit. They stay as recorded: no before_visit (decision D145 in
+  PROGRESS.md).
 
 version:
   name: visit_form

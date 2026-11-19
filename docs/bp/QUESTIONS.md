@@ -39,14 +39,14 @@ of today. Neither says how a form looked in 2012 or in early 2022.
 
 **What is not here.** Only counts are given, never a patient. The centres
 are not named, because this repository is public: their codes can be given
-on request. 79 of the 135 schemas are reviewed; the others are drafts until
+on request. 125 of the 135 schemas are reviewed; the others are drafts until
 the review of their tab (PI-12).
 
 | Section | Open | Who closes it |
 |---|---|---|
 | 1. To read in the application | 0 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 1 | The project lead and the principal investigator |
+| 3. Choices of method | 2 | The project lead and the principal investigator |
 | 4. For the data managers, the centres and the developers | 17 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
@@ -77,7 +77,7 @@ with the project lead.
 | FU-7, MAThyS recomputation | Intended | D75 |
 | DEV-1, medical history from 2022 (2026-11-17) | Seven sections of the form start with a shortcut, "Non pour tous" or "Ne sais pas pour tous". In eBipolar it leaves each disease unanswered, and the extraction does not hold it. The seven fields are asked for (DM-10) | D83 |
 | PI-2, how to use the medical history from 2022 | As recorded until the shortcuts are exported; then a "Non pour tous" gives 0 to each disease of its section | D83 |
-| DEV-2, what the yearly forms ask | Medical history, family history, comorbidities and psychotic disorder: the inclusion form again, same wording, after "is there a change since the last visit?". Suicide, mood episodes, hospitalisations, care, sick leave: "since the last visit". A `_fu` answer of the first group is a yearly update | D84 |
+| DEV-2, what the yearly forms ask | Medical history, family history, comorbidities and psychotic disorder: the inclusion form again, same wording, after "is there a change since the last visit?". Suicide, mood episodes, hospitalisations, care, sick leave: "since the last visit". A `_fu` answer of the first group is a yearly update. The family form has no `_fu` twin: a later answer is ignored by the first-answer rule (378 patients answer the counts at two or more visits; among the parents and grandparents 190 "yes" become "no" and 55 "no" become "yes"; 60 parents or grandparents pass from alive to deceased; PI-15) | D84, D148 |
 | DEV-3, suicide questions at follow-up | Two forms; the follow-up form of today says "since the last visit". The one of 2022 and 2023 also asked about the whole life in part of the centres: each centre runs its own copy of the application | D85 |
 | PI-3, follow-up suicide answers of 2022 and 2023 | Not delivered, the "yes" and the "no" alike | D88 |
 | O47, history of suicide attempts at follow-up | Split: the whole life at inclusion, since the last visit at follow-up; a date of the first attempt typed at follow-up is not delivered | D86 |
@@ -113,6 +113,7 @@ with the project lead.
 | PI-10, standard scores of the neuropsychological tests (2026-11-18) | Computed again from the raw scores with the tables of the application's scripts for the TMT, the WAIS-III and WAIS-IV subtests and indices, the Stroop, the fluency, the spatial span, the SCIP and the errands; the stored scores are checks and their differences are flagged. Not done: LIS, Barona, fNART. The tables are the application's and are not checked against the manuals (DM-4) | D135 |
 | NEUROPSYCHOLOGIE tab review, four cohorts (2026-11-19, D138 to D143) | Every neuropsychological test of BP, SZ, DR and ASP was read against the form, the application script and the data, and recomputed where its rule is known: the WAIS family with one similarities, total and table rule (SZ edition O16 closed; BP vocabulary row 25-29 from ASP; ASP age at the form date and shared index names), TMT, errands (years of education), CPT checks, CVLT discriminability, the DR tests (D2, Baddeley, RL/RI-16, auditory span, designs) from the DR script tables, Barona, fNART, LIS and SSTICS (new expected-value and distance scores). The tables are compared across the four applications and not checked against the manuals (DM-4 stays open). 79 of the 83 schemas of the tab are `reviewed` |
 | BILAN BIOLOGIQUE tab review, four cohorts (2026-11-19, D144) | The 35 schemas were read against the forms, the application scripts and the data. No unit mismatch between cohorts. A shifted block of lab results (one BP centre to 2023, one DR centre to 2022) is removed by a pooled data rule (`implausible_pool`: BP 29 visits, DR 35); the clipping of lab tails is kept (the project lead's choice); prolactin typed in mg/L, glucose in mg/dL, DR vitamin D code 2 and ASP code 64387 are read; zeros that mean not measured are missing codes; the notes carry the causes of the lipid ratio mismatches, the clearance, the unmarked CRP limits and the form caps. All 35 schemas are `reviewed`; open points (iron in micrograms per decilitre at one centre, DR prolactin of two centres, SZ vitamin D of one centre, the ASP CRP, clozapine of 1 to 19) wait on the centres (requests R102 to R106) |
+| ANTECEDENTS tab review, BP (2026-11-19, D145 to D149) | The 20 schemas were read against the forms of the application, the graph of their dependencies and the data. The three retention boxes hang on the retention itself, the hormone therapy is a detail of the menopause (missing after a "no"), `nephropathy_treatment_related` is `nephropathy_lithium`, hepatitis D has its code, and the type of diabetes of a relative is shown after its box only (3 cells `not_shown`). The notes carry the yearly-update wording (D84), the shortcut "Non pour tous" and the change question that is not exported (DM-10), the placeholders by year (DEV-13), the counts measured again and, for each year or centre shift of the QC table, its cause. "More than 5" relatives is lost, not written 5 (DM-14). All 20 schemas are `reviewed`; open: PI-15 (later family answers), `frere2_suicide` (M53, DM-5), the skin Oui/Non pattern (DM-5) | D145 to D149 |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -141,6 +142,18 @@ still to do.
 
 ### Priority B
 
+- [ ] **PI-15. Later family answers are not delivered.** (D148, DEV-2; new on
+  2026-11-19) The family is described at the inclusion visit and sometimes
+  again at the yearly visits: 378 patients answer the counts of relatives at
+  two or more visits, and 231 of them change at least one answer (among the
+  parents and grandparents 190 "yes" become "no" and 55 "no" become "yes";
+  60 parents or grandparents pass from alive to deceased). `family_structure`
+  and `family_history` keep the first answer and flag the others
+  `patient_value_varies`. Should they get a yearly twin, as the medical
+  history has (D84, D100), or stay first answer? The default is the first
+  answer; the notes say that a later answer is ignored.
+  - Today: the first answer of each relative and question is delivered.
+
 ### Priority C
 
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
@@ -154,8 +167,9 @@ still to do.
   tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
   ASP social cognition, for gaps with no known cause). BILAN BIOLOGIQUE, the 6 drafts of the tab (D144, with the 28 schemas of the
-  same tab in SZ, DR and ASP). 105 of 135 are reviewed; the 30 others are
-  drafts (ANTECEDENTS 20, SUBSTANCES ET COMORBIDITE 9, MAThyS). Each
+  same tab in SZ, DR and ASP). ANTECEDENTS, the 20 drafts of the tab (D145 to
+  D149). 125 of 135 are
+  reviewed; the 10 others are drafts (SUBSTANCES ET COMORBIDITE 9, MAThyS). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -310,7 +324,10 @@ source, in the export or in the application. Still to send.
     form stores no strength (A38 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)); the strength is in the product
     name. Asked: the export reads it there, with a source column (R54).
   - "More than 5" daughters, sons, sisters or brothers: the form offers it;
-    the extraction stops at 5. Is it written 5, or lost?
+    the extraction stops at 5. Answered on 2026-11-19 (D147): it is lost, not
+    written 5. The count of relatives is empty and the number of affected
+    relatives is filled beside it (55 visits of 49 patients: 19 patients for
+    the sisters, 31 for the brothers, 1 for the sons); a 5 is exactly five.
   - Still wished: one row per medication, in place of lists in one cell
     repeated on every row of the patient.
   - "More than 5" relatives: the export loses the answer (the count is
@@ -352,7 +369,9 @@ source, in the export or in the application. Still to send.
   | Age entered on the neuropsychology form differs from the dates by more than a year | 199 visits |
   | The inclusion visit is dated before the screening visit | 26 patients |
   | Date the information was collected is impossible (before 2008, or a year below 100) | 26 patients |
-  | The gynaecological section is filled for men | 200 |
+  | The gynaecological section is filled for men (kept as recorded: filter on sex) | 203 inclusion rows, 60 yearly rows |
+  | Skin diseases: after a "yes" to "triggered or worsened by lithium" (valproic acid for hair loss), only one of the two answers "triggered" and "worsened" is typed, always a "yes", and the other is left empty (Oui/Non questions: an empty one is not read as a "no", D145) | 23 of 49 psoriasis, 30 of 93 acne, 95 of 246 hair loss at inclusion |
+  | The suicide answer of the second brother (`frere2_suicide`) is filled in 42% of the visits that hold an answer for him, against 90% to 100% for each of the 15 other blocks with 30 answers or more: does the application store it? (asked in M53 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md), D148) | 74 of 178 visits |
   | The end-of-follow-up reason exists in two sets of columns with different answers | 2 of 5 patients who have both |
 
 - [ ] **DM-6. Centres that fill a form differently from the others.** Can
@@ -367,7 +386,7 @@ source, in the export or in the application. Still to send.
     | A (210) | Medical evaluation 79% then 20%; neuropsychology 59% then 27%; social 62% then 16%; care and hospitalisations 80% then 26%; treatments 50% then 10% | Medical evaluation 73% then 27%; care 73% then 30%; suicide 77% then 32%; treatments 94% then 52% |
     | C (178) | Medical evaluation 79% then 0% (the DSM-5 table of this centre is missing from the export, R20); biology 53% then 24%; neuropsychology 61% then 32% | Biology 64% then 30% |
     | H (128) | Biology 85% then 16%, and none of the 71 inclusions from 2024; social 40% then 2%; neuropsychology 95% then 54% | Biology 92% then 6% |
-    | B (197) | Neuropsychology 91% then 46% | Medical history 54% then 10% |
+    | B (197) | Neuropsychology 91% then 46% | Medical history 60% then 10% of the yearly visits (the six-monthly visits never hold the form: 54% of all the follow-up visits) |
 
     The seven other centres of 40 inclusions or more are stable. Over the
     whole cohort each neuropsychological test is held by 37% to 42% of the
@@ -533,7 +552,7 @@ source, in the export or in the application. Still to send.
 
   | What is written | Where | Count |
   |---|---|---|
-  | `1000-01-01` in a date that was not typed | Medical history (every date from 2025), relatives' birth and death dates, mood forms, death, change of diagnosis, referral. Written by the application since its version of 2024-07-25, in every empty date of a form that is saved (D98) | 21,903 + 22,172 + 1,136 + 488 |
+  | `1000-01-01` in a date that was not typed | Medical history (every empty date of a form saved from 2025), relatives' birth and death dates (28,582 cells in the 52 date columns of the extraction; 23,765 first answers flagged in `relatives`), mood forms, death, change of diagnosis, referral. Written by the application since its version of 2024-07-25, in every empty date of a form that is saved (D98, D148) | 23,831 (the figure the test pins) + 28,582 + 1,136 + 488 |
   | `2011-11-11` as the date of the first suicide attempt | Follow-up visits of one centre from 2011 to 2023 (every form it saved until May 2022); written by its copy of the follow-up form, which has no such field today (D85, D125) | 1,142 cells |
   | "Y" or "N" on every row, whatever was answered | `mhoccur_edm_lt`, `mhoccur_ehman_lt`, `mhoccur_epman_lt`, `mhoccur_epmixt_lt` | All rows |
   | 0 or 1 on every row | Five allergic diseases; `<relative>_alcool`, `_cannabis`, `_autre_substance` (the last one is 1 on 2,709 rows where the list does not hold it) | All rows |

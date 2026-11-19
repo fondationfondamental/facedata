@@ -2,36 +2,103 @@ instrument: family_history
 title: "Family history, one row per relative"
 tab: ANTECEDENTS
 section: Mère
-status: draft
+status: reviewed
 level: relatives
 notes: >
   One row per patient and relative, in the table relatives: the mother, the
-  father, the four grandparents, and one row for the children and one for
-  the brothers and sisters, each described as a group (BP has a row per
-  sister, brother, daughter and son). 3,748 rows of 577 patients.
+  father, the four grandparents, and one row for the children and one for the
+  brothers and sisters. BP has a row per sister, brother, daughter and son
+  (26 rows per patient at most); here a patient has 8 rows at most (6.5 on
+  average): 3,748 rows of 577 patients. The form is on the inclusion visit
+  only (one patient has it on the screening visit too, none at follow-up):
+  it has no follow-up twin.
 
-  Who has a row. The questions on the disorders are asked when the
-  relative has a psychiatric history (family_structure.yaml): a mood
-  disorder and its kind, a schizophrenic disorder, a suicide or an attempt,
-  a substance, an anxiety disorder, a dementia. The cardiovascular risk
-  factors are asked for every relative. But the boxes (alcohol, cannabis,
-  another substance; diabetes, obesity, hyperlipidaemia, hypertension) are
-  set to 0 by the form on every row that has the family form, so each
-  parent and grandparent of 577 patients has a row, most of them with
-  boxes at 0 only. A box is flagged derived_doubt where its question is
-  empty (14,335 cells). A row does not say that the relative has a
-  disorder.
+  The children and the siblings are ONE ARBITRARY RELATIVE per group. The
+  row describes one of the affected children and one of the affected
+  siblings: the export keeps one record per patient and visit of the tables
+  of the children and of the siblings (select distinct on (usubjid,
+  visitnum) without an ORDER BY), so which one is left to chance. The
+  patients who counted two or more affected children or siblings
+  (psychiatric or cardiovascular) in family_structure are 13 for the
+  children and 54 for the siblings; a count above 0 with no row: 6 children
+  and 25 siblings. Rows survive a "no" (one sibling row sits under counts of
+  0 and 0) and nothing checks the count. These rows do not join the rows of
+  BP (sister, brother, daughter, son): compare the questions of the
+  relatives of degree 1, or the columns fdr_ of the patients table.
 
-  Codes. 2 is "not known" in the yes/no questions (1,661 cells,
-  missing_code). The kind of mood disorder (0, 1, 2) and the suicide (0 to
-  3) are lists that the dictionary does not give: delivered as code_N. The
-  type of diabetes is read 1 type 1, 2 type 2 and 0 "not known", as for
-  the patient. Open question O29.
+  Who has a row. A parent or a grandparent of every patient who has the
+  family form has a row (577 patients): the table of the application holds
+  the boxes of the substances and of the cardiovascular risk factors of
+  these six relatives as NOT NULL, so an unticked box is saved 0 on every
+  saved form (not so for the children and the siblings, see below). So
+  1,245 of the 3,748 rows hold nothing but boxes at 0 (1,124 grandparents,
+  120 parents, 1 sibling; 1,252 now that the answers "not known" are
+  missing): a row does not say that the relative has a disorder.
+  A box is flagged derived_doubt where its question is empty (14,335 cells:
+  2,925 for each of the three substance boxes, 1,390 for each of the four
+  risk boxes).
 
-  A mood disorder is reported for 536 of the 737 relatives who are
-  described, in the families of 343 patients. No per-patient summary is
-  computed here (BP has fdr_ and gp_ columns): the questions are not those
-  of BP.
+  What the form asks, and what is not implemented. The questions on the
+  disorders (mood disorder and its kind, schizophrenic disorder, suicide,
+  substance, anxiety disorder, dementia) are asked when the relative has a
+  psychiatric history (family_structure). The block of the cardiovascular
+  risk factors is in the same section of the form and is asked after a "no"
+  too (293 of the 312 mothers without a psychiatric history answer it), so
+  a gate of the relative on the psychiatric history cannot be written in the
+  schema (it would blank the risk factors with the disorders): not
+  implemented. 1,895 parents and grandparents answered "no
+  psychiatric history": their questions on the disorders are missing, and
+  that means "none", not "not asked". Read family_structure, or the columns
+  fdr_ and gp_ of the patients table (below), which do it. A mood disorder
+  is reported for 536 of the 737 relatives with an answer to that question
+  (the relatives described for a psychiatric history), in the families of
+  343 patients.
+
+  Boxes of the children and the siblings. The substances (alcohol, cannabis,
+  another) and the cardiovascular risk factors (diabetes, obesity,
+  hyperlipidaemia, hypertension) are lists of check boxes in the form
+  (form 165). For a parent or a grandparent an unticked box is saved 0; the
+  tables of the children and of the siblings hold them as nullable, and an
+  unticked box is saved empty. The boxes of
+  one list are read together (box_list: substance_kinds and cv_kinds): an
+  empty box beside a ticked box of its list is 0. 241 cells become 0: 39 of
+  the children, 202 of the siblings, none of the parents (their boxes are
+  never empty). A row where every box of the list is empty stays missing.
+
+  Codes. "Not known" is a missing code: 2 in the yes/no questions (1,621
+  cells), 0 for the type of diabetes (40), 0 for the kind of mood disorder
+  (79) and 1 for the suicide (98): 1,838 cells, flagged missing_code. The
+  dictionary does not give the two lists, but the form does, and they are
+  the lists of BP. The kind of mood disorder (relative_mood_disorder_kind,
+  asked after a mood disorder "yes") is unipolar (a major depressive episode
+  or unipolar disorder, 416 relatives) or bipolar (41); it is not BP's
+  relative_disorder, which is one list with schizophrenia and "none", but
+  has its labels. The suicide (relative_suicide, the name and labels of BP)
+  is none (557), attempt (85) or completed (55); a relative who died by
+  suicide is not among the attempts. The type of diabetes is read 1 type 1,
+  2 type 2 and 0 "not known", as for the patient. In the form the type of
+  diabetes of the siblings has the field name of the children (the table of
+  the siblings holds it under ATCDFAMCV_ENFANT_TYPDIAB); the export maps it
+  correctly (7 values for the 11 siblings with diabetes).
+
+  Per patient: the columns fdr_ and gp_ of the patients table sum up these
+  rows with the counts of family_structure (family_history_per_patient,
+  below), under the names of BP. For a comparison with BP use them, not the
+  rows.
+
+  Year and centre (report). The anxiety disorder of the relative (asked for
+  the relatives with a psychiatric history, so it carries the centre
+  difference of family_structure) is 9% to 52% by centre (13 centres,
+  chi-square p < 0.0001) and 20% to 60% by year in groups of 20 to 81
+  relatives, with no trend (p = 0.04). The cardiovascular risk is 10% to 41%
+  by centre (p < 0.0001; the question is answered on 48% to 75% of the
+  relatives of a centre) and moves by 10 points or less between three
+  periods for each parent and grandparent: the yearly shares of the whole
+  table (14% to 43%) come from the mix of relatives. These are differences
+  of centres (rater habit or case mix, the data cannot tell), not steps in
+  time. The second form of the one patient who has the family form twice
+  holds another answer for one box of one relative (the hyperlipidaemia of
+  the father): the first answer is kept, flag patient_value_varies, 1 cell.
 
 relatives:
   mere: {relative: mother, kinship: mother, degree: 1}
@@ -61,18 +128,147 @@ variables:
       paternal_grandfather: paternal_grandfather
   degree: {column: degree, range: [1, 2], label: "Degree of kinship (1: parent, sibling, child; 2: grandparent)"}
   relative_mood_disorder: {column: thy, range: [0, 1], missing: {"2": unknown}, label: Mood disorder of the relative}
-  relative_mood_disorder_kind: {column: trouble, type: category, codes: {"0": code_0, "1": code_1, "2": code_2}, label: "Kind of mood disorder (codes that the dictionary does not explain)"}
+  relative_mood_disorder_kind: {column: trouble, type: category, codes: {"1": unipolar, "2": bipolar}, missing: {"0": unknown}, label: "Kind of mood disorder of the relative (unipolar: a major depressive episode or unipolar disorder; bipolar)"}
   relative_schizophrenia: {column: schi, range: [0, 1], missing: {"2": unknown}, label: Schizophrenic disorder of the relative}
-  relative_suicide_code: {column: suicide, type: category, codes: {"0": code_0, "1": code_1, "2": code_2, "3": code_3}, label: "Suicide or suicide attempt of the relative (codes that the dictionary does not explain)"}
+  relative_suicide: {column: suicide, type: category, codes: {"0": none, "2": attempt, "3": completed}, missing: {"1": unknown}, label: Suicide or suicide attempt of the relative}
   relative_substance: {column: substance, range: [0, 1], missing: {"2": unknown}, label: Abuse of or dependence on a substance}
-  relative_alcohol: {column: alcool, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on alcohol (a box)}
-  relative_cannabis: {column: cannabis, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on cannabis (a box)}
-  relative_other_substance: {column: autre, range: [0, 1], derived_from: relative_substance, label: Abuse of or dependence on another substance (a box)}
+  relative_alcohol: {column: alcool, range: [0, 1], derived_from: relative_substance, box_list: substance_kinds, label: Abuse of or dependence on alcohol (a box)}
+  relative_cannabis: {column: cannabis, range: [0, 1], derived_from: relative_substance, box_list: substance_kinds, label: Abuse of or dependence on cannabis (a box)}
+  relative_other_substance: {column: autre, range: [0, 1], derived_from: relative_substance, box_list: substance_kinds, label: Abuse of or dependence on another substance (a box)}
   relative_anxiety: {column: anx, range: [0, 1], missing: {"2": unknown}, label: Anxiety disorder of the relative}
   relative_dementia: {column: dem, range: [0, 1], missing: {"2": unknown}, label: Dementia of the relative}
   relative_cardiovascular_risk: {column: atcdfamcv, range: [0, 1], missing: {"2": unknown}, label: The relative has cardiovascular risk factors}
-  relative_diabetes: {column: diabete, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: diabetes (a box)"}
-  relative_obesity: {column: obesite, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: obesity (a box)"}
-  relative_hyperlipidaemia: {column: hyperlimidemie, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: hyperlipidaemia (a box)"}
-  relative_hypertension: {column: hypertension, range: [0, 1], derived_from: relative_cardiovascular_risk, label: "Cardiovascular risk factor: hypertension (a box)"}
+  relative_diabetes: {column: diabete, range: [0, 1], derived_from: relative_cardiovascular_risk, box_list: cv_kinds, label: "Cardiovascular risk factor: diabetes (a box)"}
+  relative_obesity: {column: obesite, range: [0, 1], derived_from: relative_cardiovascular_risk, box_list: cv_kinds, label: "Cardiovascular risk factor: obesity (a box)"}
+  relative_hyperlipidaemia: {column: hyperlimidemie, range: [0, 1], derived_from: relative_cardiovascular_risk, box_list: cv_kinds, label: "Cardiovascular risk factor: hyperlipidaemia (a box)"}
+  relative_hypertension: {column: hypertension, range: [0, 1], derived_from: relative_cardiovascular_risk, box_list: cv_kinds, label: "Cardiovascular risk factor: hypertension (a box)"}
   relative_diabetes_type: {column: typdiab, type: category, codes: {"1": type_1, "2": type_2}, missing: {"0": unknown}, label: Type of diabetes of the relative}
+
+per_patient:
+  title: Family history, per patient
+  notes: >
+    One answer per patient: is there a relative with bipolar disorder,
+    depression, schizophrenia, a completed suicide, a suicide attempt or a
+    substance problem? Same names, labels and rule as BP. The columns fdr_
+    look at the first-degree relatives (mother, father, children, siblings),
+    the columns gp_ at the four grandparents. Computed from the rows of the
+    table relatives and from the counts of family_structure: the psychiatric
+    history of each parent and grandparent (1 or 0), and the number of
+    children and of siblings with a psychiatric history. BP counts the
+    affected relatives of its own question, which joins psychiatric and
+    cardiovascular histories: the counts are not the same notion.
+
+    1 when at least one relative of the group has it. 0 when every part of
+    the group is answered and nobody has it: a parent or a grandparent with
+    no psychiatric history is a no (the form asks the disorders only after a
+    yes: 1,895 of them), one with a history needs a known answer to the
+    question, and as many children and siblings are described as the patient
+    counted with a psychiatric history. Missing otherwise: one "do not
+    know" is enough, unless another relative says yes.
+
+    Of the 634 patients, 1 / 0 / missing: fdr_bipolar 37 / 242 / 355,
+    fdr_depression 259 / 137 / 238, fdr_schizophrenia 17 / 342 / 275,
+    fdr_suicide 36 / 323 / 275, fdr_suicide_attempt 64 / 308 / 262,
+    fdr_substance 118 / 286 / 230; gp_bipolar 3 / 212 / 419, gp_depression
+    74 / 168 / 392, gp_schizophrenia 3 / 253 / 378, gp_suicide 18 / 236 /
+    380, gp_suicide_attempt 11 / 246 / 377, gp_substance 41 / 238 / 355.
+    Why fdr_bipolar is missing, in this order of precedence: no answer in
+    the family form 76 (57 patients with no form, 19 with a form that holds
+    nothing but boxes at 0); a parent "not known" or left empty 46; the
+    number of children or siblings left empty 65; a counted relative with
+    no known answer to the question 134; more children or siblings counted
+    than described 34. The other five columns fdr_ lose 76 patients with no
+    answer too, then 35 to 50 for a parent, 40 to 65 for a count left empty,
+    21 to 71 for a counted relative with no known answer (fdr_depression 71,
+    the others 21 to 43) and 16 to 51 for children or siblings counted
+    above the rows. The columns gp_ are missing mostly for a grandparent
+    "not known" or empty (266 to 286): "not known" is the answer for 27% to
+    40% of the patients who answer about each grandparent.
+
+    Two limits. (1) The children and the siblings are one arbitrary
+    relative each (see family_history above): a patient who counted two or
+    more of them (13 children, 42 siblings with a psychiatric history) is 1
+    if the described relative has it, and missing otherwise; a count above 0
+    with no row (3 children, 18 siblings) is missing. (2) The kind of mood
+    disorder is asked only after a mood disorder "yes". A relative with a
+    psychiatric history and no mood disorder has no kind, and the language
+    cannot count it as a known "no" for bipolar or unipolar disorder (the
+    variables of `where` must all have a value). So fdr_bipolar is missing
+    for 60 patients whose answer is no, fdr_depression for 29, gp_bipolar
+    for 27 and gp_depression for 19; every 1 and 0 delivered is the same
+    under the other reading, which counts the "no mood disorder" of the
+    relative. For "a relative is known to have it, or not", compare the
+    column with 1.
+
+    Depression means the answer "major depressive episode or unipolar
+    disorder", not bipolar disorder. A suicide attempt does not include a
+    completed suicide: the form takes one answer per relative.
+
+    Year and centre (report). fdr_substance, fdr_depression and gp_depression
+    have a shift in the report because a 0/1 item moves its median when the
+    share of a group of 20 to 48 patients crosses one half. By centre
+    fdr_substance is 8% to 55% (11 centres, chi-square p = 0.0006; the
+    largest centre is the highest, as for the psychiatric history of the
+    father in family_structure), fdr_depression 44% to 81% (10 centres, p =
+    0.05) and gp_depression 16% to 60% (6 centres, p = 0.02): differences
+    of centres (rater habit or case mix, the data cannot tell), not steps in
+    time. Compare a share of 1 between centres, or with BP, with care.
+  by: kinship
+  counts:
+    mother: mother_psychiatric_history
+    father: father_psychiatric_history
+    children: n_children_psychiatric_history
+    siblings: n_siblings_psychiatric_history
+    maternal_grandmother: maternal_grandmother_psychiatric_history
+    maternal_grandfather: maternal_grandfather_psychiatric_history
+    paternal_grandmother: paternal_grandmother_psychiatric_history
+    paternal_grandfather: paternal_grandfather_psychiatric_history
+  columns:
+    fdr_bipolar:
+      label: "A parent, a sibling or a child with bipolar disorder"
+      among: [mother, father, children, siblings]
+      where: {relative_mood_disorder_kind: bipolar}
+    fdr_depression:
+      label: "A parent, a sibling or a child with depression (a major depressive episode or unipolar disorder)"
+      among: [mother, father, children, siblings]
+      where: {relative_mood_disorder_kind: unipolar}
+    fdr_schizophrenia:
+      label: "A parent, a sibling or a child with schizophrenia"
+      among: [mother, father, children, siblings]
+      where: {relative_schizophrenia: 1}
+    fdr_suicide:
+      label: "A parent, a sibling or a child who died by suicide"
+      among: [mother, father, children, siblings]
+      where: {relative_suicide: completed}
+    fdr_suicide_attempt:
+      label: "A parent, a sibling or a child who attempted suicide"
+      among: [mother, father, children, siblings]
+      where: {relative_suicide: attempt}
+    fdr_substance:
+      label: "A parent, a sibling or a child with abuse of or dependence on a substance"
+      among: [mother, father, children, siblings]
+      where: {relative_substance: 1}
+    gp_bipolar:
+      label: "A grandparent with bipolar disorder"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_mood_disorder_kind: bipolar}
+    gp_depression:
+      label: "A grandparent with depression (a major depressive episode or unipolar disorder)"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_mood_disorder_kind: unipolar}
+    gp_schizophrenia:
+      label: "A grandparent with schizophrenia"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_schizophrenia: 1}
+    gp_suicide:
+      label: "A grandparent who died by suicide"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_suicide: completed}
+    gp_suicide_attempt:
+      label: "A grandparent who attempted suicide"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_suicide: attempt}
+    gp_substance:
+      label: "A grandparent with abuse of or dependence on a substance"
+      among: [maternal_grandmother, maternal_grandfather, paternal_grandmother, paternal_grandfather]
+      where: {relative_substance: 1}
