@@ -312,7 +312,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert (qc.loc["sick_leave_fu", "n_valid"], (data["sick_leave_fu"] == 1).sum(), qc.loc["sick_leave_days_fu", "n_valid"]) == (714, 229, 742)
     assert (qc.loc["ever_hospitalised_v0", "n_valid"], (data["ever_hospitalised_v0"] == 1).sum(), qc.loc["n_hospitalisations_depression_fu", "n_valid"]) == (304, 259, 792)
     assert (qc.loc["hospitalised_year", "n_valid"], (data["hospitalised_year"] == 1).sum(), (data["saw_gp"] == 1).sum(), (data["saw_psychologist"] == 1).sum()) == (996, 394, 747, 315)
-    assert (qc.loc["cannabis_use", "n_valid"], (data["cannabis_use"] == 1).sum(), qc.loc["episode_number", "n_valid"]) == (582, 24, 220)
+    assert (qc.loc["cannabis_current", "n_valid"], (data["cannabis_current"] == 1).sum(), qc.loc["episode_number", "n_valid"]) == (582, 24, 220)
 
 
 def test_treatments(result, qc):

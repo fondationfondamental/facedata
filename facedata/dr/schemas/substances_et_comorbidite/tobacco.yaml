@@ -2,12 +2,68 @@ instrument: tobacco
 title: "Tobacco"
 tab: SUBSTANCES
 section: TABAC
-status: draft
+status: reviewed
 notes: >
   The BP schema with the codes of this extraction (1 non-smoker, 2
-  ex-smoker, 3 current smoker). Filled at inclusion and at every follow-up
-  visit: 1,310 visits (54% non-smokers, 32% smokers, 15% ex-smokers; BP
-  48%, 40% and 12%). One number of pack-years is above 200 (out_of_range).
+  ex-smoker, 3 current smoker). One schema: the status is that of the day of
+  the visit and the details (pack-years, ages) are cumulative, so there is no
+  `_v0` and `_fu`; the shares at inclusion and at follow-up are close
+  (non-smokers 54% and 53%, current smokers 32% and 32%). It comes from the
+  nurse's record (form 112), which holds these four questions and no other
+  on tobacco. Filled at 1,310 visits (54% non-smokers, 32% smokers, 15%
+  ex-smokers; BP 48%, 40% and 12%): 538 of 634 inclusions (85%; 70% to 100%
+  by year, the lowest in 2025-26) and 771 of 925 follow-up visits (83%, at
+  6 months, 1, 1.5, 2 and 4 years). The dictionary lists v0, 6 months and 1
+  year only.
+
+  The form hides and clears the details by status: a non-smoker has no
+  pack-years, no start age and no stop age; a current smoker has no stop
+  age; an ex-smoker has the three. A hidden box is saved empty, never 0:
+  0 of 701 non-smoker visits hold a detail and 0 of 417 current smokers a
+  stop age. Nothing to encode (no `asked_if`, no `shown_if`). The details of
+  a smoker are missing when the rater left them empty: pack-years are valid
+  for 88% of the current smokers and 91% of the ex-smokers (BP 73% and 80%),
+  the start age for 92% and 95%, the stop age for 94% of the ex-smokers.
+
+  Pack-years. The form states the formula (cigarettes a day divided by 20,
+  times the years of smoking) in a text and computes nothing; the box takes
+  digits only, three characters, so the values are whole numbers (a half
+  pack-year cannot be typed). One value, 225, is above 200 (out_of_range:
+  200 pack-years is four packs a day for fifty years) and one cell, "2,", is
+  unparsed. The delivery winsorises the tails (limits 1 and 105), as in BP
+  and SZ: 7 cells change, five values of 115 to 187 become 105 and two zeros
+  become 1 (they are not "delivered as written").
+
+  "Non-smoker" is not "never smoked". Between two consecutive visits of a
+  patient (760 pairs): ex-smoker then non-smoker 21 of 125, current smoker
+  then non-smoker 8 of 249, non-smoker then current or ex-smoker 19 of 386.
+  In 15 of the 15 last pairs that give a start age, the age is at or before
+  the age at the earlier visit, so the earlier "non-smoker" was the likelier
+  error; 36 of the 701 non-smoker visits (27 patients) are dated after the
+  first visit of the patient as a current or ex-smoker (BP 12%). 12 patients
+  restart (ex-smoker, then current smoker). Never derive 0 pack-years from
+  "non-smoker". The details are retyped at each visit and are not constant:
+  pack-years fall between two visits in 97 of 315 pairs (31%; by more than 5
+  in about 15%) and the start age takes more than one value for 63 of the
+  124 patients who have it twice or more (51%). Delivered as recorded.
+
+  Years and centres (report panels). A step since 2021: the non-smokers are
+  50% of the visits until 2020 and 64% since (50% and 63% of the inclusions,
+  50% and 64% of the follow-up visits; 49% and 60% with the centres weighted
+  as before 2021; 9 of 12 centres go up, one is level, two go down), while the
+  details are given less often: pack-years are valid for 93% of the smokers
+  until 2020 and 76% since, the start age for 96% and 82%, the stop age for
+  97% and 81%, and the status is filled on 90% and 76% of the inclusions. No
+  cause is known (a real fall of smoking among the patients and a form filled
+  with less care both fit: DM-8). The median pack-years of the smokers is 30
+  in 2013 (25 visits), 21 in 2014 and 14.5 to 19 a year after; the year shift
+  of the QC table (0.6 interquartile range) is that first group, and the age
+  of the smokers does not move (median 52 to 56 years in 2013 to 2019). The
+  centres differ: non-smokers 37% to 71% of the visits, current smokers 15%
+  to 48%, median pack-years 14 to 27 (nine centres with 20 values or more),
+  the status filled on 36% to 100% of the inclusions; one centre holds no
+  status at any of its 70 visits since 2017. The data cannot tell a rater
+  habit from the case mix.
 
 variables:
   tobacco_status:

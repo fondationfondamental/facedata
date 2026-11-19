@@ -2,20 +2,65 @@ instrument: substance_fu
 title: Substance use disorders, at follow-up
 tab: SUBSTANCES ET COMORBIDITE
 section: Troubles lié à une SUBSTANCE AU COURS DE LA VIE / VISITE
-status: draft
+status: reviewed
 notes: >
-  The questions of substance_v0 at the follow-up visits, where they are
-  about the time since the last visit (see substance_v0.yaml): 2,311
-  visits, 744 yes to the first question, 55 "Ne sais pas" (missing codes).
-  Eight substances have a box here; the stimulants and the other
-  substances exist at follow-up only.
+  The questions of substance_v0 at the yearly visits (see substance_v0.yaml,
+  which holds the paragraphs that the two schemas share): for each of the
+  substances a box (a symptom of a use disorder over the whole life), whether
+  the disorder is present at the time of the visit, and the age at onset of
+  the disorder. 2,311 visits answer the first question (744 yes, 55 "Ne sais
+  pas", read as missing codes). Eight substances have a box here; the
+  stimulants and the other substances exist at follow-up only.
 
-  The age at onset still describes the whole life, as in BP.
+  Where the questions come from. The first question is the clinician's answer
+  of the comorbidity form (rad_tb_subst, attached to the yearly visit), which
+  the export turns into "Oui" when any box is yes, even where the clinician
+  said no or unknown (export request R116: the clinician's own answer,
+  rad_tb_subst_raw, is dropped). The box has two sources: the list of
+  substances ticked by the clinician in the comorbidity form (chk_substances_type)
+  and, from 2015, a yes of the addiction form (addicto), which is added. The
+  yes share of the cannabis box rises from 10% to 19% of the answers in
+  2012-14 to 22% to 29% from 2015; cocaine from 0% before 2015 to 1% to 7%
+  after. The "present at the time of the visit" answers are written Y/N,
+  Oui/Non or 0/1 depending on the substance; the schema reads the three.
 
-  Three columns are not loaded. chk_substances_type lists the substances
-  in one cell on 540 visits: every one of them is also a yes in its box,
-  and the boxes hold more. sutrt_autre, the name of the other substance,
-  is a copy of sutrt_autre_produit (drug_use.yaml) on every row.
+  Hidden gate. After a "no" to the opening question of the drug section
+  (rad_add_4, delivered as illicit_drugs_over_ten_times in drug_use.yaml) the
+  export leaves the six boxes of the sedatives, opiates, cocaine,
+  hallucinogens, stimulants and other substances blank on 72 of the 1,600
+  yearly visits that say no (on the other 1,528 they are filled). They are
+  delivered as 0 (asked_if on drugs_over_ten_times_fu, a hidden variable that
+  is not delivered): 432 cells missing become 0.
+
+  The end of each section (disorder at the time of the visit, age at onset) is
+  shown only with two or more DSM-5 criteria, a count that is in another tab:
+  an empty cell means "not asked", not "no" (see substance_v0.yaml).
+
+  The module is used from 2015, not from 2012: the opening question of the
+  alcohol section is answered on 14% of the yearly visits of 2014, 55% of
+  2015 and 68% to 90% after. One centre answers it on 53% of its yearly visits
+  in 2016-18, 23% in 2019-21 and 11% in 2022-26 (inclusion visits: 77%, 31%
+  and 34%), and another on 79% in 2019-21 and 33% from 2022: centre practice,
+  unexplained.
+
+  A follow-up answer is a yearly update (BP decision D84): not the whole life,
+  and not strictly the time since the last visit. Of the patients with an
+  alcohol box at 1 at inclusion, 147 of the 319 later answers are no (175 of
+  487 for cannabis, 201 of 633 for the first question). The age at onset still
+  describes the whole life, as in BP: at follow-up it equals the age given at
+  inclusion in 65 of 97 pairs for alcohol and 119 of 169 for cannabis.
+
+  Three columns are not loaded. chk_substances_type lists the substances in
+  one cell on 540 visits: every one of them is also a yes in its box, and the
+  boxes hold more. sutrt_autre, the name of the other substance, is a copy of
+  sutrt_autre_produit (drug_use.yaml) on every row.
+
+  By year, the yes share of the first question is 17% of the 95 yearly visits
+  to 2013 (the roll-out above), 36% in 2014-16, 34% to 35% in 2017-22 and 30%
+  from 2023; the cannabis box is 12%, 26%, 25% to 26% and 23%. Inside the
+  centres these shares move in both directions, and the median age at onset of
+  the alcohol disorder is 17 to 24 by centre (centres with 20 answers or more):
+  no known cause.
 
 version:
   name: visit_form
@@ -48,31 +93,32 @@ defaults: {versions: [follow_up]}
 
 variables:
   substance_disorder_fu: {column: rad_tb_subst, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Has or has had a substance use disorder, at follow-up"}
+  drugs_over_ten_times_fu: {column: rad_add_4, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, keep: false, label: "More than ten times in your life: illicit drugs or medicines taken without a prescription (the opening question of drug_use.yaml; not delivered here, the gate of the boxes of six substances), at follow-up"}
 
-  alcohol_disorder_fu: {column: suoccur_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Alcohol: abuse or dependence, at follow-up"}
-  alcohol_last_month_fu: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: symptoms in the past month, at follow-up"}
-  alcohol_onset_age_fu: {column: agedebut_alcool, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Alcohol: age at onset, at follow-up"}
+  alcohol_disorder_fu: {column: suoccur_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Alcohol: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  alcohol_last_month_fu: {column: abudep_alcool, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Alcohol: use disorder present at the time of the visit (asked from two DSM-5 criteria), at follow-up"}
+  alcohol_onset_age_fu: {column: agedebut_alcool, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Alcohol: age at onset of the use disorder, at follow-up"}
 
-  sedative_disorder_fu: {column: suoccur_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Sedatives, hypnotics, anxiolytics: abuse or dependence, at follow-up"}
-  sedative_last_month_fu: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: symptoms in the past month, at follow-up"}
-  sedative_onset_age_fu: {column: agedebut_sedatif, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Sedatives, hypnotics, anxiolytics: age at onset, at follow-up"}
+  sedative_disorder_fu: {column: suoccur_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Sedatives, hypnotics, anxiolytics: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  sedative_last_month_fu: {column: abudep_sedatif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sedatives, hypnotics, anxiolytics: use disorder present at the time of the visit (asked from two DSM-5 criteria), at follow-up"}
+  sedative_onset_age_fu: {column: agedebut_sedatif, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Sedatives, hypnotics, anxiolytics: age at onset of the use disorder, at follow-up"}
 
-  cannabis_disorder_fu: {column: suoccur_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: abuse or dependence, at follow-up"}
-  cannabis_last_month_fu: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: symptoms in the past month, at follow-up"}
-  cannabis_onset_age_fu: {column: agedebut_cannabis, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at onset, at follow-up"}
+  cannabis_disorder_fu: {column: suoccur_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cannabis: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  cannabis_last_month_fu: {column: abudep_cannabis, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cannabis: use disorder present at the time of the visit (asked from two DSM-5 criteria), at follow-up"}
+  cannabis_onset_age_fu: {column: agedebut_cannabis, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cannabis: age at onset of the use disorder, at follow-up"}
 
-  stimulant_disorder_fu: {column: suoccur_stimulants, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Stimulants: abuse or dependence, at follow-up"}
-  stimulant_onset_age_fu: {column: agedebut_stimulants, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Stimulants: age at onset, at follow-up"}
+  stimulant_disorder_fu: {column: suoccur_stimulants, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Stimulants: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  stimulant_onset_age_fu: {column: agedebut_stimulants, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Stimulants: age at onset of the use disorder, at follow-up"}
 
-  opiate_disorder_fu: {column: suoccur_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Opiates: abuse or dependence, at follow-up"}
-  opiate_last_month_fu: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: symptoms in the past month, at follow-up"}
-  opiate_onset_age_fu: {column: agedebut_opiaces, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Opiates: age at onset, at follow-up"}
+  opiate_disorder_fu: {column: suoccur_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Opiates: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  opiate_last_month_fu: {column: abudep_opiaces, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Opiates: use disorder present at the time of the visit (asked from two DSM-5 criteria), at follow-up"}
+  opiate_onset_age_fu: {column: agedebut_opiaces, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Opiates: age at onset of the use disorder, at follow-up"}
 
-  cocaine_disorder_fu: {column: suoccur_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Cocaine: abuse or dependence, at follow-up"}
-  cocaine_last_month_fu: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: symptoms in the past month, at follow-up"}
-  cocaine_onset_age_fu: {column: agedebut_cocaine, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cocaine: age at onset, at follow-up"}
+  cocaine_disorder_fu: {column: suoccur_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Cocaine: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  cocaine_last_month_fu: {column: abudep_cocaine, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cocaine: use disorder present at the time of the visit (asked from two DSM-5 criteria), at follow-up"}
+  cocaine_onset_age_fu: {column: agedebut_cocaine, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Cocaine: age at onset of the use disorder, at follow-up"}
 
-  hallucinogen_disorder_fu: {column: suoccur_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Hallucinogens: abuse or dependence, at follow-up"}
-  hallucinogen_onset_age_fu: {column: agedebut_hallucinogenes, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Hallucinogens: age at onset, at follow-up"}
+  hallucinogen_disorder_fu: {column: suoccur_hallucinogenes, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Hallucinogens: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}
+  hallucinogen_onset_age_fu: {column: agedebut_hallucinogenes, type: item, range: [0, 90], missing: {99: unknown, 999: unknown}, label: "Hallucinogens: age at onset of the use disorder, at follow-up"}
 
-  other_substance_disorder_fu: {column: suoccur_autre, type: item, range: [0, 1], codes: {Y: 1, N: 0}, label: "Another substance: abuse or dependence, at follow-up"}
+  other_substance_disorder_fu: {column: suoccur_autre, type: item, range: [0, 1], codes: {Y: 1, N: 0}, asked_if: drugs_over_ten_times_fu, label: "Another substance: symptom of a use disorder over the whole life (at least one DSM-5 criterion or the clinician's tick), at follow-up"}

@@ -2,29 +2,68 @@ instrument: eating_disorder_v0
 title: Eating disorders (inclusion visit)
 tab: SUBSTANCES ET COMORBIDITE
 section: Trouble du COMPORTEMENT ALIMENTAIRE
-status: draft
+status: reviewed
 notes: >
-  Whether the patient has an eating disorder, which one, whether symptoms
-  were present in the past month and the age at onset. Yes/no answers are
-  delivered as 1 and 0; "unknown" (U) is a missing code.
+  Whether the patient has an eating disorder, which one, whether symptoms were present in the past
+  month and the age at onset. Yes/no answers are delivered as 1 and 0; "unknown" (U) is a missing
+  code.
 
-  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
-  The same questions are asked at the inclusion visit and at the yearly
-  visits, with the same wording: the form asks "does the patient have an eating disorder", in the present tense.
-  The yearly form is the inclusion form again, shown after one more
-  question, "no change since the last visit?", which the extraction does
-  not hold (read in the application in November 2026, decision D84 in
-  PROGRESS.md). A yearly answer is an update given at that visit; the
-  project lead reads it as an answer about the time since the last visit. The data show it: 20% of the
-  patients have an eating disorder at inclusion, 14% at the yearly visits;
-  of the patients who had one at inclusion, half are answered "no" a year or
-  more later. The two are therefore delivered as separate columns, ending in
-  _v0 (inclusion visit) and _fu (yearly visits);
-  visit_form says which form a visit used and is read from the visit
-  label.
+  Where the block comes from. It sits in three tables of the application: the DSM-IV diagnosis form
+  (psy_diag_psychiatrique), the DSM-5 diagnosis form (psy_diag_psychiatriquedsm5) and the yearly
+  comorbidity form (psy_troubles_comorbides, the only one with the question "no change since the last
+  visit?", rad_pas_dechangement). The export takes each column from the first non-empty of the three.
+  Apart from the age of the eating disorder (eating_disorder_v0) and the two panic type boxes
+  (anxiety_v0) the three are identical, so there is no split by version (decision D153 in
+  PROGRESS.md).
 
-  "Night eating syndrome" is a choice used on a handful of visits, from
-  2024.
+  Two forms in the same columns (decisions D49, D50 and D84 in PROGRESS.md). The same questions are
+  asked at the inclusion visit and at the yearly visits, never at the six-monthly ones, with the same
+  wording: the form asks "does the patient have an eating disorder", in the present tense. The yearly
+  form is the inclusion form again, shown after one more question, "no change since the last visit?",
+  which the extraction does not hold (read in the application in November 2026, decision D84 in
+  PROGRESS.md). A yearly answer is an update given at that visit: neither a history of the whole life
+  nor strictly an answer about the time since the last visit. The data show that the two differ: 20%
+  of the patients have an eating disorder at inclusion, 14% at the yearly visits; of the patients
+  answered "yes" at inclusion, the first answer given a year or more later is "no" for 49% (232 of
+  469). The two are therefore delivered as separate columns, ending in _v0 (inclusion visit) and _fu
+  (yearly visits); visit_form says which form a visit used and is read from the visit label.
+
+  The follow-up version holds 11,686 visits, of which 3,352 are six-monthly visits: 1 of them holds
+  the tab, and the screening visits never do. eating_disorder_fu is answered (yes, no or unknown) on
+  4,639 of the 11,686 visits (40%), which is 56% of the 8,334 yearly visits.
+
+  Age at onset (decision D152, request A57). The age is absent from the DSM-5 inclusion form: the
+  export reads occurtcaagedebuttca from psy_diag_psychiatrique and psy_troubles_comorbides only. Among
+  the inclusion visits with an eating disorder it is filled on 84% of the 787 DSM-IV visits and on 2
+  of the 232 DSM-5 visits: by year 75% to 96% up to 2021, then 3 of 231 from 2022 (all in the first
+  quarter of 2022) and none after. At the yearly visits, which the comorbidity form serves, it is
+  filled on 57% to 83% of the "yes" visits from 2013 to 2021 and on 38% to 53% from 2022. An empty age
+  is therefore "not asked" on a DSM-5 inclusion, not "unknown", and the inclusion ages are not
+  comparable across the two forms. There is no split by version (the other columns are identical): the
+  age is delivered as recorded.
+
+  Which one. "Night eating syndrome" exists in the DSM-5 form only: 3 inclusion visits (1 in 2022, 2
+  in 2025). The ages at onset are cast with ^[0-9]+$ by the export, so "Ne sais pas", "<5" and ">89"
+  become empty (request R117): an empty age under a "yes" mixes unknown and not answered.
+
+  Years and centres (O40, R20). The whole tab is often left empty: the four gates (anxiety,
+  substances, eating disorders, somatoform disorders) are all empty on 1,091 of the 6,498 inclusion
+  visits (17%; 453 of the 1,127 inclusions of 2022 to 2024) and on 3,611 of the 8,334 yearly visits
+  (43%: at a yearly visit an empty section may mean "no change"). Four centres stop holding the tab.
+  Share of their inclusions with the four gates empty, up to 2018, 2019-2021 and 2022-2024: centre A
+  9%, 33% and 87%; centre C 17%, 27% and 100%; centre B 1%, 8% and 35%; centre I 2%, 20% and 58%. A
+  gate that is empty while another is answered is rare (4.2% of the inclusion visits and 2.3% of the
+  yearly ones) and flat by year: there is no shortcut pattern as in the history tab (D83). The values
+  are delivered as recorded: an empty gate is missing, not "no".
+
+  Spreads of the QC table (decision D157 in PROGRESS.md). The share of the yearly visits that hold
+  something of the tab (one of the four gates) is 37% to 48% in 2010-2013, 55% in 2014, 67% to 73%
+  in 2015-2019, 61% to 62% in 2020-2021 and 39% to 47% from 2022: until 2013 centre D held it on
+  none of its 143 yearly visits and centres C, E and K on 15% to 19%, and these four hold it on 51%
+  to 57% of their yearly visits in 2014-2018; the decline from 2022 is the one above. The "symptoms
+  in the past month" have a median of 1 in some years and centres (shift of 1): the share of "yes"
+  is 46% to 72% by year and 48% to 69% by centre at inclusion (groups of 20 answers or more), around
+  one half, with no step. The step of the age at onset is the one of the DSM-5 inclusion form above.
 
 version:
   name: visit_form

@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-9, DEV-14, DEV-15, DM-8, O32, O33), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-13, DEV-14, DEV-15, DM-8, O32, O33, O34, O35, O36, O37), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -34,13 +34,13 @@ on request. The questions already answered for FACE BP are not asked again;
 the BP answers are in [the BP questions](../bp/QUESTIONS.md). Where a BP
 answer may not hold for SZ, the question says so.
 
-**Five questions to send first.** DEV-1 (Calgary item 8), DEV-2 (substance
-use disorder at inclusion), DEV-3 (marital status and source of income),
-DEV-4 (occupation of the Barona estimate) and DEV-5 (scores computed
-wrongly). Each concerns a main variable of the cohort, and each looks like
-an error of the export or of the EMR that a developer can find quickly.
-A sixth, DM-10 (years of education), was answered by the extraction of
-17 November 2026.
+**Four questions to send first.** DEV-1 (Calgary item 8), DEV-3 (marital
+status and source of income), DEV-4 (occupation of the Barona estimate) and
+DEV-5 (scores computed wrongly). Each concerns a main variable of the cohort,
+and each looks like an error of the export or of the EMR that a developer can
+find quickly. Two others were answered: DM-10 (years of education), by the
+extraction of 17 November 2026, and DEV-2 (substance use disorder at
+inclusion), by the export model on 19 November 2026.
 
 ## 1. For the EMR developers and whoever writes the export
 
@@ -55,17 +55,23 @@ on one visit in ten the stored total is wrong.
 *Today:* eight items and their sum (`calgary_sum8`); no total of the scale is
 delivered. (O4, D5)
 
-**DEV-2. Substance use disorder at the inclusion visit: "no" seems to be
-written "Ne sais pas".** `rad_tb_subst` holds "Ne sais pas" on 975 of the
+**DEV-2. Substance use disorder at the inclusion visit: the first question
+is built by the export.** `rad_tb_subst` holds "Ne sais pas" on 975 of the
 1,583 inclusion visits that answer (45% to 75% in every year), "Non" on 18
-and "Oui" on 590. At follow-up "Ne sais pas" is 2%. On every one of the 1,022
-visits that hold "Ne sais pas" with the substance boxes filled, all the boxes
-say no.
-*Question:* is the answer "no" of the inclusion form exported as "Ne sais
-pas"?
+and "Oui" on 590. At follow-up "Ne sais pas" is 2%.
+*Question:* **answered on 2026-11-19: read in the export model** (D65). The
+model (`face_sz_6_substances_comorbidites.sql`) writes "Oui" when one of the
+eight boxes is yes, "Non" when the six are no and "Ne sais pas" otherwise.
+After a "no" to `rad_add_4` ("more than ten times in your life: illicit
+drugs or medicines taken without a prescription") the form shows no drug
+question and the export leaves the drug boxes blank, so "all six no" is not
+reached: 925 of the 975 visits have that "no". There is no question to send;
+the export could read that "no" as "N" and keep the clinician's own answer
+(`rad_tb_subst_raw`, request R116).
 *Today:* "Ne sais pas" is a missing code, so the first question is missing on
-these visits. The boxes of each substance are delivered and complete. (O20,
-D17)
+these visits (97% of the 608 valid answers are yes: it does not measure the
+disorder). The drug boxes are 0 after the "no" to `rad_add_4` (D63), and the
+box of each substance is delivered. (O20 closed, D63, D65)
 
 **DEV-3. Social module: answers that never appear.** `maristat` never holds
 code 2 (married or living as a couple): it is 1 on 1,652 visits, 3 or 4 on
@@ -169,17 +175,32 @@ items.
 *Today:* the copied items are not delivered; the totals are delivered as
 stored. (O12, D11, D14)
 
-**DEV-9. Two columns filled from another field.** (1) The box "panic disorder
-with agoraphobia" (`ceoccurtroubpanago`) holds, on all its 634 rows, the
-answer to the screening question `rad_peur_agoraphobie`. (2) The export swaps
+**DEV-9. Columns filled from another field.** (1) Five columns of the anxiety
+section hold other fields of the form than their names say (`eschizo_psy_diag.sql`,
+lines 304-352 and 385-390; R114). `ceoccurtroubpansago`, "panic disorder
+without agoraphobia", holds `rad_trouble_panique`, the panic disorder with or
+without agoraphobia; `ceoccurtoc`, "obsessive-compulsive disorder", holds
+`rad_trouble_obsessionnel`, the obsessional disorder (the obsessive-compulsive
+disorder is `rad_trouble_compulsif`); `ceoccuranxietegeneral`, "generalised
+anxiety", holds `rad_anxieux`, a screening question ("in the last ten months");
+`ceoccurtroubanxaffmed`, "anxiety due to a medical condition", holds
+`rad_anxieux_generalise_titre`, the generalised anxiety; and
+`ceoccurtroubpanago`, "panic disorder with agoraphobia", holds, on all its 634
+rows, `rad_peur_agoraphobie`, the screening question on agoraphobic fear. No
+answer is lost, but the names mislead anyone who reads the extraction without
+the package. (2) The export swaps
 the two migraine columns: `eschizo_mh.sql` (lines 79-90) writes
 `rad_somatique_migraine` to `migraine_MHDECOD` and `rad_somat_mig_tt` to
 `migraine_MHOCCUR`, where the eBipolar script is right. `migraine_mhdecod`
 holds the disease of every patient and `migraine_mhoccur` is "treated", filled
 only after a yes (the form and the dictionary have the disease in `_mhoccur`).
-*Question:* can both be corrected in the export (R107 for the migraine)?
-*Today:* (1) the box is ignored and the screening answer delivered under its
-own name; (2) the two columns are read the other way round. (O19, O24, D50)
+*Question:* can both be corrected in the export (R114 for the anxiety columns,
+R107 for the migraine)?
+*Today:* (1) each column is delivered under the name of what it holds (the
+panic disorder, the obsessional disorder, the screening question and the
+generalised anxiety, the screening question on agoraphobic fear), and the box
+named for the panic disorder with agoraphobia is ignored; (2) the two columns
+are read the other way round. (O19 answered, O24, D50, D60)
 
 **DEV-10. Values written where nothing was measured, or not for the visit.**
 (1) The percentile of part B of the doors test is "<1" on 172 visits where
@@ -222,16 +243,18 @@ no longer computed, or no longer exported?
 
 **DEV-13. The dictionary.** 201 columns of the extraction are not in it. For
 most the instrument makes the meaning clear; for these the question itself is
-unknown: `rad_add_4` (it opens the questions on sedatives, heroin, cocaine,
-opiates and other products), `rad_add_heroin7a`, `rad_ecv_vp5`, the screening
-questions of the anxiety section (`rad_attaq_paniq`, `rad_peur_*`,
-`rad_trouble_compulsif`), the "level" columns of the Yale-Brown scale
+unknown: `rad_ecv_vp5`, the "level" columns of the Yale-Brown scale
 (`ybobse1`...), and four z-scores of the six elements test (`elem616_`,
-`elem620_`, `elem623_`, `elem625_`). Other points: `causedec_stopsuivi`,
+`elem620_`, `elem623_`, `elem625_`). Three others were read in the field
+tables of the application on 2026-11-19: `rad_add_4` (question 4 of the
+addiction form, "more than ten times in your life": D63), `rad_add_heroin7a`
+(the heroin question 7a, "a symptom of a use disorder over the whole life":
+D66; not delivered yet, O21) and the screening questions of the anxiety
+section (`rad_attaq_paniq`, `rad_peur_*`, `rad_trouble_compulsif`: D60). Other points: `causedec_stopsuivi`,
 named for the cause of death, holds the date of death; "Arme à feu" is
 written "Arme ? feu"; the sisters, brothers and children of the family
 history hold the same lists of disorders as the parents, not "yes, no,
-unknown". (O21, O19, O10, D4, D18, D20)
+unknown". (O21, O10, D4, D18, D20, D60, D63, D66)
 
 ## 2. For the data managers
 
@@ -412,3 +435,38 @@ points (one goes from 67% to 26%). The affected sisters and brothers (12% and
 Did the wording of the question, the form or the way the centres answer it
 change around 2018, the date of the migraine step (DEV-15)? Today it is
 delivered as extracted (D59).
+
+## Added by the SUBSTANCES ET COMORBIDITE review of 2026-11-19
+
+**Anxiety and eating disorders at the yearly visits (O34, for the EMR
+developers).** The yearly comorbidity form (`psy_troubles_comorbides`) asks the
+list of the ten anxiety disorders with the past-month question of each, the type
+of the panic disorder, and the eating disorder (first question, type, past
+month). The export reads only `rad_tb_anx` of it (the model comments out the list
+and the panic type, lines 62-63 of `face_sz_6_substances_comorbidites.sql`): 2,588
+yearly visits hold no cell of anxiety or eating detail, so there is no eating
+disorder at follow-up, and the anxiety is one yes/no question (2,265 answers, 716
+yes). Can the export read them (R115)? The BP form has a "no change" gate
+(`rad_pas_dechangement`); the SZ form has none: is that on purpose? Today only
+the first question is delivered (`anxiety_fu`), as a yearly update (BP D84).
+
+**The screening question of the generalised anxiety says "ten months" (O35, for
+the data managers).** The form asks "in the last ten months, have you been
+particularly nervous or anxious?" where the other screening questions of the
+anxiety section ask "ever". Is "ten months" a typing error (M61 of the
+requests)? Today it is delivered as `gad_screening_v0` (353 yes of 634 answers,
+at inclusion only), labelled with the form's words (D60).
+
+**The substance module of SZ (O36, for the data managers).** The opening
+questions of the addiction form (more than ten times in your life: alcohol,
+cannabis, drugs) are answered on 6% of the inclusion and yearly visits of 2012,
+17% of 2014, 52% of 2015 and 84% from 2016. Was the module introduced centre by
+centre from 2015, as the anxiety tree was? One centre goes from 77% to 31% to
+34% of its inclusion visits (2016-18, 2019-21, 2022-26) and from 53% to 23% to
+11% at follow-up, another from 79% to 33% of its yearly visits from 2022. Today
+it is delivered as extracted: an empty cell is not "no" (D65; compare BP O40).
+
+**Alcohol amounts above 40 glasses a day (O37, for the data managers).** 49
+whole-life values (22 from 41 to 60, 22 from 61 to 100, 5 above 100) and 5 of
+the last 12 months. Is the unit a glass per day, or per week? Today they are out
+of range and delivered as missing (range 0 to 40; D66).

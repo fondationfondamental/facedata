@@ -39,15 +39,15 @@ of today. Neither says how a form looked in 2012 or in early 2022.
 
 **What is not here.** Only counts are given, never a patient. The centres
 are not named, because this repository is public: their codes can be given
-on request. 125 of the 135 schemas are reviewed; the others are drafts until
-the review of their tab (PI-12).
+on request. 134 of the 135 schemas are reviewed; the other one is a draft until
+its review (PI-12).
 
 | Section | Open | Who closes it |
 |---|---|---|
 | 1. To read in the application | 0 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 2 | The project lead and the principal investigator |
-| 4. For the data managers, the centres and the developers | 17 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
+| 3. Choices of method | 3 | The project lead and the principal investigator |
+| 4. For the data managers, the centres and the developers | 18 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
 
@@ -114,6 +114,7 @@ with the project lead.
 | NEUROPSYCHOLOGIE tab review, four cohorts (2026-11-19, D138 to D143) | Every neuropsychological test of BP, SZ, DR and ASP was read against the form, the application script and the data, and recomputed where its rule is known: the WAIS family with one similarities, total and table rule (SZ edition O16 closed; BP vocabulary row 25-29 from ASP; ASP age at the form date and shared index names), TMT, errands (years of education), CPT checks, CVLT discriminability, the DR tests (D2, Baddeley, RL/RI-16, auditory span, designs) from the DR script tables, Barona, fNART, LIS and SSTICS (new expected-value and distance scores). The tables are compared across the four applications and not checked against the manuals (DM-4 stays open). 79 of the 83 schemas of the tab are `reviewed` |
 | BILAN BIOLOGIQUE tab review, four cohorts (2026-11-19, D144) | The 35 schemas were read against the forms, the application scripts and the data. No unit mismatch between cohorts. A shifted block of lab results (one BP centre to 2023, one DR centre to 2022) is removed by a pooled data rule (`implausible_pool`: BP 29 visits, DR 35); the clipping of lab tails is kept (the project lead's choice); prolactin typed in mg/L, glucose in mg/dL, DR vitamin D code 2 and ASP code 64387 are read; zeros that mean not measured are missing codes; the notes carry the causes of the lipid ratio mismatches, the clearance, the unmarked CRP limits and the form caps. All 35 schemas are `reviewed`; open points (iron in micrograms per decilitre at one centre, DR prolactin of two centres, SZ vitamin D of one centre, the ASP CRP, clozapine of 1 to 19) wait on the centres (requests R102 to R106) |
 | ANTECEDENTS tab review, BP (2026-11-19, D145 to D149) | The 20 schemas were read against the forms of the application, the graph of their dependencies and the data. The three retention boxes hang on the retention itself, the hormone therapy is a detail of the menopause (missing after a "no"), `nephropathy_treatment_related` is `nephropathy_lithium`, hepatitis D has its code, and the type of diabetes of a relative is shown after its box only (3 cells `not_shown`). The notes carry the yearly-update wording (D84), the shortcut "Non pour tous" and the change question that is not exported (DM-10), the placeholders by year (DEV-13), the counts measured again and, for each year or centre shift of the QC table, its cause. "More than 5" relatives is lost, not written 5 (DM-14). All 20 schemas are `reviewed`; open: PI-15 (later family answers), `frere2_suicide` (M53, DM-5), the skin Oui/Non pattern (DM-5) | D145 to D149 |
+| SUBSTANCES ET COMORBIDITE tab review, BP (2026-11-19, D150 to D157) | The 9 schemas were read against the forms and the export model of the application and the data. The two panic type columns hold social phobia (they are ignored, R113) and the panic box, which the export builds with a substring match, becomes a score missing where only the agoraphobia box can have ticked it (362 cells); the eight substance boxes hang on the first question (no cell changes); six box labels carry the form's option texts. The notes carry the three tables of the application, the yearly-update wording (R4), the export losses (the age tokens and the substance-induced block, R117; the dictionary rows, R119; the nicotine substitution, R120; the eating age missing from the DSM-5 form, A57), the details left empty under a ticked box, the whole-tab-empty steps from 2022 (O40), the tobacco status that is not "never smoked", the counts measured again and, for each year or centre shift of the QC table, its cause. All 9 schemas are `reviewed`; open: DM-6 (centres, M62), DM-7 (dictionary rows), DM-17 (gate correction, M63), PI-16 (an "ever smoked" column) | D150 to D157 |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -156,6 +157,18 @@ still to do.
 
 ### Priority C
 
+- [ ] **PI-16. Tobacco: a per-patient "ever smoked"?** (D156; new on
+  2026-11-19) "Non fumeur" is the status of the day, not "never smoked": a
+  patient who is a non-smoker at a visit was a current or ex-smoker at an
+  earlier visit in 957 of 7,876 non-smoker visits (12%); ex-smoker to
+  non-smoker happens in 349 of 1,194 pairs of consecutive visits, and 194
+  patients are ex-smokers at a visit and current smokers at a later one.
+  Should the package deliver an analyst-facing per-patient column (ever a
+  current or ex-smoker, the first start age, the latest pack-years), as it
+  does for the family history (D103)? The default is no such column: the
+  note of `tobacco` forbids deriving 0 pack-years from "Non fumeur".
+  - Today: one value per visit, as recorded.
+
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
   CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
@@ -168,8 +181,8 @@ still to do.
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
   ASP social cognition, for gaps with no known cause). BILAN BIOLOGIQUE, the 6 drafts of the tab (D144, with the 28 schemas of the
   same tab in SZ, DR and ASP). ANTECEDENTS, the 20 drafts of the tab (D145 to
-  D149). 125 of 135 are
-  reviewed; the 10 others are drafts (SUBSTANCES ET COMORBIDITE 9, MAThyS). Each
+  D149). SUBSTANCES ET COMORBIDITE, the 9 drafts of the tab (D150 to D157). 134 of 135 are
+  reviewed; the other one is a draft (MAThyS). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -437,9 +450,46 @@ source, in the export or in the application. Still to send.
     2018, 37% in 2019-2021, 66% from 2022; C 14%, 24%, 55%; F 4%, 46%, 57%;
     I 1%, 4%, 54%; B, D and G stay at 15% or less. Do they no longer ask
     the number?
-  - Among patients with an anxiety disorder, "panic disorder" is ticked for
-    about 40% until 2017 and 13% in 2025-2026, while "not otherwise
-    specified" doubles: a slow change of habits, with no date.
+  - Among the inclusion visits with an anxiety disorder, the stored box
+    "panic disorder" is ticked on 39% until 2017 and 14% in 2025-2026 (33%
+    and 13% once the visits with only the agoraphobia box are taken out:
+    the export's panic box also matches "Agoraphobie sans trouble panique",
+    D151, R113), while "not otherwise specified" goes from 19% to 27%-29%
+    in 2024-2026: a slow change of habits, with no date.
+  - The comorbidity tab (O40, D153): the four gates (anxiety, substances,
+    eating disorders, somatoform disorders) are all empty on 17% of the
+    inclusions and 43% of the yearly visits. Share of the inclusions with
+    the four gates empty, up to 2018, in 2019-2021 and in 2022-2024:
+    centre A 9%, 33%, 87%; centre C 17%, 27%, 100% (R20); centre B 1%, 8%,
+    35%; centre I 2%, 20%, 58%. Did these centres stop filling the tab, or
+    do their copies store it elsewhere?
+  - Substance use disorders (D154, D155; M62 of
+    [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)). A ticked box has all four
+    details (type, past month, age, duration) empty on 18% of the boxes at
+    inclusion and 17% at the yearly visits: 5% to 9% of the boxes of each
+    year 2011-2016, 32% to 40% in 2018-2021 and 9% in 2022 at inclusion; the
+    type alone is empty on 4% to 67% of the ticked boxes by centre at
+    inclusion (centres with 25 boxes or more) and 6% to 53% at the yearly
+    visits. Did the centres leave the details blank, or were they lost
+    between the application and the export (the age tokens of R117 are one
+    loss)? The share of "yes" to the first question is 26% to 52% by centre
+    at inclusion (14 centres) and 13% to 42% at the yearly visits (11
+    centres), and the alcohol "symptoms in the past month" 11% to 41% and 30%
+    to 64% of the answers: another case mix, or another reading of the
+    question? The first question is empty on 14% of the inclusion visits up
+    to 2021 and 35% from 2022 (yearly 37% then 58%): three centres at
+    inclusion (C 100% from 2022 against 21% before, A 89% against 20%, B 32%
+    against 3%) and five at the yearly visits (O40).
+  - Tobacco (D156). The pack-years of the smokers and ex-smokers are filled
+    on 16% of the visits of one centre from 2022 (73% before) and 45% of
+    another (70% before), and the status is empty on 32% of the first one's
+    visits (13% before); a centre with 22 typed values has a median of 32.5
+    pack-years against 7.5 to 15.3 in the centres with 100 values or more;
+    42 visits give less than 1 pack-year for a patient who smoked 10 years or
+    more (packs a day typed in the field?). The status is filled on 76% of
+    the yearly visits of 2020 (63% in the second quarter) against 86% to 94%
+    in the other years from 2014. What changed in these centres, and in
+    2020? No request: nothing to change in the export.
 
 - [ ] **DM-7. Corrections to the dictionary.**
 
@@ -448,7 +498,7 @@ source, in the export or in the application. Still to send.
   | PATIENT | `formoppos` and `social_protec` have no label and no coding. They are no longer delivered (D111), so their coding is no longer asked. `arm`, the type of disorder: the dictionary should say that it is the type of mood disorder of the DSM-5 inclusion form, else of the DSM-IV one, replaced by the export's own list for 509 patients (read in the export, D119; R6). Three referral variables are listed under "Fin de suivi" |
   | AUTO-QUESTIONNAIRES | Codings of STAI-YA, PSQI, MARS and CSM (DM-2). `als55`, `als56`, `als59` carry labels of the long form but are scores of the 18 items: `als55`, labelled "Depression", is the anxiety-depression score (D72); `als56` is depression-elation and `als59` is anger (D67) |
   | NEUROPSYCHOLOGIE | The WAIS-IV digit-span summary columns have the labels of other columns. The CPT-3 names end with an underscore that the extraction does not have |
-  | SUBSTANCES ET COMORBIDITE | Four anxiety columns are missing (`ceoccurtrouble_panique` and three others). The label of `abudep_autre` is that of a duration; it is a yes/no |
+  | SUBSTANCES ET COMORBIDITE | Four anxiety columns have a row with a name only, no label, code, field or visit (rows 25 to 28: `ceoccurtrouble_panique` and three others). `ceoccurtroubpanago` and `ceoccurtroubpansago` are described as panic disorder with and without agoraphobia but hold "panic and social phobia ticked" and "panic ticked, social phobia not" (D150, R113). The label of `abudep_autre` is that of a duration; it is a yes/no. The eight `SUOCCUR_` rows of the substances say Y/N/U for values that are 0 and 1 (empty for unknown), and `rad_tb_subst_raw` has no row (D155, R119). The substance-induced disorder block of the form is in neither the dictionary nor the extraction (R117) |
   | EVALUATION MEDICALE | `age_ehman`, `age_epman`, `rad_agethym` have no label: age at the first hypomanic episode, at the first manic episode, at the first mood stabiliser (D87). `agedebutpremier_episode` is the age at the first depressive episode on the DSM-5 form (D89). `mhoccur_ehman_ly` carries the label of another variable. `cedecodtrouble_humeur_actuel` is listed twice |
   | SOIN SUIVI HOSP ARRET TRAVAIL | Three follow-up columns of the sick leave have no label |
   | TRAITEMENTS | The first question of the lifetime non-drug form carries the wording of the follow-up form ("depuis la dernière visite") in the application itself, and the dictionary copies it (D124). The six `CMOCCUR_*` columns and the boxes of the lifetime non-drug form hold "Oui; Non; Ne sais pas", not Y/N/U, and the 27 `_lt` rows are the patient's lifetime form, not follow-up visits. `CMDOSE` is the strength as text, empty since 2015; `CMDOSTOT` is computed by the export; an end date 0000-00-15 or 0000-00-00 is the box "Traitement en cours". The follow-up form also asks the number of CBT sessions and the start of the psychoeducation groups, which are not exported |
@@ -519,6 +569,23 @@ source, in the export or in the application. Still to send.
   - Today: the package uses the SZ form's mean from 40 to 69 and turns the
     sign from 70, for both cohorts; the bias is as the application computes
     it. The clinicians still read the application's values.
+
+- [ ] **DM-17. Does the gate correction of the dataflow run on BPALL?**
+  (M63, D153; new on 2026-11-19) The dataflow corrects the first question of
+  the anxiety section (`rad_tb_anx`) from "Non" to "Oui" when the section
+  holds evidence of a yes (`gate_correction_config` of
+  `pathologies.yaml`: one of 23 flag columns, the boxes and the past-month
+  answers, positive, or one of 11 age columns filled). In the extraction
+  the question is still "no" on 14 inclusion visits and 7 yearly visits
+  under that same rule (8 and 5 by a flag, 9 and 2 by an age; a box is
+  ticked after a "no" on 5 and 1 of them). Does the correction run on
+  BPALL, with a narrower rule, or only on another extract? Two of its flag
+  columns are the panic type columns that hold social phobia (D150, R113).
+  - Today: the answer is delivered as recorded; the boxes under a "no" are
+    read as 0 (D50), the five inclusion visits and the one yearly visit
+    that have a box after a "no" are kept as written (D153).
+  - It changes: with a correction, about 21 gates would become "yes" and
+    their details would no longer sit under a "no".
 
 ### Priority C
 

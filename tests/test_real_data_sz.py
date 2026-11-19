@@ -278,13 +278,17 @@ def test_suicide_and_comorbidity(result, qc):
     assert (qc.loc["n_attempts_since_visit", "n_valid"], (data["n_attempts_since_visit"] > 0).sum()) == (2356, 50)       # BP D86, D125: 0 after a "no"
     assert qc.loc[qc.index.str.startswith("isf"), "period_doubt"].sum() == 0          # no doubtful period here, unlike BP
 
-    assert shape_of(qc, "SUBSTANCES ET COMORBIDITE") == (189, 11, 0, 0)
+    assert shape_of(qc, "SUBSTANCES ET COMORBIDITE") == (188, 11, 0, 0)       # sedative_route_sniffed is not delivered (D66)
     # Anxiety: a tree of screening questions; a question not shown after a "no" is 0.
     assert (qc.loc["anxiety_disorder_v0", "n_valid"], data["anxiety_disorder_v0"].sum()) == (2104, 826)
-    assert (qc.loc["panic_without_agora_v0", "n_valid"], data["panic_without_agora_v0"].sum(), qc.loc["social_phobia_v0", "n_valid"], data["social_phobia_v0"].sum()) == (1911, 99, 1905, 146)
-    # The first substance question holds "Ne sais pas" where "no" is expected at inclusion; the boxes are complete.
+    assert (qc.loc["panic_disorder_v0", "n_valid"], data["panic_disorder_v0"].sum(), qc.loc["social_phobia_v0", "n_valid"], data["social_phobia_v0"].sum()) == (1911, 99, 1905, 146)
+    # The first substance question is derived by the export from the boxes (D65): "Ne sais pas" on 975 inclusion visits, most of them where the drug boxes are blank.
     assert (qc.loc["substance_disorder_v0", "n_valid"], qc.loc["substance_disorder_v0", "missing_code"], data["substance_disorder_v0"].sum()) == (608, 975, 590)
-    assert (data["alcohol_disorder_v0"].sum(), data["cannabis_disorder_fu"].sum(), data["illicit_drugs_ever"].sum(), data["heroin_ever"].sum()) == (313, 553, 481, 55)
+    # Hidden gates (D63): after "no" to rad_add_4 the five drug boxes are 0, after a "no" to the use question the "never once" question is 0, the number of episodes is 0 after "no" to the depression.
+    assert [qc.loc[name, "n_valid"] for name in ["sedative_disorder_v0", "opiate_disorder_v0", "cocaine_disorder_v0", "hallucinogen_disorder_v0", "sedative_disorder_fu", "other_substance_disorder_fu"]] == [1589, 1603, 1578, 1552, 2301, 2287]
+    assert (qc.loc["alcohol_never_once", "n_valid"], qc.loc["cannabis_never_once", "n_valid"], qc.loc["gad_v0", "n_valid"], qc.loc["mde_count", "n_valid"]) == (3430, 3376, 1902, 1662)
+    assert (qc.loc["alcohol_dose_lifetime", "n_valid"], qc.loc["alcohol_dose_lifetime", "out_of_range"], qc.loc["alcohol_dose_12m", "out_of_range"]) == (1779, 49, 5)         # range 0 to 40 (D66)
+    assert (data["alcohol_disorder_v0"].sum(), data["cannabis_disorder_fu"].sum(), data["illicit_drugs_over_ten_times"].sum(), data["heroin_over_ten_times"].sum()) == (313, 553, 481, 55)
 
 
 def test_medical_evaluation_care_and_social(result, qc):

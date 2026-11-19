@@ -2,24 +2,72 @@ instrument: tobacco
 title: Tobacco
 tab: SUBSTANCES ET COMORBIDITE
 section: TABAC
-status: draft
+status: reviewed
 notes: >
   The tobacco status at each visit, with the pack-years, the age when the
   patient started smoking and the age when they stopped. Filled at the
   inclusion visit and at every follow-up visit; the answer describes the day
-  of the visit, so there is one form.
+  of the visit, so there is one form (decision D49 in PROGRESS.md). The
+  shares of the status are close at inclusion and at follow-up (non-smokers
+  43.5% of 6,002 visits and 50.9% of 10,350) and the pack-years rise between
+  the two (median +0.5 from the inclusion visit to the last later visit, 1,327
+  patients): the status is the one of the day and the details are cumulative
+  over the life.
 
-  "Statut inconnu" is a missing code. The details are filled for the smokers
-  and the ex-smokers only (pack-years for 73% and 80% of them).
+  "Statut inconnu" is a missing code (85 visits). The form leaves the details
+  of a non-smoker blank (in the raw cell, never 0): under "Non fumeur" 3 of
+  the 7,876 visits carry a detail, and one current smoker has a stop age. Two
+  of the three belong to patients who are ex-smokers at another visit, so the
+  status is the likelier error. They stay as recorded, no shown_if (decision
+  D145 in PROGRESS.md). The details are filled for the smokers and the
+  ex-smokers only: 75% and 84% of the raw cells, pack-years valid for 73% and
+  80% of them.
 
-  Pack-years. Typed freely: 101 cells hold "NA" (a missing code) and 34 hold
-  words or a fraction, which end unparsed. A value above 200 is out of range
-  (29 cells, up to 51,050): 200 pack-years is four packs a day for fifty
-  years. 115 values are above three packs a day for the years the patient
-  smoked; they are delivered as written.
+  "Non fumeur" is not "never smoked". Between consecutive visits of a patient,
+  ex-smoker to non-smoker happens in 349 of 1,194 pairs (29%), current smoker
+  to non-smoker in 248 of 4,034 (6%) and non-smoker to current or ex-smoker
+  in 377 of 4,932. In 264 of the 284 pairs of the last kind that have a start
+  age (253 at least a year before), the start age is at or before the age at
+  the earlier visit: the earlier "non-smoker" was wrong. 957 of the 7,876
+  non-smoker visits (12%) are dated after the first visit at which the
+  patient was a current or an ex-smoker, and 194 patients are ex-smokers at
+  one visit and current smokers at a later one. Never derive 0 pack-years
+  from "Non fumeur".
 
-  Ages. 4 patients started after their age at the visit, 10 stopped after
-  it, 4 stopped before they started; delivered as written.
+  Pack-years. Typed freely: the formula of the form (packs a day times
+  years) is commented out of its script. 101 cells hold "NA" (a missing code)
+  and 34 hold words or a fraction, which end unparsed. A value above 200 is
+  out of range (29 cells, up to 51,050): 200 pack-years is four packs a day
+  for fifty years. 83 typed values up to 200 are above three packs a day for
+  the years the patient smoked (69 after the winsorisation), and 42 visits
+  give less than 1 pack-year for a patient who smoked 10 years or more (they
+  may be packs a day typed in the field). The values are winsorised at 1% and
+  99% like every number of the package: 116 cells change (61 values from 73
+  to 200 become 72; 55 values below 0.25, 7 of them zeros, become 0.25), so
+  the delivered column is not the typed one. They also change between
+  visits: the pack-years of a patient fall between two visits in 22% of 3,305
+  pairs (by more than 5 in 10%), and the start age takes more than one value
+  for 44% of the 1,772 patients who give it twice or more.
+
+  Ages. 4 visits (4 patients) give a start age more than a year after the age
+  at the visit, 10 visits (6 patients) a stop age more than a year after it,
+  and 4 visits (4 patients) a stop age before the start age; delivered as
+  written.
+
+  Fill by centre. From 2022 the pack-years of the smokers and ex-smokers are
+  filled on 16% of the visits of one centre (73% before) and 45% of another
+  (70% before), and the status is empty on 32% of the visits of the first
+  one (13% before). A centre with 22 typed pack-year values has a median of
+  32.5 against 7.5 to 15.3 in the centres with 100 values or more (21
+  delivered values, median 30, against 7 to 15: the shift of the QC table).
+  The status is filled on 67% to 84% of the follow-up visits of 2009-2013,
+  92% to 94% of those of 2014-2016, and 86% to 94% afterwards except in 2020
+  (76%: 63% in the second quarter and 71% in the fourth), at inclusion on 88%
+  to 98% in every year; the screening visits never hold it. The cause of the
+  dip of 2020 and of the first years is not known (D157).
+
+  The form also asks whether a nicotine substitute is used, and which; the
+  extraction does not hold it (R120 of EXPORT_REQUESTS.md).
 
 variables:
   tobacco_status:

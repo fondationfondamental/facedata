@@ -2,13 +2,27 @@ instrument: anxiety_fu
 title: Anxiety disorder at follow-up
 tab: SUBSTANCES ET COMORBIDITE
 section: Troubles ANXIEUX
-status: draft
+status: reviewed
 notes: >
   The first question of anxiety_v0 (does the patient have an anxiety
-  disorder), at the follow-up visits: 2,265 visits, 716 yes, a stable 24%
-  to 42% every year. The form of the follow-up visits holds nothing else
-  on anxiety: the boxes that BP has at follow-up are not in the SZ
-  extraction. "Ne sais pas" is a missing code (39).
+  disorder), at the follow-up visits: 2,265 of the 2,588 yearly visits are
+  answered, 716 yes, 1,510 no, "Ne sais pas" is a missing code (39). The yes
+  share is 24% to 42% in every year of visit. It is the only anxiety answer
+  of the extraction, and the yearly form asks more: it holds the list of the
+  anxiety disorders ticked (ten boxes) with the past-month question of each
+  and the type of the panic disorder, as the BP form does. The export reads
+  only rad_tb_anx of that form (the model has the list and the panic type
+  commented out), and no eating-disorder answer either: 2,588 yearly visits
+  hold no cell of anxiety or eating detail, which is why there is no
+  eating_disorder_fu (request R115, the yearly comorbidity form is not
+  exported). Unlike BP, the SZ form has no "no change" gate.
+
+  An answer at a yearly visit is an update (BP D84), not lifetime and not
+  strictly the time since the last visit. Of the patients with a yes at
+  inclusion, 397 of 837 later answers (47%) are a no. The yes share of the
+  yearly visits differs by centre: one centre answers yes on 10% of its
+  yearly visits where it did on 41% of its inclusions, the nine others on 19%
+  to 54% (centres with 20 answers or more).
 
 version:
   name: visit_form

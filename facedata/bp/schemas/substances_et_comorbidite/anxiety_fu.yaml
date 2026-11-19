@@ -2,50 +2,116 @@ instrument: anxiety_fu
 title: Anxiety disorders (yearly follow-up visits)
 tab: SUBSTANCES ET COMORBIDITE
 section: Troubles ANXIEUX
-status: draft
+status: reviewed
 notes: >
-  One yes/no question (does the patient have an anxiety disorder), then one
-  box per disorder and, for each, the age at onset and whether symptoms were
-  present in the past month. Yes/no answers are delivered as 1 and 0;
-  "unknown" (U) is a missing code.
+  One yes/no question (does the patient have an anxiety disorder), then one box per disorder and, for
+  each, the age at onset and whether symptoms were present in the past month. Yes/no answers are
+  delivered as 1 and 0; "unknown" (U) is a missing code.
 
-  Two periods in the same columns (decisions D49 and D50 in PROGRESS.md).
-  The same questions are asked at the inclusion visit and at the yearly
-  visits, with the same wording: the form asks "does the patient have an anxiety disorder", in the present tense.
-  The yearly form is the inclusion form again, shown after one more
-  question, "no change since the last visit?", which the extraction does
-  not hold (read in the application in November 2026, decision D84 in
-  PROGRESS.md). A yearly answer is an update given at that visit; the
-  project lead reads it as an answer about the time since the last visit. The data show it: 48% of the
-  patients have an anxiety disorder at inclusion, 35% at the yearly visits;
-  of the patients who had one at inclusion, 41% are answered "no" a year or
-  more later, in every centre. The two are therefore delivered as separate
-  columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form says which form a visit used and is read
-  from the visit label.
+  Where the block comes from. It sits in three tables of the application: the DSM-IV diagnosis form
+  (psy_diag_psychiatrique), the DSM-5 diagnosis form (psy_diag_psychiatriquedsm5) and the yearly
+  comorbidity form (psy_troubles_comorbides, the only one with the question "no change since the last
+  visit?", rad_pas_dechangement). The export takes each column from the first non-empty of the three.
+  Apart from the age of the eating disorder (eating_disorder_v0) and the two panic type boxes
+  (anxiety_v0) the three are identical, so there is no split by version (decision D153 in
+  PROGRESS.md).
 
-  The boxes are shown only after a yes to the first question: 0 means "not
-  ticked". After a no they are empty in the extraction and are read as 0
-  (asked_if, decision D50): a patient with no anxiety disorder has none of
-  them. Where the first answer is unknown or empty they stay missing. The
-  ages at onset and the "symptoms in the past month" stay missing after a
-  no: they have no value.
+  Two forms in the same columns (decisions D49, D50 and D84 in PROGRESS.md). The same questions are
+  asked at the inclusion visit and at the yearly visits, never at the six-monthly ones, with the same
+  wording: the form asks "does the patient have an anxiety disorder", in the present tense. The yearly
+  form is the inclusion form again, shown after one more question, "no change since the last visit?",
+  which the extraction does not hold (read in the application in November 2026, decision D84 in
+  PROGRESS.md). A yearly answer is an update given at that visit: neither a history of the whole life
+  nor strictly an answer about the time since the last visit. The data show that the two differ: 48%
+  of the patients have an anxiety disorder at inclusion, 35% at the yearly visits; of the patients
+  answered "yes" at inclusion, the first answer given a year or more later is "no" for 40% (435 of
+  1,081), in every centre. The two are therefore delivered as separate columns, ending in _v0
+  (inclusion visit) and _fu (yearly visits); visit_form says which form a visit used and is read from
+  the visit label.
 
-  Panic disorder. panic_disorder is ticked exactly where one of the two
-  boxes (with or without agoraphobia) is. The form has one age at onset and
-  one "symptoms in the past month" for each of the two boxes, but the
-  clinicians fill either one whatever the box (of the visits with the box
-  "without agoraphobia" and an age, 44% have it in the column of "with
-  agoraphobia"). The two columns are therefore read as one detail of the
-  panic disorder: the first that is filled; column_conflict where both are
-  and differ.
+  The follow-up version holds 11,686 visits, of which 3,352 are six-monthly visits: 1 of them holds
+  the tab, and the screening visits never do. anxiety_disorder_fu is answered (yes, no or unknown) on
+  4,660 of the 11,686 visits (40%), which is 56% of the 8,334 yearly visits.
 
-  Four columns are not in the dictionary and are read here: the box "panic
-  disorder" and the boxes of the last three disorders (the dictionary lists
-  one of them as a section title).
+  The boxes are shown only after a yes to the first question: 0 means "not ticked". The extraction
+  holds twelve boxes (ten are delivered, see the panic disorder below). Under a "yes" they are all
+  filled (2,480 of the 2,508 inclusion visits, 1,579 of the 1,593 yearly visits) or none is (28 and 14
+  visits, which stay missing): there is no box_list. After a "no" they are empty in the extraction
+  (2,660 of the 2,665 inclusion visits, 2,966 of the 2,967 yearly ones) and are read as 0 (asked_if,
+  decision D50): a patient with no anxiety disorder has none of them. Five inclusion visits and one
+  yearly visit have a box ticked after a "no": kept as written. Where the first answer is unknown or
+  empty the boxes stay missing, and so do the ages at onset and the "symptoms in the past month" after
+  a "no": they have no value.
 
-  A detail is sometimes filled although its box is not ticked (1 to 17
-  visits per disorder), and often empty although it is (the age at onset of
-  half of the ticked disorders). Both are delivered as written.
+  Panic disorder (decisions D150 and D151). The export's two panic type columns hold another answer.
+  ceoccurtroubpanago ("with agoraphobia") is 1 where the choice list of the form holds "Trouble
+  panique" and "Phobie sociale", and ceoccurtroubpansago ("without agoraphobia") where it holds panic
+  and not social phobia (face_bp_6_substances_comorbidites.sql, lines 21-22): among the 1,193 visits
+  with the panic box ticked (804 at inclusion, 389 at the yearly visits), "with agoraphobia" equals
+  the social phobia box on all 1,193. The form's own type list (chk_anxieux_trouble_panique_type) is
+  not exported. Neither column is delivered (ignored.yaml; request R113), and the type of the panic
+  disorder is not known. The box panic_disorder is built with ILIKE '%Trouble panique%', which also
+  matches the label "Agoraphobie sans trouble panique": wherever the agoraphobia box is ticked the
+  panic box is ticked too (230 of 230 at inclusion, 165 of 165 at the yearly visits). A panic detail
+  (age at onset or past month) is filled on 81% of the panic visits with no agoraphobia box (466 of
+  574 at inclusion, 78% or 175 of 224 at the yearly visits) and on 24 of the 230 (10 of the 165) with
+  it. panic_disorder is therefore a score: the stored box (panic_disorder_stored, not delivered) but
+  missing where the agoraphobia box is 1 and neither the age nor the past month of the panic disorder
+  is filled. That is 206 inclusion visits and 156 yearly visits (155 with nothing filled, and one
+  whose only detail is the answer "unknown", a missing code); they get score_not_recomputed, and the
+  flag log holds the stored 1. The visits that have a detail keep their 1. Among the inclusion visits
+  with an anxiety disorder the box is ticked on 39% of them up to 2017 and 14% in 2025-2026 as stored,
+  and on 33% and 13% as delivered.
+
+  One set of details for the panic disorder. The form has an age at onset and a "symptoms in the past
+  month" for each of its two panic types, and the export keeps both columns. They follow the form's
+  real type list, not the two boxes (which hold social phobia): the earlier claim that clinicians fill
+  either column whatever the box (44%) was an artefact of reading them against those boxes. They are
+  read as one detail of the panic disorder: the first that is filled, with column_conflict where both
+  are and differ. Seven visits have both ages (6 at inclusion, 1 at the yearly visits) and 5 carry
+  column_conflict.
+
+  Four columns have a row of the dictionary with a name only (rows 25 to 28: no label, no code, no
+  field and no visit): the box "panic disorder" and the boxes of the last three disorders (the
+  dictionary lists one of them as a section title). They are read here.
+
+  Details. A detail is sometimes filled although its box is not ticked, and often empty although it
+  is. 144 cells are filled under a box that is not ticked (108 at inclusion, 36 at the yearly visits;
+  137 under a box that is 0 or a "no", 7 under an empty box): 2 to 15 visits per disorder at inclusion
+  and 0 to 12 at the yearly visits. They are delivered as recorded, with no shown_if where the parent
+  is empty (rule R2 of the review). The export casts the ages with ^[0-9]+$, so "Ne sais pas", "<5"
+  and ">89" become empty: the empty age under a ticked box (26% to 50% of the boxes at inclusion, 46%
+  to 63% at the yearly visits, for the disorders with 100 boxes or more) mixes unknown and not
+  answered (request R117). The ages of the yearly visits equal the age given at inclusion in 33% to
+  82% of the pairs by disorder: they are lifetime ages, not ages "since the last visit".
+
+  Years and centres (O40, R20). The whole tab is often left empty: the four gates (anxiety,
+  substances, eating disorders, somatoform disorders) are all empty on 1,091 of the 6,498 inclusion
+  visits (17%; 453 of the 1,127 inclusions of 2022 to 2024) and on 3,611 of the 8,334 yearly visits
+  (43%: at a yearly visit an empty section may mean "no change"). Four centres stop holding the tab.
+  Share of their inclusions with the four gates empty, up to 2018, 2019-2021 and 2022-2024: centre A
+  9%, 33% and 87%; centre C 17%, 27% and 100%; centre B 1%, 8% and 35%; centre I 2%, 20% and 58%. A
+  gate that is empty while another is answered is rare (4.2% of the inclusion visits and 2.3% of the
+  yearly ones) and flat by year: there is no shortcut pattern as in the history tab (D83). The values
+  are delivered as recorded: an empty gate is missing, not "no".
+
+  Spreads of the QC table (decision D157 in PROGRESS.md). The share of the yearly visits that hold
+  something of the tab (one of the four gates) is 37% to 48% in 2010-2013, 55% in 2014, 67% to 73%
+  in 2015-2019, 61% to 62% in 2020-2021 and 39% to 47% from 2022: until 2013 centre D held it on
+  none of its 143 yearly visits and centres C, E and K on 15% to 19%, and these four hold it on 51%
+  to 57% of their yearly visits in 2014-2018; the decline from 2022 is the one above. The yes/no
+  variables whose median is 1 in some years or centres (shift of 1) are shares of "yes" around one
+  half: the first question at inclusion is "yes" for 33% to 69% by centre and 38% to 57% by year
+  (groups of 20 answers or more; 43% to 49% in 2010-2020, 52% to 57% in 2021-2024), and the rise of
+  the last years goes with the DSM-5 form of the inclusion visit (47% "yes" on the visits with DSM-
+  IV criteria, 54% with DSM-5 criteria; whether the cause is the wording of the form or the patients
+  is not known). The "symptoms in the past month" of the panic disorder are "yes" for 27% to 73% by
+  centre and 39% to 75% by year at inclusion, and 50% to 81% by centre at the yearly visits. The
+  ages at onset have a median up to half an interquartile range away from the overall one in some
+  centres or years (by centre 10 to 15 years for the social phobia at the yearly visits, 16 to 24
+  for the PTSD, 8 to 15 for the specific phobia and 10 to 18 for the unspecified anxiety at
+  inclusion; 14 to 20 by year for the generalised anxiety at inclusion; groups of 20 to 71 answers):
+  a spread with no step, unexplained.
 
 version:
   name: visit_form
@@ -80,9 +146,7 @@ variables:
   anxiety_disorder_fu: {column: rad_tb_anx, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Has an anxiety disorder, at follow-up"}
 
   # Which ones: boxes, filled only after a yes (1 = ticked, 0 = not ticked).
-  panic_disorder_fu: {column: ceoccurtrouble_panique, type: item, range: [0, 1], asked_if: anxiety_disorder_fu, label: "Panic disorder, at follow-up"}
-  panic_with_agora_fu: {column: ceoccurtroubpanago, type: item, range: [0, 1], asked_if: anxiety_disorder_fu, label: "Panic disorder with agoraphobia, at follow-up"}
-  panic_without_agora_fu: {column: ceoccurtroubpansago, type: item, range: [0, 1], asked_if: anxiety_disorder_fu, label: "Panic disorder without agoraphobia, at follow-up"}
+  panic_disorder_stored_fu: {column: ceoccurtrouble_panique, type: item, range: [0, 1], asked_if: anxiety_disorder_fu, keep: false, label: "Panic disorder, as stored by the export, at follow-up"}
   # One set of details for the panic disorder: the form has two, and either one is filled.
   panic_onset_age_fu: {column: [agedebuttroubpanago, agedebuttroubpansago], type: item, range: [0, 90], label: "Panic disorder: age at onset, at follow-up"}
   panic_last_month_fu: {column: [occurtroubpanago, occurtroubpansago], type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Panic disorder: symptoms in the past month, at follow-up"}
@@ -117,3 +181,11 @@ variables:
   anxiety_unspecified_fu: {column: ceoccur_trouble_anxieux_non_specifie, type: item, range: [0, 1], asked_if: anxiety_disorder_fu, label: "Anxiety disorder not otherwise specified, at follow-up"}
   anxiety_unspecified_onset_age_fu: {column: agedebuttroubanxnonspe, type: item, range: [0, 90], label: "Anxiety disorder not otherwise specified: age at onset, at follow-up"}
   anxiety_unspecified_last_month_fu: {column: occurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety disorder not otherwise specified: symptoms in the past month, at follow-up"}
+
+scores:
+  # The stored box, but missing where only the agoraphobia box can have ticked it (D151).
+  panic_disorder_fu:
+    custom: panic_unless_agoraphobia_only
+    label: "Panic disorder, at follow-up"
+    range: [0, 1]
+    compare: panic_disorder_stored_fu

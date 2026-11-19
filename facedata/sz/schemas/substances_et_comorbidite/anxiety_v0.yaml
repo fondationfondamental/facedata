@@ -2,41 +2,107 @@ instrument: anxiety_v0
 title: Anxiety disorders at inclusion
 tab: SUBSTANCES ET COMORBIDITE
 section: Troubles ANXIEUX
-status: draft
+status: reviewed
 notes: >
-  One yes/no question (does the patient have an anxiety disorder; 2,168
-  inclusion visits, 826 yes), then, from 2012, a tree of questions for the
-  patients answered yes (about 640 visits). Yes/no answers are delivered as
-  1 and 0; "U" is a missing code.
+  One yes/no question (does the patient have an anxiety disorder; 2,168 of
+  the 2,353 inclusion visits are answered, 826 yes), then, for the patients
+  answered yes, a tree of questions. Yes/no answers are delivered as 1 and 0;
+  "U" is a missing code.
 
   Another form than in FACE BP (decision D17 in PROGRESS.md). BP ticks one
   box per disorder. Here each disorder comes after a screening question, in
   columns that the dictionary does not list (rad_attaq_paniq, rad_peur_*):
   panic attacks, then panic disorder; fear of agoraphobic situations, then
   agoraphobia; a social fear, then social phobia; a specific fear, then
-  specific phobia; obsessions, then obsessive-compulsive disorder;
-  compulsions, then a compulsive disorder. The data show the tree: a
-  disorder is filled only after a yes to its screening question (295 of
-  299, 265 of 271, 228 of 231, 152 of 156, 166 of 173, 169 of 172 cells).
-  The labels of the screening questions are read from the column names.
-  Post-traumatic stress, generalised anxiety, anxiety due to a medical
-  condition and the unspecified disorder have no screening question.
+  specific phobia; obsessions, then obsessional disorder; compulsions, then
+  obsessive-compulsive disorder; feeling nervous or anxious, then generalised
+  anxiety. The data show the tree: a disorder is filled only after a yes to
+  its screening question (295 of 299 cells, 265 of 271, 228 of 231, 152 of
+  156, 166 of 173, 169 of 172 and 343 of 349 for the generalised anxiety).
+  Post-traumatic stress and the unspecified disorder have no screening
+  question. The exact French wording of every question is in the
+  application's field table (psy_diag_psychiatrique_sz_nom_champ), which the
+  labels follow. The form has no age at onset for the anxiety disorders (BP
+  has): the table lists none.
+
+  The tree was introduced centre by centre from 2012 to 2016. Of the yes
+  visits, 4% hold a question of the tree in 2012, 23% in 2013, 32% in 2014,
+  66% in 2015 and 96% to 100% from 2016: 664 of the 826 yes visits have one,
+  162 have none (155 of them dated 2015 or before, among them all those of
+  2010 and 2011). 123 inclusion visits of 2010 to 2015 hold 195 past-month
+  answers and no disorder answer: kept as written.
+
+  The export writes other fields of the form in five columns, so each is
+  named for what it holds, not for the dictionary (request R114; the names
+  were checked against the export model eschizo_psy_diag.sql and the field
+  table of the application). The column named for the panic disorder without
+  agoraphobia (ceoccurtroubpansago, written from rad_trouble_panique) holds
+  the panic disorder, with or without agoraphobia: the form's type list
+  (with or without agoraphobia) is not exported, and the variable is
+  panic_disorder_v0 (99 yes). The two past-month columns of the panic
+  disorder, one per type, are read as one, as in BP: each is empty on 71%
+  (without) and 45% (with) of the yes visits, the two together on 17 of 99,
+  and one visit holds both. The column named for the panic disorder with
+  agoraphobia (ceoccurtroubpanago) is written from the screening question on
+  agoraphobic fear (rad_peur_agoraphobie, 274 yes of 634 answers), which is
+  read as agoraphobic_fear_v0: nothing is lost (O19 is answered by the
+  source; no question to send), and the column is ignored. The column named
+  for the obsessive-compulsive disorder (ceoccurtoc, written from
+  rad_trouble_obsessionnel) holds the obsessional disorder (96 yes), the
+  variable obsessional_disorder_v0; the obsessive-compulsive disorder is the
+  column rad_trouble_compulsif (116 yes), the variable ocd_v0, and its
+  past-month question is filled under it on 105 of 116 yes and on 0 of 56 no
+  (under the obsessional disorder: 63 of 96 yes and 7 of 77 no). The column
+  named for the generalised anxiety (ceoccuranxietegeneral, written from
+  rad_anxieux) holds its screening question (353 yes), the variable
+  gad_screening_v0, and the column named for the anxiety due to a medical
+  condition (ceoccurtroubanxaffmed, written from rad_anxieux_generalise_titre)
+  holds the generalised anxiety itself (133 yes), the variable gad_v0, asked
+  after its screening question; its past-month question is yes on 124 of 136
+  answers. The form shows the medical condition and its past-month question
+  under that same answer: there is no yes/no question of its own for the
+  anxiety due to a medical condition, in the form or in the extraction, so
+  nothing says which patients have one; the condition (written on 6 of 133
+  yes visits) and its past month (filled on 66) are delivered as written.
+  The BP variables ocd_v0 and gad_v0 hold the same notions as these.
+
+  The screening question of the generalised anxiety says "in the last ten
+  months" in the form, where the others ask "ever" (question to the data
+  managers, M61 of docs/EXPORT_REQUESTS.md).
 
   A question that the form did not show after a "no" is delivered as 0
   (asked_if): no anxiety disorder means none of them, and a "no" to a
-  screening question means no such disorder. The inclusion visits of 2010
-  and 2011 answered yes have no detail: the tree did not exist yet.
+  screening question means no such disorder. The nine questions of the first
+  level (the seven screening questions, post-traumatic stress and the
+  unspecified disorder) are blank on the 1,278 visits with no anxiety
+  disorder and delivered as 0 (11,502 cells): they were not asked, which is
+  not "no" (D22); the zeros stay. Past-month answers recorded where the
+  disorder answer is empty (214 cells, 195 of them on the 123 visits above)
+  or is a no (1 cell) are kept as recorded: no shown_if. Under a yes the
+  past-month question is empty on 13% of the visits for agoraphobia, 6% for
+  social phobia, 3% for specific phobia, 9% for obsessive-compulsive
+  disorder, 0% for post-traumatic stress, 13% for generalised anxiety, 10%
+  for the unspecified disorder, and the medical condition on 95% (text) and
+  50% (past month). The yes share of the first question differs by centre, from 16% to
+  69% (ten centres with 20 answers or more); it is empty on 9.1% of the
+  inclusion visits to 2021 and on 4.4% from 2022 (no step in 2022).
 
-  One answer is lost (open question O19). The box "panic disorder with
-  agoraphobia" (ceoccurtroubpanago) holds, on all its 634 rows, the answer
-  to the screening question on agoraphobic fear (rad_peur_agoraphobie),
-  and it is that answer which opens the agoraphobia question. It is
-  ignored. rad_trouble_panique is a copy of the panic disorder without
-  agoraphobia and is ignored too. The two "past month" columns of the panic
-  disorder are read as one, as in BP.
+  The question on attention deficit hyperactivity disorder (adhd_symptoms_v0)
+  does not belong to the tree and is not asked of every patient: 1,638 of the
+  2,353 inclusion visits hold it (7% of those of 2012, 56% in 2015, 79% to
+  96% from 2016). After a yes the form asks to fill in the WURS-25.
 
-  The ages at onset, which BP has, are not extracted. The same first
-  question at the follow-up visits is in anxiety_fu.yaml.
+  By year, the yes share of the first question is 32% of the 328 inclusion
+  visits to 2013, 44% of the 446 of 2014-16, 40% of the 512 of 2017-19, 41% of
+  the 397 of 2020-22 and 37% of the 421 from 2023. Inside a centre it moves
+  much more, in both directions (from 35% to 17% in one centre between 2014-16
+  and 2017-19, from 10% to 65% in another between the visits to 2013 and those
+  of 2020-22), so the pooled share follows the mix of centres and their
+  practice: no known cause. The question on attention deficit hyperactivity
+  disorder is yes on 24% of the visits of 2014-16, 10% of 2017-19, 15% of
+  2020-22 and 28% from 2023, and on 5% to 44% by centre: the same.
+
+  The same first question at the follow-up visits is in anxiety_fu.yaml.
 
 version:
   name: visit_form
@@ -72,7 +138,7 @@ variables:
 
   # Each disorder is asked after a screening question, itself asked after a yes to the first question.
   panic_attacks_v0: {column: rad_attaq_paniq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: panic attacks, at inclusion"}
-  panic_without_agora_v0: {column: ceoccurtroubpansago, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: panic_attacks_v0, label: "Panic disorder without agoraphobia, at inclusion"}
+  panic_disorder_v0: {column: ceoccurtroubpansago, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: panic_attacks_v0, label: "Panic disorder, with or without agoraphobia, at inclusion"}
   panic_last_month_v0: {column: [occurtroubpansago, occurtroubpanago], type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Panic disorder: symptoms in the past month, at inclusion"}
   agoraphobic_fear_v0: {column: rad_peur_agoraphobie, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: fear of agoraphobic situations, at inclusion"}
   agoraphobia_v0: {column: ceoccuragostroubpan, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: agoraphobic_fear_v0, label: "Agoraphobia without panic disorder, at inclusion"}
@@ -84,19 +150,19 @@ variables:
   specific_phobia_v0: {column: ceoccurphobie_sp_cifi, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: specific_fear_v0, label: "Specific phobia, at inclusion"}
   specific_phobia_last_month_v0: {column: occurphobie_sp_cifi, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Specific phobia: symptoms in the past month, at inclusion"}
   obsessions_v0: {column: rad_peur_obsessionnel, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: obsessions, at inclusion"}
-  ocd_v0: {column: ceoccurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: obsessions_v0, label: "Obsessive-compulsive disorder (asked after the obsessions), at inclusion"}
+  obsessional_disorder_v0: {column: ceoccurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: obsessions_v0, label: "Obsessional disorder (asked after the obsessions), at inclusion"}
   compulsions_v0: {column: rad_peur_compulsif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: compulsions, at inclusion"}
-  compulsive_disorder_v0: {column: rad_trouble_compulsif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: compulsions_v0, label: "Compulsive disorder (asked after the compulsions), at inclusion"}
+  ocd_v0: {column: rad_trouble_compulsif, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: compulsions_v0, label: "Obsessive-compulsive disorder (asked after the compulsions), at inclusion"}
   ocd_last_month_v0: {column: occurtoc, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Obsessive-compulsive disorder: symptoms in the past month, at inclusion"}
   ptsd_v0: {column: ceoccurspt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Post-traumatic stress disorder, at inclusion"}
   ptsd_last_month_v0: {column: occurspt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Post-traumatic stress disorder: symptoms in the past month, at inclusion"}
-  gad_v0: {column: ceoccuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Generalised anxiety disorder (current episode only), at inclusion"}
+  gad_screening_v0: {column: ceoccuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Screening: nervous or anxious in the last ten months, at inclusion"}
+  gad_v0: {column: ceoccurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: gad_screening_v0, label: "Generalised anxiety disorder (asked after the screening question), at inclusion"}
   gad_last_month_v0: {column: occuranxietegeneral, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Generalised anxiety disorder: symptoms in the past month, at inclusion"}
-  anxiety_medical_v0: {column: ceoccurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Anxiety disorder due to a general medical condition, at inclusion"}
-  anxiety_medical_condition_v0: {column: cedecodtroubanxaffmed, type: text, label: "Anxiety due to a medical condition: the condition, as written, at inclusion"}
-  anxiety_medical_last_month_v0: {column: occurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety due to a medical condition: symptoms in the past month, at inclusion"}
+  anxiety_medical_condition_v0: {column: cedecodtroubanxaffmed, type: text, label: "Anxiety due to a medical condition: the condition, as written (asked under generalised anxiety), at inclusion"}
+  anxiety_medical_last_month_v0: {column: occurtroubanxaffmed, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety due to a medical condition: symptoms in the past month (asked under generalised anxiety), at inclusion"}
   anxiety_unspecified_v0: {column: ceoccurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: anxiety_disorder_v0, label: "Anxiety disorder not otherwise specified, at inclusion"}
   anxiety_unspecified_last_month_v0: {column: occurtroubanxnonspe, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Anxiety disorder not otherwise specified: symptoms in the past month, at inclusion"}
 
-  # Asked of every patient, whatever the first answer.
-  adhd_symptoms_v0: {column: ceoccurtdah, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Symptoms of an attention deficit hyperactivity disorder, at inclusion"}
+  # Not under the first answer: asked on 1,638 of the 2,353 inclusion visits (see the notes).
+  adhd_symptoms_v0: {column: ceoccurtdah, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Symptoms of an attention deficit hyperactivity disorder in childhood (before age 12), at inclusion"}

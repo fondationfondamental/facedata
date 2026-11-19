@@ -2,14 +2,64 @@ instrument: depressive_episodes
 title: Major depressive episodes outside the psychotic episodes
 tab: SUBSTANCES ET COMORBIDITE
 section: Trouble thymique (survenant en dehors des épisodes psychotiques)
-status: draft
+status: reviewed
 notes: >
-  Asked at the inclusion visit only (2,149 visits): has the patient had major
-  depressive episodes, the age at the first one and their number over the
-  whole life. "U" is a missing code (167 answers). 999 means "does not
-  know" (the dictionary says so): 58 ages and 215 numbers.
+  Asked at the inclusion visit only (2,149 of the 2,353 visits answered: 1,016
+  yes, 966 no): has the patient had major depressive episodes (including
+  post-psychotic depression), the age at the first one and their number over
+  the whole life. "U" is a missing code (167 answers). The age and the number
+  are shown after a yes: the number is 0 after a no (asked_if: 965 cells,
+  where the form shows nothing; one cell is filled under a no and stays), and
+  the age stays missing after a no (3 cells are filled under a no and stay as
+  recorded). Under a yes the age is empty on 7% of the visits and the number
+  on 10%.
+
+  The number is capped. The options of the form run from 0 to 20 and ">20",
+  and the export removes the sign, so ">20" is delivered as 20 (12 cells at
+  20, a lower bound) and "Ne sais pas" is 999 (215 numbers; the dictionary
+  says so). The options of the age run from "<5" to ">89", read as 5 and 89
+  ("<5" cannot be told from 5); 999 is "does not know" there too (58 ages).
+
+  The yes share of the first question differs by centre, from 34% to 74% (ten
+  centres with 20 answers or more). The version block keeps the table to the
+  inclusion visits: the follow-up visits do not hold the question.
+
+  By year, the yes share of the first question is 45% of the visits to 2013,
+  55% in 2014-16, 51% in 2017-19, 49% in 2020-22 and 55% from 2023. Inside a
+  centre it moves more (from 52% to 28% in one centre and from 31% to 74% in
+  another, between the visits to 2013 and those of 2020-22), so the pooled
+  share follows the mix and the practice of the centres: no known cause.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V8_ans: follow_up
+    V9_ans: follow_up
+    V10_ans: follow_up
+    V6_mois: follow_up
+    V18_mois: follow_up
+    V30_mois: follow_up
+    V42_mois: follow_up
+    V54_mois: follow_up
+    V66_mois: follow_up
+    V78_mois: follow_up
+    V90_mois: follow_up
+    V102_mois: follow_up
+    V114_mois: follow_up
+    V126_mois: follow_up
+
+defaults: {versions: [inclusion]}
 
 variables:
-  mde_ever: {column: ceoccurthy, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: Has had major depressive episodes}
+  mde_ever: {column: ceoccurthy, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: Has had major depressive episodes (including post-psychotic depression)}
   mde_first_age: {column: agedebutthy, type: item, range: [0, 90], missing: {999: unknown}, label: Age at the first major depressive episode}
-  mde_count: {column: nboccurthy, type: item, range: [0, 100], missing: {999: unknown}, label: Number of major depressive episodes over the whole life}
+  mde_count: {column: nboccurthy, type: item, range: [0, 100], missing: {999: unknown}, asked_if: mde_ever, label: Number of major depressive episodes over the whole life}
