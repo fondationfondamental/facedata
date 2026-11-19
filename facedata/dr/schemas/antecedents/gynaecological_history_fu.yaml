@@ -2,22 +2,36 @@ instrument: gynaecological_history_fu
 title: "Gynaecological history, at follow-up"
 tab: ANTECEDENTS
 section: Antécédents gynécologiques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  visits of 2 and 4 years: 89 visits. The questions and what is specific
-  to this cohort are described in gynaecological_history_v0.yaml.
+  visits of 2 and 4 years: 89 visits. The questions and what is specific to
+  this cohort are described in gynaecological_history_v0.yaml.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
+
+  Year (report). Among the 89 answers a single year (2017) has 20 answers or
+  more: the year shift of menopause_fu compares that one group with the
+  whole and shows no step. The share of menopause follows the age of the
+  women (see gynaecological_history_v0.yaml).
 
 version:
   name: visit_form
@@ -42,9 +56,9 @@ variables:
   n_miscarriages_fu: {column: spabortn_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of miscarriages, at follow-up"}
   n_abortions_fu: {column: nb_ivg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of voluntary terminations of pregnancy, at follow-up"}
   n_medical_terminations_fu: {column: nb_itg_rporres, type: item, range: [0, 30], asked_if: n_pregnancies_fu, label: "Number of terminations of pregnancy for a medical reason, at follow-up"}
-  menopause_fu: {column: menostat_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Menopause, at follow-up"}
+  menopause_fu: {column: menostat_rporres, type: item, range: [0, 1], label: "Menopause, at follow-up"}
   menopause_date_fu: {column: menostat_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: date, at follow-up"}
-  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: menopause_fu, label: "Menopause: hormone therapy, at follow-up"}
+  menopause_hormone_therapy_fu: {column: hormonal_rporres, type: item, range: [0, 1], label: "Hormonal treatment (asked whether or not in menopause), at follow-up"}
   menopause_hormone_therapy_start_fu: {column: hormonal_rpdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Menopause: start of the hormone therapy, at follow-up"}
-  gynaecological_disease_fu: {column: gyneco_rporres, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gynaecological disease other than a cancer, at follow-up"}
+  gynaecological_disease_fu: {column: gyneco_rporres, type: item, range: [0, 1], label: "Gynaecological disease other than a cancer, at follow-up"}
   gynaecological_disease_text_fu: {column: gynecosp_rporres, type: text, label: "Gynaecological disease: which one, as written, at follow-up"}

@@ -2,18 +2,49 @@ instrument: allergic_history_fu
 title: Allergic history, at follow-up
 tab: ANTECEDENTS
 section: Pathologies allergiques
-status: draft
+status: reviewed
 notes: >
-  One question, then two boxes written in one cell, as in BP (asked_if: no
-  allergic disease means neither). The columns asthme_mhoccur and
-  allergie_mhoccur repeat each box in a column of its own and are ignored.
-  Lupus and rheumatoid arthritis, boxes of this list in BP, are with the
-  auto-immune diseases here.
+  One question, "Pathologies allergiques", then two boxes written in one cell,
+  as in BP (asked_if: no allergic disease means neither). BP and DR ask about
+  "pathologies allergiques et inflammatoires": the SZ question is not the same
+  one, so its gate is named allergic_disease_fu and not
+  allergic_inflammatory_fu (decision D53); 29% of the inclusion answers are
+  yes, against 8.8% in BP. The columns asthme_mhoccur and allergie_mhoccur
+  repeat each box in a column of its own and are ignored. Lupus and rheumatoid
+  arthritis, boxes of this list in BP, are with the auto-immune diseases here.
 
-  The questions of the inclusion form, asked again at part of the follow-up
-  visits (about 400, 5% to 40% of the visits of a year), where they seem to
-  be about the time since the last visit: see the schema of the inclusion
-  form, whose notes hold for this one.
+  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
+  and the other details are asked after a yes and are missing otherwise.
+
+  Two forms in the same columns, as in FACE BP (BP decisions D59 and D84; here
+  decisions D20 and D56 in PROGRESS.md). The same questions are asked at the
+  inclusion visit and at the yearly follow-up visits (every follow-up visit of
+  the extraction is a yearly one; the 1,675 screening records hold no cell of
+  the section). At inclusion they are about the whole life. At the yearly
+  visits a disease answered yes at inclusion is most often answered no (39 of
+  47 follow-up answers for a head injury, 43 of 54 for acne). The yearly form
+  is the inclusion form again, with no period in the wording of its questions,
+  after one more question that the extraction does not hold: "Pas de
+  changement de l'histoire somatique depuis la dernière visite?"
+  (rad_pas_dechangement, shown at the yearly visit only; export request R78).
+  An empty follow-up section may therefore mean "no change". A yearly answer
+  is an update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are
+  delivered as separate columns ending in _v0 and _fu; visit_form says which
+  form a visit used.
+
+  The section is answered at 81% to 100% of the inclusion visits of every year
+  (lowest in 2017), with no fall in 2022. Three other sections of the medical
+  history do fall in 2022: the digestive diseases, the autoimmune diseases and
+  the other diseases (decisions D23 and D51 in PROGRESS.md).
+
+  At follow-up the section is held by 405 of the 2,588 yearly visits (4% to
+  44% of the yearly visits of a year from 2012); the other yearly visits leave
+  it empty, which may mean "no change" (see the two forms above).
+
+  The SZ form is shorter than the BP one: one question "treated" per disease,
+  and no date of onset and no "controlled". The names are those of BP where
+  the question is the same.
 
 version:
   name: visit_form
@@ -45,6 +76,6 @@ version:
 defaults: {versions: [follow_up]}
 
 variables:
-  allergic_inflammatory_fu: {column: somat_all, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Allergic disease, at follow-up"}
-  asthma_fu: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 0, "Asthme (allergique ou non)": 1}, asked_if: allergic_inflammatory_fu, label: "Asthma, at follow-up"}
-  allergy_fu: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 1, "Asthme (allergique ou non)": 0}, asked_if: allergic_inflammatory_fu, label: "Allergy other than asthma, at follow-up"}
+  allergic_disease_fu: {column: somat_all, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Allergic disease, at follow-up"}
+  asthma_fu: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 0, "Asthme (allergique ou non)": 1}, asked_if: allergic_disease_fu, label: "Asthma, at follow-up"}
+  allergy_fu: {column: chk_somat_all_specifier, type: item, range: [0, 1], separator: ",", codes: {"Allergies hors asthme": 1, "Asthme (allergique ou non)": 0}, asked_if: allergic_disease_fu, label: "Allergy other than asthma, at follow-up"}

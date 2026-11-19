@@ -7,7 +7,8 @@ One module per cohort. Everything specific to an instrument is written in a
 small YAML schema; the Python code is generic and stays small.
 
 **Status:** every column of the four extractions (BP, SZ, DR, ASP) is read or
-deliberately ignored. The schemas are drafts: each cohort's progress file
+deliberately ignored. The schemas are reviewed tab by tab (BP 125 of 135, SZ 54 of 125,
+DR 47 of 137, ASP 43 of 139; the others are drafts): each cohort's progress file
 lists the decisions taken and the questions still open
 ([BP](docs/bp/PROGRESS.md), [SZ](docs/sz/PROGRESS.md), [DR](docs/dr/PROGRESS.md),
 [ASP](docs/asp/PROGRESS.md)).
@@ -59,8 +60,9 @@ name the instruments you need), the report about ten minutes.
 
 FACE SZ is read the same way (`from facedata import sz`): every column of its
 extraction is read by a schema or ignored with a reason, in 127 instruments.
-Its schemas are drafts until the questions of `docs/sz/QUESTIONS.md` are
-answered; `docs/sz/PROGRESS.md` logs each decision. The tables of the two
+Its schemas are reviewed tab by tab (54 of 125, the others are drafts) and
+the questions of `docs/sz/QUESTIONS.md` stay open until answered;
+`docs/sz/PROGRESS.md` logs each decision. The tables of the two
 cohorts have the same key columns and the same names for the instruments
 they share, so they can be stacked:
 

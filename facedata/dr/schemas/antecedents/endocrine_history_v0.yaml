@@ -2,32 +2,54 @@ instrument: endocrine_history_v0
 title: "Endocrine history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies endocriniennes et métaboliques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
   inclusion visit: 573 visits (86% to 93% of the inclusions in every period).
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  The thyroid disorder has one date of onset (BP has one for
-  hyperthyroidism and one for hypothyroidism). Its kind is stored 1 and 2,
-  read as hypothyroidism (54 at inclusion) and hyperthyroidism (8) in the
-  order of the BP list, and 0 on 7 visits, kept as code_0. The type of
-  diabetes is stored 1 and 2, read as type 1 and type 2 (4 and 29; one
-  other value is unknown_code). "Induced by a treatment" is a code that the
-  dictionary does not explain. The kind of dyslipidaemia is two yes/no
-  questions here (hypercholesterolaemia, hypertriglyceridaemia). Of the 22
-  follow-up visits of patients with dyslipidaemia at inclusion, 13 answer
-  no.
+  The thyroid disorder has one date of onset (BP has one for hyperthyroidism
+  and one for hypothyroidism). Its kind is stored 1 hypothyroidism, 2
+  hyperthyroidism, 0 "Ne sais pas" (forms 164 and 191, in the order of the BP
+  list): 54 and 8 at inclusion; the 0 (7 inclusion visits and 1 follow-up
+  visit) is a missing code. The type of diabetes is stored 1 type I, 2 type
+  II, 0 "Ne sais pas": 4 and 29 at inclusion, and one 0, a missing code.
+  "Induced by a treatment" is 1 lithium, 2 another treatment, as in BP. No
+  question "induced by a treatment?" gates it: the form shows it under the
+  disease. It is empty under a yes on 55 of 70 forms at inclusion (79%) and 19
+  of 25 at follow-up: an empty cell cannot be told from "not asked" and must
+  not be read as "not induced".
+
+  The kind of dyslipidaemia is two yes/no questions here
+  (hypercholesterolaemia, hypertriglyceridaemia), shown after a dyslipidaemia
+  yes: after a no they are empty, and asked_if reads them as 0 (902 cells at
+  inclusion, 212 at follow-up). BP has one list of three answers, missing
+  after a no. Among the 121 yes at inclusion both boxes are ticked on 34,
+  cholesterol only on 57, triglycerides only on 10, neither on 6, and 14 are
+  incomplete: the same split as the BP list. Of the 22 follow-up visits of
+  patients with dyslipidaemia at inclusion, 13 answer no; thyroid disorder 6
+  of 20. The date of onset is empty under a yes on 53 of 121 dyslipidaemias.
+  DR has no text for another endocrine disease (BP has one): the form asks
+  only for a date.
 
 version:
   name: visit_form
@@ -47,22 +69,22 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  diabetes_v0: {column: diabete_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes, at inclusion"}
+  diabetes_v0: {column: diabete_mhoccur, type: item, range: [0, 1], label: "Diabetes, at inclusion"}
   diabetes_start_v0: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at inclusion"}
-  diabetes_treated_v0: {column: diabete_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: treated, at inclusion"}
-  diabetes_controlled_v0: {column: diabete_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Diabetes: controlled, at inclusion"}
-  diabetes_type_v0: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, label: "Diabetes: type, at inclusion"}
-  thyroid_disorder_v0: {column: dysthyro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder, at inclusion"}
-  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism, "0": code_0}, label: "Thyroid disorder: type, at inclusion"}
-  thyroid_disorder_treated_v0: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: treated, at inclusion"}
-  thyroid_disorder_induced_by_code_v0: {column: dysthyro_mhdecod, type: category, codes: {"1": code_1, "2": code_2}, label: "Thyroid disorder: induced by a treatment, at inclusion"}
-  thyroid_disorder_controlled_v0: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Thyroid disorder: controlled, at inclusion"}
-  dyslipidaemia_v0: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia, at inclusion"}
+  diabetes_treated_v0: {column: diabete_tr_mhdecod, type: item, range: [0, 1], label: "Diabetes: treated, at inclusion"}
+  diabetes_controlled_v0: {column: diabete_eq_mhdecod, type: item, range: [0, 1], label: "Diabetes: controlled, at inclusion"}
+  diabetes_type_v0: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, missing: {"0": unknown}, label: "Diabetes: type, at inclusion"}
+  thyroid_disorder_v0: {column: dysthyro_mhoccur, type: item, range: [0, 1], label: "Thyroid disorder, at inclusion"}
+  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"1": hypothyroidism, "2": hyperthyroidism}, missing: {"0": unknown}, label: "Thyroid disorder: type, at inclusion"}
+  thyroid_disorder_treated_v0: {column: dysthyro_tr_mhdecod, type: item, range: [0, 1], label: "Thyroid disorder: treated, at inclusion"}
+  thyroid_disorder_induced_by_v0: {column: dysthyro_mhdecod, type: category, codes: {"1": lithium, "2": other_treatment}, label: "Thyroid disorder: induced by a treatment, at inclusion"}
+  thyroid_disorder_controlled_v0: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], label: "Thyroid disorder: controlled, at inclusion"}
+  dyslipidaemia_v0: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], label: "Dyslipidaemia, at inclusion"}
   dyslipidaemia_start_v0: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at inclusion"}
-  dyslipidaemia_treated_v0: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: treated, at inclusion"}
-  dyslipidaemia_controlled_v0: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: controlled, at inclusion"}
-  other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another endocrine disease, at inclusion"}
+  dyslipidaemia_treated_v0: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: treated, at inclusion"}
+  dyslipidaemia_controlled_v0: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: controlled, at inclusion"}
+  other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], label: "Another endocrine disease, at inclusion"}
   other_endocrine_start_v0: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at inclusion"}
   thyroid_disorder_start_v0: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Thyroid disorder: date of onset, at inclusion"}
-  hypercholesterolaemia_v0: {column: cholester_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypercholesterolaemia, at inclusion"}
-  hypertriglyceridaemia_v0: {column: tryglicer_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Dyslipidaemia: hypertriglyceridaemia, at inclusion"}
+  hypercholesterolaemia_v0: {column: cholester_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_v0, label: "Dyslipidaemia: hypercholesterolaemia, at inclusion"}
+  hypertriglyceridaemia_v0: {column: tryglicer_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_v0, label: "Dyslipidaemia: hypertriglyceridaemia, at inclusion"}

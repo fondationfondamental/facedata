@@ -2,30 +2,47 @@ instrument: endocrine_history_v0
 title: Endocrine and metabolic history, at inclusion
 tab: ANTECEDENTS
 section: Pathologies endocriniennes et métaboliques
-status: draft
+status: reviewed
 notes: >
-  The SZ form asks about type 2 diabetes here (type 1 is with the
-  auto-immune diseases), where BP asks one question and then the type.
+  The SZ form asks about type 2 diabetes here (type 1 is with the auto-immune
+  diseases), where BP asks one question and then the type.
 
   Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
   and the other details are asked after a yes and are missing otherwise.
+  At inclusion one centre ticks "treated" on 21% of the yes answers of the whole
+  medical history (54 of 262 answers), the other centres on 45% to 63% (53%
+  pooled, 679 of 1,293): a habit of that centre, which makes the site shift of
+  the "treated" columns of this section and, with the mix of centres in groups
+  of 20 to 30 answers, their year shift. The follow-up answers are too few per
+  centre to show it.
 
-  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
-  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
-  questions are about the whole life. At the follow-up visits a disease
-  answered yes at inclusion is most often answered no (39 of 47 for a head
-  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
-  time since the last visit. The two are delivered as separate columns
-  ending in _v0 and _fu; visit_form says which form a visit used.
+  Two forms in the same columns, as in FACE BP (BP decisions D59 and D84; here
+  decisions D20 and D56 in PROGRESS.md). The same questions are asked at the
+  inclusion visit and at the yearly follow-up visits (every follow-up visit of
+  the extraction is a yearly one; the 1,675 screening records hold no cell of
+  the section). At inclusion they are about the whole life. At the yearly
+  visits a disease answered yes at inclusion is most often answered no (39 of
+  47 follow-up answers for a head injury, 43 of 54 for acne). The yearly form
+  is the inclusion form again, with no period in the wording of its questions,
+  after one more question that the extraction does not hold: "Pas de
+  changement de l'histoire somatique depuis la dernière visite?"
+  (rad_pas_dechangement, shown at the yearly visit only; export request R78).
+  An empty follow-up section may therefore mean "no change". A yearly answer
+  is an update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are
+  delivered as separate columns ending in _v0 and _fu; visit_form says which
+  form a visit used.
 
-  The section is answered at about 80% of the inclusion visits or more in
-  every year, with no fall in 2022. Three other sections of the medical
-  history do fall in 2022: the digestive diseases, the autoimmune diseases
-  and the other diseases (decision D23 in PROGRESS.md).
+  The section is answered at 81% to 100% of the inclusion visits of every year
+  (lowest in 2017), with no fall in 2022. Three other sections of the medical
+  history do fall in 2022: the digestive diseases, the autoimmune diseases and
+  the other diseases (decisions D23 and D51 in PROGRESS.md). The shortcut "Non
+  pour tous" of the form copies "no" to each disease of this section, as its
+  script is meant to (decision D51).
 
-  The SZ form is shorter than the BP one: one question "treated" per
-  disease, and no date of onset and no "controlled". The names are those of
-  BP where the question is the same.
+  The SZ form is shorter than the BP one: one question "treated" per disease,
+  and no date of onset and no "controlled". The names are those of BP where
+  the question is the same.
 
 version:
   name: visit_form
@@ -60,10 +77,10 @@ variables:
   diabetes_type2_v0: {column: diabete2_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 2 diabetes, at inclusion"}
   diabetes_type2_treated_v0: {column: diabete2_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 2 diabetes: treated at present, at inclusion"}
   thyroid_disorder_v0: {column: dysthyro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder, at inclusion"}
-  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"Hypo-thyroïdie": hypothyroidism, "Hyper-thyroïdie": hyperthyroidism}, label: "Thyroid disorder: which, at inclusion"}
+  thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"Hypo-thyroïdie": hypothyroidism, "Hyper-thyroïdie": hyperthyroidism}, label: "Thyroid disorder: type, at inclusion"}
   thyroid_disorder_treated_v0: {column: dysthyro_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder: treated at present, at inclusion"}
   dyslipidaemia_v0: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia, at inclusion"}
-  dyslipidaemia_type_v0: {column: dyslipidemie_mhmodify, type: category, codes: {"Hypercholestérolémie": hypercholesterolaemia, "Hypertriglycéridémie": hypertriglyceridaemia, "Les deux": both}, label: "Dyslipidaemia: which, at inclusion"}
+  dyslipidaemia_type_v0: {column: dyslipidemie_mhmodify, type: category, codes: {"Hypercholestérolémie": hypercholesterolaemia, "Hypertriglycéridémie": hypertriglyceridaemia, "Les deux": both}, label: "Dyslipidaemia: type, at inclusion"}
   dyslipidaemia_treated_v0: {column: dyslipidemie_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia: treated, at inclusion"}
   other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another endocrine disease, at inclusion"}
   other_endocrine_text_v0: {column: autendoc_mhmodify, type: text, label: "Another endocrine disease: which one, as written, at inclusion"}

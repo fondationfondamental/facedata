@@ -2,23 +2,36 @@ instrument: digestive_history_v0
 title: "Digestive history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies hépato-gastro-entérologiques
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
   inclusion visit: 572 visits (85% to 93% of the inclusions in every period).
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  The kind of inflammatory bowel disease and the treatment behind a drug hepatitis are codes that the dictionary does not explain.
+  The kind of inflammatory bowel disease is 1 Crohn's disease, 2 ulcerative
+  colitis, and the treatment behind a drug hepatitis is 1 neuroleptic, 2
+  antidepressant, 3 anticonvulsant, 4 another treatment (forms 164 and 191, as
+  in BP); only codes 2 and 4 occur at inclusion (6 cells), and 1 and 2 for the
+  bowel disease (11 cells).
 
 version:
   name: visit_form
@@ -38,19 +51,19 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  inflammatory_bowel_disease_v0: {column: inflachro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease, at inclusion"}
+  inflammatory_bowel_disease_v0: {column: inflachro_mhoccur, type: item, range: [0, 1], label: "Chronic inflammatory bowel disease, at inclusion"}
   inflammatory_bowel_disease_start_v0: {column: inflachro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic inflammatory bowel disease: date of onset, at inclusion"}
-  inflammatory_bowel_disease_treated_v0: {column: inflachro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease: treated, at inclusion"}
-  inflammatory_bowel_disease_controlled_v0: {column: inflachro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic inflammatory bowel disease: controlled, at inclusion"}
-  inflammatory_bowel_disease_type_code_v0: {column: inflachro_mhmodify, type: category, codes: {"1": code_1, "2": code_2}, label: "Chronic inflammatory bowel disease: type, at inclusion"}
-  cirrhosis_v0: {column: cirrhose_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis, at inclusion"}
+  inflammatory_bowel_disease_treated_v0: {column: inflachro_tr_mhdecod, type: item, range: [0, 1], label: "Chronic inflammatory bowel disease: treated, at inclusion"}
+  inflammatory_bowel_disease_controlled_v0: {column: inflachro_eq_mhdecod, type: item, range: [0, 1], label: "Chronic inflammatory bowel disease: controlled, at inclusion"}
+  inflammatory_bowel_disease_type_v0: {column: inflachro_mhmodify, type: category, codes: {"1": crohn, "2": ulcerative_colitis}, label: "Chronic inflammatory bowel disease: type, at inclusion"}
+  cirrhosis_v0: {column: cirrhose_mhoccur, type: item, range: [0, 1], label: "Cirrhosis, at inclusion"}
   cirrhosis_start_v0: {column: cirrhose_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cirrhosis: date of onset, at inclusion"}
-  cirrhosis_treated_v0: {column: cirrhose_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis: treated, at inclusion"}
-  cirrhosis_controlled_v0: {column: cirrhose_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cirrhosis: controlled, at inclusion"}
-  peptic_ulcer_v0: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer, at inclusion"}
+  cirrhosis_treated_v0: {column: cirrhose_tr_mhdecod, type: item, range: [0, 1], label: "Cirrhosis: treated, at inclusion"}
+  cirrhosis_controlled_v0: {column: cirrhose_eq_mhdecod, type: item, range: [0, 1], label: "Cirrhosis: controlled, at inclusion"}
+  peptic_ulcer_v0: {column: ulcgasduo_mhoccur, type: item, range: [0, 1], label: "Gastric or duodenal ulcer, at inclusion"}
   peptic_ulcer_start_v0: {column: ulcgasduo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Gastric or duodenal ulcer: date of onset, at inclusion"}
-  peptic_ulcer_treated_v0: {column: ulcgasduo_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer: treated, at inclusion"}
-  peptic_ulcer_controlled_v0: {column: ulcgasduo_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Gastric or duodenal ulcer: controlled, at inclusion"}
-  drug_hepatitis_v0: {column: hepmedic_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Drug-induced hepatitis, at inclusion"}
+  peptic_ulcer_treated_v0: {column: ulcgasduo_tr_mhdecod, type: item, range: [0, 1], label: "Gastric or duodenal ulcer: treated, at inclusion"}
+  peptic_ulcer_controlled_v0: {column: ulcgasduo_eq_mhdecod, type: item, range: [0, 1], label: "Gastric or duodenal ulcer: controlled, at inclusion"}
+  drug_hepatitis_v0: {column: hepmedic_mhoccur, type: item, range: [0, 1], label: "Drug-induced hepatitis, at inclusion"}
   drug_hepatitis_start_v0: {column: hepmedic_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug-induced hepatitis: date of onset, at inclusion"}
-  drug_hepatitis_treatment_code_v0: {column: hepmedic_mhmodify, type: category, codes: {"2": code_2, "4": code_4}, label: "Drug-induced hepatitis: the treatment, at inclusion"}
+  drug_hepatitis_treatment_v0: {column: hepmedic_mhmodify, type: category, codes: {"1": neuroleptic, "2": antidepressant, "3": anticonvulsant, "4": other}, label: "Drug-induced hepatitis: the treatment, at inclusion"}

@@ -2,23 +2,41 @@ instrument: cardiovascular_history_v0
 title: "Cardiovascular history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies cardio-vasculaires
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
   inclusion visit: 574 visits (86% to 93% of the inclusions in every period).
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  No date for another cardiovascular disease. Of the 20 follow-up visits of patients with hypertension at inclusion, 4 answer no.
+  Coronary disease is asked "excluding infarction" (form 164, line 50), and
+  the label says so. The inclusion form has no date for another cardiovascular
+  disease, as BP. Of the 20 follow-up visits of patients with hypertension at
+  inclusion, 4 answer no. The date of onset of the hypertension is empty under
+  a yes on 43 of 109 forms (the rater left it out).
+
+  One hypertension has "treated" and "controlled" filled while the question
+  itself is empty: every radio of the forms is unticked by a double click,
+  which fires no change event, so the children stay filled (decision D36).
+  Kept as recorded, with no shown_if.
 
 version:
   name: visit_form
@@ -38,19 +56,19 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  hypertension_v0: {column: hta_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Hypertension, at inclusion"}
+  hypertension_v0: {column: hta_mhoccur, type: item, range: [0, 1], label: "Hypertension, at inclusion"}
   hypertension_start_v0: {column: hta_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Hypertension: date of onset, at inclusion"}
-  hypertension_treated_v0: {column: hta_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Hypertension: treated, at inclusion"}
-  hypertension_controlled_v0: {column: hta_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Hypertension: controlled, at inclusion"}
-  coronary_disease_v0: {column: coronar_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Coronary disease, at inclusion"}
-  coronary_disease_start_v0: {column: coronar_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Coronary disease: date of onset, at inclusion"}
-  coronary_disease_treated_v0: {column: coronar_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Coronary disease: treated, at inclusion"}
-  coronary_disease_controlled_v0: {column: coronar_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Coronary disease: controlled, at inclusion"}
-  myocardial_infarction_v0: {column: infarctus_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Myocardial infarction, at inclusion"}
+  hypertension_treated_v0: {column: hta_tr_mhdecod, type: item, range: [0, 1], label: "Hypertension: treated, at inclusion"}
+  hypertension_controlled_v0: {column: hta_eq_mhdecod, type: item, range: [0, 1], label: "Hypertension: controlled, at inclusion"}
+  coronary_disease_v0: {column: coronar_mhoccur, type: item, range: [0, 1], label: "Coronary disease (excluding infarction), at inclusion"}
+  coronary_disease_start_v0: {column: coronar_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Coronary disease (excluding infarction): date of onset, at inclusion"}
+  coronary_disease_treated_v0: {column: coronar_tr_mhdecod, type: item, range: [0, 1], label: "Coronary disease (excluding infarction): treated, at inclusion"}
+  coronary_disease_controlled_v0: {column: coronar_eq_mhdecod, type: item, range: [0, 1], label: "Coronary disease (excluding infarction): controlled, at inclusion"}
+  myocardial_infarction_v0: {column: infarctus_mhoccur, type: item, range: [0, 1], label: "Myocardial infarction, at inclusion"}
   myocardial_infarction_date_v0: {column: infarctus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Myocardial infarction: date of the event, at inclusion"}
-  arrhythmia_v0: {column: trbrycard_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Heart rhythm disorder, at inclusion"}
+  arrhythmia_v0: {column: trbrycard_mhoccur, type: item, range: [0, 1], label: "Heart rhythm disorder, at inclusion"}
   arrhythmia_start_v0: {column: trbrycard_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Heart rhythm disorder: date of onset, at inclusion"}
-  arrhythmia_treated_v0: {column: trbrycard_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Heart rhythm disorder: treated, at inclusion"}
-  arrhythmia_controlled_v0: {column: trbrycard_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Heart rhythm disorder: controlled, at inclusion"}
-  other_cardiovascular_v0: {column: autcardv_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Another cardiovascular disease, at inclusion"}
+  arrhythmia_treated_v0: {column: trbrycard_tr_mhdecod, type: item, range: [0, 1], label: "Heart rhythm disorder: treated, at inclusion"}
+  arrhythmia_controlled_v0: {column: trbrycard_eq_mhdecod, type: item, range: [0, 1], label: "Heart rhythm disorder: controlled, at inclusion"}
+  other_cardiovascular_v0: {column: autcardv_mhoccur, type: item, range: [0, 1], label: "Another cardiovascular disease, at inclusion"}
   other_cardiovascular_text_v0: {column: autcardv_mhmodify, type: text, label: "Another cardiovascular disease: which one, as written, at inclusion"}

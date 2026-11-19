@@ -4,14 +4,14 @@ tab: ANTECEDENTS
 section: >-
   Enfants, Fratrie, Parents, Grands-parents, Antécédents filles, Antécédents fils, Antécédents sœurs,
   Antécédents frères, Antécédents maternels, Antécédents paternels
-status: draft
+status: reviewed
 level: relatives
 notes: >
   One row per patient and relative: the mother, the father, up to five
   sisters, five brothers, five daughters and five sons, and the four
   grandparents. 29,849 relatives of 5,555 patients, delivered in the table
-  relatives (decision D58 in PROGRESS.md). The columns fdr_ and gp_ of the
-  table patients sum them up (family_history_per_patient, below).
+  relatives (decisions D58 and D70 in PROGRESS.md). The columns fdr_ and gp_
+  of the table patients sum them up (family_history_per_patient, below).
 
   Who has a row. The questions on a sister, a brother, a daughter or a son
   are asked for as many of them as the patient counted as affected in
@@ -20,17 +20,42 @@ notes: >
   application in November 2026; decision D95 in PROGRESS.md). On the form
   of today the birth date, the death and its date of a sibling or a child
   are asked for the affected ones only; the older form asked them for
-  every relative, which is why a birth date exists for unaffected ones. A
-  parent or a grandparent is described after a "yes" in family_structure.
-  So a row does not say that the relative has a
-  disorder: half of the rows (15,040) hold only a birth date, a death or a
-  date of death. A relative for whom nothing is known has no row.
+  every relative, which is why a birth date exists for unaffected ones: 850
+  birth dates of the extraction lie beyond a known number of affected
+  relatives (357 visits of 352 patients, all up to February 2014). For these
+  patients "sister k" is the k-th relative listed, not the k-th affected one.
+  In this table 239 sister rows, 257 brother rows, 191 daughter rows and 205 son
+  rows lie beyond the known number of affected ones. A parent or a
+  grandparent is described after a "yes" in family_structure. So a row does
+  not say that the relative has a disorder: half of the rows (15,040) hold
+  only a birth date, a death or a date of death. A relative for whom nothing
+  is known has no row.
+
+  No row under a no. A parent or a grandparent answered "no" in
+  family_structure has nothing to describe: 14,350 such answers, 10,210 with
+  a row (a birth date or a death was typed) and 4,140 without. A missing
+  block under a "no" means none, not an unknown disorder, and so does a
+  missing block of a sibling or a child beyond the counted affected ones. To
+  ask "does a relative have it", use the columns fdr_ and gp_ of the table
+  patients, which apply this rule, and not the rows of this table.
 
   Read once. A family is described at the inclusion visit, and sometimes
-  completed later. For each relative and question the first visit that
-  holds an answer is read; where a later visit holds another one, the
-  first is kept and the cell gets patient_value_varies (up to 257 relatives
-  per variable).
+  again later: 378 patients have the family questions answered at two or
+  more visits. The yearly visit uses the same form again (D84), after the
+  question "is there a change since the last visit?", which is not exported
+  (R80 of EXPORT_REQUESTS.md): a later family form that is empty may mean
+  "no change". A later answer is a yearly update (D84): neither the whole
+  life nor strictly the time since the last visit. There is no yearly twin
+  of this schema, as there is for the medical history, and a later answer is
+  ignored. For each relative and
+  question the first visit that holds an answer is read; where a later visit
+  holds another one, the first is kept and the cell gets
+  patient_value_varies (up to 257 relatives per variable). The later answers
+  change in one direction mostly: 231 of the 378 patients differ at least
+  once on the counts or the parents and grandparents; among the answers of
+  the parents and the grandparents 190 "yes" become "no" and 55 "no" become
+  "yes", and for 60 parents or grandparents (48 patients) the first answer
+  says alive and a later one deceased.
 
   Disorder. One answer per relative: unipolar (a major depressive episode
   or unipolar disorder), bipolar, schizophrenia or none. "None" is the
@@ -40,32 +65,58 @@ notes: >
   others) is a missing code: 2,473 relatives.
 
   Suicide. One answer too: none, attempt or completed. A relative who died
-  by suicide is therefore not among the attempts.
+  by suicide is therefore not among the attempts. The answer of the second
+  brother (frere2_suicide) is filled in 74 of the 178 visits that hold any
+  answer for him (42%), against 90% to 100% for each of the 15 other blocks
+  with at least 30 answers: a gap of the stored data, not an answer.
 
   Substances and cardiovascular risk factors. The form lets the rater tick
   several boxes, and the extraction writes them in one cell
   ("Alcool,Cannabis"). Each box is delivered as a yes/no variable, and
   relative_substance is 1 when at least one of the three substances is
   ticked. "None" ticked together with "do not know" is read as unknown.
-  The extraction also holds three 0/1 columns per relative (alcool,
-  cannabis, autre_substance), written by the export on every row. They are
-  not read: autre_substance is 1 on 2,709 rows of the mother whose list
-  does not hold it, and alcool misses 55 of the 394 rows whose list holds
-  it.
+  The type of diabetes is shown only after the box diabetes is ticked
+  (shown_if): 3 of the 811 types are filled although another box is ticked;
+  they are delivered as missing and flagged not_shown. A type is given for
+  808 of the 1,597 relatives with diabetes ticked. The extraction also holds
+  three 0/1 columns per relative (alcool, cannabis, autre_substance),
+  written by the export on every row from the list of the cell (R82 of
+  EXPORT_REQUESTS.md): alcool and cannabis are 1 only when the list is
+  exactly that word, and autre_substance is 1 for any list that is not empty,
+  "Alcool" or "Cannabis". Over all the visits, autre_substance is 1 on
+  11,258 cells whose list does not hold "Autre substance" and alcool or
+  cannabis is 0 on 742 cells whose list holds the word (454 and 288). For
+  the mother, autre_substance is 1 on 2,820 visits, 2,721 of them with a list
+  that does not hold it, and alcool misses 55 of the 396 visits whose list
+  holds it. The three columns are not read; the list is.
 
-  Dates. Most of the dates are placeholders: 1000-01-01 is written in a
-  date that was not typed (11,781 birth dates, 11,984 dates of death:
-  date_placeholder). From 2022 the dates are almost never typed: the birth
-  date is filled for 70% of the relatives of the patients included until
-  2020 and for 8% of those of the patients included from 2022, the date of
-  death for 52% and for 1% of the deceased relatives. The form explains it
-  (D95): the birth dates and the dates of death of the parents and the
-  grandparents are no longer shown (they are among its hidden fields), and
-  those of the siblings and the children are asked for the affected ones
-  only. Hard limits: a birth
-  from 1840, a death from 1900. 19 dates are outside (out_of_range): ten
-  have a year below 100 and nine are deaths in the nineteenth century.
-  Three birth dates have a month written 00 with a day (unparsed).
+  Dates. 1000-01-01 is written in a date that was not typed: the
+  application puts it in every empty date of a form saved from 2025
+  (DEV-13 in QUESTIONS.md; R19 of EXPORT_REQUESTS.md). The 52 date columns
+  hold 28,582 such cells, by year of the visit: 103 in 2021, 104 in 2022,
+  104 in 2023, 493 in 2024, 12,164 in 2025 and 15,614 in 2026. This table
+  keeps the first answer of each relative: 11,781 birth dates and 11,984
+  dates of death are placeholders and are delivered as missing
+  (date_placeholder), 42% of the birth dates and 68% of the dates of death
+  that were given. Six real birth dates typed at a later visit are lost: the
+  reader skips 0000-00-00 but not 1000-01-01, so a placeholder that comes
+  first hides a later real date. From 2022 the dates are almost never typed:
+  the birth date is filled for 70% of the relatives of the patients included
+  until 2020 and for 8% of those of the patients included from 2022, the
+  date of death for 52% and for 1% of the deceased relatives. The form
+  explains it (D95): the birth dates and the dates of death of the parents
+  and the grandparents are no longer shown (they are among its hidden
+  fields), from May 2022 (the last real birth date of a parent or a
+  grandparent comes from a visit of that month), and those of the siblings
+  and the children are asked for the affected ones only. Hard limits: a
+  birth from 1840, a death from 1900. 19 dates are outside (out_of_range):
+  ten have a year below 100 and nine are deaths in the nineteenth century.
+  Three birth dates have a month written 00 with a day (unparsed). Dates
+  that are possible one by one but not together are kept and not flagged: 97
+  relatives (90 of them grandparents) died before they were born; 25
+  mothers, 23 fathers and 217 grandparents were born after the patient; 155
+  relatives of 43 patients were born on or after the first visit of the
+  patient (58 parents or grandparents, 97 siblings or children).
 
   Death. Written Y or N for the parents and the grandparents, Oui or Non
   for the others. 4,303 mothers have an answer (727 have died) and 4,161
@@ -76,9 +127,36 @@ notes: >
   corrected the mapping and ran the extraction again (decision D70 in
   PROGRESS.md). The mother now follows the father: "no" comes with the
   placeholder date, "yes" with a date or the placeholder, and the share of
-  "yes" is the same every year (13% to 21%; 23% to 37% for the fathers).
+  "yes" is the same every year (12% to 21% for the mothers, 23% to 37% for
+  the fathers, by year of inclusion from 2011 to 2025). The question was not
+  asked everywhere at the first inclusions: the death of the mother is
+  filled at 1% of the inclusion visits of 2009, 5% of 2010, 12% of 2011, 44%
+  of 2012, 57% of 2013 and 82% of 2014. So relative_deceased is empty for
+  938 relatives who have a date of death (935 of patients included from 2009
+  to 2013, 3 of 2014): an empty cell is not "alive".
 
-  Not delivered: the cause of death, a free text (8,258 cells).
+  Not delivered: the cause of death, a free text (8,306 cells). It is empty
+  for 19% to 23% of the dead parents and 41% to 47% of the dead
+  grandparents.
+
+  Years and centres. The report panels of the table relatives show a shift of 1 for degree and
+  relative_deceased. They count rows, and the mix of the rows changes. The grandparents (degree 2)
+  are 28% of the rows of 2009, 34% of 2010, 38% of 2011 and 47% to 54% from 2012: the rows of
+  siblings and children per patient fall from 2.1 and 2.2 (2009, 2011) to 1.4 in 2012, 1.0 in 2013
+  and 0.5 to 0.7 from 2014 (the old form dated every relative, see Who has a row), and the rows of
+  grandparents rise from 1.5 and 1.6 (2009, 2010) to 2.5 to 2.9 from 2011. relative_deceased is 50%
+  yes over the rows because the grandparents, mostly dead, make half of them; by kinship it stays in
+  the narrow bands given under Death, and the early years are those where the question was not
+  asked. In the table patients, fdr_bipolar (34% yes), fdr_depression (61%), fdr_substance (44%) and
+  gp_depression (38%) show a shift of 1 by centre (gp_depression 26% to 52%): a median near one
+  half. The first three also show a higher share by year in 2009 and 2010 (225 patients of 9
+  centres, 96 to 115 of them with an answer): fdr_bipolar 53% and 52%, fdr_depression 83% and 71%,
+  fdr_substance 65% and 59%, against 26% to 44%, 51% to 69% and 35% to 53% from 2011. It is the
+  denominator, not a higher prevalence: as a share of all the patients of the year the yes is steady
+  (fdr_bipolar 20% to 23% in each year from 2009 to 2016), while the 0, which needs every
+  first-degree relative to be known, is 19% of the patients of 2009, 21% of 2010, 31% of 2011 and
+  42% to 44% from 2014 (the same drift for fdr_depression and fdr_substance): the first forms were
+  less completely filled.
 
 relatives:
   mere: {relative: mother, kinship: mother, degree: 1}
@@ -227,6 +305,7 @@ variables:
     column: typdiab
     label: Type of diabetes of the relative
     type: category
+    shown_if: {relative_diabetes: [1]}
     codes: {Type I: type_1, Type II: type_2}
 
 per_patient:
@@ -246,13 +325,17 @@ per_patient:
     answer. Missing otherwise: one "do not know" is enough, unless another
     relative says yes.
 
-    Of the 5,712 patients with a family answer, fdr_bipolar is 1 for 1,208,
-    0 for 2,386 and missing for 2,118. For 1,237 of these a part of the
-    family is not answered (a parent answered "unknown", or a count left
-    empty); for 881 a relative counted as affected has no known disorder.
-    The columns gp_ are missing more often: "unknown" is the answer for a
-    fifth to a third of each grandparent. For "a relative is known to
-    have it, or not", compare the column with 1.
+    Of the 5,733 patients with a family answer (a number, the yes or no of a
+    parent, or a row that holds more than a birth date), fdr_bipolar is 1
+    for 1,213, 0 for 2,399 and missing for 2,121. For 1,238 of these a part
+    of the family is not answered (a parent answered "unknown", or a count
+    left empty); for 883 a relative counted as affected has no known
+    disorder. The columns gp_ are missing more often: "unknown" is the
+    answer for a fifth to a third of each grandparent. For "a relative is
+    known to have it, or not", compare the column with 1. A parent or a
+    grandparent answered "no" counts as no without any row. The twelve
+    columns were recomputed outside the package from the rows of the table
+    relatives and the counts of family_structure: they come out identical.
 
     Depression means the answer "major depressive episode or unipolar
     disorder", not bipolar disorder. A suicide attempt does not include a

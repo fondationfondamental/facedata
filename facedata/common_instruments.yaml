@@ -1001,10 +1001,14 @@ neurological_history_fu:
   stack: with care
   use: [migraine_fu, epilepsy_fu, multiple_sclerosis_fu, meningitis_fu]
   note: &history_fu >
-    The follow-up form asks the same questions as the inclusion form, about the
-    time since the last visit: it is delivered in columns of its own (_fu) and
-    is not to be added to the inclusion answers. The same reserves as at
-    inclusion apply.
+    The follow-up form is the inclusion form asked again at the yearly visit:
+    its questions carry no period, and an answer is a yearly update, neither
+    the whole life nor strictly the time since the last visit (a yes of the
+    inclusion is often a no a year later). It is delivered in columns of its
+    own (_fu) and is not to be added to the inclusion answers. The six-monthly
+    and the screening visits hold no cell of these sections, and an empty
+    yearly section may mean "no change since the last visit" (the question is
+    not exported). The same reserves as at inclusion apply.
 
 cardiovascular_history_v0:
   title: "Medical history at inclusion: cardiovascular diseases"
@@ -1028,7 +1032,13 @@ endocrine_history_v0:
   schemas: {bp: endocrine_history_v0, sz: endocrine_history_v0, dr: endocrine_history_v0}
   stack: with care
   use: [thyroid_disorder_v0, dyslipidaemia_v0, diabetes_v0]
-  note: *history
+  note: >
+    The same questions as the other history sections (treated, controlled,
+    type, date of onset), with the reserves of their notes. Diabetes: BP and DR
+    ask one question and its type (diabetes_v0, diabetes_type_v0); the SZ form
+    asks type 2 here (diabetes_type2_v0) and type 1 in its auto-immune section
+    (diabetes_type1_v0). DR also reads the two kinds of dyslipidaemia
+    (cholesterol, triglycerides) as two yes/no boxes where BP has one list.
 
 endocrine_history_fu:
   title: "Medical history at follow-up: endocrine and metabolic diseases"
@@ -1059,15 +1069,20 @@ allergic_history_v0:
   domain: Medical and family history
   schemas: {bp: allergic_history_v0, sz: allergic_history_v0, dr: allergic_history_v0}
   stack: with care
-  use: [allergic_inflammatory_v0, asthma_v0, allergy_v0]
-  note: *history
+  use: [asthma_v0, allergy_v0]
+  note: >
+    Asthma and allergy are under the same names in the three cohorts. The first
+    question differs: SZ asks about allergic pathologies (allergic_disease_v0,
+    yes for 29% of the inclusions) and BP and DR about allergic and
+    inflammatory pathologies (allergic_inflammatory_v0, 8.8% in BP): do not
+    compare the two gates. The reserves of the other history sections apply.
 
 allergic_history_fu:
   title: "Medical history at follow-up: allergic and inflammatory diseases"
   domain: Medical and family history
   schemas: {bp: allergic_history_fu, sz: allergic_history_fu, dr: allergic_history_fu}
   stack: with care
-  use: [allergic_inflammatory_fu, asthma_fu, allergy_fu]
+  use: [asthma_fu, allergy_fu]
   note: *history_fu
 
 autoimmune_history_v0:
@@ -1096,7 +1111,11 @@ skin_history_v0:
   schemas: {bp: skin_history_v0, sz: skin_history_v0, dr: skin_history_v0}
   stack: with care
   use: [acne_v0, psoriasis_v0]
-  note: *history
+  note: >
+    Acne and the drug eruption are in the three cohorts. Psoriasis and the
+    triggering by lithium or valproate are in BP and DR only: in SZ psoriasis
+    is in the auto-immune section and the form has no lithium sub-question.
+    The reserves of the other history sections apply.
 
 skin_history_fu:
   title: "Medical history at follow-up: skin diseases"
@@ -1115,7 +1134,10 @@ gynaecological_history_v0:
   note: >
     The number of pregnancies, the menopause and its hormone therapy are in the
     three cohorts; live births, miscarriages and terminations in BP and DR.
-    Asked of women.
+    The section is shown to everyone: men's rows hold answers in BP and SZ
+    (filter on sex). The hormone therapy is a detail of the menopause: it is
+    missing, not 0, for a woman who answered no to the menopause in the three
+    cohorts. The reserves of the other history sections apply.
 
 gynaecological_history_fu:
   title: "Medical history at follow-up: pregnancies, menopause and gynaecological diseases"
@@ -1146,19 +1168,20 @@ urinary_history_v0:
   domain: Medical and family history
   schemas: {bp: urinary_history_v0, dr: urinary_history_v0}
   stack: with care
-  use: [nephropathy_v0, prostate_adenoma_v0, urinary_retention_v0]
+  use: [nephropathy_v0, nephropathy_lithium_v0, prostate_adenoma_v0, urinary_retention_v0]
   note: >
-    The three diseases are under the same names. The causes of a urinary
-    retention are one list in BP and three boxes in DR, where a box is 0 for a
-    patient with no retention: compare the causes among the patients who have
-    the disease.
+    The three diseases are under the same names, and the nephropathy linked to
+    lithium (nephropathy_lithium_v0). The causes of a urinary retention are
+    three boxes in BP (read from one list) and in DR: a box is 0 for a patient
+    with no retention, missing for a patient who has one and was not asked:
+    compare the causes among the patients who have the disease.
 
 urinary_history_fu:
   title: "Medical history at follow-up: urinary tract"
   domain: Medical and family history
   schemas: {bp: urinary_history_fu, dr: urinary_history_fu}
   stack: with care
-  use: [nephropathy_fu, prostate_adenoma_fu, urinary_retention_fu]
+  use: [nephropathy_fu, nephropathy_lithium_fu, prostate_adenoma_fu, urinary_retention_fu]
   note: *history_fu
 
 perinatal:
@@ -1171,30 +1194,43 @@ perinatal:
     In the table patients. The ages of the parents, the weeks of pregnancy,
     the birth weight (grams) and the stay in a neonatal unit are in the four
     cohorts. The term as a class and the kind of delivery as one list are in
-    BP, SZ and DR; ASP describes the delivery with yes/no questions of its own.
+    BP, SZ and DR; ASP describes the delivery with yes/no questions of its own
+    (induced, caesarean, forceps, vacuum), asked only after a delivery that is
+    not natural and 0 after a natural one: its caesarean yes is BP's birth_type
+    equal to caesarean. The ASP columns of the parents' ages, the term, the
+    weight, the length, the head circumference and the stay in a neonatal unit
+    hold no 0 or 99 used as not known, so stack "yes" holds.
 
 family_history:
   title: Family history, one row per relative
   domain: Medical and family history
   schemas: {bp: family_history, sz: family_history, dr: family_history}
   stack: with care
-  use: [kinship, degree, relative_alcohol, relative_anxiety, relative_diabetes, relative_hypertension]
+  use: [kinship, degree, relative_suicide, relative_alcohol, relative_anxiety, relative_diabetes, relative_hypertension]
   note: >
-    In the table relatives. The relatives asked about are not the same: no
-    grandparents in SZ, and in DR the children and the siblings are each one
-    row for the group. The psychiatric disorder of a relative is one list in
-    BP and SZ (relative_disorder) and separate questions in DR. BP and DR share
-    the questions on substances, anxiety, dementia and cardiovascular risk. In
-    DR many of these boxes are written 0 where the question was not asked
-    (flag derived_doubt).
+    In the table relatives. The relatives asked about are not the same: SZ has
+    22 of the 26 relatives of BP (no grandparents, no daughters and sons: filter
+    degree == 1), and in DR the children and the siblings are one row for the
+    group, which holds one arbitrary affected relative (request R110), so they
+    do not join to the sisters, brothers, sons and daughters of BP and SZ. The
+    psychiatric disorder of a relative is one list in BP and SZ
+    (relative_disorder) and separate questions in DR (the suicide has the same
+    labels in the three cohorts). BP and DR share the questions on substances,
+    anxiety, dementia and cardiovascular risk. In DR many of these boxes are
+    written 0 where the question was not asked (flag derived_doubt). A missing
+    block under a parent answered no means none: use the per-patient summary.
 
 family_history_per_patient:
   title: Family history summed up per patient
   domain: Medical and family history
-  schemas: {bp: family_history_per_patient, sz: family_history_per_patient}
+  schemas: {bp: family_history_per_patient, sz: family_history_per_patient, dr: family_history_per_patient}
   stack: "yes"
   use: [fdr_bipolar, fdr_depression, fdr_schizophrenia, fdr_suicide, fdr_suicide_attempt]
-  note: In the table patients. A first-degree relative with each disorder, computed the same way in BP and SZ. DR has no such summary.
+  note: >
+    In the table patients. A first-degree relative with each disorder, computed
+    the same way in BP, SZ and DR. In DR fdr_bipolar and fdr_depression are
+    missing more often (the kind of mood disorder is asked only after a mood
+    disorder yes), and the children and siblings are one relative per group.
 
 family_structure:
   title: Family structure

@@ -2,28 +2,38 @@ instrument: family_history
 title: Family history, one row per relative
 tab: ANTECEDENTS
 section: Antécédents filles, Antécédents fils, Antécédents sœurs, Antécédents frères, Antécédents maternels, Antécédents paternels
-status: draft
+status: reviewed
 level: relatives
 notes: >
-  One row per patient and relative: the mother, the father, up to five
-  sisters, five brothers, five daughters and five sons, in the table
-  relatives. The columns fdr_ of the table patients sum them up
-  (family_history_per_patient, below).
+  One row per patient and relative: the mother, the father and up to five
+  sisters and five brothers, in the table relatives. The columns fdr_ of the
+  table patients sum them up (family_history_per_patient, below). The 22
+  relative keys are those of the BP schema (26) without the four grandparents:
+  filter degree == 1 to compare with BP.
 
-  Two questions per relative: the mood or psychotic disorder (none,
-  depression or unipolar disorder, bipolar disorder, schizophrenia) and
-  suicide (none, attempt, completed). "U" and "Ne sais pas" are missing
-  codes. They are asked for the relatives who have something to describe: a
-  parent answered "yes" in family_structure, and as many sisters, brothers,
-  daughters and sons as the patient counted there. About 730 mothers, 715
-  fathers, 270 sisters and 315 brothers are described; the children almost
-  never (7 cells).
+  Two questions per relative: the mood or psychotic disorder (none, depression
+  or unipolar disorder, bipolar disorder, schizophrenia) and suicide (none,
+  attempt, completed). "U" and "Ne sais pas" are missing codes. They are asked
+  for the relatives who have something to describe: a parent answered "yes" in
+  family_structure, and the sisters and brothers that the patient counted as
+  affected there. 688 mothers, 659 fathers, 239 sisters and 294 brothers are
+  described.
+
+  The SZ form has no block for the daughters and the sons (their counts are in
+  family_structure). The extraction has their columns, which hold 13 cells on
+  7 visits (6 daughters, 1 son): they are delivered as recorded, and the ten
+  keys stay because the invariant reads every raw column. The dictionary gives
+  "yes, no, unknown" as the coding of the sisters, brothers, daughters and
+  sons; the data hold the same lists of disorders as for the parents.
+
+  The rows of the parents follow the step of the yes in family_structure
+  (open question O33): a mother is described for 41% of the patients included
+  in 2010-2017 and for 29% of those included in 2018-2026, a father for 40%
+  and 29%.
 
   The BP schema with the two questions that the SZ form has: no birth and
-  death, no substance, anxiety, dementia or cardiovascular risk, and no
-  grandparents. The dictionary gives "yes, no, unknown" as the coding of
-  the sisters, brothers, daughters and sons; the data hold the same lists
-  of disorders as for the parents.
+  death, no substance, anxiety, dementia or cardiovascular risk, no
+  grandparents and no detail block for the children (decision D57).
 
 relatives:
   mere: {relative: mother, kinship: mother, degree: 1}
@@ -92,6 +102,10 @@ per_patient:
     1 when at least one of these relatives has it. 0 when every part of the
     family is answered and nobody has it. Missing otherwise: one "do not
     know" is enough, unless another relative says yes.
+
+    fdr_bipolar is 1 for 110 patients, 0 for 1,340 and missing for 903: no
+    family form 179, a parent unknown or empty 258, a count left empty 144, a
+    counted relative with no known disorder 322.
 
     The SZ form asks nothing about substances or about the grandparents, so
     the columns fdr_substance and gp_ of BP do not exist here.

@@ -2,25 +2,53 @@ instrument: perinatal
 title: "Birth"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 level: patient
 notes: >
   The term, the age of the parents, the delivery, the newborn's first days and
-  the measures at birth: 2071 inclusion visits (878 of children) and 0 follow-up visits, from 2011 to 2026; asked once, at the
-  inclusion visit.
+  the measures at birth: 2071 inclusion visits (878 of children) and 0 follow-up
+  visits, from 2009 to 2026; asked once, at the inclusion visit.
 
   Same questions as the instrument perinatal of FACE BP, SZ and DR where they
   exist there: the term, the age of the parents, the weight, the length and
-  the head circumference at birth and the two Apgar scores are delivered under
-  the same names. The delivery is described here by yes/no questions (natural,
-  induced, caesarean, forceps, vacuum) where the other cohorts have one list.
+  the head circumference at birth, the two Apgar scores and the stay in a
+  neonatal unit are delivered under the same names. None of these columns holds
+  a 0 or a 99 that stands for "not known" (the Apgar scores hold three real
+  0), so they stack with the other cohorts by name. The delivery is described
+  here by yes/no questions (natural, induced, caesarean, forceps, vacuum)
+  where the other cohorts have one list.
 
-  The term is known for 1710 patients: under 37 weeks for 163 of them. The birth
+  The term is known for 1709 patients: under 37 weeks for 163 of them. The birth
   weight is written in grams (1256 values) or in kilograms (fewer than five values under
   10, converted); fewer than five values between 10 and 400 fit neither and are not
-  delivered. A caesarean is reported for 326 of the 475 patients for whom the
-  question is answered; the question is asked when the delivery is not
-  natural (511 patients).
+  delivered.
+
+  **The delivery.** The form asks "natural delivery" first and shows the
+  questions on the delivery (induced, caesarean, forceps, vacuum, the free text
+  of another delivery) only when the answer is no: the gate is shown the
+  other way round. The answer is yes for 1366 patients, no for 511, not known
+  for 135 and empty for 306. not_natural_delivery (not delivered) is that
+  question read the other way round, 1 for a delivery that is not natural.
+  After a natural delivery induced_delivery, caesarean, forceps and
+  vacuum_extraction are 0 (`asked_if`: 1366 patients each, 5464 cells); after a
+  delivery that is not natural they are read as written (caesarean 326 yes, 149
+  no, 36 empty; induced 165 yes; forceps 65; vacuum 24); where the delivery is
+  not known or empty they stay missing. Nothing is filled under a natural
+  delivery (0 of the 475 caesarean answers, 0 of the 416 induced). With the
+  natural births counted, caesarean is 326 yes among 1841 patients (the 1366
+  natural births and the 475 answers), where it was 326 of 475: it is now
+  BP's birth_type equal to caesarean. The planned or urgent kind of an
+  induction or of a caesarean and the free texts (another delivery, the kind
+  of foetal distress) are details and stay missing after a no.
+
+  **The first days.** The days in a neonatal unit (neonatal_hospitalisation_days)
+  are shown after a yes to the stay: they are 0 after a no (1675 patients) and
+  filled for 113 of the 168 patients with a stay.
+
+  **Year and centre.** The medians of the term (39 or 40 weeks) and of the head circumference (34
+  or 35 cm) by year and by centre (years and centres with 20 values or more) differ by one unit of
+  a whole number scale: no step. The planned or emergency kind of an induction or of a caesarean
+  (126 to 256 answers) does not differ by year or by centre beyond chance.
 
   A section of the ASP cohort only.
 
@@ -29,26 +57,27 @@ variables:
   mother_age_at_birth: {column: agemere, type: item, label: "Age of the mother when the patient was born, in years", range: [12, 60]}
   father_age_at_birth: {column: agepere, type: item, label: "Age of the father when the patient was born, in years", range: [12, 90]}
   natural_delivery: {column: accnat, type: item, label: "Natural delivery (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  induced_delivery: {column: prov, type: item, label: "Induced delivery (0 no, 1 yes)", range: [0, 1]}
-  provpla: {column: provpla, type: item, label: "Induced delivery, planned (0 no, 1 yes)", range: [0, 1]}
-  provurg: {column: provurg, type: item, label: "Induced delivery, in emergency (0 no, 1 yes)", range: [0, 1]}
-  caesarean: {column: cesa, type: item, label: "Caesarean (0 no, 1 yes)", range: [0, 1]}
-  cesapla: {column: cesapla, type: item, label: "Caesarean, planned (0 no, 1 yes)", range: [0, 1]}
-  cesaurg: {column: cesaurg, type: item, label: "Caesarean, in emergency (0 no, 1 yes)", range: [0, 1]}
-  forceps: {column: forc, type: item, label: "Forceps (0 no, 1 yes)", range: [0, 1]}
-  vacuum_extraction: {column: vent, type: item, label: "Vacuum extraction (0 no, 1 yes)", range: [0, 1]}
-  accautre: {column: accautre, type: text, label: "Delivery, other, free text"}
+  not_natural_delivery: {column: accnat, type: item, range: [0, 1], codes: {"0": 1, "1": 0}, missing: {"9": unknown}, keep: false, label: "Not a natural delivery (the answer of the form read the other way round: 1 not natural, 0 natural); not delivered, the gate of the questions on the delivery"}
+  induced_delivery: {column: prov, type: item, label: "Induced delivery (0 no, 1 yes)", range: [0, 1], asked_if: not_natural_delivery}
+  induced_delivery_planned: {column: provpla, type: item, label: "Induced delivery, planned (0 no, 1 yes)", range: [0, 1]}
+  induced_delivery_emergency: {column: provurg, type: item, label: "Induced delivery, in emergency (0 no, 1 yes)", range: [0, 1]}
+  caesarean: {column: cesa, type: item, label: "Caesarean (0 no, 1 yes)", range: [0, 1], asked_if: not_natural_delivery}
+  caesarean_planned: {column: cesapla, type: item, label: "Caesarean, planned (0 no, 1 yes)", range: [0, 1]}
+  caesarean_emergency: {column: cesaurg, type: item, label: "Caesarean, in emergency (0 no, 1 yes)", range: [0, 1]}
+  forceps: {column: forc, type: item, label: "Forceps (0 no, 1 yes)", range: [0, 1], asked_if: not_natural_delivery}
+  vacuum_extraction: {column: vent, type: item, label: "Vacuum extraction (0 no, 1 yes)", range: [0, 1], asked_if: not_natural_delivery}
+  other_delivery_text: {column: accautre, type: text, label: "Other non-natural delivery, free text"}
   foetal_distress: {column: souffet, type: item, label: "Foetal distress (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  souffets: {column: souffets, type: category, label: "Foetal distress at delivery: kind", codes: {"1": anoxia, "2": severe_jaundice, "3": cerebral_haemorrhage, "4": infection, "5": other}}
-  souffetc: {column: souffetc, type: text, label: "Foetal distress, comment, free text"}
+  foetal_distress_type: {column: souffets, type: category, label: "Foetal distress at delivery: kind", codes: {"1": anoxia, "2": severe_jaundice, "3": cerebral_haemorrhage, "4": infection, "5": other}}
+  foetal_distress_other_text: {column: souffetc, type: text, label: "Foetal distress, comment, free text"}
   neonatal_resuscitation: {column: reanim, type: item, label: "Resuscitation at birth (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   neonatal_hospitalisation: {column: neonat, type: item, label: "Was admitted to a neonatal unit (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  neonatc: {column: neonatc, type: text, label: "Neonatal unit, reason, free text"}
-  neonatd: {column: neonatd, type: number, label: "Neonatal unit, days", range: [0, 360], winsor: false}
+  neonatal_hospitalisation_reason: {column: neonatc, type: text, label: "Neonatal unit, reason, free text"}
+  neonatal_hospitalisation_days: {column: neonatd, type: number, label: "Neonatal unit, number of days", range: [0, 360], winsor: false, asked_if: neonatal_hospitalisation}
   newborn_disease: {column: affecbb, type: item, label: "Disease of the newborn (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  affecbbc: {column: affecbbc, type: text, label: "Disease of the newborn, which, free text"}
+  newborn_disease_text: {column: affecbbc, type: text, label: "Disease of the newborn, which, free text"}
   twin_birth: {column: gemel, type: item, label: "Twin birth (0 no, 1 yes)", range: [0, 1]}
-  gemels: {column: gemels, type: category, label: "Twin birth: zygosity", codes: {"1": monozygotic, "2": dizygotic}, missing: {"3": unknown}}
+  twin_zygosity: {column: gemels, type: category, label: "Twin birth: zygosity", codes: {"1": monozygotic, "2": dizygotic}, missing: {"3": unknown}}
   birth_weight:
     column: naispoid
     label: Birth weight

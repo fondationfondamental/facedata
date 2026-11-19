@@ -88,7 +88,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `z_range` | band | `[low, high]`: the band also takes the z-scores of its column. A z-score inside the range is turned into its band under the normal law (section 6) |
 | `versions` | all | The editions on whose visits the variable is read (section 7). Usually set once in `defaults`. Default: all visits |
 | `winsor` | number | `[q_low, q_high]` percentiles (default `[0.01, 0.99]`), `{limits: [a, b]}` fixed limits, or `false`. Set `false` on a count of events that is 0 for most visits (episodes, consultations, hospitalisations): its 99th percentile is 0 or 1, and the default would bring every rarer value down to it |
-| `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table) |
+| `keep` | all | `false`: read and checked, but not delivered (stored scores used for comparison). Such a variable may read a column that another schema delivers, when a score needs it (the years of education for a norm table). The cells of a column read by a `keep: false` variable are not counted as unread by the coverage check: this is how an edition drops a question that does not belong to it (the follow-up change question in the inclusion twin) or how a gate asked the other way round is recoded (section 4) |
 | `derived_from` | number, item, band | Name of a score that has `compare`, or of another variable. Says that the EMR computed this stored value from it, so it is doubtful wherever that stored score is wrong, or wherever that variable is empty (section 8) |
 | `asked_if` | item, number | Name of a yes/no variable or of a count (an item or a number whose range starts at 0) listed before. The question is asked only after a yes to it (or a count above 0), or its answer is 0 when that count is 0: where that answer is 0 and the cell is empty, the value is 0 (section 4) |
 | `box_list` | item | Name of a list of yes/no boxes shown together. Once every box is read, an empty box beside a box of the same list that is 1 is 0: the rater ticked what applied. Not where a count that hangs on the box (`asked_if`) was typed: the count is shown only after a yes, so that box is left as written (section 4) |
@@ -161,6 +161,18 @@ panic_disorder:   {column: ceoccurtrouble_panique, type: item, range: [0, 1], as
 
 Use it for yes/no boxes and for counts: with no mood episode in the past
 year, the number of depressive episodes in the past year is 0.
+
+A gate that the form asks the other way round (the questions are shown after
+a "no": ASP asks 'natural delivery' and shows induced, caesarean, forceps and
+vacuum only for "no") is read once more as a hidden variable that recodes the
+answer, and `asked_if` names it:
+
+```yaml
+not_natural_delivery: {column: accnat, type: item, range: [0, 1], codes: {"0": 1, "1": 0}, missing: {"9": unknown}, keep: false}
+caesarean:            {column: cesa, type: item, range: [0, 1], asked_if: not_natural_delivery}
+```
+
+The `codes` map is applied in one pass: 0 and 1 swap without chaining.
 
 ```yaml
 any_episode: {column: rad_tb_hum_epthyman, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}

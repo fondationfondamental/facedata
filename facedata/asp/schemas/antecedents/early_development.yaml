@@ -2,11 +2,17 @@ instrument: early_development
 title: "Early development"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 notes: >
   The milestones (sitting, walking, first words, first sentences), a delay or
   a loss of language, eating and sleep problems in childhood, and seizures:
-  2020 inclusion visits (843 of children) and 116 follow-up visits, from 2011 to 2026; asked once, at the inclusion visit.
+  2020 inclusion visits (843 of children), from 2009 to 2026; asked at the
+  inclusion visit. The follow-up form (244) repeats the sections of the first
+  acquisitions and of epilepsy: 117 follow-up visits (2014 to 2019) hold a
+  box of those sections, 105 of them only the two boxes "change since the last
+  visit" (early_acquisitions_changed, 111 visits: 109 no, 2 yes;
+  seizure_history_changed, 116 visits: 114 no, 2 yes), and 12 hold an answer;
+  neither box gates anything.
 
   Named from the column names and checked against the thesaurus V2.13
   (PROGRESS.md D14). The ages are in months. A psychomotor delay is reported
@@ -15,11 +21,46 @@ notes: >
   sentences on 4: 99 is read as "not known". The ADI-R asks the same two ages
   (items 9 and 10) to the parent; this section is the clinician's record.
 
-  esichang is a box of the follow-up form.
+  **Ages with no gate.** The four ages (age_sitting, age_walking,
+  age_first_words, age_first_sentences) hang on no question: the answers to
+  psychomotor_delay and language_delay (RETPSY, RETLANG) appear in no rule of the form,
+  and the ages are typed whatever they are. The age of sitting is filled on
+  532 of the 1588 inclusion visits with no psychomotor delay (the age of
+  walking on 1161), the age of the first words on 709 of the 1389 visits with
+  no language delay (the first sentences on 693); the share of "no" visits that hold an age shows no
+  step by year since 2015. They are delivered as typed: nothing is encoded.
+  The age of a sudden complex language is filled only after a yes (174 of the
+  253 yes, none of the 1469 no).
+
+  **After a no.** The effect of the eating disorder on the weight, the four
+  boxes of the sleep disorder and the seizures still present are Oui/Non/Non
+  connu radios that the form shows after a yes to eating_problems,
+  sleep_problems_first_year or seizures: after a no they are empty in 100% of
+  the cells and are 0 (`asked_if`: 1475, 4 x 1389 and 762 cells). A radio left
+  unticked is saved empty, so there is no `box_list` on the four sleep boxes.
+  The age at the first seizure and the highest frequency are details and stay
+  missing after a no, as does the current level of language.
+
+  **The seizure block stops in 2020.** The seizure question is answered on 0.75
+  to 0.86 of the inclusion visits of each year from 2012 to 2019 (0.84 in
+  2019), on 0.45 of those of 2020, on 0.04 of 2021 and on none from 2022
+  (one visit in 2025). The application writes the question (CRISCONV) in the
+  medical history forms 193 and 347 (table aut_atcdlt), and the export reads
+  it in the table of this section (aut_c1antmed): request R108 of EXPORT_REQUESTS.md.
+
+  **Year and centre.** The ages are typed from memory in rounded months (79% of the ages of the
+  first sentences and 70% of the first words are multiples of 6). Medians by year and by centre
+  (20 values or more): sitting 6 to 8 months and 6 to 8, walking 13 to 14 and 13 to 15, first
+  sentences 24 to 36.5 and 20 to 31, the age of the sudden complex language 24 to 36 by year
+  (three years). These are one or two rounding steps and follow the age mix of the patients
+  (children are 0% to 100% of the inclusion visits of a centre and 9% to 59% of a year): the
+  median of the first sentences is 24 months among the children from 2018 and among the adults
+  from 2020, on groups of 22 to 32 values before. No change of the form is known.
 
   A section of the ASP cohort only.
 
 variables:
+  early_acquisitions_changed: {column: acqchang, type: item, label: "Early acquisitions: change since the last visit (follow-up form, retired 2021)", range: [0, 1]}
   psychomotor_delay: {column: retpsy, type: item, label: "Psychomotor delay (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   age_sitting: {column: ageassis, type: number, label: "Age when sitting, months", unit: months, range: [2, 36], winsor: false}
   age_walking: {column: agepas, type: number, label: "Age when walking, months", unit: months, range: [6, 60], winsor: false}
@@ -28,16 +69,16 @@ variables:
   age_first_sentences: {column: agephras, type: number, label: "Age of the first sentences, months", unit: months, range: [3, 98], winsor: false, missing: {"99": unknown}}
   sudden_complex_language: {column: langx, type: item, label: "Sudden appearance of a complex language (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   sudden_complex_language_age: {column: langxag, type: number, label: "Sudden appearance of a complex language, age in months", unit: months, range: [0, 120], winsor: false}
-  langact: {column: langact, type: item, label: "Current language (1 none or fewer than 5 words, 2 a few words or sentences, 3 functional, 4 normal)", range: [1, 4]}
+  current_language_level: {column: langact, type: item, label: "Current language (1 none or fewer than 5 words, 2 a few words or sentences, 3 functional, 4 normal)", range: [1, 4]}
   eating_problems: {column: tralim, type: item, label: "Eating disorder before the age of one year (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  repponde: {column: repponde, type: item, label: "Eating problems, effect on the weight (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  eating_problems_weight_effect: {column: repponde, type: item, label: "Eating disorder before the age of one year: effect on the weight (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: eating_problems}
   sleep_problems_first_year: {column: trsomm, type: item, label: "Sleep disorder before the age of one year (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  insmaj: {column: insmaj, type: item, label: "Sleep problems, insomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  hypsmaj: {column: hypsmaj, type: item, label: "Sleep problems, hypersomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  derytmaj: {column: derytmaj, type: item, label: "Sleep problems, rhythm disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  revnmaj: {column: revnmaj, type: item, label: "Sleep problems, night awakenings (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  esichang: {column: esichang, type: item, label: "History of seizures: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  sleep_problems_first_year_insomnia: {column: insmaj, type: item, label: "Sleep disorder before the age of one year: major insomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: sleep_problems_first_year}
+  sleep_problems_first_year_hypersomnia: {column: hypsmaj, type: item, label: "Sleep disorder before the age of one year: major hypersomnia (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: sleep_problems_first_year}
+  sleep_problems_first_year_rhythm_shift: {column: derytmaj, type: item, label: "Sleep disorder before the age of one year: major shift of the rhythm (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: sleep_problems_first_year}
+  sleep_problems_first_year_night_awakenings: {column: revnmaj, type: item, label: "Sleep disorder before the age of one year: major night awakenings (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: sleep_problems_first_year}
+  seizure_history_changed: {column: esichang, type: item, label: "History of seizures: change since the last visit (follow-up form, retired; 0 no, 1 yes)", range: [0, 1]}
   seizures: {column: crisconv, type: item, label: "Seizures, febrile convulsions left out (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  crisage: {column: crisage, type: number, label: "Seizures, age at the first one, months", range: [0, 642], winsor: false}
-  crisact: {column: crisact, type: item, label: "Seizures, still active (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  crisfreq: {column: crisfreq, type: item, label: "Seizures: highest lifetime frequency (1 several a day, 2 several a week, 3 several a month, 4 several a year)", range: [1, 4]}
+  age_first_seizure: {column: crisage, type: number, label: "Seizures, age at the first one, months", range: [0, 642], winsor: false}
+  seizures_current: {column: crisact, type: item, label: "Seizures, current ones (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: seizures}
+  seizures_max_frequency: {column: crisfreq, type: item, label: "Seizures: highest lifetime frequency (1 several a day, 2 several a week, 3 several a month, 4 several a year)", range: [1, 4]}

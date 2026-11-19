@@ -2,35 +2,46 @@ instrument: medications
 title: "Treatments at the visit, one row per treatment"
 tab: antecedent_famille_psy
 section: treatments
-status: draft
+status: reviewed
 level: list
 notes: >
-  The treatments recorded at a visit: the name, the generic name, the
-  indication, the dose, the start and the end, and whether the treatment is
-  still taken. 1,784 treatments for 966 visits of 896 patients (408 screening
-  visits, 475 inclusion visits and 83 follow-up visits), from 2011 to 2026. One row per
-  visit and treatment in the table treatments, where the column list says
-  "medications".
+  The treatments recorded at a visit: the name, the generic name, the indication, the dose, the
+  start and the end, and whether the treatment is still taken. 1,784 treatments for 966 visits
+  of 896 patients (408 screening visits, 475 inclusion visits and 83 follow-up visits), from
+  2010 to 2026. One row per visit and treatment in the table treatments, where the column list
+  says "medications".
 
-  **The list is that of the visit, not the history of the patient.** In BP,
-  SZ and DR every row of a patient holds the same list. Here 65 patients have
-  a list on several visits, and they differ: the list of each visit is opened
-  (field per_visit) and the table has the column visit. A current treatment
-  is declared on 715 inclusion visits and a list is recorded on 456 of them:
+  **The list is that of the visit, not the history of the patient.** In BP, SZ and DR every row
+  of a patient holds the same list. Here 65 patients have a list on several visits, and they
+  differ: the list of each visit is opened (field per_visit) and the table has the column visit.
+  A current treatment is declared on 715 inclusion visits and a list is recorded on 456 of them:
   **a patient with no list is not a patient with no treatment**.
 
-  Molecule and group. The name is looked up in the table medications.csv,
-  shared by the cohorts, and the generic name where the name gives nothing
-  (field otherwise): the name is written on 1,505 treatments and the generic
-  name on 602. 1,523 of the 1,735 treatments that have a name find their
-  molecule; thirty-one names of this cohort were added to the table, and the
-  212 others (205 different names, most of them somatic drugs written once or
-  twice) keep what was written and get unknown_code. The accents of the names
-  are written twice over in this export; the reader puts them back.
+  Molecule and group. The name is looked up in the table medications.csv, shared by the cohorts,
+  and the generic name where the name gives nothing (field otherwise): the name is written on
+  1,505 treatments and the generic name on 602. 1,523 of the 1,735 treatments that have a name
+  find their molecule; thirty-one names of this cohort were added to the table, and the 212
+  others (most of them somatic drugs written once or twice) keep what was written. 203 of them
+  get unknown_code (196 different names); the 9 that have only a generic name are not flagged.
+  The accents of the names are written twice over in this export; the reader puts them back.
 
-  The dose is a number whose unit is not recorded (1,143 treatments); the start
-  is a full date on 622 treatments, a month or a year on 102, and empty on
-  1056. still_taken is 1 on 1,447 treatments and 0 on 184.
+  The dose is a number whose unit is not recorded (1,143 treatments); the start is a full date
+  on 622 treatments, a month or a year on 102, and empty on 1056. still_taken is 1 on 1,447
+  treatments and 0 on 184 (blank on 153). The end is typed only for a treatment that is no
+  longer taken: 91 of the 184 have an end date, none of the 1,447 and none of the 153 blank. A
+  missing end date under a treatment still taken is therefore not a gap (the audit line on
+  end_date comes from reading the lists as single values).
+
+  24 cells are not read as a number or a date (unparsed, delivered missing, the text kept in the
+  flag): 20 doses and 4 start dates. The doses are a range typed with a dash (5), a number
+  followed by a unit or a word (9), a ratio or a number per word (2), a daily scheme of three
+  numbers (1), a word followed by a number (1) and a word with no number (2). The start dates
+  are a month and a year behind a leading slash (1), a day and a month with no year (1) and two
+  with an extra or a too long group of digits (2).
+
+  **Year and centre.** The median dose (no unit, doses of different molecules) is 15 to 36 by
+  centre and 5 to 30 by year (years and centres with 20 doses or more); it follows the share of
+  children, whose median by centre is 6 to 20 and the adults' 20 to 36.
 
 per_visit: true
 

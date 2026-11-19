@@ -2,19 +2,34 @@ instrument: hospitalisations
 title: "Psychiatric hospitalisations, one row per hospitalisation"
 tab: antecedent_famille_psy
 section: history
-status: draft
+status: reviewed
 level: list
 notes: >
-  The reason, the year and the length of each hospitalisation: 588
-  hospitalisations for 392 visits (388 patients), from 2013 to 2026. One row per patient and
-  hospitalisation in the table treatments, where the column list says
-  "hospitalisations".
+  The reason, the year and the length of each hospitalisation: 588 hospitalisations for 392
+  visits (388 patients), from 2009 to 2026. One row per visit and hospitalisation in the table
+  treatments, where the column list says "hospitalisations" and the column visit names the
+  visit.
 
-  The export packs the hospitalisations of a patient in one cell, three
-  fields each: the reason in free text, the year and the length in days. The
-  history is that of the patient: the first visit that holds it is read.
+  The export packs the hospitalisations of a visit in one cell, three fields each: the reason in
+  free text, the year and the length in days. A visit's list holds the rows typed at that visit;
+  the lifetime history is the union of the visits (588 rows, 4 more than when only the first
+  visit of a patient was read).
+
+  What is filled depends on the form. The inclusion form (197) asks the year of the start and
+  the length: the year is filled on 3 of the 185 records of the visits to 2019, 17 of 33 in 2020
+  and 344 of 361 from 2021; the length only from 2020 (15 of 33 in 2020, 224 of 361 from 2021).
+  The follow-up form (248) asks the dates of the start and of the end (DDEBHOSP, DFINHSOP),
+  which the export never reads: it reads ANDEBHOSP and DURHOSP, so the year and the length are
+  blank on 8 of the 9 follow-up records (request R109 of EXPORT_REQUESTS.md). 22 years are out_of_range, all
+  between 3 and 28 and on visits of 2021 to 2026: they are not lengths; 2 lengths equal 999.
+
+  **Year and centre.** The year of a stay is a date: its median follows the year of the visit
+  (2018 to 2022 by year of the visit and by centre, years and centres with 20 values or more), and
+  it is filled almost only from 2020 (above).
 
   A section of the ASP cohort only.
+
+per_visit: true
 
 packed:
   motif_andebhosp_durhosp: {fields: [hosp_reason, hosp_year, hosp_days], text: hosp_reason}

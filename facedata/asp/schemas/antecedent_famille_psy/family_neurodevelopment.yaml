@@ -2,27 +2,51 @@ instrument: family_neurodevelopment
 title: "Neurodevelopmental disorders of the relatives, one row per relative"
 tab: antecedent_famille_psy
 section: history
-status: draft
+status: reviewed
 level: list
 notes: >
-  For each relative described, nine yes/no answers: autism spectrum disorder,
-  intellectual disability, communication disorder, ADHD, learning disorder,
-  motor disorder, another disorder, a neurological disorder and an
-  oppositional disorder. 562 relatives for 434 inclusion visits, from 2020 to 2026. One row
-  per patient and relative in the table treatments, where the column list
-  says "family_neurodevelopment".
+  For each relative described, nine answers: autism spectrum disorder, intellectual disability,
+  communication disorder, ADHD, learning disorder, motor disorder, another specified
+  neurodevelopmental disorder, a neurodevelopmental disorder not specified and an oppositional
+  disorder. 562 relatives for 434 inclusion visits, from 2019 to 2026 (no yearly visit holds the
+  table). One row per patient and relative in the table treatments, where the column list says
+  "family_neurodevelopment".
 
-  The export packs the relatives of a patient in one cell, nine fields each,
-  and writes who each relative is in a second cell (srel), a code per relative
-  in the same order: the two cells have the same number of records on 253 of
-  the 264 visits that hold both. The names of the nine answers are read from
-  the name of the column (tsa, hi, trbcom, tdah, trbappr, trbmot, autretrb,
-  neuronsp, top): likely. The relative is named from the list of the thesaurus
-  (father, mother, brother, sister, son, daughter). A 9 is "not known". 85
-  records hold nine empty fields: a relative was opened and nothing was
-  answered.
+  The export packs the relatives of a patient in one cell, nine fields each, and writes who each
+  relative is in a second cell (srel), a code per relative in the same order. The nine answers
+  are those of the form 196 (TSA, HI, TRBCOM, TDAH, TRBAPPR, TRBMOT, AUTRETRB, NEURONSP, TOP);
+  the eighth, NEURONSP, is a neurodevelopmental disorder not specified (it was first read as a
+  neurological disorder: the internal field of the packed record keeps the old name
+  fam_neurological_nos). The relative is named from the list of the form (father, mother,
+  brother, sister, son, daughter). A 9 is "Non connu" (not known).
 
-  A section of the ASP cohort only.
+  The nine answers are radios Oui/Non/Non connu in the form 196 (a version with checkboxes is
+  commented out there): an empty radio beside a ticked one is not an answer, so the schema has
+  no box_list (decision R3 of the review of the history tab). 387 relatives have at least one
+  yes; 171 of them leave other answers blank (159 tick only the yes, 12 hold a yes, a no and
+  blanks). The blanks stay missing: read as no they would be 1,271 cells (open question O20). 85
+  relatives hold nine empty fields: a relative was opened and nothing was answered.
+
+  Who the relative is. The field srel is not required in the form: 191 of the 562 relatives have
+  no code (170 visits hold records and no srel at all, 180 relatives, and 11 visits have one
+  code fewer than records); the two cells have the same number of records on 253 of the 264
+  visits that hold both. A relative with no code is delivered with no relative. The form 247,
+  the follow-up form of the family history, holds only the box genchang (see psychiatric_care)
+  and nothing to enter: later answers do not exist.
+
+  The question atcdfam of the form (is there a family history?) is not a gate of the table: the
+  script that should hide the table binds the names ANTFAM* while the field is ATCDFAM, so the
+  table of the relatives is always shown (request A50 of EXPORT_REQUESTS.md). 305 visits describe a relative with at least one yes
+  and only 62 of them have atcdfam yes (233 blank, 10 no or 9):
+  family_neurodevelopmental_history is not the family history; read this list. A summary per
+  patient (a relative with an ASD, a first-degree relative with any of the nine) is not
+  delivered (open question O20).
+
+  **Year and centre.** The shares of yes of the ASD and ADHD answers do not differ beyond chance
+  between years (49% to 69% and 29% to 62%, six years with 20 relatives or more) or between
+  centres (38% to 71% and 38% to 67%, five centres): no step.
+
+  An instrument of the ASP cohort only.
 
 packed:
   tsa_hi_trbcom_tdah_trbappr_trbmot_autretrb_neuronsp_top: {fields: [fam_asd, fam_intellectual_disability, fam_communication_disorder, fam_adhd, fam_learning_disorder, fam_motor_disorder, fam_other_disorder, fam_neurological_nos, fam_oppositional_disorder]}
@@ -37,5 +61,5 @@ variables:
   relative_learning_disorder: {column: fam_learning_disorder, type: item, label: "The relative has: learning disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   relative_motor_disorder: {column: fam_motor_disorder, type: item, label: "The relative has: motor disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   relative_other_disorder: {column: fam_other_disorder, type: item, label: "The relative has: other neurodevelopmental disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  relative_neurological_nos: {column: fam_neurological_nos, type: item, label: "The relative has: neurological disorder not specified (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  relative_neurodevelopmental_unspecified: {column: fam_neurological_nos, type: item, label: "The relative has: neurodevelopmental disorder, unspecified (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   relative_oppositional_disorder: {column: fam_oppositional_disorder, type: item, label: "The relative has: oppositional disorder (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}

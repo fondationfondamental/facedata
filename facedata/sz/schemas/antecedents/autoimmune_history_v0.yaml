@@ -2,34 +2,53 @@ instrument: autoimmune_history_v0
 title: Auto-immune diseases, at inclusion
 tab: ANTECEDENTS
 section: Pathologies auto-immunes
-status: draft
+status: reviewed
 notes: >
-  A section that BP does not have, asked from 2012 (about 1,415 visits):
-  thirteen diseases, each with "treated at present". Nearly every answer is
-  no; "Nc" is a missing code (about 28 answers per disease). Five of the
-  "treated" columns are empty in the extraction.
+  A section that BP does not have, asked from 2015-02 (1,426 visits hold an
+  answer, 1,402 of them a valid one; 8 are dated earlier; the section reached
+  56% of the inclusions of 2015 and 90% of those of 2016, centre by centre
+  between 2015-02 and 2015-10): thirteen diseases, each with "treated at
+  present". Nearly every answer is no; "Nc" is read as unknown (about 28
+  answers per disease, 364 cells; 23 visits answer "Nc" to all thirteen
+  diseases and 5 more to twelve, dated 2015-05 to 2022-06: not known, not no).
+  Five of the "treated" columns (rheumatoid arthritis, Sjögren, giant cell
+  arteritis, scleroderma, sarcoidosis) are empty in the extraction. Psoriasis
+  is in this section, not in the skin one.
 
-  Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
-  and the other details are asked after a yes and are missing otherwise.
+  Yes/no answers are delivered as 1 and 0; "U" ("Ne sais pas") and "Nc" ("Non
+  connu") are missing codes, both read as unknown (decision D52). "Treated" is
+  asked after a yes and is missing otherwise.
 
-  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
-  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
-  questions are about the whole life. At the follow-up visits a disease
-  answered yes at inclusion is most often answered no (39 of 47 for a head
-  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
-  time since the last visit. The two are delivered as separate columns
-  ending in _v0 and _fu; visit_form says which form a visit used.
+  Two forms in the same columns, as in FACE BP (BP decisions D59 and D84; here
+  decisions D20 and D56 in PROGRESS.md). The same questions are asked at the
+  inclusion visit and at the yearly follow-up visits (every follow-up visit of
+  the extraction is a yearly one; the 1,675 screening records hold no cell of
+  the section). At inclusion they are about the whole life. At the yearly
+  visits a disease answered yes at inclusion is most often answered no (39 of
+  47 follow-up answers for a head injury, 43 of 54 for acne). The yearly form
+  is the inclusion form again, with no period in the wording of its questions,
+  after one more question that the extraction does not hold: "Pas de
+  changement de l'histoire somatique depuis la dernière visite?"
+  (rad_pas_dechangement, shown at the yearly visit only; export request R78).
+  An empty follow-up section may therefore mean "no change". A yearly answer
+  is an update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are
+  delivered as separate columns ending in _v0 and _fu; visit_form says which
+  form a visit used.
 
-  From 2022 the section is answered at 32% of the inclusion visits,
-  against 81% from 2016 to 2021, while the share of all included
-  patients with a disease of the section does not change: the "no" are no
-  longer written (decision D23, open question O26 in PROGRESS.md). Do not
-  compute a prevalence on the inclusions from 2022: among the answered
-  sections it is far too high.
+  From 2022 the section is answered at 32% of the inclusion visits, against
+  81% from 2016 to 2021 (and 3% to 83% by centre since 2022), while the share
+  of all included patients with a disease of the section does not change: the
+  shortcut "Non pour tous" of the section stopped copying "no" to each disease
+  (script defect, A31 of EXPORT_REQUESTS.md); the extraction does not hold the
+  shortcut (R78); an empty section is missing, not no; values as recorded
+  (decision D51, open question O26). Do not compute a prevalence on the
+  inclusions from 2022: among the answered visits the share with a disease
+  goes from 3.1% to 7.2%, while it is 2.5% and 2.3% of all inclusion visits.
 
-  The SZ form is shorter than the BP one: one question "treated" per
-  disease, and no date of onset and no "controlled". The names are those of
-  BP where the question is the same.
+  The SZ form is shorter than the BP one: one question "treated" per disease,
+  and no date of onset and no "controlled". The names are those of BP where
+  the question is the same.
 
 version:
   name: visit_form
@@ -61,29 +80,29 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  diabetes_type1_v0: {column: diabete1_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 1 diabetes, at inclusion"}
+  diabetes_type1_v0: {column: diabete1_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Type 1 diabetes, at inclusion"}
   diabetes_type1_treated_v0: {column: diabete1_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Type 1 diabetes: treated at present, at inclusion"}
-  rheumatoid_arthritis_v0: {column: polyarthr_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis, at inclusion"}
+  rheumatoid_arthritis_v0: {column: polyarthr_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Rheumatoid arthritis, at inclusion"}
   rheumatoid_arthritis_treated_v0: {column: polyarthr_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Rheumatoid arthritis: treated at present, at inclusion"}
-  lupus_v0: {column: lupus_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus, at inclusion"}
+  lupus_v0: {column: lupus_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Lupus, at inclusion"}
   lupus_treated_v0: {column: lupus_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Lupus: treated at present, at inclusion"}
-  sjogren_v0: {column: gougerot_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sjögren's disease, at inclusion"}
+  sjogren_v0: {column: gougerot_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Sjögren's disease, at inclusion"}
   sjogren_treated_v0: {column: gougerot_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sjögren's disease: treated at present, at inclusion"}
-  ankylosing_spondylitis_v0: {column: spondylar_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ankylosing spondylitis, at inclusion"}
+  ankylosing_spondylitis_v0: {column: spondylar_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Ankylosing spondylitis, at inclusion"}
   ankylosing_spondylitis_treated_v0: {column: spondylar_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ankylosing spondylitis: treated at present, at inclusion"}
-  psoriasis_v0: {column: psoriasis_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis, at inclusion"}
+  psoriasis_v0: {column: psoriasis_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Psoriasis, at inclusion"}
   psoriasis_treated_v0: {column: psoriasis_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: treated at present, at inclusion"}
-  rheumatic_fever_v0: {column: rhumart_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute rheumatic fever, at inclusion"}
+  rheumatic_fever_v0: {column: rhumart_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Acute rheumatic fever, at inclusion"}
   rheumatic_fever_treated_v0: {column: rhumart_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute rheumatic fever: treated at present, at inclusion"}
-  giant_cell_arteritis_v0: {column: horton_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Giant cell arteritis, at inclusion"}
+  giant_cell_arteritis_v0: {column: horton_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Giant cell arteritis, at inclusion"}
   giant_cell_arteritis_treated_v0: {column: horton_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Giant cell arteritis: treated at present, at inclusion"}
-  scleroderma_v0: {column: scleroder_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Scleroderma, at inclusion"}
+  scleroderma_v0: {column: scleroder_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Scleroderma, at inclusion"}
   scleroderma_treated_v0: {column: scleroder_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Scleroderma: treated at present, at inclusion"}
-  crohn_v0: {column: crohn_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Crohn's disease, at inclusion"}
+  crohn_v0: {column: crohn_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Crohn's disease, at inclusion"}
   crohn_treated_v0: {column: crohn_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Crohn's disease: treated at present, at inclusion"}
-  ulcerative_colitis_v0: {column: rectocoli_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ulcerative colitis, at inclusion"}
+  ulcerative_colitis_v0: {column: rectocoli_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Ulcerative colitis, at inclusion"}
   ulcerative_colitis_treated_v0: {column: rectocoli_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Ulcerative colitis: treated at present, at inclusion"}
-  sarcoidosis_v0: {column: sarcoido_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sarcoidosis, at inclusion"}
+  sarcoidosis_v0: {column: sarcoido_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Sarcoidosis, at inclusion"}
   sarcoidosis_treated_v0: {column: sarcoido_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Sarcoidosis: treated at present, at inclusion"}
-  coeliac_disease_v0: {column: coeliaque_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coeliac disease, at inclusion"}
+  coeliac_disease_v0: {column: coeliaque_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown, Nc: unknown}, label: "Coeliac disease, at inclusion"}
   coeliac_disease_treated_v0: {column: coeliaque_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Coeliac disease: treated at present, at inclusion"}

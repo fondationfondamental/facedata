@@ -1,7 +1,8 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4), from the extraction `SZALL_20261113.tsv`, replaced on
+PI-2 and PI-4) and on 2026-11-19 (DEV-9, DEV-14, DEV-15, DM-8, O32, O33), from the
+extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
 `FACESZ_thesaurus_V4.20.xlsx`.
@@ -127,22 +128,27 @@ Can the stored values be computed again in the database?
 education are exported (D35); the stored ones are only compared with them.
 
 **DEV-14. Medical history: three sections are mostly empty since 2022.**
-(Added on 2026-11-14.) Until 2021 each section of somatic diseases is
-answered at 80% to 95% of the inclusion visits, mostly with "no". Since 2022
-the digestive section is answered at 42% of them, the other diseases at 46%
-and the autoimmune diseases at 32%; the neurological, cardiovascular,
-endocrine, skin and allergic sections do not move. The share of all included
-patients with a digestive disease is the same before and after (17%), but
-among the answered sections it goes from 21% to 40%: the "no" are no longer
-written. 288 of the 609 inclusions since 2022 hold none of the three
-sections. Between centres, the autoimmune section is answered at 3% to 83%
-of the inclusions since 2022. The same happened to every section of FACE BP
-in 2022 (DEV-1 of the BP questions).
-*Question:* did the form of these three sections change in 2022, and is an
-empty section a "no"?
+(Added on 2026-11-14, reworded on 2026-11-19.) Until 2021 each section of
+somatic diseases is answered at 81% to 100% of the inclusion visits, mostly
+with "no". Since 2022 the digestive section is answered at 42% of them, the
+other diseases at 46% and the autoimmune diseases at 32%; the neurological,
+cardiovascular, endocrine, skin and allergic sections do not move. The share
+of all included patients with a digestive disease is the same before and
+after (17%), but among the answered sections it goes from 21% to 40%: the
+"no" are no longer written. 283 of the 609 inclusions since 2022 hold none of
+the three sections. Between centres, the autoimmune section is answered at 3%
+to 83% of the inclusions since 2022. The same happened to every section of
+FACE BP in 2022 (DEV-1 of the BP questions).
+*Read in the application:* no change of the form in 2022 is known. The script
+of the shortcut "Non pour tous" copies the "no" to each disease in four
+sections (neurological, cardiovascular, endocrine, skin) and stops at line 29
+(the field `rad_urin_non` has no row in the SZ form), so it copies nothing in
+these three sections (A31 of the requests).
+*Question:* can the script be repaired and the shortcut exported (R78)? Until
+then, is an empty section a "no"?
 *Today:* delivered as extracted, missing where the section is empty. No
 prevalence of these diseases should be computed on the inclusions from 2022.
-(O26, D23)
+(O26, D23, D51)
 
 ### Priority B
 
@@ -165,12 +171,15 @@ stored. (O12, D11, D14)
 
 **DEV-9. Two columns filled from another field.** (1) The box "panic disorder
 with agoraphobia" (`ceoccurtroubpanago`) holds, on all its 634 rows, the
-answer to the screening question `rad_peur_agoraphobie`. (2) The two migraine
-columns are swapped: `migraine_mhdecod`, named for "treated", holds the answer
-of every patient, and `migraine_mhoccur` is filled only after a yes.
-*Question:* can both be corrected in the export?
+answer to the screening question `rad_peur_agoraphobie`. (2) The export swaps
+the two migraine columns: `eschizo_mh.sql` (lines 79-90) writes
+`rad_somatique_migraine` to `migraine_MHDECOD` and `rad_somat_mig_tt` to
+`migraine_MHOCCUR`, where the eBipolar script is right. `migraine_mhdecod`
+holds the disease of every patient and `migraine_mhoccur` is "treated", filled
+only after a yes (the form and the dictionary have the disease in `_mhoccur`).
+*Question:* can both be corrected in the export (R107 for the migraine)?
 *Today:* (1) the box is ignored and the screening answer delivered under its
-own name; (2) the two columns are read the other way round. (O19, O24)
+own name; (2) the two columns are read the other way round. (O19, O24, D50)
 
 **DEV-10. Values written where nothing was measured, or not for the visit.**
 (1) The percentile of part B of the doors test is "<1" on 172 visits where
@@ -198,13 +207,14 @@ the dictionary.
 *Today:* not delivered. (O14, O11)
 
 **DEV-15. Two values that change at a date.** (Added on 2026-11-14.) (1)
-Migraine at inclusion is "yes" for 10% to 15% of the answers of 2011 to 2017
-and for 4% to 7% of those of 2018 to 2026, while no other neurological
-disease moves. (2) The IQ estimated from two subtests of the WAIS-IV is
+Migraine at inclusion is "yes" for 11.6% of the answers of 2011 to 2017 and
+for 4.6% of those of 2018 to 2026 (the step falls between the second half of
+2017, 15.5%, and the first half of 2018, 3.8%, at four of the centres), while
+head injury, epilepsy and hypertension do not move. (2) The IQ estimated from two subtests of the WAIS-IV is
 stored for 41% to 68% of the inclusions of 2019 to 2021 and for 10% to 28%
 of those of 2022 to 2026, while the two subtests are still done at about
 three inclusions in four.
-*Question:* did the migraine question change in 2018? Is the two-subtest IQ
+*Question:* did the migraine question change in 2018 (M55 of the requests)? Is the two-subtest IQ
 no longer computed, or no longer exported?
 *Today:* both delivered as extracted. (O27, O28, D23)
 
@@ -303,10 +313,16 @@ which is "wears dentures"?
 *Today:* the order of the published scale. (O6)
 
 **DM-8. Medical history at the follow-up visits.** A disease answered yes at
-inclusion is most often answered no later (39 of 47 for a head injury). As in
-BP, the follow-up form seems to ask about the time since the last visit.
-*Question:* is that so?
-*Today:* two columns per question, `_v0` and `_fu`. (D20; BP O38)
+inclusion is most often answered no later (39 of 47 follow-up answers for a
+head injury, 43 of 54 for acne).
+*Question:* what period does the follow-up form ask about?
+**Answered on 2026-11-19: read in the application** (D56, BP D84). The yearly
+form is the inclusion form again, with no period in the wording of its
+questions, after one more question, "no change since the last visit?", shown
+at the yearly visit only and not exported (R78): an empty follow-up section
+may mean "no change". A follow-up answer is a yearly update, neither a history
+of the whole life nor strictly an answer about the time since the last visit.
+*Today:* two columns per question, `_v0` and `_fu`. (D20, D56; BP D84)
 
 ### Priority C
 
@@ -374,3 +390,25 @@ delivered. (O2)
 **Unit of vitamin D by centre (O30).**
 
 **YMRS, three items stored as levels (O31, for the EMR developers).** Items 5 (irritability), 8 (content) and 9 (disruptive and aggressive behaviour) are stored 0 to 4 where the scale scores them 0, 2, 4, 6 or 8, in every year and every centre, and the stored total adds them once; item 6 is stored in points. FACE BP and FACE DR store the points. The loader delivers the published total, which is higher than the stored one on 776 of 4,538 visits. Can the form store the points and the published total?
+
+## Added by the ANTECEDENTS review of 2026-11-19
+
+**Hormonal treatment of the menopause (O32, for the EMR developers).** The
+question is "no" on all 39 answers (BP: 98 yes of 783, DR: 36 of 412) and empty
+on 13 of the 52 menopause "yes". Does the SZ form show the question, and is
+its field (`hormonal_rporres`) written when the menopause is "yes"? (M56 of the
+requests.) Today it is delivered as extracted and asked of every woman (D55).
+
+**Parents with a disorder or a risk factor, fewer since 2018 (O33, for the data
+managers).** In `family_structure` the share of mothers and of fathers "with a
+psychiatric disorder, an abuse of or dependence on a substance, a history of
+suicide attempt or a cardiovascular risk factor" falls with the year of
+inclusion: mothers 43% of 896 patients included in 2010-2017 and 30% of 1,127
+included in 2018-2026 (48% in 2017, 31% in 2018), fathers 43% of 860 and 32% of
+1,096. Six of the nine centres with 40 patients in each period fall by 4 to 41
+points (one goes from 67% to 26%). The affected sisters and brothers (12% and
+14% of the patients) and the psychiatric first-degree columns (`fdr_depression`
+33% and 31%, `fdr_bipolar` 7% and 8%) do not move, and FACE BP shows no step.
+Did the wording of the question, the form or the way the centres answer it
+change around 2018, the date of the migraine step (DEV-15)? Today it is
+delivered as extracted (D59).

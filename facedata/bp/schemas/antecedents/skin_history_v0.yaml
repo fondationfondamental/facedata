@@ -2,7 +2,7 @@ instrument: skin_history_v0
 title: "Medical history: skin diseases (inclusion visit)"
 tab: ANTECEDENTS
 section: Pathologies dermatologiques
-status: draft
+status: reviewed
 notes: >
   Psoriasis, acne, eczema, drug eruption and major hair loss. Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
   missing code.
@@ -11,7 +11,13 @@ notes: >
   the disease was triggered or worsened by lithium, and for hair loss by
   valproic acid. After a "yes" two boxes say which: triggered, worsened.
   These two are 0 after a "no" (asked_if) and missing when the first question
-  is not answered.
+  is not answered. After a "no" 0 of 2,694 cells of the two questions are
+  filled (both forms); after a "yes" 766 of 1,048 are (73%). They are Oui/Non
+  questions, not boxes of a list (no box_list): an empty one next to an
+  answered one is not read as a "no". At inclusion, of the "yes" to
+  "triggered or worsened", 23 of 49 for psoriasis, 30 of 93 for acne and 95
+  of 246 for hair loss have one of the two answered, always with a "yes", and
+  the other empty (open question DM-5).
 
   Drug eruption. The type is a simple rash, a Lyell syndrome or a
   Stevens-Johnson syndrome. The drugs are boxes ticked in one cell
@@ -19,9 +25,11 @@ notes: >
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The same
   questions are asked at the inclusion visit and at the yearly visits, never
-  at the six-monthly ones. At inclusion they are about the whole life. At the
+  at the six-monthly ones: the 3,352 six-monthly visits of the follow-up
+  version (11,686 visits, of which 8,334 are yearly) and the screening visits
+  never hold a cell of this section. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
-  349 of the 681 "yes" of this section that are answered again (35 of 111 for psoriasis, 51 of 85 for a drug eruption). The
+  399 of the 687 "yes" of this section that are answered again (39 of 113 for psoriasis, 59 of 85 for a drug eruption). The
   yearly form is the inclusion form again: the same questions, with no period
   in their wording, after one more question, "is there a change since the
   last visit?", which the extraction does not hold (read in the application
@@ -29,7 +37,10 @@ notes: >
   update given at that visit: neither a history of the whole life nor
   strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
-  says which form a visit used and is read from the visit label.
+  says which form a visit used and is read from the visit label. The
+  question "is there a change since the last visit?" is shown at the yearly
+  visit only and is not exported (rad_pas_dechangement, DM-10): an empty
+  yearly section may mean "no change".
 
   From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
   it is answered at 87% of the inclusion visits, from 2022 at 31%, and the
@@ -46,9 +57,29 @@ notes: >
   visits until 2021 and at 5% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
-  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
-  in a date that was not typed, and from 2025 in every date of the form:
-  date_placeholder. Hard limits of the dates: 1900 to 2026. One date of onset of psoriasis is in the nineteenth century: out_of_range.
+  asked only after a "yes" and are missing otherwise, except 6 detail cells
+  typed after a "no" (kept as recorded). 1000-01-01 is written in a date that
+  was not typed, and in every empty date of a form saved from 2025 (in the
+  nine sections together, 64% of the inclusion visits and 34% of the yearly
+  visits dated 2025 or later hold one; at inclusion 0% to 3% of the visits up
+  to 2024Q4, 28% in 2025Q1, 70% in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits of the dates: 1900 to 2026. One date of onset of psoriasis is in the nineteenth century: out_of_range.
+
+  Dates and the visit. Of the 2,435 delivered dates of the section (both
+  forms), 5 are after the visit (1 in the month of the visit, 4 later, by up
+  to 9 months), 11 are on the day of the visit and 4 are before the year of
+  birth. They stay as recorded: no before_visit (decision D145 in
+  PROGRESS.md).
+
+  Years and centres. The report panels show a shift of 1 (0.5 for two) for 14 yes/no items of the
+  two forms: "treated" or "controlled" for psoriasis, acne, eczema and hair loss, and the lithium
+  and valproic acid questions. They are 35% to 66% yes, where the median of a yes/no item flips as
+  soon as a year or a centre lies on the other side of one half: at inclusion "treated" is 29% to
+  69% by centre for acne (10 centres with 20 answers or more), 32% to 74% for eczema (9) and 42% to
+  65% for psoriasis (8), with no step by year. The yearly form has 119 to 179 answers per item and 2
+  to 4 centres with 20 answers or more. One item drifts: for hair loss "triggered or worsened by
+  valproic acid" is 56% yes (274 answers) before 2016 and 35% (266) from 2016, 15% in 2021, and
+  "triggered" 44% then 28%. Five of the six centres with 15 answers or more in both periods fall, by
+  9 to 32 points: a slow drift of the answers, not a step of the form.
 
 version:
   name: visit_form

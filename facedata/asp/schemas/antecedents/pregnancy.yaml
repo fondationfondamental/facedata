@@ -2,108 +2,163 @@ instrument: pregnancy
 title: "The mother's pregnancy with the patient"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 notes: >
   What the parents report of the pregnancy: earlier miscarriages and
   stillbirths, consanguinity, assisted reproduction, folic acid, bleeding,
   infections, vaccination, medications and substances during the pregnancy,
-  and the diseases of the mother and of the foetus. 2051 inclusion visits (868 of children) and fewer than five follow-up visits,
-  from 2011 to 2026; asked once, at the inclusion visit.
+  and the diseases of the mother and of the foetus. 2051 inclusion visits (868
+  of children) hold an answer of the section, from 2009 to 2026; asked once,
+  at the inclusion visit (form 192). The follow-up form (244: sections
+  pregnancy, vaccinations, first acquisitions and epilepsy) repeats the first
+  questions of the section only: on its 149 visits (2014 to 2020) the section
+  holds the boxes described below and, on one visit, another answer.
 
   The section was first read without a dictionary; the labels and the lists are
-  now those of the thesaurus V2.13 (PROGRESS.md D14). The questions are yes/no
-  with a 9 for "not known", read as missing with its reason: the answer is not
-  known for 224 to 790 of the inclusion visits by question (790 for the folic
-  acid, 684 for the vaccination). A detail (trimester, number, name of the
-  drug) is filled only after a yes.
+  now those of the thesaurus V2.13 (PROGRESS.md D14), and every variable that
+  kept its column name has a descriptive name. The questions are yes/no with a
+  9 for "not known", read as missing with its reason: the answer is not known
+  for 224 to 790 of the inclusion visits by question (790 for the folic acid,
+  684 for the vaccination). A detail (trimester, which, name of the drug) is
+  filled only after a yes and stays missing after a no.
 
-  **Boxes written on every row.** The boxes of the trimesters and of the drug
-  classes (antfct_1 to 3, morute_1 to 3, mednpsy_1 to 6) hold a 0 or a 1 on
-  every inclusion visit that has the form (2139 visits): a 0 there is "not
-  ticked", which is also what an unanswered question gives. Read them with
-  their question (antfc, morute, trtmed).
+  **Boxes written on every saved form.** The boxes of the trimesters and of
+  the drug classes (miscarriage_before_trimester_1 to 3,
+  stillbirth_before_trimester_1 to 3, pregnancy_medication_antiepileptic to
+  _other) are checkboxes: the application saves a 0 for each box that is not
+  ticked (class.update.php), and the column cannot be empty (tinyint NOT NULL
+  DEFAULT 0 in the table, on exactly these twelve columns). They are 0 or 1 on
+  2139 inclusion visits and on 149 follow-up visits; 88 inclusion visits and 148
+  follow-up visits hold no other answer of the section. A 0 there is "not
+  ticked": it is not an answer, and it is also what an unanswered question
+  gives, under a yes as well as elsewhere. No box is 1 under a question that is
+  not a yes (at inclusion: 328 visits with a trimester of an earlier
+  miscarriage, 30 of a stillbirth and 247 of a medication, all under a yes).
+  The boxes are delivered as written and flagged `derived_doubt` where their
+  question (miscarriage_before, stillbirth_before, pregnancy_medication) is
+  empty or not known: 7713 flags (5931 at inclusion, 1782 at follow-up), on 821
+  visits. The form shows the number of a trimester when its box is ticked, but
+  a box cannot say "not ticked" from "not asked", so the numbers hang on the
+  question, not on the box (below).
 
-  groschang and acqchang are boxes of the follow-up form ("changed since the
-  last visit").
+  **Yes/no questions after a yes.** The nine infections and the six substances
+  are Oui/Non radios shown after a yes to infection (pregnancy_infection) or to
+  substance use (pregnancy_substance). After a no they are empty in 100% of the
+  cells (1545 and 1500 inclusion visits): they are 0 (`asked_if`). A radio left
+  unticked is saved empty, so an empty radio beside a ticked one is not an
+  answer and there is no `box_list`: 23 of the 98 visits with an infection yes
+  and 27 of the 196 with a substance yes have a yes next to an empty radio;
+  those stay missing. After a no to their question, the numbers of earlier
+  miscarriages and of earlier deaths in utero by trimester (3804 and 4929
+  cells), the cigarettes a day (1529), the drinks a day (1643), the joints a
+  day (1674) and the doses of another substance a day (1670) are 0. The lists
+  that start at 1 (trimester of an infection, of the first intake or of a
+  bleeding, severity of a bleeding, time of the folic acid) hold no 0: they
+  stay missing after a no, as does every detail. After a no or a "not known"
+  nothing is typed under a question, not a number and not a trimester (0 cells
+  in the 38 pairs of a question and its details); under an empty answer three
+  cells are: the time of the folic acid on one visit, and the trimester and
+  the text of another infection on a visit whose infection answer is no.
+
+  The form hides one level only: a click on a question hides and clears the
+  fields under it, not the fields that hang on those (a number, a trimester).
+  At load it hides the time of the folic acid when the answer is no, not known
+  or empty, but does not clear it: one inclusion visit holds it with the
+  folic-acid answer empty.
+
+  pregnancy_section_changed is the "change since the last visit" box of the
+  pregnancy section of the follow-up form: 0 on 147 visits of 2014 to 2020,
+  never 1; it gates nothing. The same box of the first acquisitions, which the
+  first reading put here, is early_acquisitions_changed in early_development,
+  where the form places it.
+
+  **Year and centre.** folic_acid has steps whose cause is not known. Among the answers yes and no
+  the share of yes is 32% to 36% in 2013 and 2014, 13% to 20% from 2016 to 2020, 42% to 44% in
+  2021 and 2022 and 30% to 51% from 2024; it is 8% to 54% by centre (five centres with 20 answers
+  or more). The steps are made of changes inside the centres: in one centre the share of yes is
+  48% to 2015, 3% from 2016 to 2020 and 0% from 2021 while its share of "not known" goes from 11%
+  to 14% and then 45%; in another it is 33% and then 69%. No change of this question is known in
+  the form (open question O25). The age mix plays a part in the completion of the section (an
+  answer on 84% of the inclusion visits of children, 62% of adults), not in these steps: they are
+  found among the children and among the adults.
 
   A section of the ASP cohort only.
 
 variables:
-  groschang: {column: groschang, type: item, label: "Pregnancy of the patient's mother: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  pregnancy_section_changed: {column: groschang, type: item, label: "Pregnancy: change since the last visit (box of the follow-up form, section pregnancy; gates nothing) (0 no, 1 yes)", range: [0, 1]}
   miscarriage_before: {column: antfc, type: item, label: "Earlier miscarriage of the mother (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  antfct_1: {column: antfct_1, type: item, label: "Earlier miscarriage of the mother: first trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  antfct_2: {column: antfct_2, type: item, label: "Earlier miscarriage of the mother: second trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  antfct_3: {column: antfct_3, type: item, label: "Earlier miscarriage of the mother: third trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  antfct1n: {column: antfct1n, type: number, label: "Earlier miscarriages of the first trimester, number", range: [0, 200], winsor: false}
-  antfct2n: {column: antfct2n, type: number, label: "Earlier miscarriages of the second trimester, number", range: [0, 200], winsor: false}
-  antfct3n: {column: antfct3n, type: number, label: "Earlier miscarriages of the third trimester, number", range: [0, 200], winsor: false}
+  miscarriage_before_trimester_1: {column: antfct_1, type: item, label: "Earlier miscarriage of the mother: first trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: miscarriage_before}
+  miscarriage_before_trimester_2: {column: antfct_2, type: item, label: "Earlier miscarriage of the mother: second trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: miscarriage_before}
+  miscarriage_before_trimester_3: {column: antfct_3, type: item, label: "Earlier miscarriage of the mother: third trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: miscarriage_before}
+  n_miscarriages_before_trimester_1: {column: antfct1n, type: number, label: "Earlier miscarriages of the first trimester, number", range: [0, 200], winsor: false, asked_if: miscarriage_before}
+  n_miscarriages_before_trimester_2: {column: antfct2n, type: number, label: "Earlier miscarriages of the second trimester, number", range: [0, 200], winsor: false, asked_if: miscarriage_before}
+  n_miscarriages_before_trimester_3: {column: antfct3n, type: number, label: "Earlier miscarriages of the third trimester, number", range: [0, 200], winsor: false, asked_if: miscarriage_before}
   consanguinity: {column: cosang, type: item, label: "Consanguinity of the parents (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  cosangc: {column: cosangc, type: text, label: "Consanguinity, which, free text"}
+  consanguinity_text: {column: cosangc, type: text, label: "Consanguinity, which, free text"}
   assisted_reproduction: {column: procmas, type: item, label: "Medically assisted reproduction (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   stillbirth_before: {column: morute, type: item, label: "Earlier death in utero (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  morute_1: {column: morute_1, type: item, label: "Earlier death in utero: first trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  morute_2: {column: morute_2, type: item, label: "Earlier death in utero: second trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  morute_3: {column: morute_3, type: item, label: "Earlier death in utero: third trimester (box) (0 no, 1 yes)", range: [0, 1]}
-  morute1n: {column: morute1n, type: number, label: "Earlier deaths in utero of the first trimester, number", range: [0, 200], winsor: false}
-  morute2n: {column: morute2n, type: number, label: "Earlier deaths in utero of the second trimester, number", range: [0, 200], winsor: false}
-  morute3n: {column: morute3n, type: number, label: "Earlier deaths in utero of the third trimester, number", range: [0, 200], winsor: false}
-  folic_acid: {column: gros_fol, type: item, label: "Folic acid during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  gros_fola: {column: gros_fola, type: item, label: "Folic acid: when taken (1 three months before conception, 2 first trimester, 3 second, 4 third)", range: [1, 4]}
-  acqchang: {column: acqchang, type: item, label: "The events of the pregnancy changed since the last visit (box of the follow-up form) (0 no, 1 yes)", range: [0, 1]}
+  stillbirth_before_trimester_1: {column: morute_1, type: item, label: "Earlier death in utero: first trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: stillbirth_before}
+  stillbirth_before_trimester_2: {column: morute_2, type: item, label: "Earlier death in utero: second trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: stillbirth_before}
+  stillbirth_before_trimester_3: {column: morute_3, type: item, label: "Earlier death in utero: third trimester (box) (0 no, 1 yes)", range: [0, 1], derived_from: stillbirth_before}
+  n_stillbirths_before_trimester_1: {column: morute1n, type: number, label: "Earlier deaths in utero of the first trimester, number", range: [0, 200], winsor: false, asked_if: stillbirth_before}
+  n_stillbirths_before_trimester_2: {column: morute2n, type: number, label: "Earlier deaths in utero of the second trimester, number", range: [0, 200], winsor: false, asked_if: stillbirth_before}
+  n_stillbirths_before_trimester_3: {column: morute3n, type: number, label: "Earlier deaths in utero of the third trimester, number", range: [0, 200], winsor: false, asked_if: stillbirth_before}
+  folic_acid: {column: gros_fol, type: item, label: "Folic acid supplement before or at the start of the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  folic_acid_timing: {column: gros_fola, type: item, label: "Folic acid supplement: when it was taken (1 three months before conception, 2 first trimester, 3 second, 4 third)", range: [1, 4]}
   pregnancy_bleeding: {column: saign, type: item, label: "Bleeding during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  saigntri: {column: saigntri, type: item, label: "Bleeding during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  saignret: {column: saignret, type: item, label: "Bleeding during the pregnancy: severity (1 mild, 2 moderate, 3 severe)", range: [1, 3]}
+  pregnancy_bleeding_trimester: {column: saigntri, type: item, label: "Bleeding during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_bleeding_severity: {column: saignret, type: item, label: "Bleeding during the pregnancy: severity of the repercussion, 'retentissement' in the form (1 mild, 2 moderate, 3 severe)", range: [1, 3]}
   pregnancy_infection: {column: infevir, type: item, label: "Infection during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  cmv: {column: cmv, type: item, label: "Cytomegalovirus during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  cmvt: {column: cmvt, type: item, label: "Cytomegalovirus, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  liste: {column: liste, type: item, label: "Listeriosis during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  rube: {column: rube, type: item, label: "Rubella during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  toxo: {column: toxo, type: item, label: "Toxoplasmosis during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  toxot: {column: toxot, type: item, label: "Toxoplasmosis during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  herp: {column: herp, type: item, label: "Herpes during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  herpt: {column: herpt, type: item, label: "Herpes during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  hiv: {column: hiv, type: item, label: "HIV during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  hivt: {column: hivt, type: item, label: "HIV, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  gripsais: {column: gripsais, type: item, label: "Seasonal influenza during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  gripsaist: {column: gripsaist, type: item, label: "Seasonal influenza during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  gripa: {column: gripa, type: item, label: "Influenza A during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  gripat: {column: gripat, type: item, label: "Influenza A, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  infaut: {column: infaut, type: item, label: "Other infection during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  infautt: {column: infautt, type: item, label: "Other infection during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  infauta: {column: infauta, type: text, label: "Other infection, which, free text"}
+  pregnancy_infection_cmv: {column: cmv, type: item, label: "Cytomegalovirus during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_cmv_trimester: {column: cmvt, type: item, label: "Cytomegalovirus, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_listeriosis: {column: liste, type: item, label: "Listeriosis during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_rubella: {column: rube, type: item, label: "Rubella during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_toxoplasmosis: {column: toxo, type: item, label: "Toxoplasmosis during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_toxoplasmosis_trimester: {column: toxot, type: item, label: "Toxoplasmosis during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_herpes: {column: herp, type: item, label: "Herpes during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_herpes_trimester: {column: herpt, type: item, label: "Herpes during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_hiv: {column: hiv, type: item, label: "HIV during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_hiv_trimester: {column: hivt, type: item, label: "HIV, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_seasonal_influenza: {column: gripsais, type: item, label: "Seasonal influenza during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_seasonal_influenza_trimester: {column: gripsaist, type: item, label: "Seasonal influenza during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_influenza_a: {column: gripa, type: item, label: "Influenza A during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_influenza_a_trimester: {column: gripat, type: item, label: "Influenza A, trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_other: {column: infaut, type: item, label: "Other infection during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_infection}
+  pregnancy_infection_other_trimester: {column: infautt, type: item, label: "Other infection during the pregnancy: trimester (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_infection_other_text: {column: infauta, type: text, label: "Other infection, which, free text"}
   influenza_vaccine: {column: vacgrip, type: item, label: "Influenza vaccine during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   pregnancy_medication: {column: trtmed, type: item, label: "Medication during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mednpsy_1: {column: mednpsy_1, type: item, label: "Neuropsychiatric medication during the pregnancy: antiepileptic (box) (0 no, 1 yes)", range: [0, 1]}
-  mednpsy_2: {column: mednpsy_2, type: item, label: "Neuropsychiatric medication during the pregnancy: antidepressant (box) (0 no, 1 yes)", range: [0, 1]}
-  mednpsy_3: {column: mednpsy_3, type: item, label: "Neuropsychiatric medication during the pregnancy: anxiolytic (box) (0 no, 1 yes)", range: [0, 1]}
-  mednpsy_4: {column: mednpsy_4, type: item, label: "Neuropsychiatric medication during the pregnancy: typical or atypical antipsychotic (box) (0 no, 1 yes)", range: [0, 1]}
-  mednpsy_5: {column: mednpsy_5, type: item, label: "Neuropsychiatric medication during the pregnancy: lithium (box) (0 no, 1 yes)", range: [0, 1]}
-  mednpsy_6: {column: mednpsy_6, type: item, label: "Neuropsychiatric medication during the pregnancy: other medication (box) (0 no, 1 yes)", range: [0, 1]}
-  antiepic: {column: antiepic, type: text, label: "Antiepileptic during the pregnancy, which, free text"}
-  antidepc: {column: antidepc, type: text, label: "Antidepressant during the pregnancy, which, free text"}
-  anxioc: {column: anxioc, type: text, label: "Anxiolytic during the pregnancy, which, free text"}
-  antipsyc: {column: antipsyc, type: text, label: "Antipsychotic during the pregnancy, which, free text"}
-  lithc: {column: lithc, type: text, label: "Lithium during the pregnancy, which, free text"}
-  autrec: {column: autrec, type: text, label: "Other medication during the pregnancy, which, free text"}
+  pregnancy_medication_antiepileptic: {column: mednpsy_1, type: item, label: "Neuropsychiatric medication during the pregnancy: antiepileptic (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_antidepressant: {column: mednpsy_2, type: item, label: "Neuropsychiatric medication during the pregnancy: antidepressant (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_anxiolytic: {column: mednpsy_3, type: item, label: "Neuropsychiatric medication during the pregnancy: anxiolytic (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_antipsychotic: {column: mednpsy_4, type: item, label: "Neuropsychiatric medication during the pregnancy: typical or atypical antipsychotic (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_lithium: {column: mednpsy_5, type: item, label: "Neuropsychiatric medication during the pregnancy: lithium (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_other: {column: mednpsy_6, type: item, label: "Neuropsychiatric medication during the pregnancy: other medication (box) (0 no, 1 yes)", range: [0, 1], derived_from: pregnancy_medication}
+  pregnancy_medication_antiepileptic_text: {column: antiepic, type: text, label: "Antiepileptic during the pregnancy, which, free text"}
+  pregnancy_medication_antidepressant_text: {column: antidepc, type: text, label: "Antidepressant during the pregnancy, which, free text"}
+  pregnancy_medication_anxiolytic_text: {column: anxioc, type: text, label: "Anxiolytic during the pregnancy, which, free text"}
+  pregnancy_medication_antipsychotic_text: {column: antipsyc, type: text, label: "Antipsychotic during the pregnancy, which, free text"}
+  pregnancy_medication_lithium_text: {column: lithc, type: text, label: "Lithium during the pregnancy, which, free text"}
+  pregnancy_medication_other_text: {column: autrec, type: text, label: "Other medication during the pregnancy, which, free text"}
   pregnancy_substance: {column: tox, type: item, label: "Substance use during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  tabac: {column: tabac, type: item, label: "Tobacco during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  tabacnj: {column: tabacnj, type: number, label: "Tobacco during the pregnancy, cigarettes a day", range: [0, 200], winsor: false}
-  tabacdeb: {column: tabacdeb, type: item, label: "Tobacco during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  alc: {column: alc, type: item, label: "Alcohol during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  alcnj: {column: alcnj, type: number, label: "Alcohol during the pregnancy, detail", range: [0, 200], winsor: false}
-  alcdeb: {column: alcdeb, type: item, label: "Alcohol during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  cana: {column: cana, type: item, label: "Cannabis during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  cananj: {column: cananj, type: number, label: "Cannabis, detail", range: [0, 200], winsor: false}
-  canadeb: {column: canadeb, type: item, label: "Cannabis during the pregnancy, trimester when it began (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  coca: {column: coca, type: item, label: "Cocaine during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  cocadeb: {column: cocadeb, type: item, label: "Cocaine during the pregnancy, trimester when it began (1 first trimester, 2 second, 3 third)", range: [1, 3]}
-  hero: {column: hero, type: item, label: "Heroin during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  autre: {column: autre, type: item, label: "Other substance during the pregnancy (0 no, 1 yes)", range: [0, 1]}
-  autrenj: {column: autrenj, type: number, label: "Other substance, detail", range: [0, 200], winsor: false}
-  autredeb: {column: autredeb, type: item, label: "Other substance during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_tobacco: {column: tabac, type: item, label: "Tobacco during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_tobacco_cigarettes_per_day: {column: tabacnj, type: number, label: "Tobacco during the pregnancy, number of cigarettes a day", range: [0, 200], winsor: false, asked_if: pregnancy_tobacco}
+  pregnancy_tobacco_start_trimester: {column: tabacdeb, type: item, label: "Tobacco during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_alcohol: {column: alc, type: item, label: "Alcohol during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_alcohol_drinks_per_day: {column: alcnj, type: number, label: "Alcohol during the pregnancy, mean number of drinks a day", range: [0, 200], winsor: false, asked_if: pregnancy_alcohol}
+  pregnancy_alcohol_start_trimester: {column: alcdeb, type: item, label: "Alcohol during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_cannabis: {column: cana, type: item, label: "Cannabis during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_cannabis_joints_per_day: {column: cananj, type: number, label: "Cannabis during the pregnancy, mean number of joints a day", range: [0, 200], winsor: false, asked_if: pregnancy_cannabis}
+  pregnancy_cannabis_start_trimester: {column: canadeb, type: item, label: "Cannabis during the pregnancy, trimester when it began (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_cocaine: {column: coca, type: item, label: "Cocaine during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_cocaine_start_trimester: {column: cocadeb, type: item, label: "Cocaine during the pregnancy, trimester when it began (1 first trimester, 2 second, 3 third)", range: [1, 3]}
+  pregnancy_heroin: {column: hero, type: item, label: "Heroin during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_other_substance: {column: autre, type: item, label: "Other substance during the pregnancy (0 no, 1 yes)", range: [0, 1], asked_if: pregnancy_substance}
+  pregnancy_other_substance_doses_per_day: {column: autrenj, type: number, label: "Other substance during the pregnancy, mean number of doses a day", range: [0, 200], winsor: false, asked_if: pregnancy_other_substance}
+  pregnancy_other_substance_start_trimester: {column: autredeb, type: item, label: "Other substance during the pregnancy: trimester it started (1 first trimester, 2 second, 3 third)", range: [1, 3]}
   pregnancy_disease: {column: pathgro, type: item, label: "Disease of the mother during the pregnancy (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  pathgros: {column: pathgros, type: category, label: "Disease of the mother during the pregnancy: which", codes: {"1": gestational_diabetes, "2": gestational_hypertension, "3": premature_rupture_of_membranes, "4": threatened_preterm_labour, "5": placenta_praevia, "6": other}}
-  pathgroc: {column: pathgroc, type: text, label: "Disease of the mother, comment, free text"}
+  pregnancy_disease_type: {column: pathgros, type: category, label: "Disease of the mother during the pregnancy: which", codes: {"1": gestational_diabetes, "2": gestational_hypertension, "3": premature_rupture_of_membranes, "4": threatened_preterm_labour, "5": placenta_praevia, "6": other}}
+  pregnancy_disease_other_text: {column: pathgroc, type: text, label: "Disease of the mother, comment, free text"}
   foetal_disease: {column: pathfeta, type: item, label: "Disease of the foetus (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  pathfetas: {column: pathfetas, type: category, label: "Disease of the foetus during the pregnancy: which", codes: {"1": intrauterine_growth_restriction, "2": foetal_hypoxia, "3": foetal_macrosomia, "4": foetal_hypotrophy, "5": foetal_alcohol_syndrome, "6": other}}
-  pathfetac: {column: pathfetac, type: text, label: "Disease of the foetus, comment, free text"}
+  foetal_disease_type: {column: pathfetas, type: category, label: "Disease of the foetus during the pregnancy: which", codes: {"1": intrauterine_growth_restriction, "2": foetal_hypoxia, "3": foetal_macrosomia, "4": foetal_hypotrophy, "5": foetal_alcohol_syndrome, "6": other}}
+  foetal_disease_other_text: {column: pathfetac, type: text, label: "Disease of the foetus, comment, free text"}

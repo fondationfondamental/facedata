@@ -2,26 +2,46 @@ instrument: allergic_history_v0
 title: "Allergic history, at inclusion"
 tab: ANTECEDENTS
 section: Pathologies allergiques et inflammatoires
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  inclusion visit: 589 visits (88% to 96% of the inclusions in every period).
+  inclusion visit: the gate is answered on 571 of the 589 visits that hold the
+  form (87% to 93% of the inclusions in every period from 2013).
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
-  Asthma, allergy, lupus, rheumatoid arthritis and other autoimmune
-  diseases are five boxes that the form sets to 0 on every row (BP has one
-  list): flagged derived_doubt where the question "an allergic or
-  inflammatory disease" is empty.
+  Asthma, allergy, lupus, rheumatoid arthritis and other autoimmune diseases
+  are five boxes that the form sets to 0 on every saved form (BP has one
+  list): flagged derived_doubt where the question "an allergic or inflammatory
+  disease" is empty. Residual doubt that the language cannot express: 17
+  inclusion forms and 2 follow-up forms have the gate empty (14 of the 17 are
+  blank on every other question: saved empty), and 2 inclusion forms have the
+  gate yes with no box ticked (10 cells delivered 0, where BP gives missing).
+  The text of another autoimmune disease is filled on none of the 7 yes at
+  inclusion: the form declares its text box digits-only, like the counts
+  (static reading of form 164, to be confirmed). A click on the gate re-
+  evaluates only its own group, so the 14 date, treated and controlled fields
+  under the five boxes are neither hidden nor cleared (one-level cascade,
+  decision D36). Of the 17 follow-up visits of patients with the gate yes at
+  inclusion, 14 answer no.
 
 version:
   name: visit_form
@@ -41,23 +61,23 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  allergic_inflammatory_v0: {column: somat_all, type: item, range: [0, 1], missing: {"2": unknown}, label: "An allergic or inflammatory disease, at inclusion"}
-  asthma_v0: {column: asthme_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: asthma, at inclusion"}
-  allergy_v0: {column: allergie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: an allergy other than asthma, at inclusion"}
-  lupus_v0: {column: lupus_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: lupus, at inclusion"}
-  rheumatoid_arthritis_v0: {column: polyarthr_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: rheumatoid arthritis, at inclusion"}
-  other_autoimmune_v0: {column: autautoim_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: another autoimmune disease, at inclusion"}
+  allergic_inflammatory_v0: {column: somat_all, type: item, range: [0, 1], label: "An allergic or inflammatory disease, at inclusion"}
+  asthma_v0: {column: asthme_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: asthma, at inclusion"}
+  allergy_v0: {column: allergie_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: an allergy other than asthma, at inclusion"}
+  lupus_v0: {column: lupus_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: lupus, at inclusion"}
+  rheumatoid_arthritis_v0: {column: polyarthr_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: rheumatoid arthritis, at inclusion"}
+  other_autoimmune_v0: {column: autautoim_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_v0, label: "Allergic or inflammatory disease: another autoimmune disease, at inclusion"}
   asthma_start_v0: {column: asthme_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Asthma: date of onset, at inclusion"}
-  asthma_treated_v0: {column: asthme_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: treated, at inclusion"}
-  asthma_controlled_v0: {column: asthme_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: controlled, at inclusion"}
+  asthma_treated_v0: {column: asthme_tr_mhdecod, type: item, range: [0, 1], label: "Asthma: treated, at inclusion"}
+  asthma_controlled_v0: {column: asthme_eq_mhdecod, type: item, range: [0, 1], label: "Asthma: controlled, at inclusion"}
   allergy_start_v0: {column: allergie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Allergy: date of onset, at inclusion"}
-  allergy_treated_v0: {column: allergie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: treated, at inclusion"}
-  allergy_controlled_v0: {column: allergie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: controlled, at inclusion"}
+  allergy_treated_v0: {column: allergie_tr_mhdecod, type: item, range: [0, 1], label: "Allergy: treated, at inclusion"}
+  allergy_controlled_v0: {column: allergie_eq_mhdecod, type: item, range: [0, 1], label: "Allergy: controlled, at inclusion"}
   lupus_start_v0: {column: lupus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Lupus: date of onset, at inclusion"}
-  lupus_treated_v0: {column: lupus_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: treated, at inclusion"}
-  lupus_controlled_v0: {column: lupus_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: controlled, at inclusion"}
+  lupus_treated_v0: {column: lupus_tr_mhdecod, type: item, range: [0, 1], label: "Lupus: treated, at inclusion"}
+  lupus_controlled_v0: {column: lupus_eq_mhdecod, type: item, range: [0, 1], label: "Lupus: controlled, at inclusion"}
   rheumatoid_arthritis_start_v0: {column: polyarthr_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Rheumatoid arthritis: date of onset, at inclusion"}
-  rheumatoid_arthritis_treated_v0: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: treated, at inclusion"}
-  rheumatoid_arthritis_controlled_v0: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: controlled, at inclusion"}
+  rheumatoid_arthritis_treated_v0: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], label: "Rheumatoid arthritis: treated, at inclusion"}
+  rheumatoid_arthritis_controlled_v0: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], label: "Rheumatoid arthritis: controlled, at inclusion"}
   other_autoimmune_start_v0: {column: autautoim_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another autoimmune disease: date of onset, at inclusion"}
   other_autoimmune_text_v0: {column: autautoim_mhmodify, type: text, label: "Another autoimmune disease: which one, as written, at inclusion"}

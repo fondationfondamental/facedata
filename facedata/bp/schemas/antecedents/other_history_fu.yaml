@@ -2,28 +2,37 @@ instrument: other_history_fu
 title: "Medical history: cancers, infections, surgery, eye and other diseases (yearly follow-up visits)"
 tab: ANTECEDENTS
 section: Autres pathologies
-status: draft
+status: reviewed
 notes: >
   Cancer, HIV infection, chronic viral hepatitis and its virus, major
   surgery, genetic disease, "another somatic disease", and the eye diseases.
   Yes/no answers are delivered as 1 and 0; "unknown" (U, "Ne sais pas") is a
-  missing code. "Unknown" is frequent for HIV and viral hepatitis (164 and 169
+  missing code. "Unknown" is frequent for HIV and viral hepatitis (165 and 170
   inclusion visits). The surgery, the genetic disease, the other somatic
   disease and the cancer are named in free texts delivered as written.
 
-  Cancer. The types are boxes ticked in one cell (gynaecological, digestive,
-  ear nose and throat, lung, other), delivered as one yes/no variable each.
+  Cancer. The date is the date of the first diagnosis. The types are boxes
+  ticked in one cell (gynaecological, digestive, ear nose and throat, lung,
+  other), delivered as one yes/no variable each. The free text is shown under
+  the box "another cancer" and filled only then (135 of the 138 boxes ticked,
+  both forms, and no text elsewhere): no shown_if is needed.
+
+  Chronic viral hepatitis. The virus is hepatitis C, B, D (the form offers
+  it; no row holds it today) or unclassified.
 
   Eye diseases. One yes/no question, then angle-closure glaucoma, chronic
-  open-angle glaucoma and cataract, which are 0 after a "no" (asked_if). The
-  treatment under which an angle-closure glaucoma started is filled in one
-  cell and is not read.
+  open-angle glaucoma and cataract, which are 0 after a "no" (asked_if). They
+  are Oui/Non questions, not boxes of a list: an empty one beside a "yes" is
+  not a "no" (no box_list). The treatment under which an angle-closure
+  glaucoma started is filled in one cell and is not read.
 
   Two forms in the same columns (decision D59 in PROGRESS.md). The same
   questions are asked at the inclusion visit and at the yearly visits, never
-  at the six-monthly ones. At inclusion they are about the whole life. At the
+  at the six-monthly ones: the 3,352 six-monthly visits of the follow-up
+  version (11,686 visits, of which 8,334 are yearly) and the screening visits
+  never hold a cell of this section. At inclusion they are about the whole life. At the
   yearly visits a disease answered "yes" at inclusion is often answered "no":
-  305 of the 660 "yes" of this section that are answered again (9 of 37 for a cancer, 78 of 130 for a major surgery, 142 of 366 for another somatic disease). The
+  346 of the 662 "yes" of this section that are answered again (11 of 37 for a cancer, 86 of 130 for a major surgery, 167 of 367 for another somatic disease). The
   yearly form is the inclusion form again: the same questions, with no period
   in their wording, after one more question, "is there a change since the
   last visit?", which the extraction does not hold (read in the application
@@ -31,7 +40,10 @@ notes: >
   update given at that visit: neither a history of the whole life nor
   strictly an answer about the time since the last visit. The two are delivered as separate
   columns, ending in _v0 (inclusion visit) and _fu (yearly visits); visit_form
-  says which form a visit used and is read from the visit label.
+  says which form a visit used and is read from the visit label. The
+  question "is there a change since the last visit?" is shown at the yearly
+  visit only and is not exported (rad_pas_dechangement, DM-10): an empty
+  yearly section may mean "no change".
 
   From 2022 the section is mostly left empty (decision D83 in PROGRESS.md). Until 2021
   it is answered at 86% of the inclusion visits, from 2022 at 39%, and the
@@ -41,16 +53,35 @@ notes: >
   application saves it and the extraction does not hold it (read in the
   application in November 2026). An empty section is therefore most often a
   "no for all". From 2022 the
-  share of "yes" among the answers (9.0% against 4.8%) is therefore not a
+  share of "yes" among the answers (12.6% against 6.8%) is therefore not a
   prevalence. The values are delivered as recorded: an empty section is
   missing, not "no". Once the shortcut is exported, a "no for all" will
   give 0 to each disease of the section. The yearly visits answer the section at 32% of the
   visits until 2021 and at 11% from 2022.
 
   Details. The date of onset, "treated" and "controlled" (équilibrée) are
-  asked only after a "yes" and are missing otherwise. 1000-01-01 is written
-  in a date that was not typed, and from 2025 in every date of the form:
-  date_placeholder. Hard limits of the dates: 1900 to 2026.
+  asked only after a "yes" and are missing otherwise, except 3 detail cells
+  typed after a "no" (kept as recorded). 1000-01-01 is written in a date that
+  was not typed, and in every empty date of a form saved from 2025 (in the
+  nine sections together, 64% of the inclusion visits and 34% of the yearly
+  visits dated 2025 or later hold one; at inclusion 0% to 3% of the visits up
+  to 2024Q4, 28% in 2025Q1, 70% in 2025Q4, 94% in 2026Q3): date_placeholder. Hard limits of the dates: 1900 to 2026.
+
+  Dates and the visit. Of the 420 delivered dates of the section (both forms),
+  6 are after the visit (1 in the month of the visit, 5 later, by up to 3
+  months) and 11 are on the day of the visit. They stay as recorded: no
+  before_visit (decision D145 in PROGRESS.md).
+
+  Years and centres. The report panels show a shift of 1 for other_somatic_v0 and other_somatic_fu,
+  the yes to "another somatic disease". It is a catch-all that the centres use in different ways:
+  26% yes at inclusion, 9% to 49% by centre (13 centres with 20 answers or more), and 29% at the
+  yearly visits, 0% to 71% (9 centres). By year at inclusion it is 6% to 37% until 2021 (6% in 2009,
+  14% and 10% in 2015 and 2016) and 42% to 51% from 2022, when the answered visits hold more "yes"
+  (the shortcut, decision D83: not a prevalence). It also moves inside centres: of the 9 centres
+  with 15 answers or more before and from 2017, three rise by 21 to 49 points, one falls by 35 and
+  five stay within 9 points. At the yearly visits it is 18% to 2019 and 48% from 2020: six of the 7
+  centres with 15 answers or more in both periods rise (by 10 to 74 points) and one falls by 5. The
+  steps are habits of some centres, not a change of the form.
 
 version:
   name: visit_form
@@ -83,7 +114,7 @@ defaults: {versions: [follow_up]}
 
 variables:
   cancer_fu: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at follow-up"}
-  cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of diagnosis, at follow-up"}
+  cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of the first diagnosis, at follow-up"}
   cancer_gynaecological_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 1, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: gynaecological, at follow-up"}
   cancer_digestive_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 1, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: digestive, at follow-up"}
   cancer_ent_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 1, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: ear, nose and throat, at follow-up"}
@@ -96,7 +127,7 @@ variables:
   hiv_controlled_fu: {column: vih_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: controlled, at follow-up"}
   chronic_viral_hepatitis_fu: {column: hvc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis, at follow-up"}
   chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
-  chronic_viral_hepatitis_virus_fu: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: the virus, at follow-up"}
+  chronic_viral_hepatitis_virus_fu: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite D": hepatitis_d, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: the virus, at follow-up"}
   chronic_viral_hepatitis_treated_fu: {column: hvc_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: treated, at follow-up"}
   chronic_viral_hepatitis_controlled_fu: {column: hvc_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: controlled, at follow-up"}
   major_surgery_fu: {column: atdchir_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major surgery, at follow-up"}

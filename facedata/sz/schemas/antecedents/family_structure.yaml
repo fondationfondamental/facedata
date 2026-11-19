@@ -2,26 +2,53 @@ instrument: family_structure
 title: Family structure
 tab: ANTECEDENTS
 section: Enfants, Fratrie, Parents
-status: draft
+status: reviewed
 level: patient
 notes: >
-  How many daughters, sons, sisters and brothers the patient has, how many
-  of them have something to describe, and whether each parent has. One
-  value per patient, in the table patients. The details of each relative
-  are in family_history.
+  How many daughters, sons, sisters and brothers the patient has, how many of
+  them have something to describe, and whether each parent has. One value per
+  patient, in the table patients. The details of each relative are in
+  family_history.
 
   The question, as in FACE BP: a relative "with a psychiatric disorder, an
   abuse of or dependence on a substance, a history of suicide attempt or a
-  cardiovascular risk factor". A yes is therefore not a psychiatric
-  history. The names of the variables say "affected" for short.
+  cardiovascular risk factor". A yes is therefore not a psychiatric history.
+  The names of the variables say "affected" for short.
 
-  The number of affected sisters is asked only when the patient has
-  sisters: with no sister it is 0 (asked_if), and the same for the
-  brothers, the daughters and the sons. "U" is a missing code (135 mothers,
-  193 fathers).
+  The number of affected sisters is asked only when the patient has sisters:
+  with no sister it is 0 (asked_if), and the same for the brothers, the
+  daughters and the sons. "U" is a missing code (133 mothers and 191 fathers
+  of the delivered patients).
 
-  The BP schema without the four grandparents, which the SZ form does not
-  ask about. About 2,200 patients answer.
+  The affected count is empty while the total is above 0 for 32 patients
+  (sisters), 23 (brothers), 8 (sons) and 5 (daughters): it stays missing, an
+  empty count is not answered. One patient counts more affected brothers than
+  brothers. The export turns the answer ">5" of the form into an empty cell
+  (the same CASE as in BP, R34): the string never appears in SZ and the largest
+  count is 5 (8 patients with 5 sisters, 6 with 5 brothers), so a 5 is exactly
+  five. The lost ">5" show as an empty count beside a filled affected count:
+  18 patients (11 for the sisters, 10 for the brothers, 3 for both; none for the
+  daughters and the sons). Their count stays missing, it is not 5.
+
+  The form is asked once: 65 follow-up rows, dated 2011 to 2015 (63 to 2014),
+  hold family answers. The earliest answer of a patient is kept, and a later one that
+  differs is ignored with patient_value_varies (35 flags in this schema, 1 in
+  family_history). There is no shortcut on the family form.
+
+  The share of parents with a disorder or a risk factor falls with the year of
+  inclusion: mothers 43% of 896 patients included in 2010-2017 and 30% of 1,127
+  included in 2018-2026 (48% in 2017, 31% in 2018), fathers 43% of 860 and 32%
+  of 1,096. The affected sisters and brothers do not move (12% and 14% of the
+  patients in both periods), nor do the psychiatric columns of
+  family_history_per_patient (fdr_depression 33% and 31%, fdr_bipolar 7% and
+  8%). The fall is uneven between centres: of the nine centres with 40 patients
+  in each period, six fall by 4 to 41 points (one goes from 67% to 26%), one is
+  flat and two rise; over the whole period the share of mothers goes from 29% to
+  52% by centre. BP shows no such step. The cause is not known (open question
+  O33).
+
+  The BP schema without the four grandparents, which the SZ form does not ask
+  about. About 2,200 patients answer (decision D57).
 
 defaults: {type: item}
 variables:

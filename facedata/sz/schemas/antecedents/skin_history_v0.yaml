@@ -2,29 +2,54 @@ instrument: skin_history_v0
 title: Skin history, at inclusion
 tab: ANTECEDENTS
 section: Pathologies dermatologiques
-status: draft
+status: reviewed
 notes: >
-  Psoriasis is with the auto-immune diseases in the SZ form.
+  Psoriasis is in autoimmune_history_v0 in the SZ form, not here. For acne and
+  for major hair loss the form asks one yes/no question, "triggered or
+  worsened by lithium" and "by valproate"; the DDL of the application has the
+  sub-boxes "triggered" and "worsened" as BP does, the SZ form does not show
+  them, so there is no sub-gate here. Drug eruption: the type is a simple
+  rash, a Lyell syndrome or a Stevens-Johnson syndrome, written as the
+  application spells it (only the simple rash occurs, on 36 cells); the drugs
+  are boxes ticked in one cell, one yes/no variable per box, 0 after a "no"
+  (asked_if).
 
   Yes/no answers are delivered as 1 and 0; "U" is a missing code. "Treated"
   and the other details are asked after a yes and are missing otherwise.
+  At inclusion one centre ticks "treated" on 21% of the yes answers of the whole
+  medical history (54 of 262 answers), the other centres on 45% to 63% (53%
+  pooled, 679 of 1,293): a habit of that centre, which makes the site shift of
+  the "treated" columns of this section and, with the mix of centres in groups
+  of 20 to 30 answers, their year shift. The follow-up answers are too few per
+  centre to show it.
 
-  Two forms in the same columns, as in FACE BP (BP decision D59; checked on
-  the SZ data, decision D20 in PROGRESS.md). At the inclusion visit the
-  questions are about the whole life. At the follow-up visits a disease
-  answered yes at inclusion is most often answered no (39 of 47 for a head
-  injury, 43 of 54 for acne), so the follow-up form seems to ask about the
-  time since the last visit. The two are delivered as separate columns
-  ending in _v0 and _fu; visit_form says which form a visit used.
+  Two forms in the same columns, as in FACE BP (BP decisions D59 and D84; here
+  decisions D20 and D56 in PROGRESS.md). The same questions are asked at the
+  inclusion visit and at the yearly follow-up visits (every follow-up visit of
+  the extraction is a yearly one; the 1,675 screening records hold no cell of
+  the section). At inclusion they are about the whole life. At the yearly
+  visits a disease answered yes at inclusion is most often answered no (39 of
+  47 follow-up answers for a head injury, 43 of 54 for acne). The yearly form
+  is the inclusion form again, with no period in the wording of its questions,
+  after one more question that the extraction does not hold: "Pas de
+  changement de l'histoire somatique depuis la dernière visite?"
+  (rad_pas_dechangement, shown at the yearly visit only; export request R78).
+  An empty follow-up section may therefore mean "no change". A yearly answer
+  is an update given at that visit: neither a history of the whole life nor
+  strictly an answer about the time since the last visit. The two are
+  delivered as separate columns ending in _v0 and _fu; visit_form says which
+  form a visit used.
 
-  The section is answered at about 80% of the inclusion visits or more in
-  every year, with no fall in 2022. Three other sections of the medical
-  history do fall in 2022: the digestive diseases, the autoimmune diseases
-  and the other diseases (decision D23 in PROGRESS.md).
+  The section is answered at 81% to 100% of the inclusion visits of every year
+  (lowest in 2017), with no fall in 2022. Three other sections of the medical
+  history do fall in 2022: the digestive diseases, the autoimmune diseases and
+  the other diseases (decisions D23 and D51 in PROGRESS.md). The shortcut "Non
+  pour tous" of the form copies "no" to each disease of this section, as its
+  script is meant to (decision D51).
 
-  The SZ form is shorter than the BP one: one question "treated" per
-  disease, and no date of onset and no "controlled". The names are those of
-  BP where the question is the same.
+  The SZ form is shorter than the BP one: one question "treated" per disease,
+  and no date of onset and no "controlled". The names are those of BP where
+  the question is the same.
 
 version:
   name: visit_form
@@ -62,7 +87,7 @@ variables:
   eczema_v0: {column: eczema_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema, at inclusion"}
   eczema_treated_v0: {column: eczema_mhdecod, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: treated, at inclusion"}
   drug_eruption_v0: {column: toxidermi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug eruption, at inclusion"}
-  drug_eruption_type_v0: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens Johnson": stevens_johnson}, label: "Drug eruption: kind, at inclusion"}
+  drug_eruption_type_v0: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens-Johnson": stevens_johnson}, label: "Drug eruption: type, at inclusion"}
   drug_eruption_antibiotic_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 1, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 0}, asked_if: drug_eruption_v0, label: "Drug eruption: caused by an antibiotic, at inclusion"}
   drug_eruption_nsaid_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 1, "Anticonvulsivants": 0, "Autres médicaments": 0}, asked_if: drug_eruption_v0, label: "Drug eruption: caused by an anti-inflammatory drug, at inclusion"}
   drug_eruption_anticonvulsant_v0: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 1, "Autres médicaments": 0}, asked_if: drug_eruption_v0, label: "Drug eruption: caused by an anticonvulsant, at inclusion"}

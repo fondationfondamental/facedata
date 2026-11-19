@@ -548,6 +548,8 @@ def test_family_history(result, qc):
     assert (died.loc["father", "count"], died.loc["father", "sum"]) == (4161, 1199)
     # Most dates were never typed: a placeholder is a missing code.
     assert (qc.loc["relative_birth_date", "date_placeholder"], qc.loc["relative_birth_date", "n_valid"]) == (11781, 16434)
+    # The type of diabetes is shown after the diabetes box only: 3 types under another box are not shown (decision D146).
+    assert (qc.loc["relative_diabetes_type", "n_valid"], qc.loc["relative_diabetes_type", "not_shown"]) == (808, 3)
     # Counts: with no sister, no sister has anything.
     assert (qc.loc["n_sisters", "n_valid"], qc.loc["n_sisters_affected", "n_valid"]) == (5379, 5145)
     assert ((patients["n_sisters"] == 0).sum(), (patients.loc[patients["n_sisters"] == 0, "n_sisters_affected"] == 0).sum()) == (2092, 2091)
@@ -587,3 +589,13 @@ def test_medical_history(result, qc):
     assert (qc.loc["n_pregnancies_v0", "n_valid"], data["n_pregnancies_v0"].sum(), data["n_pregnancies_v0"].max()) == (3621, 5229, 11)
     none = data["n_pregnancies_v0"] == 0
     assert (none.sum(), (data.loc[none, "n_live_births_v0"] == 0).sum()) == (1518, 1511)
+    # The retention boxes hang on the retention: 0 after a "no", missing when a "yes" has no box ticked (decision D145).
+    for form, no, yes_without_box in [("v0", 4396, 31), ("fu", 1725, 8)]:
+        retention = data[f"urinary_retention_{form}"]
+        boxes = data[[f"urinary_retention_{kind}_{form}" for kind in ("neuroleptic", "antidepressant", "other_treatment")]]
+        assert ((retention == 0).sum(), (boxes[retention == 0] == 0).all(axis=1).sum(), boxes[retention == 1].isna().all(axis=1).sum()) == (no, no, yes_without_box)
+    # The hormone therapy of the menopause is asked after a menopause "yes" only, and is missing otherwise (decision D145).
+    for form, answered in [("v0", 570), ("fu", 190)]:
+        therapy = data[f"menopause_hormone_therapy_{form}"]
+        assert (qc.loc[f"menopause_hormone_therapy_{form}", "n_valid"], therapy[data[f"menopause_{form}"] == 0].notna().sum()) == (answered, 0)
+    assert (qc.loc["nephropathy_lithium_v0", "n_valid"], qc.loc["nephropathy_lithium_fu", "n_valid"]) == (104, 55)

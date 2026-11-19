@@ -1,24 +1,48 @@
 instrument: somatic_neurological
-title: "Somatic history: nervous system, one row per disease"
+title: "Somatic history: nervous system, one row per visit and disease"
 tab: antecedents
 section: history
-status: draft
+status: reviewed
 level: list
 notes: >
-  The diseases of the system reported after a yes to the question
-  history_neurological: 329 diseases for 277 visits (276 patients), up to 5 for one
-  patient. One row per patient and disease in the table treatments, where the
-  column list says "somatic_neurological".
+  The diseases of the system reported after a yes to the question history_neurological_v0
+  (inclusion visit) or history_neurological_fu (yearly visit) of the instruments
+  somatic_history_v0 and somatic_history_fu: 329 diseases for 277 visits (276 patients), up to 5
+  at one visit; 324 rows are of inclusion visits and 5 of yearly visits. One row per visit and
+  disease in the table treatments, where the column list says "somatic_neurological" and the
+  column visit names the visit.
 
-  The export packs the diseases of a patient in one cell, each between brackets
-  with four fields: the code of the disease in the list of the form, a free
-  text, the age of onset in years and whether it is over (0 or 1; 9 is "not
-  known"). The list of the diseases is that of the thesaurus V2.13. Fewer than five records
-  have a dash in their free text, which the reader keeps in the text. The
-  history is that of the patient: the first visit that holds it is read, and a
-  later visit that holds another list gets patient_value_varies.
+  A visit's list holds the rows typed at that visit; the lifetime history is the union of the
+  visits.
+
+  Read the list with the gate of the same visit: a gate 0 means none, an empty gate or a 9 means
+  not known. 17 of the 286 yes at inclusion have no list (5.9%) and 10 of 15 at the yearly
+  visits. 2 inclusion lists sit under a gate 0 or 9, 1 at inclusion under an empty gate.
+
+  The export packs the diseases of a visit in one cell, each between brackets with four fields:
+  the code of the disease in the list of the form, a free text, the age of onset in years and
+  whether it is over (0 or 1; a 9 is "not known", delivered as missing with its reason: 240
+  cells in the eight lists). The list of the diseases is that of the thesaurus V2.13. The eight
+  somatic lists have the same shape and differ only by the packed column, the prefix of the
+  fields and the list of the codes: disease_code, disease_text, age_onset (0 to 100) and
+  disease_over. The code that means "other" is 11 in ear, nose, throat and eyes, 4 in the lungs,
+  10 in the nervous system and 9 in the five others, and the free text is filled where the code
+  is "other" (1,923 of the 1,925 "other" rows of the eight lists), so that no shown_if is
+  needed. 19 rows of the eight lists have no code, 14 of them with all four fields empty (a
+  record opened and nothing typed): the schema cannot repair them (open question O19). 3 of the
+  2,422 ages of onset are more than one year above the age of the patient at the visit (one each
+  in the heart, digestive and ear, nose, throat and eyes lists): kept as recorded.
+
+  In this list "other" is the code 10: 172 of its 172 rows have a free text. 2 rows have no code
+  (1 with all four fields empty). Fewer than five records have a dash in their free text, which
+  the reader keeps in the text.
+
+  **Year and centre.** "Over" is 20% to 64% by year (nine years with 20 rows or more) and 32% to
+  56% by centre (five centres): within chance for groups of 20 to 75 rows, no step.
 
   A section of the ASP cohort only.
+
+per_visit: true
 
 packed:
   antneuros_antneuroa_antneuroag_antneurorem: {fields: [neurological_code, neurological_text, neurological_age, neurological_over], text: neurological_text}

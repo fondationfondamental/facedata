@@ -2,22 +2,31 @@ instrument: allergic_history_fu
 title: "Allergic history, at follow-up"
 tab: ANTECEDENTS
 section: Pathologies allergiques et inflammatoires
-status: draft
+status: reviewed
 notes: >
   The BP schema with the columns and the codes of this extraction, at the
-  visits of 2 and 4 years: 131 visits. The questions and what is specific
-  to this cohort are described in allergic_history_v0.yaml.
+  visits of 2 and 4 years: 131 visits. The questions and what is specific to
+  this cohort are described in allergic_history_v0.yaml.
 
-  Two forms in the same columns, as in BP: the inclusion visit, and the
-  visits of 2 and 4 years, where the same questions are asked again.
-  visit_form says which form a visit uses, and each form has its own schema
-  and its own variables (_v0 and _fu). Whether the follow-up answers are
-  about the whole life or about the time since the last visit is not
-  written anywhere; they are never mixed with the inclusion answers.
+  Two forms in the same columns, as in BP: the inclusion visit (form 164 of
+  the application) and the visits of 2 and 4 years (form 191), where the same
+  questions are asked again. visit_form says which form a visit uses, and each
+  form has its own schema and its own variables (_v0 and _fu). A follow-up
+  answer is a yearly update (BP D84): an answer given at that visit on the
+  inclusion form asked again, with no period in the wording of the questions.
+  It is neither a history of the whole life nor strictly an answer about the
+  time since the last visit, and it is never mixed with the inclusion answers.
+  Form 191 has no question "is there a change since the last visit?" (BP and
+  SZ have one, which the extraction does not hold): the whole block is asked
+  again. The block is filled at 90 of 146 visits of 2 years, 36 of 69 visits
+  of 4 years, 3 of 4 of 5 years, 1 of 3 of 3 years and 1 of 298 six-monthly
+  visits, and at none of the 253 visits of 1 year and the 150 of 18 months.
+  Form 191 is form 164 without the perinatal block and with no period wording.
 
-  Answers are numbers here (1 yes, 0 no; 2 is "not known" where it occurs),
-  where BP has words. "Treated" and "controlled" are in columns named
-  _tr_mhdecod and _eq_mhdecod. Dates are whole dates.
+  Answers are numbers here (1 yes, 0 no), where BP has words. The forms offer
+  only Oui and Non: no cell holds "not known" and none is read. "Treated" and
+  "controlled" are in columns named _tr_mhdecod and _eq_mhdecod. Dates are
+  whole dates.
 
 version:
   name: visit_form
@@ -37,23 +46,23 @@ version:
 defaults: {versions: [follow_up]}
 
 variables:
-  allergic_inflammatory_fu: {column: somat_all, type: item, range: [0, 1], missing: {"2": unknown}, label: "An allergic or inflammatory disease, at follow-up"}
-  asthma_fu: {column: asthme_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: asthma, at follow-up"}
-  allergy_fu: {column: allergie_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: an allergy other than asthma, at follow-up"}
-  lupus_fu: {column: lupus_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: lupus, at follow-up"}
-  rheumatoid_arthritis_fu: {column: polyarthr_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: rheumatoid arthritis, at follow-up"}
-  other_autoimmune_fu: {column: autautoim_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: another autoimmune disease, at follow-up"}
+  allergic_inflammatory_fu: {column: somat_all, type: item, range: [0, 1], label: "An allergic or inflammatory disease, at follow-up"}
+  asthma_fu: {column: asthme_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: asthma, at follow-up"}
+  allergy_fu: {column: allergie_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: an allergy other than asthma, at follow-up"}
+  lupus_fu: {column: lupus_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: lupus, at follow-up"}
+  rheumatoid_arthritis_fu: {column: polyarthr_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: rheumatoid arthritis, at follow-up"}
+  other_autoimmune_fu: {column: autautoim_mhoccur, type: item, range: [0, 1], derived_from: allergic_inflammatory_fu, label: "Allergic or inflammatory disease: another autoimmune disease, at follow-up"}
   asthma_start_fu: {column: asthme_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Asthma: date of onset, at follow-up"}
-  asthma_treated_fu: {column: asthme_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: treated, at follow-up"}
-  asthma_controlled_fu: {column: asthme_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Asthma: controlled, at follow-up"}
+  asthma_treated_fu: {column: asthme_tr_mhdecod, type: item, range: [0, 1], label: "Asthma: treated, at follow-up"}
+  asthma_controlled_fu: {column: asthme_eq_mhdecod, type: item, range: [0, 1], label: "Asthma: controlled, at follow-up"}
   allergy_start_fu: {column: allergie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Allergy: date of onset, at follow-up"}
-  allergy_treated_fu: {column: allergie_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: treated, at follow-up"}
-  allergy_controlled_fu: {column: allergie_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Allergy: controlled, at follow-up"}
+  allergy_treated_fu: {column: allergie_tr_mhdecod, type: item, range: [0, 1], label: "Allergy: treated, at follow-up"}
+  allergy_controlled_fu: {column: allergie_eq_mhdecod, type: item, range: [0, 1], label: "Allergy: controlled, at follow-up"}
   lupus_start_fu: {column: lupus_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Lupus: date of onset, at follow-up"}
-  lupus_treated_fu: {column: lupus_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: treated, at follow-up"}
-  lupus_controlled_fu: {column: lupus_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Lupus: controlled, at follow-up"}
+  lupus_treated_fu: {column: lupus_tr_mhdecod, type: item, range: [0, 1], label: "Lupus: treated, at follow-up"}
+  lupus_controlled_fu: {column: lupus_eq_mhdecod, type: item, range: [0, 1], label: "Lupus: controlled, at follow-up"}
   rheumatoid_arthritis_start_fu: {column: polyarthr_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Rheumatoid arthritis: date of onset, at follow-up"}
-  rheumatoid_arthritis_treated_fu: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: treated, at follow-up"}
-  rheumatoid_arthritis_controlled_fu: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Rheumatoid arthritis: controlled, at follow-up"}
+  rheumatoid_arthritis_treated_fu: {column: polyarthr_tr_mhdecod, type: item, range: [0, 1], label: "Rheumatoid arthritis: treated, at follow-up"}
+  rheumatoid_arthritis_controlled_fu: {column: polyarthr_eq_mhdecod, type: item, range: [0, 1], label: "Rheumatoid arthritis: controlled, at follow-up"}
   other_autoimmune_start_fu: {column: autautoim_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another autoimmune disease: date of onset, at follow-up"}
   other_autoimmune_text_fu: {column: autautoim_mhmodify, type: text, label: "Another autoimmune disease: which one, as written, at follow-up"}
