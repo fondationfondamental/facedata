@@ -2,21 +2,21 @@ instrument: spatial_span
 title: Spatial span (Wechsler Memory Scale III)
 tab: NEUROPSYCHOLOGIE
 section: Mémoire spatiale
-status: draft
+status: reviewed
 notes: >
   The psychologist taps blocks in a sequence that the patient repeats, in
   the same order (forward) and then in reverse (backward). Eight items of
   two trials for each order; the test stops after two failures on an item,
   so the last items are often empty. About 5,235 visits.
 
-  An item score is the number of its trials passed (0 to 2): this holds in
-  every row. The raw score of an order is the sum of its item scores up to
-  the first item scored 0 (stop_at_zero: the application does not count
-  what is typed after the first failed item), an empty item before it
-  counting 0 (0 to 16). It equals the stored one on every visit that has
-  both (5,222 forward, 5,216 backward, 5,200 for the total of the two
-  orders, 0 to 32); the plain sum of all the items differed on 0.5% of the
-  visits.
+  An item score is the number of its trials passed (0 to 2): 4 of the 82,473
+  items that have a score and both trials differ. The raw score of an order
+  is the sum of its item scores up to the first item scored 0 (stop_at_zero:
+  the application does not count what is typed after the first failed item),
+  an empty item before it counting 0 (0 to 16). It equals the stored one on
+  every visit that has both (5,222 forward, 5,216 backward, 5,200 for the
+  total of the two orders, 0 to 32); the plain sum of all the items differed
+  on 0.5% of the visits.
 
   Recomputed. The scaled scores (1 to 19) and their z-scores are computed
   again as the application computes them, and the stored values are kept
@@ -28,18 +28,30 @@ notes: >
   A scaled score that differs from the stored one is flagged score_mismatch
   (the z-score within 0.0101), and so is its z-score.
 
-  Checks. The scaled score differs from the stored one on 44 of 5,237 visits
-  for the forward order (0.8%), 44 of 5,233 for the backward order and 62 of
-  5,232 for the total (1.2%); the z-score differs on the same visits. About
-  half of them (24, 23 and 27) are visits whose typed age is more than a
-  year from the age at the visit, mostly by one scaled point, where the
-  application read the table with the typed age and the package with the
-  age at the visit; 15, 17 and 32 are visits whose ages agree and whose
-  stored scaled score is 2 to 15 points from the table's value for the
-  stored raw score (it does not follow its raw score); 5, 4 and 3 differ by
-  one point. The differences are spread over the periods (0.6 to 1.4% of
-  the visits in each) and over the centres. One
-  visit has a stored scaled score where no raw score can be computed
+  Checks. The scaled score equals the stored one on 99.16% of the visits for
+  the forward order (5,193 of 5,237) and for the backward order (5,189 of
+  5,233), and on 98.81% for the total (5,170 of 5,232): 44, 44 and 62 visits
+  differ (0.8%, 0.8% and 1.2%), and so does the z-score of the same visits.
+  Read with the typed age alone, as the application does, the table gives
+  the stored value on 99.56%, 99.54% and 99.27% of the visits that have a
+  typed age (5,228, 5,224 and 5,223).
+
+  Of the differences, 24, 23 and 27 are visits whose typed age is more than
+  a year from the age at the visit, mostly by one scaled point: the
+  application read the table with the typed age and the package with the age
+  at the visit. The others have ages that agree. 15, 17 and 32 of them have
+  a stored scaled score 2 or more points from the table's value for the
+  stored raw score: a stored 1 on 14, 17 and 32, for raw scores of 7 to 12
+  forward, 3 to 12 backward and 11 to 23 for the total, where the table
+  gives more. 5, 4 and 3 differ by one point. One centre accounts for 30 of
+  these 64 differences, and visits with the same raw scores outside them
+  equal the table on 99.4% to 99.5% (99.9% where the ages agree). A possible
+  cause is a scaled score that was computed while the raw score was still 0
+  and never refreshed: a hypothesis, to ask the data managers.
+
+  By period, 0.45% to 1.43% of the visits differ (for each of the three
+  scaled scores), and the differences are spread over the centres. One visit
+  has a stored scaled score where no raw score can be computed
   (score_not_recomputed).
 
 defaults: {type: item, range: [0, 1]}

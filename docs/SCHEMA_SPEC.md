@@ -603,6 +603,24 @@ version:
   since: {wurs25: 2021-01-01}        # no visit dated before that day is a wurs25
 ```
 
+An edition is also recognised from a column that only it has, whatever the
+visit is labelled: `override` gives, for an edition, the columns that no other
+edition holds. A visit where one of them is filled gets that edition and the
+flag `version_overridden` if its label said another one. The WAIS-IV digit-span
+sequencing task is filled on 33 FACE SZ visits that the form labels WAIS-III
+(decision D138):
+
+```yaml
+version:
+  name: wais_version
+  column: wais_version
+  codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
+```
+
+The same block is written in every schema that shares the version name. A
+visit with no data keeps no version.
+
 A visit dated before that day does not get the edition, whatever its columns
 hold. It does not fall back on another edition either: it has no version, its
 values are not delivered, and it gets `version_unknown` with the detail
@@ -631,8 +649,8 @@ Rules:
   schema's own variables read: a column of another instrument listed under
   `filled` does not give a version to a visit where the instrument is empty.
   A placeholder date (1000-01-01, 0000-00-00) counts as nothing (D122). A
-  variable that a score reads only as its `age` or its `by` (the typed age and
-  the education of a norm table, filled at every testing whatever the test) is
+  variable that a score reads only as its `age`, `age_date`, `by` or a term of its `with` (the typed age,
+  the education or the sex of a norm table, filled at every testing whatever the test) is
   not a datum of the instrument either.
 - A visit with data but a version code that is not listed gets
   `version_unknown`. So does a visit dated before the `since` day of the
@@ -672,7 +690,8 @@ scores:
 | `sum`, `mean`, `max` or `min` | The variables to combine: added, averaged, the highest of them (the ADI-R counts the higher of two mannerism items) or the lowest (the age at the first mood episode is the earliest of three ages). Scores defined higher up in the file may be used too |
 | `lookup` and `from` | Instead of `sum` or `mean`: the score is read in a norm table. `lookup` names the table, `from` the raw score to look up, and `by` a second variable the table depends on (see below) |
 | `profile` and `from` | Instead of `sum` or `mean`: the score is read in a table with one line per combination of answers (the EQ-5D index of the five answers). `profile` names the table, `from` lists the variables whose answers make the profile, written one after another (`11235`); a missing answer or a profile that the table does not hold gives a missing score, and the second gets `norm_missing` (see below) |
-| `regression`, `from` and `with` | Instead of `sum` or `mean`: a z-score computed with the regression of a norm table. `regression` names the table, `from` the raw score and `with` the other variables of the regression (see below) |
+| `regression`, `from` and `with` | Instead of `sum` or `mean`: a z-score computed with the regression of a norm table. `regression` names the table, `from` the raw score and `with` the other variables of the regression (see below). A table with no `sd` column gives the expected score instead of a z-score ("An expected value") |
+| `distance` and `from` | Instead of `sum` or `mean`: the sum over the items of the distance to a reference answer ("A distance to a reference"). `distance` names the table, `from` lists the items |
 | `band_of` and `limits` | The percentile band of a z-score, alone or to complete a `lookup` (see below) |
 | `custom` | Instead of `sum` or `mean`: the name of a function of `facedata/custom.py` that computes the score from the instrument's values, when it is a formula (a body mass index, a corrected QT interval) |
 | `reverse` | Items reversed first: `min + max − value`, using the item's own `range` |
@@ -686,6 +705,7 @@ scores:
 | `otherwise` | With `sum`, `mean`, `max` or `min`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
 | `age` | With `lookup`, `regression`: the variable that holds the age typed in the form. The EMR reads its norms with the age typed in the form, which is sometimes wrong; the table is read with that age where it is within 1 year of the age at the visit, and with the age at the visit elsewhere or where nothing was typed. A variable of the same schema, usually `keep: false` (section 8) |
+| `age_date` | With `lookup`, `regression`: a date variable (of the schema, or of `uses`): the date of the assessment. The table is read with the age at that date, `age at the visit + (date - visit date) / 365.25`, where the date is within 366 days of the visit date and, with `age_date_since`, on or after that day; elsewhere with the age at the visit. FACE ASP has no typed age: its application computes the age at the date of the assessment form (decision D139) |
 | `stop_at_zero` | With `sum`: the items are added in the order listed, and the items after the first one scored 0 are not counted (a span: the test stops at the first failure) |
 | `compare_turned` | With `compare`: a stored value equal to the score with the opposite sign is not a mismatch; it gets `sign_flipped`. For a z-score that a centre wrote with the opposite sign in some years |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
@@ -872,6 +892,46 @@ the EMR has computed the z-score with different rules over the years. The
 EMR works with the age typed in the form, the package with the age at the
 visit: set `compare_tolerance` so that a difference of one year of age is
 not flagged, and say so in `notes`.
+
+### An expected value
+
+A regression table that has no `sd` column does not give a z-score: it gives
+the expected score, `intercept + age × age + each term × its variable`,
+rounded to two decimals. The Barona formula (the IQ that the sex, the diploma,
+the occupation and the age predict) and the fNART (an IQ from the number of
+words read) are expected values. `from` is then a variable or a list of
+variables that tell that the test was done (the diploma and the occupation of
+the Barona): the expected value is missing where all of them are missing. A
+visit of an age that the table does not cover gets no value and no flag; a
+visit with the test and a missing term gets `norm_missing`.
+
+```yaml
+scores:
+  barona_expected_qit:
+    regression: wais3_barona_qit       # norms/wais3_barona_qit.csv: age_min, age_max, intercept, age, education, occupation, sex
+    from: [barona_education, barona_occupation]
+    with: {education: barona_education, occupation: barona_occupation, sex: barona_sex}
+    age: barona_age_entered
+    compare: barona_expected_qit_stored
+    compare_tolerance: 0.011
+```
+
+### A distance to a reference
+
+`distance` is the sum, over the items, of the absolute difference between the
+answer and a reference answer: the LIS score (30 ratings against the ratings
+of a panel). The table is a file of the norms folder with two columns, `item`
+(the name of the variable) and `reference`. All the items are needed: a visit
+with one item missing has no score. A table that was not found gives
+`norm_missing`.
+
+```yaml
+scores:
+  lis_total:
+    distance: lis_reference            # norms/lis_reference.csv: item, reference
+    from: [lis_01, lis_02]             # the 30 ratings
+    compare: lis_total_stored
+```
 
 ### The band of a z-score
 
@@ -1123,7 +1183,7 @@ the list is not empty.
 - `checks` names variables or scores of the schema and functions that exist
   in `facedata/custom.py`.
 - `scale` is two numbers, on a score that has `sum` or `mean`.
-- A score has exactly one of `sum`, `mean`, `max`, `min`, `lookup`, `regression` and `custom`, or `band_of` alone; `points` and
+- A score has exactly one of `sum`, `mean`, `max`, `min`, `lookup`, `profile`, `regression`, `distance` and `custom`, or `band_of` alone; `points` and
   `otherwise` go with the first four; `lookup` and `regression` come with `from`, `by` with `lookup`, `with` with `regression`,
   `minus` with `sum`, and `custom` names a function that exists in `facedata/custom.py`. `band_of` names a variable or an
   earlier score, comes with `limits` (numbers in rising order) and goes alone or with `lookup`. `with` gives each term of the
@@ -1131,7 +1191,8 @@ the list is not empty.
   `norm_missing` flags, not an error.
 - A `version` block has a `name` and exactly one of `column` (with `codes`),
   `filled` and `age`. `age` gives each version two numbers, the first below
-  the second.
+  the second. `override` names versions of the block, each with a list of
+  columns of the extraction.
 - A `version` block with `level` says `patient` and reads a `column`.
   `follow_up` and `by_inclusion_date` need `level: patient`; they name
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.

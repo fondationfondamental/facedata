@@ -2,24 +2,43 @@ instrument: laterality
 title: Edinburgh handedness inventory
 tab: NEUROPSYCHOLOGIE
 section: Latéralité
-status: draft
+status: reviewed
 notes: >
   For each of ten activities, and for the foot and the eye, the hand used:
   two crosses in a column for a strong preference, one in each column when
   either hand is used. The extraction holds the number of crosses in the
-  left and in the right column of each line (0, 1 or 2). 505 visits from
-  2010 to 2016, nearly all at inclusion; the test is not in the form that
-  replaced the old one. The dictionary lists the quotient and names the 24
-  item columns in one line; the labels of the 12 lines are those of the
-  published inventory.
+  left and in the right column of each line (0, 1 or 2). The 24 item columns
+  are filled on 505 visits from 2010 to 2016, nearly all at inclusion; the
+  stored quotient is on 869 visits (2010 to 2018, and one in 2025). The
+  dictionary lists the quotient and names the 24 item columns in one line;
+  the labels of the 12 lines are those of the published inventory.
 
   The laterality quotient is 100 x (right - left) / (right + left), from
   -100 (left-handed) to +100 (right-handed), over the ten activities of the
-  inventory: the foot and the eye are not counted (Oldfield 1971).
-  Recomputed that way, it equals the stored quotient on 460 of 501 visits.
-  The 41 others, all in one centre, hold the quotient of the 12 lines: they
-  get score_mismatch and the ten-activity quotient is delivered, so that
-  every centre is on the same scale.
+  inventory: the foot and the eye are not counted (Oldfield 1971). The
+  script of the application rounds it to one decimal, hence
+  compare_tolerance 0.051. Recomputed that way, it equals the stored
+  quotient on 460 of 501 visits (the largest difference among them is 0.0;
+  the smallest among the others is 1.7). The 41 others are all in centre F,
+  the one centre that stored the quotient of the 12 lines: of its 52 visits
+  with the items and a stored quotient (2010 to June 2015), the stored value
+  equals the 12-line quotient on 52 and the 10-line one on 11. In the 9
+  other centres none of the 313 visits where the 10-line and the 12-line
+  quotients differ follows the 12 lines; the current script has its 12-line
+  sum commented out. The 41 visits get score_mismatch and the ten-activity
+  quotient is delivered, so that every centre is on the same scale.
+
+  368 stored quotients have no item to recompute them from
+  (score_not_recomputed), in all ten centres (A 110, G 58, D 51 are the
+  most): by year 2011 1, 2014 2, 2015 89, 2016 148, 2017 117, 2018 10, 2025
+  1; 350 at inclusion; one of them (centre H) holds 16 of the 24 cells. The
+  cause is in the export, not in the form: decision D35 extended the export
+  to the quotient of the later forms, not to the items. The WAIS-IV form of
+  the application (psy_neuropsychologie_sz_wais4.php) still loads the
+  inventory script, so the test was not dropped from the form that replaced
+  the old one. Question for the data managers: export the 24 item columns of
+  the later form. The stored quotient alone is not delivered (that needs a
+  code change, left for later).
 
 defaults: {type: item, range: [0, 2]}
 
@@ -55,4 +74,4 @@ scores:
     label: Laterality quotient over the ten activities (-100 left to +100 right)
     custom: laterality_quotient
     compare: laterality_quotient_stored
-    compare_tolerance: 0.51
+    compare_tolerance: 0.051

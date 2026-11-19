@@ -2,24 +2,44 @@ instrument: wais4_similitudes
 title: WAIS-IV similarities
 tab: NEUROPSYCHOLOGIE
 section: Similitudes (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  similarities columns on the WAIS-IV visits (1,865 visits, from 2014): 18
-  items scored 0 to 2. wais3_similitudes.yaml reads the WAIS-III visits.
-  The dictionary files the columns under the WAIS-III, and does not list
-  the items.
+  (decision D10 of the BP file). This schema reads the similarities columns on
+  the WAIS-IV visits (1,899 visits, from 2013; 1,890 have a stored total): 18
+  items scored 0 to 2. wais3_similitudes.yaml reads the WAIS-III visits. The
+  dictionary files the columns under the WAIS-III, and does not list the
+  items; the section of this schema repeats that label, '(WAIS-3) ancienne
+  version', and the WAIS-IV visits are recognised by the version rule, not by
+  the label.
 
-  One of items 10 and 11 is lost on the WAIS-IV visits. The columns
-  simil10_w and simil11_w are identical on every WAIS-IV visit, while they
-  differ on the WAIS-III visits as two items do. The stored total is not
-  the sum of the 18 columns (it differs by 1 or 2 on 817 of 1,865 visits)
-  but it is a possible total of 18 different items. The export fills one of
-  the two columns from the field of the other, the error found for the
-  matrices (decision D14 and open question O12 in PROGRESS.md). Which of
-  the two is the copy cannot be told, so neither is delivered: the schema
-  gives items 1 to 9 and 12 to 18, and the total as stored.
+  Edition rule (decision D138, question O16). The form labels 33 visits
+  WAIS-III although they hold the WAIS-IV digit-span sequencing task (the
+  columns mcoc_w and mcocemp_w, which only the WAIS-IV has). They are read as
+  WAIS-IV: the version block lists the two columns under override, and the
+  visits get the flag version_overridden. 25 of them hold similarities items
+  and are read here (they were in wais3_similitudes.yaml before the rule); 2
+  of them have a stored scaled score that differs from the recomputed one. One
+  of the 25 (2013) looks like a WAIS-III test given with the sequencing task:
+  its items 10 and 11 differ, it holds WAIS-III-only columns (similarities
+  item 19, the WAIS-III efficiency columns) and its digit-span total is
+  forward + backward only; the marker reads it as WAIS-IV.
+
+  One of items 10 and 11 is lost on the WAIS-IV visits. The columns simil10_w
+  and simil11_w are the same cell on 1,894 of the 1,895 visits that have both
+  (the exception is the visit of 2013 above), while they differ on the
+  WAIS-III visits as two items do. The form of the application has 18 distinct
+  items (rad_wais_simi1 to rad_wais_simi18) and its script adds the 18; the
+  export fills one of the two columns from the field of the other, the error
+  found for the matrices (decision D14 and open question O12 in PROGRESS.md).
+  Which of the two is the copy cannot be told, so neither is delivered: the
+  schema gives items 1 to 9 and 12 to 18, and the total as stored.
+
+  The stored total is the sum of 18 real items, and it is the total delivered.
+  It is not the sum of the 18 columns (the two are equal on only 1,061 of the
+  1,890 visits that have a total, since one real item is lost), and it exceeds
+  the sum of the 16 distinct items plus the shared cell by 0 to 2 on 1,885 of
+  the 1,890 visits. 9 visits have items but no stored total, and get none.
 
   The scaled score and the z-score are recomputed from the stored total and
   delivered; the stored ones are checks (see below).
@@ -34,22 +54,29 @@ notes: >
   (scaled score - 10) / 3. The table is read with the age typed in the form
   (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it is
   within 1 year of the age at the visit, and with the age at the visit
-  elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97 have
-  a typed age more than 1 year away). The stored scores are
-  wais4_simil_scaled_stored and wais4_simil_z_stored, not delivered. The
-  stored scaled score is wrong on many visits: it differs from the recomputed
-  one on 131 of the 1,864 visits that have both (7.0%; 1 in 2016 to 2018, 11
-  in 2019 to 2021, 68 in 2022-2023, 51 from 2024), and the z-score on 80 of
-  1,865 (score_mismatch). The earlier recomputation with the script of the
-  application found 87 stored scores that are the value of the 16-17 year
-  olds' table (the script reads an empty age as 16, as in BP) and others
-  unexplained. One stored scaled score is not recomputed
+  elsewhere (1,815 of the 1,890 visits that have a total use the typed age, 75
+  have a typed age more than 1 year away). The table has no row below 16 years
+  or from 80 years (norm_missing); no SZ WAIS-IV visit is outside it. The
+  stored scores are wais4_simil_scaled_stored and wais4_simil_z_stored, not
+  delivered. The stored scaled score is wrong on many visits: it differs from
+  the recomputed one on 133 of the 1,890 visits that have both (7.0%; 1 in
+  2013 to 2015, 2 in 2016 to 2018, 11 in 2019 to 2021, 68 in 2022-2023, 51
+  from 2024), and the z-score on 82 (score_mismatch). Of the 133, 83 are the
+  value of the 16-17 year olds' table (the script reads an empty age as 16, as
+  in BP); of the 50 others, 48 carry a stored scaled score 2 above the one
+  implied by the stored z-score, so the stored scaled score is the wrong one
+  (the stored z-score follows the stored scaled score on 1,837 of 1,891
+  visits, and is the one of the recomputed scaled score on 52 of the 54
+  others). The fix of the application is dated 2026-03-12; 7 of the 66 visits
+  after it still mismatch (centres H, B and E, all with the 16-17 value; each
+  centre runs its own copy). One stored scaled score is not recomputed
   (score_not_recomputed).
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 2], versions: [wais4]}
 

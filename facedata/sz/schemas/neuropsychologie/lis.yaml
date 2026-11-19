@@ -5,20 +5,31 @@ section: "Film A : l'amende. Question : Pourquoi l’homme parle-il de son fils 
 status: draft
 notes: >
   Lecture Intentionnelle en Situation: six short film clips, and for each a
-  question about the intention of a character with five proposed answers.
-  The patient rates each answer from 1 (very unlikely) to 4 (very likely).
-  1,162 visits from 2013 to 2026, 1,148 of them with the 30 ratings.
+  question about the intention of a character with five proposed answers. The
+  patient rates each answer from 1 (very unlikely) to 4 (very likely). 1,162
+  visits from 2013 to 2026 have ratings, 1,148 of them the 30 ratings.
 
   The score is the distance to a reference group: the sum, over the 30
   answers, of the gap between the rating and the mean rating of the
-  reference group (the higher, the further from the usual reading). The
-  reference ratings are not in the dictionary and are not copied here, so
-  the score is delivered as stored. The data confirm the rule: one set of 30
-  reference ratings gives the stored score, to 0.01, on 983 of the 1,011
-  visits that have the score and the 30 ratings. The 28 others, from 2022 to
-  2024 in 6 centres, hold a score that the ratings do not give, and 137
-  visits with the 30 ratings have no score (2018 to 2024, 53 of them in
-  2022). Both are open question O18.
+  reference group (the higher, the further from the usual reading). It is
+  recomputed and delivered (distance, norms/lis_reference.csv: one reference
+  rating for each answer, read in psy_neuropsychologie_lis.js, where it is
+  written as 30 constants); the stored score (lis_total_stored, not
+  delivered) is the check. The stored score equals the recomputed one, to
+  0.01, on 983 of the 1,011 visits that have both (962 to 0.00001; 21 were
+  stored rounded to two decimals). The 28 others, from 2022 to 2024 in 6
+  centres (23 at V0), hold a score that the ratings do not give:
+  score_mismatch. 137 visits with the 30 ratings have no stored score (2015
+  to 2026, 135 of them in 2018 to 2024 and 53 in 2022; 7 centres): their
+  score is delivered. 7 stored scores cannot be recomputed (3 visits with no
+  rating and 4 with 29 ratings): score_not_recomputed. The 28 differences
+  and the 137 missing scores are open question O18. The first two years are
+  above the later ones (median score 17.4 on 25 visits in 2014 and 21.1 on
+  20 in 2015, 36 of the 45 of centre D, against 15.0 to 16.7 in 2016 to
+  2026): a step that nothing explains yet. Draft because: item 5 and item 6,
+  the 28 stored scores that the ratings do not give (2.8% of the 1,011
+  visits that have both, 2022 to 2024; open question O18) and the higher
+  scores of 2014 and 2015 have no known cause.
 
 defaults: {type: item, range: [1, 4]}
 
@@ -53,4 +64,15 @@ variables:
   lis_f3: {column: lisf03_, label: "Film F (the bathroom), answer 3"}
   lis_f4: {column: lisf04_, label: "Film F (the bathroom), answer 4"}
   lis_f5: {column: lisf05_, label: "Film F (the bathroom), answer 5"}
-  lis_total: {column: lis_, label: "LIS score: distance to the ratings of the reference group, as stored", type: number, range: [0, 100], winsor: false}
+  lis_total_stored: {column: lis_, label: "LIS score as stored", type: number, range: [0, 100], winsor: false, keep: false}
+
+scores:
+  lis_total:
+    label: "LIS score: distance to the ratings of the reference group"
+    distance: lis_reference
+    from: [lis_a1, lis_a2, lis_a3, lis_a4, lis_a5, lis_b1, lis_b2, lis_b3, lis_b4, lis_b5,
+           lis_c1, lis_c2, lis_c3, lis_c4, lis_c5, lis_d1, lis_d2, lis_d3, lis_d4, lis_d5,
+           lis_e1, lis_e2, lis_e3, lis_e4, lis_e5, lis_f1, lis_f2, lis_f3, lis_f4, lis_f5]
+    range: [0, 100]
+    compare: lis_total_stored
+    compare_tolerance: 0.011

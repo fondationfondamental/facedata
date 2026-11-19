@@ -369,3 +369,25 @@ def strength_from_name(values, keys=None):
 def end_before_start(values):
     """A treatment whose end date is before its start date."""
     return values["end_date"] < values["start_date"]
+
+
+def neuropsy_age_used(values, keys):
+    """The age that the norms of the neuropsychology tab are read with.
+
+    The age typed in the form where it is within 1 year of the age at the
+    visit, else the age at the visit (the rule of norm_age in harmonise.py).
+    Missing on the visits that have no conditions form: no test was given.
+    """
+    typed, age = values["neuropsy_age"], keys["age"]
+    used = typed.where(typed.notna() & (age.isna() | ((typed - age).abs() <= 1)), age)
+    return used.where(values.notna().any(axis=1))
+
+
+def cpt3_typed_raw(values):
+    """CPT-3: the visit holds raw values in its T-score columns.
+
+    A T-score of the hit reaction time never exceeds 90; the visits where it
+    is above 100 hold the raw values of the report (a time in ms). True on
+    them, so that a raw value that looks like a T-score (20 to 90) is flagged.
+    """
+    return values["cpt3_hrt_t_typed"] > 100

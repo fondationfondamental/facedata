@@ -111,6 +111,7 @@ with the project lead.
 | PI-8, plausible limits (2026-11-18) | Read with the limits table and the cross-cohort screen: one hard range per variable shared by two cohorts (a test fails on a new difference); the hard range is applied to times (a night of 90 hours was delivered); an index of semantic clustering of 8 or more is a typed count; platelets in hundreds of G/L are recovered; a prolactin of 0 is "nothing measured"; HbA1c in mmol/mol is converted (D127) | D130 |
 | PI-13 and O51, empty boxes of the use of care (2026-11-18) | Read as no beside a ticked box, as for the non-drug treatments: 2,106 boxes and 2,106 numbers become 0, no written value changes; a box whose number was typed is left as written | D131 |
 | PI-10, standard scores of the neuropsychological tests (2026-11-18) | Computed again from the raw scores with the tables of the application's scripts for the TMT, the WAIS-III and WAIS-IV subtests and indices, the Stroop, the fluency, the spatial span, the SCIP and the errands; the stored scores are checks and their differences are flagged. Not done: LIS, Barona, fNART. The tables are the application's and are not checked against the manuals (DM-4) | D135 |
+| NEUROPSYCHOLOGIE tab review, four cohorts (2026-11-19, D138 to D143) | Every neuropsychological test of BP, SZ, DR and ASP was read against the form, the application script and the data, and recomputed where its rule is known: the WAIS family with one similarities, total and table rule (SZ edition O16 closed; BP vocabulary row 25-29 from ASP; ASP age at the form date and shared index names), TMT, errands (years of education), CPT checks, CVLT discriminability, the DR tests (D2, Baddeley, RL/RI-16, auditory span, designs) from the DR script tables, Barona, fNART, LIS and SSTICS (new expected-value and distance scores). The tables are compared across the four applications and not checked against the manuals (DM-4 stays open). 79 of the 83 schemas of the tab are `reviewed` |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -148,7 +149,12 @@ still to do.
   (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
   four reviewed (D124); SUICIDE, ten reviewed after the splits by form
   (D125); with the audit of the four cohorts, `errands_test` (D126) and
-  `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134). 79 of 135 are reviewed; the 56 others are drafts (ANTECEDENTS 20, NEUROPSYCHOLOGIE 19, SUBSTANCES ET COMORBIDITE 9, BILAN BIOLOGIQUE 6, MAThyS). Each
+  `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134); NEUROPSYCHOLOGIE, the 20 drafts of the
+  tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
+  ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
+  ASP social cognition, for gaps with no known cause). 99 of 135 are
+  reviewed; the 36 others are drafts (ANTECEDENTS 20, SUBSTANCES ET
+  COMORBIDITE 9, BILAN BIOLOGIQUE 6, MAThyS). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read

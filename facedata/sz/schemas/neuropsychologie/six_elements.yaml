@@ -2,7 +2,7 @@ instrument: six_elements
 title: Six elements test
 tab: NEUROPSYCHOLOGIE
 section: Test des 6 éléments
-status: draft
+status: reviewed
 notes: >
   Planning and self-organisation: six tasks (two routes, two series of
   pictures to name, two series of sums) to share out in a limited time,
@@ -10,37 +10,67 @@ notes: >
   2010 to 2018 (one in 2025).
 
   Three stored scores are sums, recomputed here. The points score is the sum
-  of the six task scores (865 of 866 visits). The total of rule breaks is
-  time + alternation (862 of 862). The total error score is inefficiency +
-  rule breaks + errors of interpretation + errors of execution (850 of 853).
+  of the six task scores (the stored one equals it on 861 of the 862 visits
+  where both exist). The total of rule breaks is time + alternation (860 of
+  860). The total error score is inefficiency + rule breaks + errors of
+  interpretation + errors of execution (849 of 852).
+
+  Totals that are not recomputed (score_not_recomputed: 3 points, 1 rule
+  breaks, 2 error score). Five of them come from a part above its maximum (a
+  task score above 185, up to 1010, for the points; an alternation of 80 where
+  the maximum is 10, for the rule breaks and one error score): the part is out
+  of range and missing, and the stored total was summed from it. The other
+  error score has an inefficiency written as text, which stays unparsed. "NaN"
+  is stored as text in the total of rule breaks (2 visits) and in the total
+  error score (10): missing. The script refreshes only the inefficiency
+  z-score when the inefficiency is typed (elements3), not the total error
+  score: one of the 3 error scores that are not the sum equals the sum without
+  the inefficiency.
 
   Five z-scores. The dictionary labels one and leaves four without a label
   (elem616_, elem620_, elem623_, elem625_). They are computed again as the
   application computes them, from the score before each: z = (score - mean) /
   SD for the points and (mean - score) / SD for the inefficiency, the rule
-  breaks, the errors of execution and the total error score, so that a
-  higher z-score is a better result; one mean and one SD per measure, the
-  same at every age (norms/six_elements_*_z.csv). The stored z-scores are kept
-  only as checks (six_elements_*_z_stored, not delivered); a recomputed
-  z-score that differs from the stored one by more than 0.0101 is flagged
-  score_mismatch (the opposite sign, sign_flipped). The z-score follows the
-  recomputed score (the sum of its parts), so a stored total that is not the
-  sum no longer makes the z-score doubtful (derived_doubt). The recomputed
-  z-score differs from the stored one on 1 of 862 visits for the points, none
-  of 807 for the inefficiency, none of 858 for the rule breaks, none of 862
-  for the errors of execution and 3 of 851 for the total error score. A
-  stored z-score with no usable score is flagged score_not_recomputed (4, 1,
-  0, 2 and 2 visits).
+  breaks, the errors of execution and the total error score, so that a higher
+  z-score is a better result; one mean and one SD per measure, the same at
+  every age (norms/six_elements_*_z.csv). The stored z-scores are kept only as
+  checks (six_elements_*_z_stored, not delivered); a recomputed z-score that
+  differs from the stored one by more than 0.0101 is flagged score_mismatch
+  (the opposite sign, sign_flipped). The z-score follows the recomputed score
+  (the sum of its parts), so a stored total that is not the sum no longer
+  makes the z-score doubtful (derived_doubt). The recomputed z-score differs
+  from the stored one on 1 of 862 visits for the points, none of 807 for the
+  inefficiency, none of 858 for the rule breaks, none of 863 for the errors of
+  execution and 3 of 852 for the total error score. A stored z-score with no
+  usable score is flagged score_not_recomputed (4, 1, 0, 2 and 2 visits): the
+  4 z-scores of the points have a task score above its maximum, the z-score of
+  the inefficiency and one of the total error score an inefficiency in text,
+  the other one of the total error score an alternation of 80. The 2 z-scores
+  of the errors of execution are not recomputed because their execution cell
+  is empty: the stored value is the z-score of an empty cell read as 0 (the
+  script tests !isNaN(value), which is true for an empty cell: elements5).
 
   A few cells hold impossible values (a route score of 1010, a z-score of
   -637) and are out of range.
 
-  The total time is in minutes. 83 of 854 cells hold minutes and seconds
-  in words ("12min 30sec", "12'30"): they are unparsed and missing.
+  The total time is in minutes. 83 of 854 cells hold minutes and seconds in
+  words ("12min 30sec", "12'30"): they are unparsed and missing (a reading
+  rule m + s/60 is left for later). The 91 unparsed cells of the instrument
+  are these 83 times, 1 inefficiency and 7 numbers of times the instructions
+  were looked at.
 
   The two last columns are free text (how much the patient relied on the
-  examiner, and a description of what the patient did). They are delivered
-  as text and never appear in the report.
+  examiner, and a description of what the patient did). They are delivered as
+  text and never appear in the report.
+
+  The box "test not done" of the SZ form (chk_test_6element_) is not
+  extracted: ask the data managers. Centre I writes longer times (median 18
+  minutes on 44 visits against 15 overall, 64% above 15 minutes against 42%
+  in the other centres) and ticks time exceeded on 84% of its 80 visits
+  against 49%, and centres E and I have the most rule breaks for time (mean
+  1.6 and 1.4 against 0.95): a centre habit in applying the time limit, with
+  no step in time (the yearly median is 15 to 15.8 minutes from 2011 to
+  2017).
 
 defaults: {type: item, range: [0, 185]}
 

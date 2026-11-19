@@ -2,29 +2,36 @@ instrument: wais4_memoire_chiffres
 title: WAIS-IV digit span
 tab: NEUROPSYCHOLOGIE
 section: Mémoire des chiffres WAIS IV
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 in PROGRESS.md). This schema reads the WAIS-IV visits,
-  recognised by wais_version (4,978 visits from 2011 on).
+  recognised by wais_version (5,011 visits are labelled WAIS-IV, 2011 on;
+  4,695 of them hold a digit span value).
 
-  Summary scores only for now. The trial-level columns (mcod0101_w ...) and
-  the span z-scores are added in the NEUROPSYCHOLOGIE milestone.
+  The summary scores, the trial of each item, the item scores and the z-scores
+  of the three longest spans are all read (below).
 
   On WAIS-IV visits four summary columns are shifted by one against their
   dictionary labels. mcodemp_w holds the raw total (forward + backward +
-  sequencing, 99.7% of rows), mcoiemp_w the forward span, empdid_w the
-  backward span, and nbrut_w the forward span minus the backward span
-  (99.5%). This was checked against the span z-score columns (rank
-  correlations of 0.95 to 0.97 with the matching span). The variables below
-  read the columns for what they really hold.
+  sequencing: it equals the sum of the three raw scores on 4,654 of the 4,667
+  visits that have the four values, 99.7%; the 13 others are in the 21 visits
+  described below), mcoiemp_w the forward span, empdid_w the backward span,
+  and nbrut_w the forward span minus the backward span (4,661 of 4,682 rows,
+  99.5%; the 21 others are the same 21 visits). This was checked against the
+  span z-score columns (rank correlations of 0.955 to 0.969 with the matching
+  span). The variables below read the columns for what they really hold.
 
-  Trials. Each item has two trials (1 = correct) and an item score, the
-  number of trials passed (0 to 2): this holds in all but one or two rows.
-  The test stops after two failures on an item, so the last items are often
-  empty; "Na" in an item score is a missing code. The stored raw score of
-  each order is compared with the sum of its item scores, an empty item
-  counting 0: they agree on 99.7% of the visits.
+  Trials. Each item has two trials (1 = correct) and an item score, the number
+  of trials passed (0 to 2): this holds in all but 2 forward, 4 backward and 2
+  sequencing visits. The test stops after two failures on an item, so the last
+  items are often empty; "Na" in an item score is a missing code. The stored
+  raw score of each order is compared with the sum of its item scores, the
+  items after the first one scored 0 not counted (stop_at_zero: the test stops
+  there, as in the WAIS-III schema): they agree on 4,687 of 4,687 forward,
+  4,684 of 4,684 backward and 4,673 of 4,673 sequencing visits (without the
+  stop rule 15, 18 and 13 visits differ, the 46 false score_mismatch of the
+  earlier check).
 
   The z-scores of the three longest spans are computed with the mean and the
   standard deviation of the age group (norms/wais4_ds_forward_span_z.csv and
@@ -34,20 +41,52 @@ notes: >
   Scaled score and z-score. They are recomputed and delivered (decision of the
   project lead for the standard scores of the neuropsychological tests): the
   scaled score is read in the WAIS-IV table of the application
-  (norms/wais4_digit_span.csv) from the raw total mcodemp_w, and the z-score
-  is (scaled score - 10) / 3. The table is read with the age typed in the form
-  (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it is
-  within 1 year of the age at the visit, and with the age at the visit
-  elsewhere. Of the 4,675 visits with a total, 4,533 use the typed age, 135
-  have a typed age more than 1 year away and 7 have none usable (a text such
-  as '38 ans'). The stored scores are wais4_ds_scaled_stored,
-  wais4_ds_z_stored and the three wais4_ds_*_span_z_stored, not delivered.
-  Verified on the visits that have both: the scaled score differs on 45 of
-  4,675 (1.0%), its z-score on the same 45, the forward span z-score on 47 of
-  4,675, the backward on 57 of 4,675 and the sequencing on 47 of 4,667
-  (score_mismatch, 2013 to 2026). The z-scores of the spans are delivered on a
-  few more visits (4,687, 4,684 and 4,673) than the stored ones. No raw total
-  gives norm_missing.
+  (norms/wais4_digit_span.csv) from the raw total wais4_ds_total (the sum of
+  the three raw scores, see below), and the z-score is (scaled score - 10) /
+  3. The table is read with the age typed in the form (cclin01_, delivered as
+  neuropsy_age by neuropsy_conditions) where it is within 1 year of the age at
+  the visit, and with the age at the visit elsewhere. Of the 4,667 visits with
+  a total, 4,525 use the typed age, 135 have a typed age more than 1 year away
+  and 7 have none usable (a text such as '38 ans'). The stored scores are
+  wais4_ds_scaled_stored, wais4_ds_z_stored and the three
+  wais4_ds_*_span_z_stored, not delivered. Verified on the visits that have
+  both: the scaled score differs on 37 of 4,667 (0.8%), its z-score on 36, the
+  forward span z-score on 47 of 4,675, the backward on 57 of 4,675 and the
+  sequencing on 47 of 4,665 (score_mismatch, 2011 to 2025). The z-scores of
+  the spans are delivered on a few more visits (4,687, 4,684 and 4,673) than
+  the stored ones. No raw total gives norm_missing.
+
+  Twenty-one visits (21 patients, 2011 to 2023, in 8 centres) hold a digit
+  span form of both editions (M38 in docs/EXPORT_REQUESTS.md). The export
+  takes mcodemp_w, nbrut_w, nstand_w and vstand_w from the WAIS-III form first
+  and the other columns from the WAIS-IV form first (R59 in the same file), so
+  on these visits those four columns hold the WAIS-III form's values. nbrut_w,
+  the difference of the spans on every other row (4,661 of 4,661), holds a
+  number of 12 to 24 (out_of_range on wais4_ds_span_difference, 21 flags);
+  mcodemp_w, the raw total on every other row, holds a number of 9 or less;
+  the stored scaled score is the value of the WAIS-III table read with nbrut_w
+  on 21 of 21, and the value of the WAIS-IV table read with nbrut_w, with the
+  sum of forward and backward or with the sum of the three raw scores on none.
+  13 of the 21 have the sequencing task, which only the WAIS-IV has: each of
+  their three raw scores is the sum of its item scores (13 of 13) and the
+  stored total is not their sum (13 score_mismatch). The 8 others have no
+  sequencing score, so no WAIS-IV total exists for them. The raw total is
+  therefore computed as the sum of the three raw scores (wais4_ds_total) and
+  the stored mcodemp_w is a check (wais4_ds_total_stored): the two agree on
+  4,654 of the 4,667 visits that have the three raw scores and the stored one,
+  the 13 others being the 13 visits above, so no other cell changes. The 13
+  visits get the sum, the scaled score read in the WAIS-IV table and its
+  z-score (13 cells each; the span was read as a total before) and stay
+  flagged score_mismatch against the stored WAIS-III scores (13 of 13 for the
+  scaled score, 12 for the z-score); the 8 without sequencing have no total,
+  scaled score or z-score (8 cells each, score_not_recomputed). The columns
+  taken from the WAIS-IV form first are left as delivered. Read in the trials
+  (the rank of the last item with a trial passed, plus one for the forward and
+  sequencing spans), the forward span (mcoiemp_w) is right on 16 of the 21
+  visits (4,648 of 4,666 on the others), the backward span (empdid_w) on 15 of
+  21 (4,571 of 4,663) and the sequencing span on 13 of 13 (4,645 of 4,660);
+  the z-score of the span differs from the stored one on 9 of the 21 visits
+  for the forward span, 9 for the backward span and 1 for the sequencing span.
 
 version:
   name: wais_version
@@ -60,7 +99,7 @@ variables:
   wais4_ds_forward_raw:     {column: mcod_w,        label: Forward raw score (8 items of 2 trials),     range: [0, 16]}
   wais4_ds_backward_raw:    {column: mcoi_w,        label: Backward raw score (8 items of 2 trials),    range: [0, 16]}
   wais4_ds_sequencing_raw:  {column: mcoc_w,        label: Sequencing raw score (8 items of 2 trials),  range: [0, 16]}
-  wais4_ds_total:           {column: mcodemp_w,     label: Raw total (forward + backward + sequencing), range: [0, 48]}
+  wais4_ds_total_stored:    {column: mcodemp_w,     label: "Raw total as stored (a span on 21 visits, see the notes)", range: [0, 48], keep: false}
   wais4_ds_forward_span:    {column: mcoiemp_w,     label: Longest forward span,                        range: [0, 9]}
   wais4_ds_backward_span:   {column: empdid_w,      label: Longest backward span,                       range: [0, 9]}
   wais4_ds_sequencing_span: {column: wais_mc_cro_w, label: Longest sequencing span,                     range: [0, 9]}
@@ -149,26 +188,31 @@ variables:
   wais4_ds_sequencing_item8: {column: mcoc_8_w, label: "Sequencing - item 8 score", range: [0, 2], missing: {Na: not_applicable}}
 
 scores:
-  # Consistency check only: the stored total must equal the sum of its parts.
-  wais4_ds_total_check:
+  # The raw total is the sum of the three raw scores. The stored total is a check: on 21 visits its column holds
+  # a span and not the total (see the notes), the sum is what the application stores on every other visit.
+  wais4_ds_total:
+    label: Raw total (forward + backward + sequencing)
     sum: [wais4_ds_forward_raw, wais4_ds_backward_raw, wais4_ds_sequencing_raw]
-    compare: wais4_ds_total
-    keep: false
+    range: [0, 48]
+    compare: wais4_ds_total_stored
   # Consistency check only: the stored raw score must equal the sum of its item scores.
   wais4_ds_forward_check:
     sum: [wais4_ds_forward_item1, wais4_ds_forward_item2, wais4_ds_forward_item3, wais4_ds_forward_item4, wais4_ds_forward_item5, wais4_ds_forward_item6, wais4_ds_forward_item7, wais4_ds_forward_item8]
+    stop_at_zero: true
     min_items: 1
     compare: wais4_ds_forward_raw
     keep: false
   # Consistency check only: the stored raw score must equal the sum of its item scores.
   wais4_ds_backward_check:
     sum: [wais4_ds_backward_item1, wais4_ds_backward_item2, wais4_ds_backward_item3, wais4_ds_backward_item4, wais4_ds_backward_item5, wais4_ds_backward_item6, wais4_ds_backward_item7, wais4_ds_backward_item8]
+    stop_at_zero: true
     min_items: 1
     compare: wais4_ds_backward_raw
     keep: false
   # Consistency check only: the stored raw score must equal the sum of its item scores.
   wais4_ds_sequencing_check:
     sum: [wais4_ds_sequencing_item1, wais4_ds_sequencing_item2, wais4_ds_sequencing_item3, wais4_ds_sequencing_item4, wais4_ds_sequencing_item5, wais4_ds_sequencing_item6, wais4_ds_sequencing_item7, wais4_ds_sequencing_item8]
+    stop_at_zero: true
     min_items: 1
     compare: wais4_ds_sequencing_raw
     keep: false

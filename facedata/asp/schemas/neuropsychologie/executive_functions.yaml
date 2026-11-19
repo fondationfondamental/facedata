@@ -2,22 +2,42 @@ instrument: executive_functions
 title: "Executive function tests"
 tab: neuropsychologie
 section: executive functions
-status: draft
+status: reviewed
 notes: >
-  A block added in 2018, on 869 inclusion visits: a box "done" (yes on 572),
-  five results, the date and the age in months. The test is the revised errands
-  test ("test des commissions révisé"): the time to do the task in seconds
-  (median 380), the numbers of useless detours, of times not respected and of
-  logic errors (0 to 3 each), and the total number of errors (0 to 6).
+  A block added in 2018, on 869 inclusion visits: a box "done" (yes on 572, no
+  on 293, "Non connu" on 4, read as unknown), five results, the date and the
+  age in months. The block holds only one test, the revised errands test
+  ("test des commissions révisé"), 569 visits with a result: the time to do
+  the task in seconds (median 380 seconds, 6.3 minutes, against 6.0 minutes in
+  BP and SZ, where the time is in minutes; 9 values of 60 seconds or less look
+  like minutes and are kept), the numbers of useless detours (0 to 4), of
+  times not respected (0 to 6) and of logic errors (0 to 2), and the total
+  number of errors (0 to 9; 6 visits above 6). The stored total, which the
+  schema reads with the range 0 to 20, is the sum of the three counts on 563
+  of 565 visits (one more has a count missing); in BP and SZ the same stored
+  total has the range 0 to 30.
+
+  No z-score and no band is delivered, unlike BP and SZ. The application has
+  no rule for this block (its form only shows and hides the boxes, no script
+  computes a score), the version of the test ("revised") is not confirmed as
+  the one of the BP and SZ tables, the form has no education and no percentile
+  field, and the years of education of the sociodemographic table
+  (sd_edulevel, on two scales: O17) are missing on 73% of these visits (418 of
+  569), where the norms of BP and SZ need them.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
   D14).
 
-  An instrument of the ASP cohort only.
+  An instrument of the ASP cohort only. The age in months
+  (executive_age_months) is typed in years on 19 of the 36 visits that are
+  more than 2 years from the age at the visit x 12 (24 of the 36 at centre
+  C): not corrected. The TMT, the Stroop, the London tower and the RMIE of
+  the form 240 (426 fields) are in neither the extraction nor the
+  dictionary: requested from the data managers (D29).
 
 variables:
-  executive_done: {column: fctexe, type: item, range: [0, 1], label: "The executive function test (revised errands test) was done"}
+  executive_done: {column: fctexe, type: item, range: [0, 1], missing: {"9": unknown}, label: "The executive function test (revised errands test) was done"}
   errands_time: {column: fctexe01, type: number, range: [0, 3000], label: "Revised errands test: time to do the task, seconds"}
   errands_detours: {column: fctexe02, type: number, range: [0, 10], winsor: false, label: "Revised errands test: number of useless detours"}
   errands_late_trips: {column: fctexe03, type: number, range: [0, 10], winsor: false, label: "Revised errands test: number of trips that miss an opening hour"}

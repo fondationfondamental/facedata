@@ -2,14 +2,15 @@ instrument: doors_test
 title: Doors test (visual recognition memory)
 tab: NEUROPSYCHOLOGIE
 section: Test des portes
-status: draft
+status: reviewed
 notes: >
   Recognition of photographs of doors: part A (12 easy sets) and part B (12
   hard sets), one point per door recognised. 987 visits with a part A from
   2010 to 2018 (one in 2025).
 
-  The total is recomputed here as A + B and equals the stored one on all
-  774 visits that have both. Part B holds words on 42 visits ("NA", "non
+  The total is recomputed here as A + B and equals the stored one on all 771
+  visits that have both (the 3 other stored totals have a part out of
+  range). Part B holds words on 42 visits ("NA", "non
   réalisé", "DCM": missing codes): the part was not given, and the EMR left
   the total empty. Three scores are above 12 and out of range.
 
@@ -26,12 +27,28 @@ notes: >
   B and 1 of 769 for the total, all before 2013. The share of each band is
   stable from one period to the next.
 
-  The percentile of part B is "<1" on 172 visits where part B is empty: the
-  EMR computed it from an empty cell, as if the score were 0 (the same
-  error as for the CVLT recency in FACE BP). So does the percentile of part
-  A on one visit. Nothing is delivered for these visits, and they get
+  The percentile of part B is "<1" on 172 visits where part B is empty: 171 of
+  the 171 visits with part A typed and part B empty, and one visit where
+  both parts are empty (its part A percentile is "<1" too). The cause is the
+  script of the form: it tests !isNaN(value), which is true for an empty
+  cell, so an empty part writes "<1" (the same error as for the CVLT recency
+  in FACE BP); the total and its percentile are blanked when either part is
+  empty. Nothing is delivered for these visits, and they get
   score_not_recomputed (the stored value is in the flag log). Not counting
   them, "<1" is the percentile of 119 visits for part B.
+
+  The SZ form has a box "test not done" (chk_porte_test_non_fait) that the
+  extraction does not hold (nor the boxes of the verbal fluency, the errands
+  test and the six elements test: chk_fv_, chk_com_, chk_test_6element_):
+  ask the data managers. Besides the checks above, 2 typed ages written 'NN
+  ans' and 7 stored percentiles of '>99' (a limit that the list of bands
+  does not have: part A 1, part B 2, total 4; checks, not delivered) stay
+  unparsed, and the age at the visit is used where the typed one is not
+  read. Centre C (70 visits with a total) sits below the other centres, 13
+  against 16 for the total (part A 8 against 9, part B 5 against 6), as it
+  does on the CVLT total z-score and the WAIS-III matrices z-score, where it
+  is the second lowest: a centre difference, with no step in time (the
+  yearly medians of the total are 15 to 17 from 2011 to 2017).
 
 defaults: {type: item, range: [0, 12]}
 

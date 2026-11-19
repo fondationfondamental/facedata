@@ -2,19 +2,74 @@ instrument: baddeley_dual_task
 title: Baddeley dual task
 tab: NEUROPSYCHOLOGIE
 section: DOUBLE TACHE DE BADDELEY
-status: draft
+status: reviewed
 notes: >
-  Baddeley dual task: the score mu (the performance kept when two tasks
-  are done together, in percent), its z-score and its percentile band. Not
-  in BP or SZ. 353 visits; it fades (56% and 60% of the inclusions until
-  2017, 19% in 2018 to 2020, 2% since).
+  Baddeley dual task: the score mu (the performance kept when two tasks are
+  done together, in percent), its z-score and its percentile band. Not in BP
+  or SZ. 353 visits. It fades: of the inclusions (V0), 59% hold it until
+  2017 (61% to 2015, 55% in 2016-17) and, by year, 48% in 2017, 31% in 2018,
+  17% in 2019, 12% in 2020, 4% in 2021, none from 2022 to 2025 and 5% in
+  2026 (open question O22).
 
-  22 values of mu are below 0 or above 200 and 15 z-scores are beyond 10:
-  out_of_range. A higher z-score is a better performance.
+  The z-score and the band are recomputed as the application computes them
+  (the function doutache of apps/ecedr/www/js/neuro.js, which is the TMT
+  function; tables made by norms/make_baddeley_tables.py, which reads them
+  from the script): z = (mu - mean) / SD in the cell of the age class (under
+  40, 40 to 59, 60 and over, from the age typed in the form, reconciled with
+  the age at the visit as in the other DR tests) and of the level of
+  education (0 years, 2 to 11, 12 and over; cclin08), 9 cells of 7 limits
+  and a mean and an SD (63 limits and 18 means and SDs). Exactly 1 year of
+  education belongs to no level and gives no score (no visit). A higher
+  z-score is a better performance. The stored z-score and band
+  (dual_task_mu_z_stored, dual_task_mu_band_stored) are kept as checks, with
+  a tolerance of 0.011 for the z-score.
+
+  Agreement. With the age typed in the form, as the application reads it,
+  the stored z-score and band are the recomputed ones on 346 of 353 visits
+  (the 7 others are from 2013 to 2015), and on 326 of the 331 visits where
+  mu is in range. With the reconciled age, which is delivered, score_mismatch is flagged on 7
+  visits for the z-score and 7 for the band (2014 to 2017). Of these 7
+  visits, 2 have a typed age more than a year from the age at the visit; the
+  5 others differ with the typed age too (2014 and 2015, centres E, G and F)
+  and have no known cause.
+
+  22 values of mu are below 0 (14) or above 200 (8), from -548 to 930, in
+  2013 to 2018 (10 of them in centre D): out_of_range. The application
+  computed a z-score and a band for them all (the z-scores are beyond 10 on
+  15 of them, which end out_of_range on the stored z-score). The delivered
+  z-score and band are missing on these 22 visits, and the stored ones,
+  which cannot be recomputed, get score_not_recomputed (7 z-scores, 22
+  bands). The delivered z-scores are between -7.3 and 7.3.
 
 defaults: {type: number, winsor: false}
 
 variables:
+  # What the norms of the application are read with: the age and the years of education typed in the conditions form.
+  # Read here a second time, not delivered.
+  dual_task_age: {column: cclin01, label: "Age at the testing, as typed (for the norms)", range: [15, 100], keep: false}
+  dual_task_education: {column: cclin08, label: "Years of education (for the norms)", range: [0, 30], keep: false}
+
   dual_task_mu: {column: dtachres, label: "Mu: performance kept in the dual task, in percent of the single tasks", range: [0, 200]}
-  dual_task_mu_z: {column: dtacheca, label: Mu as a z-score (higher is better), range: [-10, 10]}
-  dual_task_mu_band: {column: dtachper, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: Mu as a percentile band}
+  dual_task_mu_z_stored: {column: dtacheca, label: "Mu as a z-score, as stored (higher is better)", range: [-10, 10], keep: false}
+  dual_task_mu_band_stored: {column: dtachper, type: band, limits: [5, 10, 25, 50, 75, 90, 95], label: "Mu as a percentile band, as stored", keep: false}
+
+scores:
+  # The z-score and the band of mu, recomputed as the application does (the function doutache of neuro.js): mu and the mean
+  # and SD, or the limits, of the cell of the age class (under 40, 40 to 59, 60 and over) and of the level of education
+  # (0 years, 2 to 11, 12 and over) in the tables of the norms folder (norms/baddeley_mu_*.csv). The stored values are compared.
+  dual_task_mu_z:
+    label: Mu as a z-score (higher is better)
+    regression: baddeley_mu_z
+    from: dual_task_mu
+    by: dual_task_education
+    age: dual_task_age
+    range: [-10, 10]
+    compare: dual_task_mu_z_stored
+    compare_tolerance: 0.011
+  dual_task_mu_band:
+    label: Mu as a percentile band
+    lookup: baddeley_mu_band
+    from: dual_task_mu
+    by: dual_task_education
+    age: dual_task_age
+    compare: dual_task_mu_band_stored

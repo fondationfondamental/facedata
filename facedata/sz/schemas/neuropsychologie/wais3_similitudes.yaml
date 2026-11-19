@@ -2,38 +2,62 @@ instrument: wais3_similitudes
 title: WAIS-III similarities
 tab: NEUROPSYCHOLOGIE
 section: Similitudes (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  similarities columns on the WAIS-III visits (569 visits, from 2010 to
-  2016): 19 items scored 0 to 2. wais4_similitudes.yaml reads the WAIS-IV
-  visits. The 19 item columns are not in the dictionary.
+  (decision D10 of the BP file). This schema reads the similarities columns on
+  the WAIS-III visits (545 visits, from 2010 to 2015): 19 items scored 0 to 2.
+  wais4_similitudes.yaml reads the WAIS-IV visits. The 19 item columns are not
+  in the dictionary.
 
-  The stored raw total is the sum of the 19 items on 557 of 569 visits; the
-  12 others get score_mismatch. The z-score is (scaled score - 10) / 3 on
-  every visit.
+  Edition rule (decision D138, question O16). The form labels 33 visits
+  WAIS-III although they hold the WAIS-IV digit-span sequencing task (the
+  columns mcoc_w and mcocemp_w, which only the WAIS-IV has). They are read as
+  WAIS-IV: the version block lists the two columns under override, and the
+  visits get the flag version_overridden. 25 of them hold similarities items
+  and are read in wais4_similitudes.yaml. Read here, as they were before the
+  rule, they gave 18 of the 20 mismatches of the scaled score and all 12
+  mismatches of the raw total (24 of the 25 visits with empty items were these
+  WAIS-IV tests).
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  Of the 545 visits, 544 have all 19 items and a stored raw total, which is
+  the sum of the 19 items on 544 of 544; the 545th has 14 items and no stored
+  total, and gets none (the application adds the 19 items and writes
+  'Questionnaire incomplet' when one is empty). The z-score is (scaled score -
+  10) / 3 on every visit.
+
+  No stopping rule shows in the data: item 19 is filled on 544 of the 545
+  visits, and the items are not left empty after failures.
 
   FACE BP has no WAIS-III similarities: its WAIS-III battery has the
   vocabulary test instead.
 
-  Scaled score and z-score (decision of 18 November 2026). Recomputed from
-  the raw total in the application's own norm table (norms/wais3_similarities.csv,
-  12 age groups read from the scripts of the EMR; not part of the
-  repository) and delivered; the stored ones are read as checks (keep:
-  false) and a difference is score_mismatch on the delivered score. The EMR
-  read its table with the age typed in the form (cclin01_); the package
-  uses that age where it is within one year of the age at the visit, else
-  the age at the visit (age: wais3_simil_age). The z-score is (scaled score - 10) / 3
-  (tolerance 0.006). On the 569 visits that have both, 20 differ: 18 are among the 33 visits labelled WAIS-III that were given the WAIS-IV (question DM-2, O16) and 2 have a typed age more than a year from the age at the visit (read with the typed age as it stands the table gives the stored score on all but the 18). The z-score differs on 20.
+  Scaled score and z-score (decision of 18 November 2026). Recomputed from the
+  raw total in the application's own norm table (norms/wais3_similarities.csv,
+  12 age groups read from the scripts of the EMR; not part of the repository)
+  and delivered; the stored ones are read as checks (keep: false) and a
+  difference is score_mismatch on the delivered score. The EMR read its table
+  with the age typed in the form (cclin01_); the package uses that age where
+  it is within one year of the age at the visit, else the age at the visit
+  (age: wais3_simil_age). The z-score is (scaled score - 10) / 3 (tolerance
+  0.006). On the 544 visits that have both, 2 differ (before 2013), both with
+  a typed age more than a year from the age at the visit (read with the typed
+  age as it stands the table gives the stored score on all 542 visits that
+  have a typed age). The z-score differs on the same 2. The typed age is
+  within a year of the age at the visit on 527 of the 544 visits that have a
+  total, farther on 15 and missing on 2. Two typed ages written 'NN ans' are
+  unparsed; the age at the visit is used where the typed one is not read (2
+  of the 2 visits have this subtest). Centre E (22 visits) has a scaled
+  score of 11.5 against 8.4 in the others (1 SD above), on 5 of the 19 items
+  (11, 13, 14, 16 and 18), while its other subtests stay within 1.0 point of
+  the cohort: a scoring habit of the similarities items in a small centre,
+  not a step in the table or in time.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 2], versions: [wais3]}
 
@@ -69,7 +93,6 @@ scores:
           wais3_simil06, wais3_simil07, wais3_simil08, wais3_simil09, wais3_simil10,
           wais3_simil11, wais3_simil12, wais3_simil13, wais3_simil14, wais3_simil15,
           wais3_simil16, wais3_simil17, wais3_simil18, wais3_simil19]
-    min_items: 1
     compare: wais3_simil_total_stored
   wais3_simil_scaled:
     label: Age-scaled score (mean 10 and SD 3)

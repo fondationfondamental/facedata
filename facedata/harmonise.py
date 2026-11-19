@@ -18,7 +18,9 @@ from facedata.tokens import EMPTY_DATE, PLACEHOLDER_DATES
 def detect_version(raw, keys, schema):
     """The edition or form of the instrument used at each visit."""
     version = schema["version"]
-    norm_inputs = {score[field] for score in schema.get("scores", {}).values() for field in ("age", "by") if field in score}
+    scores = schema.get("scores", {}).values()
+    norm_inputs = {score[field] for score in scores for field in ("age", "by", "age_date") if field in score}
+    norm_inputs = norm_inputs | {variable for score in scores for variable in (score["with"].values() if isinstance(score.get("with"), dict) else [])}
     columns = sorted({column for name, variable in schema["variables"].items() if name not in norm_inputs for column in variable["columns"]})
     has_data = ((raw[columns] != "") & (raw[columns] != EMPTY_DATE) & ~raw[columns].isin(PLACEHOLDER_DATES)).any(axis=1)
     flags = []
@@ -37,6 +39,10 @@ def detect_version(raw, keys, schema):
         result = clean_text(raw[version["column"]]).str.lower().map(codes)
         if version.get("level") == "patient":
             result, flags = patient_version(result, keys, version, has_data)
+    for name, columns in version.get("override", {}).items():     # a column that only this edition has: the label is wrong
+        marked = (raw[columns] != "").any(axis=1)                     # whatever this schema holds on the visit: one version column for the cohort
+        flags.append(make_flags(marked & result.notna() & (result != name), version["name"], "version_overridden", "a column of " + name + " is filled"))
+        result = result.mask(marked, name)
     unknown = has_data & result.isna()
     # An edition that did not exist before a day: an earlier visit has no version.
     too_early = pd.Series(False, index=raw.index)
@@ -445,12 +451,17 @@ def band_from_table(text, values, cens, flags, name, variable, age, others, norm
     return values, cens, flags
 
 
-def norm_age(values, score, age):
+def norm_age(values, score, age, visit_date=None):
     """The age a norm table is read with: the age typed in the form (score field age) where it is within 1 year of the age at the visit.
 
     The EMR reads its norms with the typed age, which is sometimes a typing error;
     where it is far from the age at the visit, or empty, the age at the visit is used.
+    Score field age_date: the age at the date of the assessment form, where that date is within 366 days of the visit.
     """
+    if "age_date" in score:
+        gap = (values[score["age_date"]] - visit_date).dt.days
+        usable = gap.abs().le(366) & (visit_date >= pd.Timestamp(score.get("age_date_since", "1900-01-01")))
+        return (age + gap / 365.25).where(usable, age)
     if "age" not in score:
         return age
     typed = values[score["age"]]
@@ -479,12 +490,24 @@ def regress(raw, age, table, terms, name, by=None):
             expected = line.intercept + line.age * years
             for term, others in terms.items():
                 expected = expected + getattr(line, term) * others
-            result = result.mask(fits, (raw - expected) / line.sd)
+            result = result.mask(fits, (raw - expected) / line.sd if "sd" in table.columns else expected.where(raw.notna()))   # no sd: the expected score
             in_table = in_table | fits
     detail = "the norm table was not found" if table is None else "a variable of the regression is missing"
     no_by = by.isna() if by is not None else False       # no education: no score, and a flag whatever the age
     flags = make_flags(raw.notna() & ((in_table & result.isna()) | no_by), name, "norm_missing", detail)
     return result.round(2), flags
+
+
+def read_distance(answers, table, name):
+    """A distance score: the sum over the items of |answer - reference| (the LIS). All the items are needed.
+
+    answers: one column per item. table: item, reference, or None when the table was not found.
+    Returns the score and the flags.
+    """
+    if table is None:
+        return pd.Series(np.nan, index=answers.index), make_flags(answers.notna().any(axis=1), name, "norm_missing", "the norm table was not found")
+    reference = table.set_index("item")["reference"].reindex(answers.columns)
+    return answers.sub(reference, axis=1).abs().sum(axis=1).where(answers.notna().all(axis=1)), stack_flags([])
 
 
 def complete_with_z(band, flags, z, limits, name):
@@ -508,6 +531,7 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
     custom scores that need the visit or the patient.
     """
     flags = []
+    visit_date = keys["visit_date"] if keys is not None and "visit_date" in keys else None
     stored_differs = {}                # score -> rows where the stored score is not the recomputed one
     as_stored = {}                     # score -> rows where it is the stored score, or is built on one
     specs = {**schema["variables"], **schema.get("scores", {})}
@@ -515,7 +539,7 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
         if "lookup" in score:
             by = values[score["by"]] if "by" in score else None
             table = (norms or {}).get(score["lookup"])
-            result, censoring, lookup_flags = look_up(values[score["from"]], norm_age(values, score, age), table, name, by)
+            result, censoring, lookup_flags = look_up(values[score["from"]], norm_age(values, score, age, visit_date), table, name, by)
             if "band_of" in score:                     # an age the table does not have: the band of the z-score
                 result, lookup_flags = complete_with_z(result, lookup_flags, values[score["band_of"]], score["limits"], name)
             flags.append(lookup_flags)
@@ -528,8 +552,12 @@ def compute_scores(values, schema, version=None, age=None, norms=None, cens=None
             terms = {term: values[variable] for term, variable in score.get("with", {}).items()}
             table = (norms or {}).get(score["regression"])
             by = values[score["by"]] if "by" in score else None
-            result, regression_flags = regress(values[score["from"]], norm_age(values, score, age), table, terms, name, by)
+            source = score["from"] if isinstance(score["from"], list) else [score["from"]]       # a list: the variables that tell the test was done
+            result, regression_flags = regress(values[source].sum(axis=1, min_count=1), norm_age(values, score, age, visit_date), table, terms, name, by)
             flags.append(regression_flags)
+        elif "distance" in score:                      # the distance to a reference answer, item by item
+            result, distance_flags = read_distance(values[score["from"]], (norms or {}).get(score["distance"]), name)
+            flags.append(distance_flags)
         elif "band_of" in score:                       # the band of a z-score, with no table
             nothing = pd.Series(np.nan, index=values.index)
             result, band_flags = complete_with_z(nothing, stack_flags([]), values[score["band_of"]], score["limits"], name)

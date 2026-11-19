@@ -204,7 +204,7 @@ def test_auto_questionnaires(result, qc):
 def test_neuropsychology(result, qc):
     data = result.data
     tab = result.qc[result.qc["tab"] == "NEUROPSYCHOLOGIE"]
-    assert (len(tab), tab["instrument"].nunique()) == (162, 16)
+    assert (len(tab), tab["instrument"].nunique()) == (163, 16)      # the conditions of the testing gain the age at the assessment (WAIS review, D138-D143)
     assert tab["unknown_code"].sum() == 0
     assert ((result.flags["variable"] == "fluency_form") & (result.flags["flag"] == "version_unknown")).sum() == 1
     # One edition of the WAIS, read from the columns that are filled; two forms of the verbal fluency, never in one column.
@@ -223,13 +223,13 @@ def test_neuropsychology(result, qc):
     assert (qc.loc["tmt_a_time", "n_valid"], qc.loc["tmt_a_time", "out_of_range"], qc.loc["tmt_b_time", "n_valid"]) == (715, 2, 704)
     # The error bands come from the norm tables, as in BP: most carry "this band or a higher one".
     if (NORMS / "tmt_a_errors.csv").exists():
-        assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "censored_right"]) == (695, 639)
-        assert (qc.loc["tmt_b_errors_band", "n_valid"], qc.loc["tmt_b_perseverative_band", "n_valid"], qc.loc["tmt_ba_errors_band", "n_valid"]) == (693, 672, 624)
+        assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "censored_right"]) == (695, 600)      # bands rebuilt from the scripts (WAIS review, D138-D143)
+        assert (qc.loc["tmt_b_errors_band", "n_valid"], qc.loc["tmt_b_perseverative_band", "n_valid"], qc.loc["tmt_ba_errors_band", "n_valid"]) == (693, 672, 684)      # the B-A band reads the checked difference (WAIS review, D138-D143)
     # Stored sums and differences against their parts: the check scores are not delivered,
     # so the flag is filed under the stored value that the analyst sees.
     mismatch = result.flags[result.flags["flag"] == "score_mismatch"]["variable"].value_counts()
-    expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 19, "designs2_z": 18,
-                "wais4_simil_z": 43, "wais4_arith_z": 25, "wais4_ds_z": 23, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 20, "wais4_imt_sum_scaled": 17}
+    expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 18, "designs2_z": 9,
+                "wais4_simil_z": 43, "wais4_arith_z": 25, "wais4_ds_z": 23, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 20, "wais4_imt_sum_scaled": 17}      # the designs z-scores are looked up in the tables (WAIS review, D138-D143)
     assert {name: int(mismatch.get(name, 0)) for name in expected} == expected
     assert not any(name.endswith("_check") for name in mismatch.index)
     assert (qc.loc["rlri16_free_sum", "n_valid"], qc.loc["rlri16_free_sum", "score_mismatch"]) == (712, 0)
@@ -239,7 +239,7 @@ def test_neuropsychology(result, qc):
     assert (qc.loc["wais4_ivt_index", "n_valid"], data["wais4_ivt_index"].median(), qc.loc["wais4_imt_index", "n_valid"], data["wais4_imt_index"].median()) == (685, 94, 614, 94)
     assert (qc.loc["wais4_ds_total", "n_valid"], qc.loc["wais4_simil_total", "n_valid"], qc.loc["wais4_arith_total", "n_valid"]) == (669, 654, 621)
     assert (qc.loc["d2_gz", "n_valid"], qc.loc["dual_task_mu", "n_valid"], qc.loc["dual_task_mu", "out_of_range"], qc.loc["designs1_raw", "n_valid"]) == (631, 331, 22, 243)
-    assert (qc.loc["auditory_span_forward", "n_valid"], qc.loc["auditory_span_forward_z", "missing_code"]) == (426, 138)
+    assert (qc.loc["auditory_span_forward", "n_valid"], qc.loc["auditory_span_forward_z", "missing_code"]) == (426, 0)      # the stored "NaN" cells are not_applicable, filed under the stored variable (WAIS review, D138-D143)
     # The conditions of the testing: codes that the dictionary does not explain.
     assert data["handedness"].value_counts().to_dict() == {"right": 676, "left": 36, "both": 19}
     assert data["neuropsy_mood_rating_delay"].value_counts().to_dict() == {"under_a_week": 518, "over_a_week": 192}

@@ -7,7 +7,7 @@ import pytest
 from facedata import custom
 from facedata.harmonise import (censoring_from_units, check_range, collapse_patient_level,
                                 compute_scores, convert_units, detect_version, doubt_period, fix_sign,
-                                look_up, norm_age, read_profile, regress, winsorise)
+                                look_up, norm_age, read_distance, read_profile, regress, winsorise)
 from helpers import flagged, make_keys, texts
 
 GLUCOSE = {
@@ -241,6 +241,28 @@ def test_version_recorded_once_per_patient():
     assert flagged(flags, "version_unknown") == [8, 9]
 
 
+def test_a_column_that_only_one_edition_has_overrides_the_label():
+    """override: a visit labelled WAIS-III that holds the WAIS-IV task is WAIS-IV, and says so."""
+    raw = pd.DataFrame({"label": ["WAIS3", "WAIS3", "WAIS4", "WAIS3", ""], "x": ["1", "1", "1", "", ""], "seq": ["", "5", "", "6", ""]})
+    keys = make_keys(["A", "B", "C", "D", "E"], [0, 0, 0, 0, 0], ["2015-01-01"] * 5)
+    schema = {"version": {"name": "wais", "column": "label", "codes": {"WAIS3": "wais3", "WAIS4": "wais4"}, "override": {"wais4": ["seq"]}},
+              "variables": {"v": {"columns": ["x"]}, "s": {"columns": ["seq"]}}}
+    version, flags = detect_version(raw, keys, schema)
+    assert list(version[:4]) == ["wais3", "wais4", "wais4", "wais4"]       # B and D carry the task; C is already WAIS-IV
+    assert pd.isna(version[4])                                                 # nothing filled: no version
+    assert flagged(flags, "version_overridden") == [1, 3]                    # only a label that was changed
+
+
+def test_norm_age_can_be_the_age_at_the_date_of_the_assessment():
+    values = pd.DataFrame({"form": pd.to_datetime(["2020-07-01", "2022-01-01", None, "2020-01-01"])})
+    visit_date = pd.Series(pd.to_datetime(["2020-01-01", "2020-01-01", "2020-01-01", "2020-01-01"]))
+    visit_age = pd.Series([30.0, 30.0, 30.0, 30.0])
+    used = norm_age(values, {"age_date": "form"}, visit_age, visit_date)
+    assert list(used.round(3)) == [30.498, 30.0, 30.0, 30.0]                 # half a year later; two years apart; no date; the same day
+    since = norm_age(values, {"age_date": "form", "age_date_since": "2020-06-01"}, visit_age, visit_date)
+    assert list(since.round(3)) == [30.0, 30.0, 30.0, 30.0]                  # the visit is before the first day: the visit age
+
+
 def test_fix_sign_flips_the_scores_written_before_a_centre_changed():
     months = pd.date_range("2012-01-01", periods=30, freq="MS")
     time = np.array([20 + (7 * i) % 23 for i in range(30)], dtype=float)
@@ -294,6 +316,31 @@ def test_collapse_patient_level_keeps_the_first_value_and_flags_changes():
     assert list(patients["usubjid"]) == ["A", "B"]
     assert list(patients["sex"]) == ["F", "M"]
     assert flagged(flags, "patient_value_varies") == [4]     # the visit whose value differs from the kept one
+
+
+def test_a_regression_with_no_sd_is_an_expected_score_and_its_from_can_be_a_list():
+    """Barona: expected = intercept + age x age + education x education, no z-score; the test is there if one of the variables in from is."""
+    table = pd.DataFrame({"age_min": [20, 40], "age_max": [39, 59], "intercept": [70.0, 60.0], "age": [0.0, 0.5], "education": [2.0, 3.0]})
+    schema = {"variables": {"edu": {}, "occ": {}, "stored": {}},
+              "scores": {"expected": {"regression": "barona", "from": ["edu", "occ"], "with": {"education": "edu"}, "compare": "stored", "compare_offset": 0.0}}}
+    values = pd.DataFrame({"edu": [5.0, 4.0, np.nan, np.nan, 5.0, 5.0], "occ": [1.0, np.nan, 3.0, np.nan, 1.0, 1.0], "stored": [80.0, 85.0, 1.0, 1.0, 1.0, 1.0]})
+    age = pd.Series([30.0, 50.0, 30.0, 30.0, 70.0, np.nan])
+    values, flags = compute_scores(values, schema, age=age, norms={"barona": table})
+    assert list(values["expected"][:2]) == [80.0, 60.0 + 25.0 + 12.0]               # 70 + 2 x 5; 60 + 0.5 x 50 + 3 x 4
+    assert pd.isna(values["expected"][2])                                           # the education is missing: no expected score
+    assert values["expected"][3:].isna().all()                                      # no test; no line for age 70; no age
+    assert flagged(flags, "norm_missing") == [2]                                    # the test is there and a term is missing
+    assert flagged(flags, "score_mismatch") == [1]
+
+
+def test_a_distance_score_needs_every_item_and_its_table():
+    table = pd.DataFrame({"item": ["b", "a"], "reference": [2.0, 3.0]})            # the order of the table is not the order of the items
+    answers = pd.DataFrame({"a": [1.0, 3.0, np.nan], "b": [4.0, 2.0, 1.0]})
+    result, flags = read_distance(answers, table, "lis")
+    assert list(result[:2]) == [4.0, 0.0] and pd.isna(result[2])                   # |1 - 3| + |4 - 2|; one item missing
+    assert len(flags) == 0
+    result, flags = read_distance(answers, None, "lis")
+    assert result.isna().all() and flagged(flags, "norm_missing") == [0, 1, 2]
 
 
 def test_a_score_can_subtract_and_have_a_floor():
@@ -697,3 +744,13 @@ def test_a_sum_that_stops_at_the_first_failure_and_a_stored_score_with_the_oppos
     assert list(values["span"]) == [3.0, 1.0, 2.0]       # 1, 1, 1, 0; 1, 0 and the 1 after the 0 is not counted; 1, 1, 0 and the 1 after it
     assert flagged(flags, "sign_flipped") == [1]          # stored -1 for a score of 1
     assert flagged(flags, "score_mismatch") == [2]
+
+
+def test_the_age_of_the_norms_and_the_cpt3_raw_values_checks():
+    values = pd.DataFrame({"neuropsy_age": [40.0, 45.0, np.nan, 30.0, np.nan], "other": [1.0, 1.0, 1.0, np.nan, np.nan]})
+    keys = pd.DataFrame({"age": [41.0, 41.0, 41.0, np.nan, 50.0]})
+    used = custom.neuropsy_age_used(values, keys)
+    assert list(used[:4]) == [40.0, 41.0, 41.0, 30.0]            # typed within a year; a typing error; nothing typed; no age at the visit
+    assert pd.isna(used[4])                                       # no conditions form on that visit: no age used
+    typed = custom.cpt3_typed_raw(pd.DataFrame({"cpt3_hrt_t_typed": [55.0, 296.0, np.nan]}))
+    assert list(typed) == [False, True, False]                    # a hit reaction time in milliseconds is not a T-score

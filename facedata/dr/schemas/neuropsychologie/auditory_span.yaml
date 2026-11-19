@@ -2,26 +2,107 @@ instrument: auditory_span
 title: Auditory verbal span, forward and backward
 tab: NEUROPSYCHOLOGIE
 section: EMPAN AUDITIVO-VERBAL
-status: draft
+status: reviewed
 notes: >
   Auditory verbal span, forward and backward, with a z-score for each and
-  their difference. Not in BP or SZ. 434 visits; it fades (56% and 68% of
-  the inclusions until 2017, 30% in 2018 to 2020, 12% to 14% since).
+  their difference (the form of the application, 199.php, calls the test
+  "Empan audio-verbal"). Not in BP or SZ. The dictionary names the five
+  variables D2_END_RES, D2_END_ECART, D2_ENV_RES, D2_ENV_ECART and
+  D2_ECA_RES, as if they belonged to the d2 test; their labels (Endroit,
+  Envers, Ecart) are those of the span. 434 visits: 426 with a forward span
+  and 430 with a backward span in range.
 
-  The z-scores hold "NaN" (123 cells) and "PA" (15) where no z-score was
-  computed: missing_code. The stored difference is the forward span minus
-  the backward span on every visit (425). Eight forward spans are written
-  with two digits and are out of range.
+  Eight forward spans (11 to 14) and two backward spans (11 and 15) are
+  above 10: out_of_range. The stored difference is the forward span minus
+  the backward span on all the 417 visits where both spans are in range (425
+  visits hold a difference, and 2 more hold a dash: unparsed).
+
+  Z-scores, recomputed with the rule of the application (neuro.js, the
+  tables tab_empd and tab_empv, which write the mean and the SD of each cell
+  as "mean-SD"): z = (span - mean) / SD, to two decimals; a higher z-score
+  is a better span. The cell is the one of the age class (20 to 24, 25 to
+  34, 35 to 44, 45 to 54, 55 to 64, 65 to 69, 70 to 74, 75 to 79) and of the
+  class of education (1 to 6 years, 7 to 11, 12, 13 to 14, 15 to 20). The
+  age is the one typed in the form (cclin01) where it is within a year of
+  the age at the visit and the age at the visit elsewhere, as for the other
+  tests of DR; the years of education are cclin08. The tables are made from
+  the script (norms/make_dr_empan_tables.py; norms/ is not in the
+  repository). The stored z-scores are kept as checks
+  (auditory_span_*_z_stored, not delivered) and compared with a tolerance of
+  0.0101.
+
+  The script has no age class under 20 years (the class of 17 years is taken
+  for "no class" and the class of 18 to 19 years is written so that no age
+  fits it) nor from 80 years. No visit is under 20; one visit has an age at
+  the visit of 80 or more, with a typed age that is lower: its stored z-scores are not recomputed (score_not_recomputed). Three more
+  forward z-scores are stored for a span above 10 (out_of_range: no span to
+  compute from). One visit holds the word false in both stored z-scores
+  (unparsed, checks only): the script of the application writes it when it
+  finds no education or age class, and the recomputed z-scores are delivered
+  there.
+
+  With the typed age the recomputed z-score equals the stored one on 287 of
+  287 forward and 291 of 292 backward visits; with the reconciled age it
+  differs on 5 forward and 6 backward visits (score_mismatch), 5 and 5 of
+  them visits whose typed age is more than a year from the age at the visit.
+
+  No norm. The table has no norm ("PA") in the class of 15 to 20 years of
+  education, at every age, and in one other cell (1 to 6 years, 20 to 24
+  years). The script tests for "PN", which no cell holds, so it computes a
+  z-score from "PA" and writes "NaN". The extraction holds "NaN" (123
+  forward, 121 backward) and "PA" (15, 14), and both mean that the table has
+  no norm: every one is a visit with 15 to 20 years of education. Both are
+  read as not_applicable, on the stored variables; the recomputed z-score is
+  missing with norm_missing on the 136 forward and 135 backward visits that
+  have a span in range and 15 to 20 years of education.
+
+  The neuropsychological assessment is given at inclusion and at the visits
+  of 1, 2 and 4 years: 744 visits of 436 patients. The auditory span is
+  present at 64% of the inclusion visits until 2017, 30% in 2018 to 2020 and
+  13% since 2021. The form (199.php) has a "test non réalisé" box for each
+  test (EMPAN_TEST here) and a "Non effectuée" box for the whole assessment
+  (NEUROPSY_OFF). Their columns exist in the database (ecedr.sql) but are
+  not in the dictionary, so they are not exported: the data managers should
+  be asked to export them, to tell a test that was not done from one that
+  was not entered (open question O22).
 
 defaults: {type: item}
 
 variables:
   auditory_span_forward: {column: empan01, label: Forward span, range: [0, 10]}
-  auditory_span_forward_z: {column: empan02, type: number, range: [-5, 5], missing: {nan: not_recorded, pa: not_applicable}, label: Forward span as a z-score (higher is better)}
   auditory_span_backward: {column: empan03, label: Backward span, range: [0, 10]}
-  auditory_span_backward_z: {column: empan04, type: number, range: [-5, 5], missing: {nan: not_recorded, pa: not_applicable}, label: Backward span as a z-score (higher is better)}
   auditory_span_difference: {column: empan05, label: Forward span minus backward span, range: [-10, 10]}
 
+  # What the norms of the application are read with: the age and the years of education typed in the conditions form
+  auditory_span_age: {column: cclin01, type: number, range: [15, 100], winsor: false, keep: false, label: "Age at the testing, as typed (for the norms)"}
+  auditory_span_education: {column: cclin08, type: number, range: [0, 30], winsor: false, keep: false, label: Years of education (for the norms)}
+
+  # The z-scores as the EMR stored them: only compared with the recomputed ones. "NaN" and "PA" both say that the table has no norm
+  auditory_span_forward_z_stored: {column: empan02, type: number, range: [-5, 5], missing: {nan: not_applicable, pa: not_applicable}, winsor: false, keep: false, label: "Forward span as a z-score, as stored"}
+  auditory_span_backward_z_stored: {column: empan04, type: number, range: [-5, 5], missing: {nan: not_applicable, pa: not_applicable}, winsor: false, keep: false, label: "Backward span as a z-score, as stored"}
+
 scores:
+  # The z-scores: (raw span - mean) / SD of the cell of the age class and the education class (norms/auditory_span_*_z.csv)
+  auditory_span_forward_z:
+    label: Forward span as a z-score (higher is better)
+    regression: auditory_span_forward_z
+    from: auditory_span_forward
+    by: auditory_span_education
+    age: auditory_span_age
+    range: [-5, 5]
+    winsor: [0.01, 0.99]
+    compare: auditory_span_forward_z_stored
+    compare_tolerance: 0.0101
+  auditory_span_backward_z:
+    label: Backward span as a z-score (higher is better)
+    regression: auditory_span_backward_z
+    from: auditory_span_backward
+    by: auditory_span_education
+    age: auditory_span_age
+    range: [-5, 5]
+    winsor: [0.01, 0.99]
+    compare: auditory_span_backward_z_stored
+    compare_tolerance: 0.0101
+
   # Consistency check only.
   auditory_span_difference_check: {sum: [auditory_span_forward], minus: [auditory_span_backward], compare: auditory_span_difference, keep: false}

@@ -2,25 +2,61 @@ instrument: barona
 title: "Expected IQ from occupation and education (Barona)"
 tab: neuropsychologie
 section: WAIS-IV
-status: draft
+status: reviewed
 notes: >
   The occupation (885 inclusion visits) and the level of education (803) that
-  the form asks before the WAIS-IV, an expected full-scale IQ (qita, 241
-  visits) and a difference (qitdif, 131 visits). The Barona estimate, as in
-  FACE SZ: an IQ expected from demographic variables, which is why it holds
-  decimals (the thesaurus calls it the expected IQ of Barona). The difference
-  is the expected IQ minus the full-scale IQ of the neuropsychology form on
-  every one of the 131 visits that hold the three numbers.
+  the form asks before the WAIS-IV, an expected full-scale IQ and a
+  difference. The Barona estimate, as in FACE SZ: an IQ expected from
+  demographic variables, which is why it holds decimals (the thesaurus calls
+  it the expected IQ of Barona). The application stored the expected IQ (qita)
+  on 241 visits and the difference (qitdif) on 131.
+
+  The expected IQ is recomputed and delivered, with the formula of the script
+  of the application (280_score.js, barona()), which is the same formula as
+  the WAIS-IV one of FACE SZ (coefficients in norms/wais3_barona_qit.csv): a
+  constant, the sex (1 for a woman, 2 for a man), the education, the
+  occupation and the class of age (16 to 89 years), rounded to two decimals.
+  The two lists are used as numbers, as the script does: the code 0 of the
+  occupation and the code 8 of the occupation and of the education count as 0
+  and 8 (116 of the expected IQs rest on an occupation code 0, 344 on a code
+  8, 1 on an education code 8). The form has no typed age: the age is the age
+  at the date of the assessment form (qsdtc) where that date is within a year
+  of the visit, as in the WAIS schemas of this cohort (decision D139), else
+  the age at the visit. A visit under 16 years has no adult norm and no value
+  (42 visits of children have both answers). 763 visits get a value (761 at
+  V0), 537 of them on visits where the application stored none: both answers
+  are there, so it is delivered. The stored value is the check
+  (barona_expected_qit_stored, not delivered).
+
+  Against the stored values, 226 visits have both: 213 are equal (to 0.05, the
+  stored value has one decimal) and 13 are score_mismatch (6 are one class of
+  age away, 2 are visits where the application left out the term of the
+  occupation code 8, 5 are not explained). 15 stored values cannot be
+  recomputed (score_not_recomputed): 14 visits have neither answer and 1 is a
+  patient under 16 years. 81 visits that have only one of the two answers get
+  no value and norm_missing.
+
+  The difference is the expected IQ minus the full-scale IQ of the
+  neuropsychology form: with the expected IQ and the IQ as stored it is exact
+  on 131 of 131 visits; with the delivered IQ (recomputed, D137) 123 of the
+  130 visits that have the three numbers are within 0.2. The difference is
+  delivered as stored and derived from the expected IQ: where the stored
+  expected IQ is not the recomputed one it is kept and gets derived_doubt (4
+  visits). qitdif_a, its copy for the abbreviated form, is on 1 visit.
 
   The two lists are exported as numbers and named from the thesaurus; the code
   0 of the occupation and the code 8 of the education are not in its lists
   (O16).
 
   In FACE SZ the occupation is most often a copy of the rank of the diploma.
-  Not here: the two codes are equal on 117 of 805 visits, which is what
-  chance gives.
+  Not here: the two codes are equal on 117 of 805 visits, which is what chance
+  gives.
 
-  qita_a is an exact copy of qita (ignored.yaml).
+  qita_a is an exact copy of qita (241 of 241, ignored.yaml). Centre B's
+  expected IQs are lower (median 98 against 105 to 112 at the other centres,
+  0.7 of the interquartile range): its patients are younger (median age 19
+  against 20 to 29) and 125 of its 145 occupations are the code 8 (no
+  occupation), which the script counts as 8.
 
   Same instrument as in FACE SZ, in other columns; lists as numbers.
 
@@ -29,6 +65,22 @@ defaults: {type: number, winsor: false}
 variables:
   barona_occupation: {column: w4_profession, type: category, codes: {"0": code_0, "1": manual_worker, "2": employee, "3": farmer, "4": craft_trade, "5": retired, "6": intermediate, "7": higher_professional, "8": no_occupation}, label: "Occupation used for the Barona estimate (the code 0 is not documented)"}
   barona_education: {column: w4_nivetude, type: category, codes: {"1": no_diploma, "2": primary_certificate, "3": vocational_certificate, "4": vocational_baccalaureate, "5": general_baccalaureate, "6": university_first_cycle, "7": university_higher, "8": code_8}, label: "Level of education used for the Barona estimate (the code 8 is not documented)"}
-  barona_expected_qit: {column: qita, range: [70, 130], label: "Expected full-scale IQ"}
-  barona_qit_difference: {column: qitdif, range: [-70, 80], label: "Expected full-scale IQ minus the measured one, as stored"}
-  barona_qit_difference_a: {column: qitdif_a, range: [-70, 80], label: "Expected full-scale IQ minus the measured IQ of the abbreviated form, as stored"}
+  barona_occupation_rank: {column: w4_profession, range: [0, 8], label: "Occupation code as the formula uses it (a number: the codes 0 and 8 count as 0 and 8)", keep: false}
+  barona_education_rank: {column: w4_nivetude, range: [0, 8], label: "Level of education code as the formula uses it (a number: the code 8 counts as 8)", keep: false}
+  barona_sex: {column: sex, type: item, codes: {Feminin: "1", Masculin: "2"}, range: [1, 2], label: "Sex, 1 for a woman and 2 for a man (the coding of the formula)", keep: false}
+  barona_assessment_date: {column: qsdtc, type: date, range: [1900-01-01, 2100-12-31], keep: false, label: "Date of the assessment form, the date of the age read in the formula"}
+  barona_expected_qit_stored: {column: qita, range: [70, 130], label: "Expected full-scale IQ as stored", keep: false}
+  barona_qit_difference: {column: qitdif, range: [-70, 80], label: "Expected full-scale IQ minus the measured one, as stored", derived_from: barona_expected_qit}
+  barona_qit_difference_a: {column: qitdif_a, range: [-70, 80], label: "Expected full-scale IQ minus the measured IQ of the abbreviated form, as stored", derived_from: barona_expected_qit}
+
+scores:
+  barona_expected_qit:
+    label: Expected full-scale IQ
+    regression: wais3_barona_qit
+    from: [barona_education_rank, barona_occupation_rank]
+    with: {education: barona_education_rank, occupation: barona_occupation_rank, sex: barona_sex}
+    age_date: barona_assessment_date
+    age_date_since: "2015-01-01"
+    range: [70, 130]
+    compare: barona_expected_qit_stored
+    compare_tolerance: 0.051

@@ -2,30 +2,31 @@ instrument: verbal_fluency
 title: Verbal fluency, letter P and animals (form 1)
 tab: NEUROPSYCHOLOGIE
 section: LANGAGE
-status: draft
+status: reviewed
 notes: >
   The BP scale for the visits that use form 1 (letter P and animals): the
-  number of words, the z-score and the percentile band of each task. BP
-  also has the kinds of errors and the clusters; here only these three
-  are entered. 586 visits.
+  number of words, the z-score and the percentile band of each task. BP also
+  has the kinds of errors and the clusters; here only these three are entered.
+  586 visits.
 
-  Two forms of the test. The form used is in fv01, stored 1 or 2, with no
-  code in the dictionary, which only says "animals or fruits". Form 1 is
-  used at inclusion (388 of 394 inclusions) and form 2 at the retest of
-  the first year (81 of its 96 visits): the usual sequence of a patient is
-  1, 2, 1, 1. The words differ: the medians are 21 words for the letter
-  and 26 for the category on form 1 (24 for the letter P and 32 for
-  animals in BP), 18 and 18 on form 2. The two forms are two tests: each
-  has its own schema and its own columns, and fluency_form says which one
-  was used. That form 1 is "letter P and animals" and form 2 another
-  letter with fruits is read from these numbers and from the label, not
-  from a code (open question O23). One visit has results and no form
-  (version_unknown).
+  Two forms of the test. The form used is in fv01, stored 1 or 2. The
+  dictionary only says "animals or fruits", and the form of the application
+  (FLUE_VERB_CHOI) names them: form 1 is "Animaux et lettre P", form 2 is
+  "Fruits et lettre R" (open question O23 and PI-4 are answered by the form).
+  Form 1 is used at inclusion (388 of 394 inclusions) and form 2 at the retest
+  of the first year (81 of its 96 visits): the usual sequence of a patient is
+  1, 2, 1, 1. The words differ: the medians are 21 words for the letter and 26
+  for the category on form 1 (24 for the letter P and 32 for animals in BP),
+  18 and 18 on form 2. The two forms are two tests: each has its own schema
+  and its own columns, and fluency_form says which one was used. One visit has
+  results and no form (version_unknown).
 
   Percentile band of the letter: labels cut by the export, as for the TMT
-  (tmt.yaml). Until about 2021, fv07 holds "25-5", "10-2", "50-7" and
-  "75-9" (257 cells, 13 centres of 14); each is read as its band (codes).
-  A higher z-score and a higher band are more words.
+  (tmt.yaml). Until about 2021, fv07 holds "25-5", "10-2", "50-7" and "75-9"
+  (245 cells, 13 centres of 14); each is read as its band (codes). "90-9" and "5-1" are cut the same way (18 more cells) and are read too. Four
+  cells of the stored letter band lose more than one character ("25-",
+  "50-", "75-" and ">9") and stay unparsed (check only). A higher
+  z-score and a higher band are more words.
 
   Recomputed with the norms of BP and SZ, which are the same script (see the
   BP schema): the z-score is (words - mean) / SD of the cell of the age class
@@ -36,23 +37,37 @@ notes: >
   than a year away. The stored z-scores and bands are kept only as checks
   (fluency_*_stored, not delivered). A missing education gives no score.
 
+  The DR script (recup_nsc_tmt in neuro.js) has the mean and SD of the BP and
+  SZ tables in the 9 cells of each task, the same band limits for every number
+  of words (729 of 729 per task), and the same age edges, but other education
+  edges: 0 years takes the lowest class, 1 year gives no result, 2 to 11 years
+  take the middle class, 12 and over the top one; the BP and SZ script takes
+  the lowest class under 6 years. One rule is delivered for all the cohorts,
+  the BP and SZ one. The 16 visits with a count and under 6 years of education
+  (15 at 5 years, 1 at 2 years) follow the middle class in the DR application:
+  every one of them differs and stays flagged score_mismatch (32 z-scores and
+  13 bands). Read in the middle class the band agrees on all 16 visits and the
+  z-score on 15 of them for each task, so that only 9 of the 25 z-score
+  differences of each task remain (1.5% of the 582 visits for the letter P).
+  The file norms/fluency_*_dr.csv models "0 to 11 and 12 and over", which is
+  not the DR rule: no schema reads it.
+
   Checks. The z-score differs from the stored one on 25 of 582 visits for the
   letter P and 25 of 584 for the animals (4.3%), the band on 16 of 578 and 10
-  of 584. 16 of the 25 z-score differences of each task are the 16 visits
-  with fewer than 6 years of education: every one of them differs, because
-  the stored values follow the class of 6 to 11 years, as if the DR form had no class
-  under 6 years (read in that class the 16 visits agree, and the z-score
-  differs on 9 of the 582 visits, 1.5%, the band on 7 of 578; the file
-  norms/fluency_*_dr.csv holds this two-class table, and is not used: BP, SZ
-  and DR follow one rule). The DR application is not available to say which
-  rule it follows; the visits that differ are flagged score_mismatch. A
-  stored band or z-score with no count of words is flagged
-  score_not_recomputed (1 visit).
+  of 584; 16 of the 25 z-score differences of each task are the 16 visits with
+  fewer than 6 years of education. The 20 other (visit, task) pairs (18 with a
+  z-score that differs, 2 with the band only) are read in another cell of the
+  table: 14 in another age class (every one with a typed age more than one
+  year from the age at the visit), 6 in no cell. The typed age is more than
+  one year from the age at the visit on 7.0% of the visits that have one (41
+  of 586), against 3.5% in BP and 3.7% in SZ. The visits that differ are
+  flagged score_mismatch. A stored band or z-score with no count of words is
+  flagged score_not_recomputed (1 visit).
 
-  The neuropsychological assessment is given at inclusion and at the visits
-  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
-  four hold it until 2020 and about one in two since 2021 (open question
-  O22).
+  The neuropsychological assessment is given at inclusion and at the visits of
+  1, 2 and 4 years: 741 visits of 433 patients with a typed age (740 with the
+  years of education). About three inclusions in four hold it until 2020 and
+  about one in two since 2021 (open question O22).
 
 version:
   name: fluency_form

@@ -581,6 +581,7 @@ first visit.
 | `unit_inferred` | info | Unit taken from the magnitude; the label was missing, unknown or impossible |
 | `sign_flipped` | info | A standard score written in the old sign convention was multiplied by −1 |
 | `version_inferred` | info | No version was recorded for the patient; it was taken from the inclusion date |
+| `version_overridden` | info | The form labels the visit with one edition, a column that only another edition has is filled: the visit has the other edition |
 | `duplicate_row` | info | A duplicated visit record was dropped |
 | `winsorised` | info | The value was clipped |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |

@@ -2,7 +2,7 @@ instrument: tmt
 title: Trail Making Test, parts A and B
 tab: NEUROPSYCHOLOGIE
 section: TMT
-status: draft
+status: reviewed
 notes: >
   The BP scale in the columns of this extraction, which keeps the kinds of
   errors apart. Times and errors, their z-scores and their percentile
@@ -13,72 +13,102 @@ notes: >
   errors, each corrected or not: eight columns, delivered under their own
   names. The BP columns are their sums (corrected, uncorrected,
   perseverative). The total of each part (tmta02, tmtb02) is delivered as
-  stored, as tmt_a_errors and tmt_b_errors: it is the sum of the four
-  kinds on all but 9 visits for part A and 31 for part B (score_mismatch
-  on the check scores). The stored B minus A difference of errors is not
-  part B minus part A on 22 visits.
+  stored, as tmt_a_errors and tmt_b_errors: it is the sum of the four kinds
+  on all but 9 visits for part A and 31 for part B (score_mismatch on the
+  check scores). The stored B minus A difference of errors is not part B
+  minus part A on 22 visits, the stored time difference on none; both are
+  delivered as stored.
 
   Z-scores and time bands: recomputed as in BP (decision PI-10), with the BP
   and SZ tables, the reconciled age (the age typed in cclin01 where it is
   within one year of the age at the visit) and the years of education
-  (cclin08): one rule for every cohort. The stored z-scores and bands are kept
-  as checks and compared (tolerance 0.011); sign_flipped marks a stored
+  (cclin08): one rule for every cohort. The stored z-scores and bands are
+  kept as checks and compared (tolerance 0.011); sign_flipped marks a stored
   z-score that is the recomputed one with the opposite sign. The z-scores of
-  the errors are computed from the stored totals (tmt_a_errors, tmt_b_errors),
-  which the application used: they agree with the stored z-score on 1 to 4
-  points more visits than the sum of the four kinds. The z-score and the band
-  of B minus A are read from part B minus part A as recomputed.
+  the errors are computed from the stored totals (tmt_a_errors,
+  tmt_b_errors), which the application used: they agree with the stored
+  z-score on 1 to 4 points more visits than the sum of the four kinds. The
+  z-score and the band of the B minus A time, and the band of the B minus A
+  errors, are read from part B minus part A as recomputed.
 
   Three z-scores are stored with the other sign. In BP a higher z-score is a
   better performance. In DR that holds for the times of parts A and B. The
   z-scores of the errors of part A, of the errors of part B and of the B
-  minus A time are stored as (raw - mean) / SD: the stored value is the
-  recomputed one with the opposite sign on 94.8 to 97.0% of the visits (662 to
-  668), in every period and centre but for a few visits of 2014 and 2015. They
-  are no longer turned by a rule: the recomputed z-score has the sign of BP,
-  and sign_flipped records every visit.
-  Their medians are those of BP (0.14 and 0.30 for the errors in both
-  cohorts). The z-scores of the times of A and of B also have the opposite
-  sign on 12 and 14 visits of 2013 to 2015, in two or three centres.
+  minus A time are stored as (raw - mean) / SD, as the script of the DR
+  application writes them, where the times of A and B are (mean - raw) / SD:
+  the stored value is the recomputed one with the opposite sign on 95 to 97%
+  of the visits (94.8 to 97.0%, 662 to 668 visits), in every period and
+  centre but for a few visits of 2014 and 2015. The package does not turn
+  the stored z-score: the delivered z-score is the recomputed one, in the
+  direction of the project (higher is better), and sign_flipped records
+  every stored one that has the opposite sign. The medians of the delivered
+  z-scores are those of BP (0.14 and 0.30 for the errors in both cohorts).
+  The z-scores of the times of A and of B also have the opposite sign on 12
+  and 14 visits of 2013 to 2015, in two or three centres. The script of the
+  application scores an empty count of errors as 0, so the stored z-score of
+  an empty count is a number (BP and SZ write "NaN"): 22 stored z-scores of
+  the part A errors and 15 of the part B errors have no recomputed one
+  (score_not_recomputed).
 
-  Otherwise the stored z-score is the recomputed one on 95% of the visits for
-  the times of A and B, and differs otherwise on 2.2 to 3.2% (15 to 23 visits)
-  of each z-score; from 2016 on 1.6 to 2.1%. The levels of education of the DR
-  application are cut differently from the ones of BP and SZ, which the
-  recomputation uses (one rule): 16 visits fall in another level, and 10 to 14
-  of the visits that differ, for each z-score, are among them. The z-score of
-  the B minus A errors, which DR never stored, is delivered on 684 visits that
-  have both totals, with the BP and SZ table, and has no check. The z-scores
-  are winsorised as in BP; the range of the z-scores of errors is wide enough
-  for the high counts of errors of DR.
+  Otherwise the stored z-score is the recomputed one on 95% of the visits
+  for the times of A and B, and differs otherwise on 2.2 to 3.2% (15 to 23
+  visits) of each z-score; from 2016 on 1.6 to 2.1%. The classes of
+  education of the DR script are 0, 2 to 11 and 12 and over (one year gives
+  no score), where the ones of BP and SZ are under 6, 6 to 11 and 12 and
+  over. The recomputation uses the BP edges (one rule for the cohorts): 16
+  visits (education 2 to 5; 14 of them have a TMT) fall in another class
+  than the DR script puts them in, and 10 to 14 of the visits that differ,
+  for each z-score, are among them. The ten tables norms/tmt_*_dr.csv, made
+  from the DR script, equal the BP tables in every cell of the same class
+  and no schema reads them. The z-score of the B minus A errors, which DR
+  never stored, is delivered on 684 visits that have both totals, with the
+  BP and SZ table, and has no check. The z-scores are not winsorised, as in
+  BP; the range of the z-scores of errors is wide enough for the high counts
+  of errors of DR.
 
-  Percentile bands of the times: labels cut by the export. Until about
-  2021 the band of the B minus A time is cut after four characters in 13
-  centres of 14: "25-5" for "25-50", "10-2", "50-7", "75-9", "90-9" (394
-  cells); a few cells hold "<" or "5-1". Read as they stand, "25-5" would
-  be another band. The z-score of the same measure has the same level
-  under a cut label and under its full label (median 0.05 under "25-5"
-  and 0.03 under "25-50"; 0.81 and 0.71 for "10-2" and "10-25"), so each
-  cut label is read as its band (codes). The stored bands are the checks:
-  the recomputed band equals the stored one on 97.4 to 97.9% of the visits
-  (98.6 to 99.0% from 2016).
+  Percentile bands of the times: labels cut by the export. The export loses
+  the last character of the label of the B minus A time band, in 13 centres
+  of 14 and mostly until 2021: "25-5" for "25-50", "10-2", "50-7", "75-9"
+  and "90-9" (394 cells, 370 of them until 2021), "5-1" for "5-10" (5
+  cells), "<" for "<5" (12) and ">9" for ">95" (2). One "10-25" lost its
+  dash ("1025") and one "25-" stays unparsed. The error percentile of part B
+  (tmtb02a, not read) is cut the same way. Read as they stand, "25-5" would
+  be another band. The z-score of the same measure has the same level under
+  a cut label and under its full label (median 0.05 under "25-5" and 0.03
+  under "25-50"; 0.81 and 0.71 for "10-2" and "10-25"; these are in the sign
+  of the stored z-score, the delivered ones are -0.05, -0.03, -0.81 and
+  -0.71), so each cut label is read as its band (codes). The stored bands
+  are the checks: the recomputed band equals the stored one on 97.3 to 97.9%
+  of the visits (98.6 to 99.0% from 2016).
 
   Percentile bands of the errors: read again in the norm tables, as in BP.
-  The two error percentile columns of the extraction (tmta02a, tmtb02a)
-  are not read (ignored.yaml). The four bands come from the number of
-  errors, the reconciled age and the years of education (cclin08, read
-  here a second time and not delivered), in the tables of the norms
-  folder; without them the bands are missing with norm_missing. Most
-  people make no error, so most bands carry <variable>_cens = +1: this
-  band or a higher one.
+  The two error percentile columns of the extraction (tmta02a, tmtb02a) are
+  not read (ignored.yaml). The four bands come from the number of errors,
+  the reconciled age and the years of education (cclin08, read here a second
+  time and not delivered), in the tables of the norms folder; without them
+  the bands are missing with norm_missing. Most people make no error, so
+  most bands carry <variable>_cens = +1: this band or a higher one; the
+  lowest band is never marked open. The DR script writes "95" as the stored
+  percentile of no error (591 of the 594 visits with no error and a stored
+  cell in part A), which is not the cell of BP. The band of the B minus A
+  errors reads the checked difference, which differs from the stored one on
+  22 visits: 68 visits gain a band, 8 lose it (a stored difference with one
+  total missing) and 20 change, and 684 visits have it.
 
   Times are in seconds; 2 times of part A and 3 of part B are out of
   range.
 
   The neuropsychological assessment is given at inclusion and at the visits
-  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
-  four hold it until 2020 and about one in two since 2021 (open question
-  O22).
+  of 1, 2 and 4 years: 741 visits of 433 patients have a typed age and 718
+  visits of 423 patients have a TMT. About three inclusions in four hold it until 2020 and about one in two since
+  2021 (open question O22). A lone dash is typed in the stored B minus A
+  time of 2 visits and in the stored B minus A errors of 3 (unparsed,
+  missing; the two parts are present on 4 of these 5 visits, and the
+  delivered B minus A z-scores and bands are read from the parts). Left as measured: the stored part B total of errors differs from the sum of its
+  four kinds on 31 visits with no known cause (25 above the sum; 11 at
+  centre L in 2024-2025, which is 11 of its 28 visits of those years, and 7
+  at centre D), and the 2025 median of the delivered part B errors and of
+  their z-score steps with them.
 
 defaults: {type: item}
 
@@ -109,9 +139,9 @@ variables:
   tmt_ba_time_z_stored: {column: tmtba01b, label: "B minus A - time as a z-score, as stored", type: number, range: [-1000, 1000], winsor: false, keep: false}
 
   # Percentile bands of the times as stored: the lower limit of the band, 0 to 95 (higher is better)
-  tmt_a_time_band_stored: {column: tmta01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Part A - time as a percentile band, as stored", keep: false}
-  tmt_b_time_band_stored: {column: tmtb01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "Part B - time as a percentile band, as stored", keep: false}
-  tmt_ba_time_band_stored: {column: tmtba01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5"}, label: "B minus A - time as a percentile band, as stored", keep: false}
+  tmt_a_time_band_stored: {column: tmta01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5", ">9": ">95", "1025": "10-25"}, label: "Part A - time as a percentile band, as stored", keep: false}
+  tmt_b_time_band_stored: {column: tmtb01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5", ">9": ">95", "1025": "10-25"}, label: "Part B - time as a percentile band, as stored", keep: false}
+  tmt_ba_time_band_stored: {column: tmtba01a, type: band, limits: [5, 10, 25, 50, 75, 90, 95], codes: {"25-5": "25-50", "10-2": "10-25", "50-7": "50-75", "75-9": "75-90", "90-9": "90-95", "5-1": "5-10", "<": "<5", ">9": ">95", "1025": "10-25"}, label: "B minus A - time as a percentile band, as stored", keep: false}
 
   # What the norms of the application are read with: the age and the years of education typed in the conditions form.
   tmt_age: {column: cclin01, type: number, label: "Age at the testing, as typed (for the norms)", range: [0, 120], winsor: false, keep: false}
@@ -149,7 +179,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_a_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -160,7 +189,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
     compare: tmt_a_errors_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -171,7 +199,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_b_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -182,7 +209,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
     compare: tmt_b_errors_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -193,7 +219,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_ba_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -204,7 +229,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
 
   # Percentile bands of the times, read in the norm tables (norms/tmt_*_time.csv) from the time, the age typed in
   # the form and the years of education. The value is the lower limit of the band. The stored band is compared.
@@ -253,6 +277,6 @@ scores:
   tmt_ba_errors_band:
     label: B minus A - errors as a percentile band
     lookup: tmt_ba_errors
-    from: tmt_ba_errors
+    from: tmt_ba_errors_check
     by: tmt_education
     age: tmt_age

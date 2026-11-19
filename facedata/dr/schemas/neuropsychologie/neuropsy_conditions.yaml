@@ -2,7 +2,7 @@ instrument: neuropsy_conditions
 title: Conditions of the neuropsychological testing
 tab: NEUROPSYCHOLOGIE
 section: Critères cliniques
-status: draft
+status: reviewed
 notes: >
   The BP and SZ schema in the columns of this extraction (cclin01 to
   cclin16), for the questions that this cohort has. The form that opens the
@@ -12,30 +12,49 @@ notes: >
   The neuropsychological assessment is given at inclusion and at the visits
   of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
   four hold it until 2020 and about one in two since 2021 (open question
-  O22).
+  O22). Whenever another instrument of the tab is filled this form is too
+  (743 of 743 visits).
 
-  The dictionary gives no code for this tab. Handedness is stored 1, 2, 3
-  and read as right, left and both, the order of the BP list (92%, 5% and
-  3% here; 89%, 9% and 2% in BP). The time since the last rating of the
-  patient's state is stored 1 and 2 and read as under and over a week, the
-  order of the BP list (73% and 27% here, 85% and 15% in BP): an
-  assumption. The psychotropic treatment has three codes that nothing
-  explains (0 on 125 visits, 1 on 415, 2 on 176) and is delivered as a
-  category of its own, not as the yes/no of SZ. The suspicion of a learning
-  disorder holds 0, 1 and 2: 2 is read as "not known" (28 visits). Open
-  question O23.
+  The dictionary gives no code for this tab; the codes are those of the form
+  of the application (eCEDR, form 199.php). Handedness is 1 right, 2 left, 3
+  both (92%, 5% and 3% here; 89%, 9% and 2% in BP). The time since the last
+  rating of the patient's state is 1 under a week, 2 over a week (73% and
+  27% here, 85% and 15% in BP). The psychotropic treatment is 1 yes, 0 no
+  and 2 "Ne sait pas", read as missing (125 no, 415 yes, 176 unknown): the
+  yes/no item of SZ, with its name. The suspicion of a learning disorder
+  holds 0, 1 and 2, 2 being "Ne sait pas", read as missing (28 visits).
 
   Not the same question as BP: cclin03 asks here whether French is the
   mother tongue (BP: a sufficient command of French), so it has another
   name. cclin14 is the "state compatible with the tests" of SZ.
 
-  Age. The age entered on the form is the age at the testing. The column
-  age of the extraction is not (see identite.yaml): the two agree on 326 of
-  741 visits.
+  Age. The age entered on the form is the age at the testing. The column age
+  of the extraction is not (see identite.yaml): the two agree on 326 of 741
+  visits. The norms of the tests are read with the typed age where it is
+  within 1 year of the age at the visit (computed from the dates), else with
+  the age at the visit; neuropsy_age_used delivers the age that was used
+  (missing on a visit with no form), so that a user sees which one it was.
+  It carries no flag. The typed age differs from the age at the visit by
+  more than 1 year on 52 of 741 visits (typed lower on 42; 1 to 2 years on
+  32, more than 2 years on 20).
 
-  Years of education are entered again at each assessment: 176 patients
-  have them twice or more, 52 with different values. They are delivered
-  as entered, per visit.
+  Years of education are entered again at each assessment: 740 visits, from
+  2 to 22 (one value at 21 to 25, plausible: the range stays [0, 30]); 176
+  patients have them twice or more, 52 with different values. They are
+  delivered as entered, per visit. None of the 718 visits with a TMT or a CVLT value lacks them. The yearly
+  median of the years of education (12 in 2013 to 2016, 14 to 15 in 2017 to
+  2021) is a mix of centres: the median is 12 at centres A, C, D, F and K
+  and 14 at the other centres (pooled, the same until 2016 and from 2017),
+  and those five centres hold 78% of the visits with a value until 2016 and
+  39% from 2017. The typed age is higher at centre J (median 61, against 46
+  to 58 at the other centres).
+
+  With the other cohorts. neuropsy_age, education_years,
+  neuropsy_mood_rating_delay and the visual and hearing questions are the
+  same question and the same coding in BP, SZ and DR. Not the same: cclin11
+  (electroconvulsive therapy in the past year in BP and DR, in the last six
+  months in SZ) and the French question. DR has no cclin05, cclin06 or
+  cclin07. No cohort asks about sleep.
 
 defaults: {type: item, range: [0, 1]}
 
@@ -56,12 +75,13 @@ variables:
   neuropsy_no_visual_disorder: {column: cclin09, label: No colour blindness or disabling visual disorder}
   neuropsy_no_hearing_disorder: {column: cclin10, label: No uncorrected hearing disorder}
   neuropsy_no_recent_ect: {column: cclin11, label: No electroconvulsive therapy in the past year}
-  neuropsy_psychotropic_treatment_code:
-    column: cclin12
-    type: category
-    label: "Psychotropic treatment (three codes that the dictionary does not explain)"
-    codes: {"0": code_0, "1": code_1, "2": code_2}
+  neuropsy_psychotropic_treatment: {column: cclin12, label: Takes a psychotropic treatment, missing: {"2": unknown}}
   neuropsy_testing_days: {column: cclin13, label: Number of days over which the tests were given, range: [1, 5]}
   neuropsy_state_compatible: {column: cclin14, label: Clinical state compatible with the cognitive tests}
   neuropsy_literate: {column: cclin15, label: No illiteracy}
   neuropsy_learning_disorder: {column: cclin16, label: A learning disorder is suspected, missing: {"2": unknown}}
+
+scores:
+  neuropsy_age_used:
+    label: "Age the norms of the tab are read with (years): the age typed in the form where it is within 1 year of the age at the visit, else the age at the visit"
+    custom: neuropsy_age_used

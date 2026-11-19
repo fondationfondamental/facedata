@@ -2,61 +2,91 @@ instrument: wais4_code_symboles_ivt
 title: WAIS-IV coding, symbol search and processing speed index
 tab: NEUROPSYCHOLOGIE
 section: Code, Symboles & IVT
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 in PROGRESS.md). This schema reads the WAIS-IV visits
-  (about 4,650 visits); wais3_code_symboles_ivt.yaml reads the others. The
-  two editions have the same subtests and the same columns, but different
-  sheets and norms: the coding sheet has 135 boxes in WAIS-IV and 133 in
-  WAIS-III.
+  (decision D10 in PROGRESS.md). This schema reads the WAIS-IV visits (5,011
+  visits are labelled WAIS-IV; 4,685 of them hold a value of this tab: 4,670
+  coding scores, 4,670 symbol search scores and 4,658 indices);
+  wais3_code_symboles_ivt.yaml reads the others. The two editions have the
+  same subtests and the same columns, but different sheets and norms: the
+  coding sheet has 135 boxes in WAIS-IV and 133 in WAIS-III.
 
-  Symbol search has 60 items. A few rows hold impossible values (a raw score
-  of -5, or 149 correct answers); they will be flagged out_of_range.
+  Symbol search has 60 items. 6 visits hold impossible values (a negative raw
+  score, or more than 60 correct answers); they are flagged out_of_range (5
+  raw scores and 5 counts of correct answers).
 
   The confidence interval of the index (ivt03_w) is text such as "90-105"
   and is delivered as text.
 
   Scaled scores, z-scores and index. They are recomputed and delivered
   (decision of the project lead for the standard scores of the
-  neuropsychological tests). The raw scores stay as delivered, except the coding raw score (below). The
-  scaled scores are read in the WAIS-IV tables of the application
-  (norms/wais4_code.csv and wais4_symbol.csv) from the raw scores, and the
-  z-scores are (scaled score - 10) / 3. The table is read with the age typed
-  in the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions)
-  where it is within 1 year of the age at the visit, and with the age at the
-  visit elsewhere. The sum of the two recomputed scaled scores is delivered as
-  wais4_ivt_sum_scaled, and the index and its percentile rank are read from it
-  in the index tables (norms/wais4_ivt.csv and wais4_ivt_percentile.csv, the
-  same in the four applications). A percentile of 0.1 or 99.9 is a censored
-  value (wais4_ivt_percentile_cens). The stored values are wais4_*_stored, not
-  delivered. The confidence interval is delivered as stored: it comes with the stored index and cannot be recomputed here (it is a text).
+  neuropsychological tests). The raw scores stay as delivered, except the
+  coding raw score (below). The scaled scores are read in the WAIS-IV tables
+  of the application (norms/wais4_code.csv and wais4_symbol.csv) from the raw
+  scores, and the z-scores are (scaled score - 10) / 3. The table is read with
+  the age typed in the form (cclin01_, delivered as neuropsy_age by
+  neuropsy_conditions) where it is within 1 year of the age at the visit, and
+  with the age at the visit elsewhere. The sum of the two recomputed scaled
+  scores is delivered as wais4_ivt_sum_scaled, and the index and its
+  percentile rank are read from it in the index tables (norms/wais4_ivt.csv
+  and wais4_ivt_percentile.csv, the same in the four applications). A
+  percentile of 0.1 or 99.9 is a censored value (wais4_ivt_percentile_cens).
+  The stored values are wais4_*_stored, not delivered. The confidence interval
+  is delivered as stored: it comes with the stored index and cannot be
+  recomputed here (it is a text). The tables norms/wais4_ivt_low.csv and
+  wais4_ivt_high.csv reproduce it from the stored sum on 4,662 of 4,666
+  visits; delivering it as two numbers is left for later, and the 124 visits
+  where the stored sum is not the recomputed one carry the interval of the
+  stored sum (no derived_doubt here, unlike the WAIS-III schema).
 
-  Verified on the visits that have both. Coding scaled score: 119 of 4,674 differ (2.5%; 42 before the coding raw
-  score was computed again), and its z-score too. Symbol search scaled score: 33 of 4,670,
-  and 7 more are not recomputed because the raw score is out of range
-  (score_not_recomputed). Sum of scaled scores: 124 of 4,661 differ and 9 are not recomputed; the
-  index differs on the same 124, the percentile rank on 120.
-  The mismatches are spread over 2013 to 2026 (2013 to 2021 mostly) and over
-  the centres; no raw score gives norm_missing.
+  Verified on the visits that have both. Coding scaled score: 119 of 4,669
+  differ (2.5%; 42 of 4,674 before the coding raw score was computed again),
+  and its z-score too. Symbol search scaled score: 33 of 4,670, and 7 more are
+  not recomputed (5 because the raw score is out of range, 2 because none is
+  typed: score_not_recomputed). Sum of scaled scores: 124 of 4,657 differ and
+  9 are not recomputed; the index differs on the same 124, the percentile rank
+  on 120 (of 4,653). The mismatches are spread over 2013 to 2026 (44 of the
+  124 sums to 2021, 80 from 2022) and over 12 centres (13 for the coding); on
+  80 of the 124 the coding raw score differs from the stored one (the errors
+  were not taken off); no raw score gives norm_missing.
+
+  Other indexes. The BP form has no information, arithmetic, picture
+  completion, block design or letter-number sequencing subtest (the extraction
+  has no column for them), so no verbal comprehension, perceptual reasoning,
+  working memory or full-scale index can be built: the processing speed index
+  is the only index of BP. A two-subtest IQ from similarities and matrices
+  would be possible on 791 visits, but no formula is known here and none is
+  invented.
 
   Coding raw score. It is computed: the boxes filled minus the boxes filled
-  incorrectly, as the application did until 2021 (302 of the 480 visits with
-  errors); since then it stores the boxes filled alone (178 visits). The
-  application stored the boxes filled alone from 2021 (its WAIS-IV form
-  calls that field the boxes filled correctly and the raw score equal to
-  it), but the data say that the clinicians go on typing all the boxes,
-  errors included: at the same age and the same symbol search score, one
-  more error goes with 0.85 fewer boxes in the typed total up to 2021, when
-  it is all the boxes, with 0.21 fewer from 2021 (BP), against 1.85 fewer
-  for a count of correct boxes; DR and ASP, whose forms always had the new
-  wording, give 0.12 and 0.09 fewer. The stored raw score therefore gives
+  incorrectly, as the application did until 2021 (302 of the 481 visits with
+  errors); since then it stores the boxes filled alone (178 visits from 2021,
+  and 1 visit in 2015). The application stored the boxes filled alone from
+  2021 (its WAIS-IV form calls that field the boxes filled correctly and the
+  raw score equal to it), but the data say that the clinicians go on typing
+  all the boxes, errors included: at the same age and the same symbol search
+  score, one more error goes with 0.85 fewer boxes in the typed total up to
+  2021, when it is all the boxes, with 0.21 fewer from 2021 (BP), against 1.85
+  fewer for a count of correct boxes; DR and ASP, whose forms always had the
+  new wording, give 0.12 and 0.09 fewer. The stored raw score therefore gives
   credit for the errors; the stored value is wais4_code_raw_stored, not
   delivered (decision D136). 184 raw scores change, 85 scaled scores and
-  z-scores, 84 sums and indices; 5 visits have no errors or no boxes typed
-  and get no raw score (score_not_recomputed). The stored scaled score
+  z-scores, 84 sums and indices; 5 visits have a stored raw score but no
+  usable errors or boxes (4 with no errors typed, 1 with a cell that cannot be
+  read) and get no raw score (score_not_recomputed). The stored scaled score
   follows the stored raw score, so it now differs from the delivered one on
   the visits whose errors were not taken off.
+
+  Unparsed cell. The one unparsed cell (coding errors) is a decimal typed in
+  a count.
+
+  Unexplained and left as measured (use a centre term in a pooled analysis):
+  centre steps on the counts of errors, with no known
+  cause: centre K has no symbol search error on 92% of its 177 visits
+  against 34% to 59% elsewhere, and centre G has one or more coding errors
+  on 35% of its 352 visits against 6% to 16% in the other centres but K
+  (1%).
 
 version:
   name: wais_version

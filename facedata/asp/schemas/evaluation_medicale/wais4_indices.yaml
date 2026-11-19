@@ -4,16 +4,19 @@ tab: evaluation_medicale
 section: intellectual assessment
 status: draft
 notes: >
-  The indices of the Wechsler Adult Intelligence Scale, fourth edition: verbal comprehension, perceptual reasoning, working memory, processing speed and the full-scale IQ, as the clinician copied them into the medical
-  evaluation. A box says that this edition was used (wai4: yes on 1043 of
-  1,750 inclusion visits); the indices are filled only after a yes. The first
-  index is on 987 inclusion visits (75 children, 912 adults), from 2013
-  to 2026; the full-scale IQ on 785: it is not computed when the
-  indices differ too much.
+  The indices of the Wechsler Adult Intelligence Scale, fourth edition: verbal
+  comprehension, perceptual reasoning, working memory, processing speed and
+  the full-scale IQ, as the clinician copied them into the medical evaluation.
+  A box says that this edition was used (wai4: yes on 1,043 of 2,318 inclusion
+  visits, 1,053 visits in all); the indices are filled only after a yes (1,044
+  visits hold one, all with the box ticked). The first index is on 986
+  inclusion visits (75 children, 911 adults), from 2012 to 2026; the
+  full-scale IQ on 784: it is not computed when the indices differ too much.
 
   One schema per edition: an index of one edition is never delivered in the
-  column of another. The indices need the norm tables of the test, which are
-  not available: they are delivered as stored, between 40 and 160.
+  column of another. The medical evaluation holds the indices and no sum of
+  scaled scores to read them with in the norm tables: they are delivered as
+  stored, between 40 and 160.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
@@ -24,13 +27,20 @@ notes: >
   Not recomputed. The medical evaluation holds no sum of scaled scores, so no
   index of this schema can be read in a table here; they stay as stored. The
   same indices, recomputed from the sums of the neuropsychology form, are in
-  wais4_efficience.yaml (wais4_*_index_np); where both exist they are the
-  stored values of that form, which equal the table on every visit.
+  wais4_efficience.yaml and wais4_code_symboles_ivt.yaml, under the names that
+  BP, SZ and DR give them (wais4_icv_index, wais4_irp_index, wais4_imt_index,
+  wais4_ivt_index, wais4_qit); the names of this copy end in _clinician so
+  that the two do not share a column. Where both exist they agree on 162 of
+  187 visits for verbal comprehension, 157 of 188 for perceptual reasoning,
+  176 of 192 for working memory, 185 of 206 for processing speed and 120 of
+  159 for the full-scale IQ (the clinician's copy against the recomputed index
+  of the form; the stored indices of the form agree on 161, 156, 168, 185 and
+  115).
 
 variables:
   wais4_done: {column: wai4, type: item, range: [0, 1], label: "This edition was used (WAIS-IV)"}
-  wais4_icv_index: {column: wai4icv, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, verbal comprehension index"}
-  wais4_irp_index: {column: wai4irp, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, perceptual reasoning index"}
-  wais4_imt_index: {column: wai4imt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, working memory index"}
-  wais4_ivt_index: {column: wai4ivt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, processing speed index"}
-  wais4_qit: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale iq"}
+  wais4_icv_index_clinician: {column: wai4icv, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, verbal comprehension index, the clinician's copy"}
+  wais4_irp_index_clinician: {column: wai4irp, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, perceptual reasoning index, the clinician's copy"}
+  wais4_imt_index_clinician: {column: wai4imt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, working memory index, the clinician's copy"}
+  wais4_ivt_index_clinician: {column: wai4ivt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, processing speed index, the clinician's copy"}
+  wais4_qit_clinician: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale iq, the clinician's copy"}

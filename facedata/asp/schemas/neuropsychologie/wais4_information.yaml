@@ -2,17 +2,21 @@ instrument: wais4_information
 title: "WAIS-IV, information"
 tab: neuropsychologie
 section: WAIS-IV
-status: draft
+status: reviewed
 notes: >
-  Information: 26 items scored from 0 to 1, their total, the scaled score and its z-score,
-  on 208 inclusion visits.
+  Information: 26 items scored from 0 to 1, their total, the scaled score and
+  its z-score, on 208 inclusion visits.
 
   The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
-  inclusion visits depending on the subtest, almost all of adults, from 2013 to
-  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
-  It is the fourth edition: the visual puzzles and the sequencing part of the
-  digit span exist only in it. No other edition of the scale is recorded in
-  this table.
+  inclusion visits depending on the subtest (302 visits in all, 12 of patients
+  under 18), from 2013 to 2026. It is on 14% of the inclusion visits of 2013,
+  42% of 2014, 36% of 2015, 18% to 19% of 2016 and 2017, 3% to 11% of 2018 to
+  2023, 21% to 22% of 2024 and 2025 and 7% of 2026 so far. It is the fourth
+  edition: the visual puzzles and the sequencing part of the digit span exist
+  only in it. No other edition of the scale is recorded in this table. The
+  extraction has no column for the edition: wais_version (wais4) is read from
+  the first item of each subtest, with the same block in the eleven schemas of
+  the WAIS-IV, and is filled on the 302 visits that hold one of them.
 
   Checked on every visit: the stored total is the sum of the items, and the
   stored z-score is the scaled score minus 10, over 3.
@@ -27,13 +31,29 @@ notes: >
   scaled score is read in the WAIS-IV table of the application
   (norms/wais4_information.csv) from the raw total, and the z-score is (scaled
   score - 10) / 3. The form has no typed age in this cohort: the table is read
-  with the age at the visit (the visits are of patients from 15.9 to 65 years;
-  the one of 15.9 years is below the first age of the tables and gets
-  norm_missing). The stored scores are wais4_info_scaled_stored and
-  wais4_info_z_stored, not delivered. Verified: the scaled score differs from
-  the stored one on 2 of the 207 visits that have both (1.0%, score_mismatch),
-  and so does its z-score; 1 visit is not recomputed (the patient of 15.9
-  years).
+  with the age at the date of the assessment form (age basis, below). The
+  visits are of patients from 15.9 to 65 years; the one of 15.9 years is below
+  the first age of the tables and gets norm_missing. The stored scores are
+  wais4_info_scaled_stored and wais4_info_z_stored, not delivered. Verified:
+  the scaled score differs from the stored one on 2 of the 207 visits that
+  have both (1.0%, score_mismatch; the same with the age at the visit), and so
+  does its z-score; 1 visit is not recomputed (the patient of 15.9 years).
+
+  Age basis. The application (eAsperger, script 280_score.js, function
+  gere_ageNPSY) computes the age at the date of the assessment form (QSDTC),
+  not at the visit date, and the data show that it did so from about 2015 on.
+  The table is therefore read with the age at the form date
+  (wais4_info_assessment_date, read from the raw column qsdtc and not
+  delivered; score fields age_date and age_date_since 2015-01-01) where the
+  visit is dated 2015 or later and the form date is within 366 days of the
+  visit, and with the age at the visit elsewhere. In this subtest the age at
+  the form date changes no score.
+
+version:
+  name: wais_version
+  filled:
+    wais4: [wais_sim1, wais_voc1, wais_info1, wais_cub1, wais_mat1, wais_puzl1, wais_mcod_1a, wais_arit1,
+            wais_cod_tot, wais_symb_tot, wais_img1]
 
 defaults: {type: item, range: [0, 1]}
 
@@ -67,6 +87,7 @@ variables:
   wais4_info_total_stored: {column: wais_infotot, range: [0, 26], keep: false, label: "WAIS-IV information, total as stored"}
   wais4_info_scaled_stored: {column: wais_info_std, range: [1, 19], label: "WAIS-IV information, scaled score as stored", keep: false}
   wais4_info_z_stored: {column: wais_info_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV information, z-score of the scaled score as stored", keep: false}
+  wais4_info_assessment_date: {column: qsdtc, type: date, range: [1900-01-01, 2100-12-31], keep: false, label: "Date of the assessment form, the date of the age read in the norms"}
 
 scores:
   wais4_info_total:
@@ -77,6 +98,8 @@ scores:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
     lookup: wais4_information
     from: wais4_info_total
+    age_date: wais4_info_assessment_date
+    age_date_since: "2015-01-01"
     range: [1, 19]
     compare: wais4_info_scaled_stored
   wais4_info_z:

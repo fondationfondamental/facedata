@@ -2,25 +2,27 @@ instrument: errands_test
 title: Errands test (Test des commissions)
 tab: NEUROPSYCHOLOGIE
 section: Test des commissions
-status: draft
+status: reviewed
 notes: >
   A planning test: the patient orders a list of errands under constraints of
-  time and place. In the extraction from 2017 (1,034 visits).
+  time and place. In the extraction from 2017 (1,034 visits, 1,025 with a
+  count of detours).
 
   Raw scores: the time taken in minutes, the useless detours, the trips that
   miss an opening hour, the logical errors, and the total of the three kinds
   of errors. The stored total equals their sum on every visit; it is
-  recomputed and compared. A few times are written as a duration ("5:30")
-  and stay unparsed.
+  recomputed and compared. 3 times of 1,034 are written as a duration (5:30)
+  and stay unparsed (a reading rule m + s/60 is left for later).
 
-  Percentiles. They are typed by hand from the norms, with limits that
-  differ from one measure to the next. They are read as bands on one list
-  of limits; the value is the lower limit of the band, and a band wider
-  than one step has <variable>_cens = +1 (450 to 540 cells for the three
-  kinds of errors, where most patients sit in the widest band). A dozen
-  cells are a number that is no limit and stay unparsed.
+  Percentiles. They are typed by hand from the norms, with limits that differ
+  from one measure to the next. They are read as bands on one list of limits;
+  the value is the lower limit of the band, and a band wider than one step has
+  <variable>_cens = +1 (672, 762 and 782 cells for the detours, the late trips
+  and the logical errors, where most patients sit in the widest band; 106 for
+  the total). Ten cells are a number that is no limit and stay unparsed.
 
-  z-scores are filled on about 520 visits; "." is a missing code.
+  z-scores are typed on 517 to 520 visits per measure (521 in all); "." is a
+  missing code.
 
   Recomputed. The percentile bands and the z-scores of the five measures
   (time, detours, late trips, logical errors, total of the three kinds of
@@ -28,38 +30,57 @@ notes: >
   application computes them (norms/errands_*_band.csv and errands_*_z.csv),
   and the stored ones are kept only as checks (errands_*_band_stored,
   errands_*_z_stored, not delivered). The band is the lower limit of the band
-  the count falls in, in the table of the level of education (below the
-  baccalauréat, or from it); a band wider than one step has
-  <variable>_cens = +1. The z-score is (mean - count) / SD in the cell of the
-  level of education and of the age (20 to 40 years, 41 to 60), so that a
-  higher z-score is a better performance; the time is cut to whole minutes
-  first, as the application does. The age is the one typed in the form
+  the count falls in, in the table of the education of the patient: under 12
+  years, or 12 years and more (the baccalauréat is 12 years); a band wider
+  than one step has <variable>_cens = +1. The z-score is (mean - count) / SD
+  in the cell of the education and of the age (20 to 40 years, 41 to 60), so
+  that a higher z-score is a better performance; the time is cut to whole
+  minutes first, as the application does. The age is the one typed in the form
   (cclin01_) where it is within one year of the age at the visit, and the age
-  at the visit elsewhere. The application computes nothing under 20 or over
-  60 years: no z-score is delivered there (about 30 visits with a count; the
-  bands do not depend on the age and are delivered). It computes nothing
-  without the level of education (rad_nsc_, filled on 816 of the 1,025 visits
-  with a count): a missing level gives no band (norm_missing, 232 to 235
-  visits per measure, from 2016 on) and no z-score. A stored value on such
-  a visit is flagged score_not_recomputed (48 to 53 bands, 20 to 22 z-scores
-  per measure).
+  at the visit elsewhere. The application computes nothing under 20 or over 60
+  years: no z-score is delivered there (36 visits with a count of detours, 30
+  with the ticked class; the bands do not depend on the age and are
+  delivered).
+
+  Education. The application's tables are two, below the baccalauréat and from
+  it, chosen by the class that the rater ticks (rad_nsc_, kept as
+  errands_education, no longer used). The package reads the years of education
+  typed in the form (cclin08_) for every visit, as the other tests do, and the
+  tables of norms/ are keyed by years (0 to 11 and 12 and over). Decision of
+  the project lead. The ticked class is filled on 791 of the 1,025 visits with
+  a count of detours; 22.8% (234) have none, from 2017 on in every year, and
+  the years are filled on every visit. Years of 12 or more equal the ticked class on 778 of the 798 visits where both exist (16 of the
+  21 others, counting all visits, are at 11 or 12 years); on these visits 67
+  bands and 84 z-scores differ from the ones the class gave. The 234 visits with no ticked class now have their
+  bands (1,170 cells) and z-scores (1,140 cells), where they had norm_missing.
+  The application does not take the lowest class when none is ticked: the
+  script (psy_neuropsychologie_comm.js) fails and writes nothing. A stored
+  band on a visit with no ticked class equals the recomputed one in 193 of 235
+  pairs (82%), a stored z-score in 10 of 99.
 
   Checks. A recomputed value that differs from the stored one is flagged
-  score_mismatch. The band differs on 38 of 697 visits for the time (5.5%),
-  17 of 696 for the detours, 18 of 694 for the late trips, 21 of 696 for the
-  logical errors and 13 of 592 for the total (2.2 to 3.0%), nearly all from
-  2019 on. The z-score is delivered on 761 to 763 visits per measure (767 in
-  all, from 2017), against 521 visits with a stored one; it differs on 14 to
-  18 of the 496 to 498 that can be compared (2.8 to 3.6%; 2 of them with the
-  opposite sign, sign_flipped), and 12 to 15 of these differences are
-  from one centre in 2022-23.
+  score_mismatch. The band differs on 51 of 744 visits for the time (6.9%), 34
+  of 743 for the detours, 24 of 742 for the late trips, 39 of 744 for the
+  logical errors and 25 of 637 for the total (3.2 to 5.2%), nearly all from
+  2019 on (166 of 173), 102 of them in 2022-23. The z-score is delivered on
+  987 to 992 visits per measure (997 in all, from 2017), against 517 to 520
+  with a stored one; it differs on 34 to 40 of the 515 to 518 that can be
+  compared (6.6 to 7.7%; 0 to 3 more with the opposite sign, sign_flipped),
+  and 28 to 33 of these differences are from one centre in 2022-23 (16 to 19
+  are on visits with no ticked class). A typed value with no count to compute
+  from is flagged score_not_recomputed (3 to 6 bands, 1 to 2 z-scores per
+  measure).
 
-  The level of education used for the norms (below or from the
-  baccalauréat) is in the column rad_nsc_, on 816 visits. errands_order is
-  the order in which the patient ran the errands, as typed.
+  errands_order is the order in which the patient ran the errands, as typed.
 
-  Same instrument as in FACE BP, read in the SZ column of the education
-  level; the box "test not done" is not extracted.
+  Same instrument as in FACE BP, with the ticked class in the SZ column
+  rad_nsc_. The box "test not done" of the SZ form (chk_com_) is not
+  extracted: ask the data managers. Besides the 3 durations and the 10
+  stored band cells with no limit (numbers, '<2', '>74', a text with a
+  comment, an HTML entity code), 2 typed ages written 'NN ans' (the age at
+  the visit is used), 2 education cells that hold a word (on visits with no
+  test value) and 1 stored z-score and 1 count of late trips typed as ranges
+  ('NN-NN') stay unparsed.
 
 defaults: {type: item, range: [0, 10]}
 
@@ -67,11 +88,12 @@ variables:
   errands_education:
     column: rad_nsc_
     type: category
-    label: Level of education used for the norms
+    label: Level of education ticked in the form (not used for the norms)
     codes: {">= baccalaureat": baccalaureat_or_more, "< baccalaureat": below_baccalaureat}
-  # What the norms need: the level of education as a number (0 below the baccalauréat, 1 from it) and the age as typed in the form,
-  # which the application reads its norms with (it computes nothing under 20 or over 60); read again here, not delivered
-  errands_level: {column: rad_nsc_, type: item, range: [0, 1], codes: {">= baccalaureat": 1, "< baccalaureat": 0}, label: "Level of education used for the norms (1 from the baccalauréat)", keep: false}
+  # What the norms need: the years of education typed in the form, 12 or more being the baccalauréat (the norm tables hold two lines of
+  # years, 0 to 11 and 12 and over), and the age as typed in the form (the application computes nothing under 20 or over 60);
+  # read again here, not delivered
+  errands_education_years: {column: cclin08_, type: number, label: "Years of education, as entered (for the norms)", range: [0, 30], winsor: false, keep: false}
   errands_age: {column: cclin01_, type: number, label: "Age at the testing, as entered (years; for the norms)", range: [15, 100], winsor: false, keep: false}
   errands_minutes: {column: com01_, type: number, label: Time taken (minutes), range: [0, 60]}
   errands_minutes_band_stored: {column: com01s1_, type: band, limits: [5, 10, 20, 25, 50, 75, 80, 90, 95], label: "Time taken - percentile band, as stored", keep: false}
@@ -109,13 +131,13 @@ scores:
     label: Time taken - percentile band
     lookup: errands_minutes_band
     from: errands_minutes
-    by: errands_level
+    by: errands_education_years
     compare: errands_minutes_band_stored
   errands_minutes_z:
     label: Time taken - z-score (higher is better)
     regression: errands_minutes_z
     from: errands_minutes_whole
-    by: errands_level
+    by: errands_education_years
     age: errands_age
     range: [-10, 10]
     winsor: [0.01, 0.99]
@@ -126,13 +148,13 @@ scores:
     label: Useless detours - percentile band
     lookup: errands_detours_band
     from: errands_detours
-    by: errands_level
+    by: errands_education_years
     compare: errands_detours_band_stored
   errands_detours_z:
     label: Useless detours - z-score (higher is better)
     regression: errands_detours_z
     from: errands_detours
-    by: errands_level
+    by: errands_education_years
     age: errands_age
     range: [-10, 10]
     winsor: [0.01, 0.99]
@@ -143,13 +165,13 @@ scores:
     label: Trips that miss an opening hour - percentile band
     lookup: errands_late_trips_band
     from: errands_late_trips
-    by: errands_level
+    by: errands_education_years
     compare: errands_late_trips_band_stored
   errands_late_trips_z:
     label: Trips that miss an opening hour - z-score (higher is better)
     regression: errands_late_trips_z
     from: errands_late_trips
-    by: errands_level
+    by: errands_education_years
     age: errands_age
     range: [-10, 10]
     winsor: [0.01, 0.99]
@@ -160,13 +182,13 @@ scores:
     label: Logical errors - percentile band
     lookup: errands_logic_errors_band
     from: errands_logic_errors
-    by: errands_level
+    by: errands_education_years
     compare: errands_logic_errors_band_stored
   errands_logic_errors_z:
     label: Logical errors - z-score (higher is better)
     regression: errands_logic_errors_z
     from: errands_logic_errors
-    by: errands_level
+    by: errands_education_years
     age: errands_age
     range: [-10, 10]
     winsor: [0.01, 0.99]
@@ -177,13 +199,13 @@ scores:
     label: Total errors - percentile band
     lookup: errands_errors_band
     from: errands_errors
-    by: errands_level
+    by: errands_education_years
     compare: errands_errors_band_stored
   errands_errors_z:
     label: Total errors - z-score (higher is better)
     regression: errands_errors_z
     from: errands_errors
-    by: errands_level
+    by: errands_education_years
     age: errands_age
     range: [-10, 10]
     winsor: [0.01, 0.99]

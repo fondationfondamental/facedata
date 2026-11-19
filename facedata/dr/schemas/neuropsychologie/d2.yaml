@@ -2,45 +2,116 @@ instrument: d2
 title: d2 test of attention
 tab: NEUROPSYCHOLOGIE
 section: D2
-status: draft
+status: reviewed
 notes: >
   d2 test of attention. Not in BP or SZ. Five measures: GZ (signs
   processed), F (errors) with F% (errors over signs processed), GZ - F
-  (overall performance), KL (concentration performance) and SB (the
-  largest line minus the smallest). 631 visits.
+  (overall performance), KL (concentration performance) and SB (the largest
+  line minus the smallest). 631 visits.
 
-  Percentiles. GZ, GZ - F and KL have a percentile rank written as a
-  number (0.1 to 99.9); F% and SB have a band, with the limits 10, 25, 50,
-  75 and 90. Each percentile rises with its raw score, and the share of
-  each band is close in every period.
+  Percentiles. GZ, GZ - F and KL have a percentile rank written as a number
+  (0.1 to 99.9); F% and SB have a band, with the limits 10, 25, 50, 75 and
+  90. Each percentile rises with its raw score. All of them are recomputed
+  here as the application computes them (apps/ecedr/www/js/neuro.js, tables
+  made by norms/make_d2_tables.py, which reads them from the script): the
+  raw score and the age typed in the form (cclin01, reconciled with the age
+  at the visit as in the other DR tests) in four age classes (under 25, 25
+  to 34, 35 to 44, 45 and over); the level of education is not used. The
+  tables hold 223 limits for GZ, 235 for GZ - F, 241 for KL, 20 for SB and
+  20 for F%, and two lists of labels (percentile ranks and bands). Every raw
+  score is cut to an integer before it is read in its table, the F% after a
+  rounding to one decimal. The stored percentiles and bands (d2_*_stored)
+  are kept as checks.
 
-  Checks. The stored GZ - F is not GZ minus F on 35 of 623 visits, in
-  every year (score_mismatch on the check score); it is delivered as
-  stored, because its percentile was read from it. F% equals F over GZ on
-  all but 3 visits.
+  Agreement. With the age typed in the form, as the application reads it,
+  the recomputed value is the stored one on 630 of 631 visits for GZ, 624 of
+  624 for GZ - F (from the typed GZ - F), 602 of 605 for KL, 624 of 629 for
+  the F% band and 615 of 617 for the SB band. With the reconciled age, which
+  is what is delivered, 6 of the 631 visits fall in another age class, and
+  score_mismatch is flagged on 5 visits for GZ, 9 for KL, 5 for the F% band
+  and 1 for the SB band (and on 30 for GZ - F, below). The SB band of 3
+  visits is lost: the SB is three digits (out of range) and its stored band
+  cannot be recomputed (score_not_recomputed).
 
-  Three SB values of three digits are out of range.
+  GZ - F. The stored GZ - F is not GZ minus F on 35 of 623 visits
+  (differences from -465 to +312; 14 years, 12 centres), while the
+  percentile of GZ and the F% follow GZ and F (F% is F over GZ on all but 2
+  visits). The delivered GZ - F is GZ minus F (627 visits, 6 more than
+  stored; score_mismatch on the 35, and score_not_recomputed on 1 visit that
+  has a stored GZ - F and no GZ or F), the stored one is the check
+  d2_gzf_stored. The percentile of GZ - F is read from the delivered value:
+  it differs from the stored one, which was read from the typed GZ - F, on
+  30 visits (score_mismatch), and 2 visits have a GZ - F above the last
+  limit of their age class (norm_missing).
+
+  Three SB values of three digits are out of range. One stored SB band holds a
+  decimal that is no limit of the band list (unparsed, check only).
 
   The neuropsychological assessment is given at inclusion and at the visits
-  of 1, 2 and 4 years: 744 visits of 436 patients. About three inclusions in
-  four hold it until 2020 and about one in two since 2021 (open question
-  O22).
+  of 1, 2 and 4 years: 744 visits of 436 patients. The d2 does not fade; the
+  assessment does (open question O22). Share of the inclusions (V0) that
+  hold any assessment, the d2, the Baddeley dual task, the memory for
+  designs and the auditory span: until 2017 76%, 63%, 59%, 47%, 64% (271
+  inclusions); 2018 to 2020 76%, 67%, 19%, 16%, 30% (135); 2021 on 51%, 41%,
+  2%, 0%, 13% (228). The d2 is held by 83%, 89% and 81% of the inclusions
+  that have an assessment.
 
 defaults: {type: number, winsor: false}
 
 variables:
+  # What the norms of the application are read with: the age typed in the conditions form. Read here a second time, not delivered.
+  d2_age: {column: cclin01, label: "Age at the testing, as typed (for the norms)", range: [15, 100], keep: false}
+
   d2_gz: {column: d2gz01, label: "GZ, speed: number of signs processed", range: [0, 658]}
-  d2_gz_percentile: {column: d2gz02, label: "GZ as a percentile rank", range: [0, 100]}
+  d2_gz_percentile_stored: {column: d2gz02, label: "GZ as a percentile rank, as stored", range: [0, 100], keep: false}
   d2_f: {column: d2f01, label: "F, accuracy: number of errors", range: [0, 658]}
   d2_f_percent: {column: d2f02, label: "F%: errors as a percentage of the signs processed", range: [0, 100]}
-  d2_f_band: {column: d2f03, type: band, limits: [10, 25, 50, 75, 90], label: "F% as a percentile band (a higher band is fewer errors)"}
-  d2_gzf: {column: d2gzf01, label: "GZ - F, overall performance", range: [0, 658]}
-  d2_gzf_percentile: {column: d2gzf02, label: "GZ - F as a percentile rank", range: [0, 100]}
+  d2_f_band_stored: {column: d2f03, type: band, limits: [10, 25, 50, 75, 90], label: "F% as a percentile band, as stored (a higher band is fewer errors)", keep: false}
+  d2_gzf_stored: {column: d2gzf01, label: "GZ - F, overall performance, as stored", range: [0, 658], keep: false}
+  d2_gzf_percentile_stored: {column: d2gzf02, label: "GZ - F as a percentile rank, as stored", range: [0, 100], keep: false}
   d2_kl: {column: d2kl01, label: "KL, concentration performance", range: [-100, 299]}
-  d2_kl_percentile: {column: d2kl02, label: "KL as a percentile rank", range: [0, 100]}
+  d2_kl_percentile_stored: {column: d2kl02, label: "KL as a percentile rank, as stored", range: [0, 100], keep: false}
   d2_sb: {column: d2sb01, label: "SB, fluctuation: largest minus smallest line", range: [0, 50]}
-  d2_sb_band: {column: d2sb02, type: band, limits: [10, 25, 50, 75, 90], label: "SB as a percentile band (a higher band is a steadier pace)"}
+  d2_sb_band_stored: {column: d2sb02, type: band, limits: [10, 25, 50, 75, 90], label: "SB as a percentile band, as stored (a higher band is a steadier pace)", keep: false}
 
 scores:
-  # Consistency check only: the stored overall performance must be GZ minus F.
-  d2_gzf_check: {sum: [d2_gz], minus: [d2_f], compare: d2_gzf, keep: false}
+  # GZ - F, overall performance, is GZ minus F; the stored value is compared (it is not on 35 visits).
+  d2_gzf:
+    label: "GZ - F, overall performance"
+    sum: [d2_gz]
+    minus: [d2_f]
+    range: [0, 658]
+    compare: d2_gzf_stored
+
+  # The percentile ranks and the bands, recomputed as the application does: the raw score and the age typed in the form
+  # (four age classes, no education) in the tables of the norms folder (norms/d2_*.csv). The stored value is compared.
+  d2_gz_percentile:
+    label: "GZ as a percentile rank"
+    lookup: d2_gz_percentile
+    from: d2_gz
+    age: d2_age
+    compare: d2_gz_percentile_stored
+  d2_gzf_percentile:
+    label: "GZ - F as a percentile rank"
+    lookup: d2_gzf_percentile
+    from: d2_gzf
+    age: d2_age
+    compare: d2_gzf_percentile_stored
+  d2_kl_percentile:
+    label: "KL as a percentile rank"
+    lookup: d2_kl_percentile
+    from: d2_kl
+    age: d2_age
+    compare: d2_kl_percentile_stored
+  d2_f_band:
+    label: "F% as a percentile band (a higher band is fewer errors)"
+    lookup: d2_f_band
+    from: d2_f_percent
+    age: d2_age
+    compare: d2_f_band_stored
+  d2_sb_band:
+    label: "SB as a percentile band (a higher band is a steadier pace)"
+    lookup: d2_sb_band
+    from: d2_sb
+    age: d2_age
+    compare: d2_sb_band_stored

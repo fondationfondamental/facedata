@@ -259,8 +259,9 @@ list.
 counts the sequencing task, all have cells in the WAIS-IV index columns, none
 has the letter-number sequencing.
 *Question:* can `wais_version` be corrected for these visits?
-*Today:* the label is followed; 30 of these visits are flagged on the
-digit-span total and their WAIS-IV indices are not read. (O16)
+*Today:* answered by the project lead (D47): a visit that holds the sequencing
+task is read as WAIS-IV whatever its label (`version.override`, flag
+`version_overridden`); 33 visits move. (O16)
 
 **DM-3. Work status and source of income, 2015 to 2018.** `stprof` and
 `saltyp` are empty on almost every inclusion visit from mid-2015 to 2018
@@ -292,7 +293,8 @@ reference group; one set of 30 reference ratings gives the stored score on
 ratings do not give, and 137 visits with the 30 ratings have no score.
 *Question:* which reference ratings does the EMR use? With them the score
 could be computed for every visit.
-*Today:* the score as stored. (O18)
+*Today:* recomputed from the 30 ratings with the reference ratings found in the
+script of the application (D48): 28 visits differ from the stored score. (O18)
 
 **DM-7. AIMS, items 11 and 12.** The dictionary names them in two orders in
 the same line.

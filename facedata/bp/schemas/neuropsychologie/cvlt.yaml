@@ -2,19 +2,46 @@ instrument: cvlt
 title: California Verbal Learning Test (CVLT)
 tab: NEUROPSYCHOLOGIE
 section: Troubles des acquisitions et des apprentissages
-status: draft
+status: reviewed
 notes: >
   A list of 16 words ("Monday list") learned over five trials, a second list
   ("Tuesday list", list B), then recalls of the first list after a short and
-  a long delay, free and cued, and a recognition task. About 5,820 visits.
-  In the dictionary the CVLT has no header: it follows the learning
+  a long delay, free and cued, and a recognition task. 5,849 visits have a
+  trial 1. In the dictionary the CVLT has no header: it follows the learning
   disorders.
 
   Raw scores. Recalls are numbers of words, 0 to 16. The total of trials 1
-  to 5 is recomputed and compared with the stored one (cvlt06_). The
-  clustering indices, the discriminability, primacy and recency (percent)
-  and the response bias are delivered as stored, within wide limits: their
-  formulas are not in the project.
+  to 5 is recomputed and compared with the stored one (cvlt06_).
+
+  Discriminability. It is recomputed, as the project lead asked: 100 x (hits
+  + 28 - false alarms) / 44, from the correct and false recognitions (16
+  targets, 28 distractors). The clinician types the stored value (cvlt18_);
+  it is only a check now, with a tolerance of 0.5, and it equals the formula
+  within 0.5 on 4,819 of 5,153 visits (93.5%). Of the 334 others, 31 are on
+  a scale of 0 to 1 (the formula divided by 100, within 0.01: one centre, 27
+  of them from 2024), 27 are 0 where the formula gives 50 or more, 20 equal
+  100 minus the formula (14 of them are among those zeros) and 270 differ by
+  2.3 points (median). The recomputed score is delivered on 5,754 visits
+  (the stored one was on 5,182): 601 more, where the recognitions are filled
+  and the discriminability is not, and 29 fewer, where a discriminability
+  was stored without recognitions (score_not_recomputed). Its percentile
+  band is read in the table from the recomputed value
+  (cvlt_discriminability_band is a score now, not a band variable): it
+  equals the percentile that the EMR wrote on 93.4% of the 5,162 visits that
+  have both; 234 of the 340 differences are on visits whose stored value
+  differs from the formula.
+
+  The semantic and serial clustering indices, the perseverations, the
+  intrusions, primacy and recency (percent) are delivered as stored, within
+  wide limits. They cannot be rebuilt: they need the words that the patient
+  said, in the order of the trials, which the extraction does not hold (the
+  clinician types the indices, and the form only reads their percentile as
+  they are typed). The response bias is delivered as stored too. It follows
+  (false alarms minus the missed targets) / (false alarms plus the missed
+  targets) only approximately (the missed targets being 16 - hits): within
+  0.01 on 87.6% of 5,080 visits, a perfect recognition giving 0 (stored on
+  2,561 of 2,577 of them). The formula of the software is to be asked of the
+  data managers.
 
   Standardised scores (decisions D38, D39 and D108 in PROGRESS.md). The
   norms give a z-score (a regression on the age, the years of education and
@@ -54,11 +81,11 @@ notes: >
   - 105, most of 2012 and 2015, were computed with no sex (the sex term
     counted 0), as were about 50 z-scores each of the delayed free recalls,
     of the primacy and of the recency;
-  - on 43 visits the recency z-score was computed from an empty recency,
-    as if it were 0;
+  - on 43 visits the recency z-score was computed from an empty recency, as
+    if it were 0;
   - the recency z-score of the patients of 40 to 69 holds "Non applicable"
-    on 835 visits: the older form wrote that, the form of today computes a
-    z-score for them.
+    on 975 visits (982 in all): the older form wrote that, the form of today
+    computes a z-score for them.
 
   Computed again, the z-score of trials 1 to 5 has the same mean in 2013
   and 2014 as in the other years (-0.20 and -0.24), and no value above 5
@@ -66,20 +93,23 @@ notes: >
 
   The age. The EMR used the age typed in the neuropsychology form; the
   package uses the age at the visit, as for every other norm. The two are
-  the same number of years on 87% to 91% of the visits until 2023 and on
-  67% from 2024, when the application began to fill the field itself, with
-  the age rounded to the nearest year. One year of age moves a z-score by
-  a few hundredths, and by more on the 34 visits where it changes the age
-  group. The stored z-score is therefore compared with a tolerance of
-  0.25. score_mismatch says that the stored one was further away: 380
-  visits for trials 1 to 5, about 100 for the primacy, 5 to 50 for the
-  other measures, and 1,697 for the recency, whose norm is corrected (see
-  below). The computed z-score is the one delivered.
+  the same number of years on 87% to 91% of the visits until 2023 and on 67%
+  from 2024, when the application began to fill the field itself, with the
+  age rounded to the nearest year. One year of age moves a z-score by a few
+  hundredths, and by more on the 34 visits where it changes the age group.
+  The stored z-score is therefore compared with a tolerance of 0.25.
+  score_mismatch says that the stored one was further away: 380 visits for
+  trials 1 to 5 (6.5% of 5,819; 16.3% in 2013-15, 7.6% to 2012, 1.7% to 4.2%
+  in the later periods; for 254 of them the stored z-score is 3.5 or more
+  above the computed one, for 166 in 2013 and 2014 and for 61 patients of 70
+  and over), about 100 for the primacy, 5 to 50 for the other measures, and
+  1,697 for the recency, whose norm is corrected (see below). The computed
+  z-score is the one delivered.
 
   Where a z-score was stored and none can be computed, the cell gets
-  score_not_recomputed (315 cells in all): no raw score, no years of
-  education, a computed z-score outside its limits, or an age for which
-  the norms give a percentile.
+  score_not_recomputed (303 cells on the twelve z-scores, 305 with the total
+  of trials 1 to 5): no raw score, no years of education, a computed z-score
+  outside its limits, or an age for which the norms give a percentile.
 
   Recency: two lines of the norm are not those of the BP script (decision
   D109, by the project lead; to confirm with the manual, open question
@@ -88,14 +118,19 @@ notes: >
   it, the patients of 40 to 69 are at -0.82 and those of 70 and over at
   -3.71.
 
-  - From 40 to 69 the z-score is (recency - mean) / sd, and the
-    application has two means: the BP form's, and another one in its other
-    scripts, which the SZ data follow. They are 0.78 standard deviation
-    apart. The second is used here, for both cohorts: the mean z-score of
-    the patients of 40 to 69 is then -0.04.
-  - From 70 the sign of the age term is turned: the script adds a term
-    that the other lines of the norm subtract. The mean z-score of the 62
-    visits is then -0.25.
+  - From 40 to 69 the z-score is (recency - mean) / sd. The scripts of the
+    application are not alike (open question O50; DM-16 for the data
+    managers): the BP script has a mean of its own, the SZ script writes
+    "Non applicable" at these ages, and a test script has a third mean that
+    is within 0.01 of the intercept of the line of the patients under 40 (a
+    copy of it?). The SZ z-scores that hold a number follow the third (2
+    mismatches at these ages). The BP mean is 0.78 standard deviation from
+    the third, which is used here, for both cohorts: the mean z-score of the
+    patients of 40 to 69 is then -0.04.
+  - From 70 the sign of the age term is turned: the script adds a term that
+    the other lines of the norm subtract. The line for 70 and over is the
+    same in the three scripts. The mean z-score of the 62 visits that have
+    one (63 have a recency) is then -0.27.
 
   The stored recency z-scores of these ages therefore all get
   score_mismatch (1,560 visits from 40 to 69, 61 from 70).
@@ -117,18 +152,24 @@ notes: >
   better performance. For primacy, recency and bias a higher band only
   means a higher value.
 
-  The five other measures that have a table at every age (perseverations,
-  intrusions, correct and false recognitions, discriminability) keep their
-  band variable: where the cell holds a percentile, the band is read again
-  in the table.
+  The measures that have a table at every age keep their band variable
+  (perseverations, intrusions, correct and false recognitions): where the
+  cell holds a percentile, the band is read again in the table. The
+  discriminability has a band score instead, read in the table from the
+  recomputed discriminability on every visit that has one.
 
   The reason for reading the tables again is one rule for every test. When
   several limits of the norms fall on the same raw score, the EMR wrote the
-  highest percentile for the CVLT: every cell written 99 for trial 5 and
-  the delayed recalls is a perfect recall of 16 words. The table gives the
-  lowest band such a score can be, with <variable>_cens = +1 (this band or
-  a higher one), as for the TMT errors. Where no limits coincide the band
-  of the table is the one the EMR wrote on 98% to 100% of the visits.
+  highest percentile for the CVLT: every cell written 99 for trial 5 and the
+  delayed recalls is a perfect recall of 16 words. The table gives the
+  lowest band such a score can be, with <variable>_cens = +1 (this band or a
+  higher one), as for the TMT errors. Where no limits coincide the band of
+  the table is the one the EMR wrote on 96% to 100% of the visits (serial
+  clustering 96.4%, semantic clustering 97.8%, trial 5 98.0%, the other
+  measures 99.4% to 99.9%). The exception is the discriminability, whose
+  band reads the recomputed value (93.4%, see the raw scores). The stored
+  percentile cells are compared with the recomputed bands only by hand, not
+  in the load.
 
   Serial clustering is read in its table too (decision D129). The EMR note
   gave it in whole numbers although the index has decimals; the script of
@@ -157,22 +198,38 @@ notes: >
   (BP has 4). No computed z-score of a recall is outside these limits.
   Primacy, recency and bias have long tails and keep wider limits (10).
 
-  Semantic clustering: 104 z-scores are beyond 5, and here the raw index
-  is the cause, not the formula. In 2012 and 2013, 23% of the indices are
-  above 4 and 24% are whole numbers, against 2% to 7% and 2% to 6% in the
-  other periods: another quantity was typed in that field, probably a
-  number of clusters (open question O49 in PROGRESS.md). Checked on
-  2026-11-18 (decision D130): 96% of the 2012-2013 visits of one centre hold
-  such a value (median 12 against 2.3, a correlation of 0.36 with the total
-  recall), and the habit goes on at a lower rate in other years and in SZ.
-  By band of the index the share of whole numbers is 2% to 3% up to 4,
-  17% to 37% from 4 to 6 and above 50% from 6 on. An index of 8 or more is
-  far beyond the 99th percentile of the norm and is mostly a count: the hard
-  range stops at 8 (it was 50), the same in SZ, so 216 BP and 17 SZ values
-  are out_of_range (the typed text stays in the flag log) and so are their
-  z-scores and bands. Between 4 and 8 a few counts remain (whole numbers
-  cannot be told from an index there); the index cannot be rebuilt from the
-  counts, which is asked of the data managers (DM-15).
+  Semantic clustering: 13 z-scores are beyond 5 (out_of_range; 104 before
+  the hard range of the index was cut), and here the raw index is the cause,
+  not the formula. In 2012 and 2013, 23% of the indices are above 4 and 24%
+  are whole numbers, against 2% to 7% and 2% to 6% in the other periods:
+  another quantity was typed in that field, probably a number of clusters
+  (open question O49 in PROGRESS.md). Checked on 2026-11-18 (decision D130):
+  96% of the 2012-2013 visits of one centre hold such a value (median 12
+  against 2.3, a correlation of 0.36 with the total recall), and the habit
+  goes on at a lower rate in other years and in SZ. By band of the index the
+  share of whole numbers is 2% to 3% up to 4, 17% to 37% from 4 to 6 and
+  above 50% from 6 on. An index of 8 or more is far beyond the 99th
+  percentile of the norm and is mostly a count: the hard range stops at 8
+  (it was 50), the same in SZ, so 216 BP and 17 SZ values are out_of_range
+  (the typed text stays in the flag log) and so are their z-scores and
+  bands. Between 4 and 8 a few counts remain: of the 200 BP values of 4 or
+  more, 81 are whole numbers, and from 6 to 8, 26 of 43 (60%, against 3.7%
+  of all the values); there are 73 whole numbers between 4 and 8 in BP and 7
+  in SZ (14 values of 4 or more, 8 whole). Whole numbers cannot be told from
+  an index there, and the index cannot be rebuilt from the counts, which is
+  asked of the data managers (DM-15). The BP thesaurus lists CVLT18Z_ to
+  CVLT22_ twice, also to ask the data managers.
+
+  Unparsed cells. The 11 cells that stay unparsed are typing errors: 7
+  decimals typed in whole-number counts, 2 durations typed as text in the
+  delay, an index with two decimal points and a dash.
+
+  Centre steps, unexplained and left as measured (use a centre term in a
+  pooled analysis): centre H
+  recalls fewer words at every trial and delayed recall (median total of
+  trials 1 to 5 of 48 against 59, 170 visits), centre D has a median delay
+  of 15 minutes against 20, and centre I a median serial clustering index of
+  0.33 against 1.28.
 
 defaults: {type: item, range: [0, 16]}
 
@@ -195,7 +252,6 @@ variables:
   cvlt_intrusions: {column: cvlt15_, label: Intrusions, range: [0, 50]}
   cvlt_hits: {column: cvlt16_, label: Correct recognitions}
   cvlt_false_alarms: {column: cvlt17_, label: False recognitions, range: [0, 28]}
-  cvlt_discriminability: {column: cvlt18_, type: number, label: Discriminability (percent), range: [0, 100], winsor: false}
   cvlt_primacy: {column: cvlt19_, type: number, label: Primacy (percent), range: [0, 100], winsor: false}
   cvlt_recency: {column: cvlt20_, type: number, label: Recency (percent), range: [0, 100], winsor: false}
   cvlt_bias: {column: cvlt21_, type: number, label: Response bias, range: [-1, 1], winsor: false}
@@ -220,19 +276,35 @@ variables:
   cvlt_recency_z_stored: {column: cvlt20z_, type: number, label: "Recency, z-score as stored", range: [-1000, 1000], missing: {inf: not_recorded, -inf: not_recorded}, winsor: false, keep: false}
   cvlt_bias_z_stored: {column: cvlt21z_, type: number, label: "Response bias, z-score as stored", range: [-1000, 1000], missing: {inf: not_recorded, -inf: not_recorded}, winsor: false, keep: false}
 
+  # The discriminability as the EMR stored it: only compared with the recomputed one
+  cvlt_discriminability_stored: {column: cvlt18_, type: number, label: Discriminability as stored (percent), range: [0, 100], winsor: false, keep: false}
+  cvlt_discriminability_band_stored: {column: cvlt18z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], label: "Discriminability, percentile band as stored (a check, not delivered)", keep: false}
+
   # A percentile band at every age
   cvlt_serial_band: {column: cvlt13z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_serial, from: cvlt_serial, label: "Serial clustering, percentile band"}
   cvlt_perseverations_band: {column: cvlt14z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_perseverations, from: cvlt_perseverations, label: "Perseverations, percentile band"}
   cvlt_intrusions_band: {column: cvlt15z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_intrusions, from: cvlt_intrusions, label: "Intrusions, percentile band"}
   cvlt_hits_band: {column: cvlt16z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_hits, from: cvlt_hits, label: "Correct recognitions, percentile band"}
   cvlt_false_alarms_band: {column: cvlt17z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_false_alarms, from: cvlt_false_alarms, label: "False recognitions, percentile band"}
-  cvlt_discriminability_band: {column: cvlt18z_, type: band, limits: [1, 5, 25, 50, 75, 95, 99], lookup: cvlt_discriminability, from: cvlt_discriminability, label: "Discriminability, percentile band"}
 
 scores:
   cvlt_total_1_5:
     label: Trials 1 to 5 - words recalled
     sum: [cvlt_trial1, cvlt_trial2, cvlt_trial3, cvlt_trial4, cvlt_trial5]
     compare: cvlt_total_1_5_stored
+
+  # Recognition discriminability: 100 x (hits + 28 - false alarms) / 44, 16 targets and 28 distractors; the stored value is a check.
+  # Written as 100 - 100/44 x (the 16 - hits targets missed + the false alarms), so that a perfect score is exactly 100 and 33/44 exactly
+  # 75, the limits of the percentile table (a plain product with 100/44 gives 100.00000000000001); floor 0 absorbs the rounding at 0.
+  cvlt_discriminability:
+    label: Discriminability (percent)
+    sum: [cvlt_hits, cvlt_false_alarms]
+    reverse: [cvlt_hits]
+    scale: [-2.272727272727273, 100]
+    floor: 0
+    range: [0, 100]
+    compare: cvlt_discriminability_stored
+    compare_tolerance: 0.5
 
   # Z-scores, computed again with the regressions of the norms (norms/cvlt_*_z.csv) from the raw score, the age
   # at the visit, the years of education and the sex. A file has a line only for the ages that have a regression.
@@ -407,3 +479,10 @@ scores:
     label: "Response bias, percentile band"
     band_of: cvlt_bias_z
     limits: [1, 5, 25, 50, 75, 95, 99]
+
+  # The band of the discriminability is read in the percentile table from the recomputed value (a score, so it is listed here, not with
+  # the band variables, which can only read a variable)
+  cvlt_discriminability_band:
+    label: "Discriminability, percentile band"
+    lookup: cvlt_discriminability
+    from: cvlt_discriminability

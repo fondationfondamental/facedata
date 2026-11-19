@@ -2,22 +2,28 @@ instrument: learning_disorders
 title: Learning and developmental disorders
 tab: NEUROPSYCHOLOGIE
 section: Troubles des acquisitions et des apprentissages
-status: draft
+status: reviewed
 notes: >
   The BP schema plus four questions. Ten learning and developmental
-  disorders, then ADHD in childhood, ADHD at present and seizures, which BP
-  does not have, and a free text on the cognitive complaints of the
-  patient.
+  disorders (the same ten, with the same names, as in BP and ASP: delivered
+  as 1 for yes and 0 for no, unknown missing), then ADHD in childhood, ADHD
+  at present and seizures, which BP and ASP do not have, and a free text on
+  the cognitive complaints of the patient. These three questions and the
+  complaints stay out of a table pooled with BP and ASP.
 
   The thirteen questions are filled on 61 visits only, most of them where
-  the conditions form says that a learning disorder is suspected (36 of
-  the 79 visits with that answer). The answers are 0, 1 and 2; the
-  dictionary gives no code. 2 is read as "not known" (81 cells,
-  missing_code), as in the checklists of the clinician (open question
-  O23).
+  the conditions form says that a learning disorder is suspected (36 of the
+  79 visits with that answer). The raw codes are those of the form (eCEDR,
+  form 199.php): 1 Oui, 0 Non and 2 Ne sait pas, for the thirteen questions
+  and also for the suspicion of a learning disorder asked in the conditions
+  form (NEURO_SUSPI). The dictionary gives no code. 2 is read as "not known"
+  (unknown, missing_code): 77 cells in all, 56 on the ten questions that BP
+  and ASP also have and 21 on the three others, as in the checklists of the
+  clinician (open question O23).
 
   The cognitive complaints (trbapp14) are written on 702 visits and
-  delivered as written.
+  delivered as written; 4 of them hold a code for a missing text
+  (not_recorded, missing_code).
 
 defaults: {type: item, range: [0, 1], missing: {"2": unknown}}
 

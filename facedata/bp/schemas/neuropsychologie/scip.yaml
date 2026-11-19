@@ -2,28 +2,36 @@ instrument: scip
 title: Screen for Cognitive Impairment in Psychiatry (SCIP)
 tab: NEUROPSYCHOLOGIE
 section: SCIP
-status: draft
+status: reviewed
 notes: >
-  A short battery of five subtests, in the extraction from 2018 (about 220
-  visits). The SCIP has three parallel forms; scip_form says which one was
-  given.
+  A short battery of five subtests, in the extraction from 2018 (234 visits
+  hold any cell, 230 a raw score). The SCIP has three parallel forms;
+  scip_form says which one was given (222 visits).
 
   Each subtest has a raw score and a z-score. The z-score is computed again
-  as the application computes it, z = (raw score - mean) / SD with one mean
-  and one SD per subtest, the same at every age (norms/scip_*_z.csv, the
-  same for the three forms), and the stored z-score is kept only as a check
-  (scip_*_z_stored, not delivered). A recomputed z-score that differs from
-  the stored one by more than 0.0101 is flagged score_mismatch. It agrees
-  on 227 to 230 visits per subtest; the stored z-score differs on one visit
-  for the working memory and the verbal fluency (the same visit, from 2024)
-  and on none for the other three. A stored z-score with no usable raw
-  score is flagged score_not_recomputed (one visit for the verbal learning,
-  whose raw score is empty, two for the delayed recall, whose raw score is
-  above 10). The limits of
-  the test are 30 for verbal learning, 24 for working memory, 10 for the
-  delayed recall and 30 for the visuomotor task. A few delayed recalls are
-  above 10 and end out_of_range. The dictionary writes "/24" for three
-  subtests that have another maximum.
+  as the application computes it: z = (raw score - mean) / SD with one mean
+  and one SD per subtest, constants written on one line of the script of the
+  form, with no age or education term and the same for the three forms
+  (norms/scip_*_z.csv). It is delivered as recomputed and is not winsorised:
+  a z-score of fixed constants is already on its scale, and the clipping at
+  the 1st and 99th percentiles changed 10 cells (3, 2, 3, 0 and 2 for verbal
+  learning, working memory, verbal fluency, delayed recall and visuomotor).
+  Where these constants come from is not checked against the manual (open
+  question DM-4).
+
+  The stored z-score is kept only as a check (scip_*_z_stored, not
+  delivered). A recomputed z-score that differs from it by more than 0.0101
+  is flagged score_mismatch: 0, 1, 1, 0 and 0 visits per subtest (the same
+  visit, from 2024, for the working memory and the verbal fluency), against
+  230, 228, 228, 227 and 227 visits where they agree. A stored z-score with
+  no usable raw score is flagged score_not_recomputed (3 in all). One is a
+  verbal learning whose raw score is empty: the stored z-score is the
+  formula applied to a raw score of 0. The two others are delayed recalls
+  whose raw score is above the limit of 10: the stored z-score is the
+  formula applied to that impossible raw score, and the raw score ends
+  out_of_range. The limits of the test are 30 for verbal learning, 24 for
+  working memory, 10 for the delayed recall and 30 for the visuomotor task.
+  The dictionary writes "/24" for three subtests that have another maximum.
 
   The hour of the testing (rad_heure_passation_), listed in this section of
   the dictionary, is in neuropsy_conditions.yaml.
@@ -50,7 +58,6 @@ scores:
     regression: scip_verbal_learning_z
     from: scip_verbal_learning
     range: [-10, 10]
-    winsor: [0.01, 0.99]
     compare: scip_verbal_learning_z_stored
     compare_tolerance: 0.0101
   scip_working_memory_z:
@@ -58,7 +65,6 @@ scores:
     regression: scip_working_memory_z
     from: scip_working_memory
     range: [-10, 10]
-    winsor: [0.01, 0.99]
     compare: scip_working_memory_z_stored
     compare_tolerance: 0.0101
   scip_verbal_fluency_z:
@@ -66,7 +72,6 @@ scores:
     regression: scip_verbal_fluency_z
     from: scip_verbal_fluency
     range: [-10, 10]
-    winsor: [0.01, 0.99]
     compare: scip_verbal_fluency_z_stored
     compare_tolerance: 0.0101
   scip_delayed_recall_z:
@@ -74,7 +79,6 @@ scores:
     regression: scip_delayed_recall_z
     from: scip_delayed_recall
     range: [-10, 10]
-    winsor: [0.01, 0.99]
     compare: scip_delayed_recall_z_stored
     compare_tolerance: 0.0101
   scip_visuomotor_z:
@@ -82,6 +86,5 @@ scores:
     regression: scip_visuomotor_z
     from: scip_visuomotor
     range: [-10, 10]
-    winsor: [0.01, 0.99]
     compare: scip_visuomotor_z_stored
     compare_tolerance: 0.0101

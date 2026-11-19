@@ -2,37 +2,47 @@ instrument: wais3_matrices
 title: WAIS-III matrix reasoning (26 items)
 tab: NEUROPSYCHOLOGIE
 section: Matrices
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 of the BP file). This schema reads the columns mat01_w to
-  mat26_w on the WAIS-III visits (568 visits, from 2010 to 2016);
+  mat26_w on the WAIS-III visits (543 visits, from 2010 to 2015);
   wais4_matrices.yaml reads the WAIS-IV visits.
 
-  The stored raw total equals the sum of the 26 items on 563 of the 567
-  visits that have it; the 4 others get score_mismatch.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold matrices items and are read
+  in wais4_matrices.yaml, not here.
 
-  Scaled score and z-score (decision of 18 November 2026). Recomputed from
-  the raw total in the application's own norm table (norms/wais3_matrices.csv,
-  not part of the repository) and delivered; the stored ones are read as
-  checks (keep: false), and a difference is score_mismatch on the delivered
-  score. The EMR read its table with the age typed in the form (cclin01_);
-  the package reads it with that age where it is within one year of the age
-  at the visit, else with the age at the visit (age: wais3_mat_age). The
-  z-score is (scaled score - 10) / 3. On the 567 visits that have a stored
-  and a recomputed scaled score, 21 differ: 15 are among the 33 visits
-  labelled WAIS-III that were given the WAIS-IV (question DM-2, O16), where
-  the stored score is probably the WAIS-IV one; of the other 6, five have a
-  typed age more than a year from the age at the visit (read with the typed
-  age as it stands the table gives the stored score on all but one of
-  them). The z-score differs on 21.
+  The stored raw total equals the sum of the 26 items on 542 of the 542 visits
+  that have it (the 543rd visit has none and gets the recomputed one).
 
-  Same instrument and same schema as in FACE BP.
+  Scaled score and z-score (decision of 18 November 2026). Recomputed from the
+  raw total in the application's own norm table (norms/wais3_matrices.csv, not
+  part of the repository) and delivered; the stored ones are read as checks
+  (keep: false), and a difference is score_mismatch on the delivered score.
+  The EMR read its table with the age typed in the form (cclin01_); the
+  package reads it with that age where it is within one year of the age at the
+  visit, else with the age at the visit (age: wais3_mat_age). The z-score is
+  (scaled score - 10) / 3. On the 542 visits that have a stored and a
+  recomputed scaled score, 6 differ (before 2013): five have a typed age more
+  than a year from the age at the visit (read with the typed age as it stands
+  the table gives the stored score on all but one of the 541 visits that have
+  a typed age). The z-score differs on 6. The typed age is within a year of
+  the age at the visit on 525 of the 543 visits that have a total, farther on
+  17 and missing on 1.
+
+  Same instrument and same schema as in FACE BP, except the version block
+  (the override of the edition rule above, which BP does not have). Two
+  typed ages written 'NN ans' are unparsed; the age at the visit is used
+  where the typed one is not read (1 of the 2 visits have this subtest).
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais3]}
 

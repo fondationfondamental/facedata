@@ -2,53 +2,68 @@ instrument: wais4_memoire_chiffres
 title: WAIS-IV digit span
 tab: NEUROPSYCHOLOGIE
 section: Mémoire des chiffres (WAIS-4) nouvelle version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the digit-span columns
-  on the WAIS-IV visits (about 2,500 visits, from 2014);
-  wais3_memoire_chiffres.yaml reads the WAIS-III visits. The WAIS-IV adds
-  the sequencing task.
+  (decision D10 of the BP file). This schema reads the digit-span columns on
+  the WAIS-IV visits (2,539 visits, from 2013; 2,527 have a raw total);
+  wais3_memoire_chiffres.yaml reads the WAIS-III visits. The WAIS-IV adds the
+  sequencing task.
+
+  Edition rule (decision D138, question O16). The form labels 33 visits
+  WAIS-III although they hold the WAIS-IV digit-span sequencing task (the
+  columns mcoc_w and mcocemp_w, which only the WAIS-IV has). They are read as
+  WAIS-IV: the version block lists the two columns under override, and the
+  visits get the flag version_overridden. All 33 hold digit-span values and
+  are read here, not in wais3_memoire_chiffres.yaml. The raw total of 32 of
+  them counts the sequencing score; that of the 33rd (2013) does not
+  (score_mismatch on the check of the total).
 
   The SZ extraction holds the summary scores only: the items of the three
   tasks, which BP has, are not extracted.
 
-  Columns. In BP the summary columns of the WAIS-IV are shifted against
-  their dictionary labels (the raw total is in mcodemp_w, the forward span
-  in mcoiemp_w...). Not here: each column holds what its label says, on
-  every WAIS-IV visit. The raw total (nbrut_w) is forward + backward +
-  sequencing on all 2,494 visits, the span difference (empdid_w) is the
-  forward span (mcodemp_w) minus the backward span (mcoiemp_w), and the
-  z-score of the scaled score is (scaled score - 10) / 3. So the same
-  output variables as in BP are read here in other columns.
+  Columns. In BP the summary columns of the WAIS-IV are shifted against their
+  dictionary labels (the raw total is in mcodemp_w, the forward span in
+  mcoiemp_w...). Not here: each column holds what its label says, on every
+  WAIS-IV visit. The raw total (nbrut_w) is forward + backward + sequencing on
+  2,526 of 2,527 visits (the exception is the visit above), the span
+  difference (empdid_w) is the forward span (mcodemp_w) minus the backward
+  span (mcoiemp_w) on 2,538 of 2,538, and the z-score of the scaled score is
+  (scaled score - 10) / 3 on 2,527 of 2,527. So the same output variables as
+  in BP are read here in other columns.
 
   Same instrument as in FACE BP, reduced to the summary scores.
 
-  Scaled score and z-score. They are recomputed and delivered (decision of the
-  project lead for the standard scores of the neuropsychological tests): the
-  scaled score is read in the WAIS-IV table of the application
-  (norms/wais4_digit_span.csv) from the raw total nbrut_w, and the z-score is
-  (scaled score - 10) / 3. The table is read with the age typed in the form
-  (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it is
-  within 1 year of the age at the visit, and with the age at the visit
-  elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97 have
-  a typed age more than 1 year away). The stored scores are
+  Scaled score and z-score. They are recomputed and delivered (decision of
+  the project lead for the standard scores of the neuropsychological tests):
+  the scaled score is read in the WAIS-IV table of the application
+  (norms/wais4_digit_span.csv) from the raw total nbrut_w, and the z-score
+  is (scaled score - 10) / 3. The table is read with the age typed in the
+  form (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where it
+  is within 1 year of the age at the visit, and with the age at the visit
+  elsewhere (2,430 of the 2,527 visits that have a total use the typed age,
+  97 have a typed age more than 1 year away). The stored scores are
   wais4_ds_scaled_stored, wais4_ds_z_stored and the three
   wais4_ds_*_span_z_stored, not delivered. The z-scores of the three longest
-  spans are computed with the mean and the standard deviation of the age group
-  (norms/wais4_ds_forward_span_z.csv and the two others, a regression with the
-  age coefficient 0) and compared with the stored z-scores to 0.011, which
-  have two decimals. Verified on the visits that have both: the scaled score
-  differs on 10 of 2,494 (0.4%), and so does its z-score; the forward span
-  z-score on 13 of 2,494, the backward on 21 and the sequencing on 15
-  (score_mismatch, 2016 to 2026). The span z-scores are delivered on a few
-  more visits (2,506, 2,507, 2,496) than the stored ones. No raw total gives
-  norm_missing.
+  spans are computed with the mean and the standard deviation of the age
+  group (norms/wais4_ds_forward_span_z.csv and the two others, a regression
+  with the age coefficient 0) and compared with the stored z-scores to
+  0.011, which have two decimals. Verified on the visits that have both: the
+  scaled score differs on 11 of 2,527 (0.4%), and so does its z-score; the
+  forward span z-score on 16 of 2,527, the backward on 24 and the sequencing
+  on 15 (score_mismatch, 2013 to 2026). The span z-scores are delivered on a
+  few more visits (2,539, 2,540, 2,529) than the stored ones (2,527). No raw
+  total gives norm_missing. The EMR read its tables with the typed age,
+  which the package replaces by the age at the visit where it is more than 1
+  year away (3.8% of the visits): this is the case of 9 of the 11
+  scaled-score differences, 10 of the 16 forward-span, 17 of the 24
+  backward-span and 13 of the 15 sequencing-span z-score differences.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, versions: [wais4]}
 

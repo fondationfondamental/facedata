@@ -2,17 +2,24 @@ instrument: wais3_code_symboles_ivt
 title: WAIS-III coding, symbol search and processing speed index
 tab: NEUROPSYCHOLOGIE
 section: Code, Symboles & IVT
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 in PROGRESS.md). This schema reads the WAIS-III visits
-  (about 1,250 visits); wais4_code_symboles_ivt.yaml reads the others. The
-  two editions have the same subtests and the same columns, but different
-  sheets and norms: the coding sheet has 133 boxes in WAIS-III and 135 in
-  WAIS-IV.
+  (decision D10 in PROGRESS.md). This schema reads the WAIS-III visits (1,302
+  visits are labelled WAIS-III, 2009 to 2025: 1,254 have a coding score, 1,246
+  a symbol search score and 1,245 the index; 25 of them are dated 2016 or
+  later and none holds a column that only the WAIS-IV has, so they stay as
+  labelled); wais4_code_symboles_ivt.yaml reads the others. The two editions
+  have the same subtests and the same columns, but different sheets and norms:
+  the coding sheet has 133 boxes in WAIS-III and 135 in WAIS-IV.
 
-  The confidence interval of the index (ivt03_w) is text such as "90-105"
-  and is delivered as text.
+  The confidence interval of the index (ivt03_w) is text such as "90-105" and
+  is delivered as stored text. It comes with the stored sum and cannot be
+  recomputed as text here: the tables norms/wais4_ivt_low.csv and
+  wais4_ivt_high.csv reproduce the WAIS-IV one on 4,662 of 4,666 visits, but
+  there is no such table for the WAIS-III, and delivering the interval as two
+  numbers is left for later. Where the stored index differs from the
+  recomputed one (30 visits) it gets derived_doubt.
 
   Raw scores. The stored raw score is delivered as it is, and checked: it is
   the boxes filled minus the boxes filled incorrectly (coding) or the correct
@@ -25,26 +32,56 @@ notes: >
   recomputed from the raw scores in the application's own norm tables
   (norms/wais3_code.csv, wais3_symbol.csv, wais3_ivt_index.csv, read from the
   scripts of the EMR; not part of the repository) and delivered; the stored
-  ones are read as checks (keep: false) and a difference is score_mismatch
-  on the delivered score. The EMR read the age tables with the age typed in
-  the form (cclin01_); the package uses that age where it is within one year
-  of the age at the visit, else the age at the visit (age: wais3_code_age).
-  The z-score is (scaled score - 10) / 3 (tolerance 0.006). The processing
-  speed index is read in an age-free table from the sum of the two
-  recomputed scaled scores, which is delivered too.
+  ones are read as checks (keep: false) and a difference is score_mismatch on
+  the delivered score. The EMR read the age tables with the age typed in the
+  form (cclin01_); the package uses that age where it is within one year of
+  the age at the visit, else the age at the visit (age: wais3_code_age). The
+  z-score is (scaled score - 10) / 3 (tolerance 0.006). The processing speed
+  index is read in an age-free table from the sum of the two recomputed scaled
+  scores, which is delivered too. The percentile rank of the index is read in
+  the application's table (norms/wais3_ivt_percentile.csv) from the same sum
+  and delivered (wais3_ivt_percentile, 1,245 visits; a percentile of 0.1 is a
+  censored value, wais3_ivt_percentile_cens, 1 visit). The stored percentile
+  is a check (wais3_ivt_percentile_stored, tolerance 0.051 because it has one
+  decimal): the table, read from the stored sum, gives it on 1,244 of 1,244
+  visits that have both.
 
   On 1,254 coding visits the scaled score differs from the stored one on 26
   (16 to 2012, 10 in 2013-2015), on 1,246 symbol search visits on 25 (15, 9
-  and 1 in 2016-2018), and the sum of the two and the index on 30 of 1,245;
-  on 24 of these 30 the typed age is more than a year from the age at the
-  visit, and read with the typed age as it stands the index differs on 9
-  visits. The z-scores differ on 38 (coding) and 43 (symbol search) visits:
-  the stored z-score is not (stored scaled score - 10) / 3 on 14 coding and
-  19 symbol search visits (by 0.33 or more), in addition to the scaled
-  scores that differ. The percentile rank and the confidence interval of the
-  index come from the stored sum and are delivered as stored: where the
-  stored index differs from the recomputed one (30 visits) they get
-  derived_doubt.
+  and 1 in 2016-2018), and the sum of the two and the index on 30 of 1,245; on
+  23 of these 30 the typed age is more than a year from the age at the visit
+  and on 1 there is none, and read with the typed age as it stands (the age at
+  the visit where none was typed) the index differs on 9 visits. The z-scores
+  differ on 38 (coding) and 43 (symbol search) visits: the stored z-score is
+  not (stored scaled score - 10) / 3 on 14 coding and 19 symbol search visits
+  (by 0.33 or more), in addition to the scaled scores that differ. The
+  percentile rank differs from the stored one on the same 30 visits
+  (score_mismatch on the delivered percentile); the interval, delivered as
+  stored, keeps its derived_doubt on these 30 visits.
+
+  The delivered scaled scores equal the stored ones on 97.9% of the coding
+  visits and 98.0% of the symbol search visits, and the sum and the index on
+  97.6%; once the visits whose typed age is missing or more than 1 year from
+  the age at the visit are set aside (73 coding, 72 symbol search and 72 sum
+  visits), on 99.5%, 99.7% and 99.5% (the set-aside visits hold 20 of the 26
+  coding mismatches, 21 of the 25 symbol search ones and 24 of the 30 of the
+  sum). 18 of the 25 visits labelled WAIS-III and dated 2016 or later hold
+  coding and 17 hold symbol search.
+
+  Other indexes. The BP form has no information, arithmetic, picture
+  completion, block design or letter-number sequencing subtest (the extraction
+  has no column for them), so no verbal comprehension, perceptual reasoning,
+  working memory or full-scale index can be built: the processing speed index
+  is the only index of BP.
+
+  Unparsed cells. The 2 cells that stay unparsed (boxes filled of the
+  coding, correct answers of the symbol search) are numbers typed with a
+  superscript.
+
+  Unexplained and left as measured (use a centre term in a pooled analysis): a
+  centre step on wais3_symbol_errors: centre K (83
+  visits) has no error on 90% of its visits against 34% to 46% in the other
+  centres, with no known cause (no score of the schema shows it).
 
 version:
   name: wais_version
@@ -74,7 +111,7 @@ variables:
   # Processing speed index (IVT)
   wais3_ivt_sum_scaled_stored: {column: ivt04_w, label: Sum of the two scaled scores as stored, range: [2, 38], keep: false}
   wais3_ivt_index_stored:      {column: ivt01_w, label: Processing speed index as stored, range: [50, 150], keep: false}
-  wais3_ivt_percentile: {column: ivt02_w, label: Percentile rank of the index, type: number, range: [0, 100], winsor: false, derived_from: wais3_ivt_index}
+  wais3_ivt_percentile_stored: {column: ivt02_w, label: Percentile rank of the index as stored, type: number, range: [0, 100], winsor: false, keep: false}
   wais3_ivt_interval:   {column: ivt03_w, label: 95% confidence interval of the index, type: text, derived_from: wais3_ivt_index}
 
 scores:
@@ -129,3 +166,10 @@ scores:
     from: wais3_ivt_sum_scaled
     range: [50, 150]
     compare: wais3_ivt_index_stored
+  wais3_ivt_percentile:
+    label: Percentile rank of the index, read in the table of the application from the sum of the scaled scores
+    lookup: wais3_ivt_percentile
+    from: wais3_ivt_sum_scaled
+    range: [0, 100]
+    compare: wais3_ivt_percentile_stored
+    compare_tolerance: 0.051

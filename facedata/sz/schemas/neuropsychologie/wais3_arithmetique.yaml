@@ -2,36 +2,53 @@ instrument: wais3_arithmetique
 title: WAIS-III arithmetic
 tab: NEUROPSYCHOLOGIE
 section: Arithmétique (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  arithmetic columns on the WAIS-III visits (557 visits, from 2010 to
-  2016): 20 items, the last two scored 0 to 2 (a point for speed).
-  wais4_arithmetique.yaml reads the WAIS-IV visits.
+  (decision D10 of the BP file). This schema reads the arithmetic columns on
+  the WAIS-III visits (533 visits, from 2010 to 2015): 20 items, the last two
+  scored 0 to 2 (a point for speed). wais4_arithmetique.yaml reads the WAIS-IV
+  visits.
 
-  The stored raw total is the sum of the 20 items on every visit. The
-  z-score is (scaled score - 10) / 3 on every visit.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold arithmetic items and are
+  read in wais4_arithmetique.yaml, not here.
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  All 533 visits have the 20 items. The stored raw total is their sum on 532
+  of 532 visits (one visit has no stored total, and the recomputed one is
+  delivered). The z-score is (scaled score - 10) / 3 on every visit.
+
+  No stopping rule shows in the data: no visit has an empty item. A total with
+  an empty item would not be computed, as in the application ('Questionnaire
+  incomplet').
 
   FACE BP does not have this subtest.
 
   Scaled score and z-score (decision of 18 November 2026). Recomputed from
-  the raw total in the application's own norm table (norms/wais3_arithmetic.csv,
-  12 age groups read from the scripts of the EMR; not part of the
-  repository) and delivered; the stored ones are read as checks (keep:
-  false) and a difference is score_mismatch on the delivered score. The EMR
-  read its table with the age typed in the form (cclin01_); the package
-  uses that age where it is within one year of the age at the visit, else
-  the age at the visit (age: wais3_arith_age). The z-score is (scaled score - 10) / 3
-  (tolerance 0.006). On the 557 visits that have a stored and a recomputed scaled score, 19 differ: 17 are among the 33 visits labelled WAIS-III that were given the WAIS-IV (question DM-2, O16), where the stored score is probably the WAIS-IV one, and 2 have a typed age more than a year from the age at the visit (read with the typed age as it stands the table gives the stored score on all but the 17). The z-score differs on 19.
+  the raw total in the application's own norm table
+  (norms/wais3_arithmetic.csv, 12 age groups read from the scripts of the
+  EMR; not part of the repository) and delivered; the stored ones are read
+  as checks (keep: false) and a difference is score_mismatch on the
+  delivered score. The EMR read its table with the age typed in the form
+  (cclin01_); the package uses that age where it is within one year of the
+  age at the visit, else the age at the visit (age: wais3_arith_age). The
+  z-score is (scaled score - 10) / 3 (tolerance 0.006). On the 532 visits
+  that have a stored and a recomputed scaled score, 2 differ (before 2013),
+  both with a typed age more than a year from the age at the visit (read
+  with the typed age as it stands the table gives the stored score on all
+  531 visits that have a typed age). The z-score differs on the same 2. The
+  typed age is within a year of the age at the visit on 515 of the 533
+  visits that have a total, farther on 17 and missing on 1. Two typed ages
+  written 'NN ans' are unparsed; the age at the visit is used where the
+  typed one is not read (1 of the 2 visits have this subtest).
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais3]}
 
@@ -68,7 +85,6 @@ scores:
           wais3_arith06, wais3_arith07, wais3_arith08, wais3_arith09, wais3_arith10,
           wais3_arith11, wais3_arith12, wais3_arith13, wais3_arith14, wais3_arith15,
           wais3_arith16, wais3_arith17, wais3_arith18, wais3_arith19, wais3_arith20]
-    min_items: 1
     compare: wais3_arith_total_stored
   wais3_arith_scaled:
     label: Age-scaled score (mean 10 and SD 3)

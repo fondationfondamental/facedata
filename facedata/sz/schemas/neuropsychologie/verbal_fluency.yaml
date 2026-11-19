@@ -2,20 +2,25 @@ instrument: verbal_fluency
 title: Verbal fluency, letter P and animals
 tab: NEUROPSYCHOLOGIE
 section: Fluences Verbales
-status: draft
+status: reviewed
 notes: >
   Two tasks of two minutes: words that begin with P, and names of animals.
-  1,401 visits, from 2010 to 2025. For each task: the number of correct
-  words, its z-score and percentile band, and the errors.
+  1,400 visits, from 2010 to 2025. For each task: the number of correct words,
+  its z-score and percentile band, and the errors.
 
-  Percentile bands. The column holds plain numbers, bands ("25 - 50") and
-  the two end classes (">95", "<5"); every cell is one full band. The value
-  is the lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95.
+  Percentile bands. The column holds plain numbers, bands ("25 - 50") and the
+  two end classes (">95", "<5"); every cell is one full band. The value is the
+  lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95.
 
   Rule breaks. The stored number is the sum of the derived words, the
   intrusions and the proper names on every visit; it is recomputed and
   compared. "DCM" is written in the error columns of one visit and stays
   unparsed.
+
+  Counts of the rater. The perseverations, the intrusions, the derived words
+  and the proper names are counts that the rater makes on the transcript of
+  the words: they cannot be recomputed (no word sequence is stored) and are
+  delivered as stored.
 
   Recomputed. The z-score and the percentile band of each task are computed
   again as the application computes them (one script for the BP and the SZ
@@ -24,24 +29,45 @@ notes: >
   40 to 59, 60 and over) and three levels of education (under 6 years, 6 to
   11, 12 and over): the z-score is (words - mean) / SD of the cell to two
   decimals (norms/fluency_*_z.csv), the band is the lower limit of the band
-  the words fall in (norms/fluency_*_band.csv; 0 for "<5", then 5, 10, 25,
-  50, 75, 90, 95). The tables are read with the age typed in the form
-  (cclin01_) where it is within one year of the age at the visit, and with
-  the age at the visit elsewhere, and with the years of education typed in
-  the form (cclin08_), filled on every visit that has a count.
+  the words fall in (norms/fluency_*_band.csv; 0 for "<5", then 5, 10, 25, 50,
+  75, 90, 95). The tables are read with the age typed in the form (cclin01_)
+  where it is within one year of the age at the visit, and with the age at the
+  visit elsewhere, and with the years of education typed in the form
+  (cclin08_), filled on every visit that has a count. The education edges are
+  those of the BP and SZ script; the DR script has other ones (see the DR
+  schema). Under 6 years (14 visits with a count for each task) the script
+  takes the lowest class, and the stored values follow it (the z-score on 14
+  of 14 visits for the letter and 13 of 14 for the animals, the band on all of
+  them).
 
   Checks. A recomputed value that differs from the stored one is flagged
   score_mismatch (the z-score by more than 0.0101). Of the visits where both
   exist, the z-score differs on 18 of 1,398 for the letter P and 18 of 1,394
-  for the animals (1.3%), the band on 12 of each (0.9%); the differences
-  are on visits until 2018 and one from 2024. A stored band that is "<5" on
-  an empty count of words (7 visits for the animals, 2 for the letter P) is
-  the percentile of an empty cell, which the EMR computes as if the count
-  were 0: nothing is delivered and the row gets score_not_recomputed, as it
-  does for the 2 stored z-scores with no count.
+  for the animals (1.3%), the band on 12 of each (0.9%); the differences are
+  on visits until 2018 and one from 2025. The 36 (visit, task) pairs with a
+  z-score that differs (19 visits; every band difference is one of them) are
+  read in another cell of the table: 26 in another class of education (16 at
+  11 or 12 years), 7 in another age class (3 of them with a typed age more
+  than one year from the age at the visit), 2 in no cell, 1 in a cell that
+  differs both ways. The typed age is more than one year from the age at the
+  visit on 3.7% of the visits that have one (126 of 3,451), and the script
+  recomputes only when the words are typed, not when the age or the education
+  is edited afterwards. A stored band that is "<5" on an empty count of words
+  (7 visits for the animals, 2 for the letter P) is the percentile of an empty
+  cell, which the EMR computes as if the count were 0: nothing is delivered
+  and the row gets score_not_recomputed, as it does for the 2 stored z-scores
+  with no count.
 
   Same instrument as in FACE BP, without the clusters and the switches,
-  which the SZ extraction does not hold.
+  which the SZ extraction does not hold. The box "test not done" of the SZ
+  form (chk_fv_) is not extracted either: ask the data managers. 2 typed
+  ages written 'NN ans' (the age at the visit is used), 2 education cells
+  that hold a word (on visits with no test value) and one count of animals
+  written with a comment stay unparsed. Centre B (21 to 24 visits) counts
+  more perseverations in the animals task (mean 2.1 against 0.5; 9 of its 22
+  visits) and 2 of its 21 visits have a proper name, while its word count is
+  3 above the others (27.7 against 24.7): counts made by the rater on the
+  transcript, a small-centre habit.
 
 defaults: {type: item, range: [0, 30]}
 

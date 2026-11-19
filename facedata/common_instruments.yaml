@@ -362,15 +362,22 @@ wurs:
 neuropsy_conditions:
   title: Conditions of the neuropsychological assessment
   domain: Neuropsychology
-  schemas: {bp: neuropsy_conditions, sz: neuropsy_conditions, dr: neuropsy_conditions, asp: puberty_and_handedness}
+  schemas: {bp: neuropsy_conditions, sz: neuropsy_conditions, dr: neuropsy_conditions, asp: assessment_conditions}
   stack: with care
-  use: [neuropsy_age, education_years, handedness, neuropsy_mood_rating_delay]
+  use: [neuropsy_age, neuropsy_age_used, education_years, neuropsy_mood_rating_delay, neuropsy_no_visual_disorder, neuropsy_no_hearing_disorder, neuropsy_french_fluent, neuropsy_state_compatible, neuropsy_psychotropic_treatment, neuropsy_learning_disorder]
   note: >
-    The age at the testing and the years of education are in BP, SZ and DR; the
-    handedness is in BP, DR and ASP (not in SZ). In SZ the form was filled from
-    2010 to 2016 only, so the age at the testing and the years of education are
-    missing afterwards. The other questions of the form are not the same from
-    one cohort to the next.
+    The age typed at the testing, its reconciled version neuropsy_age_used (the
+    age the norms of the tab are read with) and the years of education are in BP,
+    SZ and DR; ASP has neither (its application takes the age at the date of the
+    assessment form). The questions with the same names have the same meaning:
+    visual and hearing disorder in the four cohorts; sufficient French in BP, SZ
+    and ASP (DR asks for the mother tongue); compatible clinical state, treatment
+    by psychotropic drugs (1 yes, 0 no, 2 or unknown is missing) and learning
+    disorder in SZ, DR and ASP. The handedness is in BP and DR (DR codes 1 = right)
+    and in ASP under the name handedness_np (1 = left); SZ has none. Three questions
+    are not the same from one cohort to the next (the second box of the form, the
+    period of the last episode). The form of SZ covers 3,455 visits to 2026; from
+    2022 about half of the BP inclusions hold it.
 
 tmt:
   title: Trail Making Test, parts A and B
@@ -388,7 +395,8 @@ tmt:
     wrote the opposite sign (13% of the BP visits, mostly before 2013, one SZ centre
     in 2011-2012, three z-scores of DR in every year) the cell gets sign_flipped,
     elsewhere a difference is a score_mismatch. A visit with no education has no
-    z-score. The raw error counts differ: BP and SZ store the corrected and the
+    z-score. The z-scores are not clipped (no winsorising). The error bands read the
+    checked difference of B and A; the lowest band is never open (BP D138-D143). The raw error counts differ: BP and SZ store the corrected and the
     uncorrected, DR a typed total and four kinds.
 
 verbal_fluency:
@@ -401,8 +409,10 @@ verbal_fluency:
     The number of words, the z-score and the percentile band of each task are in
     the three cohorts. The errors are in BP and SZ. DR has two forms of the test
     and no code that names them: the form with the letter P and animals is told
-    from the data, and the second form (another letter, fruits) is another
-    instrument.
+    from the data, and the second form (the letter R and fruits, as the eCEDR
+    form says) is another instrument whose z-score and band are typed by hand.
+    One rule for the education below 6 years in the three cohorts (the lowest
+    class); the DR application reads the middle class on 16 visits.
 
 cvlt:
   title: California Verbal Learning Test (CVLT)
@@ -432,10 +442,11 @@ errands_test:
     or 2018; in BP on inclusions from 2021). The time, the z-scores and the
     bands are in BP and SZ and are computed again from the raw counts with the
     same tables in both (BP D135; a higher z-score is better; the age typed in
-    the form, 20 to 60 years, and the education class are needed, so about a
-    quarter of the visits have none). The z-scores typed in BP mix two sign
-    conventions (BP D126) and are only checks. In ASP the test is one of several
-    in the schema executive_functions.
+    the form, 20 to 60 years, and the years of education: 12 years or more is the
+    class of the baccalaureate, as for the other tests, whatever the class ticked
+    in the form). The z-scores typed in BP mix two sign conventions (BP D126) and
+    are only checks. ASP has the counts only, in seconds, with no norm: no z-score,
+    no band (the schema executive_functions holds this test only).
 
 wais3_matrices:
   title: WAIS-III matrix reasoning
@@ -446,9 +457,9 @@ wais3_matrices:
   note: >
     The 26 items, the total, the scaled score and the z-score, the same in both
     cohorts. Visits tested with the third edition only (until 2015 or 2016).
-    But 33 SZ visits labelled WAIS-III were given the WAIS-IV (SZ O16): their
-    scaled scores come from the wrong norms until the export tells them
-    apart.
+    33 SZ visits labelled WAIS-III were given the WAIS-IV (SZ O16): the version
+    rule reads them as WAIS-IV from the digit-span sequencing task (flag
+    version_overridden), so their cells are in the WAIS-IV schemas.
 
 wais3_memoire_chiffres:
   title: WAIS-III digit span
@@ -483,8 +494,14 @@ wais4_similitudes:
   stack: "yes"
   use: [wais4_simil_total, wais4_simil_scaled, wais4_simil_z]
   note: >
-    The total, the scaled score and the z-score are in the four cohorts. The
-    items are recorded in BP, SZ and ASP, not in DR.
+    The total, the scaled score and the z-score are in the four cohorts, with the
+    same names, ranges and direction: for the same total and the same age the four
+    cohorts give one scaled score (0 conflicts). The total is the sum of the items
+    in BP and ASP and the stored total in SZ (its export copies one item twice) and
+    DR (no items). The stored scaled score is wrong in the application (it read an
+    empty age: BP 34% of the visits, SZ 7%, DR 5% typing error in its table):
+    the recomputed score is delivered. No score below 16 or from 80 years.
+    wais4_simil_not_done is in BP only.
 
 wais4_memoire_chiffres:
   title: WAIS-IV digit span
@@ -505,10 +522,11 @@ wais4_code_symboles_ivt:
   use: [wais4_code_raw, wais4_code_scaled, wais4_code_z, wais4_symbol_raw, wais4_symbol_scaled, wais4_ivt_index]
   note: >
     The coding subtest is in the four cohorts; the symbol search is in BP, DR
-    and ASP. The raw score of the coding is delivered as stored: the centres do
-    not all take the errors off. The processing speed index of this form is
-    wais4_ivt_index in BP, SZ and DR and wais4_ivt_index_np in ASP, where the
-    shared name holds the copy of the medical evaluation (see wais4_indices).
+    and ASP. The raw score of the coding is the boxes filled minus the errors in
+    the four cohorts (BP D136: the application stopped taking the errors off in
+    2021). The processing speed index of this form is wais4_ivt_index in the four
+    cohorts (in SZ an estimate from the coding alone); the clinician's copy of
+    ASP is wais4_ivt_index_clinician.
 
 wais4_arithmetique:
   title: WAIS-IV arithmetic
@@ -526,8 +544,9 @@ wais4_vocabulaire:
   use: [wais4_vocab_total, wais4_vocab_scaled, wais4_vocab_z]
   note: >
     The 30 items, the total, the scaled score and the z-score, the same in both
-    cohorts. In BP the subtest was given from 2011 to 2021, then replaced by the
-    similarities.
+    cohorts, read in the same table (the ASP row at 25 to 29 years replaces the BP
+    script row, which was not monotone). In BP the subtest was given from 2011 to
+    2021, then replaced by the similarities.
 
 wais4_information:
   title: WAIS-IV information
@@ -550,30 +569,20 @@ wais4_efficience:
   domain: Neuropsychology
   schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_efficience}
   stack: with care
-  use: [wais4_imt_sum_scaled, wais4_imt_percentile]
+  use: [wais4_imt_sum_scaled, wais4_imt_index, wais4_imt_percentile, wais4_icv_index, wais4_irp_index, wais4_qit]
   note: >
     The working memory index is in the three cohorts, and the three other
-    indices and the full-scale IQ in SZ and ASP. In ASP the indices of this
-    form are named with the ending _np (wais4_imt_index_np ...), because the
-    shared names hold the copy of the medical evaluation: rename them before
-    stacking, or use wais4_indices. The indices are read in the table of the application from the sum of the
-    scaled scores (BP D135): SZ stores the working memory index 0.7 and the full-scale IQ 2.9 below it,
-    which are read with an offset and are checks; the sums are as stored in SZ and ASP and
-    recomputed in DR.
-
-wais4_indices:
-  title: WAIS-IV indices and full-scale IQ under the shared names
-  domain: Neuropsychology
-  schemas: {sz: wais4_efficience, dr: wais4_efficience, asp: wais4_indices}
-  stack: with care
-  use: [wais4_icv_index, wais4_irp_index, wais4_imt_index, wais4_qit]
-  note: >
-    In SZ (four indices and the IQ) and DR (working memory index) the values
-    come from the neuropsychology form. In ASP the shared names hold the values
-    that the clinician copied in the medical evaluation: they cover about five
-    times more visits than the neuropsychology form and equal it on 83% to 89%
-    of the visits that have both (72% for the IQ). The processing speed index
-    (wais4_ivt_index) follows the same rule and is also in BP.
+    indices and the full-scale IQ in SZ and ASP, under the same names. The sums of
+    the scaled scores are recomputed from the scaled scores that the subtest
+    schemas deliver (BP D137), and the indices are read in the table of the
+    application from them; the stored sums and indices are checks. SZ stores the
+    working memory index 0.7 and the full-scale IQ 2.9 below the table. The sums
+    are not the same: SZ and the second set of ASP (_a) use 1.5 x (similarities +
+    information) for the verbal comprehension, ASP uses the three subtests. In ASP
+    the clinician's copy of the medical evaluation (about five times more visits;
+    it equals the form on 83% to 92% of the visits that have both, 76% for the IQ)
+    is under the names ending in _clinician. BP delivers the processing speed
+    index only (no information, arithmetic or block design in its form).
 
 barona:
   title: Premorbid IQ expected from occupation and education (Barona)
@@ -583,10 +592,15 @@ barona:
   use: [barona_expected_qit, barona_qit_difference, barona_occupation, barona_education]
   note: >
     The expected full-scale IQ and its difference with the measured one are in
-    both cohorts; the expected verbal and performance IQ in SZ only. In SZ the
-    occupation is not reliable (it follows the diploma on 72% of the visits) and
-    the expected IQs keep their value with the flag check_failed: read the flags
-    before comparing. One code of each list is not documented in ASP.
+    both cohorts; the expected verbal and performance IQ in SZ only. The expected
+    IQ is computed from the sex, the diploma, the occupation and the age
+    (regression of the application, BP D138-D143): in SZ with the typed age, in ASP
+    with the age at the date of the form. In SZ the occupation is not reliable (it
+    follows the diploma on 72% of the visits) and the expected IQs keep their value
+    with the flag check_failed: read the flags before comparing. The ASP codes 0
+    and 8 of the occupation (about 460 expected IQs) are outside the seven ranks of
+    the formula; the difference is the stored one (derived_doubt where the expected
+    IQ moved).
 
 lis:
   title: Attribution of intentions in six film clips (LIS)
@@ -596,7 +610,9 @@ lis:
   use: [lis_total]
   note: >
     The total is in both cohorts (a distance to reference ratings: lower is
-    better); the answers to each clip are in SZ only. Added in 2018 in ASP.
+    better); the answers to each clip are in SZ only, where the total is recomputed
+    from them (BP D138-D143). In ASP the total is typed by hand, with no ratings
+    and a different scale: do not pool the two. Added in 2018 in ASP.
 
 learning_disorders:
   title: History of learning and developmental disorders

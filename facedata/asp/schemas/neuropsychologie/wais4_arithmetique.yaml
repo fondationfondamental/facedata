@@ -2,17 +2,21 @@ instrument: wais4_arithmetique
 title: "WAIS-IV, arithmetic"
 tab: neuropsychologie
 section: WAIS-IV
-status: draft
+status: reviewed
 notes: >
-  Arithmetic: 22 items scored from 0 to 1, their total, the scaled score and its z-score,
-  on 209 inclusion visits.
+  Arithmetic: 22 items scored from 0 to 1, their total, the scaled score and
+  its z-score, on 209 inclusion visits.
 
   The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
-  inclusion visits depending on the subtest, almost all of adults, from 2013 to
-  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
-  It is the fourth edition: the visual puzzles and the sequencing part of the
-  digit span exist only in it. No other edition of the scale is recorded in
-  this table.
+  inclusion visits depending on the subtest (302 visits in all, 12 of patients
+  under 18), from 2013 to 2026. It is on 14% of the inclusion visits of 2013,
+  42% of 2014, 36% of 2015, 18% to 19% of 2016 and 2017, 3% to 11% of 2018 to
+  2023, 21% to 22% of 2024 and 2025 and 7% of 2026 so far. It is the fourth
+  edition: the visual puzzles and the sequencing part of the digit span exist
+  only in it. No other edition of the scale is recorded in this table. The
+  extraction has no column for the edition: wais_version (wais4) is read from
+  the first item of each subtest, with the same block in the eleven schemas of
+  the WAIS-IV, and is filled on the 302 visits that hold one of them.
 
   Checked on every visit: the stored total is the sum of the items, and the
   stored z-score is the scaled score minus 10, over 3.
@@ -25,17 +29,64 @@ notes: >
   Scaled score and z-score. They are recomputed and delivered (decision of the
   project lead for the standard scores of the neuropsychological tests): the
   scaled score is read in the WAIS-IV table of the application
-  (norms/wais4_arithmetic_asp.csv) from the raw total, and the z-score is
-  (scaled score - 10) / 3. The ASP table is used for this subtest, as the ASP
-  script differs from the others (the tables of this subtest agree at the ages
-  of the visits of this cohort). The form has no typed age in this cohort: the
-  table is read with the age at the visit (the visits are of patients from
-  15.9 to 65 years; the one of 15.9 years is below the first age of the tables
-  and gets norm_missing). The stored scores are wais4_arith_scaled_stored and
-  wais4_arith_z_stored, not delivered. Verified: the scaled score differs from
-  the stored one on 12 of the 208 visits that have both (5.8%, score_mismatch;
-  7 in 2013 to 2015, 5 later), and so does its z-score; 1 visit is not
-  recomputed (the patient of 15.9 years).
+  (norms/wais4_arithmetic.csv) from the raw total, and the z-score is (scaled
+  score - 10) / 3. The plain table that BP, SZ and DR read is used. The ASP
+  copy (norms/wais4_arithmetic_asp.csv) holds the same values at every age
+  from 16 to 79 and only reuses its 75-79 row from 80 years: it is not needed,
+  no visit of this cohort is 80 or over, and no table has a row from 80 years
+  or below 16 (nothing is extrapolated). The form has no typed age in this
+  cohort: the table is read with the age at the date of the assessment form
+  (age basis, below). The visits are of patients from 15.9 to 65 years; the
+  one of 15.9 years is below the first age of the tables (16) and gets
+  norm_missing on ten subtests: the script gives every age under 18 the first
+  band, the tables start at 16. The stored scores are
+  wais4_arith_scaled_stored and wais4_arith_z_stored, not delivered. Verified:
+  the scaled score differs from the stored one on 11 of the 208 visits that
+  have both (5.3%, score_mismatch; 7 in 2013 to 2015, 4 later; 12 with the age
+  at the visit), and so does its z-score; 1 visit is not recomputed (the
+  patient of 15.9 years).
+
+  The 25-29 row of the script. 9 of the 11 differences are visits aged 25 to
+  29 dated 2014 to 2017 (9 of the 16 visits of that age and period; none of
+  the 22 later visits of that age differs). The row of that age group in the
+  ASP script replaced a commented row marked as an error about 2017-18 (read
+  in the script history): the stored score equals the old row on 9 of 9 visits
+  of 2014 to 2017 where the two rows differ and the new row on 6 later ones.
+  The table that is read is the one of the current script, so the stored
+  scores of 2014 to 2017 at that age group are the differences.
+
+  Age basis. The application (eAsperger, script 280_score.js, function
+  gere_ageNPSY) computes the age at the date of the assessment form (QSDTC),
+  not at the visit date, and the data show that it did so from about 2015 on.
+  The table is therefore read with the age at the form date
+  (wais4_arith_assessment_date, read from the raw column qsdtc and not
+  delivered; score fields age_date and age_date_since 2015-01-01) where the
+  visit is dated 2015 or later and the form date is within 366 days of the
+  visit, and with the age at the visit elsewhere. In this subtest the
+  differences are 12 with the age at the visit and 11 with the form date.
+
+  All subtests together. Over the eleven subtests that read a table with the
+  age (picture completion included), the scaled scores that differ from the
+  stored ones fall from 62 to 50 with the age at the form date (12 scores,
+  none new), and the three span z-scores of the digit span from 36 to 26 (10
+  scores). Reading the form date for the visits before 2015 too would leave 6
+  more differences, which is why the date starts in 2015. Of the 50 that
+  remain, 13 equal the reading with the age at the form date where that date
+  is more than 366 days from the visit (10 visits; the pipeline does not read
+  it, and a limit of 1,000 days instead would explain 13 more and create 1), 6
+  equal the reading of the first age band (4 where the form date is empty, 2
+  where it gives an age under 18: the script reads such an age as the first
+  band) and 31 follow neither. In 2024, 11 of the 52 WAIS visits (two centres)
+  have a scaled score that differs with the age at the visit; the form date
+  explains 3 of them (it is 40 to 90 days from the visit: 44 of the 51 WAIS
+  visits of 2024 that have a form date have it more than 31 days from the
+  visit) and 8 remain.
+
+version:
+  name: wais_version
+  filled:
+    wais4: [wais_sim1, wais_voc1, wais_info1, wais_cub1, wais_mat1, wais_puzl1, wais_mcod_1a, wais_arit1,
+            wais_cod_tot, wais_symb_tot, wais_img1]
 
 defaults: {type: item, range: [0, 1]}
 
@@ -65,6 +116,7 @@ variables:
   wais4_arith_total_stored: {column: wais_arittot, range: [0, 22], keep: false, label: "WAIS-IV arithmetic, total as stored"}
   wais4_arith_scaled_stored: {column: wais_arit_std, range: [1, 19], label: "WAIS-IV arithmetic, scaled score as stored", keep: false}
   wais4_arith_z_stored: {column: wais_arit_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV arithmetic, z-score of the scaled score as stored", keep: false}
+  wais4_arith_assessment_date: {column: qsdtc, type: date, range: [1900-01-01, 2100-12-31], keep: false, label: "Date of the assessment form, the date of the age read in the norms"}
 
 scores:
   wais4_arith_total:
@@ -73,8 +125,10 @@ scores:
     compare: wais4_arith_total_stored
   wais4_arith_scaled:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
-    lookup: wais4_arithmetic_asp
+    lookup: wais4_arithmetic
     from: wais4_arith_total
+    age_date: wais4_arith_assessment_date
+    age_date_since: "2015-01-01"
     range: [1, 19]
     compare: wais4_arith_scaled_stored
   wais4_arith_z:

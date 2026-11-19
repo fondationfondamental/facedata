@@ -243,7 +243,7 @@ def test_neuropsychologie(result, qc):
     assert (qc.loc["tmt_ba_time_band", "n_valid"], qc.loc["tmt_ba_time_band", "censored_left"]) == (5856, 0)         # the bands are read in the table: no open band at the low end
     # The TMT error bands are read in the norm tables, with the errors, the age and the years of education.
     assert (qc.loc["tmt_a_errors_band", "n_valid"], qc.loc["tmt_a_errors_band", "norm_missing"]) == (5860, 8)
-    assert (qc.loc["tmt_a_errors_band", "censored_right"], qc.loc["tmt_b_errors_band", "censored_right"]) == (5309, 4724)
+    assert (qc.loc["tmt_a_errors_band", "censored_right"], qc.loc["tmt_b_errors_band", "censored_right"]) == (4875, 4726)   # rebuilt from the application's scripts (TMT review, D138-D143)
     band = result.data["tmt_a_errors_band"].dropna()
     years = result.data["visit_date"].dt.year[band.index]
     shares = [(band[(years >= low) & (years <= high)] >= 10).mean() for low, high in [(2009, 2015), (2016, 2021), (2022, 2026)]]
@@ -286,7 +286,8 @@ def test_neuropsychologie(result, qc):
     assert (qc.loc["errands_errors", "n_valid"], qc.loc["errands_errors", "score_mismatch"]) == (808, 9)
     # The typed z-scores of the errands test mix two sign conventions (D126): they are checks, the z-scores are computed again (D135).
     errands_z = ["errands_minutes_z", "errands_detours_z", "errands_late_trips_z", "errands_logic_errors_z", "errands_errors_z"]
-    assert (qc.loc[errands_z, "n_valid"].sum(), qc.loc[errands_z, "period_removed"].sum()) == (2640, 0)
+    # The education basis is the years of education (12 or more), so no z-score lacks its norm any more: +958 z-scores (errands review, D138-D143).
+    assert (qc.loc[errands_z, "n_valid"].sum(), qc.loc[errands_z, "period_removed"].sum()) == (3598, 0)
     # CPT-3: about 37 visits hold something else than a T-score.
     assert (qc.loc["cpt3_omissions_t", "n_valid"], qc.loc["cpt3_omissions_t", "out_of_range"]) == (488, 37)
     assert result.data["handedness"].value_counts().to_dict() == {"right": 5468, "left": 570, "both": 121}

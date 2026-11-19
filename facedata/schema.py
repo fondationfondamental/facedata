@@ -19,10 +19,10 @@ VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
                    "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day"}
-SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "profile", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
+SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "profile", "distance", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
-                "range", "keep", "age", "stop_at_zero", "compare_turned"}
-VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since"}
+                "range", "keep", "age", "stop_at_zero", "compare_turned", "age_date", "age_date_since"}
+VERSION_FIELDS = {"name", "column", "codes", "filled", "age", "level", "follow_up", "by_inclusion_date", "since", "override"}
 TYPES = {"number", "item", "band", "category", "date", "time", "text"}
 
 
@@ -335,7 +335,7 @@ def check_scores(schema):
         for field in score:
             if field not in SCORE_FIELDS:
                 problems.append(f"{name}: unknown field '{field}'")
-        kinds = [kind for kind in ["sum", "mean", "max", "min", "lookup", "profile", "regression", "custom"] if kind in score]
+        kinds = [kind for kind in ["sum", "mean", "max", "min", "lookup", "profile", "regression", "distance", "custom"] if kind in score]
         if len(kinds) != 1 and not (kinds == [] and "band_of" in score):
             problems.append(f"{name}: a score has exactly one of sum, mean, max, min, lookup, regression and custom, or band_of alone")
         combines = "sum" in score or "mean" in score or "max" in score or "min" in score
@@ -348,10 +348,10 @@ def check_scores(schema):
             problems.append(f"{name}: there is no function '{score['custom']}' in facedata/custom.py")
         if "winsor" in score and not is_range(score["winsor"]):
             problems.append(f"{name}: winsor on a score must be [q_low, q_high]")
-        if ("lookup" in score or "regression" in score or "profile" in score) != ("from" in score):
+        if ("lookup" in score or "regression" in score or "profile" in score or "distance" in score) != ("from" in score):
             problems.append(f"{name}: lookup, regression and profile need from, the raw score; from goes with one of them")
-        if ("profile" in score) != isinstance(score.get("from"), list):
-            problems.append(f"{name}: a profile reads a list in from, and only a profile does")
+        if ("profile" in score or "distance" in score) != isinstance(score.get("from"), list) and "regression" not in score:
+            problems.append(f"{name}: a profile and a distance read a list in from, and only they do (a regression may)")
         problems.extend(check_z_score(name, score))
         if "minus" in score and "sum" not in score:
             problems.append(f"{name}: minus goes with sum")
@@ -362,15 +362,15 @@ def check_scores(schema):
                 problems.append(f"{name}: scale is [factor, offset], on a score that has sum or mean")
         if "by" in score and "lookup" not in score and "regression" not in score:
             problems.append(f"{name}: by goes with lookup or regression")
-        if "age" in score and "lookup" not in score and "regression" not in score:
-            problems.append(f"{name}: age goes with lookup or regression")
+        if ("age" in score or "age_date" in score) and "lookup" not in score and "regression" not in score:
+            problems.append(f"{name}: age and age_date go with lookup or regression")
         if score["stop_at_zero"] and "sum" not in score:
             problems.append(f"{name}: stop_at_zero goes with sum")
         if score["compare_turned"] and "compare" not in score:
             problems.append(f"{name}: compare_turned goes with compare")
         used = (score.get("sum", []) + score.get("mean", []) + score.get("max", []) + score.get("min", [])
                 + score.get("reverse", []) + score.get("minus", []))
-        for field in ["compare", "by", "otherwise", "band_of", "age"]:
+        for field in ["compare", "by", "otherwise", "band_of", "age", "age_date"]:
             if field in score:
                 used = used + [score[field]]
         if "from" in score:                          # one variable, or the list of a profile
@@ -423,9 +423,12 @@ def check_version(schema, columns):
             problems.append(f"version: since names '{name}', which is not a version of the block")
         if pd.isna(pd.to_datetime(first_day, format="%Y-%m-%d", errors="coerce")):
             problems.append(f"version: since '{name}' needs a date written YYYY-MM-DD")
+    for name in version.get("override", {}):
+        if name not in version_names(schema):
+            problems.append(f"version: override names '{name}', which is not a version of the block")
     if columns is not None:
         used = [version["column"]] if "column" in version else []
-        for group in version.get("filled", {}).values():
+        for group in list(version.get("filled", {}).values()) + list(version.get("override", {}).values()):
             used = used + group
         for column in used:
             if column not in columns:

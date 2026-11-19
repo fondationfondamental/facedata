@@ -2,7 +2,7 @@ instrument: wais4_memoire_chiffres
 title: "WAIS-IV, digit span"
 tab: neuropsychologie
 section: WAIS-IV
-status: draft
+status: reviewed
 notes: >
   Digit span: the two trials and the score of each of the eight items, forward
   and backward, the raw score of the three parts (forward, backward,
@@ -11,17 +11,24 @@ notes: >
   sequencing part are not recorded.
 
   The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
-  inclusion visits depending on the subtest, almost all of adults, from 2013 to
-  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
-  It is the fourth edition: the visual puzzles and the sequencing part of the
-  digit span exist only in it. No other edition of the scale is recorded in
-  this table.
+  inclusion visits depending on the subtest (302 visits in all, 12 of patients
+  under 18), from 2013 to 2026. It is on 14% of the inclusion visits of 2013,
+  42% of 2014, 36% of 2015, 18% to 19% of 2016 and 2017, 3% to 11% of 2018 to
+  2023, 21% to 22% of 2024 and 2025 and 7% of 2026 so far. It is the fourth
+  edition: the visual puzzles and the sequencing part of the digit span exist
+  only in it. No other edition of the scale is recorded in this table. The
+  extraction has no column for the edition: wais_version (wais4) is read from
+  the first item of each subtest, with the same block in the eleven schemas of
+  the WAIS-IV, and is filled on the 302 visits that hold one of them.
 
   Checked on every visit: the total is the sum of the three raw scores (293 of
   293), the span difference is the forward span minus the backward span (294
   of 294), and the stored z-score is the scaled score minus 10, over 3.
 
-  Same instrument and output names as in FACE SZ, in other columns. The trials of each item are specific to ASP.
+  Same instrument and output names as in FACE BP and SZ, in other columns. The
+  48 columns of the trials and of the item scores have the names of BP
+  (wais4_ds_forward_1a, wais4_ds_forward_item1 and so on, for the forward and
+  the backward part; they were named wais4_dsf_* and wais4_dsb_*).
 
   Scaled score, z-scores and span z-scores. They are recomputed and delivered
   (decision of the project lead for the standard scores of the
@@ -31,67 +38,92 @@ notes: >
   are computed with the mean and the standard deviation of the age group
   (norms/wais4_ds_forward_span_z.csv and the two others) and compared with the
   stored ones to 0.011, which have two decimals. The form has no typed age in
-  this cohort: the tables are read with the age at the visit (15.9 to 65
-  years; the visit of 15.9 years is below the first age of the tables and gets
-  norm_missing). The stored scores are wais4_ds_scaled_stored,
+  this cohort: the tables are read with the age at the date of the assessment
+  form (age basis, below). The visits are of patients from 15.9 to 65 years;
+  the visit of 15.9 years is below the first age of the tables and gets
+  norm_missing. The stored scores are wais4_ds_scaled_stored,
   wais4_ds_z_stored and the three wais4_ds_*_span_z_stored, not delivered.
 
+  Age basis. The application (eAsperger, script 280_score.js, function
+  gere_ageNPSY) computes the age at the date of the assessment form (QSDTC),
+  not at the visit date, and the data show that it did so from about 2015 on.
+  The table is therefore read with the age at the form date
+  (wais4_ds_assessment_date, read from the raw column qsdtc and not delivered;
+  score fields age_date and age_date_since 2015-01-01) where the visit is
+  dated 2015 or later and the form date is within 366 days of the visit, and
+  with the age at the visit elsewhere. In this subtest the scaled score is the
+  same with either age, and the three span z-scores differ from the stored
+  ones on 9, 10 and 7 visits instead of 10, 15 and 11.
+
   Verified on the visits that have both: the scaled score differs on 5 of 292
-  (1.7%, score_mismatch), and so does its z-score; the forward span z-score
-  differs on 10 of 292, the backward on 15 and the sequencing on 11 (3 to 5%,
-  mostly from 2024). One visit is not recomputed (the patient of 15.9 years).
+  (1.7%, score_mismatch; the same with the age at the visit), and so does its
+  z-score; the forward span z-score differs on 9 of 292, the backward on 10
+  and the sequencing on 7 (2 to 3%, 17 of the 26 from 2024; 10, 15 and 11 with
+  the age at the visit). One visit is not recomputed (the patient of 15.9 years). The 2024 part of
+  the span z-score differences (15 of the 26 cells, all at centres C and D)
+  is the 2024 pattern of those two centres described in
+  wais4_arithmetique.yaml (form dates 40 to 90 days from the visit). The
+  dictionary lists 24 item columns of the sequencing part (MCOC_1A to
+  MCOC_8B and MCOC_1 to MCOC_8) that the extraction does not hold; only its
+  total (mcoc_tot) is exported.
+
+version:
+  name: wais_version
+  filled:
+    wais4: [wais_sim1, wais_voc1, wais_info1, wais_cub1, wais_mat1, wais_puzl1, wais_mcod_1a, wais_arit1,
+            wais_cod_tot, wais_symb_tot, wais_img1]
 
 defaults: {type: item}
 
 variables:
-  wais4_dsf_1a: {column: wais_mcod_1a, range: [0, 1], label: "WAIS-IV digit span forward, item 1, first trial"}
-  wais4_dsf_1b: {column: wais_mcod_1b, range: [0, 1], label: "WAIS-IV digit span forward, item 1, second trial"}
-  wais4_dsf_1: {column: wais_mcod_1, range: [0, 2], label: "WAIS-IV digit span forward, item 1, score"}
-  wais4_dsf_2a: {column: wais_mcod_2a, range: [0, 1], label: "WAIS-IV digit span forward, item 2, first trial"}
-  wais4_dsf_2b: {column: wais_mcod_2b, range: [0, 1], label: "WAIS-IV digit span forward, item 2, second trial"}
-  wais4_dsf_2: {column: wais_mcod_2, range: [0, 2], label: "WAIS-IV digit span forward, item 2, score"}
-  wais4_dsf_3a: {column: wais_mcod_3a, range: [0, 1], label: "WAIS-IV digit span forward, item 3, first trial"}
-  wais4_dsf_3b: {column: wais_mcod_3b, range: [0, 1], label: "WAIS-IV digit span forward, item 3, second trial"}
-  wais4_dsf_3: {column: wais_mcod_3, range: [0, 2], label: "WAIS-IV digit span forward, item 3, score"}
-  wais4_dsf_4a: {column: wais_mcod_4a, range: [0, 1], label: "WAIS-IV digit span forward, item 4, first trial"}
-  wais4_dsf_4b: {column: wais_mcod_4b, range: [0, 1], label: "WAIS-IV digit span forward, item 4, second trial"}
-  wais4_dsf_4: {column: wais_mcod_4, range: [0, 2], label: "WAIS-IV digit span forward, item 4, score"}
-  wais4_dsf_5a: {column: wais_mcod_5a, range: [0, 1], label: "WAIS-IV digit span forward, item 5, first trial"}
-  wais4_dsf_5b: {column: wais_mcod_5b, range: [0, 1], label: "WAIS-IV digit span forward, item 5, second trial"}
-  wais4_dsf_5: {column: wais_mcod_5, range: [0, 2], label: "WAIS-IV digit span forward, item 5, score"}
-  wais4_dsf_6a: {column: wais_mcod_6a, range: [0, 1], label: "WAIS-IV digit span forward, item 6, first trial"}
-  wais4_dsf_6b: {column: wais_mcod_6b, range: [0, 1], label: "WAIS-IV digit span forward, item 6, second trial"}
-  wais4_dsf_6: {column: wais_mcod_6, range: [0, 2], label: "WAIS-IV digit span forward, item 6, score"}
-  wais4_dsf_7a: {column: wais_mcod_7a, range: [0, 1], label: "WAIS-IV digit span forward, item 7, first trial"}
-  wais4_dsf_7b: {column: wais_mcod_7b, range: [0, 1], label: "WAIS-IV digit span forward, item 7, second trial"}
-  wais4_dsf_7: {column: wais_mcod_7, range: [0, 2], label: "WAIS-IV digit span forward, item 7, score"}
-  wais4_dsf_8a: {column: wais_mcod_8a, range: [0, 1], label: "WAIS-IV digit span forward, item 8, first trial"}
-  wais4_dsf_8b: {column: wais_mcod_8b, range: [0, 1], label: "WAIS-IV digit span forward, item 8, second trial"}
-  wais4_dsf_8: {column: wais_mcod_8, range: [0, 2], label: "WAIS-IV digit span forward, item 8, score"}
-  wais4_dsb_1a: {column: wais_mcoi_1a, range: [0, 1], label: "WAIS-IV digit span backward, item 1, first trial"}
-  wais4_dsb_1b: {column: wais_mcoi_1b, range: [0, 1], label: "WAIS-IV digit span backward, item 1, second trial"}
-  wais4_dsb_1: {column: wais_mcoi_1, range: [0, 2], label: "WAIS-IV digit span backward, item 1, score"}
-  wais4_dsb_2a: {column: wais_mcoi_2a, range: [0, 1], label: "WAIS-IV digit span backward, item 2, first trial"}
-  wais4_dsb_2b: {column: wais_mcoi_2b, range: [0, 1], label: "WAIS-IV digit span backward, item 2, second trial"}
-  wais4_dsb_2: {column: wais_mcoi_2, range: [0, 2], label: "WAIS-IV digit span backward, item 2, score"}
-  wais4_dsb_3a: {column: wais_mcoi_3a, range: [0, 1], label: "WAIS-IV digit span backward, item 3, first trial"}
-  wais4_dsb_3b: {column: wais_mcoi_3b, range: [0, 1], label: "WAIS-IV digit span backward, item 3, second trial"}
-  wais4_dsb_3: {column: wais_mcoi_3, range: [0, 2], label: "WAIS-IV digit span backward, item 3, score"}
-  wais4_dsb_4a: {column: wais_mcoi_4a, range: [0, 1], label: "WAIS-IV digit span backward, item 4, first trial"}
-  wais4_dsb_4b: {column: wais_mcoi_4b, range: [0, 1], label: "WAIS-IV digit span backward, item 4, second trial"}
-  wais4_dsb_4: {column: wais_mcoi_4, range: [0, 2], label: "WAIS-IV digit span backward, item 4, score"}
-  wais4_dsb_5a: {column: wais_mcoi_5a, range: [0, 1], label: "WAIS-IV digit span backward, item 5, first trial"}
-  wais4_dsb_5b: {column: wais_mcoi_5b, range: [0, 1], label: "WAIS-IV digit span backward, item 5, second trial"}
-  wais4_dsb_5: {column: wais_mcoi_5, range: [0, 2], label: "WAIS-IV digit span backward, item 5, score"}
-  wais4_dsb_6a: {column: wais_mcoi_6a, range: [0, 1], label: "WAIS-IV digit span backward, item 6, first trial"}
-  wais4_dsb_6b: {column: wais_mcoi_6b, range: [0, 1], label: "WAIS-IV digit span backward, item 6, second trial"}
-  wais4_dsb_6: {column: wais_mcoi_6, range: [0, 2], label: "WAIS-IV digit span backward, item 6, score"}
-  wais4_dsb_7a: {column: wais_mcoi_7a, range: [0, 1], label: "WAIS-IV digit span backward, item 7, first trial"}
-  wais4_dsb_7b: {column: wais_mcoi_7b, range: [0, 1], label: "WAIS-IV digit span backward, item 7, second trial"}
-  wais4_dsb_7: {column: wais_mcoi_7, range: [0, 2], label: "WAIS-IV digit span backward, item 7, score"}
-  wais4_dsb_8a: {column: wais_mcoi_8a, range: [0, 1], label: "WAIS-IV digit span backward, item 8, first trial"}
-  wais4_dsb_8b: {column: wais_mcoi_8b, range: [0, 1], label: "WAIS-IV digit span backward, item 8, second trial"}
-  wais4_dsb_8: {column: wais_mcoi_8, range: [0, 2], label: "WAIS-IV digit span backward, item 8, score"}
+  wais4_ds_forward_1a: {column: wais_mcod_1a, range: [0, 1], label: "WAIS-IV digit span forward, item 1, first trial"}
+  wais4_ds_forward_1b: {column: wais_mcod_1b, range: [0, 1], label: "WAIS-IV digit span forward, item 1, second trial"}
+  wais4_ds_forward_item1: {column: wais_mcod_1, range: [0, 2], label: "WAIS-IV digit span forward, item 1, score"}
+  wais4_ds_forward_2a: {column: wais_mcod_2a, range: [0, 1], label: "WAIS-IV digit span forward, item 2, first trial"}
+  wais4_ds_forward_2b: {column: wais_mcod_2b, range: [0, 1], label: "WAIS-IV digit span forward, item 2, second trial"}
+  wais4_ds_forward_item2: {column: wais_mcod_2, range: [0, 2], label: "WAIS-IV digit span forward, item 2, score"}
+  wais4_ds_forward_3a: {column: wais_mcod_3a, range: [0, 1], label: "WAIS-IV digit span forward, item 3, first trial"}
+  wais4_ds_forward_3b: {column: wais_mcod_3b, range: [0, 1], label: "WAIS-IV digit span forward, item 3, second trial"}
+  wais4_ds_forward_item3: {column: wais_mcod_3, range: [0, 2], label: "WAIS-IV digit span forward, item 3, score"}
+  wais4_ds_forward_4a: {column: wais_mcod_4a, range: [0, 1], label: "WAIS-IV digit span forward, item 4, first trial"}
+  wais4_ds_forward_4b: {column: wais_mcod_4b, range: [0, 1], label: "WAIS-IV digit span forward, item 4, second trial"}
+  wais4_ds_forward_item4: {column: wais_mcod_4, range: [0, 2], label: "WAIS-IV digit span forward, item 4, score"}
+  wais4_ds_forward_5a: {column: wais_mcod_5a, range: [0, 1], label: "WAIS-IV digit span forward, item 5, first trial"}
+  wais4_ds_forward_5b: {column: wais_mcod_5b, range: [0, 1], label: "WAIS-IV digit span forward, item 5, second trial"}
+  wais4_ds_forward_item5: {column: wais_mcod_5, range: [0, 2], label: "WAIS-IV digit span forward, item 5, score"}
+  wais4_ds_forward_6a: {column: wais_mcod_6a, range: [0, 1], label: "WAIS-IV digit span forward, item 6, first trial"}
+  wais4_ds_forward_6b: {column: wais_mcod_6b, range: [0, 1], label: "WAIS-IV digit span forward, item 6, second trial"}
+  wais4_ds_forward_item6: {column: wais_mcod_6, range: [0, 2], label: "WAIS-IV digit span forward, item 6, score"}
+  wais4_ds_forward_7a: {column: wais_mcod_7a, range: [0, 1], label: "WAIS-IV digit span forward, item 7, first trial"}
+  wais4_ds_forward_7b: {column: wais_mcod_7b, range: [0, 1], label: "WAIS-IV digit span forward, item 7, second trial"}
+  wais4_ds_forward_item7: {column: wais_mcod_7, range: [0, 2], label: "WAIS-IV digit span forward, item 7, score"}
+  wais4_ds_forward_8a: {column: wais_mcod_8a, range: [0, 1], label: "WAIS-IV digit span forward, item 8, first trial"}
+  wais4_ds_forward_8b: {column: wais_mcod_8b, range: [0, 1], label: "WAIS-IV digit span forward, item 8, second trial"}
+  wais4_ds_forward_item8: {column: wais_mcod_8, range: [0, 2], label: "WAIS-IV digit span forward, item 8, score"}
+  wais4_ds_backward_1a: {column: wais_mcoi_1a, range: [0, 1], label: "WAIS-IV digit span backward, item 1, first trial"}
+  wais4_ds_backward_1b: {column: wais_mcoi_1b, range: [0, 1], label: "WAIS-IV digit span backward, item 1, second trial"}
+  wais4_ds_backward_item1: {column: wais_mcoi_1, range: [0, 2], label: "WAIS-IV digit span backward, item 1, score"}
+  wais4_ds_backward_2a: {column: wais_mcoi_2a, range: [0, 1], label: "WAIS-IV digit span backward, item 2, first trial"}
+  wais4_ds_backward_2b: {column: wais_mcoi_2b, range: [0, 1], label: "WAIS-IV digit span backward, item 2, second trial"}
+  wais4_ds_backward_item2: {column: wais_mcoi_2, range: [0, 2], label: "WAIS-IV digit span backward, item 2, score"}
+  wais4_ds_backward_3a: {column: wais_mcoi_3a, range: [0, 1], label: "WAIS-IV digit span backward, item 3, first trial"}
+  wais4_ds_backward_3b: {column: wais_mcoi_3b, range: [0, 1], label: "WAIS-IV digit span backward, item 3, second trial"}
+  wais4_ds_backward_item3: {column: wais_mcoi_3, range: [0, 2], label: "WAIS-IV digit span backward, item 3, score"}
+  wais4_ds_backward_4a: {column: wais_mcoi_4a, range: [0, 1], label: "WAIS-IV digit span backward, item 4, first trial"}
+  wais4_ds_backward_4b: {column: wais_mcoi_4b, range: [0, 1], label: "WAIS-IV digit span backward, item 4, second trial"}
+  wais4_ds_backward_item4: {column: wais_mcoi_4, range: [0, 2], label: "WAIS-IV digit span backward, item 4, score"}
+  wais4_ds_backward_5a: {column: wais_mcoi_5a, range: [0, 1], label: "WAIS-IV digit span backward, item 5, first trial"}
+  wais4_ds_backward_5b: {column: wais_mcoi_5b, range: [0, 1], label: "WAIS-IV digit span backward, item 5, second trial"}
+  wais4_ds_backward_item5: {column: wais_mcoi_5, range: [0, 2], label: "WAIS-IV digit span backward, item 5, score"}
+  wais4_ds_backward_6a: {column: wais_mcoi_6a, range: [0, 1], label: "WAIS-IV digit span backward, item 6, first trial"}
+  wais4_ds_backward_6b: {column: wais_mcoi_6b, range: [0, 1], label: "WAIS-IV digit span backward, item 6, second trial"}
+  wais4_ds_backward_item6: {column: wais_mcoi_6, range: [0, 2], label: "WAIS-IV digit span backward, item 6, score"}
+  wais4_ds_backward_7a: {column: wais_mcoi_7a, range: [0, 1], label: "WAIS-IV digit span backward, item 7, first trial"}
+  wais4_ds_backward_7b: {column: wais_mcoi_7b, range: [0, 1], label: "WAIS-IV digit span backward, item 7, second trial"}
+  wais4_ds_backward_item7: {column: wais_mcoi_7, range: [0, 2], label: "WAIS-IV digit span backward, item 7, score"}
+  wais4_ds_backward_8a: {column: wais_mcoi_8a, range: [0, 1], label: "WAIS-IV digit span backward, item 8, first trial"}
+  wais4_ds_backward_8b: {column: wais_mcoi_8b, range: [0, 1], label: "WAIS-IV digit span backward, item 8, second trial"}
+  wais4_ds_backward_item8: {column: wais_mcoi_8, range: [0, 2], label: "WAIS-IV digit span backward, item 8, score"}
   wais4_ds_forward_raw: {column: mcod_tot, range: [0, 16], label: "WAIS-IV digit span forward, raw score"}
   wais4_ds_backward_raw: {column: mcoi_tot, range: [0, 16], label: "WAIS-IV digit span backward, raw score"}
   wais4_ds_sequencing_raw: {column: mcoc_tot, range: [0, 16], label: "WAIS-IV digit span sequencing, raw score"}
@@ -105,6 +137,7 @@ variables:
   wais4_ds_forward_span_z_stored: {column: mc_end_std, type: number, range: [-5, 5], label: "WAIS-IV digit span forward, z-score of the span as stored", keep: false}
   wais4_ds_backward_span_z_stored: {column: mc_env_std, type: number, range: [-5, 5], label: "WAIS-IV digit span backward, z-score of the span as stored", keep: false}
   wais4_ds_sequencing_span_z_stored: {column: mc_cro_std, type: number, range: [-5, 5], label: "WAIS-IV digit span sequencing, z-score of the span as stored", keep: false}
+  wais4_ds_assessment_date: {column: qsdtc, type: date, range: [1900-01-01, 2100-12-31], keep: false, label: "Date of the assessment form, the date of the age read in the norms"}
 
 scores:
   wais4_ds_total_check:
@@ -116,6 +149,8 @@ scores:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
     lookup: wais4_digit_span
     from: wais4_ds_total
+    age_date: wais4_ds_assessment_date
+    age_date_since: "2015-01-01"
     range: [1, 19]
     compare: wais4_ds_scaled_stored
   wais4_ds_z:
@@ -129,6 +164,8 @@ scores:
     label: Longest forward span as a z-score, computed with the mean and SD of the age group
     regression: wais4_ds_forward_span_z
     from: wais4_ds_forward_span
+    age_date: wais4_ds_assessment_date
+    age_date_since: "2015-01-01"
     range: [-5, 5]
     compare: wais4_ds_forward_span_z_stored
     compare_tolerance: 0.011
@@ -136,6 +173,8 @@ scores:
     label: Longest backward span as a z-score, computed with the mean and SD of the age group
     regression: wais4_ds_backward_span_z
     from: wais4_ds_backward_span
+    age_date: wais4_ds_assessment_date
+    age_date_since: "2015-01-01"
     range: [-5, 5]
     compare: wais4_ds_backward_span_z_stored
     compare_tolerance: 0.011
@@ -143,6 +182,8 @@ scores:
     label: Longest sequencing span as a z-score, computed with the mean and SD of the age group
     regression: wais4_ds_sequencing_span_z
     from: wais4_ds_sequencing_span
+    age_date: wais4_ds_assessment_date
+    age_date_since: "2015-01-01"
     range: [-5, 5]
     compare: wais4_ds_sequencing_span_z_stored
     compare_tolerance: 0.011

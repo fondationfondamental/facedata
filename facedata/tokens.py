@@ -47,6 +47,7 @@ SEVERITY = {
     "unit_inferred": "info",
     "sign_flipped": "info",
     "version_inferred": "info",
+    "version_overridden": "info",
     "duplicate_row": "info",
     "winsorised": "info",
     "unit_doubt": "discrepancy",

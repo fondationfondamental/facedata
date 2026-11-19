@@ -115,9 +115,9 @@ def test_medical_evaluation(result, qc):
     assert (data["suicide_attempt_since_visit"].notna().sum(), (data["suicide_attempt_since_visit"] == 1).sum()) == (124, 4)
     assert data.loc[data["suicide_attempt_since_visit"].notna(), "visit"].isin(["V0", "screening"]).sum() == 0
     # One schema per edition of the Wechsler scales.
-    valid = {name: int(data[name].notna().sum()) for name in ["wisc4_icv_index", "wisc5_icv_index", "wais4_icv_index", "gai_index"]}
-    assert valid == {"wisc4_icv_index": 205, "wisc5_icv_index": 654, "wais4_icv_index": 995, "gai_index": 666}
-    assert (data["wais4_qit"].median(), data["wisc5_qit"].median()) == (110, 105)
+    valid = {name: int(data[name].notna().sum()) for name in ["wisc4_icv_index", "wisc5_icv_index", "wais4_icv_index_clinician", "gai_index"]}
+    assert valid == {"wisc4_icv_index": 205, "wisc5_icv_index": 654, "wais4_icv_index_clinician": 995, "gai_index": 666}      # the clinician's copy of the WAIS-IV indices keeps its own names (WAIS review, D138-D143)
+    assert (data["wais4_qit_clinician"].median(), data["wisc5_qit"].median()) == (110, 105)
     # Vineland-II: raw scores of the sub-domains, standard scores of the domains, their sum checked.
     assert (data["vineland_receptive_raw"].notna().sum(), data["vineland_receptive_raw"].max()) == (1108, 40)
     assert (data["vineland_composite"].notna().sum(), data["vineland_composite"].median()) == (974, 63)
@@ -155,24 +155,24 @@ def test_clinical_measures_and_biology(result, qc):
 def test_neuropsychology(result, qc):
     data = result.data
     table = qc[qc["tab"] == "neuropsychologie"]
-    assert (table["instrument"].nunique(), len(table)) == (16, 373)
+    assert (table["instrument"].nunique(), len(table)) == (16, 374)      # the block design z-score is added (WAIS review, D138-D143)
     flags = result.flags[result.flags["variable"].isin(table.index)]
     # The total of the errands test is recomputed as in BP: 2 stored totals differ, 1 has an item missing.
     actual_flags = flags["flag"].value_counts().to_dict()
-    assert actual_flags == {"missing_code": 731, "score_mismatch": 377, "score_not_recomputed": 96, "out_of_range": 22, "censored_left": 14,
-                            "winsorised": 12, "norm_missing": 10, "censored_right": 7}      # the WAIS-IV scores are read in the tables (D135); the coding raw score is the boxes filled minus the errors (D136), the index sums are recomputed (D137)
+    assert actual_flags == {"missing_code": 735, "score_mismatch": 330, "score_not_recomputed": 114, "norm_missing": 91, "out_of_range": 18, "censored_left": 14,
+                            "winsorised": 12, "censored_right": 7, "derived_doubt": 4}      # the WAIS-IV scores are read in the tables (D135); the coding raw score is the boxes filled minus the errors (D136), the index sums are recomputed (D137); the WAIS lookups read the age at the assessment, the expected IQ of Barona is recomputed, "executive_done" 9 is unknown (WAIS review, D138-D143)
     # The WAIS-IV item by item: every stored total is the sum of its items, and the digit span total of its three parts.
     wais = result.flags[result.flags["variable"].str.startswith("wais4_")]
     assert not any(name.endswith("_total") for name in wais.loc[wais["flag"] == "score_mismatch", "variable"])      # every stored total is the sum of its items
     valid = {name: int(data[name].notna().sum()) for name in ["wais4_mat_total", "wais4_simil_total", "wais4_vocab_total", "wais4_bd_total", "wais4_ds_total", "wais4_pc_total"]}
     assert valid == {"wais4_mat_total": 286, "wais4_simil_total": 293, "wais4_vocab_total": 212, "wais4_bd_total": 215, "wais4_ds_total": 293, "wais4_pc_total": 5}
     assert ((data["wais4_mat_z"] - (data["wais4_mat_scaled"] - 10) / 3).abs().max() < 0.011)             # the z-score of a scaled score
-    # Two sources for an index: the neuropsychology form (_np) and the copy of the clinician in the medical evaluation.
-    both = data["wais4_icv_index_np"].notna() & data["wais4_icv_index"].notna()
-    assert (data["wais4_icv_index_np"].notna().sum(), both.sum(), (data.loc[both, "wais4_icv_index_np"] == data.loc[both, "wais4_icv_index"]).sum()) == (205, 187, 162)
-    assert (data["barona_expected_qit"].notna().sum(), data["barona_qit_difference"].notna().sum()) == (241, 131)
-    difference = (data["barona_expected_qit"] - data["wais4_qit_np"] - data["barona_qit_difference"]).abs()
-    assert difference.notna().sum() == 130 and (difference < 0.2).sum() == 122                          # expected minus measured: 8 follow the stored IQ, not the recomputed one (D137)
+    # Two sources for an index: the neuropsychology form (the shared name) and the copy of the clinician in the medical evaluation (_clinician).
+    both = data["wais4_icv_index"].notna() & data["wais4_icv_index_clinician"].notna()
+    assert (data["wais4_icv_index"].notna().sum(), both.sum(), (data.loc[both, "wais4_icv_index"] == data.loc[both, "wais4_icv_index_clinician"]).sum()) == (205, 187, 162)
+    assert (data["barona_expected_qit"].notna().sum(), data["barona_qit_difference"].notna().sum()) == (763, 131)      # the expected IQ is recomputed by regression: 537 gained and 15 lost against the stored one, none for the 42 child visits (WAIS review, D138-D143)
+    difference = (data["barona_expected_qit"] - data["wais4_qit"] - data["barona_qit_difference"]).abs()
+    assert difference.notna().sum() == 123 and (difference < 0.2).sum() == 115                          # expected minus measured: 8 follow the stored IQ, not the recomputed one (D137); 7 pairs lose their expected IQ, 1 IQ moves with the age at the assessment (WAIS review, D138-D143)
     assert (data["trbapp01"].notna().sum(), (data["trbapp01"] == 1).sum(), qc.loc["trbapp01", "missing_code"]) == (746, 71, 55)
     assert (data["lis_total"].notna().sum(), data["face_emotion_total"].notna().sum(), data["errands_time"].notna().sum()) == (698, 701, 563)
 

@@ -2,41 +2,56 @@ instrument: wais4_efficience
 title: WAIS-IV working memory index
 tab: NEUROPSYCHOLOGIE
 section: IMT
-status: draft
+status: reviewed
 notes: >
-  WAIS-IV working memory index: the sum of the scaled scores of Digit Span
-  and Arithmetic, the index and its percentile rank. SZ has the other
-  indices of the WAIS-IV in the schema of this name; this cohort has the
-  working memory index only. 615 visits.
+  WAIS-IV working memory index: the sum of the scaled scores of Digit Span and
+  Arithmetic, the index and its percentile rank. SZ has the other indices of
+  the WAIS-IV in the schema of this name; DR can deliver none of them: its
+  form has only similarities, digit span, arithmetic, coding and symbol
+  search, so there is no verbal comprehension index (it needs information or
+  vocabulary), no perceptual reasoning index (no matrices, block design or
+  picture completion) and no full-scale IQ. The indices of this cohort are
+  this working memory index and the processing speed index of
+  wais4_code_symboles_ivt.yaml. 615 visits hold a stored sum, 614 a recomputed
+  one.
 
   One edition. No column names the edition of the WAIS in this cohort. The
-  data show the WAIS-IV in every year: within an age group, a raw score has
-  one scaled score, the same before and after 2018, for the five subtests;
-  95 digit span totals are above 30, the maximum of the WAIS-III; and the
-  processing speed index follows the WAIS-IV table of BP on each of the 35
-  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
-  block gives wais_version = wais4 on the 731 visits that hold a subtest,
-  so that the column exists as in BP and SZ.
+  data show the WAIS-IV in every year. Within a band of the typed age a raw
+  score has one stored scaled score for digit span and similarities, and for
+  arithmetic, coding and symbol search on every cell but one (2, 3 and 4
+  visits). The stored score is the same before and after 2018 on every cell
+  seen in both periods but one (symbol search). 95 digit span totals are above
+  30, the maximum of the WAIS-III. The processing speed index stored by DR
+  follows the WAIS-IV table of BP (norms/wais4_ivt.csv) on each of its 35
+  distinct sums, all seen in BP (the WAIS-III table on 21 of 35). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest, so
+  that the column exists as in BP and SZ.
 
   Scaled scores, sum and index. They are recomputed and delivered (decision of
   the project lead for the standard scores of the neuropsychological tests).
-  The two raw totals (digit span, arithmetic) are read again here as
-  wais4_imt_ds_total and wais4_imt_arith_total (not delivered; delivered by
-  their own schemas), the two scaled scores are computed again exactly as in
-  those schemas (same tables, same age rule: see wais4_memoire_chiffres.yaml;
-  not delivered), and their sum is delivered as wais4_imt_sum_scaled. The
-  index and its percentile rank are read from the sum in the index tables
+  The sum adds the two scaled scores that the digit span and arithmetic
+  schemas deliver (uses: wais4_ds_scaled and wais4_arith_scaled, as the SZ
+  schema of this name does, decision D137): this schema reads no raw total and
+  no typed age and repeats no table lookup, and the sum is the digit span
+  score plus the arithmetic score on 614 of 614 visits. The index and its
+  percentile rank are read from the sum in the index tables
   (norms/wais4_imt.csv and wais4_imt_percentile.csv). The stored sum, index
   and percentile rank are wais4_imt_*_stored, not delivered. The stored index
   is right here: in SZ the stored index is 0.7 too low and the SZ schema reads
   the table with that offset; here no offset is needed.
 
-  Verified on the visits that have both: the sum differs from the stored one
-  on 17 of 612 visits (2.8%, score_mismatch), the index on 16 of 614 and the
-  percentile rank on 16 of 614; one visit is not recomputed (a patient of 80
-  years has no value in the arithmetic table: norm_missing). 2 stored sums are
-  above 38, the highest possible: out_of_range.
+  Verified on the visits that have both (614): the sum differs from the stored
+  one on 17 visits (2.8%, score_mismatch), the index on 16 and the percentile
+  rank on 16; one more visit has a stored sum and no recomputed one (the visit
+  aged 80 or over has no value in the arithmetic table: norm_missing in the
+  arithmetic schema, score_not_recomputed here). Of the 17 sums that differ, 15 are visits where
+  the digit span or the arithmetic scaled score differs from the stored one
+  (8 and 11 visits: causes in wais4_memoire_chiffres.yaml and
+  wais4_arithmetique.yaml); the 2 others are stored sums more than 15 points
+  above the sum of the two scaled scores. 2 stored sums are above 38,
+  the highest possible: out_of_range.
 
+uses: [wais4_ds_scaled, wais4_arith_scaled]
 version:
   name: wais_version
   filled:
@@ -46,35 +61,14 @@ version:
 defaults: {type: item, versions: [wais4]}
 
 variables:
-  wais4_imt_age_entered: {column: cclin01, label: Age typed in the form (the norms were read with it), type: number, range: [15, 100], winsor: false, keep: false}
   wais4_imt_sum_scaled_stored: {column: imt01, label: "Working memory sum of scaled scores as stored (digit span + arithmetic)", range: [2, 38], keep: false}
   wais4_imt_index_stored: {column: imt02, label: Working memory index as stored, type: number, range: [50, 150], winsor: false, keep: false}
   wais4_imt_percentile_stored: {column: imt03, label: Percentile rank of the working memory index as stored, type: number, range: [0, 100], winsor: false, keep: false}
-  # The two raw totals, read again to compute the two scaled scores here; delivered by their own schemas.
-  wais4_imt_ds_total: {column: nbrut, label: Digit span raw total (for the sum), range: [0, 48], keep: false}
-  wais4_imt_arith_total: {column: arithtot, label: Arithmetic raw total (for the sum), range: [0, 22], keep: false}
 
 scores:
-  # The two scaled scores are computed again here, as in their own schemas, and not delivered.
-  wais4_imt_ds_scaled:
-    label: Digit span age-scaled score (for the sum)
-    lookup: wais4_digit_span
-    from: wais4_imt_ds_total
-    age: wais4_imt_age_entered
-    range: [1, 19]
-    keep: false
-    versions: [wais4]
-  wais4_imt_arith_scaled:
-    label: Arithmetic age-scaled score (for the sum)
-    lookup: wais4_arithmetic
-    from: wais4_imt_arith_total
-    age: wais4_imt_age_entered
-    range: [1, 19]
-    keep: false
-    versions: [wais4]
   wais4_imt_sum_scaled:
     label: Working memory sum of scaled scores (digit span + arithmetic)
-    sum: [wais4_imt_ds_scaled, wais4_imt_arith_scaled]
+    sum: [wais4_ds_scaled, wais4_arith_scaled]
     range: [2, 38]
     compare: wais4_imt_sum_scaled_stored
     versions: [wais4]

@@ -2,39 +2,67 @@ instrument: wais4_complement_images
 title: "WAIS-IV, picture completion"
 tab: neuropsychologie
 section: WAIS-IV
-status: draft
+status: reviewed
 notes: >
-  Picture completion: 24 items scored from 0 to 1, their total, the scaled score and its z-score,
-  on 5 inclusion visits.
+  Picture completion: 24 items scored from 0 to 1, their total, the scaled
+  score and its z-score, on 5 inclusion visits.
 
   The WAIS-IV of this cohort is recorded item by item, on about 210 to 295
-  inclusion visits depending on the subtest, almost all of adults, from 2013 to
-  2026 (29% to 36% of the inclusions until 2015, 10% or less from 2018 to 2023).
-  It is the fourth edition: the visual puzzles and the sequencing part of the
-  digit span exist only in it. No other edition of the scale is recorded in
-  this table.
+  inclusion visits depending on the subtest (302 visits in all, 12 of patients
+  under 18), from 2013 to 2026. It is on 14% of the inclusion visits of 2013,
+  42% of 2014, 36% of 2015, 18% to 19% of 2016 and 2017, 3% to 11% of 2018 to
+  2023, 21% to 22% of 2024 and 2025 and 7% of 2026 so far. It is the fourth
+  edition: the visual puzzles and the sequencing part of the digit span exist
+  only in it. No other edition of the scale is recorded in this table. The
+  extraction has no column for the edition: wais_version (wais4) is read from
+  the first item of each subtest, with the same block in the eleven schemas of
+  the WAIS-IV, and is filled on the 302 visits that hold one of them.
 
   Checked on every visit: the stored total is the sum of the items, and the
   stored z-score is the scaled score minus 10, over 3.
 
-  The stored total equals the sum of the items on 5 of the 5 visits that
-  hold every item. This subtest is on six visits only: too few to verify anything else.
+  The stored total equals the sum of the items on 5 of the 5 visits that hold
+  every item. Only these 5 visits hold the subtest (a sixth holds 2 items and
+  a seventh a stored scaled score alone): too few to verify anything else.
 
   Same instrument and output names as in FACE SZ, in other columns.
 
   Scaled score and z-score. They are recomputed and delivered (decision of the
   project lead for the standard scores of the neuropsychological tests): the
   scaled score is read in the WAIS-IV table of the application
-  (norms/wais4_picture_completion_asp.csv) from the raw total, and the z-score
-  is (scaled score - 10) / 3. The ASP table is used for this subtest, as the
-  ASP script differs from the others (the tables of this subtest agree at the
-  ages of the visits of this cohort). The form has no typed age in this cohort:
-  the table is read with the age at the visit (the visits are of patients from
-  15.9 to 65 years; the one of 15.9 years is below the first age of the tables
-  and gets norm_missing). The stored scores are wais4_pc_scaled_stored and
-  wais4_pc_z_stored, not delivered. Verified on the 5 visits that have both:
-  none differs; 1 more stored scaled score is not recomputed (the total is
-  missing).
+  (norms/wais4_picture_completion.csv) from the raw total, and the z-score is
+  (scaled score - 10) / 3. The plain table is used, the one that BP, SZ and DR
+  read; it holds the values of the ASP script
+  (norms/wais4_picture_completion_asp.csv is an identical copy, no longer
+  needed). The form has no typed age in this cohort: the table is read with
+  the age at the date of the assessment form (age basis, below). The stored
+  scores are wais4_pc_scaled_stored and wais4_pc_z_stored, not delivered.
+  Verified on the 5 visits that have both: none differs; 1 more stored scaled
+  score is not recomputed (the visit holds that score alone, no item and no
+  total).
+
+  Age basis. The application (eAsperger, script 280_score.js, function
+  gere_ageNPSY) computes the age at the date of the assessment form (QSDTC),
+  not at the visit date, and the data show that it did so from about 2015 on.
+  The table is therefore read with the age at the form date
+  (wais4_pc_assessment_date, read from the raw column qsdtc and not delivered;
+  score fields age_date and age_date_since 2015-01-01) where the visit is
+  dated 2015 or later and the form date is within 366 days of the visit, and
+  with the age at the visit elsewhere. In this subtest the age at the form
+  date changes no score.
+
+  The script. The row of the ages 55 to 64 that the ASP script uses is
+  complete: the row above it, commented out and marked as an error, held a
+  typo (one cell), which the SZ script still has. The rows of 25-29 and 75-79
+  have empty cells (the last cell of 25-29, the first two of 75-79): a raw
+  score that falls there has no scaled score. No visit of this cohort does (no
+  norm_missing).
+
+version:
+  name: wais_version
+  filled:
+    wais4: [wais_sim1, wais_voc1, wais_info1, wais_cub1, wais_mat1, wais_puzl1, wais_mcod_1a, wais_arit1,
+            wais_cod_tot, wais_symb_tot, wais_img1]
 
 defaults: {type: item, range: [0, 1]}
 
@@ -66,6 +94,7 @@ variables:
   wais4_pc_total_stored: {column: wais_imgtot, range: [0, 24], keep: false, label: "WAIS-IV picture completion, total as stored"}
   wais4_pc_scaled_stored: {column: wais_img_std, range: [1, 19], label: "WAIS-IV picture completion, scaled score as stored", keep: false}
   wais4_pc_z_stored: {column: wais_img_cr, type: number, range: [-3, 3], winsor: false, label: "WAIS-IV picture completion, z-score of the scaled score as stored", keep: false}
+  wais4_pc_assessment_date: {column: qsdtc, type: date, range: [1900-01-01, 2100-12-31], keep: false, label: "Date of the assessment form, the date of the age read in the norms"}
 
 scores:
   wais4_pc_total:
@@ -74,8 +103,10 @@ scores:
     compare: wais4_pc_total_stored
   wais4_pc_scaled:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual
-    lookup: wais4_picture_completion_asp
+    lookup: wais4_picture_completion
     from: wais4_pc_total
+    age_date: wais4_pc_assessment_date
+    age_date_since: "2015-01-01"
     range: [1, 19]
     compare: wais4_pc_scaled_stored
   wais4_pc_z:

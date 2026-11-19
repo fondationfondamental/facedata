@@ -2,40 +2,53 @@ instrument: wais4_complement_images
 title: WAIS-IV picture completion
 tab: NEUROPSYCHOLOGIE
 section: Complètement d'images (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  picture completion columns on the WAIS-IV visits (454 visits, from 2014
-  to 2025): 24 items scored 0 or 1. wais3_complement_images.yaml reads the
-  WAIS-III visits. The dictionary files the columns under the WAIS-III.
+  (decision D10 of the BP file). This schema reads the picture completion
+  columns on the WAIS-IV visits (490 visits, from 2013 to 2025): 24 items
+  scored 0 or 1. wais3_complement_images.yaml reads the WAIS-III visits. The
+  dictionary files the columns under the WAIS-III; the section of this schema
+  repeats that label, '(WAIS-3) ancienne version', and the WAIS-IV visits are
+  recognised by the version rule, not by the label.
 
-  The stored raw total is the sum of the 24 items on every visit. The
-  z-score is (scaled score - 10) / 3 on every visit.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold picture completion items
+  and are read here, not in wais3_complement_images.yaml.
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  Of the 490 visits, 479 have all 24 items and a stored raw total, which is
+  their sum on 479 of 479. 11 visits have empty items (the last item filled is
+  0 on all 11, the mark of a stopping rule) and no stored total, and get none:
+  the application adds the 24 items and writes 'Questionnaire incomplet' when
+  one is empty. The z-score is (scaled score - 10) / 3 on every visit.
 
   FACE BP does not have this subtest.
 
-  Scaled score and z-score. They are recomputed and delivered (decision of the
-  project lead for the standard scores of the neuropsychological tests): the
-  scaled score is read in the WAIS-IV table of the application
+  Scaled score and z-score. They are recomputed and delivered (decision of
+  the project lead for the standard scores of the neuropsychological tests):
+  the scaled score is read in the WAIS-IV table of the application
   (norms/wais4_picture_completion.csv) from the raw total of the items, and
-  the z-score is (scaled score - 10) / 3. The table is read with the age typed
-  in the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions)
-  where it is within 1 year of the age at the visit, and with the age at the
-  visit elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97
-  have a typed age more than 1 year away). The stored scores are
-  wais4_pc_scaled_stored and wais4_pc_z_stored, not delivered. Verified: the
-  scaled score differs on 4 of the 454 visits that have both, and so does its
-  z-score (score_mismatch, 2016 to 2018 and later); no total gives
-  norm_missing.
+  the z-score is (scaled score - 10) / 3. The table is read with the age
+  typed in the form (cclin01_, delivered as neuropsy_age by
+  neuropsy_conditions) where it is within 1 year of the age at the visit,
+  and with the age at the visit elsewhere (464 of the 479 visits that have a
+  total use the typed age, 15 have a typed age more than 1 year away). The
+  stored scores are wais4_pc_scaled_stored and wais4_pc_z_stored, not
+  delivered. Verified: the scaled score differs on 5 of the 479 visits that
+  have both, and so does its z-score (score_mismatch, 1 in 2013 to 2015, 2
+  in 2016 to 2018, 1 in 2019 to 2021 and 1 from 2024); no total gives
+  norm_missing. 3 of the 5 differences are on visits whose typed age is more
+  than 1 year from the age at the visit (3.1% of the visits), where the
+  package reads the table with the age at the visit and the EMR with the
+  typed one.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
@@ -76,7 +89,6 @@ scores:
           wais4_pc08, wais4_pc09, wais4_pc10, wais4_pc11, wais4_pc12, wais4_pc13, wais4_pc14,
           wais4_pc15, wais4_pc16, wais4_pc17, wais4_pc18, wais4_pc19, wais4_pc20, wais4_pc21,
           wais4_pc22, wais4_pc23, wais4_pc24]
-    min_items: 1
     compare: wais4_pc_total_stored
   wais4_pc_scaled:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual

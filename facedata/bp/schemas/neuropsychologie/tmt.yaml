@@ -2,7 +2,7 @@ instrument: tmt
 title: Trail Making Test, parts A and B
 tab: NEUROPSYCHOLOGIE
 section: TMT
-status: draft
+status: reviewed
 notes: >
   Times and errors, their z-scores and their percentile bands, for part A,
   part B and the difference B minus A.
@@ -18,16 +18,22 @@ notes: >
   a better performance, in every cohort. The stored z-scores and bands are
   kept as checks (tmt_*_z_stored, tmt_*_time_band_stored, not delivered).
 
-  The tables are read with the age typed in the form (cclin01_, tmt_age) where
-  it is within one year of the age at the visit, and with the age at the
-  visit elsewhere, which is the reconciled age, and with the years of
+  The tables are read with the age typed in the form (cclin01_, tmt_age)
+  where it is within one year of the age at the visit, and with the age at
+  the visit elsewhere, which is the reconciled age, and with the years of
   education typed in the form (cclin08_). A visit without years of education
   has no z-score and no band (8 visits; the bands get norm_missing): the
-  script then falls on its lowest class, and the package does not. The
-  z-scores and bands of B
-  minus A are read from part B minus part A as recomputed (the two check
-  scores below), not from the stored difference; the agreement with the
-  stored z-score is the same either way, to 0.1 point.
+  script then falls on its lowest class, and the package does not. Of these
+  8 visits, 2 have an empty field, 5 have text in it and 1 has a number
+  above 30; none is repaired. The typed age has 9 cells of text (a number
+  followed by a word): they stay unparsed and the age at the visit is used.
+  The z-scores and bands of B minus A are read from part B minus part A as
+  recomputed (the two check scores below), not from the stored difference;
+  the agreement with the stored z-score is the same either way, to 0.1
+  point. The band of the B minus A errors reads the checked difference too:
+  the stored difference exists from 2016 on only, so 800 more visits have
+  that band (796 of them until 2015), and no other band changes, the stored
+  and the checked differences being equal on every visit where both exist.
 
   Each delivered score is compared with the stored one. A stored z-score that
   is the delivered one with the opposite sign gets sign_flipped, any other
@@ -48,11 +54,13 @@ notes: >
   age group or level of education: the form was changed after the score was
   computed).
 
-  The EMR stored the z-score of the B-A errors from 2016 on only (the form had
-  no such field before): it is now delivered on 808 more visits, 804 of them
-  until 2015. The z-scores are winsorised as the stored ones were. The range
-  of the z-scores of errors is wide enough for the high counts of errors of
-  the DR cohort.
+  The EMR stored the z-score of the B-A errors from 2016 on only (the form
+  had no such field before): it is now delivered on 808 more visits, 804 of
+  them until 2015. The six z-scores are not winsorised: a winsorised tail
+  depends on the cohort (the lowest part A time z-score was -3.00 in BP,
+  -5.36 in SZ and -5.00 in DR, and is -10.3, -18.4 and -13.5 with the raw
+  tails), and their range already bounds them. The range of the z-scores of
+  errors is wide enough for the high counts of errors of the DR cohort.
 
   Percentile bands of the times (decision D38 in PROGRESS.md). The three
   time percentile columns mix plain numbers (50), bands ("25 - 50", also
@@ -65,18 +73,26 @@ notes: >
   another rule at its two ends: "10 - 5" for a time worse than the 5th
   percentile (203 visits, read as 5, recomputed as 0) and "<95" for a time
   better than the 95th (49 visits, read as 90, recomputed as 95); these are
-  score_mismatch.
+  score_mismatch. The script of the application writes ">95" as the band of
+  an empty time, "NaN" as the stored z-score of an empty count and scores an
+  empty count as 0: this is most of the score_not_recomputed flags of the
+  bands. On part B, 59 of the 69 flagged bands are a stored ">95" on an
+  empty time; on B minus A, 39 of the 72 are ">95" and 21 are "<95" on an
+  empty difference.
 
   Percentile bands of the errors: recomputed (decisions D42 and D43). The
   four error percentile columns of the extraction are not read
   (ignored.yaml): the EMR wrote them with three different rules over the
-  years. A patient with no error in part A has ">95" until 2015, ">5",
-  ">10" or ">25" from 2016 to 2021, and "<5" (426 visits) or ">10" from
-  2022. The "<5" is a defect of the script of the application as it
-  is today (read in November 2026; decision D98 in PROGRESS.md): where every
-  limit of the norm is the number of errors of the patient, which is the
-  case of a test with no error, the script falls in the branch that writes
-  "below the lowest percentile".
+  years. A patient with no error in part A has ">95" until 2015 (1,662 of
+  the 1,966 visits with no error), ">5", ">10" or ">25" from 2016 to 2021,
+  and "<5" (435 of the 776 such visits) or another ">" class from 2022.
+  These cells are free text of three eras, and the DR script writes "95" for
+  no error: they are not read, the bands are computed again in the tables.
+  The "<5" is a defect of the script of the application as it is today (read
+  in November 2026; decision D98 in PROGRESS.md): where every limit of the
+  norm is the number of errors of the patient, which is the case of a test
+  with no error, the script falls in the branch that writes "below the
+  lowest percentile".
 
   The four bands are read again in the norm tables of the EMR, from the
   number of errors (corrected plus uncorrected), the reconciled age and the
@@ -87,30 +103,55 @@ notes: >
   Most people make no error, so several limits of the norms fall on the same
   number of errors. The band of such a number is the lowest one it can be,
   with <variable>_cens = +1: this band or a higher one. With no error a
-  patient gets a low band with that mark, as in the cells the EMR wrote
-  from 2016 on (">5", ">10", ">25"). The bands say little, but they now say
-  the same thing in every year: the share of each band changes by 6 points
-  at most between the periods.
+  patient gets a low band with that mark, as in the cells the EMR wrote from
+  2016 on (">5", ">10", ">25"). The lowest band, a number of errors above
+  every limit, is exact and never marked open: "or a higher one" would say
+  nothing there. The tables are made from the scripts of the application by
+  norms/make_tmt_error_tables.py, as the time tables are. The bands say
+  little, but they say the same thing in every year: between the six periods
+  (to 2012, 2013-15, 2016-18, 2019-21, 2022-23, 2024 on) the share of a band
+  differs by 7.4 points at most for part A, 7.9 for part B, 8.9 for B minus
+  A (whose band now exists before 2016) and 5.0 for the perseverative errors
+  (highest minus lowest share of a band).
 
   Check against the cells the EMR wrote from 2016 to 2021, the period whose
   rule is the one of the tables: the same band on 93% of the visits for the
   errors of part B, 98% for the perseverative errors, 95% for B minus A and
   87% for part A. Reading the tables with the reconciled age instead of the
-  age at the visit changes the band of 2 to 5 of the 2,500 visits compared.
+  age at the visit changes the band of 2 to 5 of the 2,490 to 2,644 visits
+  compared (visits of 2016 to 2021 with a stored cell and a band under
+  either age).
 
   Errors. The error z-scores and the stored B-A error difference were
   computed from corrected plus uncorrected errors, so the two are added up
   in tmt_a_errors and tmt_b_errors. Most patients make no error. The norms
   then have a very small standard deviation and a single error gives a
   z-score of -2 to -8: the error z-scores are extreme by construction.
+  Perseverative errors are part of the errors of part B, so a check score
+  (the errors of part B minus the perseverative errors, in 0 to 50) gets
+  out_of_range where it is negative: 41 of the 4,625 visits that have both.
+  It changes no value.
 
   Times are in seconds. In part B, "impossible" and "arrêt" (12 visits) mean
   that the patient could not finish; they are treated as missing codes. A
   few cells hold text such as "26s" and stay unparsed.
 
-  The stored B-A time and B-A error difference are delivered as stored.
-  Two check scores recompute them as part B minus part A: the time differs
-  on 6 visits (score_mismatch), the error difference on none.
+  The stored B-A time and B-A error difference are delivered as stored. Two
+  check scores recompute them as part B minus part A: the time differs on 6
+  visits (score_mismatch), the error difference on none (SZ: 8 and 5, DR:
+  none and 22). The TMT stacks across BP, SZ and DR for the times, the
+  z-scores and the time bands: the names, the unit (seconds) and the
+  direction (a higher z-score is a better performance) are the same.
+
+  Unparsed cells. The 17 cells that stay unparsed are typed text: 5 times
+  with a unit or in minutes and seconds (4 in part A, 1 in part B), and 12
+  cells of part B (3 times and 9 error counts) that hold a slash or a word.
+
+  Unexplained and left as measured (use a centre term in a pooled analysis): a
+  centre step on the perseverative errors of part B
+  (tmt_b_errors_perseverative and its band): centre K (186 visits) has one
+  or more on 27% of its visits against 2% to 12% in each of the other
+  centres, with no known cause.
 
 defaults: {type: item}
 
@@ -161,6 +202,8 @@ scores:
   # Consistency checks: the stored differences must be part B minus part A. The z-scores and bands of B minus A read the recomputed difference.
   tmt_ba_time_check: {sum: [tmt_b_time], minus: [tmt_a_time], compare: tmt_ba_time, keep: false}
   tmt_ba_errors_check: {sum: [tmt_b_errors], minus: [tmt_a_errors], compare: tmt_ba_errors, keep: false}
+  # Perseverative errors are part of the errors of part B: the errors that are not perseverative cannot be negative (flags only).
+  tmt_b_errors_not_perseverative_check: {sum: [tmt_b_errors], minus: [tmt_b_errors_perseverative], range: [0, 50], keep: false}
 
   # z-scores of the times and of the errors, recomputed as the application does: z = (mean - raw) / SD in the cell of the age group
   # and the level of education, read in the norm tables (norms/tmt_*_z.csv). The stored z-score is compared, in either sign.
@@ -171,7 +214,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_a_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -182,7 +224,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
     compare: tmt_a_errors_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -193,7 +234,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_b_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -204,7 +244,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
     compare: tmt_b_errors_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -215,7 +254,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-20, 10]
-    winsor: [0.01, 0.99]
     compare: tmt_ba_time_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -226,7 +264,6 @@ scores:
     by: tmt_education
     age: tmt_age
     range: [-150, 20]
-    winsor: [0.01, 0.99]
     compare: tmt_ba_errors_z_stored
     compare_tolerance: 0.011
     compare_turned: true
@@ -278,6 +315,6 @@ scores:
   tmt_ba_errors_band:
     label: B minus A - errors as a percentile band
     lookup: tmt_ba_errors
-    from: tmt_ba_errors
+    from: tmt_ba_errors_check
     by: tmt_education
     age: tmt_age

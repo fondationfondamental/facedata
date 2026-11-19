@@ -2,41 +2,54 @@ instrument: wais4_arithmetique
 title: WAIS-IV arithmetic
 tab: NEUROPSYCHOLOGIE
 section: Arithmétique (WAIS-4) nouvelle version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
-  (decision D10 of the BP file). This schema reads the
-  arithmetic columns on the WAIS-IV visits (451 visits, from 2014 to
-  2025): 22 items scored 0 or 1. wais3_arithmetique.yaml reads the WAIS-III
-  visits.
+  (decision D10 of the BP file). This schema reads the arithmetic columns on
+  the WAIS-IV visits (489 visits, from 2013 to 2025): 22 items scored 0 or 1.
+  wais3_arithmetique.yaml reads the WAIS-III visits.
 
-  The stored raw total is the sum of the 22 items on every visit. The first
-  four items are 1 on every visit: the test starts further on and credits
-  them. The z-score is (scaled score - 10) / 3 on every visit.
+  Edition rule (decision D138, question O16): the 33 visits that the form
+  labels WAIS-III and that hold the WAIS-IV digit-span sequencing task
+  (columns mcoc_w and mcocemp_w) are read as WAIS-IV (override in the version
+  block, flag version_overridden). 25 of them hold arithmetic items and are
+  read here, not in wais3_arithmetique.yaml.
 
-  A total counts the items that were given: after the stopping rule the
-  remaining items are left empty.
+  Of the 489 visits, 475 have all 22 items and a stored raw total, which is
+  their sum on 475 of 475. 14 visits have empty items (the last item filled is
+  0 on 13 of them, the mark of a stopping rule): 1 has a stored total, equal
+  to the sum of the items present, which cannot be recomputed
+  (score_not_recomputed), and 13 have none. The application adds the 22 items
+  and writes 'Questionnaire incomplet' when one is empty. The first four items
+  are 1 on 480 of the 480 visits that have them: the test starts further on
+  and credits them. The z-score is (scaled score - 10) / 3 on every visit.
 
   FACE BP does not have this subtest.
 
-  Scaled score and z-score. They are recomputed and delivered (decision of the
-  project lead for the standard scores of the neuropsychological tests): the
-  scaled score is read in the WAIS-IV table of the application
+  Scaled score and z-score. They are recomputed and delivered (decision of
+  the project lead for the standard scores of the neuropsychological tests):
+  the scaled score is read in the WAIS-IV table of the application
   (norms/wais4_arithmetic.csv) from the raw total of the items, and the
-  z-score is (scaled score - 10) / 3. The table is read with the age typed in
-  the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions) where
-  it is within 1 year of the age at the visit, and with the age at the visit
-  elsewhere (digit span: 2,397 of the 2,494 visits use the typed age, 97 have
-  a typed age more than 1 year away). The stored scores are
-  wais4_arith_scaled_stored and wais4_arith_z_stored, not delivered. Verified:
-  the scaled score differs from the stored one on 2 of the 451 visits that
-  have both, and so does its z-score (score_mismatch, 2016 to 2018 and from
-  2024); no total gives norm_missing.
+  z-score is (scaled score - 10) / 3. The table is read with the age typed
+  in the form (cclin01_, delivered as neuropsy_age by neuropsy_conditions)
+  where it is within 1 year of the age at the visit, and with the age at the
+  visit elsewhere (462 of the 475 visits that have a total use the typed
+  age, 13 have a typed age more than 1 year away). The stored scores are
+  wais4_arith_scaled_stored and wais4_arith_z_stored, not delivered.
+  Verified: the scaled score differs from the stored one on 3 of the 475
+  visits that have both, and so does its z-score (score_mismatch, 2 in 2016
+  to 2018 and 1 from 2024); no total gives norm_missing; the stored total
+  that cannot be recomputed gives score_not_recomputed on the total, the
+  scaled score and the z-score. Items 21 and 22 are filled on 2 visits
+  labelled WAIS-III that hold no sequencing task, so the edition rule leaves
+  them there: they are read as WAIS-III and the 2 cells of each item are not
+  delivered.
 
 version:
   name: wais_version
   column: wais_version
   codes: {WAIS3: wais3, WAIS4: wais4}
+  override: {wais4: [mcoc_w, mcocemp_w]}
 
 defaults: {type: item, range: [0, 1], versions: [wais4]}
 
@@ -76,7 +89,6 @@ scores:
           wais4_arith11, wais4_arith12, wais4_arith13, wais4_arith14, wais4_arith15,
           wais4_arith16, wais4_arith17, wais4_arith18, wais4_arith19, wais4_arith20,
           wais4_arith21, wais4_arith22]
-    min_items: 1
     compare: wais4_arith_total_stored
   wais4_arith_scaled:
     label: Age-scaled score (mean 10 and SD 3), read in the table of the manual

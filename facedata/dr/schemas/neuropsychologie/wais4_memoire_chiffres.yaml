@@ -2,38 +2,64 @@ instrument: wais4_memoire_chiffres
 title: WAIS-IV Digit Span
 tab: NEUROPSYCHOLOGIE
 section: MÉMOIRE DES CHIFFRES
-status: draft
+status: reviewed
 notes: >
-  WAIS-IV Digit Span: the raw total, the age-scaled score and its z-score.
-  BP also has the trials and the spans; here only the totals are entered.
-  669 visits.
+  WAIS-IV Digit Span: the raw total, the age-scaled score and its z-score. BP
+  also has the trials and the spans; here only the totals are entered. 669
+  visits. The thesaurus lists the visits of this block as v0 and v1an, but 129
+  of the 669 are V2 or later (84 V2, 1 V3, 41 V4, 3 V5).
 
   One edition. No column names the edition of the WAIS in this cohort. The
-  data show the WAIS-IV in every year: within an age group, a raw score has
-  one scaled score, the same before and after 2018, for the five subtests;
-  95 digit span totals are above 30, the maximum of the WAIS-III; and the
-  processing speed index follows the WAIS-IV table of BP on each of the 35
-  sums seen in both cohorts (the WAIS-III table on 21 of 34). The version
-  block gives wais_version = wais4 on the 731 visits that hold a subtest,
-  so that the column exists as in BP and SZ.
+  data show the WAIS-IV in every year. Within a band of the typed age a raw
+  score has one stored scaled score for digit span and similarities, and for
+  arithmetic, coding and symbol search on every cell but one (2, 3 and 4
+  visits). The stored score is the same before and after 2018 on every cell
+  seen in both periods but one (symbol search). 95 digit span totals are above
+  30, the maximum of the WAIS-III. The processing speed index stored by DR
+  follows the WAIS-IV table of BP (norms/wais4_ivt.csv) on each of its 35
+  distinct sums, all seen in BP (the WAIS-III table on 21 of 35). The version
+  block gives wais_version = wais4 on the 731 visits that hold a subtest, so
+  that the column exists as in BP and SZ.
 
   Scaled score and z-score. They are recomputed and delivered (decision of the
   project lead for the standard scores of the neuropsychological tests): the
   scaled score is read in the WAIS-IV table of the application
   (norms/wais4_digit_span.csv) from the raw total, and the z-score is (scaled
   score - 10) / 3. The plain table that the other cohorts use is used here
-  too, not the table of the DR script: where the script has another value (a
-  typo), the stored score is flagged. On 2 of the 669 visits the DR script
-  differs from that table. The table is read with the age typed in the form
-  (cclin01, delivered as neuropsy_age by neuropsy_conditions) where it is
-  within 1 year of the age at the visit, and with the age at the visit
-  elsewhere (digit span: 626 of the 669 visits use the typed age, 43 have a
-  typed age more than 1 year away). The stored scores are
-  wais4_ds_scaled_stored and wais4_ds_z_stored, not delivered. Verified: the
-  scaled score differs from the stored one on 9 of 669 visits (1.3%,
-  score_mismatch, 2013 to 2026), its z-score on 23 of 662, which include the
-  14 visits of 2013 to 2015 where the stored z-score is not (scaled score -
-  10) / 3. No raw total gives norm_missing.
+  too, not the table of the DR script (norms/wais4_digit_span_dr.csv): where
+  the script has another value (a typo), the stored score is flagged. The
+  75-79 row of the DR script has 20 cells instead of 19: on 1 of the 669
+  visits it gives another value than the table (the stored score is the
+  script's, 1 point above the table's). The script has no row from age 80: 1
+  visit is that old at the visit (its typed age is more than 1 year younger);
+  the plain table reads it and its stored score is the table's.
+
+  Age. The table is read with the age typed in the form (cclin01, delivered as
+  neuropsy_age by neuropsy_conditions) where it is within 1 year of the age at
+  the visit, and with the age at the visit elsewhere: 626 of the 669 visits
+  use the typed age and 43 have a typed age more than 1 year away (36 of them
+  typed younger than the age at the visit). The stored score is read with the
+  typed age: the 8 of them that differ from the delivered score equal the
+  table at the typed age. They explain 8 of the 9 mismatches below and, over
+  arithmetic, digit span, symbol search and coding, 33 of the 47 scaled-score
+  mismatches (the others: table typos 5, the change of the coding raw score 5
+  (decision D136), unexplained 4).
+
+  The stored scores are wais4_ds_scaled_stored and wais4_ds_z_stored, not
+  delivered. Verified: the scaled score differs from the stored one on 9 of
+  669 visits (1.3%, score_mismatch, 2014 to 2026: 8 typed age, 1 table typo),
+  its z-score on 23 of 662, which include the 14 visits where the stored
+  z-score is not (scaled score - 10) / 3 (next paragraph). No raw total gives
+  norm_missing.
+
+  Stored z anomaly (DR only). The stored z-score is not (stored scaled score -
+  10) / 3 on 14 digit span visits, 14 arithmetic visits and 16 similarities
+  visits: 19 distinct visits, 9 of them in all three, dated 2013-10 to
+  2015-05, 16 of the 19 at centre F. The scaled scores 6, 9, 11, 14 and 17 are
+  stored as z-scores in steps of 0.5 and the scaled scores 8, 12, 15 and 18
+  truncated to two decimals: an old z table of the application. The coding and
+  symbol search z-scores are clean. The delivered z-score is (scaled score -
+  10) / 3 and the stored one is flagged.
 
 version:
   name: wais_version
