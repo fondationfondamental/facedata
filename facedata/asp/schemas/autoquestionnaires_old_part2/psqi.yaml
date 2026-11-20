@@ -2,14 +2,21 @@ instrument: psqi
 title: "Pittsburgh Sleep Quality Index (PSQI)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Nineteen questions, five questions about the bed partner, seven component
-  scores and a total, filled by adults: 162 inclusion visits (1 of children) and 44 follow-up visits, from 2013 to 2021.
+  Sleep over the last 30 days (the wording of items 1 to 9 and of the partner
+  items on the form). Nineteen questions, five questions about the bed partner, seven component
+  scores and a total, filled by adults: 162 inclusion visits (1 of children) and 44 follow-up visits, from 2009 to 2021 (202 of the 206 from 2013).
   It belongs to the old set of forms; the Epworth scale is the sleep questionnaire of the new set.
 
   Same instrument as in FACE BP, SZ and DR, in other columns, delivered under
-  the same names. Here the seven components are stored, and each was checked
+  the same names. The hours of sleep (item 4) are a whole number here: the field of the form
+  takes two digits, where BP, SZ and DR write hours and minutes, so the efficiency is coarser. On 8 visits the
+  rising time is 00:00:00, the bedtime of the same visits is 00:00:00 too and no hours of sleep are typed: the
+  rising time is the untouched default of the time field and is read as missing (not_recorded); the bedtime
+  of these visits is delivered as written (midnight is a possible answer).
+
+  Here the seven components are stored, and each was checked
   against the published rule:
 
   - component 1 (quality) and component 6 (medication) are the items 6 and 7:
@@ -20,50 +27,69 @@ notes: >
     hours and does not settle exactly 7 hours. Delivered as stored, as in
     the other cohorts (BP decision D93);
   - **component 4 (efficiency) is wrong when the patient goes to bed before
-    midnight.** The EMR takes the hours in bed as the difference between the
-    two clock times without crossing midnight (191 of 192 visits
+    midnight.** The script of the form takes the hours in bed as the absolute difference of the
+    two clock times, without crossing midnight (191 of 192 visits
     reproduced): a night from 23:00 to 07:00 counts sixteen hours in bed. The
     stored component is 3 on 90 of the 104 visits with a bedtime before midnight.
-    It equals the published rule on 98 of 192 visits only;
+    It equals the published rule on 101 of 192 visits only;
   - **component 5 (disturbances) is 3 as soon as one disturbance is
-    reported**: 95 visits whose sum of the items 5b to 5j is from 1 to 9, which
+    reported**: the script joins the answers 5b to 5j as text ("0" then "1" make "01", and the
+    string is compared with 0, 9 and 18; 182 of 183 visits reproduced), so 95 visits whose sum of the items 5b to 5j is from 1 to 9, which
     counts 1, and 63 from 10 to 18, which counts 2, hold a 3. Published rule:
-    25 of 183 visits;
+    25 of 183 visits. The script leaves the component empty when 5j is blank (17 visits have 5b to 5i and no 5j);
+    the function psqi_disturbances counts a blank 5j as 0 (the published treatment of a blank 5j is to verify);
   - **component 7 (daytime dysfunction) does not follow its two items**
-    (published rule: 103 of 201 visits); it is 0 on 69 visits where the two
-    items add up to 3 or more.
+    (published rule: 103 of 201 visits): the script joins the answers of the items 8 and 9 as text
+    ("1" then "2" make "12"), so it is right only when the item 8 is 0 and it is 0 as soon as the item 8 is 1 or more (200 of 201 visits
+    reproduced); it is 0 on 69 visits where the two items add up to 3 or more.
 
   The stored total is the sum of the seven stored components (172 of 172
   visits) and carries the three errors. The components 4, 5 and 7 are
   therefore computed with the published rules (functions psqi_efficiency,
   psqi_disturbances and psqi_dysfunction) and delivered, and the total is
   their sum with the four others; the stored values are read to be compared
-  (score_mismatch) and are not delivered. **The same check has not been made
-  in FACE BP, SZ and DR**, where these components are delivered as stored
-  (open question O13).
+  (score_mismatch) and are not delivered. In FACE BP, SZ and DR the stored
+  components 4, 5 and 7 follow the published rules where they are filled (decision D22 in PROGRESS.md):
+  the errors of these three components are those of the ASP form only.
+
+  On 1 visit (2018) an item is blank and the latency component and the total are stored: they
+  cannot be recomputed and are not delivered (`score_not_recomputed`).
+
+  **Year and centre.** 16 of the 32 variables reach 0.5 or more (14 by year, 9 by centre); the
+  patients are adults, 176 of the 204 visits with an item are of centre D and 25 of E. Six are scores. The
+  bedtime (median 20.8 hours in 2014, 22 in 2018, 2.75 in 2019, 3.5 in 2020) is a clock time that
+  wraps at midnight: 25% to 57% of the bedtimes of a year (8 visits or more) are before 06:00 (41 of
+  the 206 are exactly 00:00:00), and the median jumps between evening and night when that share crosses a half
+  (52% in 2019, 54% in 2020); counted past 24 hours the median is 23 to 24 in every year with 8
+  visits or more (the 24-hour bedtime function is held, A2-11). The latency, efficiency,
+  disturbances and dysfunction components are whole numbers from 0 to 3 whose median moves by one
+  unit, and the hours of sleep move from 7 to 8 in 2019. The disturbances component is higher in
+  2020 (mean 1.74 against 1.12 to 1.44 in 2013 to 2019) and in centre E (1.80 against 1.29 in D),
+  small groups (34 and 25 visits) that differ beyond chance (permutation test, p below 0.01); the
+  total (median 8, 7, 6, 8 in 2014, 2018, 2019, 2020) is within chance. No step with a form cause.
 
 defaults: {type: item, range: [0, 3]}
 
 variables:
   psqi_bedtime: {column: psqi1, type: time, label: Usual bedtime (hours), range: [0, 24]}
   psqi_latency: {column: psqi2, type: number, label: Minutes to fall asleep, unit: min, range: [0, 240], winsor: false}
-  psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours), range: [0, 24]}
+  psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours), range: [0, 24], missing: {"00:00:00": not_recorded}}
   psqi_sleep_hours: {column: psqi4, type: number, label: Hours of sleep per night, unit: h, range: [0, 24], winsor: false}
-  psqi05a: {column: psqi5a, label: "PSQI item 5a"}
-  psqi05b: {column: psqi5b, label: "PSQI item 5b"}
-  psqi05c: {column: psqi5c, label: "PSQI item 5c"}
-  psqi05d: {column: psqi5d, label: "PSQI item 5d"}
-  psqi05e: {column: psqi5e, label: "PSQI item 5e"}
-  psqi05f: {column: psqi5f, label: "PSQI item 5f"}
-  psqi05g: {column: psqi5g, label: "PSQI item 5g"}
-  psqi05h: {column: psqi5h, label: "PSQI item 5h"}
-  psqi05i: {column: psqi5i, label: "PSQI item 5i"}
-  psqi05j: {column: psqi5j, label: "PSQI item 5j"}
+  psqi05a: {column: psqi5a, label: "Trouble sleeping, last 30 days: cannot get to sleep within 30 minutes (0 never, 3 three times a week or more)"}
+  psqi05b: {column: psqi5b, label: "Trouble sleeping, last 30 days: wakes in the middle of the night or earlier than usual (0 never, 3 three times a week or more)"}
+  psqi05c: {column: psqi5c, label: "Trouble sleeping, last 30 days: has to get up to use the bathroom (0 never, 3 three times a week or more)"}
+  psqi05d: {column: psqi5d, label: "Trouble sleeping, last 30 days: cannot breathe comfortably (0 never, 3 three times a week or more)"}
+  psqi05e: {column: psqi5e, label: "Trouble sleeping, last 30 days: coughs or snores loudly (0 never, 3 three times a week or more)"}
+  psqi05f: {column: psqi5f, label: "Trouble sleeping, last 30 days: feels too cold (0 never, 3 three times a week or more)"}
+  psqi05g: {column: psqi5g, label: "Trouble sleeping, last 30 days: feels too hot (0 never, 3 three times a week or more)"}
+  psqi05h: {column: psqi5h, label: "Trouble sleeping, last 30 days: has nightmares (0 never, 3 three times a week or more)"}
+  psqi05i: {column: psqi5i, label: "Trouble sleeping, last 30 days: has pain (0 never, 3 three times a week or more)"}
+  psqi05j: {column: psqi5j, label: "Trouble sleeping, last 30 days: other reasons, written in psqi05k (0 never, 3 three times a week or more)"}
   psqi05k: {column: psqi5ja, type: text, label: "Other reason for troubled sleep, as written"}
-  psqi06: {column: psqi6, label: "PSQI item 6, sleep quality (component 1)"}
-  psqi07: {column: psqi7, label: "PSQI item 7, sleep medication (component 6)"}
-  psqi08: {column: psqi8, label: "PSQI item 8"}
-  psqi09: {column: psqi9, label: "PSQI item 9"}
+  psqi06: {column: psqi6, label: "Overall sleep quality, last 30 days (component 1; 0 very good, 1 fairly good, 2 fairly bad, 3 very bad)"}
+  psqi07: {column: psqi7, label: "Sleep medication taken, last 30 days (component 6; 0 never, 3 three times a week or more)"}
+  psqi08: {column: psqi8, label: "Trouble staying awake while driving, eating or in company, last 30 days (0 never, 3 three times a week or more)"}
+  psqi09: {column: psqi9, label: "Difficulty finding enough motivation to carry out activities, last 30 days (0 not difficult at all, 3 very difficult)"}
 
   # The questions about the bed partner. Not part of the score.
   psqi10: {column: psqi10, label: "Has a bed partner or a room mate (0 none to 3 in the same bed)"}

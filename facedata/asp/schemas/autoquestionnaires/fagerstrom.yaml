@@ -2,16 +2,29 @@ instrument: fagerstrom
 title: "Fagerström test and two smoking questions"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
   Two questions (ever smoked: yes on 134 of 458 inclusion visits; smokes now:
-  yes on 64 of 470), then the six items of the Fagerström test and its total
-  for the smokers: 63 visits, from 2020 to 2026. It is filled by adults only.
+  yes on 64 of 470), then the six items of the Fagerström test and its total for
+  the smokers: 63 visits at inclusion and 1 at follow-up, from 2019 to 2026. It
+  is filled by adults only.
 
   Same instrument as in FACE BP and DR, in other columns. The stored total is
-  the sum of the six items on 64 of 64 visits: the error of FACE DR, where
-  the item 3 is exported as the code of its answer, is not here. The two
-  smoking questions are specific to ASP.
+  the sum of the six items on 64 of 64 visits: the error of FACE DR, where the
+  item 3 is exported as the code of its answer, is not here. The two smoking
+  questions are specific to ASP.
+
+  The test is asked of the smokers only: the six items are filled on the 64
+  visits where the patient smokes now (64 of 65 such visits) and under no "no"
+  to that question. Where they are empty they are missing, not 0 (R29, empty
+  because not asked), so no `asked_if` is written: the three audit lines that
+  list the items 2, 5 and 6 without one are an artefact of the graph, since the
+  six items are filled together.
+
+  **Year and centre.** 2 of the 8 variables with a shift value reach 0.5 or more
+  (0 by year, 2 by centre): too few visits to compare. 64 totals in all, no year
+  has 20 values and one centre does (B, 21 totals), so the shift compares that
+  centre (median 2) with the overall median (3); none is read.
 
 defaults: {type: item, range: [0, 1]}
 

@@ -39,15 +39,15 @@ of today. Neither says how a form looked in 2012 or in early 2022.
 
 **What is not here.** Only counts are given, never a patient. The centres
 are not named, because this repository is public: their codes can be given
-on request. 134 of the 135 schemas are reviewed; the other one is a draft until
-its review (PI-12).
+on request. All 135 schemas are reviewed (PI-12); the last one, the MAThyS, with
+its limits stated (D190, DM-12).
 
 | Section | Open | Who closes it |
 |---|---|---|
 | 1. To read in the application | 0 | The project, in the source code and on the development instance |
-| 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 4 | The project lead and the principal investigator |
-| 4. For the data managers, the centres and the developers | 18 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
+| 2. To check on the data or the publication | 2 | The project |
+| 3. Choices of method | 6 | The project lead and the principal investigator |
+| 4. For the data managers, the centres and the developers | 19 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
 
@@ -119,6 +119,8 @@ with the project lead.
 | SOIN SUIVI and TRAITEMENTS tabs re-audit, BP (2026-11-19, D161 to D169) | The ten schemas were re-read under the rules of the other cohorts, against the forms and the export models of the application, the graph of their dependencies and the data: no delivered value changes. The counts of hospitalisations have the range 0 to 20 of the form (0 cells); the IPSRT answer "Ne sais pas" is a missing code (0 cells); a start of 0000-00-00 is a missing code (128 more flags on `start_date`, no value). The empty boxes beside a ticked one stay no in `care_use`, `non_drug_fu` and `non_drug_lifetime`, as D124 and D131 decided, with the evidence in the notes (the explicit "Non" next to them); the cumulated months of the lifetime classes stay 0 after a "no" (5,143 cells). The notes carry the script `social_diag.php` and its 178 records (A30, answers M14 as far as the data can), "since the last visit" for the follow-up counts (R14b; median gap 321 days), the DSM-5 block that asks everyone, the weeks that the export strips of non-digits (R128), the injectable doses (R123), the end dates that the add form does not check (A58) and the non-drug columns that the export drops (R125). All ten schemas stay `reviewed`; open: DM-6 (the blank boxes of the non-drug treatments, the lifetime number of hospitalisations by centre), the causes of 24 year or centre shifts still to write in the notes (D169) | D161 to D169 |
 | HETERO-QUESTIONNAIRES and DIVA re-audit, BP (2026-11-20, D170 to D175) | The eight schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export models and the data. The CGI efficacy index is a score computed from the effect and the side effects (the stored index is stale on 74 follow-up visits and is the check); the checklists of the state of the patient are titled as the symptoms present at the visit, not an episode, and their five details are `shown_if` on their symptom (11 cells); the MADRS and YMRS totals have the range 0 to 60; the stored totals of the MADRS, YMRS and FAST are the export's, and the scripts of the application compute on a button (stale after an edit); the FAST domains, the Alda total and the DIVA totals are explained in their notes (the DIVA totals are typed: the script is attached to the DSM-IV table). No other value changes; PI-17 is new | D170 to D175 |
 | EVALUATION MEDICALE DSM and psychotic-disorder schemas re-audit, BP (2026-11-20, D176 to D182) | The 14 schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export model and the data. The lifetime counts have the range 0 to 20 of the form; the follow-up counts say "since the last visit"; the total of episodes since the last visit is a score (the sum of the four counts, the typed total is the check and is delivered where a number is unknown); the three lifetime psychotic yes/no are 0 after a count of 0 (1,136 cells); the specifier, chronicity, severity and postpartum details of the most recent episode follow the display rule of the form (28 `not_shown`) and its start date must precede the visit (100 `out_of_range`); a follow-up that holds a column of the old form is read as DSM-IV (49 visits change edition). No other value changes; the audit lines left are judged in D176 to D181 | D176 to D182 |
+| AUTO-QUESTIONNAIRES re-audit, BP, first group of 13 schemas (2026-11-20, D183 to D189) | The CTQ, PSQI, Epworth, STOP-BANG, circadian, QIDS-SR16, STAI-YA, Altman, MDQ, ASRS, WURS-25, WURS-61 and EQ-5D schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export's score definitions, the graph of their dependencies and the data. The CTQ denial and the ASRS screen are computed from the items and the stored ones are the checks (the application counts a blank CTQ item as 0, and its ASRS script tests the wrong variable for an unanswered item): 108 and 100 cells change, the cells that cannot be recomputed are flagged `score_not_recomputed` (42 and 6). PSQI components 5 and 7 are computed with a blank 5j read as 0 (the script and the export both need 5j): 108 more components and 87 more totals; the latency is no longer winsorised (294 cells); the text of the other reason is shown only after a 5j of 1 to 3 (2 cells). The QIDS total is YAML (same values), the MDQ has a check of its screening result (17 visits to which R88 applies), the EQ-5D index is named for what it is (the France crosswalk of the 5L profile to the 3L value set); titles and labels say the time frame. The 13 schemas stay reviewed | D183 to D189 |
+| AUTO-QUESTIONNAIRES re-audit, BP, second group of 14 schemas (2026-11-20, D190 to D197) | The AIM-20, AIM-40, ALS-18, ALS-54, short aggression questionnaire (AQ-12), BDHI, BIS-10, BIS-12, CSM, Fagerström, MARS, MAThyS, MAThyS emotions and PRISE-M schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export's score definitions, the graph of their dependencies and the data. The BDHI items are delivered as asked, 1 true and 0 false (the 15 statements for which false is the hostile answer are read back: 67,999 cells flip, no score moves); the PRISE-M total needs the 31 items that the application asks for (239 partial sums are lost, 328 stored totals flagged `score_not_recomputed`); the MARS and BIS titles and notes carry the time frame, the numbers that the BIS-12 form prints and the corrected counts; the AQ-12 is titled by its content and not joined with item 12 of the ASP autism quotient. The MAThyS is `reviewed` with its limits stated (two or three centres in the old direction from 2023, at least 80 and up to about 1,240 visits turned by mistake before September 2021: DM-12). The tab is 27 of 27 reviewed, and the cohort 135 of 135. New questions: DM-19, PI-19, DM-20 | D190 to D197 |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -136,8 +138,47 @@ Nothing open today. The norms of the other tests (PI-10, DM-4) wait on their tab
 
 ## 2. To check on the data or the publication
 
-Nothing open today. The screening pass of BP that follows this list will add
-its findings here.
+- [ ] **DM-18. Published definitions to verify.** (D184, D185, D188; new on
+  2026-11-20) One rule and some references of the questionnaires are written 'to
+  verify' in the notes of the schemas, because the literature file of the
+  general self-report scales was not available and the sources do not settle
+  them.
+  - PSQI, a blank item 5j (how often another reason disturbed the sleep): the
+    package counts it 0 (the lead's decision). Does the manual or its French
+    validation say what to do with an unanswered 5j, or treat the component as
+    missing? On 137 BP visits 5j is blank, 108 of them with items 5b to 5i all
+    answered; the script of the application and the export both give no
+    component 5 and no total there.
+  - Circadian inventory: the exact citation of the Circadian Type Inventory
+    (Folkard and colleagues, 1979, as we know it) and the one of its French
+    version, the 'Inventaire du type circadien' (11 items).
+  - EQ-5D-5L: the crosswalk reference (van Hout and colleagues, 2012) and the
+    French EQ-5D-5L value set (Andrade and colleagues, 2020), whose range we
+    know and whose table is not in the sources (see PI-18).
+  - Today: a blank 5j counts 0; the notes name the authors as above and carry
+    'to verify'.
+
+- [ ] **DM-19. Published definitions to verify, second group of the
+  self-questionnaires.** (D193, D194; new on 2026-11-20) The notes of the BIS
+  and AQ-12 schemas say 'to verify' because the sources do not settle them.
+  - BIS-12: the twelve questions of the short form of the application are the
+    BIS-10 items 1, 6, 8, 9, 12, 14, 17, 20, 21, 23, 25 and 28, and the form
+    prints those numbers (read in the form by the review; the source in the
+    repository holds only the 34-item form, so it has not been seen on the
+    development instance). Please confirm it there, and ask the developers
+    where the twelve items come from (a published short form of the BIS-10
+    or the BIS-11, or their own choice). The same for the 34-item form (is it
+    the French BIS-10?) and for the column `bis11`: the export's own 12-item
+    sum (offset 4), neither the BIS-11 nor the BIS-12 (which 12 items, and
+    why).
+  - AQ-12: which published short form is it (items, response scale of 1 to
+    6, French version)? The package calls it the short aggression
+    questionnaire; its four sub-scores are the four factors of the Buss-Perry
+    Aggression Questionnaire, and that the twelve items are a short form of
+    it is to verify. The name collides with item 12 of the ASP `aq`
+    (Autism-Spectrum Quotient): the two are not joined.
+  - Today: the notes say 'to verify'; no delivered value depends on the
+    answers.
 
 ## 3. Choices of method
 
@@ -187,6 +228,31 @@ still to do.
   - Today: the three items and the index are read at the follow-up visits only;
     the inclusion values carry no flag.
 
+- [ ] **PI-18. EQ-5D index: the crosswalk or the French five-level value
+  set?** (D188; new on 2026-11-20) The index of the application and of the
+  export is the 'France' column of the EuroQol crosswalk from the five-level
+  profile to the three-level value set. A French value set built on the
+  five-level questionnaire exists (Andrade and colleagues, 2020: to verify
+  against the paper); its table is not in the sources, and the package would
+  need it as a norm table (outside the repository). Two choices: keep the
+  crosswalk, which is the index that every stored value follows and which the
+  four cohorts share, or add the five-level value set as a second index under
+  its own name once the table is obtained. The default is the crosswalk.
+  - Today: `eq5d_index` is the crosswalk value; the stored index (BP, SZ and
+    ASP) equals it on every visit that has the five answers.
+
+- [ ] **PI-19. PRISE-M: the 35 visits that answered both sex items.**
+  (D192; new on 2026-11-20) The application scores a visit only when the 30
+  common items and exactly one of the two sex items are answered; when both
+  are answered it shows 'Problème de genre' and writes no score. 35 visits
+  answered both (32 items), and the package sums the 32 items, as the stored
+  total does (R87). `min_items` has no maximum, so the schema cannot refuse
+  them, and the generic code is at its budget. Keep the 35 as delivered, or
+  ask for a `max_items` field (a change of the generic code)? The default is
+  to keep them.
+  - Today: the 35 totals are delivered and carry no flag; the export's rule
+    of R87 would give 15,864 totals against our 15,899.
+
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
   CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
@@ -194,13 +260,13 @@ still to do.
   (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
   four reviewed (D124); SUICIDE, ten reviewed after the splits by form
   (D125); the three care tabs read again with the other cohorts' rules (D158 to D169); HETERO-QUESTIONNAIRES and the DIVA read again with them (D170 to D175); the DSM and psychotic-disorder schemas of EVALUATION MEDICALE read again with them (D176 to D182); with the audit of the four cohorts, `errands_test` (D126) and
-  `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134); NEUROPSYCHOLOGIE, the 20 drafts of the
+  `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134) and the MAThyS with its limits stated (D190), all 27 read again with the other cohorts' rules (D183 to D197); NEUROPSYCHOLOGIE, the 20 drafts of the
   tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
   ASP social cognition, for gaps with no known cause). BILAN BIOLOGIQUE, the 6 drafts of the tab (D144, with the 28 schemas of the
   same tab in SZ, DR and ASP). ANTECEDENTS, the 20 drafts of the tab (D145 to
-  D149). SUBSTANCES ET COMORBIDITE, the 9 drafts of the tab (D150 to D157). 134 of 135 are
-  reviewed; the other one is a draft (MAThyS). Each
+  D149). SUBSTANCES ET COMORBIDITE, the 9 drafts of the tab (D150 to D157). 135 of 135 are
+  reviewed, the MAThyS last (D190). Each
   has notes that state what was asked, how the score is computed and what
   remains doubtful. Decided on 2026-11-17 (D107): the project lead reviews
   them tab by tab, in working sessions that follow this list; a schema read
@@ -285,18 +351,24 @@ source, in the export or in the application. Still to send.
     the form of each record (the application has two forms, the typed one
     and the slider); (2) two centres still enter the old direction on the
     new form (their codes on request): can they be asked how they fill the
-    scale? (3) about 80 visits dated before September 2021 were scored with
-    the new formula: were they typed or saved again later?
+    scale? A third centre (64 visits) is mixed from 2023. (3) at least 80, and
+    possibly up to about 1,240, visits dated before September 2021 were
+    scored with the new formula (D190): were they typed or saved again later?
   - Today: the eight items are turned before 2021-09-01, and they are not
     delivered, with the total and four sub-scores, from 2021-09-01 to
-    2022-12-31 (1,435 visits).
+    2022-12-31 (1,435 visits). The schema is `reviewed` with these limits
+    stated in its notes (D190).
   - It changes: with the form of each record, the 1,435 visits come back
-    and the two centres can be corrected.
+    and the two or three centres, and the visits turned by mistake before
+    2021, can be corrected.
   - Export side, 2026-11-18: the score step keeps writing its own MAThyS
     scores (decided by the project lead, D119), so request (1) becomes: say
     whether the form of each record can be told (M47 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)), and score
     each record with the rule of its form (R85); the slider table is read by
     no model (R52, M21). Our package computes the MAThyS from the items.
+    Batch 7 (2026-11-20) adds M77: which direction the centres that still
+    enter the old direction use on the new form, and whether the overlay is
+    still given.
 
 ### Priority B
 
@@ -679,6 +751,17 @@ source, in the export or in the application. Still to send.
   corrected, the questionnaires come back by themselves.
   - Today: not delivered, flagged `version_unknown`.
 
+- [ ] **DM-20. The smoking question that shows the Fagerström form.**
+  (D196; new on 2026-11-20) The application shows the Fagerström items only
+  when the smoking question of the nurse's file (`rad_tabac`, table
+  `inf_dossier_infirmier`) says 'Fumeur actuel'. That field is not in the
+  extraction; the substances tab holds a different column, which the audit of
+  the dependencies uses as a proxy (items are filled on 7 visits where it says
+  no and on 1 where it is empty). Can the export carry `rad_tabac`? With it a
+  `shown_if` could be written (R23).
+  - Today: nothing is blanked; the items and the total are delivered as
+    recorded.
+
 ### To correct at the source, and smaller questions
 
 - [ ] **DM-4. Norm tables: where does each one come from?** (O12) See
@@ -725,6 +808,13 @@ source, in the export or in the application. Still to send.
   | Alda criterion A and B score differ from their items | 9 and 11 rows, and 14 for the total (D173) |
   | MAThyS: the decimal point is lost in 52 item cells (55 for 5.5) | 52 cells |
   | PSQI: minutes to fall asleep multiplied by 60, or a bedtime | 277 and 83 values |
+  | PRISE-M total is the sum of the items present, where the application needs the 30 common items and exactly one sex item (R87; the package needs 31, D192) | 239 visits with 28 to 30 items, 89 with fewer, 35 with both sex items |
+  | PSQI: component 5 and the total are empty when item 5j is blank, because the script of the application and the export's strict sum both need it; the package counts a blank 5j as 0 (D184) | 108 components, 87 totals |
+  | CTQ denial: the script counts an unanswered item as 0, and the stored score is empty on visits whose three items are answered (the package computes it from the three items, D183; A73) | 42 visits stored with an item empty, 66 empty with the three answered |
+  | ASRS screening result: the script tests the field and not the count for an unanswered item (an incomplete part A gives 'Négatif') and the result stays empty when the button is not clicked; the package computes it from part A (D187; A78) | 6 stored negatives with an incomplete part A, 92 empty with a complete part A, 2 negatives with 4 or 5 items past their threshold |
+  | MDQ screening result is negative when question 14 or 15 is empty, whatever the 13 first answers (R88; the package keeps a check, D187) | 28 visits, 17 of them undecidable |
+  | STOP-BANG class is empty on visits that answer the seven questions and is not the application's own rule on others (score computed on a click, D106, D185) | 89 empty, 26 stale |
+  | EQ-5D: the test of an empty visual scale in the script of the application never fires (A18), so an index is stored without a scale; the ASP script requires the scale (D188) | 1,305 BP visits |
   | WAIS-IV digit-span summary columns are shifted against their labels | 4 columns |
   | WAIS-IV vocabulary is stored in columns named `vocab*_wais3` | 2,107 visits |
   | A column name is cut: `connaissance_centre_expert_preci` | |
@@ -737,9 +827,9 @@ source, in the export or in the application. Still to send.
   | Read in the code: CVLT z-score of trials 1 to 5 computed with the coefficients of the age and of the sex exchanged: the patients of 70 and over until the correction of 2024-08-02, and visits of 2013 and 2014. The values stay wrong in the database; the package computes them again (D98, D108) | 232 values |
   | CVLT z-scores computed with no sex, most in 2012 and 2015 (D108) | 105 values of trials 1 to 5, about 50 for five other measures |
   | Read in the code: the ALS-18 form prints "19" for its last question; a WURS form of 28 questions exists beside the one of 25 (D97) | |
-  | Two centres still enter the MAThyS in the direction of the old form (DM-12; 215 visits from 2023, measured again on 2026-11-18) | About 215 visits |
+  | Two centres still enter the MAThyS in the direction of the old form (DM-12; 215 visits from 2023, measured again on 2026-11-18), a third is mixed (64 visits), and before September 2021 at least 80 visits, perhaps up to about 1,240, are turned by mistake (D190) | 215, 64 and 80 to 1,240 visits |
 
-  Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the names (R57, R62, R97, R98), the WAIS-IV digit span and vocabulary columns (R59 to R61), the WAIS-III vocabulary total (R60), the PSQI minutes (R49), one row per visit and form (R18, R21, R100). The damaged characters come from the transfer of a patient between centres (A2). The `_n1` MADRS and YMRS are, by the forms, the mood rated at the neuropsychological testing when the last rating is more than a week old: kept in the export (R58, M37); D27 is to be read again with the tab NEUROPSYCHOLOGIE.
+  Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the names (R57, R62, R97, R98), the WAIS-IV digit span and vocabulary columns (R59 to R61), the WAIS-III vocabulary total (R60), the PSQI minutes (R49), one row per visit and form (R18, R21, R100). The requests and defects of the review of AUTO-QUESTIONNAIRES that concern BP are numbered in the batch 7 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md): the CTQ denial script (A73), the ASRS script (A78), the untouched time fields and the 12-hour bedtimes of the PSQI (A75; A74 for the PSQI scripts of the other applications), the MAThyS direction of the centres (M77, which extends M47); the PRISE-M rule stays R87, the MDQ screen R88, the BIS scores R84 and the MAThyS rule R85. The batch asks nothing about the blank PSQI item 5j or the EQ-5D scale test of BP, and nothing about the field below (DM-20). The damaged characters come from the transfer of a patient between centres (A2). The `_n1` MADRS and YMRS are, by the forms, the mood rated at the neuropsychological testing when the last rating is more than a week old: kept in the export (R58, M37); D27 is to be read again with the tab NEUROPSYCHOLOGIE.
 
 - [ ] **DM-8. Columns that the dictionary lists and the extraction does not
   hold.** `hooccur_hospitalisation_ly`, `nom_centre_expert`, `armcd`, `ageu`.

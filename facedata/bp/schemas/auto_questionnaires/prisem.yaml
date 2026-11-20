@@ -5,20 +5,26 @@ section: Questionnaire PRISEM
 status: reviewed
 notes: >
   Patient-Rated Inventory of Side Effects, modified. 32 symptoms in nine
-  groups, each rated 0 (absent), 1 (tolerable) or 2 (distressing). Filled at every visit until 2020; from 2021 the form is shown only after a
-  yes to "do you take a medication at present?" (mars11): 7% of the visits
-  with a no hold items, 98% of those with a yes.
+  groups, each rated 0 (absent), 1 (tolerable) or 2 (distressing), for the
+  week that has just passed and only if the patient thinks they are side
+  effects of the current treatment (the instructions of the form). Filled at
+  every visit until 2020; from 2021 the form is shown only after a yes to "do
+  you take a medication at present?" (mars11): 17 of the 231 visits with a no
+  hold items (7%), 98% of those with a yes. The 17 are kept: no gate is
+  applied.
 
   Two items are for one sex only: prism06d (irregular periods, women) and
-  prism08c (erection, men). A patient therefore answers 31 items at most (35 visits answer both sex
-  items, 32 items).
+  prism08c (erection, men). A patient therefore answers 31 items (the 30
+  others and one of these two); 35 visits answer both sex items, 32 items.
 
   The stored total (prism) is the sum of the items that are filled, in every
-  row (16,227 visits). It is recomputed here in the same way, but only when at least
-  28 of the 32 items are filled: a total over a few items would look like a
-  low score. No score_mismatch is raised; 89 stored totals have fewer than 28 items and
-  get score_not_recomputed, and on 239 more visits (28 to 30 items) the
-  total is a partial sum.
+  row (16,227 visits). It is recomputed here in the same way, but only when
+  at least 31 of the 32 items are filled, which is what the application
+  needs (its script wants the 30 common items and one sex item): a total
+  over fewer items would look like a low score. No score_mismatch is raised;
+  328 stored totals have fewer than 31 items and get score_not_recomputed
+  (89 with fewer than 28 items, and 239 with 28 to 30, which are partial
+  sums).
 
 defaults: {type: item, range: [0, 2]}
 
@@ -66,5 +72,5 @@ scores:
           prism06c, prism06d, prism07a, prism07b, prism08a, prism08b,
           prism08c, prism09a, prism09b, prism09c, prism09d, prism09e,
           prism09f, prism09g]
-    min_items: 28
+    min_items: 31
     compare: prism_stored

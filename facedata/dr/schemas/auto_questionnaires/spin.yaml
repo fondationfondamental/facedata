@@ -1,14 +1,23 @@
 instrument: spin
-title: Social Phobia Inventory (SPIN)
+title: Social Phobia Inventory (SPIN, last weeks)
 tab: AUTO-QUESTIONNAIRES
 section: SPIN
-status: draft
+status: reviewed
 notes: >
-  Social Phobia Inventory: seventeen items, each 0 (not at all) to 4
-  (extremely), on the last week. Not in BP or SZ, and not in the
-  dictionary. Filled on 147 visits, most of them inclusions (28% of the
-  inclusions of 2012 to 2014, 10% from 2018, 3% since 2024): it is filled
-  by few patients and less and less.
+  Social Phobia Inventory (form 197): seventeen items, each 0 (not at all)
+  to 4 (extremely), about how much the problems "bothered you during the
+  last weeks" (the form's own words; the published SPIN says the past
+  week). Not in BP or SZ, and not in the dictionary. Filled on 147 visits,
+  most of them inclusions (28% of the inclusions of 2012 to 2014, 10% from
+  2018, 3% since 2024): it is filled by few patients and less and less. The
+  form is in none of the lists of the simplified visit (D55).
+
+  Gate. The application offers the form by the type of the visit only, the
+  initial visit (config/global.php, line 396), not by a diagnosis such as a
+  social phobia in the MINI; yet 46 of the 147 SPIN visits are follow-up
+  visits (13 at 6 months, 8 at 18 months, 12 at 1 year, 13 at 2 years).
+  Nothing here tells why; the visits are delivered as they are (question M74
+  for the data managers).
 
   Total. The sum of the seventeen items (0 to 68, higher is more social
   anxiety). The stored total (spin_) equals it on the 147 visits. Every
@@ -40,4 +49,5 @@ scores:
   spin_total:
     label: "SPIN total (0 to 68)"
     sum: [spin01, spin02, spin03, spin04, spin05, spin06, spin07, spin08, spin09, spin10, spin11, spin12, spin13, spin14, spin15, spin16, spin17]
+    range: [0, 68]
     compare: spin_total_stored

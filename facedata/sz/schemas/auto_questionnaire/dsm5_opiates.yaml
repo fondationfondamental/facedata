@@ -2,45 +2,81 @@ instrument: dsm5_opiates
 title: "DSM-5 criteria of a use disorder: opiates"
 tab: AUTO-QUESTIONNAIRE
 section: "Critères DSM5 de troubles lié à l'usage de: OPIACE"
-status: draft
+status: reviewed
 notes: >
-  Twelve criteria of a use disorder for opiates, answered from 2014 on
-  52 visits (36 with one criterion or more). Each criterion is
-  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
-  "do not know", read as a missing code.
+  Twelve criteria of a use disorder for opiates, answered from 2014 on 52
+  visits (36 with one criterion or more). Each criterion is asked twice:
+  ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is "do not
+  know", read as a missing code.
 
-  The second question is asked after a yes to the first (asked_if): where
-  it is empty after a "no" it is 0. The extraction mostly writes it.
+  The second question is asked after a yes to the first (asked_if). The
+  extraction never fills it after a no (0 of 359 such cells), so every 0 of
+  the 12-month criteria comes from asked_if. Under a yes, none is empty and
+  none is "do not know".
 
-  The same twelve questions are asked for seven substances, in seven
-  schemas with the same variables (dsm5_alcohol.yaml and the others). The
-  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
-  DSM-IV criterion. No count of criteria is stored, and none is computed.
+  The block is shown after a yes to the question "more than ten times in
+  your life" of the SUBSTANCES tab (opiate_over_ten_times; addict.js, lines
+  50 to 56). It is not written as a shown_if: the form hides the block but
+  keeps what was typed, and no delivered cell of the block sits under a no
+  or an empty answer. A block empty on a visit was not answered: it is not a
+  string of no. The criteria carry no asked_if on the use question, which
+  would turn the blocks never asked into 0: a no there means ten times or
+  fewer.
+
+  The same twelve questions are asked for seven substances, in seven schemas
+  with the same variables (dsm5_alcohol.yaml and the others; the stems are
+  alcohol_, cannabis_, cocaine_, heroin_, opiate_, sedative_ and
+  other_substance_). The first eleven are the DSM-5 criteria; the twelfth,
+  legal problems, is a DSM-IV criterion. No count of criteria is stored. Two
+  are computed here: the number of yes among the criteria a to k, ever and
+  in the last 12 months (0 to 11). A "do not know" leaves the count missing,
+  and the legal problems are not counted. No severity band is delivered:
+  DSM-5 reads 2 or 3 criteria as mild, 4 or 5 as moderate, 6 or more as
+  severe (to verify). The application counts the criteria a to k for its own
+  message (calcul_sympt, addict.js, lines 448 to 490) and does not store the
+  count.
+
+  The same form is used at inclusion and at the yearly visits (the yearly
+  update, no split). The count "ever" is not always kept from one year to
+  the next: 5 of the 16 yearly answers of the patients with one criterion or
+  more at inclusion give a count of 0.
 
 defaults: {type: item, range: [0, 1], missing: {2: unknown}}
 
 variables:
-  opiates_larger_amounts: {column: opiacea1, label: "Opiates, criterion a: took larger amounts than intended, ever"}
-  opiates_larger_amounts_12m: {column: opiacea2, label: "Opiates, criterion a: took larger amounts than intended, in the last 12 months", asked_if: opiates_larger_amounts}
-  opiates_cut_down: {column: opiaceb1, label: "Opiates, criterion b: tried to cut down or stop, ever"}
-  opiates_cut_down_12m: {column: opiaceb2, label: "Opiates, criterion b: tried to cut down or stop, in the last 12 months", asked_if: opiates_cut_down}
-  opiates_time_spent: {column: opiacec1, label: "Opiates, criterion c: spends time obtaining, using or recovering, ever"}
-  opiates_time_spent_12m: {column: opiacec2, label: "Opiates, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: opiates_time_spent}
-  opiates_craving: {column: opiaced1, label: "Opiates, criterion d: craving, ever"}
-  opiates_craving_12m: {column: opiaced2, label: "Opiates, criterion d: craving, in the last 12 months", asked_if: opiates_craving}
-  opiates_obligations: {column: opiacee1, label: "Opiates, criterion e: failed major obligations at work, at home or at school, ever"}
-  opiates_obligations_12m: {column: opiacee2, label: "Opiates, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: opiates_obligations}
-  opiates_interpersonal: {column: opiacef1, label: "Opiates, criterion f: went on using in spite of interpersonal consequences, ever"}
-  opiates_interpersonal_12m: {column: opiacef2, label: "Opiates, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: opiates_interpersonal}
-  opiates_activities_given_up: {column: opiaceg1, label: "Opiates, criterion g: gave up social, occupational or leisure activities, ever"}
-  opiates_activities_given_up_12m: {column: opiaceg2, label: "Opiates, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: opiates_activities_given_up}
-  opiates_hazardous_use: {column: opiaceh1, label: "Opiates, criterion h: repeated use when it can be dangerous, ever"}
-  opiates_hazardous_use_12m: {column: opiaceh2, label: "Opiates, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: opiates_hazardous_use}
-  opiates_despite_problems: {column: opiacei1, label: "Opiates, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
-  opiates_despite_problems_12m: {column: opiacei2, label: "Opiates, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: opiates_despite_problems}
-  opiates_tolerance: {column: opiacej1, label: "Opiates, criterion j: tolerance, ever"}
-  opiates_tolerance_12m: {column: opiacej2, label: "Opiates, criterion j: tolerance, in the last 12 months", asked_if: opiates_tolerance}
-  opiates_withdrawal: {column: opiacek1, label: "Opiates, criterion k: withdrawal symptoms, or use to avoid them, ever"}
-  opiates_withdrawal_12m: {column: opiacek2, label: "Opiates, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: opiates_withdrawal}
-  opiates_legal_problems: {column: opiacel1, label: "Opiates, criterion l: legal problems linked to the use, ever"}
-  opiates_legal_problems_12m: {column: opiacel2, label: "Opiates, criterion l: legal problems linked to the use, in the last 12 months", asked_if: opiates_legal_problems}
+  opiate_larger_amounts: {column: opiacea1, label: "Opiates, criterion a: took larger amounts than intended, ever"}
+  opiate_larger_amounts_12m: {column: opiacea2, label: "Opiates, criterion a: took larger amounts than intended, in the last 12 months", asked_if: opiate_larger_amounts}
+  opiate_cut_down: {column: opiaceb1, label: "Opiates, criterion b: tried to cut down or stop, ever"}
+  opiate_cut_down_12m: {column: opiaceb2, label: "Opiates, criterion b: tried to cut down or stop, in the last 12 months", asked_if: opiate_cut_down}
+  opiate_time_spent: {column: opiacec1, label: "Opiates, criterion c: spends time obtaining, using or recovering, ever"}
+  opiate_time_spent_12m: {column: opiacec2, label: "Opiates, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: opiate_time_spent}
+  opiate_craving: {column: opiaced1, label: "Opiates, criterion d: craving, ever"}
+  opiate_craving_12m: {column: opiaced2, label: "Opiates, criterion d: craving, in the last 12 months", asked_if: opiate_craving}
+  opiate_obligations: {column: opiacee1, label: "Opiates, criterion e: failed major obligations at work, at home or at school, ever"}
+  opiate_obligations_12m: {column: opiacee2, label: "Opiates, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: opiate_obligations}
+  opiate_interpersonal: {column: opiacef1, label: "Opiates, criterion f: went on using in spite of interpersonal consequences, ever"}
+  opiate_interpersonal_12m: {column: opiacef2, label: "Opiates, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: opiate_interpersonal}
+  opiate_activities_given_up: {column: opiaceg1, label: "Opiates, criterion g: gave up social, occupational or leisure activities, ever"}
+  opiate_activities_given_up_12m: {column: opiaceg2, label: "Opiates, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: opiate_activities_given_up}
+  opiate_hazardous_use: {column: opiaceh1, label: "Opiates, criterion h: repeated use when it can be dangerous, ever"}
+  opiate_hazardous_use_12m: {column: opiaceh2, label: "Opiates, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: opiate_hazardous_use}
+  opiate_despite_problems: {column: opiacei1, label: "Opiates, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  opiate_despite_problems_12m: {column: opiacei2, label: "Opiates, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: opiate_despite_problems}
+  opiate_tolerance: {column: opiacej1, label: "Opiates, criterion j: tolerance, ever"}
+  opiate_tolerance_12m: {column: opiacej2, label: "Opiates, criterion j: tolerance, in the last 12 months", asked_if: opiate_tolerance}
+  opiate_withdrawal: {column: opiacek1, label: "Opiates, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  opiate_withdrawal_12m: {column: opiacek2, label: "Opiates, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: opiate_withdrawal}
+  opiate_legal_problems: {column: opiacel1, label: "Opiates, criterion l: legal problems linked to the use, ever"}
+  opiate_legal_problems_12m: {column: opiacel2, label: "Opiates, criterion l: legal problems linked to the use, in the last 12 months", asked_if: opiate_legal_problems}
+
+scores:
+  opiate_criteria_count:
+    label: "Opiates: DSM-5 criteria met, ever (criteria a to k, 0 to 11)"
+    sum: [opiate_larger_amounts, opiate_cut_down, opiate_time_spent, opiate_craving, opiate_obligations, opiate_interpersonal, opiate_activities_given_up, opiate_hazardous_use, opiate_despite_problems, opiate_tolerance, opiate_withdrawal]
+    range: [0, 11]
+    min_items: 11
+  opiate_criteria_count_12m:
+    label: "Opiates: DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)"
+    sum: [opiate_larger_amounts_12m, opiate_cut_down_12m, opiate_time_spent_12m, opiate_craving_12m, opiate_obligations_12m, opiate_interpersonal_12m, opiate_activities_given_up_12m, opiate_hazardous_use_12m, opiate_despite_problems_12m, opiate_tolerance_12m, opiate_withdrawal_12m]
+    range: [0, 11]
+    min_items: 11

@@ -2,13 +2,24 @@ instrument: fagerstrom
 title: Fagerström Test for Nicotine Dependence (6 items)
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire FAGERSTROM
-status: draft
+status: reviewed
 notes: >
-  Fagerström test for nicotine dependence, filled by the smokers (2,037
-  visits). Same instrument and same schema as in FACE BP. Item 3 lost its
-  answer "any other cigarette" until the extraction of 13 November 2026
-  (decision D1 in PROGRESS.md); it is back, and the stored total equals the
-  sum of the six items on the 1,981 visits that have it.
+  Fagerström test for nicotine dependence, 6 items, filled on 2,044 visits
+  (1,042 at inclusion). Same instrument and same schema as in FACE BP. Item 3
+  lost its answer "any other cigarette" until the extraction of 13 November
+  2026 (decision D1 in PROGRESS.md); it is back, and the stored total equals
+  the sum of the six items on the 1,981 visits that have it.
+
+  Who is asked. The test is for smokers. The form hides it by a smoking-status
+  question named rad_tabac that no table of the SZ extraction holds, so the
+  gate cannot be read from the extraction; against the tobacco status of the
+  same visit (tobacco.yaml) the items are filled on 1,833 of the 2,087 current
+  smokers, 44 of the 614 ex-smokers, 35 of the 1,728 non-smokers and 132 of
+  the 2,177 visits with no status. These 79 cells of non-smokers and
+  ex-smokers and the 132 with no status are kept as recorded (no shown_if: the
+  status is of the day of the visit and "Non fumeur" is not "never smoked"). A
+  visit with no item is missing, never 0. The form's box "done / not done"
+  (rad_fagerstrom_nf) is not in the extraction (export request R152).
 
 defaults: {type: item, range: [0, 1]}
 

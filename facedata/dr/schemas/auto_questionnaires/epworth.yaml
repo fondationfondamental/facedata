@@ -2,21 +2,29 @@ instrument: epworth
 title: Epworth Sleepiness Scale (ESS, 8 items)
 tab: AUTO-QUESTIONNAIRES
 section: EPWORTH
-status: draft
+status: reviewed
 notes: >
   The BP schema in the columns of this extraction: the eight situations are
-  in the columns ess01 to ess08 (ess0101 to ess0108 in BP) and are delivered
-  under the BP names, the time of day when the sleepiness comes is ess09 and
-  the stored total is ess. Each situation is
-  rated 0 to 3; the total is their sum (0 to 24, higher is sleepier). Filled
-  at inclusion and at the visits of 1, 2 and 4 years: 723 visits. The stored
-  total equals ours on the 719 visits where the eight items are filled.
+  in the columns ess01 to ess08 (ess0101 to ess0108 in BP) and are
+  delivered under the BP names, the time of day when the sleepiness comes
+  is ess09 and the stored total is ess. Each situation is rated 0 to 3 for
+  the way of life "in recent months" (the form's own instruction, as in BP;
+  ASP prints none); the total is their sum (0 to 24, higher is sleepier).
+  Filled at inclusion and at the visits of 1, 2 and 4 years: 723 visits.
+  The stored total equals ours on the 719 visits where the eight items are
+  filled; it is the export's (nucleus epworth.yaml).
 
-  The break of 2018 (open question O1). 94% and 89% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 43% to 48% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  The ninth question, "when do these urges to sleep come" (epworth_when),
+  is a French addition to the published eight-item scale: it does not enter
+  the total.
+
+  The break of 2018 (open question O1, answered by D55). 94% and 89% of the
+  inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the scale, 43%
+  to 48% in the three periods since 2018. The form (144) is in none of the
+  lists of the simplified visit: an empty scale since 2018 is "not asked"
+  on a simplified visit, not "no", and it is missing data here, never 0.
+  The extraction has no flag that tells a simplified visit from a full one
+  with an empty scale (R127, R139, R155).
 
 defaults: {type: item, range: [0, 3]}
 
@@ -32,12 +40,12 @@ variables:
   epworth_when:
     column: ess09
     type: category
-    label: When the sleepiness comes
+    label: When the sleepiness comes (French addition, not in the total)
     codes: {0: after_meals, 1: fixed_hours, 2: night, 3: any_time}
   epworth_stored: {column: ess, label: Epworth total as stored, range: [0, 24], keep: false}
 
 scores:
   epworth_total:
-    label: Epworth total (0 to 24, higher is sleepier)
+    label: Epworth total, in recent months (0 to 24, higher is sleepier)
     sum: [ess0101, ess0102, ess0103, ess0104, ess0105, ess0106, ess0107, ess0108]
     compare: epworth_stored

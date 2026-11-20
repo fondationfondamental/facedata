@@ -2,30 +2,46 @@ instrument: traumatic_events
 title: List of traumatic life events
 tab: AUTO-QUESTIONNAIRES
 section: EVENEMENTS DE VIE TRAUMATIQUES
-status: draft
+status: reviewed
 notes: >
-  List of seventeen traumatic life events, the first part of the form that
-  ends with the PCL-S (pcl_s.yaml). Not in BP or SZ. For each event:
-  whether it happened (1 yes, 0 no), the age at the event and whether it
-  had a negative impact (1 yes, 0 no). The wording of the events is not in
-  the dictionary, so the variables are numbered (open question O20); the
-  seventeenth is "another very stressful event", with a free text. Filled
-  at inclusion and at the visits of 1, 2 and 4 years: the seventeen
+  List of seventeen traumatic life events (form 208): the events of the
+  Life Events Checklist, 16 events and a seventeenth, "another very
+  stressful event", with a free text. Not in BP or SZ. The dictionary puts
+  this form and the PCL-S (pcl_s.yaml, form 216) under one section header;
+  they are two forms of the EMR, and the PCL-S does not say which event of
+  the list its items are about. For each event: whether it happened (1 yes,
+  0 no), the age at the event and whether it had a negative impact (a box,
+  1 ticked). The wording is in the form, not in the dictionary: the
+  variable names stay numbered and each label gives a short English version
+  of the event. Event 15, "sudden, unexpected death of a close person",
+  differs from the published checklist item (a sudden accidental death): to
+  verify against the French version used.
+
+  Period. The form prints none; the published checklist asks about the
+  whole life and the inclusion answers are read so. At follow-up the
+  answers are not cumulative: of the events answered yes at inclusion, 21%,
+  17% and 14% are answered yes again at the visits of 1, 2 and 4 years
+  (105, 61 and 27 patients with both forms complete), and new events appear
+  (29, 21 and 12). Whether the follow-up form asks about the time since the
+  previous visit is a question for the data managers (O34, M78).
+
+  Filled at inclusion and at the visits of 1, 2 and 4 years: the seventeen
   questions are answered on 544 visits (30% of the inclusions of 2012 to
-  2014, 71% in 2015 to 2017, 29% to 43% since).
+  2014, 71% in 2015 to 2017, 29% to 43% since: the form is in none of the
+  lists of the simplified visit, D55).
 
   Of the 624 events answered yes, 575 have an age, 417 an impact of 1 and
   207 an impact of 0.
 
   The impact is 0 wherever the form was opened. The form writes 0 in the
-  impact of every event that is not answered yes: 10,137 cells. On the
-  rows where the event is answered no, this 0 says the same as the answer.
-  But on 89 visits the seventeen impacts hold 0 and no event is answered:
-  there the 0 is not an answer. These 1,513 cells, and 23 cells of an
-  event left empty on other visits, are delivered and flagged
-  derived_doubt (the impact is declared derived_from its event). Count the
-  visits of this form with the events (trau01 to trau17), not with the
-  impacts.
+  impact of every event that is not answered yes: 10,137 cells. On the rows
+  where the event is answered no, this 0 says the same as the answer. But
+  on 89 visits the seventeen impacts hold 0 and no event is answered: there
+  the 0 is not an answer. These 1,513 cells, and 23 cells of an event left
+  empty on other visits, are delivered and flagged derived_doubt (the
+  impact is declared derived_from its event). The zeros are left as the
+  form wrote them. Count the visits of this form with the events (trau01 to
+  trau17), not with the impacts.
 
   The number of events answered yes (trauma_events, 0 to 17) needs the
   seventeen answers: 533 visits.
@@ -33,57 +49,57 @@ notes: >
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  trau01: {label: "Traumatic life event 1: happened (the list of events is not in the dictionary)"}
-  trau02: {label: "Traumatic life event 2: happened (the list of events is not in the dictionary)"}
-  trau03: {label: "Traumatic life event 3: happened (the list of events is not in the dictionary)"}
-  trau04: {label: "Traumatic life event 4: happened (the list of events is not in the dictionary)"}
-  trau05: {label: "Traumatic life event 5: happened (the list of events is not in the dictionary)"}
-  trau06: {label: "Traumatic life event 6: happened (the list of events is not in the dictionary)"}
-  trau07: {label: "Traumatic life event 7: happened (the list of events is not in the dictionary)"}
-  trau08: {label: "Traumatic life event 8: happened (the list of events is not in the dictionary)"}
-  trau09: {label: "Traumatic life event 9: happened (the list of events is not in the dictionary)"}
-  trau10: {label: "Traumatic life event 10: happened (the list of events is not in the dictionary)"}
-  trau11: {label: "Traumatic life event 11: happened (the list of events is not in the dictionary)"}
-  trau12: {label: "Traumatic life event 12: happened (the list of events is not in the dictionary)"}
-  trau13: {label: "Traumatic life event 13: happened (the list of events is not in the dictionary)"}
-  trau14: {label: "Traumatic life event 14: happened (the list of events is not in the dictionary)"}
-  trau15: {label: "Traumatic life event 15: happened (the list of events is not in the dictionary)"}
-  trau16: {label: "Traumatic life event 16: happened (the list of events is not in the dictionary)"}
-  trau17: {label: "Traumatic life event 17: happened (the list of events is not in the dictionary)"}
-  trau01_age: {column: trau01ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 1: age at the event"}
-  trau02_age: {column: trau02ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 2: age at the event"}
-  trau03_age: {column: trau03ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 3: age at the event"}
-  trau04_age: {column: trau04ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 4: age at the event"}
-  trau05_age: {column: trau05ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 5: age at the event"}
-  trau06_age: {column: trau06ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 6: age at the event"}
-  trau07_age: {column: trau07ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 7: age at the event"}
-  trau08_age: {column: trau08ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 8: age at the event"}
-  trau09_age: {column: trau09ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 9: age at the event"}
-  trau10_age: {column: trau10ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 10: age at the event"}
-  trau11_age: {column: trau11ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 11: age at the event"}
-  trau12_age: {column: trau12ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 12: age at the event"}
-  trau13_age: {column: trau13ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 13: age at the event"}
-  trau14_age: {column: trau14ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 14: age at the event"}
-  trau15_age: {column: trau15ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 15: age at the event"}
-  trau16_age: {column: trau16ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 16: age at the event"}
-  trau17_age: {column: trau17ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Traumatic life event 17: age at the event"}
-  trau01_impact: {column: trau01im, derived_from: trau01, label: "Traumatic life event 1: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau02_impact: {column: trau02im, derived_from: trau02, label: "Traumatic life event 2: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau03_impact: {column: trau03im, derived_from: trau03, label: "Traumatic life event 3: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau04_impact: {column: trau04im, derived_from: trau04, label: "Traumatic life event 4: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau05_impact: {column: trau05im, derived_from: trau05, label: "Traumatic life event 5: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau06_impact: {column: trau06im, derived_from: trau06, label: "Traumatic life event 6: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau07_impact: {column: trau07im, derived_from: trau07, label: "Traumatic life event 7: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau08_impact: {column: trau08im, derived_from: trau08, label: "Traumatic life event 8: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau09_impact: {column: trau09im, derived_from: trau09, label: "Traumatic life event 9: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau10_impact: {column: trau10im, derived_from: trau10, label: "Traumatic life event 10: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau11_impact: {column: trau11im, derived_from: trau11, label: "Traumatic life event 11: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau12_impact: {column: trau12im, derived_from: trau12, label: "Traumatic life event 12: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau13_impact: {column: trau13im, derived_from: trau13, label: "Traumatic life event 13: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau14_impact: {column: trau14im, derived_from: trau14, label: "Traumatic life event 14: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau15_impact: {column: trau15im, derived_from: trau15, label: "Traumatic life event 15: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau16_impact: {column: trau16im, derived_from: trau16, label: "Traumatic life event 16: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
-  trau17_impact: {column: trau17im, derived_from: trau17, label: "Traumatic life event 17: negative impact (1 yes, 0 no; the form also writes 0 where the event did not happen)"}
+  trau01: {label: "Life event 1, natural disaster (flood, hurricane, tornado, earthquake): happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau02: {label: "Life event 2, fire or explosion: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau03: {label: "Life event 3, transportation accident: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau04: {label: "Life event 4, serious accident at work or at home during a non-work activity: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau05: {label: "Life event 5, exposure to a dangerous toxic substance (chemicals, radiation): happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau06: {label: "Life event 6, physical assault: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau07: {label: "Life event 7, assault with a weapon: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau08: {label: "Life event 8, sexual assault (rape, attempted rape, any sexual act by force or under threat of a weapon): happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau09: {label: "Life event 9, other unwanted, distressing sexual experience: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau10: {label: "Life event 10, combat or exposure to a war zone: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau11: {label: "Life event 11, captivity (kidnapping, hostage, prisoner of war): happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau12: {label: "Life event 12, life-threatening illness or injury: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau13: {label: "Life event 13, severe human suffering: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau14: {label: "Life event 14, sudden violent death (homicide, suicide): happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau15: {label: "Life event 15, sudden, unexpected death of a close person: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau16: {label: "Life event 16, serious injury, damage or death caused by you to someone else: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau17: {label: "Life event 17, any other very stressful event or experience: happened (1 yes, 0 no; no period printed on the form, the published checklist asks about the whole life)"}
+  trau01_age: {column: trau01ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 1, natural disaster (flood, hurricane, tornado, earthquake): age at the event"}
+  trau02_age: {column: trau02ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 2, fire or explosion: age at the event"}
+  trau03_age: {column: trau03ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 3, transportation accident: age at the event"}
+  trau04_age: {column: trau04ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 4, serious accident at work or at home during a non-work activity: age at the event"}
+  trau05_age: {column: trau05ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 5, exposure to a dangerous toxic substance (chemicals, radiation): age at the event"}
+  trau06_age: {column: trau06ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 6, physical assault: age at the event"}
+  trau07_age: {column: trau07ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 7, assault with a weapon: age at the event"}
+  trau08_age: {column: trau08ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 8, sexual assault (rape, attempted rape, any sexual act by force or under threat of a weapon): age at the event"}
+  trau09_age: {column: trau09ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 9, other unwanted, distressing sexual experience: age at the event"}
+  trau10_age: {column: trau10ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 10, combat or exposure to a war zone: age at the event"}
+  trau11_age: {column: trau11ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 11, captivity (kidnapping, hostage, prisoner of war): age at the event"}
+  trau12_age: {column: trau12ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 12, life-threatening illness or injury: age at the event"}
+  trau13_age: {column: trau13ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 13, severe human suffering: age at the event"}
+  trau14_age: {column: trau14ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 14, sudden violent death (homicide, suicide): age at the event"}
+  trau15_age: {column: trau15ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 15, sudden, unexpected death of a close person: age at the event"}
+  trau16_age: {column: trau16ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 16, serious injury, damage or death caused by you to someone else: age at the event"}
+  trau17_age: {column: trau17ag, type: number, unit: years, range: [0, 100], winsor: false, label: "Life event 17, any other very stressful event or experience: age at the event"}
+  trau01_impact: {column: trau01im, derived_from: trau01, label: "Life event 1, natural disaster (flood, hurricane, tornado, earthquake): negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau02_impact: {column: trau02im, derived_from: trau02, label: "Life event 2, fire or explosion: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau03_impact: {column: trau03im, derived_from: trau03, label: "Life event 3, transportation accident: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau04_impact: {column: trau04im, derived_from: trau04, label: "Life event 4, serious accident at work or at home during a non-work activity: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau05_impact: {column: trau05im, derived_from: trau05, label: "Life event 5, exposure to a dangerous toxic substance (chemicals, radiation): negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau06_impact: {column: trau06im, derived_from: trau06, label: "Life event 6, physical assault: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau07_impact: {column: trau07im, derived_from: trau07, label: "Life event 7, assault with a weapon: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau08_impact: {column: trau08im, derived_from: trau08, label: "Life event 8, sexual assault (rape, attempted rape, any sexual act by force or under threat of a weapon): negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau09_impact: {column: trau09im, derived_from: trau09, label: "Life event 9, other unwanted, distressing sexual experience: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau10_impact: {column: trau10im, derived_from: trau10, label: "Life event 10, combat or exposure to a war zone: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau11_impact: {column: trau11im, derived_from: trau11, label: "Life event 11, captivity (kidnapping, hostage, prisoner of war): negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau12_impact: {column: trau12im, derived_from: trau12, label: "Life event 12, life-threatening illness or injury: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau13_impact: {column: trau13im, derived_from: trau13, label: "Life event 13, severe human suffering: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau14_impact: {column: trau14im, derived_from: trau14, label: "Life event 14, sudden violent death (homicide, suicide): negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau15_impact: {column: trau15im, derived_from: trau15, label: "Life event 15, sudden, unexpected death of a close person: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau16_impact: {column: trau16im, derived_from: trau16, label: "Life event 16, serious injury, damage or death caused by you to someone else: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
+  trau17_impact: {column: trau17im, derived_from: trau17, label: "Life event 17, any other very stressful event or experience: negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)"}
   trau17_detail: {column: trau17pr, type: text, label: "Other very stressful event, as written"}
 
 scores:

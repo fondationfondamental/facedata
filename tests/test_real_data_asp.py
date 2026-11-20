@@ -194,16 +194,20 @@ def test_neuropsychology(result, qc):
 def test_new_questionnaires(result, qc):
     data, flags = result.data, result.flags
     table = qc[qc["tab"] == "autoquestionnaires"]
-    assert (table["instrument"].nunique(), len(table)) == (29, 1217)      # the ADOS total of the summary line is not delivered
+    assert (table["instrument"].nunique(), len(table)) == (30, 1240)      # the ADOS total of the summary line is not delivered; the ADHD-RS is two forms (D63)
     assert (qc.loc["eq5d_index", "n_valid"], qc.loc["eq5d_index", "score_mismatch"], qc.loc["asrs_parta", "n_valid"]) == (1020, 0, 579)
     counts = flags[flags["variable"].isin(table.index)]["flag"].value_counts().to_dict()
-    # 14,724 scores typed without their items, and 2,964 totals built on them; 767 stored scores whose items are incomplete.
-    assert counts == {"score_as_stored": 17688, "missing_code": 1457, "score_not_recomputed": 773, "score_mismatch": 749, "out_of_range": 31}
+    # 19,157 scores typed without their items (and totals built on them); 776 stored scores whose items are incomplete.
+    # The BVAQ factors and the STAIC state are recomputed with the stored ones as checks (2,339 and 17 cells of score_mismatch; D62),
+    # and the CTQ neglect scores reproduce the script of the form through their twins (109 mismatches fewer).
+    assert counts == {"score_as_stored": 19157, "missing_code": 1460, "score_not_recomputed": 776, "score_mismatch": 2996, "out_of_range": 34}
     mismatch = lambda name: int(((flags["variable"] == name) & (flags["flag"] == "score_mismatch")).sum())
+    fl = lambda name, flag: int(((flags["variable"] == name) & (flags["flag"] == flag)).sum())
     # A score typed without any of its items is kept as stored.
-    kept = {name: (int(qc.loc[name, "n_valid"]), int(qc.loc[name, "score_as_stored"])) for name in ["adi_a1", "raads_social", "gsq_total", "bdi_total", "adhdrs_total", "cdi_total", "staic_trait"]}
-    assert kept == {"adi_a1": (1622, 419), "raads_social": (480, 159), "gsq_total": (602, 157), "bdi_total": (518, 82), "adhdrs_total": (1065, 218),
-                    "cdi_total": (457, 114), "staic_trait": (402, 149)}
+    kept = {name: (int(qc.loc[name, "n_valid"]), int(qc.loc[name, "score_as_stored"])) for name in ["adi_a1", "raads_social", "gsq_total", "bdi_total", "adhdrsc_total", "adhdrsa_total",
+                                                                                                    "cdi_total", "staic_trait", "staic_state"]}
+    assert kept == {"adi_a1": (1622, 419), "raads_social": (480, 159), "gsq_total": (602, 157), "bdi_total": (518, 82), "adhdrsc_total": (887, 210), "adhdrsa_total": (178, 8),
+                    "cdi_total": (457, 114), "staic_trait": (402, 149), "staic_state": (168, 150)}
     # ADI-R: the published algorithm; the stored totals A and C count too many items and are checked by formulas "as stored".
     assert (qc.loc["adi_social_total", "n_valid"], qc.loc["adi_communication_verbal_total", "n_valid"], qc.loc["adi_repetitive_total", "n_valid"]) == (1520, 1531, 1538)
     assert (data["adi_social_total"].median(), data["adi_social_total"].max(), data["adi_repetitive_total"].max()) == (12, 29, 12)
@@ -213,7 +217,7 @@ def test_new_questionnaires(result, qc):
     valid = {name: int(qc.loc[name, "n_valid"]) for name in ["ados3_total", "ados4_total", "ados4_communication", "ados4_social_interaction"]}
     assert valid == {"ados3_total": 797, "ados4_total": 1349, "ados4_communication": 1355, "ados4_social_interaction": 1350}
     assert (mismatch("ados3_total"), mismatch("ados4_total"), mismatch("ados4_stereotyped_restricted")) == (23, 39, 79)
-    assert (mismatch("ados4_communication_as_stored"), mismatch("ados4_social_interaction_as_stored")) == (1, 0)
+    assert (mismatch("ados4_communication_as_stored"), mismatch("ados4_social_interaction_as_stored")) == (0, 0)      # the export sums the raw codes: the checks are exact (D62, D64)
     assert (data["ados4_communication"].max(), data["ados4_social_interaction"].max()) == (8, 14)        # the published maxima
     assert (data["ados3_b08"].isna() & data["ados3_b07"].notna()).sum() == 96                              # the visits of the first edition
     # SRS of a relative: the child form and the adult form share the columns and are told apart by the age at the visit.
@@ -228,7 +232,11 @@ def test_new_questionnaires(result, qc):
     # Where the two parts were typed without their items it is their sum, and says so (156 visits).
     assert (qc.loc["gsq_proprioceptive", "n_valid"], mismatch("gsq_proprioceptive_as_stored"), mismatch("gsq_hyper_proprioceptive")) == (611, 2, 1)
     assert qc.loc["gsq_proprioceptive", "score_as_stored"] == 156
-    assert (data["adhdrs19"].value_counts().to_dict(), qc.loc["adhdrs19", "missing_code"]) == ({"yes": 675, "no": 31}, 50)
+    # ADHD-RS: the form of children (a parent rates) and the form of adults (the adult recalls childhood) share the columns and are told apart by the age (D63).
+    assert data["adhdrs_form"].value_counts().to_dict() == {"adhd_rs_child": 900, "adhd_rs_adult": 192}
+    assert (data["adhdrsc_total"].notna() & data["adhdrsa_total"].notna()).sum() == 0
+    assert (data["adhdrsc19"].value_counts().to_dict(), qc.loc["adhdrsc19", "missing_code"]) == ({"yes": 579, "no": 16}, 14)       # the form prints 9 as NA: none is a child under 7
+    assert (data["adhdrsa19"].value_counts().to_dict(), qc.loc["adhdrsa19", "missing_code"]) == ({"yes": 96, "no": 15}, 36)
     # BRIEF: the form of children and the form of adults are two instruments.
     assert data["brief_form"].value_counts().to_dict() == {"brief_parent": 858, "brief_adult": 786}
     assert (qc.loc["briefp_gec", "n_valid"], qc.loc["briefa_gec", "n_valid"], qc.loc["briefa_self_monitor", "n_valid"]) == (793, 757, 777)
@@ -238,35 +246,62 @@ def test_new_questionnaires(result, qc):
                                                                                             "ssp_total", "aqc_total", "cgi_severity", "gaf"]}
     assert totals == {"raads_total": (479, 151), "srsa_total": (467, 110), "ctq_total": (400, 40), "mars_total": (241, 6), "epworth_total": (415, 8), "asrs_total": (559, 40),
                       "staya_total": (581, 49), "ssp_total": (951, 145), "aqc_total": (500, 19), "cgi_severity": (1368, 4), "gaf": (1351, 55)}
-    assert (mismatch("ctq_emotional_neglect"), mismatch("ctq_physical_neglect"), mismatch("ctq_total_as_stored"), mismatch("mars_total_as_stored")) == (83, 26, 0, 0)
+    # The stored neglect scores are the script's rule (an answer 1 of a reversed item counts 1): their twins reproduce them on every visit (D62).
+    assert (mismatch("ctq_emotional_neglect"), mismatch("ctq_physical_neglect"), mismatch("ctq_total_as_stored"), mismatch("mars_total_as_stored")) == (0, 0, 0, 0)
+    # STAIC state: the script reverses the positive adjectives; the state total is computed from the items and the stored one is the check (R27, D62).
+    assert (qc.loc["staic_state", "n_valid"], qc.loc["staic_state", "score_as_stored"], mismatch("staic_state"), data["staic_state"].max() <= 60) == (168, 150, 17, True)
+    # ASRS screen: computed from the six items of part A (the form of this cohort stores no result): 362 of 579 positive.
+    assert (qc.loc["asrs_screen", "n_valid"], int((data["asrs_screen"] == 1).sum())) == (579, 362)
+    # BVAQ: the stored factors were inverted before 2025 on most centres; the five factors, the two components and the total are computed from the items (R27, D62).
+    assert (qc.loc["bvaq_total", "n_valid"], qc.loc["bvaq_total", "score_as_stored"], mismatch("bvaq_total"), data["bvaq_total"].median()) == (615, 172, 296, 57)
+    # BRIEF validity scores have a range now: three infrequency values and three "years known" values are missing with out_of_range.
+    assert (fl("briefa_infrequency", "out_of_range"), fl("briefp_known_for", "out_of_range"), data["briefa_infrequency"].max()) == (3, 3, 5)
 
 
 def test_old_questionnaires(result, qc):
     data, flags = result.data, result.flags
     table = qc[qc["tab"].isin(["autoquestionnaires_old_part1", "autoquestionnaires_old_part2"])]
-    assert (table["instrument"].nunique(), len(table)) == (28, 1772)
+    # The pilot forms take the names of BP (bis10NN, aim40_NN, als54_NN): 1,772 -> 1,770 variables (BIS -7, AIM +1, ALS +4); the schemas of both folders keep 28 instruments.
+    assert (table["instrument"].nunique(), len(table)) == (28, 1770)
+    assert {"bis1001", "bis10_total", "aim40_01", "aim40_score", "als54_01", "als54_depression"} <= set(table.index)
+    assert not {"bis10_1", "bis_smi", "aim_1", "aim_score", "als_1", "alsdep"} & set(table.index)
     counts = flags[flags["variable"].isin(table.index)]["flag"].value_counts()
     assert "unknown_code" not in counts and "unparsed" not in counts
-    assert (counts["score_mismatch"], counts["missing_code"], counts["score_as_stored"]) == (547, 405, 99)
+    # missing_code +26: the waking time of the CSHQ (18 visits) and the rising time of the PSQI (8) written 00:00:00 by a Time box left untouched; score_mismatch +4: ALS depression (11 items against the export's 10).
+    assert (counts["score_mismatch"], counts["missing_code"], counts["score_as_stored"]) == (551, 431, 99)
     mismatch = lambda name: int(qc.loc[name, "score_mismatch"])
+    fl = lambda name, flag: int(((flags["variable"] == name) & (flags["flag"] == flag)).sum())
     # The scores that are right as stored: recomputed, no difference.
     right = ["abc_irritability", "cca_pragmatic_skills", "cshq_total", "hama_total", "hamd_total", "lsas_anxiety_total", "rbsr_total", "spq_total", "tas_total", "dcdq_total"]
     assert [mismatch(name) for name in right] == [0] * len(right)
     valid = {name: int(qc.loc[name, "n_valid"]) for name in right + ["lsas_total", "ccc_gcc"]}
-    assert valid == {"abc_irritability": 252, "cca_pragmatic_skills": 232, "cshq_total": 106, "hama_total": 360, "hamd_total": 340, "lsas_anxiety_total": 243, "rbsr_total": 308,
+    assert valid == {"abc_irritability": 252, "cca_pragmatic_skills": 233, "cshq_total": 106, "hama_total": 360, "hamd_total": 340, "lsas_anxiety_total": 243, "rbsr_total": 308,
                      "spq_total": 184, "tas_total": 38, "dcdq_total": 55, "lsas_total": 235, "ccc_gcc": 106}
     # The three quotients: points for the answers on the scored side, not a sum of the codes.
     quotients = {name: (int(qc.loc[name, "n_valid"]), mismatch(name), float(data[name].median())) for name in ["aq_total", "empathy_quotient_total", "systemizing_quotient_total"]}
     assert quotients == {"aq_total": (250, 1, 35), "empathy_quotient_total": (443, 2, 24), "systemizing_quotient_total": (158, 6, 34)}
     assert (data["aq_total"].max() <= 50, data["empathy_quotient_total"].max() <= 80) == (True, True)
     # Two forms of the communication checklist in the same columns.
-    assert data["communication_checklist_form"].value_counts().to_dict() == {"cca": 235, "ccc2": 106}
+    # The form is also read from the questions that only one form asks: 17 visits of 17 to 24 year olds given the children's form (CCC-2), 2 of CC-A.
+    assert data["communication_checklist_form"].value_counts().to_dict() == {"cca": 237, "ccc2": 123}
     forms = flags[flags["flag"] == "version_unknown"]["variable"].value_counts().to_dict()
-    assert forms == {"communication_checklist_form": 21, "srs_relative_form": 3}      # three visits with SRS answers and an impossible date: no age
+    assert forms == {"communication_checklist_form": 2, "srs_relative_form": 3}      # two visits with items and no question of either form; three visits with SRS answers and an impossible date: no age
     # PSQI: the components 4, 5 and 7 are recomputed; the stored ones do not cross midnight or do not follow the items.
     psqi = {name: (int(qc.loc[name, "n_valid"]), mismatch(name)) for name in ["psqi_latency_component", "psqi_efficiency", "psqi_disturbances", "psqi_dysfunction", "psqi_total"]}
     assert psqi == {"psqi_latency_component": (189, 0), "psqi_efficiency": (193, 91), "psqi_disturbances": (200, 158), "psqi_dysfunction": (201, 98), "psqi_total": (182, 147)}
     assert data["psqi_total"].median() == 7
+    assert (fl("psqi_rising_time", "missing_code"), fl("cshq_waking_time", "missing_code")) == (8, 18)      # 00:00:00 is a Time box left untouched
+    # CCC-2 Social Interaction Deviance Composite: the stored one is a char(2) field and never negative (43 values); computed from the scaled scores it has 106 (63 negative).
+    assert (qc.loc["ccc_sidc", "n_valid"], int((data["ccc_sidc"] < 0).sum()), mismatch("ccc_sidc"), data["ccc_sidc"].min(), data["ccc_sidc"].max()) == (106, 63, 0, -32, 15)
+    # LSAS: twelve situations of performance and twelve of social interaction, as the form prints them; the four sub-scores equal the stored ones on every visit that has both.
+    lsas = ["lsas_social_anxiety", "lsas_social_avoidance", "lsas_performance_anxiety", "lsas_performance_avoidance"]
+    assert [int(qc.loc[name, "n_valid"]) for name in lsas] == [248, 242, 254, 244] and [mismatch(name) for name in lsas] == [0, 0, 0, 0]
+    both = data["lsas_social_anxiety"].notna() & data["lsas_performance_anxiety"].notna() & data["lsas_anxiety_total"].notna()
+    assert (data.loc[both, "lsas_social_anxiety"] + data.loc[both, "lsas_performance_anxiety"] == data.loc[both, "lsas_anxiety_total"]).all()
+    # MCDD: the box "no to all the criteria" makes the script tick no on the fifteen; the criterion 8 that it left empty is 0 on 45 visits (asked_if).
+    assert (qc.loc["mcdd8", "n_valid"], int((data["mcdd8"] == 0).sum()), int((data["mcdd8"] == 1).sum())) == (381, 366, 15)
+    # The pilot forms (four inclusion visits): ALS depression has 11 items in the application and 10 in the export (item 1 left out); the other scores agree.
+    assert (mismatch("als54_depression"), mismatch("als54_total"), mismatch("bis10_total"), mismatch("aim40_score")) == (4, 0, 0, 0)
     # An instrument on a handful of visits is read with types and ranges only.
     rare = table[table["instrument"].isin(["aim", "als", "anhedonia", "asq", "atac", "bis_old_form", "tci"])]
     assert (rare["instrument"].nunique(), int(rare["n_valid"].max())) == (7, 5)
@@ -327,12 +362,12 @@ def test_coverage():
     assert (counts.get("covered", 0), counts.get("ignored", 0), counts.get("not_assigned", 0)) == (4242, 122, 0)      # every column is read or ignored
     finished = lines
     assert set(finished["status"]) == {"covered", "ignored"}
-    # The only cells left unread: the items of the communication checklist on the 21 visits whose form cannot be told,
+    # The only cells left unread: the items of the communication checklist on the 2 visits whose form cannot be told,
     # and the SRS of a relative on the three visits whose date is impossible: no age to tell the child form from the adult form.
     unread = finished[finished["n_unread"] > 0]
     checklist = unread[unread["column"].str.fullmatch(r"comm\d+")]
     srs = unread[unread["column"].str.startswith("recs")]
-    assert (len(checklist), checklist["n_unread"].sum()) == (70, 1351)
+    assert (len(checklist), checklist["n_unread"].sum()) == (70, 95)      # 1,351 when 21 visits had no form: the form is also read from the questions that only one form asks (D68)
     assert (len(srs), srs["n_unread"].max(), len(unread) - len(checklist) - len(srs)) == (80, 3, 0)
     assert counts.sum() == 4364                                             # no column named by a schema is absent from the file
     assert lines.groupby("table")["column"].size().to_dict() == {

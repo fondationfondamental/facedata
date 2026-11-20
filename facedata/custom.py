@@ -199,48 +199,6 @@ def stai_shift(values, keys):
     return shift.fillna(of_the_place.where(fits))
 
 
-def shaps_total(values, keys=None):
-    """SHAPS: the number of items answered "disagree" or "strongly disagree" (0 or 1).
-
-    From 0 to 14; a higher score is more anhedonia. Missing unless the
-    fourteen items are answered.
-    """
-    items = values[[f"shaps{number:02d}" for number in range(1, 15)]]
-    return (items <= 1).sum(axis=1).where(items.notna().all(axis=1))
-
-
-def shaps_total_as_stored(values, keys=None):
-    """SHAPS as one EMR counts it: "agree" on items 2, 4, 5, 7 and 9, "disagree" on the nine others.
-
-    Not the score of the scale: it is computed only to check the stored column.
-    """
-    items = values[[f"shaps{number:02d}" for number in range(1, 15)]]
-    counted_on_agree = ["shaps02", "shaps04", "shaps05", "shaps07", "shaps09"]
-    points = (items <= 1).astype(int)
-    points[counted_on_agree] = (items[counted_on_agree] >= 2).astype(int)
-    return points.sum(axis=1).where(items.notna().all(axis=1))
-
-
-def qids_total(values, keys=None):
-    """QIDS-SR16 total: one value per symptom, 0 to 27.
-
-    Sleep, appetite and weight, and psychomotor change are each asked in
-    several items: the highest answer counts. The other six symptoms have one
-    item each. The form asks for item 6 or item 7 (appetite down or up) and
-    for item 8 or item 9 (weight down or up), so one answer of each pair is
-    enough. Missing when any other item is missing.
-    """
-    sleep = values[["qidsr101", "qidsr102", "qidsr103", "qidsr104"]].max(axis=1)
-    appetite = values[["qidsr106", "qidsr107", "qidsr108", "qidsr109"]].max(axis=1)
-    psychomotor = values[["qidsr115", "qidsr116"]].max(axis=1)
-    alone = ["qidsr105", "qidsr110", "qidsr111", "qidsr112", "qidsr113", "qidsr114"]
-    total = sleep + appetite + psychomotor + values[alone].sum(axis=1)
-    always = ["qidsr101", "qidsr102", "qidsr103", "qidsr104", "qidsr115", "qidsr116"] + alone
-    appetite_answered = values[["qidsr106", "qidsr107"]].notna().any(axis=1)
-    weight_answered = values[["qidsr108", "qidsr109"]].notna().any(axis=1)
-    return total.where(values[always].notna().all(axis=1) & appetite_answered & weight_answered)
-
-
 def adi_peer_item(values, keys=None):
     """ADI-R algorithm: the peer item that counts at the age of the subject.
 

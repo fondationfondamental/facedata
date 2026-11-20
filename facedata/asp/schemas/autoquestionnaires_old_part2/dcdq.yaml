@@ -2,21 +2,39 @@ instrument: dcdq
 title: "Developmental Coordination Disorder Questionnaire (DCDQ)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Fifteen items answered from 1 to 5 by a parent and a total: 54 inclusion visits (47 of children) and fewer than five follow-up visits,
-  from 2013 to 2014. It belongs to the old set of forms; filled for children.
+  Fifteen items answered from 1 to 5 and a total: 54 inclusion visits (47 of children) and 2 follow-up visits,
+  from 2013 to 2021 (48 of the 56 in 2013 and 2014). It belongs to the old set of forms.
 
   Identified from its name (tdc, trouble développemental de la coordination),
   its fifteen items from 1 to 5 and its total as the Developmental
   Coordination Disorder Questionnaire (Wilson and others, 2007), likely.
+  The answers run from 1 (not at all like the other children) to 5 (extremely like
+  the other children): the higher, the better the coordination.
+
+  Two forms share the columns. The child form (form 224, a parent reports on the child:
+  "Votre enfant", 50 visits aged 6 to 24, 38 answered by the mother and 12 by the father, from 2013 to 2021)
+  has the respondent (dcdq_filled_by). The adult retrospective form (form 223, the patient
+  reports on the years before 10: 6 visits aged 22 to 46, 2019 and 2020, one centre) has none, so an
+  empty dcdq_filled_by means the adult form. The export carries no form number, so the two
+  cannot be split in YAML (request). The published questionnaire is meant for children from
+  5 to 15 years (to verify); the form checks no age: 15 of the 56 visits are of patients aged 16 or more, 9 of them
+  on the child form. The script of the form computes the total only below 17 years on the child form and above 16 on the adult form.
 
   The scores, each fitted on the data:
 
   - DCDQ total (15 to 75): the sum of 15 items, equal to the stored score on 54 of 54 complete visits.
+  The sub-scales of the published questionnaire (control during movement, fine motor and handwriting, general
+  coordination) are not delivered: their lists of items are to verify.
 
-  dcdq_filled_by says who filled the child questionnaire (father, mother,
-  grandparents, guardian).
+  **Year and centre.** 6 of the 17 variables reach 0.5 or more, all by year, none by centre (50 of
+  the 56 visits are of centre C, children). A step with no known cause: the total is 36 in 2013
+  (25 visits) and 56.5 in 2014 (22 visits), in the same centre, at the same age (median 12.9 and
+  13.2 years) and with the same respondents (mothers 19 and 16, fathers 6 and 6); the mean answer
+  is 2.7 and 3.6, and 3 of the 16 variables differ beyond chance (permutation test, p below 0.01),
+  among them the total. The quarters of 2013 and 2014 hold 1 to 13 visits each, too few to date
+  the step.
 
   An instrument of the ASP cohort only.
 
@@ -38,7 +56,7 @@ variables:
   dcdq13: {column: tdc13, label: "DCDQ, item 13"}
   dcdq14: {column: tdc14, label: "DCDQ, item 14"}
   dcdq15: {column: tdc15, label: "DCDQ, item 15"}
-  dcdq_filled_by: {column: tdcrel, type: category, label: "DCDQ: relationship of the respondent to the patient, child questionnaire only", codes: {"1": father, "2": mother, "3": grandparents, "4": guardian}}
+  dcdq_filled_by: {column: tdcrel, type: category, label: "DCDQ respondent (parent form 224; empty = adult retrospective form 223)", codes: {"1": father, "2": mother, "3": grandparents, "4": guardian}}
   dcdq_total_stored: {column: score_tdc, type: number, range: [15, 75], winsor: false, keep: false, label: "DCDQ total (15 to 75), as stored"}
 
 scores:

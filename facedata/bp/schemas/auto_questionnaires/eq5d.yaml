@@ -5,18 +5,34 @@ section: Questionnaire EQ5D
 status: reviewed
 notes: >
   Five dimensions, each rated 1 (no problem) to 5 (extreme problem), and a
-  visual scale of today's health from 0 to 100. In the extraction from 2012 (6 visits) and 2013.
+  visual scale of the health of the patient today, from 0 to 100. In the
+  extraction from 2012 (6 visits in 2012, 193 in 2013, 12,469 from 2014 to
+  2026; 12,668 visits with the five answers in all).
 
-  The index (eq5d_) is read in a value set from the five answers; 1 is full
-  health and the lowest value in the data is -0.53. The index is a table of
-  the 3,125 profiles in the application's script (hetero_eq5d.js; the
-  country of the value set is not stated): the stored index equals it on all
-  12,668 visits with the five answers, and one index goes with one profile
-  in BP, SZ and ASP, the same in the three. Since decision D133 the index
-  delivered is the table's value, read from the five answers (the table is
-  norms/eq5d_index.csv, outside the repository), and the stored one is a
-  check (score_mismatch). The same score is computed in SZ, DR and ASP, so
-  the index is the same variable in the four cohorts.
+  The index (eq5d_) is the value of the "France" column of the EuroQol
+  crosswalk (van Hout and colleagues, 2012) from the five-level profile to
+  the three-level value set: a
+  table of the 3,125 profiles, in the application's script (hetero_eq5d.js)
+  and in the export, which names the crosswalk and the country (nucleus
+  eq5d5l.yaml). It is a crosswalk value, not a value set built on
+  five-level preferences. A French EQ-5D-5L value set exists (Andrade and
+  colleagues, 2020: to verify); it is not in the sources, and whether to use
+  it is for the project lead to decide. The lowest value in the data is
+  -0.53 (153 negative indices, which the clean model of the export strips of
+  their minus sign and the score step then writes again, R50). The stored
+  index equals the table on all 12,668 visits with the five answers, and one
+  index goes with one profile in BP, SZ and ASP, the same in the three.
+  Since decision D133 the index delivered is the table's value, read from
+  the five answers (the table is norms/eq5d_index.csv, outside the
+  repository), and the stored one is a check (score_mismatch: none in BP).
+  The same score is computed in SZ, DR and ASP, so the index is the same
+  variable in the four cohorts.
+
+  The visual scale is not part of the index. The script of the ASP
+  application asks for it before it gives an index; the BP script has a test
+  that should do the same and never fires (A18: it compares a list of
+  elements with an empty text), so the index exists on the 1,305 visits that
+  have the five answers and no scale, and is delivered there.
 
 defaults: {type: item, range: [1, 5]}
 
@@ -31,7 +47,7 @@ variables:
 
 scores:
   eq5d_index:
-    label: EQ-5D-5L index (the table of the application's script, one value per combination of the five answers)
+    label: EQ-5D-5L index (crosswalk of the 5L profile to the French 3L value set, one value per combination of the five answers)
     profile: eq5d_index
     from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]
     compare: eq5d_index_stored

@@ -1,55 +1,91 @@
 instrument: aim
-title: "Affect Intensity Measure (from the column names)"
+title: "Affect Intensity Measure, 40 items (AIM-40), old form of the autism cohort"
 tab: autoquestionnaires_old_part1
 section: old questionnaires, rare
-status: draft
+status: reviewed
 notes: >
-  41 columns filled on fewer than five visits. **Too few visits to verify**: the columns are
-  read with their types and ranges, the scores are delivered as stored and no
-  rule is checked. The thesaurus confirms the instrument and gives the range of
-  its answers; with so few visits nothing more can be verified.
+  The 40-item Affect Intensity Measure (AIM-40) of the old forms: 4 inclusion
+  visits, all of 2013 and of one centre (D). A pilot, too few visits to study
+  the form; the schema reads what can be checked on them. An instrument of the
+  ASP cohort only, with the names of the AIM-40 of BP.
 
-  An instrument of the ASP cohort only.
+  Items. `aim40_01` to `aim40_40` (the columns `aim_1` to `aim_40`), from 1
+  (never) to 6 (always), as asked. The 4 visits hold the 40 items (BP holds 20
+  of the 40). Reversed items, from the key of the export (nucleus
+  `aim.yaml`): 12, 16, 19, 24, 26, 28, 29, 31, 33, 37 and 40 (7 - value).
+
+  Score. `aim40_score`, the mean of the 40 items (1 to 6) with the 11 reversed
+  items. The stored score (`aim_score`, read as the hidden check
+  `aim40_score_stored`) is equal to it on 4 of 4 visits, to the 2 decimals
+  that the export writes (tolerance 0.006). The script of the application
+  (`230_score.js`, line 35) reverses item 36 where the key has item 37: no
+  stored value comes from it (the stored score is the export's), and the
+  stored score follows the key above.
+
+  Bridge to the AIM-20: `aim40_score20`, the mean of the 20 items that the
+  AIM-20 also has, six of them reversed (12, 24, 29, 33, 37 and 40), as in BP
+  (aim40.yaml). The cohort has no AIM-20 visit, so there is no stored value to
+  check it against.
+
+  **Year and centre.** Too few visits to screen: 4 visits of one centre (D), all of 2013. There is
+  no group of 20 values, so the quality-control table holds no year or centre shift.
+
+defaults: {type: item, range: [1, 6]}
 
 variables:
-  aim_1: {column: aim_1, type: item, label: "AIM, item 1 (1 never to 6 always)", range: [1, 6]}
-  aim_2: {column: aim_2, type: item, label: "AIM, item 2 (1 never to 6 always)", range: [1, 6]}
-  aim_3: {column: aim_3, type: item, label: "AIM, item 3 (1 never to 6 always)", range: [1, 6]}
-  aim_4: {column: aim_4, type: item, label: "AIM, item 4 (1 never to 6 always)", range: [1, 6]}
-  aim_5: {column: aim_5, type: item, label: "AIM, item 5 (1 never to 6 always)", range: [1, 6]}
-  aim_6: {column: aim_6, type: item, label: "AIM, item 6 (1 never to 6 always)", range: [1, 6]}
-  aim_7: {column: aim_7, type: item, label: "AIM, item 7 (1 never to 6 always)", range: [1, 6]}
-  aim_8: {column: aim_8, type: item, label: "AIM, item 8 (1 never to 6 always)", range: [1, 6]}
-  aim_9: {column: aim_9, type: item, label: "AIM, item 9 (1 never to 6 always)", range: [1, 6]}
-  aim_10: {column: aim_10, type: item, label: "AIM, item 10 (1 never to 6 always)", range: [1, 6]}
-  aim_11: {column: aim_11, type: item, label: "AIM, item 11 (1 never to 6 always)", range: [1, 6]}
-  aim_12: {column: aim_12, type: item, label: "AIM, item 12 (1 never to 6 always)", range: [1, 6]}
-  aim_13: {column: aim_13, type: item, label: "AIM, item 13 (1 never to 6 always)", range: [1, 6]}
-  aim_14: {column: aim_14, type: item, label: "AIM, item 14 (1 never to 6 always)", range: [1, 6]}
-  aim_15: {column: aim_15, type: item, label: "AIM, item 15 (1 never to 6 always)", range: [1, 6]}
-  aim_16: {column: aim_16, type: item, label: "AIM, item 16 (1 never to 6 always)", range: [1, 6]}
-  aim_17: {column: aim_17, type: item, label: "AIM, item 17 (1 never to 6 always)", range: [1, 6]}
-  aim_18: {column: aim_18, type: item, label: "AIM, item 18 (1 never to 6 always)", range: [1, 6]}
-  aim_19: {column: aim_19, type: item, label: "AIM, item 19 (1 never to 6 always)", range: [1, 6]}
-  aim_20: {column: aim_20, type: item, label: "AIM, item 20 (1 never to 6 always)", range: [1, 6]}
-  aim_21: {column: aim_21, type: item, label: "AIM, item 21 (1 never to 6 always)", range: [1, 6]}
-  aim_22: {column: aim_22, type: item, label: "AIM, item 22 (1 never to 6 always)", range: [1, 6]}
-  aim_23: {column: aim_23, type: item, label: "AIM, item 23 (1 never to 6 always)", range: [1, 6]}
-  aim_24: {column: aim_24, type: item, label: "AIM, item 24 (1 never to 6 always)", range: [1, 6]}
-  aim_25: {column: aim_25, type: item, label: "AIM, item 25 (1 never to 6 always)", range: [1, 6]}
-  aim_26: {column: aim_26, type: item, label: "AIM, item 26 (1 never to 6 always)", range: [1, 6]}
-  aim_27: {column: aim_27, type: item, label: "AIM, item 27 (1 never to 6 always)", range: [1, 6]}
-  aim_28: {column: aim_28, type: item, label: "AIM, item 28 (1 never to 6 always)", range: [1, 6]}
-  aim_29: {column: aim_29, type: item, label: "AIM, item 29 (1 never to 6 always)", range: [1, 6]}
-  aim_30: {column: aim_30, type: item, label: "AIM, item 30 (1 never to 6 always)", range: [1, 6]}
-  aim_31: {column: aim_31, type: item, label: "AIM, item 31 (1 never to 6 always)", range: [1, 6]}
-  aim_32: {column: aim_32, type: item, label: "AIM, item 32 (1 never to 6 always)", range: [1, 6]}
-  aim_33: {column: aim_33, type: item, label: "AIM, item 33 (1 never to 6 always)", range: [1, 6]}
-  aim_34: {column: aim_34, type: item, label: "AIM, item 34 (1 never to 6 always)", range: [1, 6]}
-  aim_35: {column: aim_35, type: item, label: "AIM, item 35 (1 never to 6 always)", range: [1, 6]}
-  aim_36: {column: aim_36, type: item, label: "AIM, item 36 (1 never to 6 always)", range: [1, 6]}
-  aim_37: {column: aim_37, type: item, label: "AIM, item 37 (1 never to 6 always)", range: [1, 6]}
-  aim_38: {column: aim_38, type: item, label: "AIM, item 38 (1 never to 6 always)", range: [1, 6]}
-  aim_39: {column: aim_39, type: item, label: "AIM, item 39 (1 never to 6 always)", range: [1, 6]}
-  aim_40: {column: aim_40, type: item, label: "AIM, item 40 (1 never to 6 always)", range: [1, 6]}
-  aim_score: {column: aim_score, type: number, label: "AIM (Affect Intensity Measure) score, as stored", range: [0, 200], winsor: false}
+  aim40_01: {column: aim_1, label: "AIM-40 item 1 (1 never to 6 always)"}
+  aim40_02: {column: aim_2, label: "AIM-40 item 2 (1 never to 6 always)"}
+  aim40_03: {column: aim_3, label: "AIM-40 item 3 (1 never to 6 always)"}
+  aim40_04: {column: aim_4, label: "AIM-40 item 4 (1 never to 6 always)"}
+  aim40_05: {column: aim_5, label: "AIM-40 item 5 (1 never to 6 always)"}
+  aim40_06: {column: aim_6, label: "AIM-40 item 6 (1 never to 6 always)"}
+  aim40_07: {column: aim_7, label: "AIM-40 item 7 (1 never to 6 always)"}
+  aim40_08: {column: aim_8, label: "AIM-40 item 8 (1 never to 6 always)"}
+  aim40_09: {column: aim_9, label: "AIM-40 item 9 (1 never to 6 always)"}
+  aim40_10: {column: aim_10, label: "AIM-40 item 10 (1 never to 6 always)"}
+  aim40_11: {column: aim_11, label: "AIM-40 item 11 (1 never to 6 always)"}
+  aim40_12: {column: aim_12, label: "AIM-40 item 12 (1 never to 6 always)"}
+  aim40_13: {column: aim_13, label: "AIM-40 item 13 (1 never to 6 always)"}
+  aim40_14: {column: aim_14, label: "AIM-40 item 14 (1 never to 6 always)"}
+  aim40_15: {column: aim_15, label: "AIM-40 item 15 (1 never to 6 always)"}
+  aim40_16: {column: aim_16, label: "AIM-40 item 16 (1 never to 6 always)"}
+  aim40_17: {column: aim_17, label: "AIM-40 item 17 (1 never to 6 always)"}
+  aim40_18: {column: aim_18, label: "AIM-40 item 18 (1 never to 6 always)"}
+  aim40_19: {column: aim_19, label: "AIM-40 item 19 (1 never to 6 always)"}
+  aim40_20: {column: aim_20, label: "AIM-40 item 20 (1 never to 6 always)"}
+  aim40_21: {column: aim_21, label: "AIM-40 item 21 (1 never to 6 always)"}
+  aim40_22: {column: aim_22, label: "AIM-40 item 22 (1 never to 6 always)"}
+  aim40_23: {column: aim_23, label: "AIM-40 item 23 (1 never to 6 always)"}
+  aim40_24: {column: aim_24, label: "AIM-40 item 24 (1 never to 6 always)"}
+  aim40_25: {column: aim_25, label: "AIM-40 item 25 (1 never to 6 always)"}
+  aim40_26: {column: aim_26, label: "AIM-40 item 26 (1 never to 6 always)"}
+  aim40_27: {column: aim_27, label: "AIM-40 item 27 (1 never to 6 always)"}
+  aim40_28: {column: aim_28, label: "AIM-40 item 28 (1 never to 6 always)"}
+  aim40_29: {column: aim_29, label: "AIM-40 item 29 (1 never to 6 always)"}
+  aim40_30: {column: aim_30, label: "AIM-40 item 30 (1 never to 6 always)"}
+  aim40_31: {column: aim_31, label: "AIM-40 item 31 (1 never to 6 always)"}
+  aim40_32: {column: aim_32, label: "AIM-40 item 32 (1 never to 6 always)"}
+  aim40_33: {column: aim_33, label: "AIM-40 item 33 (1 never to 6 always)"}
+  aim40_34: {column: aim_34, label: "AIM-40 item 34 (1 never to 6 always)"}
+  aim40_35: {column: aim_35, label: "AIM-40 item 35 (1 never to 6 always)"}
+  aim40_36: {column: aim_36, label: "AIM-40 item 36 (1 never to 6 always)"}
+  aim40_37: {column: aim_37, label: "AIM-40 item 37 (1 never to 6 always)"}
+  aim40_38: {column: aim_38, label: "AIM-40 item 38 (1 never to 6 always)"}
+  aim40_39: {column: aim_39, label: "AIM-40 item 39 (1 never to 6 always)"}
+  aim40_40: {column: aim_40, label: "AIM-40 item 40 (1 never to 6 always)"}
+
+  aim40_score_stored: {column: aim_score, type: number, range: [1, 6], winsor: false, keep: false, label: "AIM-40 score (mean of the 40 items), as the export stores it"}
+
+scores:
+  aim40_score:
+    label: AIM-40 affect intensity (mean of 40 items)
+    mean: [aim40_01, aim40_02, aim40_03, aim40_04, aim40_05, aim40_06, aim40_07, aim40_08, aim40_09, aim40_10, aim40_11, aim40_12, aim40_13, aim40_14, aim40_15, aim40_16, aim40_17, aim40_18, aim40_19, aim40_20, aim40_21, aim40_22, aim40_23, aim40_24, aim40_25, aim40_26, aim40_27, aim40_28, aim40_29, aim40_30, aim40_31, aim40_32, aim40_33, aim40_34, aim40_35, aim40_36, aim40_37, aim40_38, aim40_39, aim40_40]
+    reverse: [aim40_12, aim40_16, aim40_19, aim40_24, aim40_26, aim40_28, aim40_29, aim40_31, aim40_33, aim40_37, aim40_40]
+    compare: aim40_score_stored
+    compare_tolerance: 0.006
+
+  # Bridge to the AIM-20: the mean of the 20 items that both forms have.
+  aim40_score20:
+    label: Mean of the 20 items that the AIM-20 also has
+    mean: [aim40_02, aim40_07, aim40_09, aim40_11, aim40_12, aim40_13, aim40_18, aim40_20, aim40_22, aim40_24, aim40_25, aim40_27, aim40_29, aim40_30, aim40_33, aim40_35, aim40_36, aim40_37, aim40_39, aim40_40]
+    reverse: [aim40_12, aim40_24, aim40_29, aim40_33, aim40_37, aim40_40]

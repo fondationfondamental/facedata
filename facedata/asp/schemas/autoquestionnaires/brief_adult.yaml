@@ -2,15 +2,15 @@ instrument: brief_adult
 title: "BRIEF-A"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
   The Behavior Rating Inventory of Executive Function, adult version (Roth and
   others, 2005): 75 items answered from 1 to 3, nine scale scores, two indexes
-  and the composite, three validity scores. 781 inclusion visits and 5
-  follow-up visits, from 2013 to 2026.
+  and the composite, three validity scores. 779 inclusion visits (from 2009 to
+  2026) and 5 follow-up visits.
 
-  **Two forms in the same columns, found in the data.** A visit holds either
-  86 items or 75: 581 visits hold an item beyond the 75th (580 of them are
+  **Two forms in the same columns, found in the data.** A visit holds either 86
+  items or 75: 581 visits hold an item beyond the 75th (580 of them are
   children) and 591 hold the first 75 only (584 are adults). The first is the
   form filled by a parent for a child (BRIEF, 86 items, eight scales), the
   second the form of adults (BRIEF-A, 75 items, nine scales): the scale
@@ -18,32 +18,70 @@ notes: >
   visits of adults only. The two forms are two instruments (brief_parent and
   brief_adult) with their own columns, and brief_form says which one a visit
   holds. A visit is read as the form of adults when it holds one of the two
-  scores that only that form has, and as the form of children otherwise;
-  9 visits hold the first 75 items and no such score and are read as the
-  form of children.
+  scores that only that form has, and as the form of children otherwise; 9
+  visits hold the first 75 items and no such score and are read as the form of
+  children.
+
+  **Two forms of the adult BRIEF in the same columns.** The visits of adults
+  hold either the form filled by an informant (form 264: 108 visits, 2009 to
+  2020, in four centres; it has the rater fields: relation, how well and for how
+  long the rater knows the patient) or the self-report form (form 344: 678
+  visits, mostly from 2019, with no rater). They share every item and score
+  column, no column of the extraction names the form, and the schema cannot tell
+  them apart (`version.filled` takes the first match on columns): the rater
+  fields are labelled as belonging to the informant form and are empty on the
+  self-report form. The export would have to carry the form number or the
+  respondent (request).
 
   The scores, each fitted on the data of this form (raw sums of answers from 1
   to 3; no T-score is stored):
 
-  - inhibit: 8 items (5, 16, 29, 36, 43, 55, 58 and 73), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - shift: 6 items (8, 22, 32, 44, 61 and 67), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - emotional control: 10 items (1, 12, 19, 28, 33, 42, 51, 57, 69 and 72), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - self-monitor: 6 items (13, 23, 37, 50, 64 and 70), equal to the stored score on 558 of 560 complete visits; typed without the items on 204 visits.
-  - initiate: 8 items (6, 14, 20, 25, 45, 49, 53 and 62), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - working memory: 8 items (4, 11, 17, 26, 35, 46, 56 and 68), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - plan and organize: 10 items (9, 15, 21, 34, 39, 47, 54, 63, 66 and 71), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - task monitor: 6 items (2, 18, 24, 41, 52 and 75), equal to the stored score on 558 of 560 complete visits; typed without the items on 203 visits.
-  - organization of materials: 8 items (3, 7, 30, 31, 40, 60, 65 and 74), equal to the stored score on 558 of 559 complete visits; typed without the items on 203 visits.
-  - Behavioral Regulation Index: the sum of 4 scales (30 items), equal to the stored score on 558 of 560 complete visits.
-  - Metacognition Index: the sum of 5 scales (40 items), equal to the stored score on 558 of 559 complete visits.
-  - Global Executive Composite: the sum of 9 scales (70 items), equal to the stored score on 558 of 559 complete visits.
+  - inhibit: 8 items (5, 16, 29, 36, 43, 55, 58 and 73), equal to the stored score on 575 of 578 complete visits; typed without the items on 203 visits.
+  - shift: 6 items (8, 22, 32, 44, 61 and 67), equal to the stored score on 574 of 576 complete visits; typed without the items on 203 visits.
+  - emotional control: 10 items (1, 12, 19, 28, 33, 42, 51, 57, 69 and 72), equal to the stored score on 572 of 575 complete visits; typed without the items on 203 visits.
+  - self-monitor: 6 items (13, 23, 37, 50, 64 and 70), equal to the stored score on 577 of 580 complete visits; typed without the items on 204 visits.
+  - initiate: 8 items (6, 14, 20, 25, 45, 49, 53 and 62), equal to the stored score on 573 of 575 complete visits; typed without the items on 203 visits.
+  - working memory: 8 items (4, 11, 17, 26, 35, 46, 56 and 68), equal to the stored score on 574 of 577 complete visits; typed without the items on 203 visits.
+  - plan and organize: 10 items (9, 15, 21, 34, 39, 47, 54, 63, 66 and 71), equal to the stored score on 574 of 576 complete visits; typed without the items on 203 visits.
+  - task monitor: 6 items (2, 18, 24, 41, 52 and 75), equal to the stored score on 578 of 581 complete visits; typed without the items on 203 visits.
+  - organization of materials: 8 items (3, 7, 30, 31, 40, 60, 65 and 74), equal to the stored score on 574 of 576 complete visits; typed without the items on 203 visits.
+  - Behavioral Regulation Index: the sum of 4 scales (30 items), equal to the stored score on 565 of 567 complete visits.
+  - Metacognition Index: the sum of 5 scales (40 items), equal to the stored score on 565 of 567 complete visits.
+  - Global Executive Composite: the sum of 9 scales (70 items), equal to the stored score on 559 of 560 complete visits.
 
-  The names of the scales are those of the published profile, matched by the
-  number of items of each scale and their order: likely, to be confirmed with
-  the form (O12). A scale score typed without the items is kept as stored; a
-  few typed values are above the highest possible sum (a T-score typed in
-  place of the raw score) and are out_of_range. The validity scores do not
-  come from a plain sum and are delivered as stored.
+  The names and the items of the scales are those of the published profile and
+  are confirmed by the scripts of the forms (`264_score.js` for the informant
+  form, `344_score.js` for the self-report), scale by scale. A scale score typed
+  without the items is kept as stored: the forms have a Manual mode (radio
+  "Automatique / Manuel", `manuel_score.js`, lines 20 and 33), the flag is saved
+  with the form and is in no export model, and one centre uses it for almost
+  every visit (2018 to 2026); the typed scores are 204 of the stored rows of
+  this form. 7 visits have T-scores typed in the raw column (out_of_range). The
+  validity scores do not come from a plain sum and are delivered as stored with
+  the maximum of the scale as range (infrequency is a count of 5 items, so at
+  most 5: 3 typed values of 6, 8 and 10, from one centre, are out_of_range;
+  negativity 10, observed 9; inconsistency 20, observed 13); the published rules
+  are to verify. `briefa_known_for` (years) is limited to 100. The free text
+  `briefa_rater_other` is shown only when the rater is "other" (`shown_if`, no
+  cell blanked).
+
+  **Stored scores that differ.** 19 cells of 4 visits (2021 to 2024, three
+  centres) differ from the sums of the items or of the scales; the delivered
+  value is the sum, and no cause was found.
+
+  **Year and centre.** 61 of the 87 variables reach 0.5 or more (61 by year, 20
+  by centre): the 75 items are on a 1 to 3 scale (one level is 1.0 or more of
+  the interquartile range); the nine scales stand at 0.20 to 0.83 by year and
+  0.20 to 0.40 by centre, the two indexes and the composite at 0.47 to 0.58 and
+  0.25 to 0.28. The years to 2017 come from one centre: D holds 29 of the 30
+  composites of 2014, 18 of the 20 of 2016 and 20 of the 24 of 2017 (median
+  composite 122.5 to 129.5), against 132 to 149 from 2019, and centres D and E
+  read lower (135 and 133) than C and B (145 and 151). Two forms share the
+  columns and the export does not say which was filled: the informant form (108
+  visits, 2009 to 2020, four centres) and the self-report form (678 visits,
+  mostly from 2019): the step is partly the form (R154). Centre B types 99% of
+  its composites without items: median 151.5 typed against 141 computed. A step
+  with no known cause beyond the form and the centre mix.
 
   An instrument of the ASP cohort only.
 
@@ -147,13 +185,13 @@ variables:
   briefa_gec_stored: {column: brief_gec, type: number, label: "BRIEF-A Global Executive Composite, as stored", range: [70, 210], winsor: false, keep: false}
 
   # The rater and the validity scores, as stored.
-  briefa_rater: {column: brief_rel, type: category, label: "Relation of the rater to the patient", codes: {"1": parent, "2": spouse, "3": sibling, "4": friend, "5": other}}
-  briefa_rater_other: {column: brief_rela, type: text, label: "Relation of the rater, free text"}
-  briefa_knows_patient: {column: brief_cone, type: category, label: "How well the rater knows the patient", codes: {"1": not_very_well, "2": well, "3": very_well}}
-  briefa_known_for: {column: brief_cona, type: number, label: "For how long the rater has known the patient, years", range: [0, 300], winsor: false}
-  briefa_negativity: {column: brief_ns, type: number, label: "BRIEF-A negativity score, as stored", range: [0, 20], winsor: false}
-  briefa_infrequency: {column: brief_if, type: number, label: "BRIEF-A infrequency score, as stored", range: [0, 10], winsor: false}
-  briefa_inconsistency: {column: brief_is, type: number, label: "BRIEF-A inconsistency score, as stored", range: [0, 30], winsor: false}
+  briefa_rater: {column: brief_rel, type: category, label: "Relation of the rater to the patient (informant form only; empty on the self-report form)", codes: {"1": parent, "2": spouse, "3": sibling, "4": friend, "5": other}}
+  briefa_rater_other: {column: brief_rela, type: text, shown_if: {briefa_rater: [other]}, label: "Relation of the rater, free text (informant form only)"}
+  briefa_knows_patient: {column: brief_cone, type: category, label: "How well the rater knows the patient (informant form only; empty on the self-report form)", codes: {"1": not_very_well, "2": well, "3": very_well}}
+  briefa_known_for: {column: brief_cona, type: number, label: "For how long the rater has known the patient, years (informant form only; empty on the self-report form)", range: [0, 100], winsor: false}
+  briefa_negativity: {column: brief_ns, type: number, label: "BRIEF-A negativity score, as stored", range: [0, 10], winsor: false}
+  briefa_infrequency: {column: brief_if, type: number, label: "BRIEF-A infrequency score, as stored", range: [0, 5], winsor: false}
+  briefa_inconsistency: {column: brief_is, type: number, label: "BRIEF-A inconsistency score, as stored", range: [0, 20], winsor: false}
 
 scores:
   briefa_inhibit: {label: "BRIEF-A inhibit (8 to 24)", sum: [briefa05, briefa16, briefa29, briefa36, briefa43, briefa55, briefa58, briefa73], compare: briefa_inhibit_stored, otherwise: briefa_inhibit_stored}

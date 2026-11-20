@@ -1,15 +1,39 @@
 instrument: asrs
-title: "Adult ADHD Self-Report Scale (ASRS v1.1)"
+title: "Adult ADHD Self-Report Scale (ASRS v1.1, 18 items), last 6 months"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
-  Eighteen items from 0 to 4, at the inclusion visit: 586 visits,
-  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children have the ADHD rating scale.
+  Eighteen items from 0 to 4 about the past six months, at the inclusion visit:
+  586 visits, from 2019 to 2026, and 4 follow-up visits (590 in all). It belongs
+  to the new set of forms. It is filled by adults only. The children have the
+  ADHD rating scale.
 
-  Same instrument as in FACE BP, in columns named asrs1 to asrs18. The column
-  of the stored total (asrs_scoretot) is empty on every row (ignored.yaml), and
-  the screening result of FACE BP is not exported: the total is computed.
+  Same instrument as in FACE BP, in columns named asrs1 to asrs18. The column of
+  the stored total (asrs_scoretot) is empty on every row (ignored.yaml), and the
+  form (343) has no field for the screening result that FACE BP stores: nothing
+  is stored to check here, so the total and the screen are computed.
+
+  **The screen of part A is computed.** The part A of the published form is the
+  items 1 to 6; the screen is positive when 4 or more of them are past their
+  threshold (items 1 to 3 at "sometimes" or more, items 4 to 6 at "often" or
+  more). `asrs_parta` counts the items past the threshold (0 to 6) and
+  `asrs_screen` is 1 when the count is 4 or more, 0 otherwise, as in FACE BP,
+  where the stored result is the check (the script of the BP application tests
+  the wrong variable for a missing answer, so its stored result is empty or
+  wrong on some visits). The screen is delivered on 579 visits. It is numeric (0
+  and 1) in both cohorts.
+
+  **Year and centre.** 15 of the 21 variables reach 0.5 or more (10 by year, 13
+  by centre): the eighteen items are on a 0 to 4 scale (one level is 1.0 or more
+  of the interquartile range). The total stands at 0.18 by year and 0.30 by
+  centre, part A (a count of 0 to 6) at 0.00 and 0.50, and the screen (0 or 1)
+  at 0.00 by year and 1.00 by centre, a median that flips between 0 and 1
+  (positive for 48% of the visits of centre D and 63% to 74% in B, C, E and H).
+  Centre D reads lower on every score (median total 35 against 40 to 45): a
+  difference of 0.30 of the interquartile range with no known cause (the case
+  mix or the rater). The six years 2021 to 2026 differ by 0.18 or less (median
+  38 to 43).
 
 defaults: {type: item, range: [0, 4]}
 
@@ -51,3 +75,7 @@ scores:
   asrs_parta:
     label: ASRS part A, number of items past their threshold (0 to 6; 4 or more is a positive screen)
     sum: [asrs_a123, asrs_a456]
+  asrs_screen:
+    label: ASRS screen, part A (1 = positive, 4 or more items past their threshold)
+    sum: [asrs_parta]
+    points: {"0": 0, "1": 0, "2": 0, "3": 0, "4": 1, "5": 1, "6": 1}

@@ -2,7 +2,7 @@ instrument: eq5d
 title: EQ-5D-5L, health-related quality of life
 tab: AUTO-QUESTIONNAIRES
 section: EQ5D5L
-status: draft
+status: reviewed
 notes: >
   The BP schema without the stored utility index. EQ-5D-5L: five questions with
   five levels (1 no problem to 5 extreme) and a visual scale of the health
@@ -10,9 +10,18 @@ notes: >
   1,436 visits, 90% or more of the inclusions until 2023 and 82% since. It
   is one of the scales that the break of 2018 does not touch.
 
-  One visual scale is above 100: out_of_range. The extraction has no index column; the index is read in the table of the
-  application's script from the five answers, as in BP (BP D133), so that it
-  is the same variable in the four cohorts: 1,434 visits.
+  One visual scale is above 100: out_of_range.
+
+  Index. The extraction has no index column; the index is read in a table
+  from the five answers, as in BP (BP D133), so that it is the same variable
+  in the four cohorts: 1,434 visits. The table is the crosswalk of the 5L
+  profile to the French 3L value set (the EuroQol crosswalk of van Hout and
+  colleagues, 2012, country France, to verify): one value for each of the
+  3,125 profiles, the same in the scripts of the BP, SZ and ASP
+  applications and in the score step of the export for BP and SZ (the DR
+  application and the DR export compute no index). It is not a French value
+  set for the 5L itself; one exists (Andrade and colleagues, 2020, to
+  verify) but its table is not in the sources, so it is not used.
 
 defaults: {type: item, range: [1, 5]}
 
@@ -26,6 +35,6 @@ variables:
 
 scores:
   eq5d_index:
-    label: EQ-5D-5L index (the table of the application's script, one value per combination of the five answers)
+    label: "EQ-5D-5L index (crosswalk of the 5L profile to the French 3L value set, one value per combination of the five answers)"
     profile: eq5d_index
     from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]

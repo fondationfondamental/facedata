@@ -4,9 +4,10 @@ tab: AUTO-QUESTIONNAIRES
 section: APNEES DU SOMMEIL
 status: reviewed
 notes: >
-  First filled in November 2020; regular from 2021. Seven yes/no questions (1 = yes): snoring, tiredness,
-  observed apnoea, blood pressure, body mass index above 35, age above 50,
-  neck size. The eighth criterion is male sex; its column (apnee08) is filled
+  First filled in November 2020 (1 visit), then in 2021 (67 visits); regular
+  from 2022 (719 to 962 visits a year to 2025). Seven yes/no questions (1 =
+  yes): snoring, tiredness, observed apnoea, blood pressure, body mass index
+  above 35, age above 50, neck size. The eighth criterion is male sex; its column (apnee08) is filled
   on two visits only and is not read (ignored.yaml).
 
   The risk class is delivered as the EMR wrote it. It is the rule of the
@@ -14,10 +15,15 @@ notes: >
   without male sex; high from 5 of them, or from 2 of the first 4 with male
   sex, a body mass index above 35 or a large neck; intermediate from 3; low
   below. It differs from the published rule (male sex counted in the total)
-  on 182 of 3,939 visits (4.6%), mostly men with 2 criteria shown as low. On
-  26 visits the stored class does not follow the application's own rule
-  (score computed on a click, D106). stopbang_count7 is the number of the
-  seven criteria met (add 1 for male sex for the published total of 0 to 8).
+  on 182 of the 3,939 visits that have a sex and a class (4.6%; 175 are
+  men), mostly men with 2 criteria shown as low (159). On 26 visits the
+  stored class does not follow the application's own rule (score computed on
+  a click, D106), and it is empty on 89 of the 4,032 visits that answer the
+  seven questions (51 other visits hold a class and miss a question). The
+  class stays the application's, as the project lead decided (D134); the
+  published rule is given here to be compared. stopbang_count7 is the number of the seven criteria met
+  (add 1 for male sex for the published total of 0 to 8): it is computed
+  from the answers and does not depend on the click.
 
   A few cells hold "d?AOS": the apostrophe was damaged by the export.
 

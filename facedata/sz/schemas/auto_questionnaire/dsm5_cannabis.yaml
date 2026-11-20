@@ -2,20 +2,44 @@ instrument: dsm5_cannabis
 title: "DSM-5 criteria of a use disorder: cannabis"
 tab: AUTO-QUESTIONNAIRE
 section: "Critères DSM5 de troubles lié à l'usage de: CANNABIS"
-status: draft
+status: reviewed
 notes: >
   Twelve criteria of a use disorder for cannabis, answered from 2012 on
-  1,257 visits (863 with one criterion or more). Each criterion is
-  asked twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is
-  "do not know", read as a missing code.
+  1,257 visits (863 with one criterion or more). Each criterion is asked
+  twice: ever, and in the last 12 months. 1 is yes, 0 is no, and 2 is "do
+  not know", read as a missing code.
 
-  The second question is asked after a yes to the first (asked_if): where
-  it is empty after a "no" it is 0. The extraction mostly writes it.
+  The second question is asked after a yes to the first (asked_if). The
+  extraction never fills it after a no (0 of 8,428 such cells), so every 0
+  of the 12-month criteria comes from asked_if. Under a yes, 23 are empty
+  and 27 are "do not know".
 
-  The same twelve questions are asked for seven substances, in seven
-  schemas with the same variables (dsm5_alcohol.yaml and the others). The
-  first eleven are the DSM-5 criteria; the twelfth, legal problems, is a
-  DSM-IV criterion. No count of criteria is stored, and none is computed.
+  The block is shown after a yes to the question "more than ten times in
+  your life" of the SUBSTANCES tab (cannabis_over_ten_times; addict.js,
+  lines 50 to 56). It is not written as a shown_if: the form hides the block
+  but keeps what was typed, and 78 delivered cells on 5 visits sit under a
+  no, 24 on 1 visit under an empty answer. A block empty on a visit was not
+  answered: it is not a string of no. The criteria carry no asked_if on the
+  use question, which would turn the blocks never asked into 0: a no there
+  means ten times or fewer.
+
+  The same twelve questions are asked for seven substances, in seven schemas
+  with the same variables (dsm5_alcohol.yaml and the others; the stems are
+  alcohol_, cannabis_, cocaine_, heroin_, opiate_, sedative_ and
+  other_substance_). The first eleven are the DSM-5 criteria; the twelfth,
+  legal problems, is a DSM-IV criterion. No count of criteria is stored. Two
+  are computed here: the number of yes among the criteria a to k, ever and
+  in the last 12 months (0 to 11). A "do not know" leaves the count missing,
+  and the legal problems are not counted. No severity band is delivered:
+  DSM-5 reads 2 or 3 criteria as mild, 4 or 5 as moderate, 6 or more as
+  severe (to verify). The application counts the criteria a to k for its own
+  message (calcul_sympt, addict.js, lines 448 to 490) and does not store the
+  count.
+
+  The same form is used at inclusion and at the yearly visits (the yearly
+  update, no split). The count "ever" is not always kept from one year to
+  the next: 38 of the 225 yearly answers of the patients with one criterion
+  or more at inclusion give a count of 0.
 
 defaults: {type: item, range: [0, 1], missing: {2: unknown}}
 
@@ -44,3 +68,15 @@ variables:
   cannabis_withdrawal_12m: {column: cannabk2, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: cannabis_withdrawal}
   cannabis_legal_problems: {column: cannabl1, label: "Cannabis, criterion l: legal problems linked to the use, ever"}
   cannabis_legal_problems_12m: {column: cannabl2, label: "Cannabis, criterion l: legal problems linked to the use, in the last 12 months", asked_if: cannabis_legal_problems}
+
+scores:
+  cannabis_criteria_count:
+    label: "Cannabis: DSM-5 criteria met, ever (criteria a to k, 0 to 11)"
+    sum: [cannabis_larger_amounts, cannabis_cut_down, cannabis_time_spent, cannabis_craving, cannabis_obligations, cannabis_interpersonal, cannabis_activities_given_up, cannabis_hazardous_use, cannabis_despite_problems, cannabis_tolerance, cannabis_withdrawal]
+    range: [0, 11]
+    min_items: 11
+  cannabis_criteria_count_12m:
+    label: "Cannabis: DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)"
+    sum: [cannabis_larger_amounts_12m, cannabis_cut_down_12m, cannabis_time_spent_12m, cannabis_craving_12m, cannabis_obligations_12m, cannabis_interpersonal_12m, cannabis_activities_given_up_12m, cannabis_hazardous_use_12m, cannabis_despite_problems_12m, cannabis_tolerance_12m, cannabis_withdrawal_12m]
+    range: [0, 11]
+    min_items: 11

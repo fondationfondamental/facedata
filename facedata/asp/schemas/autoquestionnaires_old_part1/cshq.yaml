@@ -2,135 +2,161 @@ instrument: cshq
 title: "Children's Sleep Habits Questionnaire (CSHQ)"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Forty-eight items answered from 1 to 3 by a parent, for most of them whether
-  it is a problem, the usual times of sleep, eight sub-scale scores and a
-  total: 49 inclusion visits (48 of children) and 70 follow-up visits, from 2013 to 2016. It belongs to the old set of forms; filled for children.
+  Forty-eight items answered from 1 to 3 by a parent about the child, for 44 of
+  them whether it is a problem, four usual times and quantities of sleep, eight
+  sub-scale scores and a total: 49 inclusion visits (48 of children) and 70
+  follow-up visits (62 of children), from 2013 to 2017 (one visit of 2021). It
+  belongs to the old set of forms; filled for children.
 
   Identified from its name and its eight sub-scales as the Children's Sleep
-  Habits Questionnaire (Owens and others, 2000), sure: the stored scores are
-  sums of items, some reversed, and the total counts thirty-three items once.
-  The names of the sub-scales follow the publication in the order of the
-  columns (bedtime resistance, sleep onset delay, sleep duration, sleep
-  anxiety, night wakings, parasomnias, sleep disordered breathing, daytime
-  sleepiness), matched by the number of items of each: likely.
+  Habits Questionnaire (Owens and others, 2000), sure. The names of the
+  sub-scales are those of the fields of the form (`222.php`: bedtime resistance,
+  sleep onset delay, sleep duration, sleep anxiety, night wakings, parasomnia,
+  sleep disordered breathing, daytime sleepiness), which confirms the match
+  first made by the number of items.
 
-  The scores, each fitted on the data:
+  What the form asks. The questions are about the last week, or a more typical
+  week when the last one was unusual. Items 1 to 44 are answered 3 usually (5 to
+  7 times a week), 2 sometimes (2 to 4 times) or 1 rarely (0 or 1 time); items
+  45 to 48 say how the child was in four situations (playing alone, watching
+  television, on a car trip, during a meal): 1 not asleep, 2 very tired, 3
+  asleep. The items are delivered as asked and the reversal is in the scores.
+  Each of items 1 to 44 has a line 'is it a problem?': 1 yes, 0 no, 9 not
+  applicable (NA on the form), which is read as missing.
 
-  - CSHQ bedtime resistance: the sum of 6 items (1, 3, 4, 7, 10 and 12; reversed: 1 and 3), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ sleep onset delay: the sum of 1 items (2; reversed: 2), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ sleep duration: the sum of 3 items (13, 15 and 16; reversed: 15 and 16), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ sleep anxiety: the sum of 4 items (7, 11, 12 and 27), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ night wakings: the sum of 3 items (21, 31 and 32), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ parasomnias: the sum of 7 items (17, 18, 19, 20, 23, 29 and 30), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ sleep disordered breathing: the sum of 3 items (24, 25 and 26), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ daytime sleepiness: the sum of 8 items (34, 36, 37, 38, 39, 44, 46 and 47; reversed: 34), equal to the stored score on 104 of 104 complete visits.
-  - CSHQ total (33 to 99): the sum of 33 items (reversed: 1, 2, 3, 15, 16 and 34), equal to the stored score on 104 of 104 complete visits.
+  The scores, each fitted on the data (the 8 sub-scores and the total as the
+  script of the application computes them, `222_score.js`, lines 263 to 276):
 
-  The answer 9 of a problem line is read as "not known".
+  - CSHQ bedtime resistance: the sum of 6 items (1, 3, 4, 7, 10 and 12; reversed: 1 and 3), equal to the stored score on 116 of 116 visits that hold the 6 items and the score.
+  - CSHQ sleep onset delay: the sum of 1 item (2; reversed: 2), equal to the stored score on 118 of 118 visits.
+  - CSHQ sleep duration: the sum of 3 items (13, 15 and 16; reversed: 15 and 16), equal to the stored score on 117 of 117 visits.
+  - CSHQ sleep anxiety: the sum of 4 items (7, 11, 12 and 27), equal to the stored score on 115 of 115 visits.
+  - CSHQ night wakings: the sum of 3 items (21, 31 and 32), equal to the stored score on 113 of 113 visits.
+  - CSHQ parasomnias: the sum of 7 items (17, 18, 19, 20, 23, 29 and 30), equal to the stored score on 115 of 115 visits.
+  - CSHQ sleep disordered breathing: the sum of 3 items (24, 25 and 26), equal to the stored score on 118 of 118 visits.
+  - CSHQ daytime sleepiness: the sum of 8 items (34, 36, 37, 38, 39, 44, 46 and 47; reversed: 34), equal to the stored score on 115 of 115 visits.
+  - CSHQ total (33 to 99): the sum of 33 items (reversed: 1, 2, 3, 15, 16 and 34), equal to the stored score on 106 of 106 visits.
+
+  The total counts 33 items once: items 7 and 12 belong to two sub-scales
+  (bedtime resistance and sleep anxiety) and the script subtracts them from the
+  sum of the eight sub-scores. Fifteen items are in no score (5, 6, 8, 9, 14,
+  22, 28, 33, 35, 40, 41, 42, 43, 45 and 48).
+
+  The four times and quantities. The time boxes of the form save 00:00:00 when
+  they are left untouched: the waking time reads 00:00:00 on 18 of the 119
+  visits, which cannot be a waking time, and is read as not recorded (missing).
+  The bedtime reads 00:00:00 on 13 visits; midnight is a possible bedtime and an
+  untouched box cannot be told from it, so they are kept.
+
+  **Year and centre.** 5 of the 105 variables reach 0.5 or more, all by year, none by centre: the
+  119 visits are of one centre (C), children, from 2013 to 2016 (one visit each of 2017 and 2021).
+  The 5 are four items and the sleep onset delay sub-scale (a single item answered 1 to 3, medians
+  2, 1, 2); the total is at 0.22 (median 43.5, 44, 41 in 2013 to 2015). Between years 2 of the 105
+  variables differ beyond chance (permutation test, p below 0.01; about 1 expected).
 
   An instrument of the ASP cohort only.
 
 defaults: {type: item, range: [1, 3]}
 
 variables:
-  cshq01: {column: cshq1, label: "CSHQ, item 1"}
-  cshq02: {column: cshq2, label: "CSHQ, item 2"}
-  cshq03: {column: cshq3, label: "CSHQ, item 3"}
-  cshq04: {column: cshq4, label: "CSHQ, item 4"}
-  cshq05: {column: cshq5, label: "CSHQ, item 5"}
-  cshq06: {column: cshq6, label: "CSHQ, item 6"}
-  cshq07: {column: cshq7, label: "CSHQ, item 7"}
-  cshq08: {column: cshq8, label: "CSHQ, item 8"}
-  cshq09: {column: cshq9, label: "CSHQ, item 9"}
-  cshq10: {column: cshq10, label: "CSHQ, item 10"}
-  cshq11: {column: cshq11, label: "CSHQ, item 11"}
-  cshq12: {column: cshq12, label: "CSHQ, item 12"}
-  cshq13: {column: cshq13, label: "CSHQ, item 13"}
-  cshq14: {column: cshq14, label: "CSHQ, item 14"}
-  cshq15: {column: cshq15, label: "CSHQ, item 15"}
-  cshq16: {column: cshq16, label: "CSHQ, item 16"}
-  cshq17: {column: cshq17, label: "CSHQ, item 17"}
-  cshq18: {column: cshq18, label: "CSHQ, item 18"}
-  cshq19: {column: cshq19, label: "CSHQ, item 19"}
-  cshq20: {column: cshq20, label: "CSHQ, item 20"}
-  cshq21: {column: cshq21, label: "CSHQ, item 21"}
-  cshq22: {column: cshq22, label: "CSHQ, item 22"}
-  cshq23: {column: cshq23, label: "CSHQ, item 23"}
-  cshq24: {column: cshq24, label: "CSHQ, item 24"}
-  cshq25: {column: cshq25, label: "CSHQ, item 25"}
-  cshq26: {column: cshq26, label: "CSHQ, item 26"}
-  cshq27: {column: cshq27, label: "CSHQ, item 27"}
-  cshq28: {column: cshq28, label: "CSHQ, item 28"}
-  cshq29: {column: cshq29, label: "CSHQ, item 29"}
-  cshq30: {column: cshq30, label: "CSHQ, item 30"}
-  cshq31: {column: cshq31, label: "CSHQ, item 31"}
-  cshq32: {column: cshq32, label: "CSHQ, item 32"}
-  cshq33: {column: cshq33, label: "CSHQ, item 33"}
-  cshq34: {column: cshq34, label: "CSHQ, item 34"}
-  cshq35: {column: cshq35, label: "CSHQ, item 35"}
-  cshq36: {column: cshq36, label: "CSHQ, item 36"}
-  cshq37: {column: cshq37, label: "CSHQ, item 37"}
-  cshq38: {column: cshq38, label: "CSHQ, item 38"}
-  cshq39: {column: cshq39, label: "CSHQ, item 39"}
-  cshq40: {column: cshq40, label: "CSHQ, item 40"}
-  cshq41: {column: cshq41, label: "CSHQ, item 41"}
-  cshq42: {column: cshq42, label: "CSHQ, item 42"}
-  cshq43: {column: cshq43, label: "CSHQ, item 43"}
-  cshq44: {column: cshq44, label: "CSHQ, item 44"}
-  cshq45: {column: cshq45, label: "CSHQ, item 45"}
-  cshq46: {column: cshq46, label: "CSHQ, item 46"}
-  cshq47: {column: cshq47, label: "CSHQ, item 47"}
-  cshq48: {column: cshq48, label: "CSHQ, item 48"}
-  cshq_problem01: {column: cshqpb1, label: "CSHQ, is it a problem, line 1 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem02: {column: cshqpb2, label: "CSHQ, is it a problem, line 2 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem03: {column: cshqpb3, label: "CSHQ, is it a problem, line 3 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem04: {column: cshqpb4, label: "CSHQ, is it a problem, line 4 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem05: {column: cshqpb5, label: "CSHQ, is it a problem, line 5 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem06: {column: cshqpb6, label: "CSHQ, is it a problem, line 6 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem07: {column: cshqpb7, label: "CSHQ, is it a problem, line 7 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem08: {column: cshqpb8, label: "CSHQ, is it a problem, line 8 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem09: {column: cshqpb9, label: "CSHQ, is it a problem, line 9 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem10: {column: cshqpb10, label: "CSHQ, is it a problem, line 10 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem11: {column: cshqpb11, label: "CSHQ, is it a problem, line 11 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem12: {column: cshqpb12, label: "CSHQ, is it a problem, line 12 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem13: {column: cshqpb13, label: "CSHQ, is it a problem, line 13 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem14: {column: cshqpb14, label: "CSHQ, is it a problem, line 14 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem15: {column: cshqpb15, label: "CSHQ, is it a problem, line 15 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem16: {column: cshqpb16, label: "CSHQ, is it a problem, line 16 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem17: {column: cshqpb17, label: "CSHQ, is it a problem, line 17 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem18: {column: cshqpb18, label: "CSHQ, is it a problem, line 18 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem19: {column: cshqpb19, label: "CSHQ, is it a problem, line 19 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem20: {column: cshqpb20, label: "CSHQ, is it a problem, line 20 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem21: {column: cshqpb21, label: "CSHQ, is it a problem, line 21 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem22: {column: cshqpb22, label: "CSHQ, is it a problem, line 22 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem23: {column: cshqpb23, label: "CSHQ, is it a problem, line 23 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem24: {column: cshqpb24, label: "CSHQ, is it a problem, line 24 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem25: {column: cshqpb25, label: "CSHQ, is it a problem, line 25 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem26: {column: cshqpb26, label: "CSHQ, is it a problem, line 26 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem27: {column: cshqpb27, label: "CSHQ, is it a problem, line 27 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem28: {column: cshqpb28, label: "CSHQ, is it a problem, line 28 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem29: {column: cshqpb29, label: "CSHQ, is it a problem, line 29 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem30: {column: cshqpb30, label: "CSHQ, is it a problem, line 30 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem31: {column: cshqpb31, label: "CSHQ, is it a problem, line 31 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem32: {column: cshqpb32, label: "CSHQ, is it a problem, line 32 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem33: {column: cshqpb33, label: "CSHQ, is it a problem, line 33 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem34: {column: cshqpb34, label: "CSHQ, is it a problem, line 34 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem35: {column: cshqpb35, label: "CSHQ, is it a problem, line 35 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem36: {column: cshqpb36, label: "CSHQ, is it a problem, line 36 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem37: {column: cshqpb37, label: "CSHQ, is it a problem, line 37 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem38: {column: cshqpb38, label: "CSHQ, is it a problem, line 38 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem39: {column: cshqpb39, label: "CSHQ, is it a problem, line 39 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem40: {column: cshqpb40, label: "CSHQ, is it a problem, line 40 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem41: {column: cshqpb41, label: "CSHQ, is it a problem, line 41 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem42: {column: cshqpb42, label: "CSHQ, is it a problem, line 42 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem43: {column: cshqpb43, label: "CSHQ, is it a problem, line 43 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_problem44: {column: cshqpb44, label: "CSHQ, is it a problem, line 44 (0 no, 1 yes)", range: [0, 1], missing: {"9": not_applicable}}
-  cshq_bedtime: {column: coucherh, type: time, label: "CSHQ usual bedtime (hours)", range: [0, 24]}
-  cshq_sleep_hours: {column: sommheur, type: number, label: "CSHQ usual hours of sleep", range: [0, 24], winsor: false}
-  cshq_minutes_awake: {column: eveilmin, type: number, label: "CSHQ minutes awake in the night", range: [0, 600], winsor: false}
-  cshq_waking_time: {column: revmath, type: time, label: "CSHQ usual waking time (hours)", range: [0, 24]}
+  cshq01: {column: cshq1, label: "CSHQ item 1, the child goes to bed at the same time (1 rarely to 3 usually, last week)"}
+  cshq02: {column: cshq2, label: "CSHQ item 2, the child falls asleep within 20 minutes (1 rarely to 3 usually, last week)"}
+  cshq03: {column: cshq3, label: "CSHQ item 3, the child falls asleep alone in own bed (1 rarely to 3 usually, last week)"}
+  cshq04: {column: cshq4, label: "CSHQ item 4, the child falls asleep in the bed of parents or siblings (1 rarely to 3 usually, last week)"}
+  cshq05: {column: cshq5, label: "CSHQ item 5, the child falls asleep with rhythmic movements or rocking (1 rarely to 3 usually, last week)"}
+  cshq06: {column: cshq6, label: "CSHQ item 6, the child needs a special object to fall asleep (1 rarely to 3 usually, last week)"}
+  cshq07: {column: cshq7, label: "CSHQ item 7, the child needs a parent in the room to fall asleep (1 rarely to 3 usually, last week)"}
+  cshq08: {column: cshq8, label: "CSHQ item 8, the child is ready for bed at bedtime (1 rarely to 3 usually, last week)"}
+  cshq09: {column: cshq9, label: "CSHQ item 9, the child resists going to bed (1 rarely to 3 usually, last week)"}
+  cshq10: {column: cshq10, label: "CSHQ item 10, the child fights bedtime (cries, refuses to stay in bed) (1 rarely to 3 usually, last week)"}
+  cshq11: {column: cshq11, label: "CSHQ item 11, the child is afraid of sleeping in the dark (1 rarely to 3 usually, last week)"}
+  cshq12: {column: cshq12, label: "CSHQ item 12, the child is afraid of sleeping alone (1 rarely to 3 usually, last week)"}
+  cshq13: {column: cshq13, label: "CSHQ item 13, the child sleeps too little (1 rarely to 3 usually, last week)"}
+  cshq14: {column: cshq14, label: "CSHQ item 14, the child sleeps too much (1 rarely to 3 usually, last week)"}
+  cshq15: {column: cshq15, label: "CSHQ item 15, the child sleeps the right amount (1 rarely to 3 usually, last week)"}
+  cshq16: {column: cshq16, label: "CSHQ item 16, the child sleeps the same number of hours every day (1 rarely to 3 usually, last week)"}
+  cshq17: {column: cshq17, label: "CSHQ item 17, the child wets the bed at night (1 rarely to 3 usually, last week)"}
+  cshq18: {column: cshq18, label: "CSHQ item 18, the child talks in sleep (1 rarely to 3 usually, last week)"}
+  cshq19: {column: cshq19, label: "CSHQ item 19, the child is restless and moves a lot in sleep (1 rarely to 3 usually, last week)"}
+  cshq20: {column: cshq20, label: "CSHQ item 20, the child sleepwalks (1 rarely to 3 usually, last week)"}
+  cshq21: {column: cshq21, label: "CSHQ item 21, the child goes to the bed of someone else during the night (1 rarely to 3 usually, last week)"}
+  cshq22: {column: cshq22, label: "CSHQ item 22, the child complains of body pains during the night (1 rarely to 3 usually, last week)"}
+  cshq23: {column: cshq23, label: "CSHQ item 23, the child grinds teeth in sleep (1 rarely to 3 usually, last week)"}
+  cshq24: {column: cshq24, label: "CSHQ item 24, the child snores loudly (1 rarely to 3 usually, last week)"}
+  cshq25: {column: cshq25, label: "CSHQ item 25, the child seems to stop breathing during the night (1 rarely to 3 usually, last week)"}
+  cshq26: {column: cshq26, label: "CSHQ item 26, the child snores and startles during the night (1 rarely to 3 usually, last week)"}
+  cshq27: {column: cshq27, label: "CSHQ item 27, the child has difficulty sleeping away from home (1 rarely to 3 usually, last week)"}
+  cshq28: {column: cshq28, label: "CSHQ item 28, the child complains of sleep problems (1 rarely to 3 usually, last week)"}
+  cshq29: {column: cshq29, label: "CSHQ item 29, the child wakes up screaming, sweating, inconsolable (1 rarely to 3 usually, last week)"}
+  cshq30: {column: cshq30, label: "CSHQ item 30, the child wakes up alarmed by a nightmare (1 rarely to 3 usually, last week)"}
+  cshq31: {column: cshq31, label: "CSHQ item 31, the child wakes up once during the night (1 rarely to 3 usually, last week)"}
+  cshq32: {column: cshq32, label: "CSHQ item 32, the child wakes up more than once during the night (1 rarely to 3 usually, last week)"}
+  cshq33: {column: cshq33, label: "CSHQ item 33, the child goes back to bed without help after waking (1 rarely to 3 usually, last week)"}
+  cshq34: {column: cshq34, label: "CSHQ item 34, the child wakes up without being woken (1 rarely to 3 usually, last week)"}
+  cshq35: {column: cshq35, label: "CSHQ item 35, the child wakes up with an alarm clock (1 rarely to 3 usually, last week)"}
+  cshq36: {column: cshq36, label: "CSHQ item 36, the child wakes up in a bad mood (1 rarely to 3 usually, last week)"}
+  cshq37: {column: cshq37, label: "CSHQ item 37, the child is woken up by an adult or a sibling (1 rarely to 3 usually, last week)"}
+  cshq38: {column: cshq38, label: "CSHQ item 38, the child has difficulty getting out of bed in the morning (1 rarely to 3 usually, last week)"}
+  cshq39: {column: cshq39, label: "CSHQ item 39, the child takes a long time to become alert in the morning (1 rarely to 3 usually, last week)"}
+  cshq40: {column: cshq40, label: "CSHQ item 40, the child wakes up very early in the morning (1 rarely to 3 usually, last week)"}
+  cshq41: {column: cshq41, label: "CSHQ item 41, the child has a good appetite in the morning (1 rarely to 3 usually, last week)"}
+  cshq42: {column: cshq42, label: "CSHQ item 42, the child naps during the day (1 rarely to 3 usually, last week)"}
+  cshq43: {column: cshq43, label: "CSHQ item 43, the child falls asleep suddenly in the middle of an activity (1 rarely to 3 usually, last week)"}
+  cshq44: {column: cshq44, label: "CSHQ item 44, the child seems tired (1 rarely to 3 usually, last week)"}
+  cshq45: {column: cshq45, label: "CSHQ item 45, very tired or asleep playing alone (1 not asleep, 2 very tired, 3 asleep, last week)"}
+  cshq46: {column: cshq46, label: "CSHQ item 46, very tired or asleep watching television (1 not asleep, 2 very tired, 3 asleep, last week)"}
+  cshq47: {column: cshq47, label: "CSHQ item 47, very tired or asleep on a car trip (1 not asleep, 2 very tired, 3 asleep, last week)"}
+  cshq48: {column: cshq48, label: "CSHQ item 48, very tired or asleep during a meal (1 not asleep, 2 very tired, 3 asleep, last week)"}
+  cshq_problem01: {column: cshqpb1, label: "CSHQ, is item 1 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem02: {column: cshqpb2, label: "CSHQ, is item 2 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem03: {column: cshqpb3, label: "CSHQ, is item 3 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem04: {column: cshqpb4, label: "CSHQ, is item 4 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem05: {column: cshqpb5, label: "CSHQ, is item 5 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem06: {column: cshqpb6, label: "CSHQ, is item 6 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem07: {column: cshqpb7, label: "CSHQ, is item 7 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem08: {column: cshqpb8, label: "CSHQ, is item 8 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem09: {column: cshqpb9, label: "CSHQ, is item 9 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem10: {column: cshqpb10, label: "CSHQ, is item 10 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem11: {column: cshqpb11, label: "CSHQ, is item 11 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem12: {column: cshqpb12, label: "CSHQ, is item 12 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem13: {column: cshqpb13, label: "CSHQ, is item 13 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem14: {column: cshqpb14, label: "CSHQ, is item 14 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem15: {column: cshqpb15, label: "CSHQ, is item 15 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem16: {column: cshqpb16, label: "CSHQ, is item 16 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem17: {column: cshqpb17, label: "CSHQ, is item 17 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem18: {column: cshqpb18, label: "CSHQ, is item 18 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem19: {column: cshqpb19, label: "CSHQ, is item 19 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem20: {column: cshqpb20, label: "CSHQ, is item 20 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem21: {column: cshqpb21, label: "CSHQ, is item 21 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem22: {column: cshqpb22, label: "CSHQ, is item 22 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem23: {column: cshqpb23, label: "CSHQ, is item 23 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem24: {column: cshqpb24, label: "CSHQ, is item 24 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem25: {column: cshqpb25, label: "CSHQ, is item 25 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem26: {column: cshqpb26, label: "CSHQ, is item 26 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem27: {column: cshqpb27, label: "CSHQ, is item 27 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem28: {column: cshqpb28, label: "CSHQ, is item 28 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem29: {column: cshqpb29, label: "CSHQ, is item 29 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem30: {column: cshqpb30, label: "CSHQ, is item 30 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem31: {column: cshqpb31, label: "CSHQ, is item 31 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem32: {column: cshqpb32, label: "CSHQ, is item 32 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem33: {column: cshqpb33, label: "CSHQ, is item 33 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem34: {column: cshqpb34, label: "CSHQ, is item 34 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem35: {column: cshqpb35, label: "CSHQ, is item 35 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem36: {column: cshqpb36, label: "CSHQ, is item 36 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem37: {column: cshqpb37, label: "CSHQ, is item 37 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem38: {column: cshqpb38, label: "CSHQ, is item 38 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem39: {column: cshqpb39, label: "CSHQ, is item 39 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem40: {column: cshqpb40, label: "CSHQ, is item 40 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem41: {column: cshqpb41, label: "CSHQ, is item 41 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem42: {column: cshqpb42, label: "CSHQ, is item 42 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem43: {column: cshqpb43, label: "CSHQ, is item 43 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_problem44: {column: cshqpb44, label: "CSHQ, is item 44 a problem (0 no, 1 yes; 9 not applicable is missing)", range: [0, 1], missing: {"9": not_applicable}}
+  cshq_bedtime: {column: coucherh, type: time, label: "CSHQ usual bedtime of the child (hours)", range: [0, 24]}
+  cshq_sleep_hours: {column: sommheur, type: number, label: "CSHQ usual hours of sleep of the child, night and naps", range: [0, 24], winsor: false}
+  cshq_minutes_awake: {column: eveilmin, type: number, label: "CSHQ minutes that a usual waking in the night lasts", range: [0, 600], winsor: false}
+  cshq_waking_time: {column: revmath, type: time, label: "CSHQ usual waking time of the child in the morning (hours; 00:00:00 is a box left untouched)", range: [0, 24], missing: {"00:00:00": not_recorded}}
   cshq_bedtime_resistance_stored: {column: cshq_score1, type: number, range: [6, 18], winsor: false, keep: false, label: "CSHQ bedtime resistance, as stored"}
   cshq_sleep_onset_delay_stored: {column: cshq_score2, type: number, range: [1, 3], winsor: false, keep: false, label: "CSHQ sleep onset delay, as stored"}
   cshq_sleep_duration_stored: {column: cshq_score3, type: number, range: [3, 9], winsor: false, keep: false, label: "CSHQ sleep duration, as stored"}

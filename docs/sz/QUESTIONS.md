@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-7, PI-1, O31), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -172,14 +172,21 @@ prevalence of these diseases should be computed on the inclusions from 2022.
 
 ### Priority B
 
-**DEV-7. S-QoL, items 17 and 18.** The answers 1 and 3 are not in the
-extraction, in any year: the two items hold only 2, 4 and 5, while item 16 of
-the same dimension holds 1 to 5. 1,549 visits have item 16 and no item 17,
-and the stored dimension exists on 782 of them: the patients did answer.
-*Question:* can the lookup of these two items be corrected, as it was for
-the Epworth scale in BP?
-*Today:* the items as extracted (missing where the answer was 1 or 3); the
-dimension that uses them is delivered as stored. (O8)
+**DEV-7. S-QoL, items 17 and 18.** The export reads the two items with the
+wrong labels (rewritten on 2026-11-20, the cause is found). In
+`eschizo_autoq_qualite_vie.sql` (lines 114 to 124 and 223 to 233) the answers
+of the form, which are the list of item 16 (from "much more than expected", 1,
+to "less than expected", 5, the best), are looked up as "much less than
+expected" to "more than expected": the answer 5 comes out as 2, the answer 2
+as 5, and the answers 1 and 3 as empty. The two items hold only 2, 4 and 5 in
+every year, while item 16 holds 1 to 5; 1,549 visits have item 16 and no item
+17, and the stored psychological dimension (the mean of the items as
+delivered) and the index carry the error.
+*Question:* can the labels of the two CASE blocks be put right, as it was done
+for the Epworth scale in BP, the dimension and the index computed again, and
+the 18 boxes "does not concern me" (`chk_sqol_N_pc`) exported? (R150)
+*Today:* items 17 and 18, the psychological dimension and the index are read
+and checked and are not delivered. (O8, D87)
 
 **DEV-8. Items that are a copy of another item.** On every WAIS-IV visit,
 `mat25_w` and `mat26_w` hold the value of `mat24_w`, and `simil10_w` and
@@ -271,10 +278,11 @@ no longer computed, or no longer exported?
 
 **DEV-13. The dictionary.** 201 columns of the extraction are not in it. For
 most the instrument makes the meaning clear; for these the question itself is
-unknown: the "level" columns of the Yale-Brown scale
-(`ybobse1`...), and four z-scores of the six elements test (`elem616_`,
-`elem620_`, `elem623_`, `elem625_`). Four others were read in the field
-tables of the application on 2026-11-19 and 2026-11-20: `rad_ecv_vp5` (the question
+unknown: four z-scores of the six elements test (`elem616_`,
+`elem620_`, `elem623_`, `elem625_`). Five others were read in the field
+tables and the scripts of the application on 2026-11-19 and 2026-11-20: the
+"level" columns of the Yale-Brown scale (`ybobse1`..., the summary block of
+the form, edited by hand until 2026-10-26: D84), `rad_ecv_vp5` (the question
 "Homicide" of the physical violence: D80), `rad_add_4` (question 4 of the
 addiction form, "more than ten times in your life": D63), `rad_add_heroin7a`
 (the heroin question 7a, "a symptom of a use disorder over the whole life":
@@ -283,7 +291,7 @@ section (`rad_attaq_paniq`, `rad_peur_*`, `rad_trouble_compulsif`: D60). Other p
 named for the cause of death, holds the date of death; "Arme à feu" is
 written "Arme ? feu"; the sisters, brothers and children of the family
 history hold the same lists of disorders as the parents, not "yes, no,
-unknown". (O21, O10, D4, D18, D20, D60, D63, D66, D80)
+unknown". (O21, D4, D18, D20, D60, D63, D66, D80, D84)
 
 ## 2. For the data managers
 
@@ -346,8 +354,13 @@ of ng/mL (1 ng/mL is 2.5 nmol/L).
 the 25-item one in 2021, in the same columns. Here 305 visits from 2012 to
 2026 hold the 25 items, 127 of them before 2021, and SZ has no other
 questionnaire to tell the form from.
-*Question:* which form did the SZ centres use, and when did it change?
-*Today:* the 25 items and their sum, not called WURS-25 or WURS-61. (O9)
+**Answered on 2026-11-20 by the form definitions of the application (D84).**
+The SZ form is the 25-item form only: its group is named "Echelle WURS 25", its
+table holds exactly the 25 items numbered 3 to 59, the score step of the export
+has a WURS-25 entry for the SZ table, and the SZ application has no 61-item
+questionnaire. There is no change of form to date.
+*Question left:* who is asked? (DM-12)
+*Today:* the schema is `wurs25`, with the BP names. (O9, D84)
 
 **DM-6. Six films (LIS).** The score is the distance to the ratings of a
 reference group; one set of 30 reference ratings gives the stored score on
@@ -444,7 +457,7 @@ delivered. (O2)
 
 ## Added by the audit of 2026-11-14
 
-**S-QoL index with a missing dimension (O29).** The EMR averages the dimensions it has; 1,194 of 4,227 indices are concerned. Is that the rule to follow, and from how many dimensions?
+**S-QoL index with a missing dimension (O29, answered on 2026-11-20).** The EMR (the nucleus rule) averages at least seven of the eight dimensions: the package follows it with `min_items` on the dimensions (313 of the 1,194 indices that it could not recompute are now recomputed, 881 rest on seven dimensions) and no longer delivers the index while items 17 and 18 are mis-coded (D87).
 
 **Unit of vitamin D by centre (O30).**
 
@@ -606,3 +619,69 @@ the evaluation tab (`face_sz_9_evaluation_medicale.sql`, lines 118 to 133) keeps
 one row per visit, the one with the most filled fields, and breaks ties
 arbitrarily. No visit of the extraction has a duplicate. Does the application
 ever hold two rows of a visit in this tab, and what are they (R141, D80)?
+
+## Added by the AUTO-QUESTIONNAIRES review of 2026-11-20
+
+**DEV-18. The self-report questionnaires: what the export and the forms leave out or do wrongly (for the
+EMR developers and whoever writes the export).** (1) The boxes "done / not done" of the forms (`rad_ctq_nf`,
+`rad_psqi_nf`, `rad_wurs_nf`, `rad_mars_nf`, `rad_fagerstrom_nf`, `rad_actphys_nf`, `rad_present_nf`,
+`rad_stori_nf`, `rad_birchwood_nf`, and those of the other questionnaires of the tab) are in the source
+tables of the SZ application and are not selected by the export: no `rad_*_nf` column is in the extraction,
+so a blank questionnaire cannot be told from one that was not done (R152). (2) Birchwood: 57 visits of 2011 to 2016
+hold a stored total and only the answer "unsure" (O41): can the raw answers be given, and the apostrophe
+macro (`unescape_apostrophe`) be checked on the answers D'accord and Pas d'accord (R151)? (3) PSQI: the score step
+of the export is a strict sum of the items 5b to 5j, so the component 5 is empty on the 45 visits where only
+5j is blank; is that intended? The BP export writes a bedtime of 24:xx as 0:xx and the SZ export does not
+(20 visits deliver 24.0); the SZ form has no "H24" warning (A75). (4) The smoking-status question `rad_tabac`,
+which hides the Fagerström test in the form, is not exported. (5) CTQ: the script of the form counts a blank
+denial item as 0 (the stored denial score exists on 20 visits where an item is blank; A73). (6) EQ-5D: the script
+of the form tests a missing visual scale on a node list that is never empty (defect A18; no effect on the
+index).
+*Question:* can they be corrected or exported?
+*Today:* the package delivers the strict denial score, counts a blank 5j as 0, delivers a typed Birchwood
+score as stored where no item is recorded, and reads the other cells as exported. (D82, D83, D85, D86)
+
+**WURS: who is asked (DM-12, for the data managers).** The WURS is filled on 285 of the 2,353 inclusion visits,
+240 of them with a yes to the ADHD screening question of the inclusion (84%); 240 of the 309 yes have one
+(78%).
+*Question:* is it asked of the patients flagged for attention deficit only, by a protocol of the centres, and
+from when?
+*Today:* delivered as filled, with a note that the group is selected. (O42, D84)
+
+**PI-6. EQ-5D: which value set?** The index of the applications is the French column of the EuroQol
+crosswalk from the 5L profile to the 3L value set (3,125 profiles). A French value set for the 5L exists
+(to verify) and its table is not in the sources.
+*Question:* does the project want the crosswalk, or the 5L value set (and who can provide the table)?
+*Today:* the crosswalk, as the applications compute it. (O43, D86)
+
+**DEV-19. SOGS, EPHP, S-QoL: what the export and the scripts do wrongly (for the EMR developers and whoever
+writes the export).** (1) SOGS: the export reads item 6 as "no" and "yes, some months ago but not now" only
+(`eschizo_autoq_sogs.sql`, lines 69 to 71), so the answer "yes" is lost (0 on 90 visits, 1 on 28, empty on 28,
+never 2); the apostrophe macro may also lose answers (8 stored totals have no item 5 and 19 have no item 6)
+(R151). (2) The SOGS script gives 1 point to any answer of item 4, "never" included (`sogs.js`, lines 49 to 58):
+every stored total is 1 or more and 58 of 122 equal 1 (A80). (3) EPHP: the score script counted the answer
+"cannot be assessed" (7) as 7 points until 2026-10-28 and counts it as 0 since, and the stored scores were not
+computed again: 225 totals and 313 sub-scores hold a 7 counted as 7, 16 totals are above the maximum of 78
+(`autoq_ephp.js`, line 21; A80). (4) S-QoL: see DEV-7 (R150).
+*Question:* can they be corrected, and the stored scores of the EPHP computed again?
+*Today:* the SOGS total is delivered as stored, the EPHP scores are missing where an item is 7, and the S-QoL
+items 17 and 18 are not delivered. (D87, D88, D89)
+
+**S-QoL, EPHP, DSM-5 forms: who answers and what is asked (DM-13, for the data managers).** (1) The EPHP is filled
+by someone close to the patient: the dictionary says at V0, V1, V3 and V5, and the extraction holds it at every
+yearly visit (V0 953, V1 363, V2 180, V3 173, V4 73, V5 48, later visits 12). Who fills it, and at which visits?
+(2) The DSM-5 forms are the same at inclusion and at the yearly visits: does the yearly form ask "ever" or "since
+the last visit"? The count "ever" is 0 at a yearly answer of 62 of 158 patients (alcohol) and 38 of 225
+(cannabis) who had a criterion at inclusion. (3) Are the 18 boxes "does not concern me" of the S-QoL
+(`chk_sqol_N_pc`) in the source database, and how many are ticked?
+*Today:* delivered as filled. (D87, D89, D90)
+
+**PI-7. S-QoL, SOGS, EPHP, DSM-5: four choices (for the principal investigator).** (1) S-QoL: items 17 and 18, the
+psychological dimension and the index are withdrawn until the export is put right (Option A). The other option
+(B) swaps the answers 2 and 5: 3,752 cells change, the answers 1 and 3 stay missing and the dimension stays
+biased. Which one? (2) SOGS item 4: the application counts any answer as 1, the published rule counts "most of
+the time" and "every time" only (to verify): which should the delivered total follow once the export gives the
+answer "yes" of item 6 back? (3) EPHP, the code 7: count it as 0 (the script since 2026-10-28), as 7 (the stored
+scores) or as missing (here)? (4) DSM-5 forms: should the blocks that were never asked (the use question
+answered "no" or empty) be 0 (`asked_if` on the use question, 102,468 cells) or stay missing?
+*Today:* Option A; the SOGS total as stored; the EPHP score missing; the DSM-5 blocks missing. (O8, O44, O45, O46)

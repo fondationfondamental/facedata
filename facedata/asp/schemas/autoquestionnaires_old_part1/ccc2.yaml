@@ -2,27 +2,43 @@ instrument: ccc2
 title: "Children's Communication Checklist, second edition (CCC-2)"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Seventy items answered from 0 to 3 by a parent, ten scale scores (raw,
-  scaled and percentile) and two composites: 43 inclusion visits (43 of children) and 63 follow-up visits,
-  from 2013 to 2016. It belongs to the old set of forms.
+  Seventy items answered from 0 to 3 by a parent (how often the child shows the
+  behaviour: 0 less than once a week or never, 1 about once a week, 2 once or
+  twice a day, 3 several times a day or continually), ten scale scores (raw,
+  scaled and percentile) and two composites. 123 visits hold the form: 51
+  inclusion visits and 72 follow-up visits, 111 of them of children, from 2013
+  to 2021. The scores are stored on 106 of them (43 inclusion visits and 63
+  follow-up visits, all of children, from 2013 to 2016). It belongs to the old
+  set of forms.
 
   Identified from its seventy items, its ten scales of seven items and its two
   composites as the CCC-2 (Bishop, 2003), sure.
 
-  **Two forms in the same seventy item columns, found in the data.** 106 visits
-  hold the ten scale scores of the Children's Communication Checklist (106 of
-  them are children) and 235 hold the three composites of the Communication
-  Checklist for adults (234 are adults); none holds both. The two forms are
-  two instruments (ccc2 and cca) with their own columns, and
-  communication_checklist_form says which one a visit holds. 21 visits hold
-  items and no score of either form: their form cannot be told and they are
-  not delivered (version_unknown).
+  **Two forms in the same seventy item columns, found in the data.** The form of
+  a visit is read from what only one form has (`version`, the first match wins).
+  A scale score of the children's checklist, or one of the four questions that
+  the children's form asks before it (hearing, sentences, relation to the child,
+  time in contact: `communication_context`), makes a CCC-2 visit: 123 visits. A
+  composite of the adult checklist, or one of the three questions that the adult
+  form asks (age at the end of the studies, work, speech therapist), makes a
+  CC-A visit (cca.yaml): 237 visits. The language at home (`lang`) is asked in
+  both forms and tells nothing. 2 visits hold items and none of these: their
+  form cannot be told and they are not delivered (version_unknown). Before the
+  review only the scores gave the form: 106 CCC-2 and 235 CC-A visits, and 21
+  visits with items and no score were left out; 17 of them are now CCC-2 visits
+  and 2 CC-A visits.
 
-  The ten raw scores, each checked against its items (five items, and two
-  items of the last twenty reversed; the visits where the stored score is the
-  sum):
+  The 17 CCC-2 visits added hold items and no score. They are patients aged 17.1
+  to 24.5 years (5 of them under 18) who were given the children's form, and the
+  script of the application computes the scores only below the age of 17
+  (`214_score.js`, line 30). Their raw scores are computed here (16 visits; the
+  17th lacks an item), with no stored value to check them against.
+
+  The ten raw scores, each checked against its items (five items, and two items
+  of the last twenty reversed; the visits where the stored score is the sum).
+  Counts on the 106 visits that hold the stored scores:
 
   - speech: items 2, 24, 29, 38 and 44, and 51 and 58 reversed: 105 of 106 visits.
   - syntax: items 1, 17, 27, 36 and 43, and 55 and 69 reversed: 103 of 106 visits.
@@ -35,20 +51,51 @@ notes: >
   - social relations: items 3, 7, 13, 16 and 33, and 57 and 67 reversed: 101 of 105 visits.
   - interests: items 9, 22, 26, 47 and 49, and 52 and 63 reversed: 102 of 106 visits.
 
-  The scaled scores and the percentiles need the norm tables: delivered as
-  stored. The General Communication Composite is the sum of the first eight
-  scaled scores (106 of 106 visits). The Social Interaction Deviance
-  Composite follows its published formula on the 43 visits that hold it
-  (43 of 43); it is filled on fewer visits than the other scores and never
-  negative, which the formula allows (open question O13).
+  The scaled scores and the percentiles are not read in a norm table: the script
+  of the application computes them from the raw score and the age in months with
+  a formula of the logarithm of the age (`214_score.js`, lines 150 to 270). The
+  formulas are not reproduced here and the scaled scores and percentiles are
+  delivered as stored. The General Communication Composite is the sum of the
+  first eight scaled scores (106 of 106 visits).
+
+  The Social Interaction Deviance Composite is computed by the script (line 268)
+  as the scaled scores of inappropriate initiation, nonverbal communication,
+  social relations and interests, minus those of speech, syntax, semantics and
+  coherence. The export holds the composite on 43 of the 106 visits, always 0 or
+  more: none of the negative values is stored. The field of the application is
+  two characters wide (`COMM_SIDCS char(2)`, easperger.sql, line 3377, and a box
+  with a maximum length of 2), which cannot hold a value of -10 or lower; why
+  the values from -9 to -1 are lost too is not established. `ccc_sidc` is
+  computed here from the stored scaled scores, on the 106 visits: 63 values are
+  added (all negative: 23 of -10 or lower and 40 from -9 to -1), 3 are 0 and 40
+  are positive (range -32 to 15), and the 43 stored values are all equal to it.
+  A negative value means that the four scales of the first group (initiation,
+  nonverbal communication, social relations, interests) add up to lower scaled
+  scores than the four of the second group; the published sign and cut-off are
+  to verify (the open question O13 of PROGRESS.md about the composite never
+  being negative is answered by the lost sign).
+
+  The script tests the scaled score of interests with `!=` and so drops a scaled
+  score of 0 from the composite (none is present).
+
+  On 2 visits (2014 and 2015) an item is blank and a raw score is stored (inappropriate initiation
+  on one, social relations on the other): it cannot be recomputed and is not delivered
+  (`score_not_recomputed`).
+
+  **Year and centre.** 26 of the 103 variables reach 0.5 or more, all by year, none by centre: 119
+  of the 123 visits are of one centre (C), so the centres cannot be compared. The years with 20
+  values or more are 2013, 2014 and 2015; between them 1 of the 102 variables compared differs
+  beyond chance (permutation test, p below 0.01; about 1 expected). The one score that reaches 0.5
+  is the scaled interests score (medians 3, 4, 3: one unit of a whole-number scale). The General
+  Communication Composite has a median of 29, 37 and 38 (n 24, 43, 31), within chance.
 
   An instrument of the ASP cohort only.
 
 version:
   name: communication_checklist_form
   filled:                            # tested top to bottom, first match wins
-    ccc2: [comm_speech, comm_speechs, comm_speechp, comm_syntax, comm_syntaxs, comm_syntaxp, comm_semantic, comm_semantics, comm_semanticp, comm_coher, comm_cohers, comm_coherp, comm_inapp, comm_inapps, comm_inappp, comm_stereo, comm_stereos, comm_stereop, comm_context, comm_contexts, comm_contextp, comm_nverb, comm_nverbs, comm_nverbp, comm_social, comm_socials, comm_socialp, comm_interst, comm_intersts, comm_interstp, comm_gccs, comm_gccp, comm_sidcs]
-    cca: [comm_ls, comm_ps, comm_se]
+    ccc2: [comm_speech, comm_speechs, comm_speechp, comm_syntax, comm_syntaxs, comm_syntaxp, comm_semantic, comm_semantics, comm_semanticp, comm_coher, comm_cohers, comm_coherp, comm_inapp, comm_inapps, comm_inappp, comm_stereo, comm_stereos, comm_stereop, comm_context, comm_contexts, comm_contextp, comm_nverb, comm_nverbs, comm_nverbp, comm_social, comm_socials, comm_socialp, comm_interst, comm_intersts, comm_interstp, comm_gccs, comm_gccp, comm_sidcs, surd, phras, relenf, temps]
+    cca: [comm_ls, comm_ps, comm_se, arretud, orthopho, travail]
 
 defaults: {type: item, range: [0, 3], versions: [ccc2]}
 
@@ -157,7 +204,7 @@ variables:
   ccc_interests_percentile: {column: comm_interstp, type: number, label: "CCC-2 interests, percentile as stored", range: [0, 100], winsor: false}
   ccc_gcc: {column: comm_gccs, type: number, label: "CCC-2 General Communication Composite (sum of the first eight scaled scores), as stored", range: [0, 160], winsor: false}
   ccc_gcc_percentile: {column: comm_gccp, type: number, label: "CCC-2 General Communication Composite, percentile as stored", range: [0, 100], winsor: false}
-  ccc_sidc: {column: comm_sidcs, type: number, label: "CCC-2 Social Interaction Deviance Composite, as stored", range: [-60, 60], winsor: false}
+  ccc_sidc_stored: {column: comm_sidcs, type: number, label: "CCC-2 Social Interaction Deviance Composite, as stored (no negative value is stored)", range: [-60, 60], winsor: false, keep: false}
 
 scores:
   ccc_speech: {label: "CCC-2 speech, raw score (0 to 21)", sum: [ccc02, ccc24, ccc29, ccc38, ccc44, ccc51, ccc58], reverse: [ccc51, ccc58], compare: ccc_speech_stored}
@@ -170,3 +217,8 @@ scores:
   ccc_nonverbal_communication: {label: "CCC-2 nonverbal communication, raw score (0 to 21)", sum: [ccc08, ccc14, ccc20, ccc31, ccc39, ccc56, ccc65], reverse: [ccc56, ccc65], compare: ccc_nonverbal_communication_stored}
   ccc_social_relations: {label: "CCC-2 social relations, raw score (0 to 21)", sum: [ccc03, ccc07, ccc13, ccc16, ccc33, ccc57, ccc67], reverse: [ccc57, ccc67], compare: ccc_social_relations_stored}
   ccc_interests: {label: "CCC-2 interests, raw score (0 to 21)", sum: [ccc09, ccc22, ccc26, ccc47, ccc49, ccc52, ccc63], reverse: [ccc52, ccc63], compare: ccc_interests_stored}
+  ccc_sidc:
+    label: "CCC-2 Social Interaction Deviance Composite: scaled scores of initiation, nonverbal communication, social relations and interests minus those of speech, syntax, semantics and coherence"
+    sum: [ccc_inappropriate_initiation_scaled, ccc_nonverbal_communication_scaled, ccc_social_relations_scaled, ccc_interests_scaled]
+    minus: [ccc_speech_scaled, ccc_syntax_scaled, ccc_semantics_scaled, ccc_coherence_scaled]
+    compare: ccc_sidc_stored

@@ -1,75 +1,159 @@
 instrument: als
-title: "Affective Lability Scale (from the column names)"
+title: "Affective Lability Scale, 54 items (ALS-54), old form of the autism cohort"
 tab: autoquestionnaires_old_part1
 section: old questionnaires, rare
-status: draft
+status: reviewed
 notes: >
-  61 columns filled on fewer than five visits. **Too few visits to verify**: the columns are
-  read with their types and ranges, the scores are delivered as stored and no
-  rule is checked. The thesaurus confirms the instrument and gives the range of
-  its answers; with so few visits nothing more can be verified.
+  The 54-item Affective Lability Scale (ALS-54) of the old forms: 4 inclusion
+  visits, all of 2013 and of one centre (D). A pilot, too few visits to study
+  the form; the schema reads what can be checked on them. An instrument of the
+  ASP cohort only, with the names of the ALS-54 of BP.
 
-  An instrument of the ASP cohort only.
+  Items. `als54_01` to `als54_54` (the columns `als_1` to `als_54`), from 0
+  (not at all characteristic) to 3 (very characteristic), as asked. The 4
+  visits hold the 54 items (BP holds 18 of the 54). No item is reversed.
+
+  Scores. The application (`229_score.js`) computes the six sub-scores as the
+  mean of their items, each only when all its items are answered, and the
+  total as the mean of the 54 items. Every item belongs to one sub-score:
+  depression 11 items (1, 8, 9, 13, 19, 25, 31, 40, 42, 46, 54), elation 12
+  (2, 6, 7, 18, 27, 32, 35, 36, 45, 47, 52, 53), anxiety-depression 8 (3, 10,
+  16, 17, 22, 37, 38, 49), anxiety 7 (4, 5, 12, 20, 26, 28, 44), anger 7 (14,
+  15, 21, 23, 33, 41, 50) and bipolar 9 (11, 24, 29, 30, 34, 39, 43, 48, 51).
+  The stored scores (`alsdep`, `alselat`, `alsanxdep`, `alsanx`, `alsanger`,
+  `alsscorbp`, `als_score`, read as the hidden checks `als54_*_stored`) are
+  equal to the application's on 4 of 4 visits for elation, anxiety-depression,
+  anxiety, anger, bipolar and the total, to the 3 decimals that the export
+  writes (tolerance 0.0006). The stored depression is not: the score step of
+  the data managers' pipeline averages 10 items, not 11, and leaves out item 1
+  (the data managers confirmed it, M25 of EXPORT_REQUESTS.md). The depression
+  that is delivered is the application's, with the 11 items, and the stored
+  one is the check: 4 `score_mismatch` on 4 visits, which are the known
+  error of the export (R27 of the review).
+
+  Bridge to the ALS-18: the four scores of the ALS-18, from the 18 items that
+  both forms have, as in BP (als54.yaml): anxiety-depression (items 5, 12, 16,
+  17, 20), depression-elation (8, 25, 34, 36, 42, 43, 45, 46), anger (14, 21,
+  23, 33, 41) and the total of the 18 items (means, 0 to 3). The cohort has no
+  ALS-18 visit, so there is no stored value to check them against.
+
+  **Year and centre.** Too few visits to screen: 4 visits of one centre (D), all of 2013. There is
+  no group of 20 values, so the quality-control table holds no year or centre shift.
+
+defaults: {type: item, range: [0, 3]}
 
 variables:
-  als_1: {column: als_1, type: item, label: "ALS, item 1 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_2: {column: als_2, type: item, label: "ALS, item 2 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_3: {column: als_3, type: item, label: "ALS, item 3 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_4: {column: als_4, type: item, label: "ALS, item 4 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_5: {column: als_5, type: item, label: "ALS, item 5 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_6: {column: als_6, type: item, label: "ALS, item 6 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_7: {column: als_7, type: item, label: "ALS, item 7 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_8: {column: als_8, type: item, label: "ALS, item 8 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_9: {column: als_9, type: item, label: "ALS, item 9 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_10: {column: als_10, type: item, label: "ALS, item 10 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_11: {column: als_11, type: item, label: "ALS, item 11 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_12: {column: als_12, type: item, label: "ALS, item 12 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_13: {column: als_13, type: item, label: "ALS, item 13 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_14: {column: als_14, type: item, label: "ALS, item 14 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_15: {column: als_15, type: item, label: "ALS, item 15 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_16: {column: als_16, type: item, label: "ALS, item 16 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_17: {column: als_17, type: item, label: "ALS, item 17 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_18: {column: als_18, type: item, label: "ALS, item 18 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_19: {column: als_19, type: item, label: "ALS, item 19 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_20: {column: als_20, type: item, label: "ALS, item 20 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_21: {column: als_21, type: item, label: "ALS, item 21 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_22: {column: als_22, type: item, label: "ALS, item 22 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_23: {column: als_23, type: item, label: "ALS, item 23 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_24: {column: als_24, type: item, label: "ALS, item 24 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_25: {column: als_25, type: item, label: "ALS, item 25 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_26: {column: als_26, type: item, label: "ALS, item 26 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_27: {column: als_27, type: item, label: "ALS, item 27 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_28: {column: als_28, type: item, label: "ALS, item 28 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_29: {column: als_29, type: item, label: "ALS, item 29 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_30: {column: als_30, type: item, label: "ALS, item 30 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_31: {column: als_31, type: item, label: "ALS, item 31 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_32: {column: als_32, type: item, label: "ALS, item 32 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_33: {column: als_33, type: item, label: "ALS, item 33 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_34: {column: als_34, type: item, label: "ALS, item 34 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_35: {column: als_35, type: item, label: "ALS, item 35 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_36: {column: als_36, type: item, label: "ALS, item 36 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_37: {column: als_37, type: item, label: "ALS, item 37 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_38: {column: als_38, type: item, label: "ALS, item 38 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_39: {column: als_39, type: item, label: "ALS, item 39 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_40: {column: als_40, type: item, label: "ALS, item 40 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_41: {column: als_41, type: item, label: "ALS, item 41 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_42: {column: als_42, type: item, label: "ALS, item 42 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_43: {column: als_43, type: item, label: "ALS, item 43 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_44: {column: als_44, type: item, label: "ALS, item 44 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_45: {column: als_45, type: item, label: "ALS, item 45 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_46: {column: als_46, type: item, label: "ALS, item 46 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_47: {column: als_47, type: item, label: "ALS, item 47 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_48: {column: als_48, type: item, label: "ALS, item 48 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_49: {column: als_49, type: item, label: "ALS, item 49 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_50: {column: als_50, type: item, label: "ALS, item 50 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_51: {column: als_51, type: item, label: "ALS, item 51 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_52: {column: als_52, type: item, label: "ALS, item 52 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_53: {column: als_53, type: item, label: "ALS, item 53 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  als_54: {column: als_54, type: item, label: "ALS, item 54 (0 not at all characteristic to 3 very characteristic)", range: [0, 3]}
-  alsdep: {column: alsdep, type: number, label: "ALS depression score, as stored", range: [0, 200], winsor: false}
-  alselat: {column: alselat, type: number, label: "ALS elation score, as stored", range: [0, 200], winsor: false}
-  alsanxdep: {column: alsanxdep, type: number, label: "ALS anxiety-depression score, as stored", range: [0, 200], winsor: false}
-  alsanx: {column: alsanx, type: number, label: "ALS anxiety score, as stored", range: [0, 200], winsor: false}
-  alsanger: {column: alsanger, type: number, label: "ALS anger score, as stored", range: [0, 200], winsor: false}
-  alsscorbp: {column: alsscorbp, type: number, label: "ALS bipolar score, as stored", range: [0, 200], winsor: false}
-  als_score: {column: als_score, type: number, label: "ALS (Affective Lability Scale) total score, as stored", range: [0, 200], winsor: false}
+  als54_01: {column: als_1, label: "ALS-54 item 1 (0 not at all characteristic to 3 very characteristic)"}
+  als54_02: {column: als_2, label: "ALS-54 item 2 (0 not at all characteristic to 3 very characteristic)"}
+  als54_03: {column: als_3, label: "ALS-54 item 3 (0 not at all characteristic to 3 very characteristic)"}
+  als54_04: {column: als_4, label: "ALS-54 item 4 (0 not at all characteristic to 3 very characteristic)"}
+  als54_05: {column: als_5, label: "ALS-54 item 5 (0 not at all characteristic to 3 very characteristic)"}
+  als54_06: {column: als_6, label: "ALS-54 item 6 (0 not at all characteristic to 3 very characteristic)"}
+  als54_07: {column: als_7, label: "ALS-54 item 7 (0 not at all characteristic to 3 very characteristic)"}
+  als54_08: {column: als_8, label: "ALS-54 item 8 (0 not at all characteristic to 3 very characteristic)"}
+  als54_09: {column: als_9, label: "ALS-54 item 9 (0 not at all characteristic to 3 very characteristic)"}
+  als54_10: {column: als_10, label: "ALS-54 item 10 (0 not at all characteristic to 3 very characteristic)"}
+  als54_11: {column: als_11, label: "ALS-54 item 11 (0 not at all characteristic to 3 very characteristic)"}
+  als54_12: {column: als_12, label: "ALS-54 item 12 (0 not at all characteristic to 3 very characteristic)"}
+  als54_13: {column: als_13, label: "ALS-54 item 13 (0 not at all characteristic to 3 very characteristic)"}
+  als54_14: {column: als_14, label: "ALS-54 item 14 (0 not at all characteristic to 3 very characteristic)"}
+  als54_15: {column: als_15, label: "ALS-54 item 15 (0 not at all characteristic to 3 very characteristic)"}
+  als54_16: {column: als_16, label: "ALS-54 item 16 (0 not at all characteristic to 3 very characteristic)"}
+  als54_17: {column: als_17, label: "ALS-54 item 17 (0 not at all characteristic to 3 very characteristic)"}
+  als54_18: {column: als_18, label: "ALS-54 item 18 (0 not at all characteristic to 3 very characteristic)"}
+  als54_19: {column: als_19, label: "ALS-54 item 19 (0 not at all characteristic to 3 very characteristic)"}
+  als54_20: {column: als_20, label: "ALS-54 item 20 (0 not at all characteristic to 3 very characteristic)"}
+  als54_21: {column: als_21, label: "ALS-54 item 21 (0 not at all characteristic to 3 very characteristic)"}
+  als54_22: {column: als_22, label: "ALS-54 item 22 (0 not at all characteristic to 3 very characteristic)"}
+  als54_23: {column: als_23, label: "ALS-54 item 23 (0 not at all characteristic to 3 very characteristic)"}
+  als54_24: {column: als_24, label: "ALS-54 item 24 (0 not at all characteristic to 3 very characteristic)"}
+  als54_25: {column: als_25, label: "ALS-54 item 25 (0 not at all characteristic to 3 very characteristic)"}
+  als54_26: {column: als_26, label: "ALS-54 item 26 (0 not at all characteristic to 3 very characteristic)"}
+  als54_27: {column: als_27, label: "ALS-54 item 27 (0 not at all characteristic to 3 very characteristic)"}
+  als54_28: {column: als_28, label: "ALS-54 item 28 (0 not at all characteristic to 3 very characteristic)"}
+  als54_29: {column: als_29, label: "ALS-54 item 29 (0 not at all characteristic to 3 very characteristic)"}
+  als54_30: {column: als_30, label: "ALS-54 item 30 (0 not at all characteristic to 3 very characteristic)"}
+  als54_31: {column: als_31, label: "ALS-54 item 31 (0 not at all characteristic to 3 very characteristic)"}
+  als54_32: {column: als_32, label: "ALS-54 item 32 (0 not at all characteristic to 3 very characteristic)"}
+  als54_33: {column: als_33, label: "ALS-54 item 33 (0 not at all characteristic to 3 very characteristic)"}
+  als54_34: {column: als_34, label: "ALS-54 item 34 (0 not at all characteristic to 3 very characteristic)"}
+  als54_35: {column: als_35, label: "ALS-54 item 35 (0 not at all characteristic to 3 very characteristic)"}
+  als54_36: {column: als_36, label: "ALS-54 item 36 (0 not at all characteristic to 3 very characteristic)"}
+  als54_37: {column: als_37, label: "ALS-54 item 37 (0 not at all characteristic to 3 very characteristic)"}
+  als54_38: {column: als_38, label: "ALS-54 item 38 (0 not at all characteristic to 3 very characteristic)"}
+  als54_39: {column: als_39, label: "ALS-54 item 39 (0 not at all characteristic to 3 very characteristic)"}
+  als54_40: {column: als_40, label: "ALS-54 item 40 (0 not at all characteristic to 3 very characteristic)"}
+  als54_41: {column: als_41, label: "ALS-54 item 41 (0 not at all characteristic to 3 very characteristic)"}
+  als54_42: {column: als_42, label: "ALS-54 item 42 (0 not at all characteristic to 3 very characteristic)"}
+  als54_43: {column: als_43, label: "ALS-54 item 43 (0 not at all characteristic to 3 very characteristic)"}
+  als54_44: {column: als_44, label: "ALS-54 item 44 (0 not at all characteristic to 3 very characteristic)"}
+  als54_45: {column: als_45, label: "ALS-54 item 45 (0 not at all characteristic to 3 very characteristic)"}
+  als54_46: {column: als_46, label: "ALS-54 item 46 (0 not at all characteristic to 3 very characteristic)"}
+  als54_47: {column: als_47, label: "ALS-54 item 47 (0 not at all characteristic to 3 very characteristic)"}
+  als54_48: {column: als_48, label: "ALS-54 item 48 (0 not at all characteristic to 3 very characteristic)"}
+  als54_49: {column: als_49, label: "ALS-54 item 49 (0 not at all characteristic to 3 very characteristic)"}
+  als54_50: {column: als_50, label: "ALS-54 item 50 (0 not at all characteristic to 3 very characteristic)"}
+  als54_51: {column: als_51, label: "ALS-54 item 51 (0 not at all characteristic to 3 very characteristic)"}
+  als54_52: {column: als_52, label: "ALS-54 item 52 (0 not at all characteristic to 3 very characteristic)"}
+  als54_53: {column: als_53, label: "ALS-54 item 53 (0 not at all characteristic to 3 very characteristic)"}
+  als54_54: {column: als_54, label: "ALS-54 item 54 (0 not at all characteristic to 3 very characteristic)"}
+
+  # Scores as stored in the extraction (the export's): checks of our own means.
+  als54_depression_stored: {column: alsdep, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 depression as the export stores it (10 items, without item 1)"}
+  als54_elation_stored: {column: alselat, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 elation as stored"}
+  als54_anxiety_depression_stored: {column: alsanxdep, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 anxiety-depression as stored"}
+  als54_anxiety_stored: {column: alsanx, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 anxiety as stored"}
+  als54_anger_stored: {column: alsanger, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 anger as stored"}
+  als54_bipolar_stored: {column: alsscorbp, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 bipolar as stored"}
+  als54_total_stored: {column: als_score, type: number, range: [0, 3], winsor: false, keep: false, label: "ALS-54 total (mean of the 54 items) as stored"}
+
+scores:
+  als54_depression:
+    label: ALS-54 depression (mean of 11 items)
+    mean: [als54_01, als54_08, als54_09, als54_13, als54_19, als54_25, als54_31, als54_40, als54_42, als54_46, als54_54]
+    compare: als54_depression_stored
+    compare_tolerance: 0.0006
+  als54_elation:
+    label: ALS-54 elation (mean of 12 items)
+    mean: [als54_02, als54_06, als54_07, als54_18, als54_27, als54_32, als54_35, als54_36, als54_45, als54_47, als54_52, als54_53]
+    compare: als54_elation_stored
+    compare_tolerance: 0.0006
+  als54_anxiety_depression:
+    label: ALS-54 anxiety-depression (mean of 8 items)
+    mean: [als54_03, als54_10, als54_16, als54_17, als54_22, als54_37, als54_38, als54_49]
+    compare: als54_anxiety_depression_stored
+    compare_tolerance: 0.0006
+  als54_anxiety:
+    label: ALS-54 anxiety (mean of 7 items)
+    mean: [als54_04, als54_05, als54_12, als54_20, als54_26, als54_28, als54_44]
+    compare: als54_anxiety_stored
+    compare_tolerance: 0.0006
+  als54_anger:
+    label: ALS-54 anger (mean of 7 items)
+    mean: [als54_14, als54_15, als54_21, als54_23, als54_33, als54_41, als54_50]
+    compare: als54_anger_stored
+    compare_tolerance: 0.0006
+  als54_bipolar:
+    label: ALS-54 bipolar (mean of 9 items)
+    mean: [als54_11, als54_24, als54_29, als54_30, als54_34, als54_39, als54_43, als54_48, als54_51]
+    compare: als54_bipolar_stored
+    compare_tolerance: 0.0006
+  als54_total:
+    label: ALS-54 total (mean of the 54 items)
+    mean: [als54_01, als54_02, als54_03, als54_04, als54_05, als54_06, als54_07, als54_08, als54_09, als54_10, als54_11, als54_12, als54_13, als54_14, als54_15, als54_16, als54_17, als54_18, als54_19, als54_20, als54_21, als54_22, als54_23, als54_24, als54_25, als54_26, als54_27, als54_28, als54_29, als54_30, als54_31, als54_32, als54_33, als54_34, als54_35, als54_36, als54_37, als54_38, als54_39, als54_40, als54_41, als54_42, als54_43, als54_44, als54_45, als54_46, als54_47, als54_48, als54_49, als54_50, als54_51, als54_52, als54_53, als54_54]
+    compare: als54_total_stored
+    compare_tolerance: 0.0006
+
+  # Bridge to the ALS-18: its four scores, from the 18 items both forms have.
+  als54_anxiety_depression18:
+    label: Anxiety-depression, 5 of the items that the ALS-18 also has (mean)
+    mean: [als54_05, als54_12, als54_16, als54_17, als54_20]
+  als54_depression_elation18:
+    label: Depression-elation, 8 of the items that the ALS-18 also has (mean)
+    mean: [als54_08, als54_25, als54_34, als54_36, als54_42, als54_43, als54_45, als54_46]
+  als54_anger18:
+    label: Anger, 5 of the items that the ALS-18 also has (mean)
+    mean: [als54_14, als54_21, als54_23, als54_33, als54_41]
+  als54_total18:
+    label: Mean of the 18 items that the ALS-18 also has
+    mean: [als54_05, als54_08, als54_12, als54_14, als54_16, als54_17, als54_20, als54_21, als54_23, als54_25, als54_33, als54_34, als54_36, als54_41, als54_42, als54_43, als54_45, als54_46]

@@ -2,18 +2,34 @@ instrument: mars
 title: "Medication Adherence Rating Scale (MARS)"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
-  Ten yes/no items and a total, at the inclusion visit: 239 visits,
-  from 2021 to 2026. It belongs to the new set of forms. It is filled by adults only.
+  Ten yes/no items and a total, at the inclusion visit: 239 visits, from 2020 to
+  2026, and 4 follow-up visits (243 in all). It belongs to the new set of forms.
+  It is filled by adults only. The form (332) has no question on whether a
+  medication is taken and no gate, and it states no time frame.
 
   Same instrument as in FACE BP and DR. **The answers are coded as in FACE DR,
-  the other way round from FACE BP**: 1 is "yes" here (item 5 holds a 1 on
-  26% of the answers, 96% in BP). And the stored total repeats the error
-  of DR: it counts the answers that show poor adherence (241 of 241 visits
-  reproduced). The schema of FACE DR is used: the items are read back to the BP
-  coding, the total is recomputed (higher is better), and the stored total is
-  checked with a formula "as stored" and not delivered.
+  the other way round from FACE BP**: 1 is "yes" here (item 5 holds a 1 on 26%
+  of the answers, 96% in BP). **The stored total is wrong, and the error is the
+  export's, not the EMR's.** The script of the form (`332_score.js`) reverses
+  the items 1 to 6, 9 and 10 (a yes shows poor adherence) and adds the items 7
+  and 8 as they are, which gives a total where higher is better. The export step
+  that rewrites the total (`mars.yaml` of the export, lines 5-9 and 16-20) names
+  the DR and ASP columns together with those of BP and reverses the items 7 and
+  8 instead: the stored total counts the answers that show poor adherence, and
+  equals 10 minus the delivered total on 241 of 241 visits (1,026 of 1,026 in
+  DR). The schema of FACE DR is used: the items are read back to the BP coding,
+  the total is recomputed (higher is better, as the script computes it), and the
+  stored total is checked with a formula "as stored" and not delivered. The fix
+  is a separate entry of the export for DR and ASP with the items 1 to 6, 9 and
+  10 reversed (request in EXPORT_REQUESTS.md).
+
+  **Year and centre.** 6 of the 9 variables reach 0.5 or more (5 by year, 4 by
+  centre): the ten answers are 0 or 1 (a median that flips between the two
+  levels is 1.0), and the total stands at 0.33 by year and 0.50 by centre
+  (median 5 to 7 by year; 6 in C, 7 in D and E, 7.5 in B with 22 totals). Adults
+  only, 2021 to 2026. No step beyond one point of a total of 0 to 10.
 
 defaults: {type: item, range: [0, 1]}
 

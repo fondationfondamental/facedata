@@ -1,12 +1,13 @@
 instrument: cdi
-title: "Children's Depression Inventory (CDI)"
+title: "Children's Depression Inventory (CDI; past two weeks)"
 tab: autoquestionnaires
 section: child and parent questionnaires
-status: draft
+status: reviewed
 notes: >
-  Twenty-seven items answered from 0 to 2 and a total, filled by children:
-  482 inclusion visits of children, 2 of adults and 75 follow-up visits, from 2020 to 2026. It belongs to the new set of forms; the
-  adults fill the BDI-II.
+  Twenty-seven items answered from 0 to 2 and a total, filled by children: 484
+  inclusion visits (482 of children, 2 of adults, from 2019 to 2026) and 75
+  follow-up visits. It belongs to the new set of forms; the adults fill the
+  BDI-II. The items ask about the past two weeks.
 
   Identified from its name and its twenty-seven items as the Children's
   Depression Inventory (Kovacs, 1985), sure: the stored total follows the
@@ -17,9 +18,21 @@ notes: >
 
   - CDI total (0 to 54): the sum of 27 items (reversed: 2, 5, 7, 8, 10, 11, 13, 15, 16, 18, 21, 24 and 25), equal to the stored score on 316 of 341 complete visits; typed without its items on 114 visits, where it is kept as stored.
 
-  The visits where the stored total is not the published sum are dated 2022
-  and 2023, differ by one point for most, and all but one come from one
-  centre: totals typed by hand. The total delivered is the published sum.
+  The 25 visits where the stored total is not the published sum are dated 2021
+  (1 visit), 2022 (9) and 2023 (15); the stored total differs by one point on 20
+  of them, and all but one come from one centre: totals typed by hand. The total
+  delivered is the published sum. The 114 totals typed without any item come
+  mostly from one centre (103), the same that types the STAIC and BDI-II totals.
+
+  **Year and centre.** 10 of the 21 variables reach 0.5 or more (10 by year, 1
+  by centre): the 27 items are on a 0 to 2 scale (one level is 1.0 or more of
+  the interquartile range). The total stands at 0.22 by year (median 11 to 14)
+  and 0.44 by centre (A 11, B 16). The difference between the centres is the
+  Manual mode: centre B types 95% of its totals without items (103 of the 114
+  typed), median 15.5 (mean 16.7) against 11 (12.4) for the computed ones, a
+  rule applied by hand that is not known (O17); the 25 stored totals that differ
+  from the published sum (one point off on 20 of them) are dated 2021 to 2023
+  and come from centre A (24 of them), not from the Manual mode.
 
   An instrument of the ASP cohort only.
 
@@ -58,6 +71,7 @@ variables:
 scores:
   cdi_total:
     label: "CDI total (0 to 54)"
+    range: [0, 54]
     sum: [cdi01, cdi02, cdi03, cdi04, cdi05, cdi06, cdi07, cdi08, cdi09, cdi10, cdi11, cdi12, cdi13, cdi14, cdi15, cdi16, cdi17, cdi18, cdi19, cdi20, cdi21, cdi22, cdi23, cdi24, cdi25, cdi26, cdi27]
     reverse: [cdi02, cdi05, cdi07, cdi08, cdi10, cdi11, cdi13, cdi15, cdi16, cdi18, cdi21, cdi24, cdi25]
     compare: cdi_total_stored

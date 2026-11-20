@@ -2,27 +2,44 @@ instrument: communication_context
 title: "Questions before the communication checklist"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Twelve questions asked with the communication checklists of the old forms:
-  230 inclusion visits (50 of children) and 79 follow-up visits, from 2013 to
-  2020. The first five are asked about adults (age at the end of the studies,
-  work, language), the others about children (hearing, speech in sentences, the
-  relation of the person who answers and the time spent with the child). Their
-  wording is that of the thesaurus V2.13.
+  Twelve questions asked before the communication checklists of the old forms:
+  309 visits (230 inclusion visits, 50 of children, and 79 follow-up visits, 63
+  of children), from 2009 to 2021 and 94% of them from 2013 to 2018. The adult
+  form (CC-A) asks five of them: `arretud` (age at the end of the studies, in
+  years), `travail` (work, free text), `lang`, `autlang` and `orthopho` (a
+  speech therapist ever seen for language problems). The children's form (CCC-2)
+  asks `surd` (hearing impairment) and its comment, `lang`, `autlang`, `phras`
+  (can put words into sentences) and its comment, `relenf` (relation to the
+  child of the person who answers), `temps` (time in contact with the child, in
+  months) and a comment on the checklist (`comm`). `lang` and `autlang` are
+  asked in both forms, with the same wording: `lang` is filled on 123 CCC-2
+  visits, 182 CC-A visits and 2 visits with neither. Their wording is that of
+  the thesaurus V2.13, checked against forms 213 and 214.
+
+  The other questions are asked by one form only, and they give the form of a
+  visit that has items and no score (`version` of ccc2.yaml and cca.yaml).
+  `temps` is in months, 72 to 240 on the data (the form wants at least 3 months
+  of contact).
+
+  **Year and centre.** Three of the 12 variables have a group of 20 values, and none reaches 0.5
+  (0.25 to 0.33 by year or by centre): the time in contact with the child (`temps`) goes from a
+  median of 150 months in 2013 to 176 in 2015, the children getting older; the age at the end of
+  the studies (`arretud`) is 21 to 23 years.
 
   An instrument of the ASP cohort only.
 
 variables:
   arretud: {column: arretud, type: number, label: "CC-A (adult communication checklist): age at the end of the studies, years", range: [0, 200], winsor: false}
   travail: {column: travail, type: text, label: "Work, free text"}
-  lang: {column: lang, type: item, label: "CC-A (adult communication checklist): French is the main language at home (0 no, 1 yes)", range: [0, 1]}
-  autlang: {column: autlang, type: text, label: "Other language, free text"}
+  lang: {column: lang, type: item, label: "French is the main language at home (0 no, 1 yes), asked in the CC-A and in the CCC-2 forms", range: [0, 1]}
+  autlang: {column: autlang, type: text, label: "Other language spoken at home, free text, asked in the CC-A and in the CCC-2 forms"}
   orthopho: {column: orthopho, type: item, label: "CC-A (adult communication checklist): ever saw a speech therapist for language problems (0 no, 1 yes)", range: [0, 1]}
   surd: {column: surd, type: item, label: "CCC-2 (child communication checklist): the child has a hearing impairment (0 no, 1 yes)", range: [0, 1]}
   surdc: {column: surdc, type: text, label: "Hearing impairment, comment, free text"}
   phras: {column: phras, type: item, label: "CCC-2 (child communication checklist): the child can put words into sentences (0 no, 1 yes)", range: [0, 1]}
   phrasc: {column: phrasc, type: text, label: "Speaks in sentences, comment, free text"}
   relenf: {column: relenf, type: text, label: "Relation to the child of the person who answers, free text"}
-  temps: {column: temps, type: number, label: "CCC-2 (child communication checklist): time the respondent has been in contact with the child, months", range: [0, 457], winsor: false}
+  temps: {column: temps, type: number, label: "CCC-2 (child communication checklist): time the respondent has been in contact with the child, in months (the form says months)", range: [0, 240], winsor: false}
   comm: {column: comm, type: text, label: "Comment on the checklist, free text"}

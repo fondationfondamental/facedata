@@ -6,6 +6,7 @@ schemas must produce"). No patient row appears here.
 
 from pathlib import Path
 
+import pandas as pd
 import pytest
 
 from facedata import bp
@@ -239,6 +240,72 @@ def test_auto_questionnaires(result, qc):
     reduced = data.loc[data["visit_date"] < "2021-01-01", ["als18_total", "wurs25_total", "aim20_score", "bis12_total"]]
     assert reduced.notna().sum().sum() == 0
     assert (qc.loc["bdhi_total", "n_valid"], qc.loc["aq12_total", "n_valid"]) == (4474, 1387)
+
+
+def test_auto_questionnaires_scores_of_the_review_of_2026_11_20(result, qc):
+    """Scores that the package computes where the application or the export gets them wrong (D183 to D197)."""
+    data, flags = result.data, result.flags
+
+    def count(variable, flag):
+        return int(((flags["variable"] == variable) & (flags["flag"] == flag)).sum())
+
+    # CTQ denial: the items 10, 16 and 22 answered 5, computed when the three are answered; the stored score is the check.
+    # 66 visits gain a score, 42 lose it (one to three items empty: `score_not_recomputed`), D183.
+    assert qc.loc["ctq_denial", "n_valid"] == 6194
+    assert (qc.loc["ctq_denial", "score_mismatch"], qc.loc["ctq_denial", "score_not_recomputed"]) == (0, 42)
+    # ASRS screen: 1 positive, 0 negative (was a category), from part A; the stored screen is the check (D187).
+    assert qc.loc["asrs_screen", "n_valid"] == 1320
+    assert data["asrs_screen"].value_counts().to_dict() == {1.0: 708, 0.0: 612}
+    assert (qc.loc["asrs_screen", "score_not_recomputed"], qc.loc["asrs_screen", "score_mismatch"]) == (6, 2)
+    # MDQ: the stored screen is negative on 17 visits where a missing answer is the only thing that could have made it so (R88).
+    assert count("mdq_screen_check", "score_mismatch") == 17
+    # PSQI: components 5 and 7 are computed, a blank 5j counts 0 (D184); the latency is no longer winsorised.
+    assert (qc.loc["psqi_disturbances", "n_valid"], qc.loc["psqi_total", "n_valid"]) == (16687, 16437)
+    assert (qc.loc["psqi_dysfunction", "n_valid"], qc.loc["psqi_dysfunction", "score_mismatch"]) == (16709, 0)
+    assert (qc.loc["psqi_disturbances", "score_mismatch"], qc.loc["psqi_total", "score_mismatch"]) == (0, 725)
+    assert qc.loc["psqi_latency", "winsorised"] == 0 and count("psqi_latency", "winsorised") == 0
+    assert qc.loc["psqi_latency", "max"] == 240
+    assert (qc.loc["psqi05k", "not_shown"], count("psqi05k", "not_shown")) == (2, 2)
+    # PRISE-M: the total needs 31 items, 239 partial sums of 28 to 30 items are lost (D191).
+    assert (qc.loc["prisem_total", "n_valid"], qc.loc["prisem_total", "score_not_recomputed"]) == (15899, 328)
+    assert qc.loc["prisem_total", "score_mismatch"] == 0
+
+
+def test_bdhi_items_are_delivered_as_asked(result):
+    """The extraction stores the 75 statements keyed to hostility. Fifteen have "false" as the hostile answer: they are read back to
+    1 true, 0 false (D190), and the sub-scores reverse them, so that no sub-score cell changes."""
+    flipped = [1, 10, 17, 21, 27, 34, 39, 50, 55, 63, 66, 67, 71, 72, 74]
+    names = ["bdhi%02d" % n for n in range(1, 76)]
+    raw, keys, visit_flags = prepare_visits(read_extraction(EXTRACTION))
+    typed = pd.concat([keys[["usubjid", "visit"]], raw[names].replace("", pd.NA).astype("Float64").astype(float)], axis=1)
+    delivered = result.data
+    both = typed.merge(delivered[["usubjid", "visit"] + names + ["bdhi_assault", "bdhi_indirect", "bdhi_irritability", "bdhi_negativism",
+                                                                  "bdhi_resentment", "bdhi_suspicion", "bdhi_verbal", "bdhi_guilt"]],
+                       on=["usubjid", "visit"], suffixes=("_typed", ""))
+    assert len(both) == len(delivered) == len(typed)
+    turned_cells = 0
+    for number in range(1, 76):
+        name = "bdhi%02d" % number
+        filled = both[name + "_typed"].notna()
+        assert (both[name].notna() == filled).all(), name           # the same cells are filled
+        if number in flipped:
+            assert (both.loc[filled, name] + both.loc[filled, name + "_typed"] == 1).all(), name
+            turned_cells += int(filled.sum())
+        else:
+            assert (both.loc[filled, name] == both.loc[filled, name + "_typed"]).all(), name
+    assert turned_cells == 67999
+    # The mean of a turned item and of an item that is not (stored 0.249 and 0.176 on 4,541 and 4,543 cells).
+    assert both["bdhi01"].mean() == pytest.approx(1 - both["bdhi01_typed"].mean())
+    assert both["bdhi02"].mean() == pytest.approx(both["bdhi02_typed"].mean())
+    # Every sub-score cell is the plain sum of the items as typed, as before the change (one 1 minus value cancels the other).
+    schema = load_schemas(bp.SCHEMAS)["bdhi"]
+    expected_cells = {"bdhi_assault": 4511, "bdhi_indirect": 4514, "bdhi_irritability": 4509, "bdhi_negativism": 4527,
+                      "bdhi_resentment": 4511, "bdhi_suspicion": 4512, "bdhi_verbal": 4506, "bdhi_guilt": 4514}
+    for score, cells in expected_cells.items():
+        items = schema["scores"][score]["sum"]
+        plain = both[[item + "_typed" for item in items]].sum(axis=1, min_count=len(items))
+        assert (both[score].notna() == plain.notna()).all() and both[score].notna().sum() == cells, score
+        assert (both[score].dropna() == plain.dropna()).all(), score
 
 
 def test_neuropsychologie(result, qc):

@@ -1,60 +1,129 @@
 instrument: bis_old_form
-title: "Barratt Impulsiveness Scale of the old forms (from the column names)"
+title: "Barratt Impulsiveness Scale, BIS-10 (34 items), old form of the autism cohort"
 tab: autoquestionnaires_old_part1
 section: old questionnaires, rare
-status: draft
+status: reviewed
 notes: >
-  46 columns filled on fewer than five visits. **Too few visits to verify**: the columns are
-  read with their types and ranges, the scores are delivered as stored and no
-  rule is checked. The thesaurus confirms the instrument and gives the range of
-  its answers; with so few visits nothing more can be verified.
+  The 34-item Barratt Impulsiveness Scale (BIS-10) of the old forms: 4
+  inclusion visits, all of 2013 and of one centre (D). A pilot, too few visits
+  to study the form; the schema reads what can be checked on them. An
+  instrument of the ASP cohort only, with the names of the BIS-10 of BP and DR.
 
-  An instrument of the ASP cohort only.
+  Items. `bis1001` to `bis1034` (the columns `bis10_1` to `bis10_34`), from 1
+  (rarely or never) to 4 (almost always), as asked. The reversed items, from
+  the application, are 1, 7, 8, 9, 10, 12, 13, 15, 21, 33 and 34: the reversal
+  is in the scores (`reverse`, 5 - value), as in BP.
+
+  Scores. The 4 visits hold the 34 items. The application stores three sums
+  (`bis_smi`, `bis_ai`, `bis_npi`, read as the hidden checks `bis10_motor_app`,
+  `bis10_attention_app`, `bis10_planning_app`): they are equal to ours on 4 of
+  4 visits. Motor impulsivity has 11 items, attentional impulsivity 8 and
+  planning difficulty 11 (the last also counts items 14, 18 and 31, which the
+  dictionary formula leaves out, as in BP). The total is the sum of the three
+  (30 items); items 19, 26, 27 and 29 belong to none of them. `bis_score`, the
+  column that the thesaurus calls the score of the scale, is not that total:
+  it is the mean of the cognitive and of the behavioural scores of the export
+  (`bis1038`, 5 items, and `bis1039`, 7 items: the general score, request R83;
+  both are equal to the 5 - value rule on 4 of 4 visits, where BP's are 1
+  higher). It is read and not delivered.
+
+  What the export adds, read and not delivered (`keep: false`). Its score
+  step writes on the same visits the sums with 6 - value, as in BP:
+  `bis10_imp_mot`, `bis10_imp_att`, `bis10_diff_plan` and `bis10_score_total`
+  are higher than ours by 1, 2, 8 and 11 (one point per reversed item) on 4 of
+  4 visits; `bis10`, the sum of the 12 items that the BIS-12 also has, is 5
+  higher; `bis11`, the sum of 12 other items, is 4 higher. The total and the
+  12-item sum are compared with the offset of BP (`compare_offset`).
+
+  Bridge to the BIS-12: `bis10_sum12`, the total of the 12 items that both
+  forms have, as in BP (bis10.yaml). The cohort has no BIS-12 visit.
+
+  **Year and centre.** Too few visits to screen: 4 visits of one centre (D), all of 2013. There is
+  no group of 20 values, so the quality-control table holds no year or centre shift.
+
+defaults: {type: item, range: [1, 4]}
 
 variables:
-  bis10_1: {column: bis10_1, type: item, label: "BIS-10, item 1 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_2: {column: bis10_2, type: item, label: "BIS-10, item 2 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_3: {column: bis10_3, type: item, label: "BIS-10, item 3 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_4: {column: bis10_4, type: item, label: "BIS-10, item 4 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_5: {column: bis10_5, type: item, label: "BIS-10, item 5 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_6: {column: bis10_6, type: item, label: "BIS-10, item 6 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_7: {column: bis10_7, type: item, label: "BIS-10, item 7 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_8: {column: bis10_8, type: item, label: "BIS-10, item 8 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_9: {column: bis10_9, type: item, label: "BIS-10, item 9 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_10: {column: bis10_10, type: item, label: "BIS-10, item 10 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_11: {column: bis10_11, type: item, label: "BIS-10, item 11 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_12: {column: bis10_12, type: item, label: "BIS-10, item 12 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_13: {column: bis10_13, type: item, label: "BIS-10, item 13 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_14: {column: bis10_14, type: item, label: "BIS-10, item 14 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_15: {column: bis10_15, type: item, label: "BIS-10, item 15 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_16: {column: bis10_16, type: item, label: "BIS-10, item 16 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_17: {column: bis10_17, type: item, label: "BIS-10, item 17 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_18: {column: bis10_18, type: item, label: "BIS-10, item 18 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_19: {column: bis10_19, type: item, label: "BIS-10, item 19 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_20: {column: bis10_20, type: item, label: "BIS-10, item 20 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_21: {column: bis10_21, type: item, label: "BIS-10, item 21 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_22: {column: bis10_22, type: item, label: "BIS-10, item 22 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_23: {column: bis10_23, type: item, label: "BIS-10, item 23 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_24: {column: bis10_24, type: item, label: "BIS-10, item 24 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_25: {column: bis10_25, type: item, label: "BIS-10, item 25 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_26: {column: bis10_26, type: item, label: "BIS-10, item 26 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_27: {column: bis10_27, type: item, label: "BIS-10, item 27 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_28: {column: bis10_28, type: item, label: "BIS-10, item 28 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_29: {column: bis10_29, type: item, label: "BIS-10, item 29 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_30: {column: bis10_30, type: item, label: "BIS-10, item 30 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_31: {column: bis10_31, type: item, label: "BIS-10, item 31 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_32: {column: bis10_32, type: item, label: "BIS-10, item 32 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_33: {column: bis10_33, type: item, label: "BIS-10, item 33 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis10_34: {column: bis10_34, type: item, label: "BIS-10, item 34 (1 rarely or never to 4 almost always)", range: [1, 4]}
-  bis_score: {column: bis_score, type: number, label: "BIS (Barratt Impulsiveness Scale) score, Barratt's coding, as stored", range: [0, 200], winsor: false}
-  bis_ai: {column: bis_ai, type: number, label: "BIS attentional impulsiveness score, as stored", range: [0, 200], winsor: false}
-  bis_smi: {column: bis_smi, type: number, label: "BIS motor impulsiveness score, as stored", range: [0, 200], winsor: false}
-  bis_npi: {column: bis_npi, type: number, label: "BIS non-planning impulsiveness score, as stored", range: [0, 200], winsor: false}
-  bis1038: {column: bis1038, type: number, label: "BIS-10: stored value bis1038, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis1039: {column: bis1039, type: number, label: "BIS-10: stored value bis1039, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis10_imp_mot: {column: bis10_imp_mot, type: number, label: "BIS-10: stored value bis10_imp_mot, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis10_imp_att: {column: bis10_imp_att, type: number, label: "BIS-10: stored value bis10_imp_att, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis10_diff_plan: {column: bis10_diff_plan, type: number, label: "BIS-10: stored value bis10_diff_plan, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis10_score_total: {column: bis10_score_total, type: number, label: "BIS-10: stored value bis10_score_total, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis10: {column: bis10, type: number, label: "BIS-10: stored value bis10, not documented by the thesaurus", range: [0, 200], winsor: false}
-  bis11: {column: bis11, type: number, label: "BIS-10: stored value bis11, not documented by the thesaurus", range: [0, 200], winsor: false}
+  bis1001: {column: bis10_1, label: "BIS-10 item 1 (1 rarely or never to 4 almost always)"}
+  bis1002: {column: bis10_2, label: "BIS-10 item 2 (1 rarely or never to 4 almost always)"}
+  bis1003: {column: bis10_3, label: "BIS-10 item 3 (1 rarely or never to 4 almost always)"}
+  bis1004: {column: bis10_4, label: "BIS-10 item 4 (1 rarely or never to 4 almost always)"}
+  bis1005: {column: bis10_5, label: "BIS-10 item 5 (1 rarely or never to 4 almost always)"}
+  bis1006: {column: bis10_6, label: "BIS-10 item 6 (1 rarely or never to 4 almost always)"}
+  bis1007: {column: bis10_7, label: "BIS-10 item 7 (1 rarely or never to 4 almost always)"}
+  bis1008: {column: bis10_8, label: "BIS-10 item 8 (1 rarely or never to 4 almost always)"}
+  bis1009: {column: bis10_9, label: "BIS-10 item 9 (1 rarely or never to 4 almost always)"}
+  bis1010: {column: bis10_10, label: "BIS-10 item 10 (1 rarely or never to 4 almost always)"}
+  bis1011: {column: bis10_11, label: "BIS-10 item 11 (1 rarely or never to 4 almost always)"}
+  bis1012: {column: bis10_12, label: "BIS-10 item 12 (1 rarely or never to 4 almost always)"}
+  bis1013: {column: bis10_13, label: "BIS-10 item 13 (1 rarely or never to 4 almost always)"}
+  bis1014: {column: bis10_14, label: "BIS-10 item 14 (1 rarely or never to 4 almost always)"}
+  bis1015: {column: bis10_15, label: "BIS-10 item 15 (1 rarely or never to 4 almost always)"}
+  bis1016: {column: bis10_16, label: "BIS-10 item 16 (1 rarely or never to 4 almost always)"}
+  bis1017: {column: bis10_17, label: "BIS-10 item 17 (1 rarely or never to 4 almost always)"}
+  bis1018: {column: bis10_18, label: "BIS-10 item 18 (1 rarely or never to 4 almost always)"}
+  bis1019: {column: bis10_19, label: "BIS-10 item 19 (1 rarely or never to 4 almost always)"}
+  bis1020: {column: bis10_20, label: "BIS-10 item 20 (1 rarely or never to 4 almost always)"}
+  bis1021: {column: bis10_21, label: "BIS-10 item 21 (1 rarely or never to 4 almost always)"}
+  bis1022: {column: bis10_22, label: "BIS-10 item 22 (1 rarely or never to 4 almost always)"}
+  bis1023: {column: bis10_23, label: "BIS-10 item 23 (1 rarely or never to 4 almost always)"}
+  bis1024: {column: bis10_24, label: "BIS-10 item 24 (1 rarely or never to 4 almost always)"}
+  bis1025: {column: bis10_25, label: "BIS-10 item 25 (1 rarely or never to 4 almost always)"}
+  bis1026: {column: bis10_26, label: "BIS-10 item 26 (1 rarely or never to 4 almost always)"}
+  bis1027: {column: bis10_27, label: "BIS-10 item 27 (1 rarely or never to 4 almost always)"}
+  bis1028: {column: bis10_28, label: "BIS-10 item 28 (1 rarely or never to 4 almost always)"}
+  bis1029: {column: bis10_29, label: "BIS-10 item 29 (1 rarely or never to 4 almost always)"}
+  bis1030: {column: bis10_30, label: "BIS-10 item 30 (1 rarely or never to 4 almost always)"}
+  bis1031: {column: bis10_31, label: "BIS-10 item 31 (1 rarely or never to 4 almost always)"}
+  bis1032: {column: bis10_32, label: "BIS-10 item 32 (1 rarely or never to 4 almost always)"}
+  bis1033: {column: bis10_33, label: "BIS-10 item 33 (1 rarely or never to 4 almost always)"}
+  bis1034: {column: bis10_34, label: "BIS-10 item 34 (1 rarely or never to 4 almost always)"}
+
+  # Scores as the application stores them: checks of our own sums.
+  bis10_motor_app: {column: bis_smi, type: number, range: [11, 44], winsor: false, keep: false, label: "Motor impulsiveness as the application stores it"}
+  bis10_attention_app: {column: bis_ai, type: number, range: [8, 32], winsor: false, keep: false, label: "Attentional impulsiveness as the application stores it"}
+  bis10_planning_app: {column: bis_npi, type: number, range: [11, 44], winsor: false, keep: false, label: "Planning difficulty as the application stores it"}
+
+  # Scores as the export stores them (6 - value for the reversed items, higher than ours).
+  bis10_motor_stored: {column: bis10_imp_mot, type: number, range: [12, 45], winsor: false, keep: false, label: "Motor impulsiveness as the export stores it"}
+  bis10_attention_stored: {column: bis10_imp_att, type: number, range: [10, 34], winsor: false, keep: false, label: "Attentional impulsiveness as the export stores it"}
+  bis10_planning_stored: {column: bis10_diff_plan, type: number, range: [19, 52], winsor: false, keep: false, label: "Planning difficulty as the export stores it"}
+  bis10_total_stored: {column: bis10_score_total, type: number, range: [41, 131], winsor: false, keep: false, label: "Total of the three sums as the export stores it"}
+  bis10_score11_stored: {column: bis11, type: number, range: [16, 52], winsor: false, keep: false, label: "Sum of 12 items as the export stores it (stored as bis11)"}
+  bis10_sum12_stored: {column: bis10, type: number, range: [17, 53], winsor: false, keep: false, label: "Sum of the 12 items that the BIS-12 also has, as the export stores it"}
+  bis10_cognitive_stored: {column: bis1038, type: number, range: [1, 4], winsor: false, keep: false, label: "Cognitive impulsivity (mean of 5 items) as stored"}
+  bis10_behavioural_stored: {column: bis1039, type: number, range: [1, 4], winsor: false, keep: false, label: "Behavioural impulsivity (mean of 7 items) as stored"}
+  bis10_general_stored: {column: bis_score, type: number, range: [1, 4], winsor: false, keep: false, label: "General impulsivity as stored (mean of the cognitive and behavioural scores)"}
+
+scores:
+  bis10_motor:
+    label: Motor impulsivity (11 items)
+    sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020, bis1022, bis1023, bis1024, bis1028, bis1034]
+    reverse: [bis1034]
+    compare: bis10_motor_app
+
+  bis10_attention:
+    label: Attentional impulsivity (8 items)
+    sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
+    reverse: [bis1009, bis1021]
+    compare: bis10_attention_app
+
+  bis10_planning:
+    label: Planning difficulty (11 items)
+    sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1014, bis1015, bis1018, bis1031, bis1033]
+    reverse: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1015, bis1033]
+    compare: bis10_planning_app
+
+  bis10_total:
+    label: BIS-10 total (motor + attention + planning, 30 items)
+    sum: [bis10_motor, bis10_attention, bis10_planning]
+    compare: bis10_total_stored
+    compare_offset: 11
+
+  # Bridge to the BIS-12: the total of the 12 items that both forms have.
+  bis10_sum12:
+    label: Total of the 12 items that the BIS-12 also has
+    sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1020, bis1021, bis1023, bis1025, bis1028]
+    reverse: [bis1001, bis1008, bis1009, bis1012, bis1021]
+    compare: bis10_sum12_stored
+    compare_offset: 5

@@ -2,21 +2,33 @@ instrument: birchwood
 title: Birchwood Insight Scale
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire BIRCHWOOD
-status: draft
+status: reviewed
 notes: >
-  Birchwood Insight Scale, filled at every visit (4,305 visits): eight
-  statements, each 0 (disagree), 1 (unsure) or 2 (agree). The dictionary
-  does not give the statements.
+  Birchwood Insight Scale, filled at every visit (4,327 visits): eight
+  statements, each 0 (disagree), 1 (unsure) or 2 (agree). The dictionary does
+  not give the statements.
 
   Until the extraction of 13 November 2026 the eight items were empty: the
   export lost them (decision D1 in PROGRESS.md).
 
-  Scores. Each stored score was fitted on the items. Awareness of symptoms
-  is item 1 + item 8. Awareness of illness is item 7 + item 2 reversed.
-  Need for treatment is items 4 and 5 plus items 3 and 6 reversed, halved.
-  Each goes from 0 to 4 and the total from 0 to 12. They equal the stored
-  ones but for 2 to 5 visits (score_mismatch). About 60 to 90 visits have a
-  stored score with an item missing; ours needs all its items.
+  Scores. Each stored score was fitted on the items. Awareness of symptoms is
+  item 1 + item 8. Awareness of illness is item 7 + item 2 reversed. Need for
+  treatment is items 4 and 5 plus items 3 and 6 reversed, halved. Each goes
+  from 0 to 4 and the total from 0 to 12. They equal the stored ones but for 2
+  to 5 visits (score_mismatch); ours needs all its items.
+
+  Scores typed with no item. 57 visits of 2011 to 2016 have a stored total and
+  every answer present is "unsure" (86 cells, all 1), so the answers "agree"
+  and "disagree", which the export probably loses (the apostrophe of D'accord
+  and Pas d'accord, the loss of D1), are what is missing; 19 of them have no
+  item at all. Where none of the items of a score is recorded and the stored
+  score is, the stored score is delivered and flagged score_as_stored
+  (otherwise, R18): symptoms 36 visits, illness 32, treatment 39 and total 24
+  (19 typed totals, and 5 totals added up from sub-scores of which some are
+  delivered as stored). Where only some items are missing the score stays
+  missing, because the stored one may be a partial sum (score_not_recomputed
+  on 14, 21, 17 and 33 visits). The raw answers of these 57 visits are asked
+  of the export (request R151 of docs/EXPORT_REQUESTS.md).
 
 defaults: {type: item, range: [0, 2]}
 
@@ -39,18 +51,22 @@ scores:
     label: "Birchwood: awareness of symptoms (items 1 and 8, 0 to 4)"
     sum: [birchwood01, birchwood08]
     compare: birchwood_symptoms_stored
+    otherwise: birchwood_symptoms_stored
   birchwood_illness:
     label: "Birchwood: awareness of illness (item 7 and item 2 reversed, 0 to 4)"
     sum: [birchwood02, birchwood07]
     reverse: [birchwood02]
     compare: birchwood_illness_stored
+    otherwise: birchwood_illness_stored
   birchwood_treatment:
     label: "Birchwood: need for treatment (items 4 and 5, items 3 and 6 reversed, halved: 0 to 4)"
     sum: [birchwood03, birchwood04, birchwood05, birchwood06]
     reverse: [birchwood03, birchwood06]
     scale: [0.5, 0]
     compare: birchwood_treatment_stored
+    otherwise: birchwood_treatment_stored
   birchwood_total:
     label: "Birchwood total (0 to 12, higher is better insight)"
     sum: [birchwood_symptoms, birchwood_illness, birchwood_treatment]
     compare: birchwood_total_stored
+    otherwise: birchwood_total_stored

@@ -2,14 +2,21 @@ instrument: pcl_s
 title: PTSD Checklist (PCL-S)
 tab: AUTO-QUESTIONNAIRES
 section: EVENEMENTS DE VIE TRAUMATIQUES
-status: draft
+status: reviewed
 notes: >
-  PTSD Checklist, specific version: seventeen symptoms over the last month,
-  each 1 (not at all) to 5 (very often), about the events of the list that
-  precedes it in the form (traumatic_events.yaml). Not in BP or SZ. Filled
-  on 127 visits of 111 patients, at inclusion and at the visits of 2 and 4
-  years (25% of the inclusions of 2012 to 2014, 7% since 2024). On 64 of
-  the 127 visits no event of the list is answered yes.
+  PTSD Checklist, specific version (PCL-S, form 216): seventeen symptoms,
+  each 1 (not at all) to 5 (very often), about "this stressful episode".
+  Not in BP or SZ. It is another form than the list of events
+  (traumatic_events.yaml, form 208), under the same section header of the
+  dictionary, and it does not say which event of the list the patient has
+  in mind: on 64 of the 127 visits no event of the list is answered yes.
+  The form prints no time frame (the published PCL-S asks about the past
+  month: to verify against the French version used). Filled on 127 visits
+  of 111 patients, at inclusion and at the visits of 2 and 4 years (25% of
+  the inclusions of 2012 to 2014, 7% since 2024); the form is in none of
+  the lists of the simplified visit (D55). The labels give the three
+  clusters of the published checklist: re-experiencing (items 1 to 5),
+  avoidance and numbing (6 to 12) and hyperarousal (13 to 17).
 
   Total. The sum of the seventeen items (17 to 85). The stored total
   (ptsd_) equals it on the 127 visits. Every item rises with the others.
@@ -17,23 +24,23 @@ notes: >
 defaults: {type: item, range: [1, 5]}
 
 variables:
-  ptsd01: {label: "PCL-S item 1"}
-  ptsd02: {label: "PCL-S item 2"}
-  ptsd03: {label: "PCL-S item 3"}
-  ptsd04: {label: "PCL-S item 4"}
-  ptsd05: {label: "PCL-S item 5"}
-  ptsd06: {label: "PCL-S item 6"}
-  ptsd07: {label: "PCL-S item 7"}
-  ptsd08: {label: "PCL-S item 8"}
-  ptsd09: {label: "PCL-S item 9"}
-  ptsd10: {label: "PCL-S item 10"}
-  ptsd11: {label: "PCL-S item 11"}
-  ptsd12: {label: "PCL-S item 12"}
-  ptsd13: {label: "PCL-S item 13"}
-  ptsd14: {label: "PCL-S item 14"}
-  ptsd15: {label: "PCL-S item 15"}
-  ptsd16: {label: "PCL-S item 16"}
-  ptsd17: {label: "PCL-S item 17"}
+  ptsd01: {label: "PCL-S item 1, re-experiencing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd02: {label: "PCL-S item 2, re-experiencing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd03: {label: "PCL-S item 3, re-experiencing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd04: {label: "PCL-S item 4, re-experiencing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd05: {label: "PCL-S item 5, re-experiencing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd06: {label: "PCL-S item 6, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd07: {label: "PCL-S item 7, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd08: {label: "PCL-S item 8, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd09: {label: "PCL-S item 9, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd10: {label: "PCL-S item 10, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd11: {label: "PCL-S item 11, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd12: {label: "PCL-S item 12, avoidance and numbing; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd13: {label: "PCL-S item 13, hyperarousal; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd14: {label: "PCL-S item 14, hyperarousal; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd15: {label: "PCL-S item 15, hyperarousal; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd16: {label: "PCL-S item 16, hyperarousal; 1 not at all to 5 very often; no time frame printed on the form"}
+  ptsd17: {label: "PCL-S item 17, hyperarousal; 1 not at all to 5 very often; no time frame printed on the form"}
   ptsd_total_stored: {column: ptsd_, label: PCL-S score as stored, range: [17, 85], keep: false}
 
 scores:

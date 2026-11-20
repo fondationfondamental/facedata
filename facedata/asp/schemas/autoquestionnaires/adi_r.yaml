@@ -2,12 +2,12 @@ instrument: adi_r
 title: "Autism Diagnostic Interview-Revised (ADI-R)"
 tab: autoquestionnaires
 section: diagnostic instruments
-status: draft
+status: reviewed
 notes: >
-  The parent interview of the diagnosis of autism, at the inclusion visit:
-  1587 visits hold its conclusion, 1618 its first algorithm score and 1217 the
-  items, from 2013 to 2026. It is filled for children and adults (806 and
-  812 inclusion visits). Never at follow-up.
+  The parent interview of the diagnosis of autism, at the inclusion visit: 1587
+  visits hold its conclusion, 1,622 its first algorithm score and 1,243 the
+  items, from 2011 to 2026. It is filled for children and adults (806 and 812
+  inclusion visits). Never at follow-up.
 
   Identified as the ADI-R (Lord, Rutter and Le Couteur, 1994), sure: the item
   numbers run from 1 to 93, the answers are its codes (0 to 3, then 7, 8 and 9),
@@ -19,56 +19,94 @@ notes: >
   abnormal between four and five years), which the algorithm reads. The items
   are delivered as recorded. **The codes 7, 8 and 9 are not levels**: 7 is an
   abnormality of another kind, 8 is "not applicable", 9 is "not known". Do not
-  average the items. The algorithm counts a code 3 as 2 and the codes 7, 8 and
-  9 as 0 (the field points of the scores). The codes of an age in months from
-  991 to 999 are read as missing, each with its code. The two items of free
-  text (1 and 3) are delivered as text.
+  average the items. The algorithm counts a code 3 as 2 and the codes 7, 8 and 9
+  as 0 (the field points of the scores). The codes of an age in months from 991
+  to 999 are read as missing, each with its code (the item 87 too: 96 and 98 are
+  codes, 99 is not known). The items 19 and 28 are durations in months ("Durée"
+  in the form), not ages. The two items of free text (1 and 3) are delivered as
+  text.
 
-  **The algorithm sub-scores, each checked against its items** (visits where
-  the stored value equals the published rule, of the visits that hold the
-  items): A1 1,169 of 1,183; A2 1,094 of 1,128; A3 1,163 of 1,176; A4 1,124 of 1,141;
-  B1 1,081 of 1,097; B2 1,083 of 1,111; B3 951 of 1,090; B4 1,075 of 1,100;
-  C1 1,147 of 1,161; C2 1,090 of 1,105; C3 1,137 of 1,147; C4 1,125 of 1,140.
-  A2 follows the age rule of the publication: group play with peers (item 64)
-  under ten years at the interview, friendships (item 65) from ten years (the
-  function adi_peer_item). C3 and C4 are the higher of two items.
+  **The algorithm sub-scores, each checked against its items** (visits where the
+  stored value equals the published rule, of the visits that hold the items): A1
+  1,169 of 1,183; A2 1,094 of 1,128; A3 1,163 of 1,176; A4 1,124 of 1,141; B1
+  1,081 of 1,097; B2 1,083 of 1,111; B3 951 of 1,090; B4 1,075 of 1,100; C1
+  1,147 of 1,161; C2 1,090 of 1,105; C3 1,137 of 1,147; C4 1,125 of 1,140. A2
+  follows the age rule of the publication: group play with peers (item 64) under
+  ten years at the interview, friendships (item 65) from ten years (the function
+  adi_peer_item). C3 and C4 are the higher of two items.
 
   **B3 leaves out an item between 2016 and 2020.** On the visits of those years
-  where the item 38 counts, the stored B3 is the sum of its four items on
-  16 of 117 and the sum without the item 38 on 99 of 117; from 2021 it is the
-  four-item sum on 143 of 154. The B3 delivered is the four-item sum
-  where the items are recorded; a B3 typed without its items is delivered as typed (score_as_stored).
+  where the item 38 counts, the stored B3 is the sum of its four items on 16 of
+  117 and the sum without the item 38 on 99 of 117; from 2021 it is the
+  four-item sum on 143 of 154. The B3 delivered is the four-item sum where the
+  items are recorded; a B3 typed without its items is delivered as typed
+  (score_as_stored).
 
-  **The stored domain totals A and C are not the published ones.** The stored
-  total A is the sum of every item of the domain, the items 64 and 65 both
-  (951 of 951 visits), where the algorithm counts one of the two: it
-  equals the sum of its four sub-scores on 449 of 1,136 visits only. The stored
-  total C adds the two items of C3 and of C4 instead of the higher one
-  (1,109 of 1,109): it equals the sum of its sub-scores on 653 of 1,082. A stored
-  total is so up to 2 points (A) or 4 points (C) above the published one. The
-  totals A and C delivered are the sums of the sub-scores; the stored ones are
-  read to be checked (formulas "as stored") and are not delivered. The stored
-  verbal total B is the published one (1,087 of 1,087).
+  **The stored domain totals A and C are not the published ones, and the cause
+  is the export.** The script of the form is right (`200_score.js`, lines 158
+  and 425); the export recomputes the totals (`adir.yaml` of the export, lines
+  150-181: a gated sum that puts the items 64 and 65 both in A and the two items
+  of C3 and of C4 both in C) and its values replace the application's ones (O12
+  (1)). The stored total A is the sum of every item of the domain, the items 64
+  and 65 both (951 of 951 visits), where the algorithm counts one of the two: it
+  equals the sum of its four sub-scores on 449 of 1,136 visits only, and it is
+  above the delivered total A on 659 of 1,089 visits. The stored total C adds
+  the two items of C3 and of C4 instead of the higher one (1,109 of 1,109): it
+  equals the sum of its sub-scores on 653 of 1,082, and it is above the
+  delivered total C on 424 of 1,109. A stored total is so up to 2 points (A) or
+  4 points (C) above the published one, and 8 of the 679 complete visits of
+  verbal subjects cross a cut-off of the algorithm on the stored totals and not
+  on the published ones. The totals A and C delivered are the sums of the
+  sub-scores; the stored ones are read to be checked (formulas "as stored") and
+  are not delivered. The stored verbal total B is the published one (1,087 of
+  1,087).
 
   **Sub-scores typed without the items.** On 423 visits the sub-scores are
   recorded and no item is: they are kept as stored (score_as_stored), and the
-  domain totals are their sums.
+  domain totals are their sums. The form lets the clinician type the scores: a
+  switch "Automatique / Manuel" (`eASPERGER.js`, lines 3927-3930;
+  `manuel_score.js` lists the ADI-R) turns the script off, and the flag is not
+  exported (O12 (9), O17 (1)). On 12 visits whose verbal status is the
+  non-verbal code, the sub-scores B2 and B3 and the verbal total B are delivered
+  (36 cells), where the application leaves them empty.
 
   D (abnormality evident before 36 months) needs thresholds on ages and is
-  delivered as stored. The published rule (first noticed before 36 months,
-  first words after 24, first phrases after 33, item 86 coded 3 or 4, the
+  delivered as stored. The published rule (first noticed before 36 months, first
+  words after 24, first phrases after 33, item 86 coded 3 or 4, the
   interviewer's judgement before 36 months) reproduces it on 751 of 752 visits.
-  The non-verbal total B is delivered as stored (226 visits).
+  **432 of the 1,184 stored D values are partial sums**: the export counts a
+  missing item as 0 (`adir.yaml` of the export, lines 183-189), where the
+  application leaves D empty unless the five items are present (`200_score.js`,
+  lines 435-480); read them as lower bounds. The non-verbal total B is delivered
+  as stored (226 visits).
 
   adi_positive is the conclusion as recorded. It agrees with the four cut-offs
   of the publication (A 10, verbal B 8, C 3, D 1) applied to the stored totals
   on 1,008 of 1,053 visits. adi_done is 1 on 1745 visits and 0 on 270; the
-  conclusion is filled on 1571 and 8 of them: 1 is read as "done". The
-  informant (mother, father, another guardian, several interviews) and the
-  version of the interview (ADI of 1988, ADI-R of 1995 or of 2003) are named
-  from the thesaurus. The thesaurus writes "Total A = A1 + A2 + A3 + A4" and
-  "Total C = C1 + C2 + C3 + C4": the stored totals do not follow its own
-  formulas. The name of the examiner (adiexam) is not delivered (ignored.yaml).
+  conclusion is filled on 1571 and 8 of them: 1 is read as "done". The informant
+  (mother, father, another guardian, several interviews) and the version of the
+  interview (ADI of 1988, ADI-R of 1995 or of 2003) are named from the
+  thesaurus. The thesaurus writes "Total A = A1 + A2 + A3 + A4" and "Total C =
+  C1 + C2 + C3 + C4": the stored totals do not follow its own formulas. The name
+  of the examiner (adiexam) is not delivered (ignored.yaml).
+
+  **Year and centre.** 111 of the 125 variables reach 0.5 or more (103 by year,
+  79 by centre): the items are whole-number scales (codes 0 to 3 and ages in
+  months), and the three domain totals reach 0.50 to 1.00 by year and 0.43 to
+  0.50 by centre. Two things move them. The age mix: children are 100% of the
+  visits of centre A, 64% of B, 18% of C, 3% of D and none of E, and 12% to 69%
+  of the visits by year; the totals differ by centre inside each age group
+  (children: A 12, B 11, C 19.5; adults: B 11, C 12, D 15, E 9). And a fall with
+  the years: the median social total is 21 in 2011 to 2013, 15 to 16.5 in 2014
+  to 2017 and 10 to 12 from 2018, in children and in adults alike, and among the
+  patients with a confirmed diagnosis too (21, 16, 13, 12 and 11 by period; the
+  patients not confirmed are 12% to 16% of the visits from 2018 against 5% to 6%
+  before, and take part of it); the verbal total falls the same way (14 to 18,
+  then 10 to 11, then 7 to 8). The edition of the interview is the 2003 one on
+  99% of the visits that name it, so it does not explain the fall: a step with
+  no known cause (the case mix and the rater are the candidates). The sub-scores
+  typed without items (423 visits) give the same median total as the computed
+  ones (12).
 
   An instrument of the ASP cohort only.
 
@@ -102,7 +140,7 @@ variables:
   adi16: {column: adi16, label: "ADI-R item 16 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
   adi17: {column: adi17, type: number, label: "ADI-R item 17, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"996": code_996, "998": not_applicable, "999": unknown}}
   adi18: {column: adi18, label: "ADI-R item 18 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
-  adi19: {column: adi19, type: number, label: "ADI-R item 19, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
+  adi19: {column: adi19, type: number, label: "ADI-R item 19, duration of the loss of language skills, months", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
   adi20: {column: adi20, label: "ADI-R item 20 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
   adi21: {column: adi21, label: "ADI-R item 21 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
   adi22: {column: adi22, label: "ADI-R item 22 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
@@ -111,9 +149,9 @@ variables:
   adi25: {column: adi25, label: "ADI-R item 25 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
   adi26: {column: adi26, type: number, label: "ADI-R item 26, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"998": not_applicable, "999": unknown}}
   adi27: {column: adi27, label: "ADI-R item 27 (loss of skills)", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
-  adi28: {column: adi28, type: number, label: "ADI-R item 28, age in months (loss of skills)", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
+  adi28: {column: adi28, type: number, label: "ADI-R item 28, duration of the loss of skills, months", range: [0, 400], unit: months, winsor: false, missing: {"993": code_993, "998": not_applicable, "999": unknown}}
   adi86: {column: adi86, label: "ADI-R item 86, age when the abnormality was first evident (codes 0 to 4)", range: [0, 4], missing: {"9": unknown}}
-  adi87: {column: adi87, type: number, label: "ADI-R item 87, the interviewer's judgement of the age of the first abnormality, months", range: [0, 90], unit: months, winsor: false, missing: {"99": unknown}}
+  adi87: {column: adi87, type: number, label: "ADI-R item 87, the interviewer's judgement of the age of the first abnormality, months", range: [0, 90], unit: months, winsor: false, missing: {"96": code_96, "98": not_applicable, "99": unknown}}
 
   # Items 29 to 93: the current behaviour (_a) and the past one (_p), the codes as recorded.
   adi30_current: {column: adi30_a, label: "ADI-R item 30, overall level of language", range: [0, 9], codes: {"0": 0, "1": 1, "2": 2, "3": 3, "7": 7, "8": 8, "9": 9}}
@@ -279,13 +317,13 @@ scores:
   adi_communication_verbal_total: {label: "ADI-R B, communication of verbal subjects (0 to 26; cut-off 8)", sum: [adi_b1, adi_b2, adi_b3, adi_b4], compare: adi_communication_verbal_stored}
   adi_repetitive_total: {label: "ADI-R C, restricted and repetitive behaviours (0 to 12; cut-off 3)", sum: [adi_c1, adi_c2, adi_c3, adi_c4]}
   adi_social_total_as_stored:
-    label: "Total A as the EMR computes it (the sixteen items, 64 and 65 both), to check the stored total"
+    label: "Total A as the export computes it (the sixteen items, 64 and 65 both), to check the stored total"
     sum: [adi50_past, adi51_past, adi57_past, adi49_past, adi62_past, adi63_past, adi64_past, adi65_past, adi52_past, adi53_past, adi54_past, adi31_past, adi55_past, adi56_past, adi58_past, adi59_past]
     points: {"3": 2, "7": 0, "8": 0, "9": 0}
     compare: adi_social_total_stored
     keep: false
   adi_repetitive_total_as_stored:
-    label: "Total C as the EMR computes it (the eight items, no higher-of-two), to check the stored total"
+    label: "Total C as the export computes it (the eight items, no higher-of-two), to check the stored total"
     sum: [adi67_past, adi68_past, adi39_past, adi70_past, adi77_past, adi78_past, adi69_past, adi71_past]
     points: {"3": 2, "7": 0, "8": 0, "9": 0}
     compare: adi_repetitive_total_stored

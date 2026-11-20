@@ -1,56 +1,74 @@
 instrument: shaps
-title: Snaith-Hamilton Pleasure Scale (SHAPS)
+title: Snaith-Hamilton Pleasure Scale (SHAPS, these last days)
 tab: AUTO-QUESTIONNAIRES
 section: SHAPS
-status: draft
+status: reviewed
 notes: >
-  Snaith-Hamilton Pleasure Scale: fourteen situations that usually give
-  pleasure, each answered on four levels, stored 0 (strongly disagree) to 3
-  (strongly agree). Not in BP or SZ, and not in the dictionary. In the
-  extraction from 2015 (42% of the inclusions of 2015 to 2017, about 80%
-  since) and at every follow-up visit: 948 visits.
+  Snaith-Hamilton Pleasure Scale (form 224): fourteen situations that
+  usually give pleasure, about "these last days", each answered on four
+  levels, stored 0 (strongly disagree) to 3 (strongly agree). Not in BP or
+  SZ, and not in the dictionary. In the extraction from 2015 (42% of the
+  inclusions of 2015 to 2017, about 80% since) and at every follow-up
+  visit: 948 visits. The form is on the four lists of the simplified visit,
+  so the break of 2018 does not touch it.
 
-  Score: the stored one is wrong; ours is delivered. The published score
-  gives one point for each item answered "disagree" or "strongly disagree"
-  (0 to 14, higher is more anhedonia). The fourteen stored items all point
-  the same way: each falls when the MADRS rises (r = -0.35 to -0.55), so a
-  low value is the answer of anhedonia for every item. The stored score
-  (shaps_) counts "disagree" on nine items and "agree" on the five others
-  (2, 4, 5, 7 and 9): this rule gives the stored value on each of the 943
-  visits where the fourteen items are filled. It looks like the scoring of
-  a form on which five items are printed with their answers in the other
-  order, applied to answers that are not stored in that order. Counting
-  "disagree" on the fourteen items gives a score that follows depression
-  better (r = 0.61 with the MADRS against 0.42 for the stored one; median 5
-  against 7). The function shaps_total of custom.py computes it; the twin
-  shaps_total_as_stored reproduces the EMR rule, to check the stored value,
-  and is not delivered. Open question O18.
+  Score: the stored one is wrong; ours is delivered. The published score gives
+  one point for each item answered "disagree" or "strongly disagree" (0 to 14,
+  higher is more anhedonia). The fourteen stored items all point the same way:
+  each falls when the MADRS rises (r = -0.35 to -0.55), so a low value is the
+  answer of anhedonia for every item. The stored score (shaps_) counts
+  "disagree" on nine items and "agree" on the five others (2, 4, 5, 7 and 9):
+  this rule gives the stored value on each of the 943 visits where the
+  fourteen items are filled. The cause is the export, not the EMR: the score
+  definition of the export (nucleus shaps.yaml, line 34) reverses items 2, 4,
+  5, 7 and 9 before the count, whereas the script of the form (224_score.js,
+  lines 31 to 36) counts the answers 0 and 1 as one point on all fourteen
+  items, as ours does. Counting "disagree" on the fourteen items gives a score
+  that follows depression better (r = 0.61 with the MADRS against 0.42 for the
+  stored one; median 5 against 7). The score is written in the schema as a sum
+  of points (no function of custom.py); the twin shaps_total_as_stored adds
+  the nine items counted on "disagree" and the five items counted on "agree"
+  and reproduces the rule of the export, to check the stored value, and is not
+  delivered. Open question O18 (the reversal of the export is the cause; its
+  correction is requested in R147).
 
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  shaps01: {label: "SHAPS item 1 (0 strongly disagree to 3 strongly agree)"}
-  shaps02: {label: "SHAPS item 2 (0 strongly disagree to 3 strongly agree)"}
-  shaps03: {label: "SHAPS item 3 (0 strongly disagree to 3 strongly agree)"}
-  shaps04: {label: "SHAPS item 4 (0 strongly disagree to 3 strongly agree)"}
-  shaps05: {label: "SHAPS item 5 (0 strongly disagree to 3 strongly agree)"}
-  shaps06: {label: "SHAPS item 6 (0 strongly disagree to 3 strongly agree)"}
-  shaps07: {label: "SHAPS item 7 (0 strongly disagree to 3 strongly agree)"}
-  shaps08: {label: "SHAPS item 8 (0 strongly disagree to 3 strongly agree)"}
-  shaps09: {label: "SHAPS item 9 (0 strongly disagree to 3 strongly agree)"}
-  shaps10: {label: "SHAPS item 10 (0 strongly disagree to 3 strongly agree)"}
-  shaps11: {label: "SHAPS item 11 (0 strongly disagree to 3 strongly agree)"}
-  shaps12: {label: "SHAPS item 12 (0 strongly disagree to 3 strongly agree)"}
-  shaps13: {label: "SHAPS item 13 (0 strongly disagree to 3 strongly agree)"}
-  shaps14: {label: "SHAPS item 14 (0 strongly disagree to 3 strongly agree)"}
+  shaps01: {label: "SHAPS item 1 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps02: {label: "SHAPS item 2 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps03: {label: "SHAPS item 3 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps04: {label: "SHAPS item 4 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps05: {label: "SHAPS item 5 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps06: {label: "SHAPS item 6 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps07: {label: "SHAPS item 7 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps08: {label: "SHAPS item 8 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps09: {label: "SHAPS item 9 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps10: {label: "SHAPS item 10 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps11: {label: "SHAPS item 11 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps12: {label: "SHAPS item 12 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps13: {label: "SHAPS item 13 (0 strongly disagree to 3 strongly agree; these last days)"}
+  shaps14: {label: "SHAPS item 14 (0 strongly disagree to 3 strongly agree; these last days)"}
   shaps_total_stored: {column: shaps_, label: SHAPS score as stored, range: [0, 14], keep: false}
 
 scores:
   shaps_total:
     label: "SHAPS score: number of items answered disagree or strongly disagree (0 to 14, higher is more anhedonia)"
-    custom: shaps_total
+    sum: [shaps01, shaps02, shaps03, shaps04, shaps05, shaps06, shaps07, shaps08, shaps09, shaps10, shaps11, shaps12, shaps13, shaps14]
+    points: {"0": 1, "1": 1, "2": 0, "3": 0}
+    range: [0, 14]
+  shaps_as_stored_nine:
+    label: "SHAPS, nine items counted on disagree as the export does (check of the stored score)"
+    sum: [shaps01, shaps03, shaps06, shaps08, shaps10, shaps11, shaps12, shaps13, shaps14]
+    points: {"0": 1, "1": 1, "2": 0, "3": 0}
+    keep: false
+  shaps_as_stored_five:
+    label: "SHAPS, items 2, 4, 5, 7 and 9 counted on agree as the export does (check of the stored score)"
+    sum: [shaps02, shaps04, shaps05, shaps07, shaps09]
+    points: {"0": 0, "1": 0, "2": 1, "3": 1}
+    keep: false
   shaps_total_as_stored:
-    label: "SHAPS counted as the EMR does, to check the stored score"
-    custom: shaps_total_as_stored
+    label: "SHAPS counted as the export does, to check the stored score"
+    sum: [shaps_as_stored_nine, shaps_as_stored_five]
     compare: shaps_total_stored
     keep: false

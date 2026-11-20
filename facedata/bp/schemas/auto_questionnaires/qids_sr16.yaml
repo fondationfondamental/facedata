@@ -1,23 +1,30 @@
 instrument: qids_sr16
-title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
+title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16), last 7 days
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire QIDS-SR16
 status: reviewed
 notes: >
-  Sixteen items, each 0 to 3, on the last seven days. Filled at every visit.
+  Sixteen items, each 0 to 3, on the last seven days. Filled at 89% to 96%
+  of the visits other than the screening visit, in every period (89% in
+  2022-23, 91% from 2024), and at 66% of the screening visits (2,622 of
+  3,987: the application gives the screening visit a QIDS of its own, D90).
 
   Total. The sixteen items cover nine symptoms, and the total adds one value
   per symptom (0 to 27): the highest of the four sleep items (1 to 4), item
   5, the highest of the four appetite and weight items (6 to 9), items 10 to
   14, and the highest of the two psychomotor items (15 and 16). This is not
-  a sum, so the function qids_total of custom.py computes it. The stored
-  total (qidsr120) is exactly this in every row where it exists (19,331); it
-  is stored only when the sixteen items are filled.
+  a sum: hidden scores take the highest of each group (qids_sleep,
+  qids_appetite_weight, qids_psychomotor) and the total adds the nine
+  values, all in the schema. The stored total (qidsr120) is written by the
+  score step of the export (D120; a maximum that needs every item of its
+  group), not by the application. It is exactly ours in every row where it
+  exists (19,331), so stored and recomputed agree on the items and on the
+  export's formula; it is stored only when the sixteen items are filled.
 
   One answer of each pair is enough. The form asks for item 6 or item 7
   (appetite down or up) and for item 8 or item 9 (weight down or up), not
   for both. On 99 visits, spread over all the years, the patient did so,
-  and the EMR stores no total. Ours is computed there (19,430 totals
+  and the export stores no total. Ours is computed there (19,430 totals
   against 19,331): the highest of the appetite and weight items that are
   answered. The other twelve items must all be filled. The rule was found
   in FACE DR, where the form is filled this way on most visits from 2022.
@@ -44,7 +51,31 @@ variables:
   qids_stored: {column: qidsr120, label: QIDS-SR16 total as stored, range: [0, 27], keep: false}
 
 scores:
+  qids_sleep:
+    label: QIDS-SR16 sleep domain (highest of items 1 to 4)
+    max: [qidsr101, qidsr102, qidsr103, qidsr104]
+    keep: false
+  qids_appetite_pair:
+    label: QIDS-SR16 appetite, the highest answered of items 6 and 7
+    max: [qidsr106, qidsr107]
+    min_items: 1
+    keep: false
+  qids_weight_pair:
+    label: QIDS-SR16 weight, the highest answered of items 8 and 9
+    max: [qidsr108, qidsr109]
+    min_items: 1
+    keep: false
+  qids_appetite_weight:
+    label: QIDS-SR16 appetite and weight domain (highest of items 6 to 9)
+    max: [qids_appetite_pair, qids_weight_pair]
+    keep: false
+  qids_psychomotor:
+    label: QIDS-SR16 psychomotor domain (highest of items 15 and 16)
+    max: [qidsr115, qidsr116]
+    keep: false
   qids_total:
-    label: QIDS-SR16 total
-    custom: qids_total
+    label: QIDS-SR16 total (0 to 27)
+    sum: [qids_sleep, qidsr105, qids_appetite_weight, qidsr110, qidsr111,
+          qidsr112, qidsr113, qidsr114, qids_psychomotor]
+    range: [0, 27]
     compare: qids_stored

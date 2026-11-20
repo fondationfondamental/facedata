@@ -4,21 +4,28 @@ tab: AUTO-QUESTIONNAIRES
 section: Questionnaire BDHI
 status: reviewed
 notes: >
-  Filled once, at the inclusion visit, until 2022; the AQ-12 took its place.
-  Seventy-five true/false statements.
+  Filled once, at the inclusion visit, until 2022; the short aggression
+  questionnaire (aq12.yaml) took its place. Seventy-five true/false
+  statements.
 
-  Coding. The items are stored already keyed: 1 is the hostile answer,
-  whether that answer is "true" or "false" (the dictionary lists the fifteen
-  statements for which it is "false"). A sub-score is therefore the plain
-  sum of its items.
+  Coding. The extraction stores the items already keyed to hostility: 1 is
+  the hostile answer, whether that answer is "true" or "false" (the
+  dictionary lists the fifteen statements for which it is "false"; the
+  script of the form keys them the same way). The items are delivered as
+  asked, 1 true and 0 false: the fifteen statements for which false is the
+  hostile answer (items 1, 10, 17, 21, 27, 34, 39, 50, 55, 63, 66, 67, 71,
+  72 and 74) are read back with a code table, and the sub-scores reverse
+  them (1 minus the value). A sub-score is the same number as the stored
+  one.
 
   Eight sub-scores: assault (10 items), indirect hostility (9), irritability
   (11), negativism (5), resentment (8), suspicion (10), verbal hostility
   (13) and guilt (9). Two components: attitudinal (resentment and suspicion)
   and motor (assault, indirect hostility, irritability and verbal
-  hostility). The item lists were read from the data: each stored sub-score and the attitudinal component equal ours in every row
-  where both exist (4,506 to 4,514 rows; 4,474 for the component); the motor
-  component differs on 1 of 4,452 rows.
+  hostility). The item lists were read from the data: each stored sub-score
+  and the attitudinal component equal ours in every row where both exist
+  (4,506 to 4,527 rows; 4,474 for the component); the motor component
+  differs on 1 of 4,452 rows.
 
   The extraction stores no total. The usual one is added here: the seven
   hostility sub-scores, guilt left out (66 items).
@@ -26,81 +33,81 @@ notes: >
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  bdhi01: {label: "BDHI item 1 (1 = hostile answer)"}
-  bdhi02: {label: "BDHI item 2 (1 = hostile answer)"}
-  bdhi03: {label: "BDHI item 3 (1 = hostile answer)"}
-  bdhi04: {label: "BDHI item 4 (1 = hostile answer)"}
-  bdhi05: {label: "BDHI item 5 (1 = hostile answer)"}
-  bdhi06: {label: "BDHI item 6 (1 = hostile answer)"}
-  bdhi07: {label: "BDHI item 7 (1 = hostile answer)"}
-  bdhi08: {label: "BDHI item 8 (1 = hostile answer)"}
-  bdhi09: {label: "BDHI item 9 (1 = hostile answer)"}
-  bdhi10: {label: "BDHI item 10 (1 = hostile answer)"}
-  bdhi11: {label: "BDHI item 11 (1 = hostile answer)"}
-  bdhi12: {label: "BDHI item 12 (1 = hostile answer)"}
-  bdhi13: {label: "BDHI item 13 (1 = hostile answer)"}
-  bdhi14: {label: "BDHI item 14 (1 = hostile answer)"}
-  bdhi15: {label: "BDHI item 15 (1 = hostile answer)"}
-  bdhi16: {label: "BDHI item 16 (1 = hostile answer)"}
-  bdhi17: {label: "BDHI item 17 (1 = hostile answer)"}
-  bdhi18: {label: "BDHI item 18 (1 = hostile answer)"}
-  bdhi19: {label: "BDHI item 19 (1 = hostile answer)"}
-  bdhi20: {label: "BDHI item 20 (1 = hostile answer)"}
-  bdhi21: {label: "BDHI item 21 (1 = hostile answer)"}
-  bdhi22: {label: "BDHI item 22 (1 = hostile answer)"}
-  bdhi23: {label: "BDHI item 23 (1 = hostile answer)"}
-  bdhi24: {label: "BDHI item 24 (1 = hostile answer)"}
-  bdhi25: {label: "BDHI item 25 (1 = hostile answer)"}
-  bdhi26: {label: "BDHI item 26 (1 = hostile answer)"}
-  bdhi27: {label: "BDHI item 27 (1 = hostile answer)"}
-  bdhi28: {label: "BDHI item 28 (1 = hostile answer)"}
-  bdhi29: {label: "BDHI item 29 (1 = hostile answer)"}
-  bdhi30: {label: "BDHI item 30 (1 = hostile answer)"}
-  bdhi31: {label: "BDHI item 31 (1 = hostile answer)"}
-  bdhi32: {label: "BDHI item 32 (1 = hostile answer)"}
-  bdhi33: {label: "BDHI item 33 (1 = hostile answer)"}
-  bdhi34: {label: "BDHI item 34 (1 = hostile answer)"}
-  bdhi35: {label: "BDHI item 35 (1 = hostile answer)"}
-  bdhi36: {label: "BDHI item 36 (1 = hostile answer)"}
-  bdhi37: {label: "BDHI item 37 (1 = hostile answer)"}
-  bdhi38: {label: "BDHI item 38 (1 = hostile answer)"}
-  bdhi39: {label: "BDHI item 39 (1 = hostile answer)"}
-  bdhi40: {label: "BDHI item 40 (1 = hostile answer)"}
-  bdhi41: {label: "BDHI item 41 (1 = hostile answer)"}
-  bdhi42: {label: "BDHI item 42 (1 = hostile answer)"}
-  bdhi43: {label: "BDHI item 43 (1 = hostile answer)"}
-  bdhi44: {label: "BDHI item 44 (1 = hostile answer)"}
-  bdhi45: {label: "BDHI item 45 (1 = hostile answer)"}
-  bdhi46: {label: "BDHI item 46 (1 = hostile answer)"}
-  bdhi47: {label: "BDHI item 47 (1 = hostile answer)"}
-  bdhi48: {label: "BDHI item 48 (1 = hostile answer)"}
-  bdhi49: {label: "BDHI item 49 (1 = hostile answer)"}
-  bdhi50: {label: "BDHI item 50 (1 = hostile answer)"}
-  bdhi51: {label: "BDHI item 51 (1 = hostile answer)"}
-  bdhi52: {label: "BDHI item 52 (1 = hostile answer)"}
-  bdhi53: {label: "BDHI item 53 (1 = hostile answer)"}
-  bdhi54: {label: "BDHI item 54 (1 = hostile answer)"}
-  bdhi55: {label: "BDHI item 55 (1 = hostile answer)"}
-  bdhi56: {label: "BDHI item 56 (1 = hostile answer)"}
-  bdhi57: {label: "BDHI item 57 (1 = hostile answer)"}
-  bdhi58: {label: "BDHI item 58 (1 = hostile answer)"}
-  bdhi59: {label: "BDHI item 59 (1 = hostile answer)"}
-  bdhi60: {label: "BDHI item 60 (1 = hostile answer)"}
-  bdhi61: {label: "BDHI item 61 (1 = hostile answer)"}
-  bdhi62: {label: "BDHI item 62 (1 = hostile answer)"}
-  bdhi63: {label: "BDHI item 63 (1 = hostile answer)"}
-  bdhi64: {label: "BDHI item 64 (1 = hostile answer)"}
-  bdhi65: {label: "BDHI item 65 (1 = hostile answer)"}
-  bdhi66: {label: "BDHI item 66 (1 = hostile answer)"}
-  bdhi67: {label: "BDHI item 67 (1 = hostile answer)"}
-  bdhi68: {label: "BDHI item 68 (1 = hostile answer)"}
-  bdhi69: {label: "BDHI item 69 (1 = hostile answer)"}
-  bdhi70: {label: "BDHI item 70 (1 = hostile answer)"}
-  bdhi71: {label: "BDHI item 71 (1 = hostile answer)"}
-  bdhi72: {label: "BDHI item 72 (1 = hostile answer)"}
-  bdhi73: {label: "BDHI item 73 (1 = hostile answer)"}
-  bdhi74: {label: "BDHI item 74 (1 = hostile answer)"}
-  bdhi75: {label: "BDHI item 75 (1 = hostile answer)"}
+  bdhi01: {label: "BDHI item 1 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi02: {label: "BDHI item 2 (1 true, 0 false)"}
+  bdhi03: {label: "BDHI item 3 (1 true, 0 false)"}
+  bdhi04: {label: "BDHI item 4 (1 true, 0 false)"}
+  bdhi05: {label: "BDHI item 5 (1 true, 0 false)"}
+  bdhi06: {label: "BDHI item 6 (1 true, 0 false)"}
+  bdhi07: {label: "BDHI item 7 (1 true, 0 false)"}
+  bdhi08: {label: "BDHI item 8 (1 true, 0 false)"}
+  bdhi09: {label: "BDHI item 9 (1 true, 0 false)"}
+  bdhi10: {label: "BDHI item 10 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi11: {label: "BDHI item 11 (1 true, 0 false)"}
+  bdhi12: {label: "BDHI item 12 (1 true, 0 false)"}
+  bdhi13: {label: "BDHI item 13 (1 true, 0 false)"}
+  bdhi14: {label: "BDHI item 14 (1 true, 0 false)"}
+  bdhi15: {label: "BDHI item 15 (1 true, 0 false)"}
+  bdhi16: {label: "BDHI item 16 (1 true, 0 false)"}
+  bdhi17: {label: "BDHI item 17 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi18: {label: "BDHI item 18 (1 true, 0 false)"}
+  bdhi19: {label: "BDHI item 19 (1 true, 0 false)"}
+  bdhi20: {label: "BDHI item 20 (1 true, 0 false)"}
+  bdhi21: {label: "BDHI item 21 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi22: {label: "BDHI item 22 (1 true, 0 false)"}
+  bdhi23: {label: "BDHI item 23 (1 true, 0 false)"}
+  bdhi24: {label: "BDHI item 24 (1 true, 0 false)"}
+  bdhi25: {label: "BDHI item 25 (1 true, 0 false)"}
+  bdhi26: {label: "BDHI item 26 (1 true, 0 false)"}
+  bdhi27: {label: "BDHI item 27 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi28: {label: "BDHI item 28 (1 true, 0 false)"}
+  bdhi29: {label: "BDHI item 29 (1 true, 0 false)"}
+  bdhi30: {label: "BDHI item 30 (1 true, 0 false)"}
+  bdhi31: {label: "BDHI item 31 (1 true, 0 false)"}
+  bdhi32: {label: "BDHI item 32 (1 true, 0 false)"}
+  bdhi33: {label: "BDHI item 33 (1 true, 0 false)"}
+  bdhi34: {label: "BDHI item 34 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi35: {label: "BDHI item 35 (1 true, 0 false)"}
+  bdhi36: {label: "BDHI item 36 (1 true, 0 false)"}
+  bdhi37: {label: "BDHI item 37 (1 true, 0 false)"}
+  bdhi38: {label: "BDHI item 38 (1 true, 0 false)"}
+  bdhi39: {label: "BDHI item 39 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi40: {label: "BDHI item 40 (1 true, 0 false)"}
+  bdhi41: {label: "BDHI item 41 (1 true, 0 false)"}
+  bdhi42: {label: "BDHI item 42 (1 true, 0 false)"}
+  bdhi43: {label: "BDHI item 43 (1 true, 0 false)"}
+  bdhi44: {label: "BDHI item 44 (1 true, 0 false)"}
+  bdhi45: {label: "BDHI item 45 (1 true, 0 false)"}
+  bdhi46: {label: "BDHI item 46 (1 true, 0 false)"}
+  bdhi47: {label: "BDHI item 47 (1 true, 0 false)"}
+  bdhi48: {label: "BDHI item 48 (1 true, 0 false)"}
+  bdhi49: {label: "BDHI item 49 (1 true, 0 false)"}
+  bdhi50: {label: "BDHI item 50 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi51: {label: "BDHI item 51 (1 true, 0 false)"}
+  bdhi52: {label: "BDHI item 52 (1 true, 0 false)"}
+  bdhi53: {label: "BDHI item 53 (1 true, 0 false)"}
+  bdhi54: {label: "BDHI item 54 (1 true, 0 false)"}
+  bdhi55: {label: "BDHI item 55 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi56: {label: "BDHI item 56 (1 true, 0 false)"}
+  bdhi57: {label: "BDHI item 57 (1 true, 0 false)"}
+  bdhi58: {label: "BDHI item 58 (1 true, 0 false)"}
+  bdhi59: {label: "BDHI item 59 (1 true, 0 false)"}
+  bdhi60: {label: "BDHI item 60 (1 true, 0 false)"}
+  bdhi61: {label: "BDHI item 61 (1 true, 0 false)"}
+  bdhi62: {label: "BDHI item 62 (1 true, 0 false)"}
+  bdhi63: {label: "BDHI item 63 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi64: {label: "BDHI item 64 (1 true, 0 false)"}
+  bdhi65: {label: "BDHI item 65 (1 true, 0 false)"}
+  bdhi66: {label: "BDHI item 66 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi67: {label: "BDHI item 67 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi68: {label: "BDHI item 68 (1 true, 0 false)"}
+  bdhi69: {label: "BDHI item 69 (1 true, 0 false)"}
+  bdhi70: {label: "BDHI item 70 (1 true, 0 false)"}
+  bdhi71: {label: "BDHI item 71 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi72: {label: "BDHI item 72 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi73: {label: "BDHI item 73 (1 true, 0 false)"}
+  bdhi74: {label: "BDHI item 74 (1 true, 0 false; false is the hostile answer)", codes: {"0": 1, "1": 0}}
+  bdhi75: {label: "BDHI item 75 (1 true, 0 false)"}
 
   # Scores as stored. Used only to check our own scores.
   bdhi_assault_stored: {column: bdhi76, label: Assault as stored, range: [0, 10], keep: false}
@@ -119,16 +126,19 @@ scores:
     label: BDHI assault (10 items)
     sum: [bdhi01, bdhi09, bdhi17, bdhi25, bdhi33, bdhi41, bdhi49, bdhi57,
           bdhi65, bdhi70]
+    reverse: [bdhi01, bdhi17]
     compare: bdhi_assault_stored
   bdhi_indirect:
     label: BDHI indirect hostility (9 items)
     sum: [bdhi02, bdhi10, bdhi18, bdhi26, bdhi34, bdhi42, bdhi50, bdhi58,
           bdhi75]
+    reverse: [bdhi10, bdhi34, bdhi50]
     compare: bdhi_indirect_stored
   bdhi_irritability:
     label: BDHI irritability (11 items)
     sum: [bdhi04, bdhi11, bdhi20, bdhi27, bdhi35, bdhi44, bdhi52, bdhi60,
           bdhi66, bdhi71, bdhi73]
+    reverse: [bdhi27, bdhi66, bdhi71]
     compare: bdhi_irritability_stored
   bdhi_negativism:
     label: BDHI negativism (5 items)
@@ -137,16 +147,19 @@ scores:
   bdhi_resentment:
     label: BDHI resentment (8 items)
     sum: [bdhi05, bdhi13, bdhi21, bdhi29, bdhi37, bdhi45, bdhi53, bdhi61]
+    reverse: [bdhi21]
     compare: bdhi_resentment_stored
   bdhi_suspicion:
     label: BDHI suspicion (10 items)
     sum: [bdhi06, bdhi14, bdhi22, bdhi30, bdhi38, bdhi46, bdhi54, bdhi62,
           bdhi67, bdhi72]
+    reverse: [bdhi67, bdhi72]
     compare: bdhi_suspicion_stored
   bdhi_verbal:
     label: BDHI verbal hostility (13 items)
     sum: [bdhi07, bdhi15, bdhi23, bdhi31, bdhi39, bdhi43, bdhi47, bdhi51,
           bdhi55, bdhi59, bdhi63, bdhi68, bdhi74]
+    reverse: [bdhi39, bdhi55, bdhi63, bdhi74]
     compare: bdhi_verbal_stored
   bdhi_guilt:
     label: BDHI guilt (9 items)

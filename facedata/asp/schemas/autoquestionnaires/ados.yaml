@@ -2,36 +2,71 @@ instrument: ados
 title: "Autism Diagnostic Observation Schedule (ADOS): the session"
 tab: autoquestionnaires
 section: diagnostic instruments
-status: draft
+status: reviewed
 notes: >
-  What is recorded for every ADOS, whatever its module: whether it was done,
-  its date, the age, the module, the total and the conclusion. 2021 inclusion
-  visits and 161 follow-up visits, from 2011 to 2026.
+  What is recorded for every ADOS, whatever its module: whether it was done, its
+  date, the age, the module, the total and the conclusion. 2021 inclusion visits
+  and 161 follow-up visits, from 2011 to 2026.
 
-  The module entered is the module 3 on 800 visits (children and adolescents with
-  fluent speech), the module 4 on 1372 (adolescents and adults) and the module 2
-  on 9. The items and the algorithm scores of each module are in the
-  instruments ados_module2, ados_module3 and ados_module4: the modules do not
-  have the same items, so they are not delivered in the same columns.
+  The module entered is the module 3 on 800 visits (children and adolescents
+  with fluent speech), the module 4 on 1372 (adolescents and adults) the module
+  2 on 9 and the module 1 on 1. The items and the algorithm scores of each
+  module are in the instruments ados_module2, ados_module3 and ados_module4: the
+  modules do not have the same items, so they are not delivered in the same
+  columns. The date, the ages and the module are shown only when the box "done"
+  is yes (`shown_if`): they are empty on every visit where it is no or empty, so
+  no cell is blanked.
 
-  ados_total_recorded is the total of the summary line: the stored total of
-  the module entered, on 796 of 796 visits of the module 3 and on 1,350 of 1,350 of
+  ados_total_recorded is the total of the summary line: the stored total of the
+  module entered, on 796 of 796 visits of the module 3 and on 1,350 of 1,350 of
   the module 4. It so carries the error of the stored totals of the first
   edition (a code 3 counted 3). **Use the total of the module** (ados3_total,
-  ados4_total), which is recomputed. ados_positive is the conclusion as recorded: it is "yes" on 1672 of the
-  1685 visits classified autism or autism spectrum by the module, and "no" on
-  438 of the 445 classified non-spectrum. ados_done is 1 on 2189 visits and
-  0 on 154; the module is filled on 2182 and 0 of them: 1 is read as "done".
+  ados4_total), which is recomputed. ados_positive is the conclusion "above the
+  spectrum cut-off" **as the export computes it from the items** (`ados_diag`:
+  it is the export that sums the raw codes, a 3 counted 3, and cuts the sum): it
+  is "yes" on 1672 of the 1685 visits classified autism or autism spectrum by
+  the module, and "no" on 438 of the 445 classified non-spectrum, and 6 of its
+  "yes" are visits whose published sums say no. It is delivered as recorded.
+  ados_done is 1 on 2189 visits and 0 on 154; the module is filled on 2182 and 0
+  of them: 1 is read as "done".
+
+  **The stored scores of the ADOS are the export's, not the EMR's.** The script
+  of the form (`281_score.js`, lines 62, 81 and 256-266) counts a code 3 as 2,
+  as the publication does. The export rewrites the algorithm scores from the raw
+  codes (`ados.yaml` of the export, lines 100-101 and 123-124, and
+  `easperger_aut_c1ados.sql`, lines 248-250), counting a 3 as 3, and its values
+  replace the application's ones: every error of the stored scores in the three
+  modules belongs to the export (O12 (1)). The scores delivered here follow the
+  publication and are the ones the form computes.
+
+  **Both editions stay in the same columns** (R28). The first edition of the
+  ADOS and the ADOS-2 share the items, and the export maps the items of the
+  first edition into the ADOS-2 columns (`easperger_aut_c1ados.sql`, lines
+  26-145); one revised rule defines each column, and the edition is told by the
+  item that the ADOS-2 added (B8 in the module 3, B10 in the module 4), which is
+  empty on a visit of the first edition. 36 item cells of the three modules lie
+  outside the answer list of the ADOS-2 (for example a 3 in the item B5 of the
+  module 3 and in the item B6 of the module 4): the old coding of those items is
+  a question for the ASP team. 12 visits hold the items of another module than
+  the one entered, and the staging column A22 is mapped to the items B9a and B9b
+  of the module 2, probably a slip of the export.
 
   The name of the examiner (adosexam) is not delivered (ignored.yaml).
+
+  **Year and centre.** 1 of the 2 variables with a shift value reach 0.5 or more
+  (1 by year, 1 by centre): the age in years at the session (0.54 by year, 0.77
+  by centre), which is the age mix of the centres: children are 100% of the
+  sessions of centre A, 61% of B, 16% of C, 2% of D and none of E (median age
+  11, 17, 25, 28 and 28 years). The date and the module are a date and a
+  category and have no shift.
 
   An instrument of the ASP cohort only.
 
 variables:
   ados_done: {column: adosnf, type: category, label: "ADOS done", codes: {"0": "no", "1": "yes"}}
-  ados_date: {column: ados_date, type: date, label: "Date of the ADOS"}
-  ados_age_years: {column: adosan, type: number, label: "Age at the ADOS, years", range: [2, 70], unit: years, winsor: false}
-  ados_age_months: {column: adosmois, type: number, label: "Age at the ADOS, months beyond the years", range: [0, 11], unit: months, winsor: false}
-  ados_module: {column: modsaisi, type: category, label: "ADOS module", codes: {"1": module_1, "2": module_2, "3": module_3, "4": module_4}}
+  ados_date: {column: ados_date, shown_if: {ados_done: [yes]}, type: date, label: "Date of the ADOS"}
+  ados_age_years: {column: adosan, shown_if: {ados_done: [yes]}, type: number, label: "Age at the ADOS, years", range: [2, 70], unit: years, winsor: false}
+  ados_age_months: {column: adosmois, shown_if: {ados_done: [yes]}, type: number, label: "Age at the ADOS, months beyond the years", range: [0, 11], unit: months, winsor: false}
+  ados_module: {column: modsaisi, shown_if: {ados_done: [yes]}, type: category, label: "ADOS module", codes: {"1": module_1, "2": module_2, "3": module_3, "4": module_4}}
   ados_total_recorded: {column: ados_tot, type: number, label: "ADOS total of the summary line, as stored (two algorithms in one column: not delivered)", range: [0, 30], winsor: false, keep: false}
-  ados_positive: {column: ados_diag, type: category, label: "ADOS above the spectrum cut-off, as recorded", codes: {"0": "no", "1": "yes"}}
+  ados_positive: {column: ados_diag, type: category, label: "ADOS above the spectrum cut-off, as computed by the export from the items", codes: {"0": "no", "1": "yes"}}

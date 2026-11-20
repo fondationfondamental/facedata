@@ -1,30 +1,35 @@
 instrument: stai_ya
-title: State-Trait Anxiety Inventory, form Y-A (state anxiety, 20 items)
+title: State-Trait Anxiety Inventory, form Y-A (state anxiety right now, 20 items)
 tab: AUTO-QUESTIONNAIRES
 section: STAY_A
-status: draft
+status: reviewed
 notes: >
   The BP scale, with the answers brought to one coding first. Twenty items
-  on how the patient feels right now, four levels each. Filled at inclusion
-  and at every follow-up visit: 1,076 visits.
+  on how the patient feels right now (state anxiety, form Y-A), four levels
+  each. Filled at inclusion and at every follow-up visit: 1,076 visits. The
+  form (133) has no display rule of its own: it is offered at every visit
+  except on a simplified visit (below).
 
   Three codings in the same columns. BP stores the answers 1 to 4. This
   extraction stores them 0 to 3, 1 to 4 or 2 to 5, and no column says
   which. A visit tells its own coding when it holds a 0, a 5, or both a 1
-  and a 4: 655 visits are coded 0 to 3 (ten centres, 2012 to 2024), 184
-  are coded 1 to 4 (ten centres, 2012 to 2026) and 100 are coded 2 to 5
-  (one centre, 2013 to 2021). The 137 other visits could be read two ways
+  and a 4: 655 visits are coded 0 to 3 (ten centres, 2012 to 2024), 184 are
+  coded 1 to 4 (ten centres, 2012 to 2026) and 100 are coded 2 to 5 (one
+  centre, 2013 to 2021). The 137 other visits could be read two ways
   (answers from 1 to 3, or from 2 to 4). The coding belongs to the centre
   and the year: of the 110 centre-years with a visit that tells its coding,
-  108 have one coding only. So a visit that cannot tell takes the coding
-  of its centre in the same year, when there is only one and its answers
-  fit: 133 visits. The function stai_shift of custom.py does this and
-  gives the number to add (staya_shift: +1, 0 or -1), known on 1,072
-  visits; on the 4 others the items are not delivered.
+  108 have one coding only. So a visit that cannot tell takes the coding of
+  its centre in the same year, when there is only one and its answers fit:
+  133 visits. The function stai_shift of custom.py does this and gives the
+  number to add (staya_shift: +1, 0 or -1), known on 1,072 visits; on the 4
+  others the items are not delivered.
 
   What is delivered. The stored answers (stayaNN_stored) are read and not
-  delivered. staya01 to staya20 are the answers on the BP coding, 1 to 4
-  (1 = no, 4 = yes): the stored answer plus the shift.
+  delivered. staya01 to staya20 are the answers on the BP coding, 1 to 4 (1
+  = no, 4 = yes): the stored answer plus the shift. After the shift the
+  mean of the items is the same in the three codings (2.23, 2.18 and 2.24),
+  which supports the shift. The level of the DR totals (about 11 points
+  above BP) is clinical, as for the QIDS, not a difference of coding.
 
   Total. Ten items describe calm (1, 2, 5, 8, 10, 11, 15, 16, 19 and 20)
   and are reversed, so that a higher total is more anxiety (20 to 80). With
@@ -34,11 +39,13 @@ notes: >
   visits where the twenty items are filled, whatever the coding (open
   question O16).
 
-  The break of 2018 (open question O1). 96% and 91% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 43% to 49% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  The break of 2018 (open question O1, answered by D55). 96% and 91% of the
+  inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the scale, 43%
+  to 49% in the three periods since 2018. The form (133) is in none of the
+  lists of the simplified visit: an empty scale since 2018 is "not asked"
+  on a simplified visit, not "no", and it is missing data here, never 0.
+  The extraction has no flag that tells a simplified visit from a full one
+  with an empty scale (R127, R139, R155).
 
 defaults: {type: item, range: [0, 5], keep: false}
 
@@ -93,4 +100,5 @@ scores:
     label: STAI-YA state anxiety total
     sum: [staya01_stored, staya02_stored, staya03_stored, staya04_stored, staya05_stored, staya06_stored, staya07_stored, staya08_stored, staya09_stored, staya10_stored, staya11_stored, staya12_stored, staya13_stored, staya14_stored, staya15_stored, staya16_stored, staya17_stored, staya18_stored, staya19_stored, staya20_stored]
     reverse: [staya01_stored, staya02_stored, staya05_stored, staya08_stored, staya10_stored, staya11_stored, staya15_stored, staya16_stored, staya19_stored, staya20_stored]
+    range: [20, 80]
     compare: staya_stored

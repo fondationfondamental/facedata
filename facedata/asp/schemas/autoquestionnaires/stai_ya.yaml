@@ -1,17 +1,25 @@
 instrument: stai_ya
-title: "State-Trait Anxiety Inventory, form Y-A (state)"
+title: "State-Trait Anxiety Inventory, form Y-A (state anxiety right now, 20 items)"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
-  Twenty items and a total, at the inclusion visit: 579 visits,
-  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children fill the STAIC.
+  Twenty items and a total, about how the patient feels right now (state
+  anxiety), at the inclusion visit: 579 visits, from 2018 to 2026, and 8
+  follow-up visits (587 in all). It belongs to the new set of forms. It is
+  filled by adults only. The children fill the STAIC.
 
   Same instrument as in FACE BP and DR, in the same columns. The answers are
   stored from 0 to 3 on every visit of this cohort, where the published form
   counts from 1 to 4: the schema of FACE DR, which reads the coding from the
-  answers of the visit and delivers the items from 1 to 4, is used as it is.
-  The total does not depend on the coding.
+  answers of the visit and delivers the items from 1 to 4, is used as it is. The
+  total does not depend on the coding.
+
+  **Year and centre.** 14 of the 21 variables reach 0.5 or more (14 by year, 13
+  by centre): the 20 items are on a four-level scale (one level is 1.0 or more
+  of the interquartile range). The total stands at 0.20 by year and 0.15 by
+  centre (median 45 to 53 by year, 46 to 51 by centre). Adults only, 2021 to
+  2026. No step.
 
 defaults: {type: item, range: [0, 5], keep: false}
 
@@ -64,6 +72,7 @@ scores:
   staya20: {sum: [staya20_stored, staya_shift], label: "STAI-YA item 20"}
   staya_total:
     label: STAI-YA state anxiety total
+    range: [20, 80]
     sum: [staya01_stored, staya02_stored, staya03_stored, staya04_stored, staya05_stored, staya06_stored, staya07_stored, staya08_stored, staya09_stored, staya10_stored, staya11_stored, staya12_stored, staya13_stored, staya14_stored, staya15_stored, staya16_stored, staya17_stored, staya18_stored, staya19_stored, staya20_stored]
     reverse: [staya01_stored, staya02_stored, staya05_stored, staya08_stored, staya10_stored, staya11_stored, staya15_stored, staya16_stored, staya19_stored, staya20_stored]
     compare: staya_stored

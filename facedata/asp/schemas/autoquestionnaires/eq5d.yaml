@@ -2,19 +2,56 @@ instrument: eq5d
 title: "EQ-5D-5L"
 tab: autoquestionnaires
 section: questionnaires
-status: draft
+status: reviewed
 notes: >
   Five dimensions answered from 1 to 5, the visual scale of health and a stored
-  index, at the inclusion visit: 913 visits (268 children), from 2013 to 2026.
+  index, about the state of health today: 1,021 visits hold an answer (913 at
+  inclusion, from 2009 to 2026, and 108 follow-up visits). Children and adults:
+  344 of the 1,020 visits with the five answers are visits of patients under 18,
+  who fill the same adult form.
 
   Same instrument as in FACE BP, SZ and DR (five levels), in other columns
-  (mobility, selfcare, activity, pain, anxiety, eq_vas). The index (eq5d_score) is the one of BP and SZ: the table of the
-  application's script gives the same value for each profile they share (BP
-  D133). It is read from the five answers (the stored index is a check:
-  score_mismatch) and 45 visits that have the five answers and no stored
-  index get one. It lies between -0.6 and 1
-  on 980 of 1008 visits; the others hold values up to several hundreds, an
-  index typed without its decimal point or another number (out_of_range).
+  (mobility, selfcare, activity, pain, anxiety, eq_vas).
+
+  **The index is the crosswalk of the 5L profile to the French 3L value set.**
+  The table of the application's script (`250_score.js` here, `hetero_eq5d.js`
+  in BP and SZ) gives one index per profile of the five answers, and the three
+  tables are identical on the 3,125 profiles: it is the France column of the
+  EuroQol crosswalk from the 5L profile to the 3L value sets (van Hout and
+  others, 2012), not a value set of the 5L form. A value set made for the 5L
+  form exists for France (Andrade and others, 2020); its table is not in the
+  sources, and which set to use is a choice for the analyst. For a patient under
+  18 the adult form and the adult value set are used (344 visits).
+
+  The index is read from the five answers (the stored index is a check:
+  score_mismatch) on 1,020 visits, 45 more than the stored index covers. The
+  stored index equals the table on 974 of 974 visits where the five answers and
+  a possible stored index exist. Four things differ. **28 stored indices are
+  above 1**: whole numbers typed without the decimal separator (26 with three
+  digits, 2 with two: 1000 times a value of the table), 27 of them on visits
+  with none of the five answers, in 2020 to 2022 in two centres; where the five
+  answers exist (1 visit) the table value is delivered. **6 stored indices sit
+  on visits with fewer than five answers**: they cannot be recomputed
+  (score_not_recomputed). **11 negative indices are dropped by the export**
+  (`easperger_aut_eq5d.sql`, line 43: R51): the stored index is empty on 11
+  visits whose profile has a negative value, which the table gives. **34 visits
+  with the five answers have no visual scale and no stored index**: the script
+  requires the scale before it writes the index (`250_score.js`, lines 15-19);
+  the index is delivered there all the same, since it does not depend on the
+  scale. (In BP and SZ the same test on the scale never fires, because the
+  script reads a NodeList instead of a value: A18.)
+
+  **Year and centre.** 5 of the 5 variables reach 0.5 or more (5 by year, 3 by
+  centre): the five answers are levels of a whole-number scale, and the index
+  (the value of the table for the five answers) stands at 0.55 by year and 0.50
+  by centre. The age mix: children are 34% of the visits, 100% of centre A, 53%
+  of B, 45% of C, 3% of D and none of E (median index 0.86 in A, 0.77 in D, 0.64
+  to 0.67 in B and C, 0.54 in E). Among adults the median index is 0.80 to 0.91
+  in 2014 and 2015, 0.71 to 0.88 in 2016 to 2018 and 0.62 to 0.70 from 2019
+  (year shift 0.72 within adults, 0.36 within children); centre D, 97% adults,
+  reads 0.77 against 0.65 to 0.66 in B and C and 0.54 in E, which takes part of
+  it. A step with no known cause (the case mix; the table of the index does not
+  change).
 
 defaults: {type: item, range: [1, 5]}
 
@@ -29,7 +66,7 @@ variables:
 
 scores:
   eq5d_index:
-    label: EQ-5D-5L index (the table of the application's script, one value per combination of the five answers)
+    label: "EQ-5D-5L index: crosswalk of the 5L profile to the French 3L value set, as the application's script reads it (one value per combination of the five answers)"
     profile: eq5d_index
     from: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205]
     compare: eq5d_index_stored

@@ -12,8 +12,11 @@ notes: >
 
   Times. Bedtime, rising time and hours of sleep are written HH:MM and
   delivered in hours (23:30 is 23.5), as written: 635 bedtimes are between
-  6:00 and 17:00 (a 12-hour clock, or patients who sleep by day), and 16
-  visits give more than 16 hours of sleep.
+  6:00 and 17:00 (a 12-hour clock, or patients who sleep by day), and 13
+  visits give more than 16 hours of sleep. Three nights of more than 24
+  hours are out_of_range, and one visit holds a time written with one digit
+  of minutes in two fields (the rising time and the hours of sleep: 2 cells,
+  unparsed): it is not guessed.
 
   Minutes to fall asleep (psqi02). 312 values are above 5 hours. Most are
   the minutes multiplied by 60: 300, 600, 900, 1800 and 3600 are frequent,
@@ -22,16 +25,45 @@ notes: >
   those who need hours. A value above 240 is therefore divided by 60
   (unit_inferred). The exception is 1260 to 1439: these are bedtimes typed
   in the wrong field (22:30 is 1350 minutes after midnight). They fit no
-  unit and end out_of_range.
+  unit and end out_of_range. The minutes are not winsorised: the default
+  limits of a number (the 1st and 99th percentiles) brought 148 values above
+  150 minutes down to 150 and 146 values of 0 up to 1, and these are real
+  answers (winsor: false).
 
   Components. Checked against the items on all rows: the EMR computes each
   of them as the PSQI manual says. Quality is item 6 and medication is item
-  7, so their copies (psqi15, psqi16) are not read (ignored.yaml). Duration,
-  efficiency, disturbances and daytime dysfunction are delivered as stored.
-  The latency component is recomputed by the function psqi_latency of
-  custom.py from the corrected minutes and item 5a, because the stored one
-  (psqi14) used the minutes as written: it differs on the visits above
-  (score_mismatch), and so does the stored total.
+  7, so their copies (psqi15, psqi16) are not read (ignored.yaml). Duration
+  is delivered as stored. Latency, efficiency, disturbances and daytime
+  dysfunction are computed here from the items by functions of custom.py
+  (psqi_latency, psqi_efficiency, psqi_disturbances, psqi_dysfunction), and
+  the stored component is the check (score_mismatch). The latency component
+  uses the corrected minutes and item 5a, because the stored one (psqi14)
+  used the minutes as written: it differs on the visits above, and so does
+  the stored total. Measured (score_mismatch): 234 stored latency components,
+  521 stored efficiencies (the application takes the bedtime as typed, wrong
+  on a 12-hour clock, D132) and 725 stored totals differ from ours; 83, 24
+  and 106 cannot be recomputed (minutes or times out_of_range:
+  score_not_recomputed, neither value is delivered). The stored disturbances
+  and daytime dysfunction never differ.
+
+  Disturbances and a blank 5j. The component adds the items 5b to 5j: 0
+  counts 0, 1 to 9 count 1, 10 to 18 count 2, more count 3. Item 5j asks how
+  often another reason disturbed the sleep, and a patient with no other
+  reason often leaves it blank: 137 visits have no 5j, against 12 to 35 for
+  each of the items 5a to 5i. The script of the application asks for it
+  ("Questionnaire incomplet" and no component otherwise) and so does the
+  score step of the export (D120, strict sum of 5b to 5j), so the stored
+  component and the stored total are empty on the 108 visits whose items 5b
+  to 5i are all answered and whose 5j is blank. The package reads a blank 5j as 0 and
+  computes the component there (108 more components and 87 more totals; the
+  21 others lack another component). On the visits where the stored
+  component exists, ours is equal to it. The published treatment of a blank
+  5j is to verify. The daytime dysfunction component (items 8 and 9) is the
+  same as the stored one on every visit.
+
+  The text of the other reason (psqi05k) is shown by the form only after a
+  5j of 1, 2 or 3: 3,655 of the 3,657 texts follow one of these answers, and
+  the 2 others (one under a 5j of 0, one under a blank 5j) are not_shown.
 
   Sleep of 7 hours exactly counts as 0 in the duration component, as in the
   application, whose script tests "7 hours or more" on the hours typed and
@@ -59,6 +91,7 @@ variables:
       "min x 60": {factor: 0.0166667, expect: [240.01, 1260]}
       "min x 60, long": {factor: 0.0166667, expect: [1440, 4501]}
     range: [0, 240]
+    winsor: false
   psqi_rising_time: {column: psqi03, type: time, label: Usual rising time (hours), range: [0, 24]}
   psqi_sleep_hours: {column: psqi04, type: time, label: Hours of sleep per night, range: [0, 24]}
   psqi05a: {label: "Vous n’êtes pas arrivé(e) à vous endormir en 30 minutes"}
@@ -71,7 +104,7 @@ variables:
   psqi05h: {label: "Vous avez fait des cauchemars"}
   psqi05i: {label: "Vous avez eu des douleurs"}
   psqi05j: {label: "Combien de fois, au cours des 30 derniers jours, avez-vous eu des..."}
-  psqi05k: {type: text, label: "Other reason for troubled sleep, as written"}
+  psqi05k: {type: text, label: "Other reason for troubled sleep, as written", shown_if: {psqi05j: [1, 2, 3]}}
   psqi06: {label: "Comment qualifieriez-vous la qualité de votre sommeil en général au..."}
   psqi07: {label: "Au cours des 30 derniers jours, combien de fois avez-vous pris des..."}
   psqi08: {label: "Au cours des 30 derniers jours, combien de fois avez-vous eu des..."}
@@ -80,12 +113,20 @@ variables:
   # Component scores as stored, 0 to 3.
   psqi_efficiency_stored: {column: psqi11, label: Component 4 as stored (hours in bed from the bedtime typed as written), keep: false}
   psqi_duration: {column: psqi12, label: "Component 3 - sleep duration, as stored (7 hours or more counts 0)"}
-  psqi_disturbances: {column: psqi13, label: Component 5 - sleep disturbances}
+  psqi_disturbances_stored: {column: psqi13, label: Component 5 as stored, keep: false}
   psqi_latency_stored: {column: psqi14, label: Component 2 as stored, keep: false}
-  psqi_dysfunction: {column: psqi17, label: Component 7 - daytime dysfunction}
+  psqi_dysfunction_stored: {column: psqi17, label: Component 7 as stored, keep: false}
   psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
 
 scores:
+  psqi_disturbances:
+    label: Component 5 - sleep disturbances
+    custom: psqi_disturbances
+    compare: psqi_disturbances_stored
+  psqi_dysfunction:
+    label: Component 7 - daytime dysfunction
+    custom: psqi_dysfunction
+    compare: psqi_dysfunction_stored
   psqi_latency_component:
     label: Component 2 - sleep latency
     custom: psqi_latency

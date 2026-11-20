@@ -2,71 +2,99 @@ instrument: tics
 title: "Tics (section of the old forms)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
   A checklist of motor and vocal tics answered from 1 to 3 (some lines with a
   description in free text), severity ratings for the last week and for the
   life, the age of onset, and the diagnosis of Tourette's disorder:
-  206 inclusion visits (48 of children) and 52 follow-up visits, from 2013 to 2020. It belongs to the old set of forms.
+  206 inclusion visits (48 of children) and 52 follow-up visits, from 2012 to 2021. It belongs to the old set of forms.
 
-  The thesaurus calls the section "chronic motor and vocal tics": a checklist
-  of 37 tics answered 1 never, 2 in the past, 3 in the last week, then
+  The thesaurus calls the section "chronic motor and vocal tics" (form 216,
+  "Tics moteurs et vocaux chroniques"): a checklist
+  of 37 tics (1 to 24 motor, 25 to 37 vocal) answered 1 never, 2 in the past, 3 in the last week, then
   questions on multiple tics, the severity (in the last week and in the worst
-  period of the life), the ages and the diagnosis.
+  period of the life), the ages and the diagnosis. The labels give the wording of the form in
+  short.
+
+  Gates. The 13 description boxes of the checklist (free text) are filled under an answer 2 or 3 of their item (434 cells),
+  never under 1, and under an empty item on 19 cells: they are delivered as written, with no shown_if (it would
+  blank the 19). The question on a medication for tics (tourtt) asks about "tics and/or Tourette", wider than the
+  Tourette diagnosis (tourdiag) that precedes it, so it is not asked_if the diagnosis (it is empty on the 209
+  visits that answer no to the diagnosis, and has one answer in all).
+
+  The form offers the answers of the tic-free-period question (0 always tic-free to 5 never tic-free) to the two
+  questions on the intensity of the tics in the worst period of the life (ticvie3 and ticvie4), copied from the two
+  questions above them: the intensity questions of the last week (ticsem3 and ticsem4) have their own
+  answers (0 absent to 5 severe). The two variables are delivered as written and labelled so. The ages are
+  whole years: the export casts them with a rule that keeps only the cells made of digits, so a decimal or a word typed in an
+  age is lost (request).
+
+  **Year and centre.** 12 of the 76 variables reach 0.5 or more (12 by year, 4 by centre; 27
+  variables have a group of 20 values). A step with no known cause, by year: the 37 tics are
+  answered 1 never, 2 in the past, 3 in the last week, and on the inclusion visits of adults the
+  share of 'never' is 63% to 71% in 2013 to 2016 (mean answer 1.43 to 1.55), 76% and 78% in 2017
+  and 2018 (1.33, 1.31) and 93% in 2019 (1.12; 19 visits); it is 94% to 97% on the 48 follow-up
+  visits of 2018 to 2020. 14 of the 54 variables differ between years beyond chance (permutation
+  test, p below 0.01), 17 among adults and none among children (only two years hold 20 values of
+  them), and 10 between centres, 6 among adults. The centres differ by age (children are 94% of
+  the visits of C, 1% of D, none of E) but the step is among adults, and the form shows no change.
+  The same fall of the yes is seen in the yes-or-no boxes of repetitive_behaviours (from the end
+  of 2018) and in the box of MCDD (ticked on 86% of the visits of 2018 and 98% of 2019); the
+  history gates of ANTECEDENTS fell from 2017 (D47 of PROGRESS.md).
 
   An instrument of the ASP cohort only.
 
 variables:
-  tic1: {column: tic1, type: item, label: "Tics checklist, item 1 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic2: {column: tic2, type: item, label: "Tics checklist, item 2 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic3: {column: tic3, type: item, label: "Tics checklist, item 3 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic4: {column: tic4, type: item, label: "Tics checklist, item 4 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic5: {column: tic5, type: item, label: "Tics checklist, item 5 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic6: {column: tic6, type: item, label: "Tics checklist, item 6 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic7: {column: tic7, type: item, label: "Tics checklist, item 7 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic8: {column: tic8, type: item, label: "Tics checklist, item 8 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic9: {column: tic9, type: item, label: "Tics checklist, item 9 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic10: {column: tic10, type: item, label: "Tics checklist, item 10 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic11: {column: tic11, type: item, label: "Tics checklist, item 11 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic12: {column: tic12, type: item, label: "Tics checklist, item 12 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic13: {column: tic13, type: item, label: "Tics checklist, item 13 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic14: {column: tic14, type: item, label: "Tics checklist, item 14 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic14a: {column: tic14a, type: text, label: "Tics checklist, item 14, detail, free text"}
-  tic15: {column: tic15, type: item, label: "Tics checklist, item 15 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic15a: {column: tic15a, type: text, label: "Tics checklist, item 15, detail, free text"}
-  tic16: {column: tic16, type: item, label: "Tics checklist, item 16 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic16a: {column: tic16a, type: text, label: "Tics checklist, item 16, detail, free text"}
-  tic17: {column: tic17, type: item, label: "Tics checklist, item 17 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic18: {column: tic18, type: item, label: "Tics checklist, item 18 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic19: {column: tic19, type: item, label: "Tics checklist, item 19 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic20: {column: tic20, type: item, label: "Tics checklist, item 20 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic21: {column: tic21, type: item, label: "Tics checklist, item 21 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic21a: {column: tic21a, type: text, label: "Tics checklist, item 21, detail, free text"}
-  tic22: {column: tic22, type: item, label: "Tics checklist, item 22 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic22a: {column: tic22a, type: text, label: "Tics checklist, item 22, detail, free text"}
-  tic23: {column: tic23, type: item, label: "Tics checklist, item 23 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic23a: {column: tic23a, type: text, label: "Tics checklist, item 23, detail, free text"}
-  tic24: {column: tic24, type: item, label: "Tics checklist, item 24 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic24a: {column: tic24a, type: text, label: "Tics checklist, item 24, detail, free text"}
-  tic25: {column: tic25, type: item, label: "Tics checklist, item 25 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic26: {column: tic26, type: item, label: "Tics checklist, item 26 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic27: {column: tic27, type: item, label: "Tics checklist, item 27 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic28: {column: tic28, type: item, label: "Tics checklist, item 28 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic29: {column: tic29, type: item, label: "Tics checklist, item 29 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic30: {column: tic30, type: item, label: "Tics checklist, item 30 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic30a: {column: tic30a, type: text, label: "Tics checklist, item 30, detail, free text"}
-  tic31: {column: tic31, type: item, label: "Tics checklist, item 31 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic31a: {column: tic31a, type: text, label: "Tics checklist, item 31, detail, free text"}
-  tic32: {column: tic32, type: item, label: "Tics checklist, item 32 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic32a: {column: tic32a, type: text, label: "Tics checklist, item 32, detail, free text"}
-  tic33: {column: tic33, type: item, label: "Tics checklist, item 33 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic33a: {column: tic33a, type: text, label: "Tics checklist, item 33, detail, free text"}
-  tic34: {column: tic34, type: item, label: "Tics checklist, item 34 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic35: {column: tic35, type: item, label: "Tics checklist, item 35 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic36: {column: tic36, type: item, label: "Tics checklist, item 36 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic36a: {column: tic36a, type: text, label: "Tics checklist, item 36, detail, free text"}
-  tic37: {column: tic37, type: item, label: "Tics checklist, item 37 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
-  tic37a: {column: tic37a, type: text, label: "Tics checklist, item 37, detail, free text"}
+  tic1: {column: tic1, type: item, label: "Tics checklist, motor tic 1, blinking, squinting, rapid eye movements, rolling the eyes (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic2: {column: tic2, type: item, label: "Tics checklist, motor tic 2, eye gestures: looking surprised, glancing aside as if hearing a noise (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic3: {column: tic3, type: item, label: "Tics checklist, motor tic 3, biting the tongue or the lip, licking the lip, teeth grinding (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic4: {column: tic4, type: item, label: "Tics checklist, motor tic 4, flaring the nostrils, smiling, other mouth gestures, odd expressions, sticking out the tongue (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic5: {column: tic5, type: item, label: "Tics checklist, motor tic 5, head: touching the shoulder with the chin, pulling the chin up (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic6: {column: tic6, type: item, label: "Tics checklist, motor tic 6, head: tossing the head back as if hair were in the eyes (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic7: {column: tic7, type: item, label: "Tics checklist, motor tic 7, shoulder jerks (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic8: {column: tic8, type: item, label: "Tics checklist, motor tic 8, shrugging the shoulders as if saying I do not know (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic9: {column: tic9, type: item, label: "Tics checklist, motor tic 9, arms and hands: rapid flexing or extending of the arms, nail biting, pulling the fingers back, cracking the joints (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic10: {column: tic10, type: item, label: "Tics checklist, motor tic 10, arms and hands: running a hand through the hair, touching objects or people, pinching, counting on the fingers, writing tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic11: {column: tic11, type: item, label: "Tics checklist, motor tic 11, legs and feet: tapping, jumping, kneeling, flexing or extending a joint, shaking or tapping the foot (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic12: {column: tic12, type: item, label: "Tics checklist, motor tic 12, legs: a step forward then two steps back, squatting, deep knee bend (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic13: {column: tic13, type: item, label: "Tics checklist, motor tic 13, abdomen, trunk, pelvis: tensing the abdomen or the buttocks (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic14: {column: tic14, type: item, label: "Tics checklist, motor tic 14, other simple motor tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic14a: {column: tic14a, type: text, label: "Tics checklist, motor tic 14, detail, free text"}
+  tic15: {column: tic15, type: item, label: "Tics checklist, motor tic 15, complex: tics linked to compulsive behaviours (touching, tapping, picking up) (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic15a: {column: tic15a, type: text, label: "Tics checklist, motor tic 15, detail, free text"}
+  tic16: {column: tic16, type: item, label: "Tics checklist, motor tic 16, complex: stimulus-dependent tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic16a: {column: tic16a, type: text, label: "Tics checklist, motor tic 16, detail, free text"}
+  tic17: {column: tic17, type: item, label: "Tics checklist, motor tic 17, complex: obscene or impolite gestures (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic18: {column: tic18, type: item, label: "Tics checklist, motor tic 18, complex: unusual position (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic19: {column: tic19, type: item, label: "Tics checklist, motor tic 19, complex: bending over (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic20: {column: tic20, type: item, label: "Tics checklist, motor tic 20, complex: turning around (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic21: {column: tic21, type: item, label: "Tics checklist, motor tic 21, complex: sudden impulsive behaviours (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic21a: {column: tic21a, type: text, label: "Tics checklist, motor tic 21, detail, free text"}
+  tic22: {column: tic22, type: item, label: "Tics checklist, motor tic 22, complex: behaviours that may hurt or maim others (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic22a: {column: tic22a, type: text, label: "Tics checklist, motor tic 22, detail, free text"}
+  tic23: {column: tic23, type: item, label: "Tics checklist, motor tic 23, complex: self-injurious behaviours (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic23a: {column: tic23a, type: text, label: "Tics checklist, motor tic 23, detail, free text"}
+  tic24: {column: tic24, type: item, label: "Tics checklist, motor tic 24, other motor tics or sequences of motor tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic24a: {column: tic24a, type: text, label: "Tics checklist, motor tic 24, detail, free text"}
+  tic25: {column: tic25, type: item, label: "Tics checklist, vocal tic 25, coughing (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic26: {column: tic26, type: item, label: "Tics checklist, vocal tic 26, clearing the throat (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic27: {column: tic27, type: item, label: "Tics checklist, vocal tic 27, sniffing (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic28: {column: tic28, type: item, label: "Tics checklist, vocal tic 28, whistling (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic29: {column: tic29, type: item, label: "Tics checklist, vocal tic 29, bird noises (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic30: {column: tic30, type: item, label: "Tics checklist, vocal tic 30, other simple vocal tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic30a: {column: tic30a, type: text, label: "Tics checklist, vocal tic 30, detail, free text"}
+  tic31: {column: tic31, type: item, label: "Tics checklist, vocal tic 31, complex: syllables (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic31a: {column: tic31a, type: text, label: "Tics checklist, vocal tic 31, detail, free text"}
+  tic32: {column: tic32, type: item, label: "Tics checklist, vocal tic 32, complex: rude or obscene words or phrases (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic32a: {column: tic32a, type: text, label: "Tics checklist, vocal tic 32, detail, free text"}
+  tic33: {column: tic33, type: item, label: "Tics checklist, vocal tic 33, complex: words (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic33a: {column: tic33a, type: text, label: "Tics checklist, vocal tic 33, detail, free text"}
+  tic34: {column: tic34, type: item, label: "Tics checklist, vocal tic 34, complex: repeating what someone else said (echolalia) (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic35: {column: tic35, type: item, label: "Tics checklist, vocal tic 35, complex: repeating what one has just said (palilalia) (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic36: {column: tic36, type: item, label: "Tics checklist, vocal tic 36, other speech problems (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic36a: {column: tic36a, type: text, label: "Tics checklist, vocal tic 36, detail, free text"}
+  tic37: {column: tic37, type: item, label: "Tics checklist, vocal tic 37, other vocal tics or sequences of vocal tics (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
+  tic37a: {column: tic37a, type: text, label: "Tics checklist, vocal tic 37, detail, free text"}
   ticmul: {column: ticmul, type: item, label: "Tics: several distinct tics at the same time in the last week (0 no, 1 yes)", range: [0, 1]}
   ticmulc: {column: ticmulc, type: text, label: "Tics: several distinct tics at the same time, description, free text"}
   ticcons: {column: ticcons, type: item, label: "Tics: a series of tics occurring together in the last week (0 no, 1 yes)", range: [0, 1]}
@@ -79,17 +107,17 @@ variables:
   ticsem5_v: {column: ticsem5_v, type: item, label: "Tics: interference of vocal tics in the last week (1 never to 5 frequently disrupts)", range: [1, 5]}
   ticvie1: {column: ticvie1, type: item, label: "Tics: longest period without motor tics in the worst lifetime period (0 always tic-free to 5 never tic-free)", range: [0, 5]}
   ticvie2: {column: ticvie2, type: item, label: "Tics: longest period without vocal tics in the worst lifetime period (0 always tic-free to 5 never tic-free)", range: [0, 5]}
-  ticvie3: {column: ticvie3, type: item, label: "Tics: intensity of motor tics in the worst lifetime period (0 to 5, higher is worse)", range: [0, 5]}
-  ticvie4: {column: ticvie4, type: item, label: "Tics: intensity of vocal tics in the worst lifetime period (0 to 5, higher is worse)", range: [0, 5]}
+  ticvie3: {column: ticvie3, type: item, label: "Tics: intensity of motor tics in the worst lifetime period (the form offers the answers of the tic-free-period question: 0 always tic-free to 5 never tic-free)", range: [0, 5]}
+  ticvie4: {column: ticvie4, type: item, label: "Tics: intensity of vocal tics in the worst lifetime period (the form offers the answers of the tic-free-period question: 0 always tic-free to 5 never tic-free)", range: [0, 5]}
   ticvie5_m: {column: ticvie5_m, type: item, label: "Tics: interference of motor tics in the worst lifetime period (1 never to 5 frequently disrupts)", range: [1, 5]}
   ticvie5_v: {column: ticvie5_v, type: item, label: "Tics: interference of vocal tics in the worst lifetime period (1 never to 5 frequently disrupts)", range: [1, 5]}
-  ticmage: {column: ticmage, type: number, label: "Tics: age at the first motor tics, years", range: [0, 200], winsor: false}
-  ticmgrav: {column: ticmgrav, type: number, label: "Tics: age when the motor tics were worst, years", range: [0, 200], winsor: false}
+  ticmage: {column: ticmage, type: number, label: "Tics: age at the first motor tics, years", range: [0, 100], winsor: false}
+  ticmgrav: {column: ticmgrav, type: number, label: "Tics: age when the motor tics were worst, years", range: [0, 100], winsor: false}
   ticmdesc: {column: ticmdesc, type: text, label: "Tics: description of the first motor tics, free text"}
-  ticvage: {column: ticvage, type: number, label: "Tics: age at the first vocal tics, years", range: [0, 200], winsor: false}
-  ticvgrav: {column: ticvgrav, type: number, label: "Tics: age when the vocal tics were worst, years", range: [0, 200], winsor: false}
+  ticvage: {column: ticvage, type: number, label: "Tics: age at the first vocal tics, years", range: [0, 100], winsor: false}
+  ticvgrav: {column: ticvgrav, type: number, label: "Tics: age when the vocal tics were worst, years", range: [0, 100], winsor: false}
   ticvdesc: {column: ticvdesc, type: text, label: "Tics: description of the first vocal tics, free text"}
   tourdiag: {column: tourdiag, type: item, label: "Tics: a diagnosis of Tourette syndrome was raised (0 no, 1 yes)", range: [0, 1]}
   tourq: {column: tourq, type: text, label: "Tics: who raised the diagnosis of Tourette syndrome, free text"}
-  tourage: {column: tourage, type: number, label: "Tics: age when the diagnosis of Tourette syndrome was raised, years", range: [0, 200], winsor: false}
+  tourage: {column: tourage, type: number, label: "Tics: age when the diagnosis of Tourette syndrome was raised, years", range: [0, 100], winsor: false}
   tourtt: {column: tourtt, type: item, label: "Tics: ever received medication for tics or Tourette syndrome (0 no, 1 yes)", range: [0, 1]}

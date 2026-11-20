@@ -2,26 +2,46 @@ instrument: sqol
 title: Schizophrenia Quality of Life questionnaire (S-QoL 18)
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire QUALITE DE VIE
-status: draft
+status: reviewed
 notes: >
-  S-QoL 18, filled at every visit (4,313 visits): 18 items of 1 to 5,
-  eight dimensions and an index, each from 0 to 100.
+  S-QoL 18, filled at every visit (4,334 visits): 18 items of 1 to 5, eight
+  dimensions and an index, each from 0 to 100.
 
-  Scoring, fitted on the items: a dimension is the mean of its items
-  brought to 0 to 100, (mean - 1) x 25, and the index is the mean of the
-  eight dimensions. The dictionary gives the items of each dimension, and
-  the data agree: no score_mismatch on the seven dimensions recomputed
-  here. The stored index is rounded to one decimal, hence the tolerance.
+  Scoring, fitted on the items: a dimension is the mean of its items brought
+  to 0 to 100, (mean - 1) x 25, and the index is the mean of the eight
+  dimensions. The dictionary gives the items of each dimension, and the data
+  agree: no score_mismatch on the seven dimensions recomputed here. The EMR
+  export stores a dimension when at most one of its items is missing (the
+  mean of the others, as the nucleus rule says), so the seven dimensions are
+  computed with min_items 1 (two items) or 2 (resilience, three items): 671
+  more cells than a strict mean, all equal to the stored ones. The stored
+  index is the mean of 7 or 8 dimensions rounded to one decimal, hence the
+  tolerance; the index checked here needs the eight: it equals the stored
+  one on the 3,346 visits where both exist, and 881 stored indexes rest on
+  seven dimensions.
 
-  Items 17 and 18 lose two of their five answers. They hold only 2, 4 and
-  5, in every year, while item 16 of the same dimension holds 1 to 5: the
-  answers 1 and 3 are not in the extraction. 1,549 visits have item 16 and
-  no item 17. The stored dimension (psychological well-being) exists on
-  782 of them, so the answers were given and the export loses them, as it
-  lost the Epworth answers in BP (decision D8 and open question O8 in
-  PROGRESS.md). The two items are delivered as extracted: missing where
-  the answer was 1 or 3. The dimension cannot be recomputed, so the stored
-  one is delivered as it is, and the index is computed with it.
+  Items 17 and 18 are mis-coded by the export. The form gives them the
+  answers of item 16 (from "much more than expected", 1, to "less than
+  expected", 5, the best), but the export reads them with the labels "much
+  less than expected" to "more than expected"
+  (eschizo_autoq_qualite_vie.sql, the two CASE blocks). So the answer 5 of
+  the form is delivered as 2, the answer 2 as 5, and the answers 1 and 3 are
+  lost: the two items hold only 2, 4 and 5, in every year, while item 16
+  holds 1 to 5. Item 17 and item 16 correlate at -0.35 as extracted and at
+  +0.37 once 2 and 5 are swapped; item 18 the same way (-0.36, +0.38). The
+  stored psychological dimension is the mean of the items as delivered
+  (1,991 of 1,991 visits with the three items, 1,509 of 1,509 with item 16
+  and one other), so it carries the error: put right, it would change on
+  1,505 of the 1,991 visits, by 30 points of 100 on average. The index is
+  built on it, so every index carries the error (decisions D8 and D87 and
+  open question O8 in PROGRESS.md).
+
+  Items 17 and 18, the psychological dimension and the index are therefore
+  read and checked (keep: false) and not delivered, until the export labels
+  are put right (export request R150 of docs/EXPORT_REQUESTS.md). The
+  swap of 2 and 5 is not applied here: answers 1 and 3 would stay missing
+  and the dimension would still be biased. The 18 boxes "does not concern
+  me" of the form (chk_sqol_N_pc) are not exported either.
 
 defaults: {type: item, range: [1, 5]}
 
@@ -42,8 +62,8 @@ variables:
   sqol14: {label: "S-QoL item 14 (1 to 5)"}
   sqol15: {label: "S-QoL item 15 (1 to 5)"}
   sqol16: {label: "S-QoL item 16 (1 to 5)"}
-  sqol17: {label: "S-QoL item 17 (1 to 5)"}
-  sqol18: {label: "S-QoL item 18 (1 to 5)"}
+  sqol17: {label: "S-QoL item 17 (1 to 5), mis-coded by the export, not delivered", keep: false}
+  sqol18: {label: "S-QoL item 18 (1 to 5), mis-coded by the export, not delivered", keep: false}
   sqol_sentimental_life_stored: {column: sqol19, type: number, label: S-QoL sentimental life as stored, range: [0, 100], winsor: false, keep: false}
   sqol_self_esteem_stored: {column: sqol20, type: number, label: S-QoL self-esteem as stored, range: [0, 100], winsor: false, keep: false}
   sqol_family_stored: {column: sqol21, type: number, label: S-QoL relations with the family as stored, range: [0, 100], winsor: false, keep: false}
@@ -54,9 +74,10 @@ variables:
   sqol_psychological_wellbeing:
     column: sqol24
     type: number
-    label: "S-QoL psychological well-being, as stored (items 16 to 18; see the notes)"
+    label: "S-QoL psychological well-being as stored (items 16 to 18), mean of mis-coded items, not delivered"
     range: [0, 100]
     winsor: false
+    keep: false
   sqol_index_stored: {column: sqol, type: number, label: S-QoL index as stored, range: [0, 100], winsor: false, keep: false}
 
 scores:
@@ -64,46 +85,54 @@ scores:
     label: "S-QoL sentimental life (items 14, 15; 0 to 100)"
     mean: [sqol14, sqol15]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_sentimental_life_stored
     compare_tolerance: 0.051
   sqol_self_esteem:
     label: "S-QoL self-esteem (items 1, 4; 0 to 100)"
     mean: [sqol01, sqol04]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_self_esteem_stored
     compare_tolerance: 0.051
   sqol_family:
     label: "S-QoL relations with the family (items 10, 11; 0 to 100)"
     mean: [sqol10, sqol11]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_family_stored
     compare_tolerance: 0.051
   sqol_friends:
     label: "S-QoL relations with friends (items 12, 13; 0 to 100)"
     mean: [sqol12, sqol13]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_friends_stored
     compare_tolerance: 0.051
   sqol_autonomy:
     label: "S-QoL autonomy (items 5, 6; 0 to 100)"
     mean: [sqol05, sqol06]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_autonomy_stored
     compare_tolerance: 0.051
   sqol_physical_wellbeing:
     label: "S-QoL physical well-being (items 8, 9; 0 to 100)"
     mean: [sqol08, sqol09]
     scale: [25, -25]
+    min_items: 1
     compare: sqol_physical_wellbeing_stored
     compare_tolerance: 0.051
   sqol_resilience:
     label: "S-QoL resilience (items 2, 3, 7; 0 to 100)"
     mean: [sqol02, sqol03, sqol07]
     scale: [25, -25]
+    min_items: 2
     compare: sqol_resilience_stored
     compare_tolerance: 0.051
   sqol_index:
-    label: "S-QoL index, mean of the eight dimensions (0 to 100, higher is better)"
+    label: "S-QoL index, mean of the eight dimensions (0 to 100, higher is better), contains the psychological dimension, not delivered"
+    keep: false
     mean: [sqol_sentimental_life, sqol_self_esteem, sqol_family, sqol_friends, sqol_autonomy,
            sqol_psychological_wellbeing, sqol_physical_wellbeing, sqol_resilience]
     compare: sqol_index_stored
