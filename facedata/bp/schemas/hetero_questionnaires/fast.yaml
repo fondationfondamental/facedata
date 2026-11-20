@@ -5,19 +5,35 @@ section: Questionnaire FAST
 status: reviewed
 notes: >
   24 items scored from 0 (no difficulty) to 3 (severe difficulty), six domain
-  scores and a total.
+  scores and a total (Rosa and others 2007; the domains and the item numbers
+  are those of the published form: scale_reference.md, section 5). The
+  domains hold 4, 5, 5, 2, 6 and 2 items, so they run from 0 to 12, 15, 15,
+  6, 18 and 6; the total runs from 0 to 72 (observed 0 to 72, two visits at
+  the maximum).
 
   The stored total equals the sum of the 24 items on all 16,604 visits that
-  have one, because the export's score step writes it again from the items
-  (D120): it is a check of the package against the export, not against the
-  application. The six stored domain scores are the application's, which
-  computes them on a button and not on saving (D106): each differs from the
-  sum of its items on 0.1 to 0.7% of the visits, in every period. The domain scores are therefore recomputed here and
-  compared with the stored ones (score_mismatch). The sums and the domains
-  are those of the scoring script of the application.
+  have one, because the score step of the export (nucleus, fast.yaml: a strict
+  sum of the 24 items, the total only) writes it again from the items (D120;
+  1,151 rows of the BP table changed by the step in the run of 2026-11-13): it
+  is a check of the package against the export, not against the application. The six stored
+  domain scores (fast25 to fast30) are the application's, and the score step
+  does not touch them. The application computes them when the button
+  "Calculer le score" is clicked and not on saving (D106): each differs from
+  the sum of its items on 0.2% to 0.8% of the visits that have both (446
+  cells in all: 50, 122, 69, 25, 91 and 89), in every period, and 3,240
+  recomputed domain scores have no stored one (549, 582, 554, 522, 527, 506).
+  The domain scores are therefore recomputed here and compared with the
+  stored ones (score_mismatch). The sums and the domains are those of the
+  scoring script of the application. That script sums each domain alone, so a
+  domain with every item answered has its score even when another domain is
+  incomplete: 335 visits hold some but not all of the 24 items, 333 of them
+  get a domain score and none a total. 48 stored domain values sit on visits
+  where one of their items is missing (score_not_recomputed). The script of
+  the DR application (form 130) differs: it stops at the first incomplete
+  domain and empties every domain and the total.
 
   A score needs all its items, as in the EMR, which stores no score when an
-  item is missing.
+  item is missing. No pro-rating (the original publication has none either).
 
 defaults: {type: item, range: [0, 3]}
 

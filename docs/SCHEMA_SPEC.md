@@ -737,7 +737,7 @@ scores:
 | `min_items` | How many items must be present. Default: all of them. Otherwise the score is missing |
 | `versions` | Versions in which the score is computed. Missing elsewhere |
 | `compare` | Variable holding the score as stored in the extraction. A difference above 0.01 gives `score_mismatch`; the recomputed score is kept. Where the stored score exists, is not delivered (`keep: false`) and the score cannot be recomputed, the row gets `score_not_recomputed`. A check score (`keep: false`) that compares a delivered variable files its `score_mismatch` under that variable |
-| `otherwise` | With `sum`, `mean`, `max` or `min`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
+| `otherwise` | With `sum`, `mean`, `max` or `min`: the variable that holds the score as stored. On a visit where **none** of the items is recorded and the stored score is, the score was typed alone: it is delivered as stored and gets `score_as_stored`. Where only some items are missing the score stays missing (a stored total may then be a partial sum). Use it only when the stored score follows the right rule. To fall back on the stored score wherever one item of a longer sum is missing, build the strict sum in a hidden score (`keep: false`) and name it as the single item of the delivered score. The flag is a discrepancy, and a later score that adds up a score delivered as stored gets it too |
 | `compare_offset` | Known, documented offset of the stored score: stored = recomputed + offset. Explain it in `notes` |
 | `age` | With `lookup`, `regression`: the variable that holds the age typed in the form. The EMR reads its norms with the age typed in the form, which is sometimes wrong; the table is read with that age where it is within 1 year of the age at the visit, and with the age at the visit elsewhere or where nothing was typed. A variable of the same schema, usually `keep: false` (section 8) |
 | `age_date` | With `lookup`, `regression`: a date variable (of the schema, or of `uses`): the date of the assessment. The table is read with the age at that date, `age at the visit + (date - visit date) / 365.25`, where the date is within 366 days of the visit date and, with `age_date_since`, on or after that day; elsewhere with the age at the visit. FACE ASP has no typed age: its application computes the age at the date of the assessment form (decision D139) |
@@ -1131,7 +1131,7 @@ is not known: name them in a `doubt` block with `remove: true` (section 10).
 
 ```yaml
 checks:
-  cgi_efficacy_index: cgi_index_differs     # (therapeutic effect - 1) x 4 + side effects
+  psp_band: psp_band_differs                # the ten-point band of the PSP score
 ```
 
 Use them rarely. A second instrument needing the same rule is a sign that the

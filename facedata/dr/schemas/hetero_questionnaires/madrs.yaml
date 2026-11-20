@@ -2,15 +2,37 @@ instrument: madrs
 title: Montgomery-Asberg Depression Rating Scale (MADRS)
 tab: HETERO-QUESTIONNAIRES
 section: Questionnaire MADRS
-status: draft
+status: reviewed
 notes: >
-  Ten items rated 0 to 6 by the clinician; the total is their sum (0 to 60).
-  The stored total equals the sum on all 2,065 visits that have the ten items.
+  Ten items rated 0 to 6 by the clinician; the total is their sum (0 to 60,
+  Montgomery and Asberg 1979; scale_reference.md, section 1).
 
-  The scale is rated at the screening visit (561 patients, median 30) and
-  again at the inclusion visit (605 patients, median 28), then at every
-  follow-up visit. The inclusion criterion "MADRS above 20" is ticked at
-  screening: 12 screening totals and 67 inclusion totals are 20 or less.
+  The stored total is the export's: the data flow (the nucleus definition
+  madrs.yaml, which names the DR table too) writes the strict sum of the ten
+  items over the total of the form, which is the same plain sum (the script
+  js_scores/100_score.js empties the field when an item is empty). The stored
+  total equals the sum on all 2,065 visits that have the ten items and is
+  empty on the others, by construction: the comparison validates the items
+  and the export formula, not the application. The observed maximum is 60.
+
+  Two administrations in the same columns. The scale is rated at the
+  screening visit (form 100: 561 ratings, median 30) and again at the
+  inclusion visit (form 123: 605 ratings, median 28), then at every
+  follow-up visit. 538 patients have both: the inclusion total is 1.8 points
+  lower on average (SD 6.0, correlation 0.63) after a median gap of 14 days.
+  The two are separate rows (screening and V0), so no split of the schema is
+  needed; analyses that want one baseline must choose. Form 174 is a third
+  copy of the form that no menu offers.
+
+  The inclusion criterion "MADRS above 20" (inclusion_criteria) is ticked
+  for 631 patients. 558 of them have a screening total, 10 of these are 20 or
+  less, and 73 have no screening total (the box was ticked without the scale
+  at screening).
+
+  The MADRS is on the simplified visit (visite.SVUPDES = 1): it is kept
+  there, with the QIDS, the CGI, the EQ-5D and the MDQ (open question O1,
+  answered in PROGRESS.md D55). It is filled at 91% to 100% of the V0
+  visits in every period.
 
   Same instrument as in FACE BP.
 
@@ -34,4 +56,5 @@ scores:
     label: MADRS total
     sum: [madrs01, madrs02, madrs03, madrs04, madrs05,
           madrs06, madrs07, madrs08, madrs09, madrs10]
+    range: [0, 60]
     compare: madrs_stored

@@ -9,12 +9,28 @@ notes: >
   present in the data.
 
   The stored total (madrs_) equals the sum of the ten items on every visit
-  where both exist (17,334), the rule of the scoring script of the
-  application: no score_mismatch. One rating in eight is an odd value.
+  where both exist (17,334): no score_mismatch. That is true by construction
+  and checks the items and the formula of the export, not the application.
+  The score step of the export (nucleus, madrs.yaml: a strict sum of the ten
+  items) writes madrs_ again after its models (D120); its changelog lists 206
+  rows of the BP table changed by the step in the run of 2026-11-13. The
+  application computes the total only when the button "Calculer le score" is
+  clicked (hetero_madrs.js, lines 20 to 24), so the value that it stores is
+  stale after an edit of an item, and it writes "Questionnaire incomplet"
+  when an item is missing, as the strict sum does. The rule is the plain sum
+  of the ten items, 0 to 60 (Montgomery and Asberg, 1979; the range is as
+  used in published analysis plans, the original paper's own statement is to
+  verify: scale_reference.md, section 1). The observed maximum is 51. The
+  export's madrs.yaml gives scale_max 50: it is used only to reverse items
+  (none here), so it changes nothing, but the published maximum is 60
+  (request R137). 13% of the ratings are odd values (the dictionary labels only
+  the even anchors 0, 2, 4, 6).
 
-  The columns ending in _n1 (a separate dictionary section) are legacy second
-  ratings left by a data-management experiment. They are not loaded (decision
-  D27 in PROGRESS.md).
+  The columns ending in _n1 (a separate dictionary section) are the mood at
+  the neuropsychological assessment, which the forms of that tab open when
+  the last MADRS is more than a week old (D119), not residuals; they are
+  not loaded (decision D27 in PROGRESS.md; whether to deliver them is
+  decided with the NEUROPSYCHOLOGIE tab, M37).
 
 defaults: {type: item, range: [0, 6]}
 
@@ -36,4 +52,5 @@ scores:
     label: MADRS total
     sum: [madrs01, madrs02, madrs03, madrs04, madrs05,
           madrs06, madrs07, madrs08, madrs09, madrs10]
+    range: [0, 60]
     compare: madrs_stored

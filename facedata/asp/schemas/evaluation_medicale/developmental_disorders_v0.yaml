@@ -1,0 +1,158 @@
+instrument: developmental_disorders_v0
+title: "ADHD, behaviour, elimination, eating, tic and communication disorders, at inclusion"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  The developmental part of the clinician's list of psychiatric comorbidities (the same table and forms as mood_disorders:
+  form 202 at inclusion, form 348 at the yearly visits; 9 'Non connu' is a missing code): attention deficit hyperactivity
+  disorder (tbath: age at the first symptoms, presentation, remission, two treatment boxes), oppositional defiant disorder
+  (tbopp), conduct disorder (tcond: childhood-onset and adolescent-onset boxes), elimination disorder (tcsfinc) with
+  encopresis (presi) and enuresis (enresi), each with its age at onset, type boxes and remission, eating disorder (tcali) with
+  anorexia (anor: restrictive and purging types) and bulimia (boul), chronic tics (ticchr) with motor tics (ticmo), vocal tics
+  (ticvo) and Tourette syndrome (gtour, with three treatment boxes), then a developmental coordination disorder (tac) and four
+  communication disorders (trbco01 language, trbco02 speech sound, trbco03 stuttering, trbco04 social communication), each
+  with an age at the first symptoms and a remission box. The names come from the thesaurus V2.13 (PROGRESS.md D13 and D14).
+
+  Gates. After a no the yes/no of encopresis and enuresis (under the elimination disorder), of anorexia and bulimia (under the
+  eating disorder) and of motor tics, vocal tics and Tourette syndrome (under the chronic tics) are 0 (asked_if). The ages,
+  the remissions, the types, the treatment boxes and the five blocks added late stay missing after a no: a 0 on a remission
+  would read 'disorder present, not in remission'. The 9 'Non connu' is a missing code on six more variables that the form
+  offers it for (the remission of conduct disorder, encopresis, enuresis, vocal tics and stuttering, and the motor tics
+  question itself; no 9 is on these columns). The ages of encopresis and enuresis are ages at onset ('Age lors du début'):
+  encopresis_onset_age and enuresis_onset_age. All ages are in years (unit); the data are unchanged, the hard limit of 0 to 70
+  stays (the oldest patient is 65: it removes one impossible ADHD age, 72, typed for a patient aged 11.8).
+
+  Roll-out. The coordination disorder and the four communication disorders are answered on 1 visit in 2017, 1 in 2018, 4 to 6
+  in 2019, 26 to 27 in 2020 and 158 to 172 in 2021 (valid yes/no answers at inclusion, by question) and on 41% to 69% of the
+  inclusions of each year since, in step with the rest of the form: the labels say 'from 2021' (they said 'from 2019'). The
+  coordination disorder is yes for 141 of 758 valid answers at inclusion (822 answers, 64 of them 'not known').
+
+  ADHD presentation. The form has a radio for it (TBATHT: 1 combined, 2 inattentive, 3 hyperactive) that the clean model holds
+  (easperger_aut_c1dsmdigs.sql:153) and the export does not select (face_asp_8_evaluation_medicale.sql:205-212; request R143).
+  The three boxes adhd_combined, adhd_inattentive and adhd_hyperactive are those of the old form and stop in 2021: to 2020 213
+  of the 244 visits with ADHD yes have exactly one box yes (220 hold a box, 6 hold two); from 2021 2 of the 274 hold a box, so
+  the presentation is missing for the others. The labels say 'old form, to 2021'.
+
+  The change question of form 203, otrchang, was read here (comorbidities_changed); it belongs to the sleep and self-injury
+  form and is delivered in sleep_disorders_v0 and sleep_disorders_fu as sleep_self_harm_changed.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At inclusion. 1,549 inclusion visits answer at least one question. Yes: ADHD 475 of 1,411 valid answers, oppositional
+  defiant disorder 68, conduct disorder 13, elimination disorder 132 (encopresis 36, enuresis 104), eating disorder 141
+  (anorexia 72, bulimia 49), chronic tics 94 (motor 80, vocal 32, Tourette 15), coordination disorder 141 of 758, language
+  disorder 95 of 783, speech sound disorder 24 of 781, stuttering 12 of 776, social communication disorder 208 of 746.
+
+  Checks (aggregates). 3 typed age cells are above the age at the visit, all by more than a year: ADHD by 20.8 and by 60.2
+  years (the second is the 72 typed for a patient aged 11.8, removed by the hard limit) and bulimia by 2.8 years. An eating
+  disorder with neither anorexia nor bulimia yes: 40 of 141 (6 with both empty). Delivered as recorded. Stuttering and the
+  other communication disorders: the stuttering question of the neuropsychology form (learning_disorders, trbapp07) agrees
+  with stuttering_v0 on 186 of 196 visits where both are answered (the 10 others: trbapp07 yes, here no).
+
+  **Year and centre.** 7 of the 64 variables reach 0.5 or more. Age mix: ADHD is yes for 44% of the children
+  and 21% of the adults, the social communication disorder (asked from 2017: 746 answers) 41% and 9%, the
+  remission of enuresis 47% and 93%. Habit of the centre: among adults ADHD is yes for 13% to 80% by centre
+  (seven centres with 20 answers; the 80% is one centre with 20 answers) and the social communication disorder
+  for 0% to 67% (all ages). ADHD in adults rises from 8% to 14% in 2016 to 2020 to 22% to 24% in 2021 to 2023
+  and 33% to 49% in 2024 to 2026: the centre mix explains part of it (the centre that answered alone to 2017
+  types 9% to 17% from 2014 to 2020; the two later centres with 20 adult answers or more type 25% and 80% over
+  their adults), but not all: in the centre that holds most of the later adults it rises from 10% in 2021 (21
+  answers) to 44% in 2026 (16 answers). The form changed in 2021 (new questions) and no setting explains the
+  rise: no known cause. The presentation boxes of the old form (to 2021: 186 and 192 answers), the
+  psychostimulant (19% to 50% yes by year on 32 to 59 answers: within chance) and the language disorder ages
+  (50 values, two centres) are small groups.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  adhd_v0: {column: tbath, type: item, range: [0, 1], missing: {"9": unknown}, label: "Attention deficit hyperactivity disorder, at inclusion"}
+  adhd_onset_age_v0: {column: tbathag, type: number, unit: years, range: [0, 70], winsor: false, label: "ADHD: age at onset, at inclusion"}
+  adhd_combined_v0: {column: tbathmix, type: item, range: [0, 1], label: "ADHD: combined presentation (old form, to 2021), at inclusion"}
+  adhd_inattentive_v0: {column: tbathatt, type: item, range: [0, 1], label: "ADHD: inattentive presentation (old form, to 2021), at inclusion"}
+  adhd_hyperactive_v0: {column: tbathhyp, type: item, range: [0, 1], label: "ADHD: hyperactive presentation (old form, to 2021), at inclusion"}
+  adhd_remission_v0: {column: tbathrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "ADHD: in remission, at inclusion"}
+  adhd_psychostimulant_v0: {column: tbathpsy, type: item, range: [0, 1], label: "ADHD: treated with a psychostimulant, at inclusion"}
+  adhd_neuroleptic_v0: {column: tbathneu, type: item, range: [0, 1], label: "ADHD: treated with a neuroleptic, at inclusion"}
+  oppositional_disorder_v0: {column: tbopp, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder, at inclusion"}
+  oppositional_disorder_onset_age_v0: {column: tboppag, type: number, unit: years, range: [0, 70], winsor: false, label: "Oppositional defiant disorder: age at onset, at inclusion"}
+  oppositional_disorder_remission_v0: {column: tbopprem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder: in remission, at inclusion"}
+  conduct_disorder_v0: {column: tcond, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conduct disorder, at inclusion"}
+  conduct_disorder_onset_age_v0: {column: tcondiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Conduct disorder: age at onset, at inclusion"}
+  conduct_disorder_childhood_v0: {column: tcenf, type: item, range: [0, 1], label: "Conduct disorder: childhood onset, at inclusion"}
+  conduct_disorder_adolescence_v0: {column: tcado, type: item, range: [0, 1], label: "Conduct disorder: adolescent onset, at inclusion"}
+  conduct_disorder_remission_v0: {column: tcrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conduct disorder: in remission, at inclusion"}
+  elimination_disorder_v0: {column: tcsfinc, type: item, range: [0, 1], missing: {"9": unknown}, label: "Elimination disorder, at inclusion"}
+  encopresis_v0: {column: presi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder_v0, label: "Encopresis, at inclusion"}
+  encopresis_onset_age_v0: {column: presiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Encopresis: age at onset, at inclusion"}
+  encopresis_with_constipation_v0: {column: presit1, type: item, range: [0, 1], label: "Encopresis: with constipation and overflow incontinence, at inclusion"}
+  encopresis_without_constipation_v0: {column: presit2, type: item, range: [0, 1], label: "Encopresis: without constipation and overflow incontinence, at inclusion"}
+  encopresis_remission_v0: {column: presirem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Encopresis: in remission, at inclusion"}
+  enuresis_v0: {column: enresi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder_v0, label: "Enuresis, at inclusion"}
+  enuresis_onset_age_v0: {column: enresiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Enuresis: age at onset, at inclusion"}
+  enuresis_nocturnal_v0: {column: enresit1, type: item, range: [0, 1], label: "Enuresis: nocturnal only, at inclusion"}
+  enuresis_diurnal_v0: {column: enresit2, type: item, range: [0, 1], label: "Enuresis: diurnal only, at inclusion"}
+  enuresis_nocturnal_and_diurnal_v0: {column: enresit3, type: item, range: [0, 1], label: "Enuresis: nocturnal and diurnal, at inclusion"}
+  enuresis_remission_v0: {column: enresirem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Enuresis: in remission, at inclusion"}
+  eating_disorder_v0: {column: tcali, type: item, range: [0, 1], missing: {"9": unknown}, label: "Eating disorder, at inclusion"}
+  anorexia_v0: {column: anor, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder_v0, label: "Anorexia, at inclusion"}
+  anorexia_onset_age_v0: {column: anorag, type: number, unit: years, range: [0, 70], winsor: false, label: "Anorexia: age at onset, at inclusion"}
+  anorexia_restrictive_v0: {column: anorrest, type: item, range: [0, 1], label: "Anorexia: restrictive type, at inclusion"}
+  anorexia_purging_v0: {column: anorpurg, type: item, range: [0, 1], label: "Anorexia: purging type, at inclusion"}
+  bulimia_v0: {column: boul, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder_v0, label: "Bulimia, at inclusion"}
+  bulimia_onset_age_v0: {column: boulag, type: number, unit: years, range: [0, 70], winsor: false, label: "Bulimia: age at onset, at inclusion"}
+  bulimia_remission_v0: {column: boulrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Bulimia: in remission, at inclusion"}
+  chronic_tics_v0: {column: ticchr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Chronic tic disorder, at inclusion"}
+  motor_tics_v0: {column: ticmo, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_v0, label: "Motor tics, at inclusion"}
+  motor_tics_onset_age_v0: {column: ticmoag, type: number, unit: years, range: [0, 70], winsor: false, label: "Motor tics: age at onset, at inclusion"}
+  motor_tics_remission_v0: {column: ticmorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Motor tics: in remission, at inclusion"}
+  vocal_tics_v0: {column: ticvo, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_v0, label: "Vocal tics, at inclusion"}
+  vocal_tics_onset_age_v0: {column: ticvoag, type: number, unit: years, range: [0, 70], winsor: false, label: "Vocal tics: age at onset, at inclusion"}
+  vocal_tics_remission_v0: {column: ticvorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Vocal tics: in remission, at inclusion"}
+  tourette_v0: {column: gtour, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_v0, label: "Tourette syndrome, at inclusion"}
+  tourette_onset_age_v0: {column: gtourag, type: number, unit: years, range: [0, 70], winsor: false, label: "Tourette syndrome: age at onset, at inclusion"}
+  tourette_remission_v0: {column: gtourrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Tourette syndrome: in remission, at inclusion"}
+  tourette_clonidine_v0: {column: gtourcat, type: item, range: [0, 1], label: "Tourette syndrome: treated with clonidine (Catapressan), at inclusion"}
+  tourette_neuroleptic_v0: {column: gtourneu, type: item, range: [0, 1], label: "Tourette syndrome: treated with a neuroleptic, at inclusion"}
+  tourette_benzodiazepine_v0: {column: gtourben, type: item, range: [0, 1], label: "Tourette syndrome: treated with a benzodiazepine, at inclusion"}
+  coordination_disorder_v0: {column: ceoccur_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder (from 2021), at inclusion"}
+  coordination_disorder_onset_age_v0: {column: agedebut_tac, type: number, unit: years, range: [0, 70], winsor: false, label: "Developmental coordination disorder: age at onset, at inclusion"}
+  coordination_disorder_remission_v0: {column: remi_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder: in remission, at inclusion"}
+  language_disorder_v0: {column: trbco01, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder (from 2021), at inclusion"}
+  language_disorder_onset_age_v0: {column: trbco01a, type: number, unit: years, label: "Language disorder: age at the first symptoms, at inclusion", range: [0, 70]}
+  language_disorder_remission_v0: {column: trbco01b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder: in remission, at inclusion"}
+  speech_sound_disorder_v0: {column: trbco02, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder (from 2021), at inclusion"}
+  speech_sound_disorder_onset_age_v0: {column: trbco02a, type: number, unit: years, label: "Speech sound disorder: age at the first symptoms, at inclusion", range: [0, 70]}
+  speech_sound_disorder_remission_v0: {column: trbco02b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder: in remission, at inclusion"}
+  stuttering_v0: {column: trbco03, type: item, range: [0, 1], missing: {"9": unknown}, label: "Childhood-onset fluency disorder (stuttering) (from 2021), at inclusion"}
+  stuttering_onset_age_v0: {column: trbco03a, type: number, unit: years, label: "Childhood-onset fluency disorder (stuttering): age at the first symptoms, at inclusion", range: [0, 70]}
+  stuttering_remission_v0: {column: trbco03b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Childhood-onset fluency disorder (stuttering): in remission, at inclusion"}
+  social_communication_disorder_v0: {column: trbco04, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder (from 2021), at inclusion"}
+  social_communication_disorder_onset_age_v0: {column: trbco04a, type: number, unit: years, label: "Social (pragmatic) communication disorder: age at the first symptoms, at inclusion", range: [0, 70]}
+  social_communication_disorder_remission_v0: {column: trbco04b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder: in remission, at inclusion"}

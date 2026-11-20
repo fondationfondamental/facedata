@@ -2,18 +2,41 @@ instrument: fast
 title: "Functioning Assessment Short Test (FAST)"
 tab: HETERO-QUESTIONNAIRES
 section: Questionnaire FAST
-status: draft
+status: reviewed
 notes: >
-  24 items rated 0 (no difficulty) to 3 (severe difficulty); six domain scores
-  and a total (0 to 72, higher is worse). The stored total equals the sum of
-  the items on all 513 visits that have the 24 items, and each stored domain
-  score equals the sum of its items wherever both exist (454 to 510 visits).
-  A domain score is stored less often than its items are complete (21 to 115
-  visits per domain): the recomputed scores fill these.
+  24 items rated 0 (no difficulty) to 3 (severe difficulty); six domain
+  scores and a total (0 to 72, higher is worse; Rosa and others 2007;
+  scale_reference.md, section 5). The 24 items are the same, in the same
+  order, as in FACE BP (form 130 of the DR application checked against the
+  BP form).
 
-  Rated at the inclusion visit and at two and four years. Filled at about 90%
-  of the inclusion visits until 2017 and at about half of them since 2018
-  (open question O1 in PROGRESS.md).
+  The stored total is the export's: the data flow (nucleus definition
+  fast.yaml, which names the DR table too) writes the strict sum of the 24
+  items. It equals the sum of the items on all 513 visits that have the 24
+  items, by construction, and is empty on the others. The six domain scores
+  (fast25 to fast30) are the application's own and the export does not touch
+  them: each equals the sum of its items wherever both exist (0 difference),
+  and a domain score is stored less often than its items are complete (the
+  recomputed one fills 61, 21, 60, 115, 45 and 66 visits).
+
+  The script of the DR application differs from the BP one (form 130,
+  js_scores/130_score.js; request A66): it stops at the first incomplete
+  domain and empties all six domain scores and the total when one item is
+  blank, where the BP domain scripts sum each domain alone. The package
+  follows the BP rule (a domain with all its items has its score), so on the
+  59 visits that hold some but not all of the 24 items it delivers 273
+  domain scores that the DR script would have left empty (54, 11, 57, 56,
+  40 and 55 per domain) and no total. The DR script also leaves a domain
+  empty on 95 complete visits where every item of the domain is 0 (7, 10,
+  3, 59, 5 and 11 per domain, of 527 zero-sum domains: the 432 others hold
+  0): the cause is not known (question to the data managers, PROGRESS.md
+  D61). The schema is the BP one (no difference to list in differences.yaml:
+  the difference is in the script).
+
+  Rated at the inclusion visit and at two and four years. Filled at about
+  90% of the V0 visits until 2017 and at about half of them since 2018 (open
+  question O1): FAST is one of the forms that the simplified visit omits
+  (PROGRESS.md D55, request R139).
 
   Same instrument as in FACE BP.
 

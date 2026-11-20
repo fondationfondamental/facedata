@@ -1,0 +1,102 @@
+instrument: psychotic_symptoms_fu
+title: "Psychotic symptoms and schizophrenia at the yearly follow-up visits"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  The psychotic part of the clinician's list of psychiatric comorbidities (the same table and forms as mood_disorders: form
+  202 at inclusion, form 348 at the yearly visits; 9 'Non connu' is a missing code). A first question (symppsyh, psychotic
+  symptoms) opens four groups, each a yes/no with boxes: delusions (idel, four mechanisms: intuitive, hallucinatory,
+  interpretative, imaginative), hallucinations (hal, five senses), disorganisation (diss, 'dissociation' in the French sense,
+  three mechanisms: thought blocking, diffluence, morbid rationalism) and deficit symptoms (def: blunted affect, poverty of
+  speech, athymhormia), then the onset (acute, progressive) and the course (chronic, intermittent, episodic) of the symptoms.
+  A second question (tskizo) is a schizophrenia spectrum disorder, with five type boxes, an age at the first episode, a number
+  of episodes, an age at the first treatment and a remission, filled for fewer than five patients; the duration of the longest
+  episode (durepilg, months) is in the form and the export, but its column is empty on all 4,500 rows (ignored.yaml). The
+  names come from the thesaurus V2.13 (PROGRESS.md D13 and D14).
+
+  Gates. The yes/no of the four groups (delusions, hallucinations, disorganisation, deficit symptoms) hangs on the first
+  question (symppsyh) and is 0 after a no (asked_if; 1,502 visits with a no, 6,008 cells that were missing: 1,438 at inclusion
+  and 64 at the yearly visits, four questions each; the extraction leaves them empty and no cell is filled under a no). The
+  mechanisms and senses under a group, the type boxes and the remission stay missing after a no: they are details of a symptom
+  that is absent (R1). The rule is one level deep: 9 mechanism cells are filled while their group question is empty (all 0,
+  none positive; the four group questions are empty on 7, 5, 10 and 11 visits with the first question yes), and none is filled
+  under a no.
+
+  Not joined with SZ. The SZ list of symptoms (lifetime_symptoms, ever and last month, many more items) asks other questions
+  in another window: symptom_hallucination_bodily_* is the cenesthetic hallucinations here, symptom_alogia_* the poverty of
+  speech and symptom_avolition_* the athymhormia, with other wording; no variable is shared.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At the yearly visits. 68 follow-up visits answer at least one question: psychotic symptoms yes on 3 of 67 answers (both of
+  the 2 patients with a yes at inclusion and a later answer say yes again), delusions 1, hallucinations 2, disorganisation 1
+  and deficit symptoms 0 among 67 valid answers; schizophrenia spectrum 0 of 68.
+
+  The change question of form 348 is in mood_disorders_fu (axis1_summary_changed_fu); an empty yearly section here means 'no
+  change' (R25).
+
+  **Year and centre.** No variable has a year or a centre with 20 values (68 visits): there is nothing to
+  screen.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  psychotic_symptoms_fu: {column: symppsyh, type: item, range: [0, 1], missing: {"9": unknown}, label: "Psychotic symptoms, at follow-up"}
+  delusions_fu: {column: idel, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: psychotic_symptoms_fu, label: "Delusions, at follow-up"}
+  delusions_intuitive_fu: {column: idelintu, type: item, range: [0, 1], label: "Delusions: intuitive mechanism, at follow-up"}
+  delusions_hallucinatory_fu: {column: idelhal, type: item, range: [0, 1], label: "Delusions: hallucinatory mechanism, at follow-up"}
+  delusions_interpretative_fu: {column: idelinte, type: item, range: [0, 1], label: "Delusions: interpretative mechanism, at follow-up"}
+  delusions_imaginative_fu: {column: idelimag, type: item, range: [0, 1], label: "Delusions: imaginative mechanism, at follow-up"}
+  hallucinations_fu: {column: hal, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: psychotic_symptoms_fu, label: "Hallucinations, at follow-up"}
+  hallucinations_auditory_fu: {column: halaud, type: item, range: [0, 1], label: "Hallucinations: auditory, at follow-up"}
+  hallucinations_cenesthetic_fu: {column: halcene, type: item, range: [0, 1], label: "Hallucinations: cenesthetic, at follow-up"}
+  hallucinations_visual_fu: {column: halvisu, type: item, range: [0, 1], label: "Hallucinations: visual, at follow-up"}
+  hallucinations_olfactory_fu: {column: halolf, type: item, range: [0, 1], label: "Hallucinations: olfactory, at follow-up"}
+  hallucinations_gustatory_fu: {column: halgust, type: item, range: [0, 1], label: "Hallucinations: gustatory, at follow-up"}
+  disorganisation_fu: {column: diss, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: psychotic_symptoms_fu, label: "Disorganisation, at follow-up"}
+  disorganisation_thought_blocking_fu: {column: dissbarr, type: item, range: [0, 1], label: "Disorganisation: thought blocking, at follow-up"}
+  disorganisation_diffluence_fu: {column: dissdiff, type: item, range: [0, 1], label: "Disorganisation: diffluent speech, at follow-up"}
+  disorganisation_morbid_rationalism_fu: {column: dissrati, type: item, range: [0, 1], label: "Disorganisation: morbid rationalism, at follow-up"}
+  deficit_symptoms_fu: {column: def, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: psychotic_symptoms_fu, label: "Deficit symptoms, at follow-up"}
+  deficit_blunted_affect_fu: {column: defemaff, type: item, range: [0, 1], label: "Deficit symptoms: blunted affect, at follow-up"}
+  deficit_poverty_of_speech_fu: {column: defpauvd, type: item, range: [0, 1], label: "Deficit symptoms: poverty of speech, at follow-up"}
+  deficit_athymhormia_fu: {column: defathy, type: item, range: [0, 1], label: "Deficit symptoms: athymhormia (loss of drive), at follow-up"}
+  psychotic_onset_fu: {column: psyhdeb, type: category, codes: {"1": acute, "2": progressive}, missing: {"9": unknown}, label: "Onset of the psychotic symptoms, at follow-up"}
+  psychotic_course_fu: {column: psyhevo, type: category, codes: {"1": chronic, "2": intermittent, "3": episodic}, label: "Course of the psychotic symptoms, at follow-up"}
+  schizophrenia_spectrum_fu: {column: tskizo, type: item, range: [0, 1], missing: {"9": unknown}, label: "Schizophrenia spectrum disorder, at follow-up"}
+  schizophrenia_paranoid_fu: {column: tskizo1, type: item, range: [0, 1], label: "Schizophrenia spectrum disorder: paranoid type, at follow-up"}
+  schizophrenia_disorganised_fu: {column: tskizo2, type: item, range: [0, 1], label: "Schizophrenia spectrum disorder: disorganised type, at follow-up"}
+  schizophrenia_catatonic_fu: {column: tskizo3, type: item, range: [0, 1], label: "Schizophrenia spectrum disorder: catatonic type, at follow-up"}
+  schizophrenia_undifferentiated_fu: {column: tskizo4, type: item, range: [0, 1], label: "Schizophrenia spectrum disorder: undifferentiated type, at follow-up"}
+  schizophrenia_residual_fu: {column: tskizo5, type: item, range: [0, 1], label: "Schizophrenia spectrum disorder: residual type, at follow-up"}
+  schizophrenia_first_episode_age_fu: {column: ageprepi, type: number, unit: years, range: [0, 70], winsor: false, label: "Schizophrenia spectrum disorder: age at the first episode, at follow-up"}
+  schizophrenia_n_episodes_fu: {column: nbepi, type: number, range: [0, 99], winsor: false, asked_if: schizophrenia_spectrum_fu, label: "Schizophrenia spectrum disorder: number of episodes, at follow-up"}
+  schizophrenia_first_treatment_age_fu: {column: ageprtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Schizophrenia spectrum disorder: age at the first treatment, at follow-up"}
+  schizophrenia_remission_fu: {column: psyhrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Schizophrenia spectrum disorder: in remission, at follow-up"}

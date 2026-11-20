@@ -32,9 +32,16 @@ notes: >
   the three. Each detail is asked for some types only: the specifier and
   the chronicity for a depressive episode, the severity for a depressive,
   manic or mixed one, the postpartum onset for every type but the
-  unspecified one. 24 answers of 2009 to 2015 were given where the form
-  hides the question (7 specifiers, 11 chronicities, 6 severities); they
-  are delivered as written.
+  unspecified one. The form's rule is on the positions of the type list (1
+  depressive, 2 hypomanic, 3 manic, 4 mixed, 5 unspecified): specifier and
+  chronicity on 1, severity on 1, 3 and 4, the yes/no "catatonic" on 3 and
+  4, postpartum on 1 to 4, and shown_if applies it. 28 answers of 2009 to
+  2015 filled where the form hides the question are missing and get
+  not_shown: 24 under a type that hides the question (7 specifiers, 11
+  chronicities, 6 severities) and 4 under an empty type (2 chronicities, 2
+  postpartum), the few cells under an empty parent that the rule also
+  blanks (an exception to the rule that a value under an empty parent stays
+  as recorded).
 
   The most recent episode or the current one. Where the patient is in an
   episode at inclusion, the clinicians often described that episode here:
@@ -49,17 +56,24 @@ notes: >
   atypical specifier to 54% of the depressive episodes, the others to 18%
   or less.
 
-  Dates. Of the 3,823 start dates, 95 are after the visit; of the 3,176 end
-  dates, 87 are more than a month after the visit and 70 are before the
-  start. They are delivered as written. 1000-01-01 is the application's
-  placeholder (2 start and 2 end dates, date_placeholder). 19 dates have no
-  day or no month and are read as the middle of the period (date_partial).
-  1 start date has the year and the month 0000: unparsed, not delivered.
+  Dates. The start date is the date of an event before the visit
+  (before_visit): 100 of the 3,823 start dates are on or after the visit
+  (95 after it, 67 of them by more than a month, and 5 on the visit day),
+  out_of_range and not delivered (3,723 delivered). The end date is not
+  checked in this way, because the episode may be going on: 289 of the
+  3,176 end dates are on or after the visit (110 on the visit day, 87 more
+  than a month after) and are delivered as written. 70 end dates are before
+  the start (60 in the same year; swapping the day and the month of one of
+  the two dates repairs 24); 21 of the 70 have a start after the visit, now
+  removed, so 49 pairs remain. 1000-01-01 is the application's placeholder
+  (2 start and 2 end dates, date_placeholder). 19 dates have no day or no
+  month and are read as the middle of the period (date_partial). 1 start
+  date has the year and the month 0000: unparsed, not delivered.
 
   The type of the most recent episode recorded at the follow-up visits is
   another column, read by the schemas of the follow-up form. Not in the
   extraction: the DSM-IV form asks whether a manic or mixed episode is
-  catatonic (a field labelled "Type d'épisode Catatonique").
+  catatonic (a field labelled "Type d'épisode Catatonique"; R140).
 
 version:
   name: dsm_version
@@ -70,14 +84,15 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm4]}
 
 variables:
-  dsm4_recent_start_date: {column: cestdtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "Start of the most recent episode"}
+  dsm4_recent_start_date: {column: cestdtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], before_visit: true, label: "Start of the most recent episode"}
   dsm4_recent_end_date: {column: ceendtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "End of the most recent episode"}
   dsm4_recent_type: {column: cetermepisode_recent, type: category, codes: {"Episode Dépressif Majeur": mde, "Hypomanie": hypomania, "Manie": mania, "Mixte": mixed, "Episode non spécifié": unspecified}, label: "Type of the most recent episode"}
-  dsm4_recent_specifier: {column: cedecodepisode_recent, type: category, codes: {"Sans caractéristique mélancolique atypique ou catatonique": none, "Sans caractéristique mélancolique atypique catatonique ou mixte": none, "Mélancolique": melancholic, "Atypique": atypical, "Catatonique": catatonic}, label: "Most recent episode, if depressive: specifier"}
-  dsm4_recent_chronic: {column: chronepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Most recent episode, if depressive: chronic"}
-  dsm4_recent_severity: {column: cesevepisode_recent, type: category, codes: {"Léger": mild, "Modéré": moderate, "Sévère sans caractéristiques psychotiques": severe, "Sévère sans caractéristique psychotique": severe, "Sévère avec caractéristiques psychotiques congruentes": severe_psychotic_congruent, "Sévère avec caractéristiques psychotiques non congruentes": severe_psychotic_incongruent}, label: "Severity of the most recent episode (depressive, manic or mixed)"}
-  dsm4_recent_postpartum: {column: ppartepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Most recent episode: after a birth"}
+  dsm4_recent_specifier: {column: cedecodepisode_recent, type: category, codes: {"Sans caractéristique mélancolique atypique ou catatonique": none, "Sans caractéristique mélancolique atypique catatonique ou mixte": none, "Mélancolique": melancholic, "Atypique": atypical, "Catatonique": catatonic}, shown_if: {dsm4_recent_type: [mde]}, label: "Most recent episode, if depressive: specifier"}
+  dsm4_recent_chronic: {column: chronepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, shown_if: {dsm4_recent_type: [mde]}, label: "Most recent episode, if depressive: chronic"}
+  dsm4_recent_severity: {column: cesevepisode_recent, type: category, codes: {"Léger": mild, "Modéré": moderate, "Sévère sans caractéristiques psychotiques": severe, "Sévère sans caractéristique psychotique": severe, "Sévère avec caractéristiques psychotiques congruentes": severe_psychotic_congruent, "Sévère avec caractéristiques psychotiques non congruentes": severe_psychotic_incongruent}, shown_if: {dsm4_recent_type: [mde, mania, mixed]}, label: "Severity of the most recent episode (depressive, manic or mixed)"}
+  dsm4_recent_postpartum: {column: ppartepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, shown_if: {dsm4_recent_type: [mde, hypomania, mania, mixed]}, label: "Most recent episode: after a birth"}

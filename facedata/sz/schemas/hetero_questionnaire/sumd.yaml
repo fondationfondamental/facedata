@@ -2,7 +2,7 @@ instrument: sumd
 title: Scale to assess Unawareness of Mental Disorder (SUMD, abbreviated)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire Self-Unawareness of Mental Disorder SUMD
-status: draft
+status: reviewed
 notes: >
   Rated by the clinician at every visit. Three general items (awareness of
   having a mental disorder, of its consequences, of the effects of the
@@ -21,9 +21,35 @@ notes: >
   to sumd09a, which the dictionary does not list. It does not name the six
   symptoms, so they stay numbered here.
 
+  The attribution and the script (request A62). The script of the form
+  (hetero_sumd.js) is meant to set the attribution of a symptom to 0 ("cannot
+  be rated") when the awareness of the same symptom is 0 or 3, and, for the
+  three general items, to tick attribution radios named
+  labelfieldsradhtml_attribu10, 20 and 30 (lines 37 to 47 and 79 to 89), which
+  the table of the form does not have (it has attribu4 to attribu9 only). When
+  a general item is 0 or 3 the script stops with an error on those lines
+  before it reaches the rules of the symptoms. So 530 attributions of 1 to 3
+  remain under an awareness of 0 or 3 (symptom by symptom 82, 124, 108, 93, 53
+  and 70; 522 of them under awareness 3, 8 under 0), and 6 more sit under an
+  empty awareness. Among the cells with an awareness of 0 or 3 and an
+  attribution, 12.1% (507 of 4,182) hold an attribution of 1 to 3 on the
+  visits where a general item is 0 or 3, against 0.2% (23 of 10,419)
+  elsewhere. The cells stay as recorded and get no shown_if: the form does not
+  hide the attribution (only the script was meant to zero it), and 522 of the
+  536 cells that a rule would blank are an awareness of 3 where the clinician
+  rated the attribution.
+
+  Missing codes. The 0 is read as missing: 29, 128 and 148 visits for the
+  three general items, 1,570 to 2,294 awareness cells and 2,014 to 2,701
+  attribution cells per symptom.
+
   Stored scores. sumd1, sumd2 and sumd3 are the three general items again
-  (equal on 4,534 to 4,539 of about 4,540 visits). They are not loaded
-  (ignored.yaml). The scale has no total.
+  (equal on 4,539 of 4,541, 4,534 of 4,540 and 4,537 of 4,537 visits; the
+  eight others are stale). They are not loaded (ignored.yaml). The scale has
+  no total in the application and none is built here. The abbreviated SUMD-A of
+  the literature scores three dimensions (items 1 to 3, 4 to 6, 7 to 9, the
+  mean rescaled 0 to 100, "cannot be rated" as missing: Michel et al. 2013,
+  scale_reference.md, section 13); the attribution items are outside it.
 
 defaults: {type: item, range: [1, 3], missing: {0: not_applicable}}
 

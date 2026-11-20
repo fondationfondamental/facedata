@@ -2,15 +2,34 @@ instrument: ymrs
 title: "Young Mania Rating Scale (YMRS)"
 tab: HETERO-QUESTIONNAIRES
 section: YMRS (Young Mania Rating Scale, Young et al. 1978)
-status: draft
+status: reviewed
 notes: >
-  Eleven items; items 5, 6, 8 and 9 are rated 0 to 8 and the others 0 to 4.
-  The stored total equals the sum of the items on all 1,033 visits that have
-  them. Mania is rare in this cohort: the median total is 0.
+  Eleven items; items 5, 6, 8 and 9 are rated 0 to 8 and the others 0 to 4
+  (Young et al. 1978; scale_reference.md, section 2), so the total runs from
+  0 to 60. The form keys the four double-weight items 0, 2, 4, 6, 8 and the
+  script (js_scores/125_score.js) adds the keys as they are: nothing is
+  doubled in the package, as in FACE BP (where the script doubles the letters
+  a to e). Mania is rare in this cohort: the median total is 0.
 
-  Rated at the inclusion and follow-up visits. Filled at about 90% of the
-  inclusion visits until 2017 and at about half of them since 2018, like
-  thirteen other scales (open question O1 in PROGRESS.md).
+  The stored total is the export's: the data flow (nucleus definition
+  ymrs.yaml, which names the DR table too) writes the strict sum of the
+  eleven items. It equals the sum of the items on all 1,033 visits that have
+  them (observed maximum 44), by construction, so the comparison validates
+  the items and the export formula, not the application.
+
+  Rated at the inclusion and follow-up visits. Filled at 90% of the V0
+  visits until 2017 (245 of 271) and at 50% since 2018 (183 of 363), like
+  thirteen other scales (open question O1): a visit with the BAS holds the
+  YMRS on 97% (the reverse, 98%). Answered by the application (PROGRESS.md
+  D55): the simplified visit (visite.SVUPDES = 1,
+  config/globale2.php, DESTVISIMP) keeps the MADRS, the QIDS, the CGI, the
+  EQ-5D, the MDQ, the EGF, the ATHF and the etat du patient forms and omits
+  the YMRS (form 125), the BAS (124), the FAST (130), the SACHS (225) and the
+  ERD (228). An empty YMRS since 2018 is "not asked" on a simplified visit,
+  not "no mania"; the extraction does not say which visits were simplified
+  (request R127: the svupdes column). Since 2018, of the 12 centres with 10 V0
+  visits or more, three fill the YMRS on 89% to 97% of their V0 visits and
+  five on 4% to 17%.
 
   Same instrument as in FACE BP and FACE SZ.
 
@@ -35,4 +54,5 @@ scores:
     label: "YMRS total (11 items)"
     sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
           ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
+    range: [0, 60]
     compare: ymrs_total_stored

@@ -1,0 +1,187 @@
+instrument: amiel_lebigre_v0
+title: Life events questionnaire (Amiel-Lebigre), inclusion form
+tab: HETERO-QUESTIONNAIRES
+section: AMIEL-LEBIGRE (Questionnaire d'évènement de vie, Amiel-Lebigre et al.,2005)
+status: reviewed
+notes: >
+  The life-events questionnaire of Amiel-Lebigre at the inclusion visit
+  (form 209): 53 events, each answered 1 (yes) or 0 (no), and for a yes a
+  second answer, "when", chosen in a list of four (six months, one year, two
+  years, whole life). Filled at 354 inclusion visits from 2013 (the share of
+  the V0 visits runs from 16% in 2013 to 90% in 2017 and 43% to 72% since);
+  330 answer all 53 events, with a median of 8 events (mean 9.2, at most
+  39). The follow-up form is another instrument, amiel_lebigre_fu (decision
+  D60 in PROGRESS.md).
+
+  The dictionary names the columns in two lines ("53 items", "if yes, date
+  of the event") and gives neither the events nor a coding. The 53 texts are
+  in the form (the same in forms 209 and 210), and the labels here are their
+  English wording; the 53rd is "other events than these in the last two
+  years". The second column is not a date: it holds the code of the list, 1
+  six months, 2 one year, 3 two years, 4 whole life ("Date :" is the label
+  of the form), on 3,209 of the 3,284 events answered yes at inclusion and
+  never otherwise. It is delivered as a category (before the review as the
+  code: 3,518 cells of the two forms change representation, 3,209 here and
+  309 at follow-up). The form does not say whether "one year" means within
+  the last year or between six and twelve months ago. 75 events answered yes
+  on 12 inclusion visits have no "when": delivered as written, no flag.
+  Event 18 (prison sentence) is never answered yes; the most frequent yes is
+  event 23 (death in the close family, 192 inclusion visits).
+
+  A step in time with no known cause: the count has a median of 4 or 5
+  events a visit in 2015-2018 and 11 to 16 from 2019 (7 of the 8 centres
+  with 6 visits or more in each period rise); the events of the last two
+  years go from a median of 2 to 4 and those ticked "whole life" from 0 to
+  6, with the same four options of the form since 2014 (PROGRESS.md D66,
+  QUESTIONS.md DM-11).
+
+  amiel_events is the number of events answered yes, when the 53 are
+  answered (330 visits); no score is stored and the instrument has none. No
+  published definition matches this form (Amiel-Lebigre and others 1984: a
+  53-event schedule with an impact rating of 0 to 100; 1990: 51 events;
+  1998: counts of upsetting events; the windows of the form and the "2005"
+  of the dictionary have no published counterpart; scale_reference.md,
+  section 20, to verify): the count is the package's own and not a published
+  score.
+
+  Two forms in the same columns. Form 209 is shown at the initial evaluation
+  and form 210 at the evaluations of 24 and 48 months (visit types 2, 6 and
+  8; both are on the simplified visit). They read the same raw columns
+  (amiel01 to amiel53 and amiel01d to amiel53d); the events are the same,
+  and the list of "when" has four options in form 209 and two in form 210.
+  The two are never delivered in one column: visit_form says which form a
+  visit uses (inclusion for the screening and inclusion visits, follow_up
+  for the others), and each form has its own schema and its own variables
+  (the C-SSRS and the ISF of this cohort do the same).
+
+  An instrument of the TRD cohort only.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+
+defaults: {type: item, range: [0, 1], versions: [inclusion]}
+
+variables:
+  amiel01: {column: amiel01, label: "Life event 1: Unemployment of the person or of the partner"}
+  amiel02: {column: amiel02, label: "Life event 2: Difficulties with the boss or colleagues"}
+  amiel03: {column: amiel03, label: "Life event 3: Change of job (of the same type)"}
+  amiel04: {column: amiel04, label: "Life event 4: Change of type of job"}
+  amiel05: {column: amiel05, label: "Life event 5: Change in working hours or conditions"}
+  amiel06: {column: amiel06, label: "Life event 6: Promotion or more responsibilities at work"}
+  amiel07: {column: amiel07, label: "Life event 7: Retirement"}
+  amiel08: {column: amiel08, label: "Life event 8: Moving house"}
+  amiel09: {column: amiel09, label: "Life event 9: Professional failure"}
+  amiel10: {column: amiel10, label: "Life event 10: Change of neighbours"}
+  amiel11: {column: amiel11, label: "Life event 11: Quarrel with neighbours"}
+  amiel12: {column: amiel12, label: "Life event 12: Large increase in income (25%)"}
+  amiel13: {column: amiel13, label: "Life event 13: Large decrease in income (25%)"}
+  amiel14: {column: amiel14, label: "Life event 14: Major debt"}
+  amiel15: {column: amiel15, label: "Life event 15: Minor financial difficulties"}
+  amiel16: {column: amiel16, label: "Life event 16: Loss of objects of great personal value"}
+  amiel17: {column: amiel17, label: "Life event 17: Major violation of the law, legal proceedings"}
+  amiel18: {column: amiel18, label: "Life event 18: Prison sentence"}
+  amiel19: {column: amiel19, label: "Life event 19: Taking part in a fight"}
+  amiel20: {column: amiel20, label: "Life event 20: Onset of alcoholism in the close family"}
+  amiel21: {column: amiel21, label: "Life event 21: Suicide in the close family"}
+  amiel22: {column: amiel22, label: "Life event 22: Imprisonment"}
+  amiel23: {column: amiel23, label: "Life event 23: Death in the close family"}
+  amiel24: {column: amiel24, label: "Life event 24: Death of a close friend"}
+  amiel25: {column: amiel25, label: "Life event 25: Accident or serious illness in the close family"}
+  amiel26: {column: amiel26, label: "Life event 26: A new member of the family comes to live in the home"}
+  amiel27: {column: amiel27, label: "Life event 27: Problems with alcohol or drugs"}
+  amiel28: {column: amiel28, label: "Life event 28: Large decrease in social life"}
+  amiel29: {column: amiel29, label: "Life event 29: No home for a time"}
+  amiel30: {column: amiel30, label: "Life event 30: Serious illness or injury needing hospital treatment or at least a month off work"}
+  amiel31: {column: amiel31, label: "Life event 31: Illness or accident needing medical treatment"}
+  amiel32: {column: amiel32, label: "Life event 32: Sudden and major visual or hearing impairment"}
+  amiel33: {column: amiel33, label: "Life event 33: Unwanted pregnancy (of one of the partners)"}
+  amiel34: {column: amiel34, label: "Life event 34: Miscarriage"}
+  amiel35: {column: amiel35, label: "Life event 35: Abortion"}
+  amiel36: {column: amiel36, label: "Life event 36: Sexual difficulties, personal or in the couple"}
+  amiel37: {column: amiel37, label: "Life event 37: Marriage"}
+  amiel38: {column: amiel38, label: "Life event 38: Pregnancy"}
+  amiel39: {column: amiel39, label: "Life event 39: More quarrels with the spouse or partner"}
+  amiel40: {column: amiel40, label: "Life event 40: More quarrels with one or more persons of the close family"}
+  amiel41: {column: amiel41, label: "Life event 41: Difficulties with other relatives (for example the in-laws)"}
+  amiel42: {column: amiel42, label: "Life event 42: A child leaves home"}
+  amiel43: {column: amiel43, label: "Life event 43: Need to have the children looked after by others"}
+  amiel44: {column: amiel44, label: "Life event 44: Behaviour problems in the children"}
+  amiel45: {column: amiel45, label: "Life event 45: Death of the spouse (or partner)"}
+  amiel46: {column: amiel46, label: "Life event 46: Divorce or legal separation"}
+  amiel47: {column: amiel47, label: "Life event 47: Marital separation imposed by circumstances"}
+  amiel48: {column: amiel48, label: "Life event 48: Extramarital affair"}
+  amiel49: {column: amiel49, label: "Life event 49: End of an affair"}
+  amiel50: {column: amiel50, label: "Life event 50: Infidelity of the spouse"}
+  amiel51: {column: amiel51, label: "Life event 51: Marital reconciliation"}
+  amiel52: {column: amiel52, label: "Life event 52: Start or end of the spouse's work"}
+  amiel53: {column: amiel53, label: "Life event 53: Other events than the above in the last two years"}
+  amiel01_when: {column: amiel01d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 1: when it happened"}
+  amiel02_when: {column: amiel02d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 2: when it happened"}
+  amiel03_when: {column: amiel03d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 3: when it happened"}
+  amiel04_when: {column: amiel04d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 4: when it happened"}
+  amiel05_when: {column: amiel05d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 5: when it happened"}
+  amiel06_when: {column: amiel06d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 6: when it happened"}
+  amiel07_when: {column: amiel07d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 7: when it happened"}
+  amiel08_when: {column: amiel08d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 8: when it happened"}
+  amiel09_when: {column: amiel09d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 9: when it happened"}
+  amiel10_when: {column: amiel10d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 10: when it happened"}
+  amiel11_when: {column: amiel11d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 11: when it happened"}
+  amiel12_when: {column: amiel12d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 12: when it happened"}
+  amiel13_when: {column: amiel13d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 13: when it happened"}
+  amiel14_when: {column: amiel14d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 14: when it happened"}
+  amiel15_when: {column: amiel15d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 15: when it happened"}
+  amiel16_when: {column: amiel16d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 16: when it happened"}
+  amiel17_when: {column: amiel17d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 17: when it happened"}
+  amiel18_when: {column: amiel18d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 18: when it happened"}
+  amiel19_when: {column: amiel19d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 19: when it happened"}
+  amiel20_when: {column: amiel20d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 20: when it happened"}
+  amiel21_when: {column: amiel21d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 21: when it happened"}
+  amiel22_when: {column: amiel22d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 22: when it happened"}
+  amiel23_when: {column: amiel23d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 23: when it happened"}
+  amiel24_when: {column: amiel24d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 24: when it happened"}
+  amiel25_when: {column: amiel25d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 25: when it happened"}
+  amiel26_when: {column: amiel26d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 26: when it happened"}
+  amiel27_when: {column: amiel27d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 27: when it happened"}
+  amiel28_when: {column: amiel28d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 28: when it happened"}
+  amiel29_when: {column: amiel29d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 29: when it happened"}
+  amiel30_when: {column: amiel30d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 30: when it happened"}
+  amiel31_when: {column: amiel31d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 31: when it happened"}
+  amiel32_when: {column: amiel32d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 32: when it happened"}
+  amiel33_when: {column: amiel33d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 33: when it happened"}
+  amiel34_when: {column: amiel34d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 34: when it happened"}
+  amiel35_when: {column: amiel35d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 35: when it happened"}
+  amiel36_when: {column: amiel36d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 36: when it happened"}
+  amiel37_when: {column: amiel37d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 37: when it happened"}
+  amiel38_when: {column: amiel38d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 38: when it happened"}
+  amiel39_when: {column: amiel39d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 39: when it happened"}
+  amiel40_when: {column: amiel40d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 40: when it happened"}
+  amiel41_when: {column: amiel41d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 41: when it happened"}
+  amiel42_when: {column: amiel42d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 42: when it happened"}
+  amiel43_when: {column: amiel43d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 43: when it happened"}
+  amiel44_when: {column: amiel44d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 44: when it happened"}
+  amiel45_when: {column: amiel45d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 45: when it happened"}
+  amiel46_when: {column: amiel46d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 46: when it happened"}
+  amiel47_when: {column: amiel47d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 47: when it happened"}
+  amiel48_when: {column: amiel48d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 48: when it happened"}
+  amiel49_when: {column: amiel49d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 49: when it happened"}
+  amiel50_when: {column: amiel50d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 50: when it happened"}
+  amiel51_when: {column: amiel51d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 51: when it happened"}
+  amiel52_when: {column: amiel52d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 52: when it happened"}
+  amiel53_when: {column: amiel53d, type: category, codes: {"1": six_months, "2": one_year, "3": two_years, "4": whole_life}, label: "Life event 53: when it happened"}
+
+scores:
+  amiel_events:
+    label: "Number of life events answered yes (0 to 53)"
+    sum: [amiel01, amiel02, amiel03, amiel04, amiel05, amiel06, amiel07, amiel08, amiel09, amiel10, amiel11, amiel12, amiel13, amiel14, amiel15, amiel16, amiel17, amiel18, amiel19, amiel20, amiel21, amiel22, amiel23, amiel24, amiel25, amiel26, amiel27, amiel28, amiel29, amiel30, amiel31, amiel32, amiel33, amiel34, amiel35, amiel36, amiel37, amiel38, amiel39, amiel40, amiel41, amiel42, amiel43, amiel44, amiel45, amiel46, amiel47, amiel48, amiel49, amiel50, amiel51, amiel52, amiel53]

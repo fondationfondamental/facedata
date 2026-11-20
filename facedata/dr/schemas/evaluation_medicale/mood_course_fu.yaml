@@ -2,20 +2,69 @@ instrument: mood_course_fu
 title: "Mood episodes since the last visit (follow-up form)"
 tab: EVALUATION MEDICALE
 section: Caractéristiques
-status: draft
+status: reviewed
 notes: >
   The mood episodes since the last visit, at the follow-up visits: 836
-  visits (88% to 97% of the visits of each kind).
+  visits (88% to 97% of the visits of each kind: 91% at 6 months, 89% at
+  12, 93% at 18, 88% at 24, 97% at 48). The section of the patient-state
+  form (form 183) is headed "DEPUIS DERNIERE VISITE": the counts say since
+  the last visit, with no other period. The window is not the same for
+  every visit: the median gap to the previous visit is 190 days (quartiles
+  177 and 231) and 744 days at the 4-year visit, which often follows a
+  2-year one.
+
+  The dictionary lists the visits of three of these questions (the manic
+  psychotic yes/no, the induced yes/no and the suicide attempts) as 6
+  months and 1 year only; they are filled at the later follow-up visits too
+  (18 months to 5 years).
+
+  Names. The counts that BP's DSM-IV follow-up form also asks (depressive,
+  depressive with psychotic features, hypomanic, manic with psychotic
+  features, mixed) carry BP's names (dsm4_fu_n_mde, dsm4_fu_n_mde_psychotic,
+  dsm4_fu_n_hypomania, dsm4_fu_n_mania_psychotic, dsm4_fu_n_mixed): the
+  same question in other raw columns (evnum_*, BP reads evnum_*_spv). BP's
+  hard limit of these counts is 20 and so is this one (largest typed here:
+  8 depressive, 3 hypomanic). The counts that BP does not have keep their
+  name: the resistant episodes, the induced episodes with their yes/no, the
+  yes/no for a manic episode with psychotic features, and the suicide
+  attempts (the ETAT_SUI_NB field of the form, not BP's attempt question:
+  D49). BP's follow-up gate "at least one episode since the last visit"
+  and the total number of episodes do not exist in the DR form.
 
   Two forms in the same columns. The inclusion visit asks about the whole
   life; the follow-up visits use the same columns for the time since the
   last visit. The two are never delivered in one column: visit_form says
   which form a visit uses (inclusion for the screening and inclusion
   visits, follow_up for the others), and each form has its own schema and
-  its own variables.
+  its own variables. Forms 116 and 183 never meet on one visit, though they
+  share the evnum_* columns (mood_history_v0.yaml).
 
   A major depressive episode since the last visit on 327 of 809 visits, a
-  resistant one on 252 of 796, a suicide attempt on 44 of 796.
+  resistant one on 252 of 796, a suicide attempt on 44 of 796. A resistant
+  count above the depressive count on 13 of 795 visits, a count of
+  episodes with psychotic features above the depressive count on 1.
+
+  Gates. The induced episode is a yes/no (mhoccur_eind) and a count after a
+  yes: the form shows the count only after a yes and leaves it blank after
+  a no (asked_if: 821 cells missing become 0; 9 yes answers hold the count
+  1, 2 no answers hold a typed 0, 2 "not known" stay missing). The manic
+  psychotic yes/no is NOT a gate for its count: the form shows the yes/no
+  only when the hypomanic count is above 0 (formulaires.js line 4617 reads
+  ETAT_EPI_HYPOMAN where there is no manic count in this form: a defect;
+  line 4618 does the same for the mixed psychotic question). Only 17 yes/no
+  cells are filled (16 "no", 1 "not known"; 14 of them under a hypomanic
+  count above 0, 3 under 0) while the always-shown count is filled on 791
+  visits (2 above 0): the count is the usable answer, its yes/no stays as
+  typed and the 774 blanks of the yes/no beside a count are not "no".
+
+  Not in the extraction. Form 183 also asks, since the last visit, the
+  mixed episodes with psychotic features (yes/no ETAT_EPI_MIXTE_PSYCHO and
+  its count; the label says "maniaque" at line 50 of 183.php), the
+  complete and the incomplete remission between the episodes and the
+  seasonal pattern. The table holds them, the clean model of the form
+  (edepression_hetero_etatp.sql) and the export do not select them
+  (request R142): evnum_emixt_psy and the remission and seasonal columns
+  of this extraction come from form 116 only.
 
   Four columns that the dictionary does not list (etat_epi_maj,
   fetat_epi_edm, etat_epi_depress, etat_sui_nb) are the fields of the
@@ -40,13 +89,13 @@ version:
 defaults: {type: item, versions: [follow_up]}
 
 variables:
-  n_mde_since_visit: {column: evnum_edm, type: number, range: [0, 60], winsor: false, label: Number of major depressive episodes since the last visit}
-  n_mde_psychotic_since_visit: {column: evnum_edm_psy, type: number, range: [0, 60], winsor: false, label: Number of major depressive episodes with psychotic features since the last visit}
-  n_resistant_episodes_since_visit: {column: evnum_edr, type: number, range: [0, 60], winsor: false, label: Number of depressive episodes resistant to two treatments or more since the last visit}
-  n_hypomanic_since_visit: {column: evnum_ehman, type: number, range: [0, 60], winsor: false, label: Number of hypomanic episodes since the last visit}
+  dsm4_fu_n_mde: {column: evnum_edm, type: number, range: [0, 20], winsor: false, label: Number of major depressive episodes since the last visit}
+  dsm4_fu_n_mde_psychotic: {column: evnum_edm_psy, type: number, range: [0, 20], winsor: false, label: Number of major depressive episodes with psychotic features since the last visit}
+  n_resistant_episodes_since_visit: {column: evnum_edr, type: number, range: [0, 20], winsor: false, label: Number of depressive episodes resistant to two treatments or more since the last visit}
+  dsm4_fu_n_hypomania: {column: evnum_ehman, type: number, range: [0, 20], winsor: false, label: Number of hypomanic episodes since the last visit}
   manic_psychotic_since_visit: {column: mhoccur_eman_psy, range: [0, 1], missing: {"2": unknown}, label: A manic episode with psychotic features since the last visit}
-  n_manic_psychotic_since_visit: {column: evnum_eman_psy, type: number, range: [0, 60], winsor: false, label: Number of manic episodes with psychotic features since the last visit}
-  n_mixed_since_visit: {column: evnum_emixt, type: number, range: [0, 60], winsor: false, label: Number of mixed episodes since the last visit}
+  dsm4_fu_n_mania_psychotic: {column: evnum_eman_psy, type: number, range: [0, 20], winsor: false, label: Number of manic episodes with psychotic features since the last visit}
+  dsm4_fu_n_mixed: {column: evnum_emixt, type: number, range: [0, 20], winsor: false, label: Number of mixed episodes since the last visit}
   induced_episode_since_visit: {column: mhoccur_eind, range: [0, 1], missing: {"2": unknown}, label: An induced episode since the last visit}
-  n_induced_since_visit: {column: evnum_eind, type: number, range: [0, 60], winsor: false, label: Number of induced episodes since the last visit}
+  n_induced_since_visit: {column: evnum_eind, type: number, range: [0, 20], winsor: false, asked_if: induced_episode_since_visit, label: Number of induced episodes since the last visit}
   n_suicide_attempts_since_visit: {column: evnum_suicid, type: number, range: [0, 99], winsor: false, label: Number of suicide attempts since the last visit}

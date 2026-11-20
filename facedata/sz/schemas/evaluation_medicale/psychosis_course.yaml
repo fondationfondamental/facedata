@@ -2,24 +2,64 @@ instrument: psychosis_course
 title: Course of the psychotic disorder
 tab: EVALUATION MEDICALE
 section: Caractéristiques du trouble vie entière
-status: draft
+status: reviewed
 notes: >
   At the inclusion visit: the age at the first psychotic episode and at the
   first antipsychotic treatment, the duration of untreated psychosis in
   months, the number of psychotic episodes and the course of the symptoms
-  (about 2,200 visits). At every visit: a psychotic episode in the past
-  year, a suicide attempt in the past year and their number (4,461 visits).
+  (2,244 visits answer at least one of these). At every visit: a psychotic
+  episode in the past year, a suicide attempt in the past year and their
+  number (4,549 visits answer at least one of the three). The follow-up form
+  of the application has its own course question and its 12-month questions on
+  violence and substances; the export does not read them (request R141,
+  face_sz_9_evaluation_medicale.sql lines 20 to 34 and 81). The export keeps
+  one row per visit, the most complete, and breaks ties arbitrarily (lines 118
+  to 133); no visit of the extraction has a duplicate (question to the data
+  managers).
 
   "Ne sais pas" is a missing code (41 and 44 ages, 163 answers on the
   episode of the past year); so is 999 in the duration (14). The number of
   episodes holds "Aucun" on 37 visits, read as 0, and "more than 20" on 21
-  (censored_right). The number of attempts is filled after a yes.
+  (censored_right). "<5" is read as 5 (censored_left) on 4 cells: one age at
+  the first episode, two ages at the first treatment, one duration. Two more
+  answers of the duration are words typed in the box of months (one word and
+  one of three words): they are unparsed and stay missing.
 
-  The duration of untreated psychosis is delivered as typed. It is not the
-  difference between the two ages, which are in whole years.
+  The name. first_psychotic_episode_age is the age at the first psychotic
+  episode (it was first_episode_age; R12). DR delivered its age at the first
+  depressive episode under the same name, which is another question; the hub of
+  the export maps this column to AGEDEBUTPremier_episode (face_sz_all.sql,
+  line 283), the name of the first mood episode in BP.
+
+  The duration of untreated psychosis is a number of months, typed in a
+  numeric field. It is not the difference between the two ages, which are in
+  whole years, and it is not delivered as typed: 15 cells (192 to 360 months)
+  are winsorised to 184, and the one cell of 680 is out of range (the maximum
+  is 600). 14 durations are longer than the time since the first episode (the
+  difference of the age at the visit and the age at the first episode, in
+  whole years) plus 12 months.
+
+  The number of attempts in the past year is shown after a yes to the attempt
+  question and is 0 here after a no (asked_if): 4,319 cells, 2,041 at inclusion
+  and 2,278 at follow-up. It is a number that is not winsorised (a count of
+  events that is 0 for most visits), from 0 to 20: the list of the form is 0
+  to 20 and ">20", which would be read as censored at 20 (no cell holds it; 17
+  is the largest value). After a yes it is
+  filled on 116 of the 126 inclusion visits and on 51 of the 53 follow-up
+  visits; it is 0 after a yes on 3 inclusion visits and 1 follow-up visit.
+
+  Consistency. The age at the first episode is above the age at the visit on 8
+  visits (2 by more than a year), and the age at the first antipsychotic
+  treatment on 17 (2 by more than a year). The first treatment is before the
+  first episode on 65 of 2,093 visits that have both (50 by 2 years or more).
+  The course says a single episode and the number of episodes is 2 or more on
+  33 of 168 visits (165 have a number); it says episodic and the number is 1 on
+  172 of 1,183 (1,060 have a number). A psychotic episode in the past year (yes
+  at inclusion) has a number of episodes of 0 on 7 inclusion visits and no
+  number on 135.
 
 variables:
-  first_episode_age: {column: agepisod, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotic episode}
+  first_psychotic_episode_age: {column: agepisod, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotic episode}
   first_antipsychotic_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first antipsychotic treatment}
   untreated_psychosis_months: {column: duree, type: number, unit: months, range: [0, 600], missing: {999: unknown}, label: Duration of untreated psychosis}
   n_psychotic_episodes: {column: evnum_tbpsy_lt, type: number, range: [0, 20], codes: {Aucun: 0}, winsor: false, label: Number of psychotic episodes}
@@ -39,4 +79,4 @@ variables:
       Autre cours évolutif: other
   psychotic_episode_12m: {column: mhoccur_tbpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: At least one psychotic episode in the past year}
   suicide_attempt_12m: {column: mhoccur_suicid_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: Suicide attempt in the past year}
-  n_suicide_attempts_12m: {column: evnum_suicid_ly, type: item, range: [0, 50], label: Number of suicide attempts in the past year}
+  n_suicide_attempts_12m: {column: evnum_suicid_ly, type: number, winsor: false, range: [0, 20], asked_if: suicide_attempt_12m, label: Number of suicide attempts in the past year}

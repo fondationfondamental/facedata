@@ -74,7 +74,12 @@ cgi_egf:
   note: >
     The CGI severity (1 to 7) and the GAF (1 to 100) are in the four cohorts.
     The CGI improvement, therapeutic effect, side effects and efficacy index
-    are in BP and SZ only.
+    are in BP and SZ only: the index is recomputed as 4 x (therapeutic effect
+    - 1) + side effects, with the stored value as a check (the application
+    computes it only when the side-effects label is clicked, so the stored
+    index goes stale). DR has the severity only: the application collects a
+    CGI-I that the extraction does not export (R145). SZ and DR keep the digits
+    of the GAF only (R138).
 
 madrs:
   title: Montgomery-Asberg Depression Rating Scale (MADRS)
@@ -94,13 +99,14 @@ ymrs:
   stack: "yes"
   use: [ymrs_total]
   note: >
-    Eleven items; items 5, 6, 8 and 9 count double (0, 2, 4, 6, 8). The SZ form
-    stores items 5, 8 and 9 as levels (0 to 4) and its stored total counts them
+    Eleven items; items 5, 6, 8 and 9 count double (0, 2, 4, 6, 8). The SZ
+    export maps the letters of items 5, 8 and 9 to levels 0 to 4 where BP and
+    DR give points (a mapping slip, R135) and its stored total counts them
     once: the package delivers the three items in points and the published
-    total, so that the three cohorts are on one scale. A SZ total computed
-    before this correction is lower on the visits where one of these items is
-    not 0. In DR it is on about nine inclusions in ten until 2016 and about one
-    in two since 2018.
+    total, so that the three cohorts are on one scale. The stored SZ total is
+    lower on 776 of 4,538 visits. In DR the scale is not asked on the
+    simplified visits of 2018 onward (R139): it is on nine inclusions in ten
+    to 2017 and one in two since 2018.
 
 fast:
   title: Functioning Assessment Short Test (FAST)
@@ -110,22 +116,29 @@ fast:
   use: [fast_total, fast_autonomy, fast_occupational, fast_cognitive, fast_financial, fast_interpersonal, fast_leisure]
   note: >
     Twenty-four items of 0 to 3, six domains and a total, recomputed from the
-    items in both cohorts. Higher is worse. In DR it is on about nine inclusions
-    in ten until 2016 and about one in two since 2018.
+    items in both cohorts. Higher is worse. The DR application script empties
+    all six domains when one item is blank and the package recomputes a domain
+    on a partial visit. In DR the scale is not asked on the simplified visits
+    of 2018 onward (R139): it is on nine inclusions in ten to 2017 and one in
+    two since 2018.
 
 etat_depressif:
-  title: Current major depressive episode, DSM-IV symptom checklist
+  title: Depressive symptoms present at the visit (DSM-IV criterion A checklist)
   domain: Scales rated by the clinician
   schemas: {bp: etat_depressif, dr: etat_depressif}
   stack: with care
   use: [etatd_total]
   note: >
-    Nine symptoms and their count. The details of a symptom (weight gain or
-    loss, insomnia or hypersomnia, agitation or retardation) are not recorded
-    the same way in the two cohorts: use the nine symptoms and the count.
+    Nine symptoms and their count; the form is filled whatever the mood state
+    (it is not an episode). The details of a symptom (weight gain or loss,
+    insomnia or hypersomnia, agitation or retardation) are not recorded the
+    same way in the two cohorts (DR has a list form with an 'unknown' option 3
+    and gated details): use the nine symptoms and the count. The DR ninth
+    symptom reads 'or a specific plan', the BP one does not: the yes rates are
+    not comparable.
 
 etat_maniaque:
-  title: Current manic episode, DSM-IV symptom checklist
+  title: Manic symptoms present at the visit (DSM-IV checklist)
   domain: Scales rated by the clinician
   schemas: {bp: etat_maniaque, dr: etat_maniaque}
   stack: "yes"
@@ -629,7 +642,7 @@ learning_disorders:
 anxiety_v0:
   title: Anxiety disorders at inclusion
   domain: Diagnosis, comorbidities and substances
-  schemas: {bp: anxiety_v0, sz: anxiety_v0}
+  schemas: {bp: anxiety_v0, sz: anxiety_v0, asp: anxiety_disorders_v0}
   stack: with care
   use: [anxiety_disorder_v0, agoraphobia_v0, social_phobia_v0, specific_phobia_v0, ocd_v0, ptsd_v0, gad_v0]
   note: >
@@ -641,12 +654,16 @@ anxiety_v0:
     are not delivered (they hold the social phobia, R113) and BP's
     panic_disorder_v0 is corrected where only an agoraphobia can have ticked
     it. DR assesses the same disorders with the MINI at the screening visit
-    (other variables, not stacked); ASP has its own form.
+    (other variables, not stacked). ASP's clinician list (form 202) carries the
+    same names for the disorders and their ages at onset (hard limit 0 to 70
+    years against 0 to 90 in BP); its remission is 'now', not the last month,
+    and its generalised_anxiety_v0 is not the gad_v0 of BP; separation anxiety
+    and PTSD are asked from 2021 only.
 
 anxiety_fu:
   title: Anxiety disorders at the yearly visits
   domain: Diagnosis, comorbidities and substances
-  schemas: {bp: anxiety_fu, sz: anxiety_fu}
+  schemas: {bp: anxiety_fu, sz: anxiety_fu, asp: anxiety_disorders_fu}
   stack: with care
   use: [anxiety_disorder_fu]
   note: >
@@ -658,9 +675,9 @@ anxiety_fu:
 substance_v0:
   title: Substance use disorders at inclusion
   domain: Diagnosis, comorbidities and substances
-  schemas: {bp: substance_v0, sz: substance_v0}
+  schemas: {bp: substance_v0, sz: substance_v0, asp: substance_use}
   stack: with care
-  use: [alcohol_disorder_v0, cannabis_disorder_v0, sedative_disorder_v0, opiate_disorder_v0, cocaine_disorder_v0]
+  use: [alcohol_disorder_v0, cannabis_disorder_v0, sedative_disorder_v0, opiate_disorder_v0, cocaine_disorder_v0, hallucinogen_disorder_v0, stimulant_disorder_v0, alcohol_onset_age_v0, cannabis_onset_age_v0, cocaine_onset_age_v0, hallucinogen_onset_age_v0, stimulant_onset_age_v0]
   note: >
     The disorder, 'in the last month' and the age at onset of each substance are
     under the same names. In SZ the first question (any substance use disorder)
@@ -669,10 +686,14 @@ substance_v0:
     least one DSM-5 criterion)'; the sedative, opiate, cocaine and hallucinogen
     boxes are 0 after a 'no' to the opening drug question; the module is used
     from 2015. SZ has no type of disorder (abuse or dependence) and no duration,
-    and six substances. DR uses the MINI and ASP its own form (other variables,
-    not stacked): ASP's alcohol_first_age, cannabis_first_age and
-    cocaine_first_age are the onset of the disorder, as the _onset_age
-    variables here, and are renamed in the review of its tab.
+    and six substances. DR uses the MINI. ASP's substance_use (clinician's
+    list, inclusion only, form 202) carries the same names for alcohol,
+    cannabis, cocaine, stimulants and hallucinogens: the 0/1 items are 0 after
+    a no to the opening question as in BP, and the onset ages are the age at
+    onset of the disorder; its benzodiazepines (narrower than the sedatives),
+    solvents, tobacco and steroids have names of their own, it has no opiates,
+    no 'last month' and no duration (its 'past or current' status is another
+    question).
 
 substance_fu:
   title: Substance use disorders at the yearly visits
@@ -707,7 +728,10 @@ tobacco:
     The status (non-smoker, smoker, ex-smoker), the pack-years and the two ages
     are in the four cohorts, with the same three answers. ASP records tobacco
     from 2020, and its pack-years are doubtful (ASP O10): compare the
-    pack-years of BP, SZ and DR only. 'Non fumeur' is not 'never smoked': a
+    pack-years of BP, SZ and DR only. ASP's clinician list also asks the age at
+    the start of smoking (smoking_start_age_clinician, equal on 12 of 13
+    visits); SZ's tobacco_first_age is the first cigarette: the three names are
+    not joined. 'Non fumeur' is not 'never smoked': a
     patient answers non-smoker at one visit and smoker or ex-smoker at another
     (about 12% of the non-smoker visits of BP follow a visit of a smoker), so
     no pack-year is 0 by derivation. SZ asks five more questions, from 2015.
@@ -715,30 +739,90 @@ tobacco:
 
 
 
-first_episode_age:
-  title: Age at the first episode of the disorder
+first_mood_episode:
+  title: The first mood episode (DSM-IV form)
   domain: Diagnosis, comorbidities and substances
-  schemas: {sz: psychosis_course, dr: mood_history_v0}
+  schemas: {bp: dsm4_premier_episode, dr: mood_history_v0}
   stack: with care
-  use: [first_episode_age]
+  use: [dsm4_first_episode_age, dsm4_first_episode_type, dsm4_first_episode_postpartum]
   note: >
-    The same name for the first episode of the disorder of each cohort: the
-    first psychotic episode in SZ, the first depressive episode in DR. BP holds
-    the age at the first mood episode under its own names (dsm4_premier_episode,
-    dsm5_premier_episode).
+    BP's DSM-IV form and DR's form 116 read the same raw columns and carry the
+    same names: the age, the type and the postpartum onset of the first mood
+    episode. BP delivers the DSM-5 form apart (dsm5_premier_episode, the first
+    major depressive episode); DR has one form. The DR age is as declared,
+    not corrected. The first psychotic episode of SZ is another question
+    (first_psychotic_episode_age) and is not joined.
+
+mood_episodes_lifetime:
+  title: Mood episodes over the whole life (DSM-IV form)
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: dsm4_vie_entiere, dr: mood_history_v0}
+  stack: with care
+  use: [dsm4_lt_n_mde, dsm4_lt_n_mde_psychotic, dsm4_lt_n_hypomania, dsm4_lt_n_mania, dsm4_lt_n_mania_psychotic, dsm4_lt_n_mixed, dsm4_lt_n_mixed_psychotic, dsm4_lt_n_induced, dsm4_lt_full_remission, dsm4_lt_seasonal, dsm4_lt_first_treatment_age]
+  note: >
+    The counts include the current episode. The hard limit is 20 in BP and 50
+    in DR (one DR visit holds 50). BP asks a yes/no before each count of
+    episodes with psychotic features; DR has the count only, and gives it 0
+    when the number of episodes of the kind is 0.
+
+mood_episodes_since_visit:
+  title: Mood episodes since the last visit (DSM-IV form)
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: dsm4_depuis_derniere_visite, dr: mood_course_fu}
+  stack: with care
+  use: [dsm4_fu_n_mde, dsm4_fu_n_mde_psychotic, dsm4_fu_n_hypomania, dsm4_fu_n_mania_psychotic, dsm4_fu_n_mixed]
+  note: >
+    DR's section is headed 'since the last visit', with a window of about six
+    months at most visits (median gap 190 days); the BP window is six months
+    or a year, and the BP DSM-5 edition of 2022 is another schema. Do not
+    compare counts across windows.
+
+current_mood_episode:
+  title: The current mood episode (DSM-IV form)
+  domain: Diagnosis, comorbidities and substances
+  schemas: {bp: dsm4_episode_actuel, dr: mood_history_v0}
+  stack: with care
+  use: [dsm4_current_severity, dsm4_current_chronic, dsm4_current_postpartum]
+  note: >
+    The severity, the chronic course and the postpartum onset of the current
+    episode, read from the same raw columns as in BP.
+
+isf_lifetime_fu:
+  title: Suicidal thoughts and acts, the lifetime form asked again at a follow-up visit
+  domain: Suicide
+  schemas: {dr: isf_lifetime_fu, asp: suicide_and_self_harm_fu}
+  stack: with care
+  use: [isf05_lifetime_fu]
+  note: >
+    The form carries no period (LIFETIME wording in ASP, the inclusion form
+    asked again in DR): it is not joined with isf_since_visit of BP and SZ.
+    A lifetime yes at inclusion becomes a no at follow-up in some patients.
+
+suicide_attempts_fu:
+  title: Suicide attempts, the lifetime form asked again at a follow-up visit
+  domain: Suicide
+  schemas: {dr: suicide_attempts_fu, asp: suicide_and_self_harm_fu}
+  stack: with care
+  use: [n_attempts_fu]
+  note: >
+    The number of attempts of the lifetime form asked again at a follow-up
+    visit: not the number since the last visit.
 
 # ---------------------------------------------------------------- Suicide
 
 isf_lifetime:
   title: Suicidal thoughts and acts over the whole life (inclusion form)
   domain: Suicide
-  schemas: {bp: isf_lifetime, sz: isf_lifetime, dr: isf_lifetime}
-  stack: "yes"
+  schemas: {bp: isf_lifetime, sz: isf_lifetime, dr: isf_lifetime, asp: suicide_and_self_harm_v0}
+  stack: with care
   use: [isf01_lifetime, isf02_lifetime, isf03_lifetime, isf04_lifetime, isf05_lifetime]
   note: >
     Five yes/no questions and when (last week, two weeks to a year, over a
     year), the same in the three cohorts. In DR part of the centres fill only
-    the Columbia scale from 2018.
+    the Columbia scale from 2018. ASP asks the fifth question only
+    (isf05_lifetime, 'conduites suicidaires' in its form): its yes rate is
+    11.5% against 38% in BP, so do not compare them before the clinicians say
+    what the question means.
 
 isf_since_visit:
   title: Suicidal thoughts and acts since the last visit (follow-up form)
@@ -784,7 +868,7 @@ cssrs_fu:
 suicide_attempts:
   title: History of suicide attempts over the whole life (inclusion form)
   domain: Suicide
-  schemas: {bp: suicide_attempts, sz: suicide_attempts, dr: suicide_attempts}
+  schemas: {bp: suicide_attempts, sz: suicide_attempts, dr: suicide_attempts, asp: suicide_and_self_harm_v0}
   stack: with care
   use: [n_attempts, first_attempt_date, violent_attempts, serious_attempts, n_violent_attempts, n_serious_attempts]
   note: >
@@ -795,7 +879,11 @@ suicide_attempts:
     is out of range. The three cohorts deliver it from the inclusion visit
     only, where it is about the whole life; the follow-up visits are in
     suicide_attempts_since_visit in BP and SZ, and in suicide_attempts_fu in
-    DR (the lifetime form asked again at 24 and 48 months: not joined).
+    DR (the lifetime form asked again at 24 and 48 months: not joined). ASP
+    gives the number of attempts (n_attempts) and the ages of the first and
+    last one (first_attempt_age, last_attempt_age), not a date, and a
+    serious_suicide_attempt that is another question than the intensive-care
+    attempt.
 
 suicide_attempts_since_visit:
   title: Suicide attempts since the last visit (follow-up form)
@@ -811,7 +899,7 @@ suicide_attempts_since_visit:
     2023 (period_removed): its follow-up form of that time also asked about
     the whole life. DR's number of attempts since the last visit, read from
     another question (the clinician's summary of the course, mood_course_fu),
-    is n_suicide_attempts_since_visit.
+    is n_suicide_attempts_since_visit (ASP's follow-up number is n_attempts_fu).
 
 most_serious_attempt:
   title: The most serious suicide attempt

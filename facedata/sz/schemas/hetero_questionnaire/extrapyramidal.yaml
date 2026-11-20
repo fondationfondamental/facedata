@@ -1,38 +1,56 @@
 instrument: extrapyramidal
-title: Extrapyramidal side effects (ten-item scale, parkinsonism)
+title: Extrapyramidal side effects (Simpson-Angus Scale, parkinsonism)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire EFFETS SECONDAIRES EXTRA-PYRAMIDAUX
-status: draft
+status: reviewed
 notes: >
   Rated by the clinician at every visit: ten items from 0 (normal) to 4
-  (severe). The dictionary gives no name to the items, only "Q1 to Q10";
-  ten items of 0 to 4 with a mean score is the form of the Simpson-Angus
-  scale, but the dictionary does not say so and the items stay numbered.
+  (severe). It is the Simpson-Angus Scale (Simpson and Angus 1970): the ten
+  items are the ten of the form, in its order (scale_reference.md, section 12).
+  The dictionary calls the columns ESRSA01 to ESRSA10 and the items "Q1 to
+  Q10", and the name esrsa stays here; but the form is not the ESRS of
+  Chouinard (another instrument, with items of 0 to 3, 0 to 6 and 0 to 8, no
+  mean).
+
+  The items (form fields in brackets): 1 gait (radhtml_dempatient), 2 arm
+  dropping (chut), 3 passive shoulder movement (epaule), 4 elbow rigidity
+  (coude), 5 wrist rigidity (poignet), 6 leg pendulousness (jambe), 7 head
+  dropping (tete), 8 glabella tap (yeux), 9 tremor (entree), 10 salivation
+  (parole). The export writes them in this order (eschizo_hetero_extrapyramidaux.sql).
+  Item 8 counts the blinks after the taps, in five classes: 0 to 5, 6 to 10,
+  11 to 15, 16 to 20 and 21 or more; the 112 cells at 4 are "21 or more".
 
   Score. The stored score (esrsa, "parkinsonism if 1 or more" in the
-  dictionary) is the mean of the ten items, rounded to one decimal: equal
-  to ours on 4,185 of 4,195 visits, hence the tolerance. The ten others get
-  score_mismatch. A mean needs its ten items; 46 visits have the ten items
-  and no stored score.
+  dictionary) is the mean of the ten items, as the script of the form computes
+  it (the sum divided by 10, on a button; nothing is rounded: a sum of whole
+  numbers over 10 has one decimal by itself). It is equal to ours on 4,185 of
+  4,195 visits. The ten others get score_mismatch, all with a stored value
+  below the items (probably an item edited after the button was clicked). A
+  mean needs its ten items; 46 visits have the ten items and no stored score,
+  and one visit has a stored score and fewer than ten items (score_not_recomputed).
+
+  The dictionary rule "parkinsonism if 1 or more" has no published basis: the
+  mean is 1 or more on 3.6% of the visits and 0.3 or more on 27.2%. The
+  published cut-offs for the mean of this scale are 0.3 and 0.65 (Janno et al.
+  2005); their origin is to verify. No cut-off is delivered.
 
 defaults: {type: item, range: [0, 4]}
 
 variables:
-  esrsa01: {label: "Extrapyramidal scale, item 1"}
-  esrsa02: {label: "Extrapyramidal scale, item 2"}
-  esrsa03: {label: "Extrapyramidal scale, item 3"}
-  esrsa04: {label: "Extrapyramidal scale, item 4"}
-  esrsa05: {label: "Extrapyramidal scale, item 5"}
-  esrsa06: {label: "Extrapyramidal scale, item 6"}
-  esrsa07: {label: "Extrapyramidal scale, item 7"}
-  esrsa08: {label: "Extrapyramidal scale, item 8"}
-  esrsa09: {label: "Extrapyramidal scale, item 9"}
-  esrsa10: {label: "Extrapyramidal scale, item 10"}
-  esrsa_mean_stored: {column: esrsa, type: number, label: Mean as stored (one decimal), range: [0, 4], winsor: false, keep: false}
+  esrsa01: {label: "Simpson-Angus 1: gait"}
+  esrsa02: {label: "Simpson-Angus 2: arm dropping"}
+  esrsa03: {label: "Simpson-Angus 3: passive shoulder movement"}
+  esrsa04: {label: "Simpson-Angus 4: elbow rigidity"}
+  esrsa05: {label: "Simpson-Angus 5: wrist rigidity"}
+  esrsa06: {label: "Simpson-Angus 6: leg pendulousness"}
+  esrsa07: {label: "Simpson-Angus 7: head dropping"}
+  esrsa08: {label: "Simpson-Angus 8: glabella tap (blinks: 0 is 0 to 5, 4 is 21 or more)"}
+  esrsa09: {label: "Simpson-Angus 9: tremor"}
+  esrsa10: {label: "Simpson-Angus 10: salivation"}
+  esrsa_mean_stored: {column: esrsa, type: number, label: Mean as stored, range: [0, 4], winsor: false, keep: false}
 
 scores:
   esrsa_mean:
-    label: Extrapyramidal scale, mean of the ten items (0 to 4)
+    label: Simpson-Angus mean of the ten items (0 to 4)
     mean: [esrsa01, esrsa02, esrsa03, esrsa04, esrsa05, esrsa06, esrsa07, esrsa08, esrsa09, esrsa10]
     compare: esrsa_mean_stored
-    compare_tolerance: 0.051

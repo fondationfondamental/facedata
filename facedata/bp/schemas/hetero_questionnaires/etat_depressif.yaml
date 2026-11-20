@@ -1,30 +1,65 @@
 instrument: etat_depressif
-title: "Current major depressive episode: DSM-IV symptom checklist"
+title: "Depressive symptoms present at the visit (DSM-IV criterion A checklist)"
 tab: HETERO-QUESTIONNAIRES
 section: Episode depressif majeur actuel
 status: reviewed
 notes: >
-  Part of the "État du patient" form: a DSM-IV symptom checklist, filled at
-  the inclusion visit and at the follow-up visits. It is the same form for
-  every patient, so it does not depend on dsm_version.
+  Part of the "État du patient" form (the section is called "Episode
+  dépressif majeur actuel"): a checklist of the nine symptoms of criterion A
+  of a DSM-IV major depressive episode, filled at the inclusion visit and at
+  the follow-up visits. The instruction of the form is to fill it whatever
+  the mood state of the patient (euthymic, depressed, manic, hypomanic or
+  mixed) and to tick the symptoms present: it lists the symptoms present at
+  the visit, it is not an episode and not a diagnosis. It is the same form
+  for every patient, so it does not depend on dsm_version.
 
-  The answers are Y and N in the extraction. They are delivered as 1 and 0, so
-  that the symptoms can be counted. U ("does not know") is a missing code.
+  The answers are Y, N and U in the extraction. Y and N are delivered as 1
+  and 0, so that the symptoms can be counted. U ("does not know") is a
+  missing code.
 
-  The stored score is the number of symptoms present, and exists only when the
-  nine symptoms are answered with yes or no, as in the scoring script of the
-  application. It is computed on 15,414 visits and differs from the stored
-  one on 61; they get score_mismatch and the recomputed count is kept.
+  The stored count (etatd) is the application's own: the score step of the
+  export has no definition for it. The application computes it when the
+  button "Calculer le score" is clicked (hetero_etat_patient.js): Oui is 1,
+  Non is 0, any other answer ("Ne sais pas") is -999 and gives "Score non
+  calculable", and a blank item makes the script stop with an error (line
+  82, the variable champ does not exist there), so the field keeps its old
+  value (request A64). The package counts the symptoms from the answers, and
+  needs all nine to be yes or no, like the stored count. It is delivered on
+  15,414 visits and the stored count is absent on 1,952 of them. It differs
+  from the stored one on 61 visits (stored higher on 17, lower on 44): they
+  get score_mismatch and the recomputed count is kept; one stored count sits
+  on a visit where an item is missing (score_not_recomputed). 268 visits (1.7%
+  of the 15,682 where the nine are answered) get no count because one answer
+  is "Ne sais pas", and 141 more have an item left blank. The form does not store
+  the published rule of criterion A (five or more of the nine symptoms in the
+  same two weeks, one of them depressed mood or loss of interest; DSM-IV-TR
+  text to verify, scale_reference.md section 25), and does not ask the
+  duration: a count of 5 or more is met on 3,146 of the 15,414 counts (20%),
+  and with depressed mood or loss of interest on 2,979 (19%).
 
-  Five symptoms have a detail that says which way the change goes (loss or
-  gain, insomnia or hypersomnia). It is asked when the symptom is present,
-  and is filled for 79% to 94% of the symptoms present.
+  Five symptoms have a detail that says which way the change goes (reactivity,
+  loss or gain, insomnia or hypersomnia, agitation or retardation, racing or
+  slowed thoughts). The form shows it only after a yes (position 0 of the
+  parent, "Oui"), so each detail has shown_if on its symptom: 11 filled cells
+  of the 18,170 are delivered as missing (not_shown): 9 under a no, 1 under
+  "Ne sais pas" and 1 under an empty symptom (that last one is an exception to
+  the rule that a value recorded under an empty parent stays, accepted because
+  the other ten are explicit contradictions). The detail is filled for 79% to
+  94% of the symptoms present.
+
+  The form is filled less and less: of the visits that hold a MADRS, YMRS,
+  FAST or CGI rating, 95% have it up to 2017, 88% in 2018-2022 and 86% from
+  2023; one centre goes from 98% to 44% and 10%. DR asks the ninth symptom
+  with an addition (or a precise plan to commit suicide) that BP does not
+  have, so its yes rates are not comparable (at a MADRS suicide item of 2,
+  38% in BP and 64% in DR).
 
 defaults: {type: item, range: [0, 1], codes: {Y: 1, N: 0}, missing: {U: unknown}}
 
 variables:
   etatd01: {label: "Humeur dépressive la majeure partie de la journée"}
   etatd01a:
+    shown_if: {etatd01: [1]}
     label: "Mood reactivity (asked when the symptom is present)"
     type: category
     codes:
@@ -33,6 +68,7 @@ variables:
   etatd02: {label: "Diminution marquée d'intérêt ou de plaisir dans toutes ou presque les activités habituelles, presque toute la journée"}
   etatd03: {label: "Perte ou gain de poids significatif, ou, diminution ou augmentation de l'appétit"}
   etatd03a:
+    shown_if: {etatd03: [1]}
     label: "Weight or appetite change (asked when the symptom is present)"
     type: category
     codes:
@@ -40,6 +76,7 @@ variables:
       "Gain": gain
   etatd04: {label: "Insomnie ou hypersomnie"}
   etatd04a:
+    shown_if: {etatd04: [1]}
     label: "Sleep change (asked when the symptom is present)"
     type: category
     codes:
@@ -47,6 +84,7 @@ variables:
       "Hypersomnie": hypersomnia
   etatd05: {label: "Agitation ou ralentissement psychomoteur"}
   etatd05a:
+    shown_if: {etatd05: [1]}
     label: "Psychomotor change (asked when the symptom is present)"
     type: category
     codes:
@@ -56,6 +94,7 @@ variables:
   etatd07: {label: "Sentiment d'indignité, d'auto-accusation ou de culpabilité excessive ou inappropriée"}
   etatd08: {label: "Diminution de l'aptitude à penser ou se concentrer ou indécision chaque jour"}
   etatd08a:
+    shown_if: {etatd08: [1]}
     label: "Thinking speed (asked when the symptom is present)"
     type: category
     codes:

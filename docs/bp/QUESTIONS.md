@@ -46,7 +46,7 @@ its review (PI-12).
 |---|---|---|
 | 1. To read in the application | 0 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 0 | The project |
-| 3. Choices of method | 3 | The project lead and the principal investigator |
+| 3. Choices of method | 4 | The project lead and the principal investigator |
 | 4. For the data managers, the centres and the developers | 18 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
@@ -106,7 +106,7 @@ with the project lead.
 | PI-10 and DEV-8 (2), CVLT z-scores (2026-11-17) | The z-scores are computed again with the regressions of the application's script, from the raw score, the age at the visit, the years of education and the sex. The script gives back 95% to 99% of the stored z-scores; of those of trials 1 to 5, 232 were computed with the coefficients of the age and of the sex exchanged (2013 and 2014; the patients of 70 and over until August 2024) and 105 with no sex. The stored z-scores are kept as a check. Two lines of the recency norm are corrected (the mean from 40 to 69, the sign of the age term from 70): see DM-16 | D108, D109 |
 | DEV-6, dated list of the changes of rule | What the code can tell (its history starts in 2024): 2024-07-25, 1000-01-01 written in every empty date; 2024-08-02, CVLT regression of the patients of 70 and over corrected; the TMT "<5" is a defect of today's script | D98 |
 | DM-11, does the export remove the patients who object? (2026-11-18) | No step of the export reads the answer "objects"; it removes the records with a tutelle or minor form (`formoppos` 3 or 4) or under sauvegarde de justice (PROTEC 3), row by row. The project lead decided not to use the opposition answer: nothing is asked of the export | D119 |
-| DEV-11, how the export decides between DSM-IV and DSM-5 (2026-11-18) | From the content of the two inclusion records: DSM5 when the DSM-5 record holds one of five lifetime answers, else DSM4; follow-ups never get one. Of the 849 empty inclusions, 202 are centre C's, whose DSM-5 table is missing from the export. Asked of the export: R20, R68 to R70. In the package, a placeholder date no longer counts as a filled form, and the follow-ups keep the switch date of 2022 | D119, D122 |
+| DEV-11, how the export decides between DSM-IV and DSM-5 (2026-11-18) | From the content of the two inclusion records: DSM5 when the DSM-5 record holds one of five lifetime answers, else DSM4; follow-ups never get one. Of the 849 empty inclusions, 202 are centre C's, whose DSM-5 table is missing from the export. Asked of the export: R20, R68 to R70. In the package, a placeholder date no longer counts as a filled form, and the follow-ups keep the switch date of 2022, except that a follow-up that holds a column of the old form (the mixed numbers or the typed total) is read as DSM-IV: 49 visits change edition (2026-11-20) | D119, D122, D180 |
 | DEV-8 and O28, the CVLT serial-clustering table and the tie rule (2026-11-18) | The script of the application holds the exact limits (decimals from 40 to 69 years), the same in the BP and the eSchizo forms. The band is recomputed from the raw index like the eleven others; 784 BP bands change (692 written 99 become "95 or higher"). The tie rule is an accident of the loop: the CVLT script advances while the score is above a limit (so it stops at the highest percentile), the TMT script while it is at or above (the lowest); nothing says it is meant. The package keeps one rule | D129 |
 | PI-8, plausible limits (2026-11-18) | Read with the limits table and the cross-cohort screen: one hard range per variable shared by two cohorts (a test fails on a new difference); the hard range is applied to times (a night of 90 hours was delivered); an index of semantic clustering of 8 or more is a typed count; platelets in hundreds of G/L are recovered; a prolactin of 0 is "nothing measured"; HbA1c in mmol/mol is converted (D127) | D130 |
 | PI-13 and O51, empty boxes of the use of care (2026-11-18) | Read as no beside a ticked box, as for the non-drug treatments: 2,106 boxes and 2,106 numbers become 0, no written value changes; a box whose number was typed is left as written | D131 |
@@ -117,6 +117,8 @@ with the project lead.
 | SUBSTANCES ET COMORBIDITE tab review, BP (2026-11-19, D150 to D157) | The 9 schemas were read against the forms and the export model of the application and the data. The two panic type columns hold social phobia (they are ignored, R113) and the panic box, which the export builds with a substring match, becomes a score missing where only the agoraphobia box can have ticked it (362 cells); the eight substance boxes hang on the first question (no cell changes); six box labels carry the form's option texts. The notes carry the three tables of the application, the yearly-update wording (R4), the export losses (the age tokens and the substance-induced block, R117; the dictionary rows, R119; the nicotine substitution, R120; the eating age missing from the DSM-5 form, A57), the details left empty under a ticked box, the whole-tab-empty steps from 2022 (O40), the tobacco status that is not "never smoked", the counts measured again and, for each year or centre shift of the QC table, its cause. All 9 schemas are `reviewed`; open: DM-6 (centres, M62), DM-7 (dictionary rows), DM-17 (gate correction, M63), PI-16 (an "ever smoked" column) | D150 to D157 |
 | SUICIDE tab re-audit, BP (2026-11-19, D158 to D160) | The ten schemas were re-read under the rules of the other cohorts, against the forms and the export models of the application, the graph of their dependencies and the data: no delivered value changes. The twelve C-SSRS inclusion variables are named for their period (`cssrs*_past_week`; DR's whole-life ones are `cssrs*_lifetime`). The notes carry the time frame of the follow-up forms ("since the last visit", not a yearly update: R14a), the reason why the sections of the most violent and most serious attempt end in 2021 (the group tables of the application lack groups 4 and 6, A60), the Suicide Intent Scale and the C-SSRS behaviour block that the extraction does not hold (R126, M64), the history of attempts shown after a "no" only from the end of 2021, the follow-up first-attempt date that the export will empty (A20, R22), the C-SSRS inconsistencies delivered as rated, the centres that leave the tab empty (O40) and the exception of the 241 `not_shown` cells (R15). All ten schemas stay `reviewed`; open: DM-6 (centres, M64), O52 | D158 to D160 |
 | SOIN SUIVI and TRAITEMENTS tabs re-audit, BP (2026-11-19, D161 to D169) | The ten schemas were re-read under the rules of the other cohorts, against the forms and the export models of the application, the graph of their dependencies and the data: no delivered value changes. The counts of hospitalisations have the range 0 to 20 of the form (0 cells); the IPSRT answer "Ne sais pas" is a missing code (0 cells); a start of 0000-00-00 is a missing code (128 more flags on `start_date`, no value). The empty boxes beside a ticked one stay no in `care_use`, `non_drug_fu` and `non_drug_lifetime`, as D124 and D131 decided, with the evidence in the notes (the explicit "Non" next to them); the cumulated months of the lifetime classes stay 0 after a "no" (5,143 cells). The notes carry the script `social_diag.php` and its 178 records (A30, answers M14 as far as the data can), "since the last visit" for the follow-up counts (R14b; median gap 321 days), the DSM-5 block that asks everyone, the weeks that the export strips of non-digits (R128), the injectable doses (R123), the end dates that the add form does not check (A58) and the non-drug columns that the export drops (R125). All ten schemas stay `reviewed`; open: DM-6 (the blank boxes of the non-drug treatments, the lifetime number of hospitalisations by centre), the causes of 24 year or centre shifts still to write in the notes (D169) | D161 to D169 |
+| HETERO-QUESTIONNAIRES and DIVA re-audit, BP (2026-11-20, D170 to D175) | The eight schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export models and the data. The CGI efficacy index is a score computed from the effect and the side effects (the stored index is stale on 74 follow-up visits and is the check); the checklists of the state of the patient are titled as the symptoms present at the visit, not an episode, and their five details are `shown_if` on their symptom (11 cells); the MADRS and YMRS totals have the range 0 to 60; the stored totals of the MADRS, YMRS and FAST are the export's, and the scripts of the application compute on a button (stale after an edit); the FAST domains, the Alda total and the DIVA totals are explained in their notes (the DIVA totals are typed: the script is attached to the DSM-IV table). No other value changes; PI-17 is new | D170 to D175 |
+| EVALUATION MEDICALE DSM and psychotic-disorder schemas re-audit, BP (2026-11-20, D176 to D182) | The 14 schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export model and the data. The lifetime counts have the range 0 to 20 of the form; the follow-up counts say "since the last visit"; the total of episodes since the last visit is a score (the sum of the four counts, the typed total is the check and is delivered where a number is unknown); the three lifetime psychotic yes/no are 0 after a count of 0 (1,136 cells); the specifier, chronicity, severity and postpartum details of the most recent episode follow the display rule of the form (28 `not_shown`) and its start date must precede the visit (100 `out_of_range`); a follow-up that holds a column of the old form is read as DSM-IV (49 visits change edition). No other value changes; the audit lines left are judged in D176 to D181 | D176 to D182 |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -171,13 +173,27 @@ still to do.
   note of `tobacco` forbids deriving 0 pack-years from "Non fumeur".
   - Today: one value per visit, as recorded.
 
+- [ ] **PI-17. CGI improvement, therapeutic effect and efficacy index at
+  inclusion: deliver them?** (D170, D113; new on 2026-11-20) The form asks
+  them at the follow-up visits and says to tick "not assessed" at the initial
+  evaluation, and the package reads them at follow-up visits only. They hold a
+  rating all the same at 1,068 inclusion visits (19% of those that have a
+  severity; 1% to 3% in four centres and 37% to 60% in three). The ratings do
+  not look like a blank form: at inclusion the improvement correlates with the
+  severity as it does at follow-up (Spearman 0.46 on 1,057 pairs, against
+  0.44 on 8,841). What the raters compared with at inclusion is not known.
+  Should the inclusion values be delivered under names of their own, or stay
+  out? The default is out.
+  - Today: the three items and the index are read at the follow-up visits only;
+    the inclusion values carry no flag.
+
 - [ ] **PI-12. Review of the schemas.** Done: PATIENT, four schemas reviewed
   and one removed (D111); HETERO-QUESTIONNAIRES, seven reviewed (D113);
   CONSTANTES et ECG, three reviewed (D114); SOCIAL, one reviewed (D116);
   PERINATALITE, one reviewed (D117); EVALUATION MEDICALE, fifteen reviewed
   (D122); SOIN SUIVI HOSP ARRET TRAVAIL, six reviewed (D123); TRAITEMENTS,
   four reviewed (D124); SUICIDE, ten reviewed after the splits by form
-  (D125); the three care tabs read again with the other cohorts' rules (D158 to D169); with the audit of the four cohorts, `errands_test` (D126) and
+  (D125); the three care tabs read again with the other cohorts' rules (D158 to D169); HETERO-QUESTIONNAIRES and the DIVA read again with them (D170 to D175); the DSM and psychotic-disorder schemas of EVALUATION MEDICALE read again with them (D176 to D182); with the audit of the four cohorts, `errands_test` (D126) and
   `biochimie` (D127); AUTO-QUESTIONNAIRES, 26 of 27 (D134); NEUROPSYCHOLOGIE, the 20 drafts of the
   tab (D138 to D143, with 58 of the 62 schemas of the same tab in SZ, DR and
   ASP; the 4 left as drafts are SZ barona, lis and WAIS-III digit span and
@@ -359,8 +375,20 @@ source, in the export or in the application. Still to send.
     where the strength comes from. The export reads '1/2' units as 1, which
     doubles 2 stored doses (R75); the package's dose is right there. The
     item number changes between extractions until R76 ships.
+  - The date of the follow-up diagnosis form ("Date de recueil des
+    informations"; D180, new on 2026-11-20). No model exports it (R140 asks
+    for other columns of `face_bp_10`; the date is not among them). It
+    would date the change from the old form to the new one centre by
+    centre and replace the rule of the package, which reads a follow-up
+    that holds a column of the old form as DSM-IV: 25 follow-up visits of
+    October to December 2021 answer yes on the new form and are read as
+    DSM-IV by their label, with nothing to mark them, and 8 follow-up
+    visits of 2021 of patients with no label stay `version_unknown`. Asked:
+    export the date with the follow-up diagnosis columns.
   - Today: the daily dose is the package's (strength stored, else read from
-    the name); a count of relatives of 5 is read as 5.
+    the name); a count of relatives of 5 is read as 5; the edition of a
+    follow-up diagnosis form is read from its date and, for 49 visits, from
+    the old-form columns.
 
 - [ ] **DM-5. Values to query with the centres.** Each is already
   neutralised in the package (missing with a flag, or repaired with a flag).
@@ -469,6 +497,14 @@ source, in the export or in the application. Still to send.
     episode? Centre F also has 12 "yes" to a psychotic disorder at
     inclusion in 2016-18 against 0 before and 5 after: real diagnoses, or
     the psychotic features of mood episodes?
+    The typed total of episodes since the last visit differs from the sum
+    of the four counts on 27% of the 59 complete DSM-IV follow-ups of one
+    centre (the next centre 11.5%, the median 7%; D177), though the form
+    says it must equal the sum of all the episodes since the last visit:
+    what do its raters type there? At 377 of 1,616 DSM-IV and 153 of 596
+    DSM-5 follow-ups the patient is in an episode today and the answer is
+    "no episode since the last visit": does an episode that began before
+    the last visit count (D181)?
   - Use of care (D123): four centres leave the number of consultations
     empty after a yes more and more often. Psychiatrist: centre A 8% until
     2018, 37% in 2019-2021, 66% from 2022; C 14%, 24%, 55%; F 4%, 46%, 57%;
@@ -680,13 +716,13 @@ source, in the export or in the application. Still to send.
 
   | Finding | Count |
   |---|---|
-  | FAST domain scores differ from their items (the total is written again by the export's score step, so it always fits) | 442 cells |
-  | CGI efficacy index differs from its two components, by a multiple of 4 | 79 of 9,010 rows |
-  | DSM-IV checklist: the symptom counts are not stored | 1,946 visits (depressive), 678 (manic) |
+  | FAST domain scores differ from their items (the total is written again by the export's score step, so it always fits) | 446 cells (D173) |
+  | CGI efficacy index differs from its two components, by a multiple of 4 | 74 of 7,985 follow-up visits; the index is now recomputed and the stored one is the check (D170) |
+  | DSM-IV checklist: the symptom counts are not stored | 1,952 visits (depressive), 677 (manic) (D172) |
   | WAIS-III vocabulary raw total is the sum of the items minus 3 | 1,207 of 1,210 rows |
   | QTc computed from QT and RR typed on different scales | 164 impossible values |
   | Cholesterol ratio computed from the numbers as typed | 364 visits |
-  | Alda criterion A and B score differ from their items | 9 and 11 rows |
+  | Alda criterion A and B score differ from their items | 9 and 11 rows, and 14 for the total (D173) |
   | MAThyS: the decimal point is lost in 52 item cells (55 for 5.5) | 52 cells |
   | PSQI: minutes to fall asleep multiplied by 60, or a bedtime | 277 and 83 values |
   | WAIS-IV digit-span summary columns are shifted against their labels | 4 columns |

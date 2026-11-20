@@ -1,0 +1,145 @@
+instrument: developmental_disorders_fu
+title: "ADHD, behaviour, elimination, eating, tic and communication disorders at the yearly follow-up visits"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  The developmental part of the clinician's list of psychiatric comorbidities (the same table and forms as mood_disorders:
+  form 202 at inclusion, form 348 at the yearly visits; 9 'Non connu' is a missing code): attention deficit hyperactivity
+  disorder (tbath: age at the first symptoms, presentation, remission, two treatment boxes), oppositional defiant disorder
+  (tbopp), conduct disorder (tcond: childhood-onset and adolescent-onset boxes), elimination disorder (tcsfinc) with
+  encopresis (presi) and enuresis (enresi), each with its age at onset, type boxes and remission, eating disorder (tcali) with
+  anorexia (anor: restrictive and purging types) and bulimia (boul), chronic tics (ticchr) with motor tics (ticmo), vocal tics
+  (ticvo) and Tourette syndrome (gtour, with three treatment boxes), then a developmental coordination disorder (tac) and four
+  communication disorders (trbco01 language, trbco02 speech sound, trbco03 stuttering, trbco04 social communication), each
+  with an age at the first symptoms and a remission box. The names come from the thesaurus V2.13 (PROGRESS.md D13 and D14).
+
+  Gates. After a no the yes/no of encopresis and enuresis (under the elimination disorder), of anorexia and bulimia (under the
+  eating disorder) and of motor tics, vocal tics and Tourette syndrome (under the chronic tics) are 0 (asked_if). The ages,
+  the remissions, the types, the treatment boxes and the five blocks added late stay missing after a no: a 0 on a remission
+  would read 'disorder present, not in remission'. The 9 'Non connu' is a missing code on six more variables that the form
+  offers it for (the remission of conduct disorder, encopresis, enuresis, vocal tics and stuttering, and the motor tics
+  question itself; no 9 is on these columns). The ages of encopresis and enuresis are ages at onset ('Age lors du début'):
+  encopresis_onset_age and enuresis_onset_age. All ages are in years (unit); the data are unchanged, the hard limit of 0 to 70
+  stays (the oldest patient is 65: it removes one impossible ADHD age, 72, typed for a patient aged 11.8).
+
+  Roll-out. The coordination disorder and the four communication disorders are answered on 1 visit in 2017, 1 in 2018, 4 to 6
+  in 2019, 26 to 27 in 2020 and 158 to 172 in 2021 (valid yes/no answers at inclusion, by question) and on 41% to 69% of the
+  inclusions of each year since, in step with the rest of the form: the labels say 'from 2021' (they said 'from 2019'). The
+  coordination disorder is yes for 141 of 758 valid answers at inclusion (822 answers, 64 of them 'not known').
+
+  ADHD presentation. The form has a radio for it (TBATHT: 1 combined, 2 inattentive, 3 hyperactive) that the clean model holds
+  (easperger_aut_c1dsmdigs.sql:153) and the export does not select (face_asp_8_evaluation_medicale.sql:205-212; request R143).
+  The three boxes adhd_combined, adhd_inattentive and adhd_hyperactive are those of the old form and stop in 2021: to 2020 213
+  of the 244 visits with ADHD yes have exactly one box yes (220 hold a box, 6 hold two); from 2021 2 of the 274 hold a box, so
+  the presentation is missing for the others. The labels say 'old form, to 2021'.
+
+  The change question of form 203, otrchang, was read here (comorbidities_changed); it belongs to the sleep and self-injury
+  form and is delivered in sleep_disorders_v0 and sleep_disorders_fu as sleep_self_harm_changed.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At the yearly visits. 70 follow-up visits answer at least one question. Yes: ADHD 43 of 68, oppositional defiant disorder 5,
+  elimination disorder 14 (encopresis 7, enuresis 10), eating disorder 2, chronic tics 6 (motor 5, vocal 5, Tourette 2),
+  coordination disorder 2 of 30, language disorder 2 of 32, social communication disorder 15 of 30. The 184 cells of the
+  change question otrchang read here before are now in sleep_disorders_fu.
+
+  The change question of form 348 is in mood_disorders_fu (axis1_summary_changed_fu); an empty yearly section here means 'no
+  change' (R25). Checks: an eating disorder with neither anorexia nor bulimia yes: 0 of 2.
+
+  **Year and centre.** 70 visits: the one variable that reaches 0.5 (the social communication disorder, 30
+  answers, one centre with 20 values) is within chance.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  adhd_fu: {column: tbath, type: item, range: [0, 1], missing: {"9": unknown}, label: "Attention deficit hyperactivity disorder, at follow-up"}
+  adhd_onset_age_fu: {column: tbathag, type: number, unit: years, range: [0, 70], winsor: false, label: "ADHD: age at onset, at follow-up"}
+  adhd_combined_fu: {column: tbathmix, type: item, range: [0, 1], label: "ADHD: combined presentation (old form, to 2021), at follow-up"}
+  adhd_inattentive_fu: {column: tbathatt, type: item, range: [0, 1], label: "ADHD: inattentive presentation (old form, to 2021), at follow-up"}
+  adhd_hyperactive_fu: {column: tbathhyp, type: item, range: [0, 1], label: "ADHD: hyperactive presentation (old form, to 2021), at follow-up"}
+  adhd_remission_fu: {column: tbathrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "ADHD: in remission, at follow-up"}
+  adhd_psychostimulant_fu: {column: tbathpsy, type: item, range: [0, 1], label: "ADHD: treated with a psychostimulant, at follow-up"}
+  adhd_neuroleptic_fu: {column: tbathneu, type: item, range: [0, 1], label: "ADHD: treated with a neuroleptic, at follow-up"}
+  oppositional_disorder_fu: {column: tbopp, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder, at follow-up"}
+  oppositional_disorder_onset_age_fu: {column: tboppag, type: number, unit: years, range: [0, 70], winsor: false, label: "Oppositional defiant disorder: age at onset, at follow-up"}
+  oppositional_disorder_remission_fu: {column: tbopprem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Oppositional defiant disorder: in remission, at follow-up"}
+  conduct_disorder_fu: {column: tcond, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conduct disorder, at follow-up"}
+  conduct_disorder_onset_age_fu: {column: tcondiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Conduct disorder: age at onset, at follow-up"}
+  conduct_disorder_childhood_fu: {column: tcenf, type: item, range: [0, 1], label: "Conduct disorder: childhood onset, at follow-up"}
+  conduct_disorder_adolescence_fu: {column: tcado, type: item, range: [0, 1], label: "Conduct disorder: adolescent onset, at follow-up"}
+  conduct_disorder_remission_fu: {column: tcrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Conduct disorder: in remission, at follow-up"}
+  elimination_disorder_fu: {column: tcsfinc, type: item, range: [0, 1], missing: {"9": unknown}, label: "Elimination disorder, at follow-up"}
+  encopresis_fu: {column: presi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder_fu, label: "Encopresis, at follow-up"}
+  encopresis_onset_age_fu: {column: presiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Encopresis: age at onset, at follow-up"}
+  encopresis_with_constipation_fu: {column: presit1, type: item, range: [0, 1], label: "Encopresis: with constipation and overflow incontinence, at follow-up"}
+  encopresis_without_constipation_fu: {column: presit2, type: item, range: [0, 1], label: "Encopresis: without constipation and overflow incontinence, at follow-up"}
+  encopresis_remission_fu: {column: presirem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Encopresis: in remission, at follow-up"}
+  enuresis_fu: {column: enresi, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: elimination_disorder_fu, label: "Enuresis, at follow-up"}
+  enuresis_onset_age_fu: {column: enresiag, type: number, unit: years, range: [0, 70], winsor: false, label: "Enuresis: age at onset, at follow-up"}
+  enuresis_nocturnal_fu: {column: enresit1, type: item, range: [0, 1], label: "Enuresis: nocturnal only, at follow-up"}
+  enuresis_diurnal_fu: {column: enresit2, type: item, range: [0, 1], label: "Enuresis: diurnal only, at follow-up"}
+  enuresis_nocturnal_and_diurnal_fu: {column: enresit3, type: item, range: [0, 1], label: "Enuresis: nocturnal and diurnal, at follow-up"}
+  enuresis_remission_fu: {column: enresirem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Enuresis: in remission, at follow-up"}
+  eating_disorder_fu: {column: tcali, type: item, range: [0, 1], missing: {"9": unknown}, label: "Eating disorder, at follow-up"}
+  anorexia_fu: {column: anor, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder_fu, label: "Anorexia, at follow-up"}
+  anorexia_onset_age_fu: {column: anorag, type: number, unit: years, range: [0, 70], winsor: false, label: "Anorexia: age at onset, at follow-up"}
+  anorexia_restrictive_fu: {column: anorrest, type: item, range: [0, 1], label: "Anorexia: restrictive type, at follow-up"}
+  anorexia_purging_fu: {column: anorpurg, type: item, range: [0, 1], label: "Anorexia: purging type, at follow-up"}
+  bulimia_fu: {column: boul, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: eating_disorder_fu, label: "Bulimia, at follow-up"}
+  bulimia_onset_age_fu: {column: boulag, type: number, unit: years, range: [0, 70], winsor: false, label: "Bulimia: age at onset, at follow-up"}
+  bulimia_remission_fu: {column: boulrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Bulimia: in remission, at follow-up"}
+  chronic_tics_fu: {column: ticchr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Chronic tic disorder, at follow-up"}
+  motor_tics_fu: {column: ticmo, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_fu, label: "Motor tics, at follow-up"}
+  motor_tics_onset_age_fu: {column: ticmoag, type: number, unit: years, range: [0, 70], winsor: false, label: "Motor tics: age at onset, at follow-up"}
+  motor_tics_remission_fu: {column: ticmorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Motor tics: in remission, at follow-up"}
+  vocal_tics_fu: {column: ticvo, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_fu, label: "Vocal tics, at follow-up"}
+  vocal_tics_onset_age_fu: {column: ticvoag, type: number, unit: years, range: [0, 70], winsor: false, label: "Vocal tics: age at onset, at follow-up"}
+  vocal_tics_remission_fu: {column: ticvorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Vocal tics: in remission, at follow-up"}
+  tourette_fu: {column: gtour, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: chronic_tics_fu, label: "Tourette syndrome, at follow-up"}
+  tourette_onset_age_fu: {column: gtourag, type: number, unit: years, range: [0, 70], winsor: false, label: "Tourette syndrome: age at onset, at follow-up"}
+  tourette_remission_fu: {column: gtourrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Tourette syndrome: in remission, at follow-up"}
+  tourette_clonidine_fu: {column: gtourcat, type: item, range: [0, 1], label: "Tourette syndrome: treated with clonidine (Catapressan), at follow-up"}
+  tourette_neuroleptic_fu: {column: gtourneu, type: item, range: [0, 1], label: "Tourette syndrome: treated with a neuroleptic, at follow-up"}
+  tourette_benzodiazepine_fu: {column: gtourben, type: item, range: [0, 1], label: "Tourette syndrome: treated with a benzodiazepine, at follow-up"}
+  coordination_disorder_fu: {column: ceoccur_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder (from 2021), at follow-up"}
+  coordination_disorder_onset_age_fu: {column: agedebut_tac, type: number, unit: years, range: [0, 70], winsor: false, label: "Developmental coordination disorder: age at onset, at follow-up"}
+  coordination_disorder_remission_fu: {column: remi_tac, type: item, range: [0, 1], missing: {"9": unknown}, label: "Developmental coordination disorder: in remission, at follow-up"}
+  language_disorder_fu: {column: trbco01, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder (from 2021), at follow-up"}
+  language_disorder_onset_age_fu: {column: trbco01a, type: number, unit: years, label: "Language disorder: age at the first symptoms, at follow-up", range: [0, 70]}
+  language_disorder_remission_fu: {column: trbco01b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Language disorder: in remission, at follow-up"}
+  speech_sound_disorder_fu: {column: trbco02, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder (from 2021), at follow-up"}
+  speech_sound_disorder_onset_age_fu: {column: trbco02a, type: number, unit: years, label: "Speech sound disorder: age at the first symptoms, at follow-up", range: [0, 70]}
+  speech_sound_disorder_remission_fu: {column: trbco02b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Speech sound disorder: in remission, at follow-up"}
+  stuttering_fu: {column: trbco03, type: item, range: [0, 1], missing: {"9": unknown}, label: "Childhood-onset fluency disorder (stuttering) (from 2021), at follow-up"}
+  stuttering_onset_age_fu: {column: trbco03a, type: number, unit: years, label: "Childhood-onset fluency disorder (stuttering): age at the first symptoms, at follow-up", range: [0, 70]}
+  stuttering_remission_fu: {column: trbco03b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Childhood-onset fluency disorder (stuttering): in remission, at follow-up"}
+  social_communication_disorder_fu: {column: trbco04, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder (from 2021), at follow-up"}
+  social_communication_disorder_onset_age_fu: {column: trbco04a, type: number, unit: years, label: "Social (pragmatic) communication disorder: age at the first symptoms, at follow-up", range: [0, 70]}
+  social_communication_disorder_remission_fu: {column: trbco04b, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social (pragmatic) communication disorder: in remission, at follow-up"}

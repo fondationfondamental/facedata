@@ -25,15 +25,30 @@ notes: >
   Scores. The number of criteria present, for each of the four blocks (0 to
   9). It is computed where the nine criteria are answered and compared with
   the stored number. The stored number is typed by the clinician: the
-  application's counting script is attached to the DSM-IV form, which has
-  no DIVA, so the button of the DSM-5 form does nothing. 71 complete blocks
-  have no stored number (8 in 2019-2021, 16 in 2022-2023, 47 from 2024).
-  Where it is stored, it agrees on 91 of 98 complete blocks; the 7 others
-  differ by one (score_mismatch). 17 blocks have a stored number although
-  some criteria were not answered (score_not_recomputed): in 13 it is the
-  sum of those that were, in 3 no criterion is answered; ours is missing
-  there. Two of these 3 are on an inclusion that holds no criterion at all,
-  so 51 inclusions hold a DIVA cell and 50 are delivered.
+  application's script that adds up the DIVA answers is loaded for the
+  DSM-IV table only (formspecial_bipolaire.php, line 87), and the DIVA is on
+  the DSM-5 form, so nothing adds the criteria up and the field can be
+  edited. 71 of the 169 complete blocks have no stored number (8 in
+  2019-2021, 16 in 2022-2023, 47 from 2024). Where it is stored, it agrees on
+  91 of 98 complete blocks; the 7 others differ by one (score_mismatch: 4
+  above, 3 below), and for 3 of those 7 the stored number is the right total
+  of another block of the same inclusion, typed in the wrong block. 17 blocks
+  have a stored number although some criteria were not answered
+  (score_not_recomputed): in 13 it is the sum of those that were answered, in
+  3 no criterion is answered, in 1 it is another number; ours is missing in
+  those 17. Two of the 3 blocks with no criterion answered are on an
+  inclusion that holds no criterion at all, so 51 inclusions hold a DIVA
+  cell and 50 are delivered (all at the inclusion visit, in eight centres,
+  from 2019 to 2026).
+
+  What the counts mean. The published threshold of the DSM-IV-TR criteria is 6
+  of 9 in attention or in hyperactivity-impulsivity, for adults and for
+  childhood alike (Kooij and others 2010); the DSM-5 and DIVA-5 threshold for
+  adults is 5 of 9 (Hong and others 2020; scale_reference.md, section 23).
+  The form holds the counts only: the other questions of the interview (the
+  symptoms present more than in other people, the onset before age 7, the
+  impairment in two or more areas) are not in the form, so a diagnosis of
+  ADHD cannot be rebuilt from this schema (request A68).
 
   The interview is DSM-IV-TR for every patient, so it is not split by DSM
   version. It is read whatever the edition of the mood sections of the same

@@ -2,29 +2,70 @@ instrument: athf
 title: Antidepressant Treatment History Form (ATHF)
 tab: HETERO-QUESTIONNAIRES
 section: ATHF Criteria for Rating Medication Trials for Antidepressant Failure (2009)
-status: draft
+status: reviewed
 notes: >
-  The Antidepressant Treatment History Form: one rating per antidepressant,
-  per biological therapy, per augmentation agent and per psychotherapy that
-  the patient received for the current episode, 42 in all. A rating of 0
-  means no prescription. For an antidepressant, 1 and 2 are trials that were
-  too short or under the adequate dose, and 3 and more an adequate trial;
-  the exact levels of each line are in the dictionary. Filled at the
-  inclusion visit (507 visits) and at the follow-up visits (526), at about
-  80% of the inclusion visits in every period.
+  The Antidepressant Treatment History Form (Sackeim; scale_reference.md,
+  section 18): one rating per antidepressant, per biological therapy, per
+  augmentation agent and per psychotherapy that the patient received for the
+  current episode, 42 in all. A rating of 0 means no prescription. For an
+  antidepressant, 1 and 2 are trials that were too short or under the
+  adequate dose, and 3 and more an adequate trial (the published rule also
+  needs adherence and an insufficient benefit); the levels of each line are
+  in form 154 (the dictionary lists them). Filled at the inclusion visit (514
+  visits, and one at screening) and at the follow-up visits (530), at 77% to
+  84% of the V0 visits in every period from 2013.
 
-  No score is stored and none is computed here: the ratings are delivered
-  as written. The number of adequate trials is the count of the ratings of
-  3 or more among the antidepressants.
+  No score is stored and none is computed here: the ratings are delivered as
+  rated. The published form has no single total either (number of trials,
+  number of failed adequate trials, most potent rating, total potency). The
+  number of adequate trials is the count of the ratings of 3 or more among
+  the antidepressants; an optional score for it is not added, because the
+  published rule is to verify.
 
-  Four points that the dictionary does not settle (open question O8 in
-  PROGRESS.md). (1) Two columns are called bupropion: athf05e, filled on
-  every visit and rarely above 0, and athf05f, filled from 2019 (572 visits)
-  and rated 3 or 4 on 149 of them; athf05f is delivered under a neutral
-  name. (2) Two columns are called antipsychotics (athf10b, athf10c). (3)
-  Lithium alone (athf08a) and carbamazepine (athf08c) hold ratings of 4 to 6
-  where the dictionary lists 0 to 3; they are kept. (4) Phenelzine (athf04d)
-  is filled from 2019 only.
+  When the form is offered. At the initial evaluation (V0) always; at the
+  other visits only when the MADRS saved on the same visit is above 10
+  (class.menu_init.php, verif_athf, dated 3 November 2015; before that date
+  it was offered at every follow-up visit: config/global.php). So an empty
+  ATHF is "not offered", never "no trial". At follow-up it is filled on 73%
+  of the visits with a stored MADRS above 10 (484 of 662; 78% since the rule:
+  402 of 518) and on 19% of those at 10 or below (46 of 237; 9% since: 16 of
+  188), on none of 26 with no MADRS; at V0 on 81% (514 of 634; 7 of the 11 V0
+  visits with a MADRS of 10 or less). The audit lines "MADRS -> ATHF
+  asked_if MISSING" (42) are false positives: the form is not a question
+  under a gate, and an empty ATHF is not a 0. The follow-up form can copy the
+  previous visit ("Recuperer les donnees de la derniere visite"): of the 509
+  follow-up ATHF with an earlier ATHF of the patient, 99 (19%) are identical
+  in all 42 cells.
+
+  The four points that the dictionary did not settle (open question O8,
+  closed by form 154 and the review, PROGRESS.md D59). (1) Two columns are
+  called bupropion: athf05e is bupropion (ATHFE5), filled on every visit and
+  rarely above 0, and athf05f is vortioxetine (ATHFF5, "Vortioxetine
+  (Brintellix)"), rated 3 or 4 on 149 of its 572 visits: it is delivered as
+  athf_vortioxetine (rule R12, name by content). Vortioxetine and phenelzine
+  (athf04d, MAOI D) are filled on 59 of the 500 ATHF visits of 2013 to 2017,
+  on 68 of the 71 of 2018 and on 96% of the later ones, so the two lines
+  look added to the form around 2018 (the earlier note said "from 2019").
+  (2) The two columns called antipsychotics are the two lines of the same
+  section: athf10b is "antipsychotics, any dose for any duration" (not an
+  augmentation agent), athf10c the option that rates antipsychotics of a
+  non-psychotic patient as one continuous trial, whatever their number. (3)
+  Bilateral ECT (athf06b) holds the keys 3 and 4, which the form labels B4
+  (7 to 9 sessions) and B5 (10 or more): they are rated 4 and 5 (the
+  published table has no 3 for a bilateral course; 33 and 93 cells recoded).
+  Lithium alone (athf08a) and carbamazepine (athf08c) are selects with two
+  groups of options: 1 to 3 by plasma level and 4 to 6 by dose, which give
+  the same levels A1 to A3 and C1 to C3. The keys 4, 5 and 6 are recoded 1,
+  2 and 3 and the range is 0 to 3 (54 and 16 cells); the basis of the rating
+  (plasma level or dose) is lost; the options by dose appear from 2017 (53
+  of the 54 lithium cells are from 2018 on). (4) A resistance score computed
+  from the form is not in the extraction (the application has none).
+
+  Consistency of the ratings: lithium as an augmentation agent rated 5 needs
+  an antidepressant rated 4 and has one on 105 of its 119 cells; rated 4 it
+  needs an antidepressant rated 3 or more and has one on 99 of 109. The
+  tutorial notebook counts adequate trials on a list of antidepressants that
+  lacks phenelzine and vortioxetine.
 
   An instrument of the TRD cohort only.
 
@@ -51,22 +92,22 @@ variables:
   athf_tianeptine: {column: athf05c, range: [0, 4], label: "ATHF, Other antidepressants: tianeptine"}
   athf_agomelatine: {column: athf05d, range: [0, 4], label: "ATHF, Other antidepressants: agomelatine"}
   athf_bupropion: {column: athf05e, range: [0, 4], label: "ATHF, Other antidepressants: bupropion"}
-  athf_other_antidepressant_05f: {column: athf05f, range: [0, 4], label: "ATHF, Other antidepressants: a second column that the dictionary also calls bupropion (which drug is not known)"}
+  athf_vortioxetine: {column: athf05f, range: [0, 4], label: "ATHF, Other antidepressants: vortioxetine (the dictionary calls this column bupropion too)"}
   athf_ect_unilateral: {column: athf06a, range: [0, 5], label: "ATHF, ECT: unilateral"}
-  athf_ect_bilateral: {column: athf06b, range: [0, 5], label: "ATHF, ECT: bilateral"}
+  athf_ect_bilateral: {column: athf06b, range: [0, 5], codes: {"3": 4, "4": 5}, label: "ATHF, ECT: bilateral (the form keys 3 and 4 are the levels B4 and B5, 7 to 9 and 10 or more sessions)"}
   athf_vagus_nerve_stimulation: {column: athf07a, range: [0, 4], label: "ATHF, Non-drug biological therapies: vagus nerve stimulation"}
   athf_tms: {column: athf07b, range: [0, 4], label: "ATHF, Non-drug biological therapies: TMS"}
   athf_tdcs: {column: athf07c, range: [0, 4], label: "ATHF, Non-drug biological therapies: tDCS"}
-  athf_lithium_alone: {column: athf08a, range: [0, 6], label: "ATHF, Augmentation: lithium alone for a unipolar depressive episode"}
+  athf_lithium_alone: {column: athf08a, range: [0, 3], codes: {"4": 1, "5": 2, "6": 3}, label: "ATHF, Augmentation: lithium alone, level 1 to 3 (by plasma level, or by dose: form keys 4 to 6)"}
   athf_lithium_augmentation: {column: athf08b, range: [0, 5], label: "ATHF, Augmentation: lithium as an augmentation agent"}
-  athf_carbamazepine: {column: athf08c, range: [0, 6], label: "ATHF, Augmentation: carbamazepine"}
+  athf_carbamazepine: {column: athf08c, range: [0, 3], codes: {"4": 1, "5": 2, "6": 3}, label: "ATHF, Augmentation: carbamazepine, level 1 to 3 (by plasma level, or by dose: form keys 4 to 6)"}
   athf_lamotrigine: {column: athf08d, range: [0, 3], label: "ATHF, Augmentation: lamotrigine"}
   athf_thyroid_hormones: {column: athf08e, range: [0, 4], label: "ATHF, Augmentation: thyroid hormones"}
   athf_alprazolam: {column: athf09a, range: [0, 2], label: "ATHF, Benzodiazepines: alprazolam"}
   athf_other_benzodiazepines: {column: athf09b, range: [0, 1], label: "ATHF, Benzodiazepines: other benzodiazepines"}
   athf_stimulants: {column: athf10a, range: [0, 1], label: "ATHF, Others: stimulants (methylphenidate, modafinil)"}
-  athf_antipsychotics_10b: {column: athf10b, range: [0, 1], label: "ATHF, Others: antipsychotics, first column of that name"}
-  athf_antipsychotics_10c: {column: athf10c, range: [0, 1], label: "ATHF, Others: antipsychotics, second column of that name"}
+  athf_antipsychotics_10b: {column: athf10b, range: [0, 1], label: "ATHF, Others: antipsychotics, any dose for any duration (not an augmentation agent)"}
+  athf_antipsychotics_10c: {column: athf10c, range: [0, 1], label: "ATHF, Others: antipsychotics, rated as one continuous trial whatever their number (non-psychotic patients)"}
   athf_clonidine_and_others: {column: athf10d, range: [0, 1], label: "ATHF, Others: clonidine, L-tryptophan, thyroid hormones and similar"}
   athf_anxiolytics_hypnotics: {column: athf10e, range: [0, 1], label: "ATHF, Others: anxiolytics and hypnotics (buspirone, zolpidem, lorazepam, clonazepam)"}
   athf_phototherapy: {column: athf10f, range: [0, 1], label: "ATHF, Others: phototherapy"}

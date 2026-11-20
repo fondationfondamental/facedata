@@ -2,39 +2,59 @@ instrument: dsm_criteria
 title: "DSM criteria of the autism spectrum diagnosis"
 tab: evaluation_medicale
 section: diagnosis
-status: draft
+status: reviewed
 notes: >
-  Ten yes/no boxes named cridsm17 to cridsm26, filled by the clinician at the
-  inclusion visit, on about 1,956 of the 2,318 inclusions in every year
-  (and on 19 follow-up visits).
+  Ten yes/no boxes, cridsm17 to cridsm26, filled by the clinician in form 198 ('Critères DSM 5 autisme', table aut_c1cridsm,
+  section G.1.1): 1,963 inclusion visits hold at least one of the ten, 1,831 of them all nine criteria, and the conclusion is on
+  every one of the 2,318 inclusions; 19 follow-up visits hold the ten boxes too (17 conclusions yes, 2 no). 9 ('Inconnu') is a
+  missing code. The schema is not split into _v0 and _fu: 19 follow-up visits against 1,963 at inclusion, with the same
+  columns, the same wording and no change question.
 
-  The schema was written from the column names and the answers, then checked
-  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
-  D14). The count fits the DSM-5 criteria of autism spectrum disorder: three
-  criteria of social communication, four of restricted and repetitive
-  behaviours, the early onset and the impairment (cridsm17 to cridsm25), then a
-  conclusion (cridsm26). cridsm26 is filled on every inclusion and equals the
-  column arm for 2,318 of 2,318 patients: it is the diagnosis of the cohort
-  (identite). The nine criteria are all yes for 944 patients. 9 is read as "not
-  known".
+  The count fits the DSM-5 criteria of autism spectrum disorder: three criteria of social communication (A1 to A3, cridsm17 to
+  cridsm19), four of restricted and repetitive behaviours (B1 to B4, cridsm20 to cridsm23), the early onset (C) and the
+  impairment (D) (cridsm24, cridsm25), then a conclusion (cridsm26). The names come from the thesaurus V2.13 (PROGRESS.md D13
+  and D14). cridsm26 equals the column arm for 2,318 of 2,318 patients: it is the diagnosis of the cohort (identite). The nine
+  criteria are all yes for 944 patients.
 
-  dsmtype is the interview used for the DSM summary: the DIGS for 427 patients,
-  the Kiddie-SADS for 725, and a code 3 that the thesaurus does not document
-  for 98 (O16). It is filled on 82% to 94% of the inclusions until 2017 and on
-  34% to 59% since. reschang is the box "changed since the last visit" of this
-  section; the old forms also fill it at inclusion (63% to 96% of the
-  inclusions until 2019, none since 2022).
+  The conclusion is typed, not computed. The application has no script for form 198 (js_scores holds none; the only script on
+  these fields is the shortcut below). The headings printed on the form say that A is 'manifested in the three cases' and B
+  'at least two' of the four, and the line above the conclusion says 'tick yes if the criteria A, B, C and D are met'; but the
+  instruction at the top (198.php:12) is the DSM-IV counting ('6 items or more yes in A: at least 2 in (1), at least 1 in (2),
+  1 in (3), at least one in B and C'), left from the old form, and may steer the raters. The published DSM-5 rule is all three A
+  criteria, at least two of the four B criteria, C and D (American Psychiatric Association 2013; recalled, not read in the
+  source: to verify). On the 1,831 inclusion visits with all nine criteria the conclusion differs from that rule on 138 (133 yes
+  with the criteria not met, 5 no with all of them met); a plain '6 of 9' rule would differ on 51. The conclusion is delivered as
+  typed.
 
-  Eleven more boxes, dsmaut01 to dsmaut11, exist from 2018 on (1,204
-  inclusions): the five specifiers of the DSM-5 (intellectual impairment,
-  language impairment, a known medical or genetic condition, another disorder,
-  catatonia) and the support needed in each of the two domains. The thesaurus
-  numbers the three levels backwards ("level 1: very substantial support"); the
-  boxes it calls "level 3: support" are the most ticked (594 and 606 visits,
-  against 127 and 115), so the variables are named from the wording, not from
-  the number (O16).
+  The shortcut. The box 'Non pour tous les critères' (DSM5N, not in the extraction) ticks no on the nine criteria and on the
+  conclusion (eASPERGER.js:5172-5182): 90 inclusion visits have all nine at 0 and a conclusion of 0, which is 37% of the 243
+  inclusion visits with the nine criteria answered and a conclusion of no. A zero ticked by the shortcut and a typed zero cannot
+  be told apart (request R143: export the shortcut flags). The DSM-IV criteria of the old form (cridsm1 to cridsm16 and the
+  shortcut DSM4N) are in the clean model (easperger_aut_c1cridsm.sql) and are not exported either (R143).
+
+  Specifiers and severity. Eleven boxes, dsmaut01 to dsmaut11: the five specifiers of the DSM-5 (intellectual impairment,
+  language impairment, a known medical or genetic condition, another disorder, catatonia) and the support needed in each of the
+  two domains. They are answered on 2, 13, 22 and 59 inclusion visits of 2017 to 2020, on 216 (86%) of 2021 and on 90% or more
+  of the visits of each year after ('from 2018' was wrong): 1,230 inclusions in all. The form prints the levels backwards,
+  'Niveau 1: nécessite un soutien très important' to 'Niveau 3: nécessite un soutien' (198.php:64-71, the field numbers
+  1208 to 1214): the variables are named from the wording, the number of the dictionary is the wrong way round (the boxes of
+  level 3 are the most ticked, 594 and 606 visits against 127 and 115: closes O16 (2) for the form; the dictionary stays wrong).
+  The severity of a domain is three separate yes/no radios, not one list (no box_list, rule R3): social communication has
+  exactly one yes on 1,042 of 1,081 visits, two on 11 and none on 28; the restricted behaviours on 965 of 1,071, 7 and 99.
+
+  The interview used for the summary (dsmtype) and the box 'changed since the last visit' (reschang), both fields of the
+  diagnosis summary form 202 and 348 and not of this form, were read here: they are now axis1_interview and
+  axis1_summary_changed in mood_disorders_v0 and mood_disorders_fu (PROGRESS.md D48).
 
   An instrument of the ASP cohort only.
+
+  **Year and centre.** 5 of the 21 variables reach 0.5 or more, all yes/no boxes. The criterion B1 is yes for
+  66% of 1,949 answers: 34% to 86% by centre and 52% to 82% by year, no step. The box 'other disorder' of the
+  specifiers (asked from 2017: 26% yes, 6% to 67% by centre, 36% in children and 19% in adults) and the
+  severity boxes (from 2017, on 90% of the inclusions since 2021) differ by age and by centre: the level
+  'support' of the social domain is ticked for 73% of the children and 45% of the adults, 25% to 76% by
+  centre, 42% to 66% by year (55 to 213 answers a year; the children are 9% to 59% of the inclusions by year).
+  Age mix and habit of the centre; of the nine criteria only B1 is flagged.
 
 variables:
   dsm_criterion_a1: {column: cridsm17, type: item, range: [0, 1], missing: {"9": unknown}, label: "DSM-5 criterion A1: deficits in social and emotional reciprocity"}
@@ -47,8 +67,6 @@ variables:
   dsm_criterion_c: {column: cridsm24, type: item, range: [0, 1], missing: {"9": unknown}, label: "DSM-5 criterion C: symptoms present in early childhood"}
   dsm_criterion_d: {column: cridsm25, type: item, range: [0, 1], missing: {"9": unknown}, label: "DSM-5 criterion D: symptoms limit and impair everyday functioning"}
   dsm_asd_conclusion: {column: cridsm26, type: item, range: [0, 1], label: "Conclusion of the criteria (equals the diagnosis of the cohort)"}
-  dsm_interview: {column: dsmtype, type: category, codes: {"1": digs, "2": kiddie_sads, "3": code_3}, label: "Interview used for the DSM summary (the code 3 is not documented)"}
-  dsm_section_changed: {column: reschang, type: item, range: [0, 1], label: "This section changed since the last visit (also filled at inclusion in the old forms)"}
   specifier_intellectual_impairment: {column: dsmaut01, type: item, range: [0, 1], label: "DSM-5 specifier: with intellectual impairment"}
   specifier_language_impairment: {column: dsmaut02, type: item, range: [0, 1], label: "DSM-5 specifier: with language impairment"}
   specifier_medical_or_genetic_condition: {column: dsmaut03, type: item, range: [0, 1], label: "DSM-5 specifier: associated with a known medical or genetic condition or environmental factor"}

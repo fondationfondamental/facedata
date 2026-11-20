@@ -1,0 +1,125 @@
+instrument: anxiety_disorders_fu
+title: "Anxiety disorders at the yearly follow-up visits"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  The anxiety part of the clinician's list of psychiatric comorbidities (the same table and forms as mood_disorders: form 202
+  at inclusion, form 348 at the yearly visits). A first question (tranxi, any anxiety disorder; 9 is a missing code) opens the
+  disorders, each with an age at onset and a remission: panic disorder with agoraphobia (panag) and without (pansa),
+  agoraphobia without panic disorder (agspa), social phobia (phso), specific phobia (phsp, five types), separation anxiety
+  (anxsep), obsessive-compulsive disorder (toc, with a box 'treated with an SSRI' and the response), obsessive-compulsive
+  symptoms (soc, with the age when the compulsions and the obsessions began), generalised anxiety (anxge) and post-traumatic
+  stress (spt). The names come from the thesaurus V2.13 (PROGRESS.md D13 and D14).
+
+  Gates. After a no to the first question the eight older sub-disorder questions are 0 (asked_if). Separation anxiety and
+  post-traumatic stress have no rule: they are answered only after a yes to the first question (empty on all 650 visits with a
+  no), but they exist only from 2020-21, so a rule would write 0 on the 321 visits with a no dated to 2020 where nothing was
+  asked (PROGRESS.md D50). They were added late: the valid yes/no answers at inclusion are 1 visit in 2017, 1 in 2018, 3 and 2
+  in 2019, 18 and 14 in 2020 and 97 and 96 in 2021 (separation anxiety, post-traumatic stress); among the visits with an
+  anxiety yes they are answered on 1, 1, 4 and 24 of 45, 71, 83 and 74 in 2017-2020 and on 86% to 92% (separation anxiety) and
+  86% to 99% (post-traumatic stress) from 2021 ('two more added in 2020' was wrong, and the labels say 'from 2021'). The ages
+  and the remission stay missing after a no (a 0 on a remission would read 'disorder present, not in remission'); so do the
+  five types of the specific phobia and the SSRI boxes. The 9 of the remission of separation anxiety is a missing code (the
+  form offers 'Non connu'; none is on the column).
+
+  Panic disorder. The form has a box with agoraphobia and one without. panic_disorder_<edition> is their highest where both
+  are answered: 157 yes at inclusion and 4 at the yearly visits (161 in all); a visit with one box yes and the other empty or
+  'not known' is not scored (16 visits: 10 + 6; the highest of what is present would give 177 yes). It is the BP name and
+  meaning (panic disorder, with or without agoraphobia).
+
+  Names and joins. The stems are the BP and SZ ones with the ending of the form: anxiety_disorder, agoraphobia (agoraphobia
+  without panic disorder), social_phobia, specific_phobia, ocd and ptsd, each with _onset_age, and panic_disorder (a score
+  here, as in BP). They are catalogued with BP and SZ by the lead; the hard limit of the ages is 0 to 70 here (BP: 0 to 90),
+  kept (the oldest patient is 65). Not joined: generalised_anxiety (BP's gad_v0 is the question about the current episode
+  only, the ASP form has no such wording) and the remissions (the ASP question is the state now, BP's is the last month). The
+  ages are now in years (unit); the data are unchanged.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At the yearly visits. 71 follow-up visits answer at least one question: any anxiety disorder yes on 47 of 71; social phobia
+  17 of 66, specific phobia 24 of 64, obsessive-compulsive symptoms 20 of 62, generalised anxiety 17 of 66, agoraphobia 8 of
+  63, panic 2 and 3 of 63 and 64; separation anxiety 3 of 11 and post-traumatic stress 1 of 11.
+
+  The change question of form 348 is delivered in mood_disorders_fu (axis1_summary_changed_fu), because it covers the whole of
+  the axis I summary: an empty yearly section here means 'no change' (R25).
+
+  Checks (aggregates). A first answer yes with no sub-disorder yes: 3 of 47, all three with the whole sub-section empty.
+
+  **Year and centre.** 71 answers: at most two centres and one year hold 20 values, and the three variables
+  that reach 0.5 or more (any anxiety disorder, specific phobia, obsessive-compulsive symptoms; yes 41% to 85%
+  between the two centres for the first) are within chance on groups this small.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  anxiety_disorder_fu: {column: tranxi, type: item, range: [0, 1], missing: {"9": unknown}, label: "Any anxiety disorder, at follow-up"}
+  panic_with_agoraphobia_fu: {column: panag, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Panic disorder with agoraphobia, at follow-up"}
+  panic_with_agoraphobia_onset_age_fu: {column: panagag, type: number, unit: years, range: [0, 70], winsor: false, label: "Panic disorder with agoraphobia: age at onset, at follow-up"}
+  panic_with_agoraphobia_remission_fu: {column: panagrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Panic disorder with agoraphobia: in remission, at follow-up"}
+  panic_without_agoraphobia_fu: {column: pansa, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Panic disorder without agoraphobia, at follow-up"}
+  panic_without_agoraphobia_onset_age_fu: {column: pansag, type: number, unit: years, range: [0, 70], winsor: false, label: "Panic disorder without agoraphobia: age at onset, at follow-up"}
+  panic_without_agoraphobia_remission_fu: {column: pansarem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Panic disorder without agoraphobia: in remission, at follow-up"}
+  agoraphobia_fu: {column: agspa, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Agoraphobia without panic disorder, at follow-up"}
+  agoraphobia_onset_age_fu: {column: agspaag, type: number, unit: years, range: [0, 70], winsor: false, label: "Agoraphobia without panic disorder: age at onset, at follow-up"}
+  agoraphobia_remission_fu: {column: agsparem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Agoraphobia without panic disorder: in remission, at follow-up"}
+  social_phobia_fu: {column: phso, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Social phobia, at follow-up"}
+  social_phobia_onset_age_fu: {column: phsoag, type: number, unit: years, range: [0, 70], winsor: false, label: "Social phobia: age at onset, at follow-up"}
+  social_phobia_remission_fu: {column: phsorem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Social phobia: in remission, at follow-up"}
+  specific_phobia_fu: {column: phsp, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Specific phobia, at follow-up"}
+  specific_phobia_onset_age_fu: {column: phspag, type: number, unit: years, range: [0, 70], winsor: false, label: "Specific phobia: age at onset, at follow-up"}
+  specific_phobia_animal_fu: {column: phsptani, type: item, range: [0, 1], label: "Specific phobia: animal type, at follow-up"}
+  specific_phobia_natural_environment_fu: {column: phsptenv, type: item, range: [0, 1], label: "Specific phobia: natural environment type, at follow-up"}
+  specific_phobia_blood_injection_fu: {column: phsptsan, type: item, range: [0, 1], label: "Specific phobia: blood, injection and injury type, at follow-up"}
+  specific_phobia_situational_fu: {column: phsptsit, type: item, range: [0, 1], label: "Specific phobia: situational type, at follow-up"}
+  specific_phobia_other_fu: {column: phsptaut, type: item, range: [0, 1], label: "Specific phobia: other type, at follow-up"}
+  specific_phobia_remission_fu: {column: phsprem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific phobia: in remission, at follow-up"}
+  separation_anxiety_fu: {column: ceoccur_anxsep, type: item, range: [0, 1], missing: {"9": unknown}, label: "Separation anxiety (from 2021), at follow-up"}
+  separation_anxiety_onset_age_fu: {column: agedebut_anxsep, type: number, unit: years, range: [0, 70], winsor: false, label: "Separation anxiety: age at onset, at follow-up"}
+  separation_anxiety_remission_fu: {column: remi_anxsep, type: item, range: [0, 1], missing: {"9": unknown}, label: "Separation anxiety: in remission, at follow-up"}
+  ocd_fu: {column: toc, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Obsessive-compulsive disorder, at follow-up"}
+  ocd_onset_age_fu: {column: tocag, type: number, unit: years, range: [0, 70], winsor: false, label: "Obsessive-compulsive disorder: age at onset, at follow-up"}
+  ocd_remission_fu: {column: tocrem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Obsessive-compulsive disorder: in remission, at follow-up"}
+  ocd_ssri_treatment_fu: {column: tocirs, type: item, range: [0, 1], label: "Obsessive-compulsive disorder: treated with an SSRI, at follow-up"}
+  ocd_ssri_response_fu: {column: tocirst, type: category, codes: {"1": responder, "2": partial_responder, "3": non_responder}, label: "Obsessive-compulsive disorder: response to the SSRI, at follow-up"}
+  obsessive_compulsive_symptoms_fu: {column: soc, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Obsessive-compulsive symptoms, at follow-up"}
+  compulsions_onset_age_fu: {column: socagcom, type: number, unit: years, range: [0, 70], winsor: false, label: "Obsessive-compulsive symptoms: age when the compulsions began, at follow-up"}
+  obsessions_onset_age_fu: {column: socagobs, type: number, unit: years, range: [0, 70], winsor: false, label: "Obsessive-compulsive symptoms: age when the obsessions began, at follow-up"}
+  generalised_anxiety_fu: {column: anxge, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: anxiety_disorder_fu, label: "Generalised anxiety disorder, at follow-up"}
+  generalised_anxiety_onset_age_fu: {column: anxgeag, type: number, unit: years, range: [0, 70], winsor: false, label: "Generalised anxiety disorder: age at onset, at follow-up"}
+  generalised_anxiety_remission_fu: {column: anxgerem, type: item, range: [0, 1], missing: {"9": unknown}, label: "Generalised anxiety disorder: in remission, at follow-up"}
+  ptsd_fu: {column: ceoccur_spt, type: item, range: [0, 1], missing: {"9": unknown}, label: "Post-traumatic stress disorder (from 2021), at follow-up"}
+  ptsd_onset_age_fu: {column: agedebut_spt, type: number, unit: years, range: [0, 70], winsor: false, label: "Post-traumatic stress disorder: age at onset, at follow-up"}
+  ptsd_remission_fu: {column: remi_spt, type: item, range: [0, 1], missing: {"9": unknown}, label: "Post-traumatic stress disorder: in remission, at follow-up"}
+
+scores:
+  panic_disorder_fu:
+    max: [panic_with_agoraphobia_fu, panic_without_agoraphobia_fu]
+    label: "Panic disorder, with or without agoraphobia, at follow-up"
+    range: [0, 1]

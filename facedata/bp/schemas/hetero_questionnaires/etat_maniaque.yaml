@@ -1,20 +1,48 @@
 instrument: etat_maniaque
-title: "Current manic episode: DSM-IV symptom checklist"
+title: "Manic symptoms present at the visit (DSM-IV checklist)"
 tab: HETERO-QUESTIONNAIRES
 section: Episode maniaque actuel
 status: reviewed
 notes: >
-  Part of the "État du patient" form: a DSM-IV symptom checklist, filled at
-  the inclusion visit and at the follow-up visits. It is the same form for
+  Part of the "État du patient" form (the section is called "Episode maniaque
+  actuel"): a checklist of the nine symptoms of a DSM-IV manic episode (two
+  mood items and seven symptoms), filled at the inclusion visit and at the
+  follow-up visits. The instruction of the form is to fill it whatever the
+  mood state of the patient (euthymic, depressed, manic, hypomanic or mixed)
+  and to tick the symptoms present: it lists the symptoms present at the
+  visit, it is not an episode and not a diagnosis. It is the same form for
   every patient, so it does not depend on dsm_version.
 
-  The answers are Y and N in the extraction. They are delivered as 1 and 0, so
-  that the symptoms can be counted. U ("does not know") is a missing code.
+  The answers are Y, N and U in the extraction. Y and N are delivered as 1
+  and 0, so that the symptoms can be counted. U ("does not know") is a
+  missing code.
 
-  The stored score is the number of symptoms present, and exists only when the
-  nine symptoms are answered with yes or no, as in the scoring script of the
-  application. It is computed on 15,283 visits and differs from the stored
-  one on 22; they get score_mismatch and the recomputed count is kept.
+  The stored count (etatm) is the application's own: the score step of the
+  export has no definition for it. The application computes it when the
+  button "Calculer le score" is clicked (hetero_etat_patient.js): Oui is 1,
+  Non is 0, any other answer ("Ne sais pas") is -999 and gives "Score non
+  calculable", and a blank item makes the script stop with an error (line
+  82, the variable champ does not exist there), so the field keeps its old
+  value (request A64). The package counts the symptoms from the answers, and
+  needs all nine to be yes or no, like the stored count. It is delivered on
+  15,283 visits and the stored count is absent on 677 of them. It differs
+  from the stored one on 22 visits (stored lower on 19, higher on 3): they
+  get score_mismatch and the recomputed count is kept; two stored counts sit
+  on visits where an item is missing (score_not_recomputed). 106 visits (0.7%
+  of the 15,389 where the nine are answered) get no count because one answer
+  is "Ne sais pas", and 40 more have an item left blank.
+
+  The count is the number of symptoms ticked, not a measure of mania: a count
+  of 3 or more is met on 1,419 of the 15,283 counts (9.3%); the rule of
+  criterion B (a mood item and 3 of the 7 other symptoms, 4 if the mood is
+  only irritable; DSM-5 wording as reproduced in scale_reference.md, section
+  25, the DSM-IV-TR counts to verify) is met on 676 (4.4%); a YMRS of 12 or
+  more on 519 of the 15,197 of those visits that have one. The duration is
+  not asked.
+
+  The form is filled less and less: of the visits that hold a MADRS, YMRS,
+  FAST or CGI rating, 95% have it up to 2017, 88% in 2018-2022 and 86% from
+  2023; one centre goes from 98% to 44% and 10%.
 
 defaults: {type: item, range: [0, 1], codes: {Y: 1, N: 0}, missing: {U: unknown}}
 

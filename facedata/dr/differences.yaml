@@ -7,9 +7,12 @@ identite: the diagnosis is that of the DR cohort; the day of birth is set to the
 provenance: two of the BP questions only; the referrer has other texts and the purpose of the visit is exported as a code that the dictionary does not explain
 
 # HETERO-QUESTIONNAIRES
-cgi_egf: the TRD form has the CGI severity and the GAF only, and the GAF is in the column egf_
-etat_depressif: the answers are 1, 0 and 2 where BP writes Y, N and U; no stored count; each detail is two yes/no boxes, and the weight and sleep details have a second form with one list
+cgi_egf: the TRD extraction has the CGI severity and the GAF only (no improvement, no side effects, no efficacy index; the CGI-I of form 184 is not exported), the GAF is in the column egf_ and its box takes digits only, so no band is typed and the option bands is not set
+etat_depressif: the answers are 1, 0 and 2 where BP writes Y, N and U; no stored count; each detail of reactivity, psychomotor change and thinking speed is two yes/no boxes (0 after a no to the symptom), and the weight and sleep details have a second form with one list whose option 3 is "ne sais pas"; the suicide item adds "or a specific plan" to the BP wording
 etat_maniaque: the answers are 1, 0 and 2 where BP writes Y, N and U; no stored count
+# fast: the schema is the BP one (a line here would fail test_shared_instruments_are_the_same_in_dr); the script of the DR application
+#   (form 130) differs: it empties all six domain scores and the total when one item is blank, where the BP domain scripts sum each
+#   domain alone, and the package follows the BP rule (273 domain cells on 59 partial visits that the DR script leaves empty; request A66)
 
 # VITAL SIGN et ECG
 ecg: the TRD extraction has no "ECG done" question

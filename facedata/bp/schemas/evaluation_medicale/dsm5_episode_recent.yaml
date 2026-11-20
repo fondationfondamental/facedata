@@ -42,6 +42,11 @@ notes: >
   keeps the answer rules of the DSM-IV form, where the fourth type was the
   mixed one, so unlike the DSM-IV form it asks the severity and the
   postpartum onset of an unspecified episode (21 of 21 answered).
+  The form's rule is on the positions of the type list, as in
+  dsm4_episode_recent.yaml (specifier and chronicity on 1, severity on 1, 3
+  and 4, postpartum on 1 to 4): position 4 is the unspecified type here,
+  where it is the mixed one in the DSM-IV form. No cell is filled under a
+  type that hides the question, so no shown_if is needed.
 
   The most recent episode or the current one. Where the patient is in an
   episode at inclusion, the clinicians often described that episode here:
@@ -67,7 +72,7 @@ notes: >
   The type of the most recent episode recorded at the follow-up visits is
   another column, read by the schemas of the follow-up form. Not in the
   extraction: the DSM-5 form asks whether a manic or unspecified episode is
-  catatonic and whether a manic one has mixed features.
+  catatonic and whether a manic one has mixed features (R140).
 
 version:
   name: dsm_version
@@ -78,6 +83,7 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm5]}
 

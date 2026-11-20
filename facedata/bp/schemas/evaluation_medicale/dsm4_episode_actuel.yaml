@@ -10,7 +10,7 @@ notes: >
   and yearly). It describes the day of the visit at every visit, so the
   inclusion and the follow-up answers are in the same columns. A third of
   the inclusions read here are in an episode (1,445 of 4,415) and a quarter
-  of the follow-up visits (1,671 of 7,294). Yes/no answers are delivered as
+  of the follow-up visits (1,700 of 7,343). Yes/no answers are delivered as
   1 and 0; "Ne sais pas" is a missing code.
 
   DSM-IV and DSM-5 are two editions (decision D9 in PROGRESS.md), asked on
@@ -29,16 +29,25 @@ notes: >
   and has no version from 2020 to 2022 (version_unknown, not delivered).
   Why labels are missing and which visits D14 reads in the other edition:
   see dsm4_depuis_derniere_visite.yaml. Here 20 inclusions and 327
-  follow-up visits are read as DSM-IV by date, and 29 visits with an answer
-  (5 inclusions and 24 follow-ups of 2020 and 2021, 27 patients) have no
-  version and are delivered in neither schema.
+  follow-up visits are read as DSM-IV by date; the 49 follow-up visits that
+  hold a column of the old form are read as DSM-IV whatever their label
+  (the override of the version block). 15 visits with an answer (5
+  inclusions of 2020 and 2021 and 10 follow-ups of 2021, 14 patients) have
+  no version and are delivered in neither schema.
 
   The inclusion form of DSM-IV has a mixed type of episode (91 visits) and
   a yes/no "catatonic" asked for a manic or mixed episode (100 visits, 1 of
   them "Ne sais pas"). Each detail is asked for some types only: the
   specifier and the chronicity for a depressive episode, the severity for a
   depressive, manic or mixed one, the postpartum onset for every type but
-  the unspecified one.
+  the unspecified one (the form's rule, on the positions of the type list:
+  specifier and chronicity on the depressive type, severity on the
+  depressive, manic and mixed ones, the yes/no "catatonic" on the manic and
+  mixed ones, postpartum on the first four). No shown_if here, unlike
+  dsm4_episode_recent.yaml: it would blank 341 cells (337 before the
+  override), 319 of them at follow-up visits where the type is empty, the
+  residue of the removed mixed type (see below), so that the type is the
+  missing value and the details are real answers; 22 elsewhere.
 
   The details are asked only after a yes. After a no the form empties the
   type of episode, and the start date at follow-up, but not the details
@@ -49,42 +58,47 @@ notes: >
   All are delivered as written, as in D50.
 
   "Chronic" is a judgement of the rater: of the follow-up episodes ticked
-  chronic that have a start date, 45 of 296 began two years or more before
+  chronic that have a start date, 45 of 307 began two years or more before
   the visit, and the share of chronic depressive episodes at inclusion goes
   from 18% to 74% between centres. The share of inclusions in an episode
   rises from 27% until 2012 to 37% in 2019-2021, and goes from 15% to 51%
   between centres; the mixed type is under 1% to 18% of the episodes by
-  centre.
-  One centre (K) gives a melancholic or atypical specifier to 55% of the
-  depressive episodes, the others to 12% or less.
+  centre. One centre (K) gives a melancholic or atypical specifier to 55%
+  of the depressive episodes, the others to 12% or less.
 
   At the follow-up visits. The follow-up form, one form for every patient,
   has no mixed type of episode today. It most likely had one until it
   changed (October 2021 to May 2022, D14), like the DSM-IV inclusion form
   whose answer rules it keeps, and those answers were emptied when the type
-  left the list: 161 follow-up visits in an episode have no type (2010 to
-  2021), 139 of them with a severity and none with a chronicity, as a mixed
-  episode would; 79 count a mixed episode since the last visit. "Episode
+  left the list: 164 follow-up visits in an episode have no type (2010 to
+  2022), 141 of them with a severity and none with a chronicity, as a mixed
+  episode would; 81 count a mixed episode since the last visit. "Episode
   non spécifié" has a severity on 0 of 44 DSM-IV follow-ups and on 18 of 18
-  DSM-5 ones. These visits are delivered with no type.
+  DSM-5 ones. These visits are delivered with no type. The 33 follow-up
+  visits of January to May 2022 that the override reads as DSM-IV (D180) all
+  answered yes to an episode since the last visit, so 64% of them are in an
+  episode today against 24% to 25% of the follow-ups of 2019 to 2021: this
+  is the year shift of the box, a selection and not a change of habit (leave
+  2022 out of a trend).
 
   The follow-up specifier. Until September 2021 it holds almost only the
-  answers that the DSM-5 list kept: 94 of its 99 values are melancholic,
-  atypical or catatonic, and the DSM-IV answer "none" never appears, so an
-  empty cell means "none" or not answered (87 of the 1,087 follow-up
-  depressive episodes of 2011 to 2020 have a specifier). Its share cannot
-  be compared with the inclusion one. From October 2021 the new list is
-  used: 17 of the 19 values are "none". So 22 follow-up visits carry the
-  DSM-5 wording of "none" (read as none; 17 of October to December 2021, 5
-  of 2014 to 2019), and 2 carry the DSM-5 specifier "mixed" (2019, 2021),
-  which this form does not have: unknown_code.
+  answers that the DSM-5 list kept: 94 of its 99 values (93 of the 98 on a
+  depressive episode) are melancholic, atypical or catatonic, and the
+  DSM-IV answer "none" never appears, so an empty cell means "none" or not
+  answered (87 of the 1,089 follow-up depressive episodes of 2011 to 2020
+  have a specifier). Its share cannot be compared with the inclusion one.
+  From October 2021 the new list is used: 17 of the 19 values are "none".
+  So 22 follow-up visits carry the DSM-5 wording of "none" (read as none;
+  17 of October to December 2021, 5 of 2014 to 2019), and 2 carry the DSM-5
+  specifier "mixed" (2019, 2021), which this form does not have:
+  unknown_code.
 
-  The start date of the episode exists at the follow-up visits only (1,532
-  dates). 52 are after the visit (1 to 340 days), delivered as written. 2
+  The start date of the episode exists at the follow-up visits only (1,559
+  dates). 54 are after the visit (1 to 640 days), delivered as written. 2
   have no day or no month and are read as the middle of the period
-  (date_partial). The
-  placeholder 1000-01-01, which the application writes into empty dates
-  since its version of 2024-07-25 (D98), never occurs here.
+  (date_partial). The placeholder 1000-01-01, which the application writes
+  into empty dates since its version of 2024-07-25 (D98), never occurs
+  here.
 
   Not in the extraction: the follow-up form asks whether a manic or
   unspecified episode is catatonic or has mixed features (R68).
@@ -98,6 +112,7 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm4]}
 

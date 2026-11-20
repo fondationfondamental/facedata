@@ -1,0 +1,73 @@
+instrument: learning_difficulties_fu
+title: "Reading, spelling, mathematics and writing difficulties at the yearly follow-up visits"
+tab: evaluation_medicale
+section: learning
+status: reviewed
+notes: >
+  Four questions of the clinician (form 120, table aut_c1trappr, 'Trouble spécifique des apprentissages avec déficit'; 9 'Non
+  connu' is a missing code): a specific learning disorder with impairment in reading (retlec), in written expression (orth) or
+  in mathematics (math), and dysgraphia (ecri), each with two radios after a yes: it interfered with school or daily life
+  (ending vi) and an assessment or re-education by a professional (ending reed; a speech therapist, except for dysgraphia,
+  where the form says 'un professionnel'). The form carries an older, narrower wording in its other language slot (reading
+  delay in childhood, 8 to 18 years; spelling and mathematics difficulties 'âge + 8 ans'; writing difficulties 8 to 18 years):
+  the current label is the DSM-5 disorder, with no age window. The names come from the thesaurus V2.13 (PROGRESS.md D13 and
+  D14).
+
+  The same twelve columns exist without the ending _med in the table autoquestionnaires: exact copies, not loaded
+  (ignored.yaml). The two boxes after the disorder stay missing after a no (they are details of a disorder that is absent,
+  R1).
+
+  Not joined. The reviewed learning_disorders (neuropsychology tab, trbapp01 to trbapp10, asked before the assessment) holds
+  other questions in other columns: reading difficulty here and dyslexia agree on 598 of the 630 visits where both are
+  answered (writing and dysorthographia 588 of 640, mathematics and dyscalculia 596 of 637); the stuttering of the
+  developmental part and trbapp07 agree on 186 of 196. The questions are close but are not the same, so the names are not
+  shared.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At the yearly visits. 77 follow-up visits answer at least one question. Yes: reading 2 of 74, written expression 11 of 74,
+  mathematics 2 of 71 and dysgraphia 27 of 72. The form has no change question.
+
+  **Year and centre.** 77 visits: at most one year or one centre holds 20 values: there is nothing to screen.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  reading_disorder_fu: {column: retlec_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in reading, at follow-up"}
+  reading_disorder_interfered_fu: {column: retlecvi_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in reading: it interfered with school or daily life, at follow-up"}
+  reading_disorder_reeducation_fu: {column: retreed_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in reading: assessed or re-educated by a speech therapist, at follow-up"}
+  written_expression_disorder_fu: {column: orth_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in written expression, at follow-up"}
+  written_expression_disorder_interfered_fu: {column: orthvi_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in written expression: it interfered with school or daily life, at follow-up"}
+  written_expression_disorder_reeducation_fu: {column: orthreed_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in written expression: assessed or re-educated by a speech therapist, at follow-up"}
+  mathematics_disorder_fu: {column: math_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in mathematics, at follow-up"}
+  mathematics_disorder_interfered_fu: {column: mathvi_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in mathematics: it interfered with school or daily life, at follow-up"}
+  mathematics_disorder_reeducation_fu: {column: mathreed_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Specific learning disorder with impairment in mathematics: assessed or re-educated by a speech therapist, at follow-up"}
+  dysgraphia_fu: {column: ecri_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Dysgraphia, at follow-up"}
+  dysgraphia_interfered_fu: {column: ecrivi_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Dysgraphia: it interfered with school or daily life, at follow-up"}
+  dysgraphia_reeducation_fu: {column: ecrireed_med, type: item, range: [0, 1], missing: {"9": unknown}, label: "Dysgraphia: assessed or re-educated by a professional, at follow-up"}

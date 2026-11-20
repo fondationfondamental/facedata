@@ -2,65 +2,86 @@ instrument: violent_behaviours
 title: Violent behaviours
 tab: EVALUATION MEDICALE
 section: COMPORTEMENTS VIOLENTS
-status: draft
+status: reviewed
 notes: >
-  At the inclusion visit (about 1,800 visits): four kinds of violent
-  behaviour of the patient (verbal, physical, sexual, breaking of
-  objects). For each: inside or outside the family, an intervention of the
-  police, a conviction and its sentence; for the physical violence also
-  blows and wounds, with or without a weapon, and whether the other person
-  needed care; for the sexual violence its kind. 1 is yes, 0 is no.
+  At the inclusion visit (1,816 visits; no other visit holds an answer): four
+  kinds of violent behaviour of the patient over the whole life (verbal,
+  physical, sexual, breaking of objects). For each: inside or outside the
+  family, an intervention of the police, a conviction and its sentence; for the
+  physical violence also blows and wounds, with or without a weapon, whether the
+  other person needed care, and homicide; for the sexual violence its kind. 1 is
+  yes, 0 is no. The form puts the question as "has the subject presented, over
+  the whole life".
 
-  The details are filled after a yes and stay empty otherwise. Cells that
-  list several boxes ("Intrafamiliale,Extrafamiliale", the weapons, the
-  sentences) are read as one yes/no per box. The firearm is written "Arme ?
-  feu" in the extraction: the accented letter was lost by the export.
+  The details hang on a gate in the form (the table psy_ecv_nom_champ): the type,
+  the police and the conviction on the question of the kind of violence, the
+  sentence on the conviction; for the physical violence the blows and homicide
+  on the physical violence, and the weapon and the care needed on the blows,
+  not on the physical violence. A detail is filled after a yes and empty
+  otherwise. The ten yes/no questions that hang on a gate (the police and the
+  conviction of the four kinds, the blows, the care needed) are 0 after a no on
+  their gate (asked_if): 12,613 cells, the cascade included (the care needed
+  hangs on the blows: 1,195 cells after a no to the physical violence, 211
+  after blows and wounds "no"). The sets (type, weapon, sentence) are left as
+  they are: an empty cell of a set is not a no. Cells that list several boxes
+  ("Intrafamiliale,Extrafamiliale", the weapons, the sentences) are read as one
+  yes/no per box. The firearm is written "Arme ? feu" in the extraction: the
+  accented letter was lost by the export.
 
-  rad_ecv_vp5 (603 cells, yes on 8), a question of the physical violence
-  that the dictionary does not have, is ignored (open question O21).
+  Homicide (decision D80; closes open question O21). rad_ecv_vp5 is the
+  question "Homicide" of the physical violence (field 136 of the form),
+  committed by the patient over the whole life, and is delivered as
+  violence_physical_homicide: 603 answers (8 yes) after a yes to the physical
+  violence and 0 after a no (1,195), 1,798 valid cells in all. 12 of the 615
+  visits with a physical violence have the answer blank. Of the 8 yes, 6 also
+  hold blows and wounds, 6 an intervention of the police and 5 a conviction.
+
+  Roll-out. The block is answered on 6%, 10% and 15% of the inclusion visits of
+  2010, 2011 and 2012, 33% in 2013, 50% in 2014 and 81% to 99% from 2015.
 
 defaults: {type: item, range: [0, 1], codes: {Oui: 1, Non: 0}}
 
 variables:
-  violence_verbal: {column: mhoccur_ecv_vv, label: "Verbal violence"}
+  violence_verbal: {column: mhoccur_ecv_vv, label: "Verbal violence committed by the patient, whole life"}
   violence_verbal_within_family: {column: type_ecv_vv, separator: ",", codes: {Intrafamiliale: 1, Extrafamiliale: 0}, label: "Verbal violence: within family"}
   violence_verbal_outside_family: {column: type_ecv_vv, separator: ",", codes: {Intrafamiliale: 0, Extrafamiliale: 1}, label: "Verbal violence: outside family"}
-  violence_verbal_police: {column: police_ecv_vv, label: "Verbal violence: the police intervened"}
-  violence_verbal_convicted: {column: rad_ecv_vv4, label: "Verbal violence: convicted"}
+  violence_verbal_police: {column: police_ecv_vv, asked_if: violence_verbal, label: "Verbal violence: the police intervened"}
+  violence_verbal_convicted: {column: rad_ecv_vv4, asked_if: violence_verbal, label: "Verbal violence: convicted"}
   violence_verbal_sentence_fine: {column: condamn_ecv_vv, separator: ",", codes: {Amende: 1, Sursis: 0, Prison: 0}, label: "Verbal violence: sentence, amende"}
   violence_verbal_sentence_suspended: {column: condamn_ecv_vv, separator: ",", codes: {Amende: 0, Sursis: 1, Prison: 0}, label: "Verbal violence: sentence, sursis"}
   violence_verbal_sentence_prison: {column: condamn_ecv_vv, separator: ",", codes: {Amende: 0, Sursis: 0, Prison: 1}, label: "Verbal violence: sentence, prison"}
 
-  violence_physical: {column: mhoccur_ecv_vp, label: "Physical violence"}
-  violence_physical_blows: {column: rad_ecv_vp2, label: "Physical violence: blows and wounds"}
+  violence_physical: {column: mhoccur_ecv_vp, label: "Physical violence committed by the patient, whole life"}
+  violence_physical_blows: {column: rad_ecv_vp2, asked_if: violence_physical, label: "Physical violence: blows and wounds"}
   violence_physical_no_weapon: {column: mhmodify_ecv_vp, separator: ",", codes: {"Sans arme": 1, "Arme blanche": 0, "Arme ? feu": 0}, label: "Physical violence: sans arme"}
   violence_physical_blade: {column: mhmodify_ecv_vp, separator: ",", codes: {"Sans arme": 0, "Arme blanche": 1, "Arme ? feu": 0}, label: "Physical violence: arme blanche"}
   violence_physical_firearm: {column: mhmodify_ecv_vp, separator: ",", codes: {"Sans arme": 0, "Arme blanche": 0, "Arme ? feu": 1}, label: "Physical violence: arme à feu"}
-  violence_physical_care_needed: {column: rad_ecv_vp4, label: "Physical violence: the other person needed care"}
+  violence_physical_care_needed: {column: rad_ecv_vp4, asked_if: violence_physical_blows, label: "Physical violence: the other person needed care (asked after blows and wounds)"}
+  violence_physical_homicide: {column: rad_ecv_vp5, asked_if: violence_physical, label: "Physical violence: homicide committed by the patient, whole life"}
   violence_physical_within_family: {column: type_ecv_vp, separator: ",", codes: {Intrafamiliale: 1, Extrafamiliale: 0}, label: "Physical violence: within family"}
   violence_physical_outside_family: {column: type_ecv_vp, separator: ",", codes: {Intrafamiliale: 0, Extrafamiliale: 1}, label: "Physical violence: outside family"}
-  violence_physical_police: {column: police_ecv_vp, label: "Physical violence: the police intervened"}
-  violence_physical_convicted: {column: rad_ecv_vp8, label: "Physical violence: convicted"}
+  violence_physical_police: {column: police_ecv_vp, asked_if: violence_physical, label: "Physical violence: the police intervened"}
+  violence_physical_convicted: {column: rad_ecv_vp8, asked_if: violence_physical, label: "Physical violence: convicted"}
   violence_physical_sentence_fine: {column: condamn_ecv_vp, separator: ",", codes: {Amende: 1, Sursis: 0, Prison: 0}, label: "Physical violence: sentence, amende"}
   violence_physical_sentence_suspended: {column: condamn_ecv_vp, separator: ",", codes: {Amende: 0, Sursis: 1, Prison: 0}, label: "Physical violence: sentence, sursis"}
   violence_physical_sentence_prison: {column: condamn_ecv_vp, separator: ",", codes: {Amende: 0, Sursis: 0, Prison: 1}, label: "Physical violence: sentence, prison"}
 
-  violence_sexual: {column: mhoccur_ecv_vs, label: "Sexual violence"}
+  violence_sexual: {column: mhoccur_ecv_vs, label: "Sexual violence committed by the patient, whole life"}
   violence_sexual_rape: {column: mhmodify_ecv_vs, separator: ",", codes: {Viol: 1, Attouchements: 0}, label: "Sexual violence: rape"}
   violence_sexual_touching: {column: mhmodify_ecv_vs, separator: ",", codes: {Viol: 0, Attouchements: 1}, label: "Sexual violence: touching"}
   violence_sexual_within_family: {column: type_ecv_vs, separator: ",", codes: {Intrafamiliale: 1, Extrafamiliale: 0}, label: "Sexual violence: within family"}
   violence_sexual_outside_family: {column: type_ecv_vs, separator: ",", codes: {Intrafamiliale: 0, Extrafamiliale: 1}, label: "Sexual violence: outside family"}
-  violence_sexual_police: {column: police_ecv_vs, label: "Sexual violence: the police intervened"}
-  violence_sexual_convicted: {column: rad_ecv_vs5, label: "Sexual violence: convicted"}
+  violence_sexual_police: {column: police_ecv_vs, asked_if: violence_sexual, label: "Sexual violence: the police intervened"}
+  violence_sexual_convicted: {column: rad_ecv_vs5, asked_if: violence_sexual, label: "Sexual violence: convicted"}
   violence_sexual_sentence_fine: {column: condamn_ecv_vs, separator: ",", codes: {Amende: 1, Sursis: 0, Prison: 0}, label: "Sexual violence: sentence, amende"}
   violence_sexual_sentence_suspended: {column: condamn_ecv_vs, separator: ",", codes: {Amende: 0, Sursis: 1, Prison: 0}, label: "Sexual violence: sentence, sursis"}
   violence_sexual_sentence_prison: {column: condamn_ecv_vs, separator: ",", codes: {Amende: 0, Sursis: 0, Prison: 1}, label: "Sexual violence: sentence, prison"}
 
-  violence_objects: {column: mhoccur_ecv_vo, label: "Breaking of objects"}
+  violence_objects: {column: mhoccur_ecv_vo, label: "Breaking of objects by the patient, whole life"}
   violence_objects_within_family: {column: type_ecv_vo, separator: ",", codes: {Intrafamiliale: 1, Extrafamiliale: 0}, label: "Breaking of objects: within family"}
   violence_objects_outside_family: {column: type_ecv_vo, separator: ",", codes: {Intrafamiliale: 0, Extrafamiliale: 1}, label: "Breaking of objects: outside family"}
-  violence_objects_police: {column: police_ecv_vo, label: "Breaking of objects: the police intervened"}
-  violence_objects_convicted: {column: rad_ecv_vo4, label: "Breaking of objects: convicted"}
+  violence_objects_police: {column: police_ecv_vo, asked_if: violence_objects, label: "Breaking of objects: the police intervened"}
+  violence_objects_convicted: {column: rad_ecv_vo4, asked_if: violence_objects, label: "Breaking of objects: convicted"}
   violence_objects_sentence_fine: {column: condamn_ecv_vo, separator: ",", codes: {Amende: 1, Sursis: 0, Prison: 0}, label: "Breaking of objects: sentence, amende"}
   violence_objects_sentence_suspended: {column: condamn_ecv_vo, separator: ",", codes: {Amende: 0, Sursis: 1, Prison: 0}, label: "Breaking of objects: sentence, sursis"}
   violence_objects_sentence_prison: {column: condamn_ecv_vo, separator: ",", codes: {Amende: 0, Sursis: 0, Prison: 1}, label: "Breaking of objects: sentence, prison"}

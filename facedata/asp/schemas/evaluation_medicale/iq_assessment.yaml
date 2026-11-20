@@ -2,13 +2,40 @@ instrument: iq_assessment
 title: "Intellectual assessment: date, age and general ability index"
 tab: evaluation_medicale
 section: intellectual assessment
-status: draft
+status: reviewed
 notes: >
   The summary of the intellectual assessment that the clinician copies into
-  the medical evaluation: a box "assessment done" (qirea, filled until 2020
-  only: yes on 514 of 795 inclusion visits; 9 is read as "not known"), the
-  date of the assessment (1,866 visits), the age at the assessment in years
-  and months, and the general ability index (iag, from 2018, 675 visits).
+  the medical evaluation (form 119, typed numbers, no script): the date of
+  the assessment, the age at the assessment in years and months, a box
+  "assessment done" and the general ability index (iag).
+
+  The box "an IQ was already done" (qirea): 795 inclusion answers (yes 514, no
+  254, 9 read as "not known" 27) and 87 at follow-up visits, filled from 2010
+  and mostly from 2013 to 2020 (four answers in 2021, one in 2025): the radio
+  is commented out of form 119 (119.php:9), so it left the form around 2021. It does not tell
+  whether an assessment exists: it says no on 268 visits, 205 of which hold
+  an index of one of the three editions.
+
+  The date (qi_date, "date de passation"): 1,957 non-empty cells, of which
+  262 hold 0000-00-00 (the empty date of the export, silently empty; 184 of
+  these visits hold an index) and 2 are out of range (1921 and 2107): 1,693
+  dates are delivered. (The earlier note said 1,866: that is the number of
+  non-empty V0 cells, the 262 empty dates included.) The date is the date to
+  which the indices belong: the norm tables of the application read the age at
+  this date, so the indices of wais4_indices, wisc4_indices and
+  wisc5_indices describe the assessment, not the visit. The edition boxes
+  agree with the age at the assessment only in part: the WISC-IV is ticked on
+  37 visits of patients aged 18 or more at the visit and the WISC-V on 19
+  (5 and 2 of those with a date were 18 or more at the assessment), and 10
+  WAIS-IV assessments are dated under the age of 16.
+
+  The general ability index (iag, "indice d'aptitude generale"): 675 visits,
+  all inclusion visits (301 of children), one dated 2016 and the others from
+  2018 on; 666 are delivered, 9 are outside 40 to 160 (8 below 40, one above
+  160: out_of_range). The form has one field IAG for the three editions of
+  the Wechsler scales, so the index cannot be tied to an edition, and the
+  composition of the French IAG of the WISC-IV and WISC-V is not confirmed
+  (scale_reference.md, 'to verify').
 
   The indices themselves are in three instruments, one per edition of the
   Wechsler scales: wisc4_indices, wisc5_indices and wais4_indices.
@@ -18,6 +45,17 @@ notes: >
   D14).
 
   An instrument of the ASP cohort only.
+
+  **Year and centre.** 3 of the 5 variables reach 0.5 or more. 'Assessment done' is yes for 90% of the
+  children and 47% of the adults, 26% to 89% by centre (age mix, habit of the centre); the age at the
+  assessment is 12 years in children and 24 in adults. **The general ability index** (675 visits, 666
+  delivered) is 107 in children and 114 in adults and 110 to 116 in five centres, but 66 in one (81 values,
+  all children, 75 of them from 2023; quartiles 53 and 104): at the visits of that centre where the WISC-V
+  full-scale IQ is typed too (80 pairs) the index is 46 points below it (median difference, correlation 0.43),
+  against +2 points and 0.97 elsewhere (140 pairs). The field holds another number there (a sum of scaled
+  scores, or an index of another edition: O32). The values between 40 and 160 are delivered as typed; the 9
+  out of range (below 40 or above 160) are removed. The state of the field is a documented step with no known
+  cause.
 
 variables:
   iq_assessment_done: {column: qirea, type: item, range: [0, 1], missing: {"9": unknown}, label: "An IQ assessment was already done"}

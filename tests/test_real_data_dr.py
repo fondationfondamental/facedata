@@ -84,14 +84,14 @@ def test_patient_and_inclusion_tabs(result, qc):
 
 def test_hetero_questionnaires(result, qc):
     tab = result.qc[result.qc["tab"] == "HETERO-QUESTIONNAIRES"]
-    assert (len(tab), tab["instrument"].nunique()) == (271, 12)
+    assert (len(tab), tab["instrument"].nunique()) == (378, 13)
     assert tab[["unknown_code", "unparsed", "version_unknown"]].sum().sum() == 0
     # Stored totals that follow their items on every visit: MADRS, YMRS, FAST, BAS, and the ERD on items 1 to 14.
     for score, visits in [("madrs_total", 2065), ("ymrs_total", 1033), ("fast_total", 513), ("bas_total", 1038), ("erd_total", 518)]:
         assert (qc.loc[score, "n_valid"], qc.loc[score, "score_mismatch"]) == (visits, 0)
-    # SACHS (Bipolarity Index): the ratings are read the way the stored total counts them; 4 totals still differ.
-    assert (qc.loc["sachs_total", "n_valid"], qc.loc["sachs_total", "score_mismatch"]) == (243, 4)
-    assert set(result.data["sachs_course"].dropna().unique()) <= {0, 2, 5, 10, 15, 20}
+    # SACHS (Bipolarity Index): every key is brought to its points (D58); 3 totals still differ (the plain sum of the keys, three early visits of one centre).
+    assert (qc.loc["sachs_total", "n_valid"], qc.loc["sachs_total", "score_mismatch"]) == (243, 3)
+    assert set(result.data["sachs_course"].dropna().unique()) == {0, 2, 5, 10, 15}      # key 21 is 5 points, not 20 (D58)
     # The MADRS is rated at screening and again at inclusion; the Thase and Rush stage at screening only.
     visits = result.data.loc[result.data["madrs_total"].notna(), "visit"].value_counts()
     assert (visits["screening"], visits["V0"]) == (561, 605)
@@ -101,14 +101,27 @@ def test_hetero_questionnaires(result, qc):
     # Current depressive episode: two forms of the weight and sleep details, never in one column.
     data = result.data
     assert data["etatd_detail_form"].value_counts().to_dict() == {"list": 1132, "boxes": 348}
-    assert data["etatd03a"].value_counts().to_dict() == {"gain": 261, "loss": 161, "loss_and_gain": 29}
-    assert data["etatd04a"].value_counts().to_dict() == {"insomnia": 397, "hypersomnia": 142, "insomnia_and_hypersomnia": 15}
+    assert data["etatd03a"].value_counts().to_dict() == {"gain": 261, "loss": 161}     # option 3 is "ne sais pas": missing (D56)
+    assert data["etatd04a"].value_counts().to_dict() == {"insomnia": 397, "hypersomnia": 142}
     assert data.loc[data["etatd_detail_form"] == "list", ["etatd03_loss_box", "etatd04_insomnia_box"]].notna().sum().sum() == 0
     assert data.loc[data["etatd_detail_form"] == "boxes", ["etatd03a", "etatd04a"]].notna().sum().sum() == 0
     assert (qc.loc["etatd_total", "n_valid"], qc.loc["etatm_total", "n_valid"]) == (1403, 1432)
     assert (qc.loc["cgi_severity", "n_valid"], qc.loc["cgi_severity", "missing_code"], qc.loc["gaf", "n_valid"]) == (1432, 2, 1351)
-    assert (qc.loc["amiel_events", "n_valid"], qc.loc["athf_venlafaxine", "n_valid"]) == (483, 1035)
+    assert (qc.loc["amiel_events", "n_valid"], qc.loc["amiel_events_fu", "n_valid"], qc.loc["athf_venlafaxine", "n_valid"]) == (330, 153, 1035)     # the Amiel-Lebigre is two schemas by form (D60)
     assert tab["out_of_range"].sum() == 0
+    # The ATHF keys are brought back to the levels of the form (D59): bilateral ECT B4 and B5, the two groups of options of lithium alone.
+    assert data["athf_ect_bilateral"].value_counts().to_dict() == {0: 871, 5: 93, 4: 33, 1: 19, 2: 13}
+    assert data["athf_lithium_alone"].value_counts().to_dict() == {0: 831, 3: 85, 2: 67, 1: 38}
+    assert (qc.loc["athf_vortioxetine", "n_valid"], qc.loc["athf_phenelzine", "n_valid"]) == (572, 576)
+    # The six detail boxes of the depressive symptoms are asked after a yes: an empty box after a no is 0 (D56).
+    boxes = ["etatd01_hyper_reactivity", "etatd01_hypo_reactivity", "etatd05_agitation", "etatd05_retardation", "etatd08_racing_thoughts", "etatd08_slowed_thinking"]
+    assert qc.loc[boxes, "n_valid"].tolist() == [1433, 1437, 1451, 1457, 1454, 1453]
+    # Amiel-Lebigre: the "when" of an event has four options at inclusion (form 209) and two at follow-up (form 210); never in one column (D60).
+    when = [f"amiel{n:02d}_when" for n in range(1, 54)]
+    when_fu = [f"amiel{n:02d}_fu_when" for n in range(1, 54)]
+    assert (data[when].notna().sum().sum(), data[when_fu].notna().sum().sum()) == (3209, 309)
+    assert pd.concat([data[column] for column in when_fu]).value_counts().to_dict() == {"six_months": 155, "one_year": 154}
+    assert pd.concat([data[column] for column in when]).value_counts().to_dict() == {"whole_life": 1736, "two_years": 712, "one_year": 386, "six_months": 375}
 
 
 def test_vital_signs_and_ecg(result, qc):
@@ -289,7 +302,7 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert data["visit_form"].value_counts().to_dict() == {"inclusion": 1268, "follow_up": 924}
     assert (qc.loc["isf01_lifetime", "n_valid"], qc.loc["isf01_lifetime_fu", "n_valid"]) == (452, 140)
     assert data.loc[data["visit_form"] == "follow_up", "isf01_lifetime"].notna().sum() == 0
-    assert (qc.loc["n_mde_lifetime", "n_valid"], data["n_mde_lifetime"].median(), qc.loc["n_mde_since_visit", "n_valid"], data["n_mde_since_visit"].median()) == (343, 3, 809, 0)
+    assert (qc.loc["dsm4_lt_n_mde", "n_valid"], data["dsm4_lt_n_mde"].median(), qc.loc["dsm4_fu_n_mde", "n_valid"], data["dsm4_fu_n_mde"].median()) == (343, 3, 809, 0)
     assert (qc.loc["cssrs01_lifetime", "n_valid"], (data["cssrs01_lifetime"] == 1).sum(), qc.loc["cssrs01_since_visit", "n_valid"], (data["cssrs01_since_visit"] == 1).sum()) == (557, 427, 784, 366)
     # The ISF asked again at 2 and 4 years says "ever" and no period (D44): it is delivered apart and no answer is flagged.
     assert tab["period_doubt"].sum() == 0
@@ -308,7 +321,12 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     assert "legal_protection" not in data.columns            # administrative: not delivered, as in BP and SZ (BP D111, D116)
     assert result.patients["birth_term"].value_counts().to_dict() == {"term": 435, "preterm": 47, "post_term": 14}     # asked once: per patient
     assert data["mdd_course"].value_counts().to_dict() == {"recurrent": 509, "single_episode": 123}
-    assert data["current_episode_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
+    # The mood form: the types 8 and 9 of the first episode are not in the form (D65); the psychotic counts and the induced count are asked after a count above 0 or a yes (D64).
+    assert data["dsm4_first_episode_type"].value_counts().to_dict() == {"mde": 317, "mde_psychotic": 18}
+    assert (qc.loc["dsm4_first_episode_type", "missing_code"], qc.loc["treatment_delay_weeks", "n_valid"], qc.loc["treatment_delay_weeks", "out_of_range"]) == (23, 140, 2)
+    assert qc.loc[["dsm4_lt_n_mde_psychotic", "dsm4_lt_n_mania_psychotic", "dsm4_lt_n_mixed_psychotic"], "n_valid"].tolist() == [294, 304, 302]
+    assert (qc.loc["n_induced_since_visit", "n_valid"], qc.loc["dsm4_fu_n_mania_psychotic", "n_valid"], qc.loc["manic_psychotic_since_visit", "n_valid"]) == (832, 791, 16)
+    assert data["dsm4_current_severity"].value_counts().head(2).to_dict() == {"severe": 218, "moderate": 102}
     assert data["marital_status"].value_counts().to_dict() == {"couple": 399, "single": 169, "divorced": 64, "separated": 28, "widowed": 20}
     # The lists of the most serious and of the most violent attempt are read from forms 151 and 152 (D46).
     assert data["serious_method"].value_counts().head(2).to_dict() == {"sedative_drugs": 61, "non_sedative_drugs_or_substances": 7}
