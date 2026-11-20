@@ -12,6 +12,9 @@ notes: >
   This schema reads those twelve columns on the visits where the 12-item form
   was used: the visits where none of the 22 other BIS-10 items is filled.
   bis10.yaml reads the other visits. Both files carry the same version block.
+  The 34-item form is the French BIS-10 (to verify). The 12-item form is the
+  one that the EMR prints from 2021; its source, a published short form or
+  a selection by the developers, is to verify.
 
   Before 2021. The 12-item form did not exist, and the data managers advise
   not to deliver the reduced questionnaires of a visit dated before 2021
@@ -21,8 +24,11 @@ notes: >
   like.
 
   Item names. The twelve questions are BIS-10 items 1, 6, 8, 9, 12, 14, 17,
-  20, 21, 23, 25 and 28, numbered 1 to 12 in that order (confirmed, decision
-  D8 in PROGRESS.md). bis12_01 to bis12_12 follow that numbering.
+  20, 21, 23, 25 and 28 (confirmed, decision D8 in PROGRESS.md). The form
+  prints these BIS-10 numbers (the question stored in bis1006 is printed 6),
+  not 1 to 12. The variables are numbered 1 to 12 in the order of the
+  questions, bis12_01 to bis12_12, and the label of each says the number
+  that the form prints.
 
   Items are coded 1 to 4. The reversed items are those stored in the columns
   of the reversed BIS-10 items 1, 8, 9, 12 and 21, that is bis12_01, 03, 04,
@@ -39,8 +45,8 @@ notes: >
   The stored behavioural and general means are rounded to one decimal: they
   are compared with a tolerance of 0.051 (the general score with an offset
   of 0.5). The export also writes a score when an item is missing, as the
-  sum of the answers present (10 stored scores; one stored total of 5 is
-  below the declared range).
+  sum of the answers present (22 stored scores on 7 visits; one stored total
+  of 5 is below the declared range).
 
   Not read. On these visits the EMR also filled bis10_imp_mot, bis10_imp_att,
   bis10_imp_pla, bis10_score_total and bis11, using the 4, 4, 4, 12 and 9
@@ -60,18 +66,18 @@ version:
 defaults: {type: item, range: [1, 4], versions: [bis12]}
 
 variables:
-  bis12_01: {column: bis1001, label: BIS-12 item 1 (stored in bis1001)}
-  bis12_02: {column: bis1006, label: BIS-12 item 2 (stored in bis1006)}
-  bis12_03: {column: bis1008, label: BIS-12 item 3 (stored in bis1008)}
-  bis12_04: {column: bis1009, label: BIS-12 item 4 (stored in bis1009)}
-  bis12_05: {column: bis1012, label: BIS-12 item 5 (stored in bis1012)}
-  bis12_06: {column: bis1014, label: BIS-12 item 6 (stored in bis1014)}
-  bis12_07: {column: bis1017, label: BIS-12 item 7 (stored in bis1017)}
-  bis12_08: {column: bis1020, label: BIS-12 item 8 (stored in bis1020)}
-  bis12_09: {column: bis1021, label: BIS-12 item 9 (stored in bis1021)}
-  bis12_10: {column: bis1023, label: BIS-12 item 10 (stored in bis1023)}
-  bis12_11: {column: bis1025, label: BIS-12 item 11 (stored in bis1025)}
-  bis12_12: {column: bis1028, label: BIS-12 item 12 (stored in bis1028)}
+  bis12_01: {column: bis1001, label: "BIS-12 item 1 (the form prints 1; stored in bis1001)"}
+  bis12_02: {column: bis1006, label: "BIS-12 item 2 (the form prints 6; stored in bis1006)"}
+  bis12_03: {column: bis1008, label: "BIS-12 item 3 (the form prints 8; stored in bis1008)"}
+  bis12_04: {column: bis1009, label: "BIS-12 item 4 (the form prints 9; stored in bis1009)"}
+  bis12_05: {column: bis1012, label: "BIS-12 item 5 (the form prints 12; stored in bis1012)"}
+  bis12_06: {column: bis1014, label: "BIS-12 item 6 (the form prints 14; stored in bis1014)"}
+  bis12_07: {column: bis1017, label: "BIS-12 item 7 (the form prints 17; stored in bis1017)"}
+  bis12_08: {column: bis1020, label: "BIS-12 item 8 (the form prints 20; stored in bis1020)"}
+  bis12_09: {column: bis1021, label: "BIS-12 item 9 (the form prints 21; stored in bis1021)"}
+  bis12_10: {column: bis1023, label: "BIS-12 item 10 (the form prints 23; stored in bis1023)"}
+  bis12_11: {column: bis1025, label: "BIS-12 item 11 (the form prints 25; stored in bis1025)"}
+  bis12_12: {column: bis1028, label: "BIS-12 item 12 (the form prints 28; stored in bis1028)"}
 
   # Scores as stored in the extraction. Used only to check our own scores.
   bis12_total_stored:       {column: bis10,   range: [17, 53], keep: false}

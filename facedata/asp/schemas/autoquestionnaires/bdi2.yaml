@@ -1,11 +1,13 @@
 instrument: bdi2
-title: "Beck Depression Inventory, second edition (BDI-II)"
+title: "Beck Depression Inventory, second edition (BDI-II; past two weeks, today included)"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
-  Twenty-one items and a total, at the inclusion visit: 437 visits,
-  from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only. The children fill the CDI.
+  Twenty-one items and a total, at the inclusion visit: 595 visits, from 2019 to
+  2026, and 8 follow-up visits (603 in all). It belongs to the new set of forms.
+  It is filled by adults only. The children fill the CDI. The items ask about
+  the past two weeks, today included.
 
   Identified from its name (bdi02) and its twenty-one items as the second
   edition of the Beck Depression Inventory, sure: the items 16 (sleep) and 18
@@ -15,10 +17,19 @@ notes: >
   an increase or a decrease is not delivered.
 
   The total is the sum of the twenty-one items so read: it equals the stored
-  total on 435 of the 436 visits that hold every item. On 82 visits the total was
-  typed without any item: it is kept as stored (score_as_stored). On 78 visits
-  some items are missing: the total is not delivered there, since a stored
-  total may then be a partial sum.
+  total on 435 of the 436 visits that hold every item. On 82 visits the total
+  was typed without any item: it is kept as stored (score_as_stored). On 78
+  visits some items are missing: the total is not delivered there, since a
+  stored total may then be a partial sum. The 82 totals typed without any item
+  include 66 from one centre that records almost no item (the same centre types
+  the STAIC and CDI totals).
+
+  **Year and centre.** 11 of the 22 variables reach 0.5 or more (11 by year, 6
+  by centre): the 21 items are on a 0 to 3 scale (one level is 1.0 or more of
+  the interquartile range). The total stands at 0.19 by year and by centre
+  (median 16 to 21 by year, 14 to 19 by centre): no step. The 82 totals typed
+  without items (90% of the totals of centre B) have the median of the computed
+  ones (17.5 in both; mean 18.5 and 19.2).
 
   An instrument of the ASP cohort only.
 
@@ -51,6 +62,7 @@ variables:
 scores:
   bdi_total:
     label: "BDI-II total (0 to 63)"
+    range: [0, 63]
     sum: [bdi01, bdi02, bdi03, bdi04, bdi05, bdi06, bdi07, bdi08, bdi09, bdi10, bdi11, bdi12, bdi13, bdi14, bdi15, bdi16, bdi17, bdi18, bdi19, bdi20, bdi21]
     compare: bdi_total_stored
     otherwise: bdi_total_stored

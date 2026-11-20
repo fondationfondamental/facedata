@@ -2,15 +2,34 @@ instrument: hamd
 title: "Hamilton Depression Rating Scale, 17 items (HAM-D)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Seventeen items and a total: 268 inclusion visits (53 of children) and 83 follow-up visits, from 2013 to 2021. It belongs to the old set of forms.
+  Seventeen items and a total: 268 inclusion visits (53 of children) and 83 follow-up visits, from 2009 to 2021 (349 of the 351 from 2013). It belongs to the old set of forms.
 
   Identified from its name and its seventeen items as the Hamilton Depression
   Rating Scale, sure. The item 16 (weight loss) has two columns, by history
   and measured: one of the two is filled (333 and 14 visits; both on 4), and the
   total counts the one that is. So computed, the total equals the stored one
   on 338 of 338 visits.
+
+  The form gives three answers (0 to 2) to the items 4, 5, 6, 12, 13, 14, 16 and 17
+  and five (0 to 4) to the others, as published: the total runs from 0 to 52.
+  The form goes on with the items 18 to 21 (variation during the day,
+  depersonalisation, delusional and obsessional symptoms), which are not part of
+  the total of 17 items and which the extraction does not hold.
+  The form has no age limit: 117 of the 351 visits with an item are of patients
+  under 18 (the youngest is 6 years old).
+
+  On 5 visits (2018 to 2020) an item is blank and a total is stored: it cannot be recomputed and
+  is not delivered (`score_not_recomputed`).
+
+  **Year and centre.** 8 of the 19 variables reach 0.5 or more (8 by year, 4 by centre), the total
+  at 0.89 by year and 0.50 by centre; the others have an interquartile range of 0. The age mix
+  explains the first part (children are 90% of the visits of centre C, 1% of D and none of E; the
+  median total is 1 among children and 7 among adults). Among adults the median is 3 (2014), 6, 6,
+  9.5 (2017), 3.5 (2019) and 12 (2020), and inside centre D alone 3 (2014), 8, 9, 8 (2017), 3.5
+  (2019) and 12 (2020; 22 and 21 visits in 2019 and 2020), the same swing as the HAM-A: a step
+  with no known cause (the rater or the case mix; no change of the form is known).
 
   An instrument of the ASP cohort only.
 
@@ -20,26 +39,27 @@ variables:
   hamd01: {column: hamd1, label: "HAM-D, item 1"}
   hamd02: {column: hamd2, label: "HAM-D, item 2"}
   hamd03: {column: hamd3, label: "HAM-D, item 3"}
-  hamd04: {column: hamd4, label: "HAM-D, item 4"}
-  hamd05: {column: hamd5, label: "HAM-D, item 5"}
-  hamd06: {column: hamd6, label: "HAM-D, item 6"}
+  hamd04: {column: hamd4, range: [0, 2], label: "HAM-D, item 4"}
+  hamd05: {column: hamd5, range: [0, 2], label: "HAM-D, item 5"}
+  hamd06: {column: hamd6, range: [0, 2], label: "HAM-D, item 6"}
   hamd07: {column: hamd7, label: "HAM-D, item 7"}
   hamd08: {column: hamd8, label: "HAM-D, item 8"}
   hamd09: {column: hamd9, label: "HAM-D, item 9"}
   hamd10: {column: hamd10, label: "HAM-D, item 10"}
   hamd11: {column: hamd11, label: "HAM-D, item 11"}
-  hamd12: {column: hamd12, label: "HAM-D, item 12"}
-  hamd13: {column: hamd13, label: "HAM-D, item 13"}
-  hamd14: {column: hamd14, label: "HAM-D, item 14"}
+  hamd12: {column: hamd12, range: [0, 2], label: "HAM-D, item 12"}
+  hamd13: {column: hamd13, range: [0, 2], label: "HAM-D, item 13"}
+  hamd14: {column: hamd14, range: [0, 2], label: "HAM-D, item 14"}
   hamd15: {column: hamd15, label: "HAM-D, item 15"}
-  hamd16a: {column: hamd16a, label: "HAM-D, item 16, weight loss by history"}
-  hamd16b: {column: hamd16b, label: "HAM-D, item 16, weight loss measured"}
-  hamd17: {column: hamd17, label: "HAM-D, item 17"}
+  hamd16a: {column: hamd16a, range: [0, 2], label: "HAM-D, item 16, weight loss by history"}
+  hamd16b: {column: hamd16b, range: [0, 2], label: "HAM-D, item 16, weight loss measured"}
+  hamd17: {column: hamd17, range: [0, 2], label: "HAM-D, item 17"}
   hamd_total_stored: {column: hamd_tot17, type: number, label: "HAM-D total as stored", range: [0, 52], winsor: false, keep: false}
 
 scores:
   hamd16: {label: "HAM-D, item 16 (the form of the item that is filled)", max: [hamd16a, hamd16b], min_items: 1, keep: false}
   hamd_total:
     label: "HAM-D total, 17 items (0 to 52)"
+    range: [0, 52]
     sum: [hamd01, hamd02, hamd03, hamd04, hamd05, hamd06, hamd07, hamd08, hamd09, hamd10, hamd11, hamd12, hamd13, hamd14, hamd15, hamd16, hamd17]
     compare: hamd_total_stored

@@ -170,15 +170,27 @@ def test_auto_questionnaires(result, qc):
     assert (len(tab), tab["instrument"].nunique()) == (765, 26)
     assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["version_unknown"].sum()) == (0, 1, 0)
     # Stored totals that follow their items on every visit.
-    for score, visits in [("altman_total", 1067), ("csm_total", 718), ("prisem_total", 1041), ("mathys_total", 937), ("epworth_total", 719),
+    for score, visits in [("altman_total", 1067), ("csm_total", 718), ("prisem_total", 1019), ("mathys_total", 937), ("epworth_total", 719),
                           ("staya_total", 1065), ("rosenberg_total", 946), ("spin_total", 147), ("ptsd_total", 127), ("leaps_total", 168)]:
         assert (qc.loc[score, "n_valid"], qc.loc[score, "score_mismatch"]) == (visits, 0), score
+    # PRISE-M: the application needs 31 answers (the 30 common items and one sex item); 22 sums of 28 to 30 items left, 31 stored totals are not recomputed.
+    assert qc.loc["prisem_total", "score_not_recomputed"] == 31
     # QIDS: one answer of each appetite and weight pair is enough; the EMR stores a total on 1,643 visits only.
+    # The rule is in the YAML (hidden maxima of the pairs); the stored total is the check: 0 `score_mismatch` where both exist.
     assert (qc.loc["qids_total", "n_valid"], qc.loc["qids_total", "score_mismatch"]) == (1870, 0)
     # Forms that store their reverse-keyed items already reversed: the items are read back to the BP coding, the stored
     # scores reverse them twice and are reproduced by twin scores that are not delivered.
-    for score, visits in [("ctq_total", 517), ("ctq_emotional_neglect", 521), ("ctq_physical_neglect", 523), ("bis10_total", 530), ("bis10_planning", 539)]:
+    for score, visits in [("ctq_total", 517), ("ctq_emotional_neglect", 521), ("ctq_physical_neglect", 523), ("bis10_total", 530), ("bis10_planning", 539),
+                          ("bis10_motor", 537), ("bis10_attention", 542)]:
         assert (qc.loc[score, "n_valid"], qc.loc[score, "score_mismatch"]) == (visits, 0), score
+    # The three BIS sub-scores are also compared with the sums of the application (`bis1035` to `bis1037`, hidden checks): no mismatch;
+    # two partial application sums are out of their range.
+    bis_flags = result.flags[result.flags["variable"].str.startswith("bis10")]
+    assert (bis_flags["flag"] == "score_mismatch").sum() == 0
+    app_sums = bis_flags[bis_flags["variable"].str.endswith("_app")]
+    assert app_sums["variable"].value_counts().to_dict() == {"bis10_motor_app": 1, "bis10_planning_app": 1} and set(app_sums["flag"]) == {"out_of_range"}
+    # Strict denial score (the three items 10, 16 and 22 answered): 93 more totals than the stored one, which counts an unanswered item as 0.
+    assert (qc.loc["ctq_denial", "n_valid"], qc.loc["ctq_denial", "score_mismatch"], qc.loc["ctq_denial", "score_not_recomputed"]) == (522, 0, 1)
     assert "ctq_total_as_stored" not in data and "bis10_total_as_stored" not in data
     assert round(data["ctq_emotional_abuse"].corr(data["ctq_emotional_neglect"]), 2) == 0.61       # abuse and neglect rise together
     assert (round(data["ctq_emotional_neglect"].mean(), 1), round(data["ctq_total"].mean(), 1)) == (13.3, 44.1)
@@ -196,20 +208,51 @@ def test_auto_questionnaires(result, qc):
     assert (qc.loc["fagerstrom_total", "n_valid"], qc.loc["fagerstrom_total", "score_mismatch"]) == (392, 129)
     assert [qc.loc[name, "score_mismatch"] for name in ["mathys_emotion", "mathys_motivation", "mathys_perception", "mathys_interaction", "mathys_cognition"]] == [64, 63, 59, 0, 58]
     assert [qc.loc[name, "score_mismatch"] for name in ["bfi_extraversion", "bfi_agreeableness", "bfi_conscientiousness", "bfi_neuroticism", "bfi_openness"]] == [0, 0, 16, 16, 0]
+    # The BFI form stores 17 statements already reversed and the Rosenberg form five: both are read back to the direction of the question
+    # (7,835 BFI and 4,732 Rosenberg item cells), and the key is in the score. As asked, such an item falls when its scale rises.
+    bfi_reversed = {"bfi_extraversion": [6, 21, 31], "bfi_agreeableness": [2, 12, 27, 37, 45], "bfi_conscientiousness": [8, 18, 23, 43],
+                    "bfi_neuroticism": [9, 24, 34], "bfi_openness": [35, 41]}
+    for scale, numbers in bfi_reversed.items():
+        for number in numbers:
+            assert data[f"bfi{number:02d}"].corr(data[scale]) < -0.4, number
+    assert (qc.loc["bfi02", "n_valid"], round(data["bfi02"].mean(), 2)) == (550, 2.16)
+    for number in [3, 5, 8, 9, 10]:
+        assert data[f"rosenb{number:02d}"].corr(data["rosenberg_total"]) < -0.4, number
+    for number in [1, 2, 4, 6, 7]:
+        assert data[f"rosenb{number:02d}"].corr(data["rosenberg_total"]) > 0.7, number
     # SHAPS: the number of items answered "disagree"; the stored score counts five items the other way.
+    # The two rules are in the YAML; the export's rule (`shaps_total_as_stored`, hidden) reproduces the stored score on every visit.
     assert (qc.loc["shaps_total", "n_valid"], data["shaps_total"].median()) == (943, 5)
+    assert ((result.flags["flag"] == "score_mismatch") & result.flags["variable"].str.startswith("shaps")).sum() == 0
     assert round(data["shaps_total"].corr(data["madrs_total"]), 2) == 0.61
     # Direction of the scales that only this cohort has.
     assert round(data["rosenberg_total"].corr(data["qids_total"]), 2) == -0.70
     assert round(data["mars_total"].corr(data["qids_total"]), 2) == -0.38
     # The other questionnaires.
-    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unit_inferred"]) == (1007, 17, 1)       # the 12-hour bedtimes are corrected (BP D132)
+    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unit_inferred"]) == (1022, 17, 1)       # the 12-hour bedtimes are corrected (BP D132); a rising time of 00:00:00 is a missing code and a blank 5j counts 0 (D68)
+    # Components 5 and 7 are recomputed and compared with the stored ones (hidden checks); a blank 5j counts 0 (19 more components 5);
+    # a rising time of 00:00:00 is a missing code (39); the partner items are shown after a partner only (175 cells, with 5k and 10f).
+    assert [qc.loc[name, "n_valid"] for name in ["psqi_disturbances", "psqi_dysfunction"]] == [1053, 1058]
+    psqi_flags = result.flags[result.flags["variable"].str.startswith("psqi")]
+    assert (psqi_flags[psqi_flags["variable"].isin(["psqi_disturbances", "psqi_dysfunction"])]["flag"] == "score_mismatch").sum() == 0
+    assert (qc.loc["psqi_rising_time", "missing_code"], qc.loc["psqi_total", "score_not_recomputed"]) == (39, 10)
+    assert int(tab.loc[tab["instrument"] == "psqi", "not_shown"].sum()) == 175
+    assert [qc.loc[name, "not_shown"] for name in ["psqi10a", "psqi10b", "psqi10c", "psqi10d", "psqi10e", "psqi10f", "psqi05k"]] == [34, 34, 34, 34, 35, 3, 1]
     assert (qc.loc["mdq_total", "n_valid"], data["mdq_screen"].value_counts().to_dict()) == (982, {"negative": 922, "positive": 60})
+    # The check score of the published rule (7 symptoms, same period, a problem): one visit with 7 symptoms, question 14 empty and a negative stored result.
+    mdq_flags = result.flags[result.flags["variable"] == "mdq_screen_check"]
+    assert mdq_flags["flag"].value_counts().to_dict() == {"score_mismatch": 1}
     assert (qc.loc["eq5d_vas", "n_valid"], qc.loc["eq5d_vas", "out_of_range"]) == (1422, 1)
     assert qc.loc["eq5d_index", "n_valid"] == 1434                # the index DR does not store, read in the table of the application (BP D133)
     assert (qc.loc["sitting_weekday_hours", "out_of_range"], qc.loc["sitting_weekend_hours", "out_of_range"]) == (75, 28)
+    # Physical activity: the durations are shown after one day or more (42 cells under 0 days or an empty count); the DR walking pace
+    # (form 217: 1 brisk, 3 slow) is turned to the SZ order, so that it falls with age and rises with the days of vigorous activity.
+    assert int(tab.loc[tab["instrument"] == "physical_activity", "not_shown"].sum()) == 42
+    assert qc.loc["walking_pace", "not_shown"] == 1 and data["walking_pace"].value_counts().sort_index().to_dict() == {1.0: 268, 2.0: 394, 3.0: 78}
+    ranks = pd.concat([data["walking_pace"], data["age"].astype(float), data["vigorous_days"]], axis=1).rank()
+    assert (round(ranks["walking_pace"].corr(ranks["age"]), 2), round(ranks["walking_pace"].corr(ranks["vigorous_days"]), 2)) == (-0.13, 0.18)
     assert (qc.loc["detc_cage_total", "n_valid"], qc.loc["food_01", "n_valid"], qc.loc["leaps_not_working", "n_valid"]) == (100, 863, 754)
-    assert (qc.loc["paykel_events", "n_valid"], int(tab.loc[tab["instrument"] == "paykel", "out_of_range"].sum())) == (530, 43)
+    assert (qc.loc["paykel_events", "n_valid"], int(tab.loc[tab["instrument"] == "paykel", "out_of_range"].sum())) == (530, 46)       # the months of the Paykel list go from 1 to 12 (D67)
     # Traumatic events: the form writes 0 in the impact of an event that nobody answered.
     assert (qc.loc["trauma_events", "n_valid"], qc.loc["trau01", "n_valid"], qc.loc["trau01_impact", "n_valid"]) == (533, 544, 633)
     assert int(tab.loc[tab["instrument"] == "traumatic_events", "derived_doubt"].sum()) == 1536
@@ -245,7 +288,7 @@ def test_neuropsychology(result, qc):
     expected = {"d2_gzf": 35, "tmt_b_errors": 31, "tmt_ba_errors": 22, "designs1_z": 18, "designs2_z": 9,
                 "wais4_simil_z": 43, "wais4_arith_z": 25, "wais4_ds_z": 23, "tmt_a_errors": 9, "wais4_ivt_sum_scaled": 20, "wais4_imt_sum_scaled": 17}      # the designs z-scores are looked up in the tables (WAIS review, D138-D143)
     assert {name: int(mismatch.get(name, 0)) for name in expected} == expected
-    assert not any(name.endswith("_check") for name in mismatch.index)
+    assert not any(name.endswith("_check") for name in mismatch.index if name != "mdq_screen_check")      # the MDQ check has no delivered stored value: its flag stays under the check (D70)
     assert (qc.loc["rlri16_free_sum", "n_valid"], qc.loc["rlri16_free_sum", "score_mismatch"]) == (712, 0)
     assert (qc.loc["rlri16_total_sum", "n_valid"], qc.loc["rlri16_total_sum", "score_mismatch"]) == (713, 0)
     assert data["rlri16_recognition_band"].value_counts().to_dict() == {99.0: 623, 5.0: 85}
@@ -446,7 +489,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = dr.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2338, 37, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (2341, 34, 0)
     assert counts["covered"] + counts["ignored"] == 2375
 
 

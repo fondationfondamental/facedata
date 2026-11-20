@@ -154,11 +154,7 @@ ctq:
   stack: "yes"
   use: [ctq_total, ctq_emotional_abuse, ctq_physical_abuse, ctq_sexual_abuse, ctq_emotional_neglect, ctq_physical_neglect]
   note: >
-    The 28 items are delivered on one coding (1 to 5, as asked) and the five
-    sub-scores and the total are recomputed from them in the four cohorts. In DR
-    seven items are stored reversed and are read back; in DR and ASP several
-    stored sub-scores are wrong and are not delivered. The severity classes are
-    in BP and SZ only. Filled by adults; in ASP from 2020.
+    The 28 items are delivered on one coding (1 to 5, as asked) and the five sub-scores and the total are recomputed from them in the four cohorts. In DR seven items are stored reversed and are read back. The stored DR neglect scores and total are wrong because the score step of the export reverses the items a second time; the stored ASP neglect and abuse scores are wrong because of the form's script (the answer 1 is mapped wrongly, items 12 and 14 are not read): the recomputed scores are delivered and the stored ones are checks. The denial score counts the three items strictly (all answered) in the four cohorts. The severity classes are delivered in BP and SZ only, as stored, with gaps (class missing on 45 to 71 visits per sub-score, stale on a few). Filled by adults; in ASP from 2020.
 
 psqi:
   title: Pittsburgh Sleep Quality Index (PSQI)
@@ -167,30 +163,25 @@ psqi:
   stack: "yes"
   use: [psqi_total, psqi06, psqi_latency_component, psqi_duration, psqi_efficiency, psqi_disturbances, psqi07, psqi_dysfunction]
   note: >
-    Seven components of 0 to 3 and their sum, on the same rules in the four
-    cohorts; components 1 and 6 are the answers to questions 6 and 7 (psqi06,
-    psqi07). In ASP three stored components are wrong and are recomputed. In
-    BP, SZ and DR the same three, recomputed with the published rules, equal
-    the stored ones (2 of 16,678 BP visits differ, none of 3,107 SZ and 1,031
-    DR visits; checked 2026-11-18), so they are delivered as stored.
-    Exactly 7 hours of sleep count 0: the application tests "7 hours or more",
-    where the published sheet says "more than 7 hours" and leaves 7 hours
-    open. It is the same in the four cohorts, so they compare. In ASP the PSQI belongs to the old set of forms (2013 to
-    2021, adults). In DR it is on about nine inclusions in ten until 2016 and
-    about one in two since 2018.
+    Seven components of 0 to 3 and their sum, on the same rules in the four cohorts, over the last 30 days; components 1 and 6 are the answers to questions 6 and 7 (psqi06, psqi07). Components 2, 4, 5 and 7 are recomputed with the published rules in the four cohorts. A blank item 5j (other reason for waking) counts 0 in the four cohorts: it is a blank in the export's score (BP 108, SZ 45, DR 19 and ASP 17 visits), the published treatment is to verify. In ASP the EMR script is wrong for components 4, 5 and 7 (an absolute difference of the two times, and answers added as text). Exactly 7 hours of sleep count 0: the application tests "7 hours or more", where the published sheet says "more than 7 hours" and leaves 7 hours open; the four cohorts do the same. Bedtimes typed on a 12-hour clock are delivered as typed (BP 554 visits, SZ 109, DR 19, ASP 5). The partner questions are asked in SZ, DR and ASP only. In ASP the PSQI belongs to the old set of forms (2009 to 2021, adults). In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 mars:
-  title: Medication Adherence Rating Scale (MARS, 10 items)
+  title: Medication Adherence Rating Scale (MARS, 10 items, past week)
   domain: Questionnaires filled by the patient
   schemas: {bp: mars, sz: mars, dr: mars, asp: mars}
   stack: "yes"
   use: [mars_total]
   note: >
-    Ten yes/no items and a total of 0 to 10 (higher is better adherence). DR and
-    ASP store the answers the other way round; they are read on the BP coding
-    and the total is recomputed. In ASP it belongs to the new set of forms (from
-    2021, adults). In DR it is on about nine inclusions in ten until 2016 and
-    about one in two since 2018.
+    Ten yes/no items about the last week and a total of 0 to 10 (higher is
+    better adherence). DR and ASP store the answers the other way round; they
+    are read on the BP coding and the total is recomputed: the stored DR and ASP
+    totals count poor adherence because the score step of the export reverses
+    them again, not because of the application. BP asks the medication
+    question first and hides the items after a no (since 2022: missing, not
+    0); SZ has no such question. In ASP it belongs to the new set of forms
+    (from 2020, adults). In DR the simplified visit of 2018 onward does not
+    offer it: it is on nine inclusions in ten to 2017 and about one in two
+    since 2018.
 
 eq5d:
   title: EQ-5D-5L, health-related quality of life
@@ -199,13 +190,7 @@ eq5d:
   stack: "yes"
   use: [eq5d0201, eq5d0202, eq5d0203, eq5d0204, eq5d0205, eq5d_vas, eq5d_index]
   note: >
-    Five dimensions of 1 to 5 and the visual scale of 0 to 100, in the four
-    cohorts. The utility index is the one the database stores, in BP, SZ and
-    ASP, and the DR extraction has none. Its value set is not documented, but
-    it is one table: each of the 876 BP, 603 SZ and 248 ASP health profiles
-    has one index, and the 446 profiles shared by BP and SZ and the 224 shared
-    by BP and ASP have the same index in both (checked 2026-11-18). ASP holds
-    28 indices above 1, which no value set gives; they are out of range. The index delivered is the table's value, read from the five answers in the four cohorts (BP D133), so it is on one value set everywhere; DR, which stores none, now has it.
+    Five dimensions of 1 to 5 and the visual scale of 0 to 100, in the four cohorts, about today. The utility index is the table of the EuroQol crosswalk from the 5L profile to the French 3L value set (the same 3,125 values in the BP/SZ script, the ASP script and the norm table; the reference of the crosswalk is to verify); a French 5L value set also exists and is not used. It is delivered from the five answers in the four cohorts (BP D133), so it is on one value set everywhere; DR, which stores none, has it too. The stored ASP index holds 28 values above 1 (integers typed without a decimal separator), drops the negative values (export) and needs the visual scale (script); 344 ASP visits are of patients under 18, who answer the adult form.
 
 fagerstrom:
   title: Fagerström Test for Nicotine Dependence (6 items)
@@ -213,7 +198,8 @@ fagerstrom:
   schemas: {bp: fagerstrom, sz: fagerstrom, dr: fagerstrom, asp: fagerstrom}
   stack: "yes"
   use: [fagerstrom_total]
-  note: Six items and a total of 0 to 10, recomputed from the items. Filled by smokers only.
+  note: >
+    Six items and a total of 0 to 10, recomputed from the items. Filled by smokers: BP, DR and ASP show the items only to current smokers; the SZ form shows them to everyone (its gate is not wired), so SZ holds items for non-smokers too. In DR the item 3 key is read back to the 0/1 coding and the stored DR total is 2 too high on a third of the visits.
 
 stai_ya:
   title: State-Trait Anxiety Inventory, form Y-A (state anxiety, 20 items)
@@ -237,9 +223,7 @@ epworth:
   stack: "yes"
   use: [epworth_total]
   note: >
-    Eight situations of 0 to 3 and a total of 0 to 24, the same in the three
-    cohorts. Filled by adults; in ASP from 2021. In DR it is on about nine
-    inclusions in ten until 2016 and about one in two since 2018.
+    Eight situations of 0 to 3 and a total of 0 to 24, the same in the three cohorts; the BP and DR forms say 'in recent months' and the ASP form has no instruction. Filled by adults; in ASP from 2020. In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 prisem:
   title: PRISE-M, side effects of the treatment (32 items)
@@ -248,9 +232,12 @@ prisem:
   stack: "yes"
   use: [prisem_total]
   note: >
-    Thirty-two items and their sum, the same in the three cohorts; the total
-    needs 28 items at least. In ASP from 2021 (adults). In DR it is on about
-    nine inclusions in ten until 2016 and about one in two since 2018.
+    Thirty-two items (30 common items and one item for each sex) and their sum,
+    the same in the three cohorts; the total needs 31 answers, as in the
+    applications. In ASP from 2020 (adults). In DR the simplified visit of 2018
+    onward does not offer it: it is on nine inclusions in ten to 2017 and about
+    one in two since 2018. BP hides the items after a no to the medication
+    question of the MARS form (since 2022).
 
 asrs:
   title: Adult ADHD Self-Report Scale (ASRS v1.1, 18 items)
@@ -259,9 +246,7 @@ asrs:
   stack: "yes"
   use: [asrs_total]
   note: >
-    Eighteen items of 0 to 4 and their sum. Added in 2021 in BP and in 2019 in
-    ASP (adults). The screening result of the first six items is delivered in BP
-    only.
+    Eighteen items of 0 to 4 and their sum, over the last six months. Added in 2021 in BP and in 2019 in ASP (adults). The part A count (items 1 to 6, 0 to 6) and the screening result (4 or more items past their threshold) are recomputed in both cohorts as 1 or 0; the stored BP screen is a check (the script gives 'negative' on an incomplete part A, and the ASP form has no score).
 
 altman:
   title: Altman Self-Rating Mania Scale (ASRM, 5 items)
@@ -270,9 +255,7 @@ altman:
   stack: "yes"
   use: [altman_total]
   note: >
-    Five items of 0 to 4 and their sum. In BP it is also filled at the screening
-    visit. In DR it is on about nine inclusions in ten until 2016 and about one
-    in two since 2018.
+    Five items of 0 to 4 and their sum, over the last week. In BP it is also filled at the screening visit. In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 qids_sr16:
   title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
@@ -281,8 +264,7 @@ qids_sr16:
   stack: "yes"
   use: [qids_total]
   note: >
-    Sixteen items and a total of 0 to 27, computed by the same function in both
-    cohorts. Filled at the screening visit and at the inclusion visit in both.
+    Sixteen items and a total of 0 to 27 over the last seven days, computed by the same YAML rule in both cohorts (the highest answer of each of the three multi-item symptoms; one answer of each appetite and weight pair is enough). The package delivers 99 BP and 227 DR totals that the export leaves empty (its strict maximum). Filled at the screening visit and at the inclusion visit in both. The DR level (QIDS about 6 points above BP) follows the clinical severity, not a different coding.
 
 mdq:
   title: Mood Disorder Questionnaire (MDQ)
@@ -291,23 +273,16 @@ mdq:
   stack: with care
   use: [mdq_total]
   note: >
-    Thirteen symptoms and their count. In BP it is filled once, at the screening
-    visit, so it is in the baseline row and not in the inclusion row, for the
-    patients who had a screening visit. In DR it is filled at the inclusion
-    visit and at the yearly visits.
+    Thirteen symptoms and their count, 'ever'. The names are the same in both cohorts. In BP it is filled once, at the screening visit, so it is in the baseline row and not in the inclusion row, for the patients who had a screening visit. In DR it is filled at the inclusion visit and at the yearly visits, where it does not behave as a lifetime question (about half of the 'yes' of the inclusion are 'no' a year later); questions 14 and 15 are hidden since 2018 when no symptom is ticked. The stored screening result is the export's and is empty or negative where question 14 or 15 is empty (request R88): a check score reports 17 BP visits and 1 DR visit.
 
 bis10:
   title: Barratt Impulsiveness Scale, BIS-10 (34 items)
   domain: Questionnaires filled by the patient
-  schemas: {bp: bis10, dr: bis10}
+  schemas: {bp: bis10, dr: bis10, asp: bis_old_form}
   stack: with care
   use: [bis10_total, bis10_motor, bis10_attention, bis10_planning]
   note: >
-    The same key in both cohorts; in DR eleven items are stored reversed and are
-    read back. The key of the French BIS-10 could not be checked against its
-    publication (an open question of BP). BP used the BIS-10 until 2022 and the
-    BIS-12 afterwards, which is another instrument (bis12). In DR it is on about
-    nine inclusions in ten until 2016 and about one in two since 2018.
+    The same key in the three cohorts. The items are delivered on the BP coding: in DR eleven items are stored reversed and are read back, and the stored DR scores are wrong because the score step of the export reverses them again. The key of the French BIS-10 could not be checked against its publication (an open question of BP). BP used the BIS-10 until 2022 and the BIS-12 afterwards, which is another instrument (bis12). ASP has the old form on four visits of 2013 (schema bis_old_form, scored with the same key). In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 csm:
   title: Composite Scale of Morningness (CSM, 13 items)
@@ -316,9 +291,7 @@ csm:
   stack: "yes"
   use: [csm_total]
   note: >
-    Thirteen items and a total of 13 to 55, the same in both cohorts. BP fills
-    it once, at the inclusion visit. In DR it is on about nine inclusions in ten
-    until 2016 and about one in two since 2018.
+    Thirteen items and a total of 13 to 55, the same in both cohorts. BP fills it once, at the inclusion visit (a few follow-up visits). In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 mathys:
   title: Multidimensional Assessment of Thymic States (MAThyS, 20 items)
@@ -327,13 +300,7 @@ mathys:
   stack: with care
   use: [mathys_total, mathys_emotion, mathys_motivation, mathys_perception, mathys_interaction, mathys_cognition]
   note: >
-    Twenty visual scales of 0 to 10, five sub-scores and a total, recomputed
-    from the items with the same key in both cohorts: the published one, which
-    is also that of the application. In BP the form stored the eight reversed
-    scales already turned until 2021: they are turned back, and the visits from
-    September 2021 to December 2022, when the centres changed form, have no
-    total (BP D91). In DR the key holds in every year. In DR it is on
-    about nine inclusions in ten until 2016 and about one in two since 2018.
+    Twenty visual scales of 0 to 10, five sub-scores and a total, recomputed from the items with the same key in both cohorts: the published one, which is also that of the application. In BP the form stored the eight reversed scales already turned until 2021: they are turned back, and the visits from September 2021 to December 2022, when the centres changed form, have no total (BP D91). Some centres entered the old direction on the new form: in BP at least 80 and up to about 1,240 visits before 2021-09 and about 215 since 2023; in DR three centre-periods (about 115 visits): the schema cannot name centres, so these visits are delivered with the key. In DR the simplified visit of 2018 onward does not offer it.
 
 mathys_emotions:
   title: MAThyS, how often seven emotions were felt
@@ -342,8 +309,7 @@ mathys_emotions:
   stack: "yes"
   use: [mathys21, mathys22, mathys23, mathys24, mathys25, mathys26, mathys27]
   note: >
-    Seven questions, the same in both cohorts. No score. In DR it is on about
-    nine inclusions in ten until 2016 and about one in two since 2018.
+    Seven questions, the same in both cohorts. No score. In DR the simplified visit of 2018 onward does not offer it: it is on nine inclusions in ten to 2017 and about one in two since 2018.
 
 physical_activity:
   title: Physical activity over the last seven days
@@ -352,23 +318,23 @@ physical_activity:
   stack: with care
   use: [vigorous_days, moderate_days, walking_days]
   note: >
-    The same fourteen questions in both cohorts (days, hours and minutes of each
-    kind of activity over the last seven days). The numbers of days compare. The
-    hours and the minutes are typed in several ways and are delivered as typed,
-    and a sitting time above 24 hours is not delivered in DR: no total is
-    computed, and the durations need a rule of your own.
+    The same fourteen questions in both cohorts (days, hours and minutes of each kind of activity over the last seven days). The numbers of days compare. DR stores the walking pace the other way round from SZ: it is read back so that 1 is slow and 3 brisk in both. The hours and the minutes are typed in several ways and are delivered as typed (shown only after a day count of 1 or more); a sitting time above 24 hours is not delivered in DR (probably a weekly figure): no total is computed, and the durations need a rule of your own.
 
 wurs:
-  title: Wender Utah Rating Scale
+  title: Wender Utah Rating Scale, 25-item form (childhood recall)
   domain: Questionnaires filled by the patient
-  schemas: {bp: wurs25, sz: wurs}
-  stack: "no"
+  schemas: {bp: wurs25, sz: wurs25}
+  stack: with care
+  use: [wurs25_total]
   note: >
-    BP has two forms, the 61-item one until 2021 and the 25-item one after, in
-    two instruments (wurs61, wurs25). SZ reads the same 25 columns as one
-    instrument whatever the year, so a SZ column mixes the two forms, and its
-    names (wurs_NN) are not those of BP. Do not stack until the SZ forms are
-    told apart (an open question of SZ).
+    The 25 items of the ADHD subset, 0 to 4, total 0 to 100, in the same names
+    in BP and SZ. BP also has the 61-item form (wurs61, until 2021; the 25
+    shared items are delivered as wurs61_NN and as the sum wurs61_sum25), which
+    is another instrument. The SZ form is the 25-item form only (its table, its
+    menu and its score definition say WURS 25). In SZ the questionnaire is
+    asked of a selected group (the application reminds it only when the
+    diagnosis form says ADHD): 12% of the inclusion visits, 78% of those
+    with ADHD yes, against 93% of the BP inclusions.
 
 # ---------------------------------------------------------------- Neuropsychology
 

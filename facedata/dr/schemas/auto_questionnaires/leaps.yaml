@@ -2,11 +2,11 @@ instrument: leaps
 title: Lam Employment Absence and Productivity Scale (LEAPS)
 tab: AUTO-QUESTIONNAIRES
 section: LEAPS
-status: draft
+status: reviewed
 notes: >
   Lam Employment Absence and Productivity Scale. Not in BP or SZ. Filled
   at inclusion and at the visits of 1, 2 and 4 years: 762 visits (58% of
-  the inclusions of 2012 to 2014, 65% to 70% since). The break of 2018
+  the inclusions of 2012 to 2014, 64% to 69% since). The break of 2018
   does not touch it.
 
   The form starts with the work: its kind (free text), the hours scheduled
@@ -16,14 +16,20 @@ notes: >
   of the patients who work: how often, at work over the last two weeks,
   each problem was felt, from 0 (none of the time) to 4 (all the time).
   They are filled on 168 visits, the seven together, and never when the
-  box is ticked.
+  box is ticked. The gate is the box: the form shows the seven items when
+  the box is 0 (not ticked; script of the form, formulaires.js, the field
+  LEAPS3BIS), and they are delivered only then (shown_if). All 168 visits
+  with the items are under a 0, so no cell is hidden: the line documents
+  the gate.
 
   Total. The sum of the seven items (0 to 28, higher is more impairment at
   work). The stored total (leaps_) equals it on the 167 visits where it
   exists. It rises with depression (r = 0.72 with the QIDS).
 
   One number of scheduled hours is above 200 (out_of_range). 10 cells of
-  the kind of work hold a word read as no answer (missing_code).
+  the kind of work hold a word read as no answer (missing_code). The hours
+  missed are above the hours scheduled on 59 of the 594 visits that hold
+  both: kept as typed.
 
 defaults: {type: item, range: [0, 4]}
 
@@ -32,13 +38,13 @@ variables:
   leaps_hours_scheduled: {column: leaps02, type: number, unit: hours, range: [0, 200], winsor: false, label: "Hours of work scheduled in the last two weeks"}
   leaps_hours_missed: {column: leaps03, type: number, unit: hours, range: [0, 200], winsor: false, label: "Hours of work missed in the last two weeks because of how the patient felt"}
   leaps_not_working: {column: leaps03a, range: [0, 1], label: "Not working at present (sick leave, disability, retirement)"}
-  leaps04a: {label: "LEAPS item 1: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04b: {label: "LEAPS item 2: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04c: {label: "LEAPS item 3: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04d: {label: "LEAPS item 4: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04e: {label: "LEAPS item 5: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04f: {label: "LEAPS item 6: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
-  leaps04g: {label: "LEAPS item 7: how often at work in the last two weeks (0 none of the time to 4 all the time)"}
+  leaps04a: {label: "LEAPS item 1: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04b: {label: "LEAPS item 2: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04c: {label: "LEAPS item 3: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04d: {label: "LEAPS item 4: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04e: {label: "LEAPS item 5: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04f: {label: "LEAPS item 6: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
+  leaps04g: {label: "LEAPS item 7: how often at work in the last two weeks (0 none of the time to 4 all the time)", shown_if: {leaps_not_working: [0]}}
   leaps_total_stored: {column: leaps_, label: LEAPS score as stored, range: [0, 28], keep: false}
 
 scores:

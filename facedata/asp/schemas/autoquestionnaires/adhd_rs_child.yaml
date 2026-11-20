@@ -1,0 +1,112 @@
+instrument: adhd_rs_child
+title: "ADHD Rating Scale, child form filled by a parent (behaviours now)"
+tab: autoquestionnaires
+section: child and parent questionnaires
+status: reviewed
+notes: >
+  The ADHD Rating Scale filled by a parent for a child (form 221): eighteen
+  items answered from 0 to 3 about the behaviours of the child now, two
+  sub-scores and a total, then one more question. 900 visits of patients under
+  18: 721 at inclusion and 179 follow-up visits, from 2013 to 2026.
+
+  **Two forms in the same columns.** The extraction keeps two forms of the
+  ADHD-RS in the same raw columns (the table `aut_adhdrs`): the form 221,
+  "ADHD-RS (Enfant)", in which a parent rates the behaviours of the child
+  ("votre enfant"), and the form 220, "ADHD-RS (Adulte)", in which the adult
+  recalls the same behaviours as a child ("enfant, vous..."). No column says
+  which was filled. The age at the visit tells it, under 18 for adhd_rs_child
+  (900 visits) and 18 and over for adhd_rs_adult (192 visits); a visit with
+  answers and no age has no form (version_unknown). Before this review one
+  schema held both forms in the same output columns (a rating of the child now
+  and a recall of childhood in one column), and the thesaurus marks the scale
+  for children while 175 of its visits were visits of adults. Every value is
+  unchanged by the split.
+
+  Identified from its name and its eighteen items as the ADHD Rating Scale
+  (DuPaul and others), the eighteen DSM symptoms of ADHD, likely. The published
+  form alternates the two dimensions (odd items inattention, even items
+  hyperactivity). **Here the first nine items are one dimension and the last
+  nine the other**: the items correlate 0.48 and 0.49 within each half and 0.3
+  between the halves, against 0.38, 0.38 and 0.4 for odd and even items. The
+  stored sub-scores follow the halves, so they are right for this form:
+  inattention is the items 1 to 9 and hyperactivity-impulsivity the items 10 to
+  18, in the order of the DSM.
+
+  The scores, each fitted on the data of this form:
+
+  - ADHD-RS child form inattention (items 1 to 9): the sum of 9 items, equal to the stored score on 664 of 681 complete visits; typed without its items on 210 visits, where it is kept as stored.
+  - ADHD-RS child form hyperactivity-impulsivity (items 10 to 18): the sum of 9 items, equal to the stored score on 677 of 678 complete visits; typed without its items on 212 visits, where it is kept as stored.
+  - ADHD-RS child form total (0 to 54): the sum of 18 items, equal to the stored score on 658 of 675 complete visits; typed without its items on 210 visits, where it is kept as stored.
+
+  The 17 visits where the stored total differs from the sum of the items are all
+  inclusion visits, 16 of them dated 2013 and from one centre. From 2019 the
+  scores are often typed without the items (210 visits, 2019 to 2026, mostly
+  from one centre); they are then kept as stored. `adhdrsc19` is a nineteenth
+  question: were some of these behaviours present before the age of 7 (yes on
+  579, no on 16). The form offers a third answer, 9, printed "NA"; the thesaurus
+  words it "not applicable, child under 7", but it is on 14 visits of this form
+  and on no patient under 7 (O16): it is read as missing (not_applicable).
+
+  **Year and centre.** 15 of the 21 variables reach 0.5 or more (15 by year, 7
+  by centre): items on a whole-number scale, where a median that moves by one
+  level is 1.0 or more of the interquartile range; the three scores stay at 0.36
+  to 0.45 by year and 0.18 to 0.30 by centre. The median total is 22.5, 17 and
+  16.5 in 2013 to 2015 and 23 to 28 from 2018, and the years are the centres:
+  centre C holds 99 of the 100 totals of 2013 to 2015 (median 19; 8 in 2016,
+  none later), against 26 in centre A and 24 in centre B. The lower level of
+  centre C has no known cause (the case mix or the rater; no change of the form
+  is known). The 210 totals typed without items are 206 of the 208 totals of
+  centre B (from 2019) and have the median of the computed ones (24.5 and 25):
+  no Manual-mode step.
+
+  An instrument of the ASP cohort only. The adults fill the ASRS, or the adult
+  form of this scale (adhd_rs_adult).
+
+version:
+  name: adhdrs_form
+  age:                               # years at the visit: from the first number, below the second
+    adhd_rs_child: [0, 18]
+    adhd_rs_adult: [18, 130]
+
+defaults: {type: item, range: [0, 3], versions: [adhd_rs_child]}
+
+variables:
+  adhdrsc01: {column: adhdrs1, label: "ADHD-RS child form, item 1"}
+  adhdrsc02: {column: adhdrs2, label: "ADHD-RS child form, item 2"}
+  adhdrsc03: {column: adhdrs3, label: "ADHD-RS child form, item 3"}
+  adhdrsc04: {column: adhdrs4, label: "ADHD-RS child form, item 4"}
+  adhdrsc05: {column: adhdrs5, label: "ADHD-RS child form, item 5"}
+  adhdrsc06: {column: adhdrs6, label: "ADHD-RS child form, item 6"}
+  adhdrsc07: {column: adhdrs7, label: "ADHD-RS child form, item 7"}
+  adhdrsc08: {column: adhdrs8, label: "ADHD-RS child form, item 8"}
+  adhdrsc09: {column: adhdrs9, label: "ADHD-RS child form, item 9"}
+  adhdrsc10: {column: adhdrs10, label: "ADHD-RS child form, item 10"}
+  adhdrsc11: {column: adhdrs11, label: "ADHD-RS child form, item 11"}
+  adhdrsc12: {column: adhdrs12, label: "ADHD-RS child form, item 12"}
+  adhdrsc13: {column: adhdrs13, label: "ADHD-RS child form, item 13"}
+  adhdrsc14: {column: adhdrs14, label: "ADHD-RS child form, item 14"}
+  adhdrsc15: {column: adhdrs15, label: "ADHD-RS child form, item 15"}
+  adhdrsc16: {column: adhdrs16, label: "ADHD-RS child form, item 16"}
+  adhdrsc17: {column: adhdrs17, label: "ADHD-RS child form, item 17"}
+  adhdrsc18: {column: adhdrs18, label: "ADHD-RS child form, item 18"}
+  adhdrsc19: {column: adhdrs19, type: category, label: "ADHD-RS child form, question 19: some of these behaviours were present before the age of 7 (yes or no; the form offers 9 = NA)", codes: {"0": "no", "1": "yes"}, missing: {"9": not_applicable}}
+  adhdrsc_inattention_stored: {column: adhdrs_score1, type: number, range: [0, 27], winsor: false, keep: false, label: "ADHD-RS child form inattention (items 1 to 9), as stored"}
+  adhdrsc_hyperactivity_stored: {column: adhdrs_score2, type: number, range: [0, 27], winsor: false, keep: false, label: "ADHD-RS child form hyperactivity-impulsivity (items 10 to 18), as stored"}
+  adhdrsc_total_stored: {column: adhdrs_scoretot, type: number, range: [0, 54], winsor: false, keep: false, label: "ADHD-RS child form total (0 to 54), as stored"}
+
+scores:
+  adhdrsc_inattention:
+    label: "ADHD-RS child form inattention (items 1 to 9)"
+    sum: [adhdrsc01, adhdrsc02, adhdrsc03, adhdrsc04, adhdrsc05, adhdrsc06, adhdrsc07, adhdrsc08, adhdrsc09]
+    compare: adhdrsc_inattention_stored
+    otherwise: adhdrsc_inattention_stored
+  adhdrsc_hyperactivity:
+    label: "ADHD-RS child form hyperactivity-impulsivity (items 10 to 18)"
+    sum: [adhdrsc10, adhdrsc11, adhdrsc12, adhdrsc13, adhdrsc14, adhdrsc15, adhdrsc16, adhdrsc17, adhdrsc18]
+    compare: adhdrsc_hyperactivity_stored
+    otherwise: adhdrsc_hyperactivity_stored
+  adhdrsc_total:
+    label: "ADHD-RS child form total (0 to 54)"
+    sum: [adhdrsc01, adhdrsc02, adhdrsc03, adhdrsc04, adhdrsc05, adhdrsc06, adhdrsc07, adhdrsc08, adhdrsc09, adhdrsc10, adhdrsc11, adhdrsc12, adhdrsc13, adhdrsc14, adhdrsc15, adhdrsc16, adhdrsc17, adhdrsc18]
+    compare: adhdrsc_total_stored
+    otherwise: adhdrsc_total_stored

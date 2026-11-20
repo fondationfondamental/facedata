@@ -2,16 +2,25 @@ instrument: abc
 title: "Aberrant Behavior Checklist (ABC)"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Fifty-eight items answered from 0 to 3 and five sub-scale scores: 192 inclusion visits (50 of children) and 71 follow-up visits,
-  from 2013 to 2018. It belongs to the old set of forms.
+  Fifty-eight items answered from 0 to 3 and five sub-scale scores: 192
+  inclusion visits (50 of children) and 71 follow-up visits (62 of children),
+  263 visits of 193 patients in three centres (C, D and E), from 2009 to 2021
+  and 96% of them from 2013 to 2018. It belongs to the old set of forms.
 
-  Identified from its name, its fifty-eight items and its five sub-scales as
-  the Aberrant Behavior Checklist (Aman and others, 1985), sure: the five
-  stored scores have the items of the published sub-scales (irritability 15
-  items, lethargy and social withdrawal 16, stereotypy 7, hyperactivity 16,
-  inappropriate speech 4).
+  The form stopped being asked: it is not in the current menu of forms, and a
+  blank of a recent visit is a form not asked, not a missing answer (D3 of
+  PROGRESS.md). It is filled on 89% of the visits of 2013 that are not screening
+  visits, 83% in 2014, 58% in 2015, 41% in 2016, 13% in 2017, 4% in 2018 and
+  less than 1% from 2019.
+
+  Identified from its name, its fifty-eight items and its five sub-scales as the
+  Aberrant Behavior Checklist (Aman and others, 1985), sure: the five stored
+  scores have the items of the published sub-scales (irritability 15 items,
+  lethargy and social withdrawal 16, stereotypy 7, hyperactivity 16,
+  inappropriate speech 4). The counts per sub-scale and the 0 to 3 coding are
+  not confirmed by a published source (to verify).
 
   The scores, each fitted on the data:
 
@@ -20,6 +29,23 @@ notes: >
   - ABC stereotypy: the sum of 7 items (6, 11, 17, 27, 35, 45 and 49), equal to the stored score on 227 of 227 complete visits.
   - ABC hyperactivity: the sum of 16 items, equal to the stored score on 227 of 227 complete visits.
   - ABC inappropriate speech: the sum of 4 items (9, 22, 33 and 46), equal to the stored score on 227 of 227 complete visits.
+
+  A sub-score is delivered only where all its items are answered. On 36 visits
+  an item is blank and the five scores are stored: the script of the application
+  (`255_score.js`) counts a blank as 0, which gives the stored value in 55 of
+  these 61 stored scores and another value in 6 scores of 5 visits (an item
+  changed after the score was computed). These 61 are `score_not_recomputed` and
+  the scores are not delivered; a blank item is a form that was not asked, not a
+  0.
+
+  **Year and centre.** 22 of the 63 variables reach 0.5 or more of the interquartile range (19 by
+  year, 18 by centre): none of the five sub-scale scores (0.11 to 0.40 by year, 0.06 to 0.33 by
+  centre), the others are items of 0 to 3 whose median moves by one unit. The centres differ by
+  age: children are 87% of the visits of centre C, 3% of D and none of E. Between the centres 20
+  of the 63 variables differ beyond chance (permutation test, p below 0.01; lethargy: median 7 in
+  C, 15 in D, 12 in E), but among the adults of D and E only 2 do, and between years 2 do (1 among
+  adults, none among children), against about 0.6 expected by chance: the age mix, not a step of
+  the form.
 
   An instrument of the ASP cohort only.
 

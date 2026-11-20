@@ -1,33 +1,57 @@
 instrument: mcdd
-title: "Multiple Complex Developmental Disorder criteria (from the column names)"
+title: "Multiple Complex Developmental Disorder (MCDD) criteria"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  A first box and fifteen criteria answered 0 or 1: 343 inclusion visits (89 of children) and 45 follow-up visits, from 2013 to 2021.
+  A first box and fifteen criteria answered 0 or 1: 343 inclusion visits (89 of children) and 45 follow-up visits, from 2009 to 2025 (382 of the 388 between 2012 and 2021).
   It belongs to the old set of forms.
 
-  Named from its columns (mcdd): the criteria of the multiple complex
-  developmental disorder, likely. The thesaurus gives the answers (1 yes, 0 no,
-  9 not known) and not the wording of the criteria; a 9 is read as "not known".
-  No score is stored.
+  The form 199 (section "MCDD, multiple complex developmental disorders") lists fifteen
+  criteria in three groups, each answered yes, no or unknown (9, read as "not known"):
+  1 a deficit in the regulation of affective states or anxiety (criteria 1a to 1d, mcdd1 to mcdd4),
+  2 a deficit in social behaviour (2a and 2b, mcdd5 and mcdd6) and 3 the presence of a thought
+  disorder (3a to 3i, mcdd7 to mcdd15). The published source of these criteria is to verify. No score is stored.
+
+  The box "no to all the criteria" (mcddn_1) makes the script of the form tick no on the fifteen
+  criteria. It is written 0 or 1 on every row of the form, whenever the form is saved: ticked on 194 of the 388 visits,
+  not ticked on 194 (5 of them with no criterion answered). Under the 194 ticked boxes, 147 visits have the fifteen
+  criteria at 0, 33 have the criterion 8 empty and the fourteen others at 0, and 14 hold a criterion at 1 (12 of them with the
+  criterion 8 empty too): the criterion 8 is the only one that a ticked box left empty (45 visits, 2012 to 2017).
+  The criteria are therefore read after the box: the hidden variable mcdd_not_none is 0 when the box is ticked
+  and every criterion is asked_if it, so an empty criterion under a ticked box is 0 (45 cells, all of the criterion 8).
+  A criterion at 1 under a ticked box stays as written (14 visits, contradictory).
+
+  **Year and centre.** Only 2 of the 16 variables have a shift (the criteria, answered 0 for the
+  most part, have an interquartile range of 0), and both reach 0.5 or more: the box `mcddn_1` and
+  one criterion. The year step of the criteria is the use of that box, which ticks no on the
+  fifteen criteria: it is ticked on 11% of the visits of 2013, 33% of 2014, 15% of 2015, 54% of
+  2016, 58% of 2017, 86% of 2018, 98% of 2019 (66 visits), 31% of 2020 and 12% of 2021, so that
+  the mean number of criteria answered yes is 1.6 to 2.9 a year in 2013 to 2017, 0.5 in 2018 and
+  0.02 in 2019 (0.75 in 2020, 2.5 in 2021). Among the visits whose box is not ticked it stays at
+  2.3 to 3.3 a year in 2013 to 2016 (4.6 on 14 visits in 2017, 3.7 on 6 in 2018). By centre the
+  box is ticked on 61% of the visits of C (all of its 75 visits of 2018 and 2019), 33% of D (73%
+  and 90% in 2018 and 2019) and 76% of A (children are 100% of A, 47% of C, none of D). Why the
+  use of the box rises from 2016 is not known: a step with no known cause, in the habit of the box
+  and not in the criteria.
 
   An instrument of the ASP cohort only.
 
 variables:
-  mcddn_1: {column: mcddn_1, type: item, label: "MCDD (multiple complex developmental disorder): no to all the criteria (box) (0 no, 1 yes)", range: [0, 1]}
-  mcdd1: {column: mcdd1, type: item, label: "MCDD criteria, item 1 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd2: {column: mcdd2, type: item, label: "MCDD criteria, item 2 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd3: {column: mcdd3, type: item, label: "MCDD criteria, item 3 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd4: {column: mcdd4, type: item, label: "MCDD criteria, item 4 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd5: {column: mcdd5, type: item, label: "MCDD criteria, item 5 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd6: {column: mcdd6, type: item, label: "MCDD criteria, item 6 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd7: {column: mcdd7, type: item, label: "MCDD criteria, item 7 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd8: {column: mcdd8, type: item, label: "MCDD criteria, item 8 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd9: {column: mcdd9, type: item, label: "MCDD criteria, item 9 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd10: {column: mcdd10, type: item, label: "MCDD criteria, item 10 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd11: {column: mcdd11, type: item, label: "MCDD criteria, item 11 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd12: {column: mcdd12, type: item, label: "MCDD criteria, item 12 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd13: {column: mcdd13, type: item, label: "MCDD criteria, item 13 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd14: {column: mcdd14, type: item, label: "MCDD criteria, item 14 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  mcdd15: {column: mcdd15, type: item, label: "MCDD criteria, item 15 (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  mcddn_1: {column: mcddn_1, type: item, label: "MCDD: box 'no to all the criteria' ticked (written 0 or 1 whenever the form is saved) (0 not ticked, 1 ticked)", range: [0, 1]}
+  mcdd_not_none: {column: mcddn_1, type: item, label: "MCDD: the box 'no to all the criteria' is not ticked (0 ticked, 1 not ticked)", range: [0, 1], codes: {"0": 1, "1": 0}, keep: false}
+  mcdd1: {column: mcdd1, type: item, label: "MCDD criterion 1a (regulation of affect and anxiety): unusual or peculiar fears or phobias (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd2: {column: mcdd2, type: item, label: "MCDD criterion 1b (regulation of affect and anxiety): frequent idiosyncratic or bizarre anxious reactions (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd3: {column: mcdd3, type: item, label: "MCDD criterion 1c (regulation of affect and anxiety): recurrent panic attacks (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd4: {column: mcdd4, type: item, label: "MCDD criterion 1d (regulation of affect and anxiety): episodes of disorganisation with immature or markedly violent behaviour (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd5: {column: mcdd5, type: item, label: "MCDD criterion 2a (social behaviour): social disinterest, detachment, avoidance, withdrawal (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd6: {column: mcdd6, type: item, label: "MCDD criterion 2b (social behaviour): visibly disturbed or ambivalent attachment (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd7: {column: mcdd7, type: item, label: "MCDD criterion 3a (thought disorder): magical and irrational thinking (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd8: {column: mcdd8, type: item, label: "MCDD criterion 3b (thought disorder): sudden intrusions into a normal thought process (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd9: {column: mcdd9, type: item, label: "MCDD criterion 3c (thought disorder): bizarre ideas (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd10: {column: mcdd10, type: item, label: "MCDD criterion 3d (thought disorder): repetition of words with no meaning, neologisms (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd11: {column: mcdd11, type: item, label: "MCDD criterion 3e (thought disorder): easily perplexed or confused (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd12: {column: mcdd12, type: item, label: "MCDD criterion 3f (thought disorder): grandiose ideas, including fantasies of omnipotence (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd13: {column: mcdd13, type: item, label: "MCDD criterion 3g (thought disorder): paranoid or persecutory preoccupations (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd14: {column: mcdd14, type: item, label: "MCDD criterion 3h (thought disorder): over-investment in fantasised or imaginary figures or characters (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}
+  mcdd15: {column: mcdd15, type: item, label: "MCDD criterion 3i (thought disorder): ideas of reference (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}, asked_if: mcdd_not_none}

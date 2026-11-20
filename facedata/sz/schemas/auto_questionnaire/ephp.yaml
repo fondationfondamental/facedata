@@ -1,19 +1,29 @@
 instrument: ephp
-title: EPHP, assessment of the processes of psychic handicap
+title: "EPHP, assessment of the processes of psychic handicap, filled by someone close to the patient"
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire EPHP
-status: draft
+status: reviewed
 notes: >
-  EPHP, filled from 2013 (1,798 visits): 13 items from 0 (great
-  difficulty) to 6 (no difficulty), in four domains.
+  EPHP, filled from 2013 (1,802 visits): 13 items from 0 (great difficulty)
+  to 6 (no difficulty), in four domains. The dictionary says that someone
+  close to the patient fills it, at V0, V1, V3 and V5; the extraction holds
+  it at every yearly visit (V0 953, V1 363, V2 180, V3 173, V4 73, V5 48,
+  later visits 12).
 
-  The code 7 is "cannot be assessed": 377 cells, read as a missing code.
+  The code 7 is "cannot be assessed": 377 cells on 231 visits, read as a
+  missing code.
 
-  Scores. The four stored sub-scores are the sums of their items (1 to 4,
-  5 to 8, 9 to 11, 12 and 13), and the total is their sum: 1 to 4
-  score_mismatch each. A sum needs all its items. On the 225 visits with a
-  7 the EMR still stores a total, computed in a way that the data do not
-  show; no score is delivered there.
+  Scores. The four stored sub-scores are the sums of their items (1 to 4, 5
+  to 8, 9 to 11, 12 and 13), and the total is their sum: 1 to 4
+  score_mismatch each. A sum needs all its items, so no score is delivered
+  where an item is 7 (225 visits with a stored total): the strict score is
+  kept. On those visits the stored scores count the 7 as 7 points: the total
+  is the sum with the 7 on 224 of the 225, and 16 stored totals are above
+  the maximum of 78 (up to 82). The EMR script counted the 7 as 7 until
+  2026-10-28 and counts it as 0 since (the commit "score non-evaluable
+  answers as zero"; A80 of docs/EXPORT_REQUESTS.md); the published rule for a
+  non-evaluable item is to verify. The 17 visits with an item empty for another reason have no stored
+  score.
 
 defaults: {type: item, range: [0, 6], missing: {7: not_applicable}}
 

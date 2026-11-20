@@ -1,22 +1,33 @@
 instrument: yale_brown
-title: Yale-Brown Obsessive Compulsive Scale (Y-BOCS)
+title: Yale-Brown Obsessive Compulsive Scale (Y-BOCS), past week
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire YALEBROWN
-status: draft
+status: reviewed
 notes: >
-  Y-BOCS, filled from 2015 by the patients with obsessions or
-  compulsions (290 visits): five items for the obsessions and five for the
-  compulsions, each 0 to 4. The dictionary does not name the items; the
-  labels are those of the published scale in its order.
+  Y-BOCS, about the past week, filled from 2015 by the patients with
+  obsessions or compulsions (291 visits): five items for the obsessions and
+  five for the compulsions, each 0 to 4. The dictionary does not name the
+  items; the labels are those of the published scale in its order. The
+  sub-totals go from 0 to 20 and the total from 0 to 40 (range on the scores).
 
-  The stored sub-totals are the sums of the five items on nine visits in
-  ten: 25 and 26 score_mismatch, and 28 on the total. All of them are on
-  visits of 2015 and 2016 (decision D23 in PROGRESS.md).
+  The stored sub-totals are the sums of the five items on nine visits in ten:
+  25 and 26 score_mismatch, and 28 on the total. All of them are on visits of
+  2015 and 2016 (decision D23 in PROGRESS.md). Four stored scores (one
+  sub-total of each kind and two totals) have an item missing and no
+  recomputed score (score_not_recomputed).
 
-  Not loaded: ybobse1 to ybobse5 and ybcomp1 to ybcomp5, which the
-  dictionary calls "scores, level" of the same ten items. They equal the
-  item on about 60% of the visits only, and the sub-totals follow the
-  items, not them (ignored.yaml; open question O10 in PROGRESS.md).
+  Not loaded: ybobse1 to ybobse5 and ybcomp1 to ybcomp5, which the dictionary
+  calls "scores, level" of the same ten items (ignored.yaml; the open question
+  O10 is answered, decision D84). They are the summary block of the form (the radio fields
+  radhtml_syb1 to radhtml_syb10): a copy of the ten answers that the patient
+  or the rater could edit by hand until the commit of 2026-10-26 of the
+  application, which made it read-only and filled it from the ten items. The
+  stored sub-totals that differ from the sum of the items (25 and 26 visits,
+  all in 2015 and 2016) equal the sum of the summary block on every one of
+  them, so the old script added the block, not the items. The block equals the
+  item on 55% of the cells only, because it was typed apart. The delivered
+  sums are the current rule (the items), the stored ones are the check, and
+  the block has no twin score.
 
 defaults: {type: item, range: [0, 4]}
 
@@ -40,11 +51,14 @@ scores:
     label: Y-BOCS obsessions sub-total (0 to 20)
     sum: [ybocs_obsessions1, ybocs_obsessions2, ybocs_obsessions3, ybocs_obsessions4, ybocs_obsessions5]
     compare: ybocs_obsessions_stored
+    range: [0, 20]
   ybocs_compulsions_total:
     label: Y-BOCS compulsions sub-total (0 to 20)
     sum: [ybocs_compulsions1, ybocs_compulsions2, ybocs_compulsions3, ybocs_compulsions4, ybocs_compulsions5]
     compare: ybocs_compulsions_stored
+    range: [0, 20]
   ybocs_total:
     label: Y-BOCS total (0 to 40)
     sum: [ybocs_obsessions_total, ybocs_compulsions_total]
     compare: ybocs_total_stored
+    range: [0, 40]

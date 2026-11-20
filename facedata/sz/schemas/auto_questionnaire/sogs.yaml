@@ -2,35 +2,60 @@ instrument: sogs
 title: South Oaks Gambling Screen (SOGS)
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire SOGS
-status: draft
+status: reviewed
 notes: >
-  South Oaks Gambling Screen, filled from 2014 by few patients (145
-  visits; the questions on borrowed money, 16a to 16k, on 13). Until the
-  extraction of 13 November 2026 nine items were empty (decision D1 in
-  PROGRESS.md).
+  South Oaks Gambling Screen, filled from 2014 by few patients (146 visits;
+  the questions on borrowed money, 16a to 16k, on 13). Until the extraction
+  of 13 November 2026 nine items were empty (decision D1 in PROGRESS.md).
 
-  The dictionary gives the wording of questions 2, 4, 5 and 6 only; the
-  yes/no items keep their number. 22 of the columns are not in its list.
+  The dictionary gives the wording of questions 2, 4, 5 and 6 only (for 4, 5
+  and 6, the last 12 months); the yes/no items keep their number. 22 of the
+  columns are not in its list.
 
-  The total is delivered as stored. With 122 totals the scoring key
-  cannot be recovered from the data.
+  Coding, as the export writes it. Item 4 is not in order of frequency: 1
+  most of the times I lose, 2 sometimes (less than half of the times), 3
+  every time. Items 1a to 1g: 1 at least once a week, 2 less than once a
+  week. The export reads the answers of item 6 as "no" and "yes, some months
+  ago but not now" only: the answer "yes" is lost (0 on 90 visits, 1 on 28,
+  empty on 28, never 2); export request R151 of
+  docs/EXPORT_REQUESTS.md.
+
+  Gate. Item 16 (borrowed money) opens 16a to 16k (asked_if): after a no
+  they are 0 (130 of the 132 visits with a no had them empty; the other 2
+  hold an answer and keep it). Item 3a (the relatives, a text) is empty on
+  the 118 visits with a no to item 3 and filled on 23 of the 24 with a yes:
+  asked_if does not apply to a text, so no gate is written.
+
+  Total. It is delivered as stored. Its key is in the application script
+  (sogs.js, calcul, lines 118 to 139, the item 4 rule in valeur_champ, lines
+  49 to 58; A80 of docs/EXPORT_REQUESTS.md): item 4 counts 1 for any answer,
+  "never" included, so that every stored total is 1 or more (58 of 122 equal
+  1; the published rule scores item 4 only for "most of the time" and "every
+  time", to verify); items 5
+  and 6 count 1 for any answer but the first; items 7 to 11, 13 to 15 and
+  16a to 16i count 1 for a yes; item 12 and 16j and 16k are not counted; the
+  maximum is 20. On the 94 totals that the delivered items allow to
+  recompute, the key gives the stored one on 90. The total is not recomputed
+  here while the export loses the answer "yes" of item 6 and some answers
+  written with an apostrophe (8 stored totals have no item 5); to be seen
+  again once the export is put right, with the choice of the item 4 rule.
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  sogs01a: {label: "SOGS 1a: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01b: {label: "SOGS 1b: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01c: {label: "SOGS 1c: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01d: {label: "SOGS 1d: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01e: {label: "SOGS 1e: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01f: {label: "SOGS 1f: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
-  sogs01g: {label: "SOGS 1g: a kind of gambling (0 never, 1 once a week or more, 2 less than once a week)", range: [0, 2]}
+  sogs01a: {label: "SOGS 1a: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01b: {label: "SOGS 1b: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01c: {label: "SOGS 1c: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01d: {label: "SOGS 1d: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01e: {label: "SOGS 1e: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01f: {label: "SOGS 1f: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
+  sogs01g: {label: "SOGS 1g: a kind of gambling (0 never, 1 at least once a week, 2 less than once a week)", range: [0, 2]}
   sogs_largest_amount: {column: sogs02, type: number, label: "SOGS 2: largest amount gambled in one day", range: [0, 1000000], winsor: false}
   sogs03: {label: "SOGS 3: a relative has or had a gambling problem"}
   sogs_relatives: {column: sogs03a, type: text, label: "SOGS 3a: the relatives with a gambling problem, as written"}
-  sogs04: {label: "SOGS 4: went back another day to win back the money lost (0 never to 3 every time)", range: [0, 3]}
-  sogs05: {label: "SOGS 5: claimed to be winning while losing (0 never to 2 most of the time)", range: [0, 2]}
-  sogs06: {label: "SOGS 6: had a gambling problem in the last 12 months (0 no, 1 in the past but not now, 2 yes)", range: [0, 2]}
+  sogs04: {label: "SOGS 4: in the last 12 months, went back another day to win back the money lost (0 never, 1 most of the times I lose, 2 sometimes, less than half of the times, 3 every time I lose; not in order of frequency)", range: [0, 3]}
+  sogs05: {label: "SOGS 5: in the last 12 months, claimed to be winning while losing (0 never or never gambled, 1 yes, less than half of the times I lost, 2 yes, most of the time)", range: [0, 2]}
+  sogs06: {label: "SOGS 6: had a gambling problem in the last 12 months (0 no, 1 yes some months ago but not now, 2 yes: not in the extraction)", range: [0, 2]}
   sogs07: {label: "SOGS item 7 (1 yes, 0 no)"}
   sogs08: {label: "SOGS item 8 (1 yes, 0 no)"}
   sogs09: {label: "SOGS item 9 (1 yes, 0 no)"}
@@ -41,17 +66,17 @@ variables:
   sogs14: {label: "SOGS item 14 (1 yes, 0 no)"}
   sogs15: {label: "SOGS item 15 (1 yes, 0 no)"}
   sogs16: {label: "SOGS item 16 (1 yes, 0 no)"}
-  sogs16a: {label: "SOGS 16a: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16b: {label: "SOGS 16b: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16c: {label: "SOGS 16c: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16d: {label: "SOGS 16d: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16e: {label: "SOGS 16e: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16f: {label: "SOGS 16f: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16g: {label: "SOGS 16g: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16h: {label: "SOGS 16h: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16i: {label: "SOGS 16i: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16j: {label: "SOGS 16j: a source of the money borrowed to gamble (1 yes, 0 no)"}
-  sogs16k: {label: "SOGS 16k: a source of the money borrowed to gamble (1 yes, 0 no)"}
+  sogs16a: {label: "SOGS 16a: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16b: {label: "SOGS 16b: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16c: {label: "SOGS 16c: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16d: {label: "SOGS 16d: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16e: {label: "SOGS 16e: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16f: {label: "SOGS 16f: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16g: {label: "SOGS 16g: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16h: {label: "SOGS 16h: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16i: {label: "SOGS 16i: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16j: {label: "SOGS 16j: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
+  sogs16k: {label: "SOGS 16k: a source of the money borrowed to gamble (1 yes, 0 no)", asked_if: sogs16}
   sogs_total:
     column: sogs_
     label: SOGS total as stored (0 to 20)

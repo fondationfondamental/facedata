@@ -2,17 +2,23 @@ instrument: mars
 title: Medication Adherence Rating Scale (MARS, 10 items)
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire MARS
-status: draft
+status: reviewed
 notes: >
-  Medication Adherence Rating Scale, filled at every visit (4,315
-  visits). The BP schema: ten items coded 1 = no and 0 = yes, and a total
-  that counts items 7 and 8 the other way (decision D37 of the BP file).
-  The stored total was fitted on the items here too and follows the same
-  formula: 2 score_mismatch on 4,266 totals.
+  Medication Adherence Rating Scale, 10 items, filled at every visit (4,316
+  visits, 2,078 at inclusion). The BP schema: ten items coded 1 = no and 0 =
+  yes, and a total that counts items 7 and 8 the other way (decision D37 of
+  the BP file). The stored total was fitted on the items here too and follows
+  the same formula: 2 score_mismatch on the 4,204 visits that have both a
+  stored and a recomputed total; 62 more visits have a recomputed total and no
+  stored one.
 
-  Item 10 is in the column mars010 (mars10 in BP), which the dictionary
-  does not list. The BP question "takes a medication at present" (mars11)
-  is not in the SZ extraction.
+  Item 10 is in the column mars010 (mars10 in BP), which the dictionary does
+  not list. The BP question "takes a medication at present" (mars11) is not in
+  the SZ extraction and the SZ form has no such question: there is no gate (in
+  BP the form hides the MARS after a no to that question). An empty MARS in SZ
+  is a questionnaire not filled, never a no: it is missing, not 0. The form's
+  box "done / not done" (rad_mars_nf) is not in the extraction (export
+  request R152).
 
 defaults: {type: item, range: [0, 1]}
 

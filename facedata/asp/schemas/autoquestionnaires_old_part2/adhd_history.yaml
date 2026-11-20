@@ -1,16 +1,23 @@
 instrument: adhd_history
-title: "Attention and hyperactivity (section of the old forms)"
+title: "Attention deficit hyperactivity disorder, THADA (section of the old forms)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
   Twenty-one questions answered from 1 to 3, then the school years, the age of
   the first signs, and whether help, a diagnosis and a medication were given:
-  200 inclusion visits (49 of children) and 49 follow-up visits, from 2013 to 2020. It belongs to the old set of forms.
+  200 inclusion visits (49 of children) and 49 follow-up visits, from 2010 to 2021 (245 of the 249 in 2013 to 2020). It belongs to the old set of forms.
 
-  The thesaurus calls the section THADA (attention deficit hyperactivity
-  disorder): 21 questions answered 1 never, 2 in the past, 3 in the last week,
-  then questions on school, help and treatment. No score is stored.
+  The form 219 is titled "Trouble hyperactif avec déficit de l'attention"
+  (THADA, attention deficit hyperactivity disorder): 21 questions answered 1
+  never, 2 in the past, 3 in the last week, then questions on school, help and
+  treatment. No score is stored.
+
+  **Year and centre.** 12 of the 30 variables reach 0.5 or more (9 by year, 10 by centre), all of
+  them items answered 1 to 3 or the age of the first signs; no score is stored. Children are 96%
+  of the visits of centre C, 2% of D and none of E. Between the centres 12 of the 26 variables
+  compared differ beyond chance (permutation test, p below 0.01), among the adults of D and E only
+  1 does; between years 2 do, 1 among children (thad10) and none among adults: the age mix.
 
   An instrument of the ASP cohort only.
 
@@ -38,10 +45,10 @@ variables:
   thad21: {column: thad21, type: item, label: "ADHD history (THADA), item 21 (1 never, 2 in the past, 3 in the last week)", range: [1, 3]}
   thadc5: {column: thadc5, type: text, label: "Comment, free text"}
   ecprim: {column: ecprim, type: item, label: "ADHD history: achievement at primary school (1 poor, 2 reasonable, 3 average, 4 good)", range: [1, 4]}
-  ageprec: {column: ageprec, type: number, label: "Age of the first signs (years)", range: [0, 200], winsor: false}
+  ageprec: {column: ageprec, type: number, label: "Age of the first signs (years)", range: [0, 100], winsor: false}
   attaide: {column: attaide, type: item, label: "ADHD history: sought help for attention problems (0 no, 1 yes)", range: [0, 1]}
   attdiag: {column: attdiag, type: item, label: "ADHD history: a diagnosis of attention disorder was raised (0 no, 1 yes)", range: [0, 1]}
   attdiagq: {column: attdiagq, type: text, label: "Diagnosis of an attention disorder, by whom, free text"}
-  attdiaga: {column: attdiaga, type: number, label: "Diagnosis of an attention disorder, age (years)", range: [0, 200], winsor: false}
+  attdiaga: {column: attdiaga, type: number, label: "Diagnosis of an attention disorder, age (years)", range: [0, 100], winsor: false}
   attmed: {column: attmed, type: item, label: "ADHD history: took medication for attention problems (0 no, 1 yes)", range: [0, 1]}
   attmedc: {column: attmedc, type: text, label: "Medication for attention, which, free text"}

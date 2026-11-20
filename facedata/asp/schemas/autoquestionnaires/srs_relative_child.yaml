@@ -2,55 +2,72 @@ instrument: srs_relative_child
 title: "Social Responsiveness Scale, school-age form filled by a parent"
 tab: autoquestionnaires
 section: screening questionnaires
-status: draft
+status: reviewed
 notes: >
   The school-age form of the Social Responsiveness Scale (Constantino and
-  Gruber): sixty-five items answered from 1 to 4 by a parent or another
-  relative of a patient under 18. 982 visits of 862 patients: 517 screening
-  visits, 354 inclusion visits and 111 follow-up visits.
+  Gruber): sixty-five items answered from 1 to 4 by a parent or another relative
+  of a patient under 18. 982 visits of 862 patients: 517 screening visits, 354
+  inclusion visits and 111 follow-up visits.
 
-  **Two forms in the same columns.** The summary sheet of the thesaurus lists
-  a form for a child and a form for an adult, both filled by a relative. They
-  have the same sixty-five item numbers and are stored in the same columns
-  (recsoc1 to recsoc65), and no column says which was filled: the age at the
-  visit tells it, under 18 for srs_relative_child, 18 and over for
-  srs_relative_adult (PROGRESS.md D14). The norms of the two forms are not the
-  same. A visit with answers and no age has no form (version_unknown, fewer
-  than five visits).
+  **Two forms in the same columns.** The summary sheet of the thesaurus lists a
+  form for a child and a form for an adult, both filled by a relative. They have
+  the same sixty-five item numbers and are stored in the same columns (recsoc1
+  to recsoc65), and no column says which was filled: the age at the visit tells
+  it, under 18 for srs_relative_child, 18 and over for srs_relative_adult
+  (PROGRESS.md D14). The norms of the two forms are not the same. A visit with
+  answers and no age has no form (version_unknown, fewer than five visits). The
+  application picks the form from the age at the date of the form, the package
+  from the age at the visit: the two differ on 7 follow-up visits that cross the
+  age of 18.
 
-  Identified from its sixty-five items and its five sub-scales, sure: the
-  five stored sub-scales have exactly the items of the published ones
-  (awareness 8 items, cognition 12, communication 22, motivation 11,
-  restricted interests and repetitive behaviour 12). The thesaurus names the
-  scale and its total raw score only; it gives the answers: 1 not true, 2
-  sometimes true, 3 often true, 4 almost always true, and 9 "does not apply",
-  read as missing (not_applicable). It writes the scale for the screening
-  visit only.
+  Identified from its sixty-five items and its five sub-scales, sure: the five
+  stored sub-scales have exactly the items of the published ones (awareness 8
+  items, cognition 12, communication 22, motivation 11, restricted interests and
+  repetitive behaviour 12). The thesaurus names the scale and its total raw
+  score only; it gives the answers: 1 not true, 2 sometimes true, 3 often true,
+  4 almost always true, and 9 "does not apply", read as missing
+  (not_applicable). It writes the scale for the screening visit only.
 
-  **The stored raw scores are wrong on every visit.** The published score
-  counts each answer from 0 to 3 and reverses seventeen items (3, 7, 11, 12,
-  15, 17, 21, 22, 26, 32, 38, 40, 43, 45, 48, 52 and 55). The stored scores
-  are plain sums of the answers from 1 to 4, with no item reversed: the total
-  is the sum of the sixty-five answers on 888 of 888 complete visits of this
-  form. The answers themselves show that the seventeen items must be
-  reversed: in this form too they are the only items that fall when the rest
-  of the scale rises (17 items with a negative item-rest correlation, the
-  published seventeen). A stored total is from 22 to 110 points above the
-  published one (median 62).
+  **The stored raw scores are wrong on every visit, and the cause is the export,
+  not the EMR.** The script of the form computes the published score: answers 0
+  to 3, the seventeen items reversed, and no total unless every answer is
+  present (`211_score.js`, line 27; `212_score.js`, line 29; `256_score.js` and
+  `257_score.js`, line 58). The export recomputes the scores (`recsoc.yaml` of
+  the export) and its values replace the application's ones: it expects answers
+  written 0 to 3 and receives 1 to 4, counts a missing answer as 0, and reads
+  its T-score tables on a raw range of 0 to 24 (O12 (1), O17). The published
+  score counts each answer from 0 to 3 and reverses seventeen items (3, 7, 11,
+  12, 15, 17, 21, 22, 26, 32, 38, 40, 43, 45, 48, 52 and 55). The stored scores
+  are plain sums of the answers from 1 to 4, with no item reversed: the total is
+  the sum of the sixty-five answers on 888 of 888 complete visits of this form.
+  The answers themselves show that the seventeen items must be reversed: in this
+  form too they are the only items that fall when the rest of the scale rises
+  (17 items with a negative item-rest correlation, the published seventeen). A
+  stored total is from 22 to 110 points above the published one (median 62).
 
-  The seven scores are therefore computed with the published key and
-  delivered (the total on 887 visits, median 94). The stored ones are read
-  to be checked (formulas "as stored") and are not delivered.
+  The seven scores are therefore computed with the published key and delivered
+  (the total on 887 visits, median 94). The stored ones are read to be checked
+  (formulas "as stored") and are not delivered.
 
-  **The stored T-scores are not delivered.** A T-score is read by the EMR in
-  the table of the manual from the stored raw score, which is wrong; and the
-  two total T-scores are sums of the sub-scale T-scores, not T-scores. The
-  norm table is not available, so no T-score is delivered; one can be read
-  in the manual from the corrected raw score, the sex and the form.
+  **The stored T-scores are not delivered.** A T-score is read by the export, in
+  tables made for a raw range of 0 to 24, from the stored raw score, which is
+  wrong; and the two total T-scores are sums of the sub-scale T-scores, not
+  T-scores. The norm table is not available, so no T-score is delivered; one can
+  be read in the manual from the corrected raw score, the sex and the form.
 
   srsc_filled_by says who filled the form (father, mother, other).
 
-  An instrument of the ASP cohort only. The form of an adult filled by a relative is srs_relative_adult; the self-report of adults is srs_adult.
+  **Year and centre.** 52 of the 72 variables reach 0.5 or more (52 by year, 28
+  by centre): the 65 items are on a 1 to 4 scale (one level is 1.0 or more of
+  the interquartile range), and the seven scores stand at 0.30 to 0.41 by year
+  and 0.06 to 0.30 by centre, the total at 0.39 and 0.21. The median total is
+  low in 2014 (78) and drifts down at the end (93 in 2022 and 2024, 85 in 2023,
+  77 in 2026) against 95.5 to 106 from 2013 to 2021 (2014 apart), and centre C
+  (to 2016) reads 85 against 92 in A and 98 in B. A drift of less than 0.4 of
+  the interquartile range with no known cause (the case mix or the rater).
+
+  An instrument of the ASP cohort only. The form of an adult filled by a
+  relative is srs_relative_adult; the self-report of adults is srs_adult.
 
 version:
   name: srs_relative_form

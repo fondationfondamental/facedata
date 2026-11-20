@@ -1,32 +1,48 @@
 instrument: qids_sr16
-title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16)
+title: Quick Inventory of Depressive Symptomatology, self-report (QIDS-SR16, last 7 days)
 tab: AUTO-QUESTIONNAIRES
 section: QIDS
-status: draft
+status: reviewed
 notes: >
   The BP schema as it is. Sixteen items, each 0 to 3, on the last seven
-  days. Filled at the screening visit (72% of them), at inclusion (91%) and
-  at every follow-up visit (92% to 96%): 1,902 visits, and still 83% of the
-  inclusions of 2024 to 2026.
+  days (the two weight items on the last 15 days, as the form prints them).
+  Filled at the screening visit (72% of them), at inclusion (91%) and at
+  every follow-up visit (92% to 96%): 1,902 visits, and still 83% of the
+  inclusions of 2024 to 2026. The form (126) is on the four lists of the
+  simplified visit, so the break of 2018 does not touch it. Level: the DR
+  totals are higher than in BP (mean 15.1 against 9.4), as expected in a
+  cohort of treatment-resistant depression; the item profiles agree with
+  BP, so it is not a difference of coding.
 
-  Total. The sixteen items cover nine symptoms, and the total adds one value
-  per symptom (0 to 27): the highest of the four sleep items (1 to 4), item
-  5, the highest of the four appetite and weight items (6 to 9), items 10 to
-  14, and the highest of the two psychomotor items (15 and 16). The function
-  qids_total of custom.py computes it. The stored total (qidsr120) is
-  exactly this on the 1,643 visits where it exists: the visits with the
+  Total. The sixteen items cover nine symptoms, and the total adds one
+  value per symptom (0 to 27): the highest of the four sleep items (1 to
+  4), item 5, the highest of the four appetite and weight items (6 to 9),
+  items 10 to 14, and the highest of the two psychomotor items (15 and 16).
+  It is written in the schema with hidden maxima (qids_sleep,
+  qids_appetite_pair, qids_weight_pair, qids_appetite_weight,
+  qids_psychomotor), no function of custom.py. The stored total (qidsr120)
+  is exactly this on the 1,643 visits where it exists: the visits with the
   sixteen items filled.
 
   One answer of each pair is enough. The form asks for item 6 or item 7
-  (appetite down or up) and for item 8 or item 9 (weight down or up), not
-  for both. Until 2021 nearly every visit answers the four (1% to 3% of the
-  visits answer one of each pair, 7% in 2017). From 2022 the patients do as
-  the form asks: 26% of the QIDS visits of 2022, 47% in 2023, 64% in 2024,
-  58% in 2025 and 74% in 2026, in 8 of the 10 centres that have ten QIDS
-  visits or more since 2022. On these 227 visits the EMR stores no total.
-  Ours is computed there (1,870 totals): the twelve other items must be
-  filled, and each pair must have one answer. Without this the total would
-  be missing for most recent visits (open question O13).
+  (appetite down or up) and for item 8 or item 9 (weight down or up), not for
+  both. Until 2021 nearly every visit answers the four (1% to 3% of the visits
+  answer one of each pair, 7% in 2017). From 2022 the patients do as the form
+  asks: 26% of the QIDS visits of 2022, 47% in 2023, 64% in 2024, 58% in 2025
+  and 74% in 2026 (of the visits with the twelve other items filled), in 8 of
+  the 10 centres that have ten QIDS visits or more since 2022. On these 227
+  visits the EMR stores no total, and the cause is the export: the score
+  definition (nucleus qids.yaml, lines 19 to 30 and 46 to 60) takes the
+  highest of each block in strict mode, so a blank answer of a pair blanks the
+  total, whereas the script of the form (126_score.js, lines 35 to 45) sets
+  the unanswered partner of an item to 0 and computes the total. Ours follows
+  the script (the highest answered of each pair, at least one answer): 1,870
+  totals, the twelve other items being filled. Without this the total would be
+  missing for most recent visits (open question O13; requests R147 and R155).
+  The export takes no selector of the form (QIDS6A, QIDS8A), and the form's
+  own rule that clears the weight details (formulaires.js, line 3965) names
+  the wrong block when QIDS8A is 2 (2 visits show an answer that the form
+  hides: A77).
 
 defaults: {type: item, range: [0, 3]}
 
@@ -50,7 +66,30 @@ variables:
   qids_stored: {column: qidsr120, label: QIDS-SR16 total as stored, range: [0, 27], keep: false}
 
 scores:
+  qids_sleep:
+    label: QIDS-SR16 sleep domain (highest of items 1 to 4)
+    max: [qidsr101, qidsr102, qidsr103, qidsr104]
+    keep: false
+  qids_appetite_pair:
+    label: QIDS-SR16 appetite, the highest answered of items 6 and 7
+    max: [qidsr106, qidsr107]
+    min_items: 1
+    keep: false
+  qids_weight_pair:
+    label: QIDS-SR16 weight, the highest answered of items 8 and 9
+    max: [qidsr108, qidsr109]
+    min_items: 1
+    keep: false
+  qids_appetite_weight:
+    label: QIDS-SR16 appetite and weight domain (highest of items 6 to 9)
+    max: [qids_appetite_pair, qids_weight_pair]
+    keep: false
+  qids_psychomotor:
+    label: QIDS-SR16 psychomotor domain (highest of items 15 and 16)
+    max: [qidsr115, qidsr116]
+    keep: false
   qids_total:
-    label: QIDS-SR16 total
-    custom: qids_total
+    label: QIDS-SR16 total (0 to 27)
+    sum: [qids_sleep, qidsr105, qids_appetite_weight, qidsr110, qidsr111, qidsr112, qidsr113, qidsr114, qids_psychomotor]
+    range: [0, 27]
     compare: qids_stored

@@ -13,6 +13,9 @@ notes: >
   was used: a visit is "bis10" when at least one of the 22 items that only
   the 34-item form has is filled. A visit dated before 2021 is never read
   as the 12-item form (since, in the version block): bis12.yaml says why.
+  The 34-item form is the French BIS-10 (to verify). The column bis11 of the
+  extraction is a third thing: the export's own set of 12 items, not the
+  BIS-11 (bis10_score11).
 
   Items are coded 1 to 4. Reversed items, from the dictionary: 1, 7, 8, 9,
   10, 12, 13, 15, 21, 33, 34.
@@ -33,10 +36,11 @@ notes: >
 
   3. The stored behavioural and general scores (bis1039, bis1040) are rounded
   to one decimal. Comparing them would flag most rows for a rounding
-  difference: they are compared with a tolerance of 0.051 (the general score with an offset of 0.5). The export also writes a score
-  when an item is missing, as the sum of the answers present (27 of 27
-  checked): 227 score_not_recomputed, and 4 stored motor sums (7 to 10) fall
-  under the declared range.
+  difference: they are compared with a tolerance of 0.051 (the general
+  score with an offset of 0.5). The export also writes a score when an item
+  is missing, as the sum of the answers present (27 of 27 checked): 264
+  score_not_recomputed over the nine scores, on 63 visits, and 4 stored
+  motor sums (7 to 10) fall under the declared range.
 
   The last four scores use only the 12 items that the BIS-12 also has. They
   are the only bridge between the two instruments. Whether an answer given
@@ -137,7 +141,7 @@ scores:
     compare_offset: 11
 
   bis10_score11:
-    label: Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25)
+    label: Export's 12-item set stored as bis11, not the BIS-11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25)
     sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014,
           bis1017, bis1019, bis1020, bis1022, bis1024, bis1025]
     reverse: [bis1001, bis1008, bis1009, bis1012]

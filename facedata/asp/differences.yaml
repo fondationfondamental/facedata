@@ -38,11 +38,11 @@ wais4_vocabulaire: other columns; no edition column, wais_version is read from t
 # autoquestionnaires
 stai_ya: the answers are stored from 0 to 3 on every visit; they are read as stored, not delivered, and delivered on the BP coding once the coding of the visit is known, as in DR
 epworth: the eight situations are in the columns ess01 to ess08 (delivered under the BP names), the time of day in ess09 and the stored total in ess, as in DR
-mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence and is checked by a twin score; no mars11 (as in DR)
-asrs: other columns (asrs1 to asrs18); the screening result of BP is not extracted and the column of the stored total is empty
+mars: the answers are stored 1 = yes, the opposite of BP, and are read on the BP coding; the stored total counts poor adherence (the export reverses the wrong items, not the EMR) and is checked by a twin score; no mars11 and no question on taking a medication (as in DR)
+asrs: other columns (asrs1 to asrs18); the form has no field for the screening result of BP, so asrs_screen is computed from the part A count with nothing stored to compare, and the column of the stored total is empty
 fagerstrom: other columns (fag_1 to fag_6, fagerstrom_score); two questions before the test (has ever smoked, smokes now)
-eq5d: other columns; the stored index is the one of BP and SZ (the same index for each of the 224 health profiles shared with BP) and is a check of the computed one; ASP holds 28 stored indices above 1, out of range
-ctq: the stored sub-scores are in other columns (ctq30 to ctq38) and there is no severity class; two stored sub-scores leave out an item, so they and the stored total are checked by twin scores
+eq5d: other columns; the stored index is the one of BP and SZ (the same index for each of the 224 health profiles shared with BP, the crosswalk of the 5L profile to the French 3L value set) and is a check of the computed one; ASP holds 28 stored indices above 1 (typed without the decimal separator), 11 negative indices dropped by the export and no index where the script finds no visual scale
+ctq: the stored sub-scores are in other columns (ctq30 to ctq38) and there is no severity class; two stored sub-scores leave out an item (the script reads two radios that do not exist), so they and the stored total are checked by twin scores, and the stored neglect scores are checked by twin scores too (the script counts an answer 1 of a reversed item as 1)
 cgi_egf: the severity of the CGI and the GAF only, in other columns (gravmdi, egfval); two boxes of the follow-up form (changed since the last visit)
 
 # autoquestionnaires_old_part2

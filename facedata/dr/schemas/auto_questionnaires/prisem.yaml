@@ -2,7 +2,7 @@ instrument: prisem
 title: PRISE-M, side effects of the treatment (32 items)
 tab: AUTO-QUESTIONNAIRES
 section: PRISEM
-status: draft
+status: reviewed
 notes: >
   The BP schema as it is: Patient-Rated Inventory of Side Effects, 32
   symptoms in nine groups, each rated 0 (absent), 1 (tolerable) or 2
@@ -11,15 +11,22 @@ notes: >
   inclusion and at every follow-up visit: 1,050 visits.
 
   The stored total (prism) is the sum of the items that are filled, on
-  every visit. Ours is the same sum, computed when at least 28 of the 32
-  items are filled: 1,041 visits, where it equals the stored one. On the 9
-  others fewer items are filled and no total is delivered.
+  every visit. The application's script asks for 31 answers (the 30 items
+  that everybody answers and the one item of the patient's sex) and gives no
+  total below that. Ours is the same sum, computed when at least 31 of the
+  32 items are filled: 1,019 visits, where it equals the stored one. On the
+  others fewer items are filled and no total is delivered. (A partial sum of
+  28 to 30 items, which the schema delivered before, is not a score of the
+  scale: 22 visits.)
 
-  The break of 2018 (open question O1). 95% and 87% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 39% to 48% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  The break of 2018 (open question O1, answered by the application). 95% and
+  87% of the inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the
+  scale, 39% to 48% in 2018 to 2020, 2021 to 2023 and 2024 to 2026. The
+  PRISE-M (form 221) is one of the forms that the simplified visit leaves
+  out (visite.SVUPDES = 1, config/globale2.php, DESTVISIMP; PROGRESS.md
+  D55): an empty scale after 2018 is "not asked" on a simplified visit, not
+  "no" and not 0. The extraction does not say which visits were simplified
+  (request R127 and R155: the svupdes column; question M69).
 
 defaults: {type: item, range: [0, 2]}
 
@@ -67,5 +74,5 @@ scores:
           prism06c, prism06d, prism07a, prism07b, prism08a, prism08b,
           prism08c, prism09a, prism09b, prism09c, prism09d, prism09e,
           prism09f, prism09g]
-    min_items: 28
+    min_items: 31
     compare: prism_stored

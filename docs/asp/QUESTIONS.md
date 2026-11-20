@@ -30,6 +30,10 @@ split six schemas into `_v0` and `_fu` (D49), answered the code 3 of `dsmtype` (
 support levels (D52), and added DEV-13 and DM-15 to DM-17 (PROGRESS.md D48 to D53). The second part (the intellectual assessment, the Vineland, the suicide and substance
 forms) closed O9 as to the wording and the levels of use of the substances (O8 (3); D56, D57), and added DEV-14 and DM-18 to DM-22 (D54 to D60); DM-2 is corrected.
 
+**Update of 2026-11-20 (questionnaires, first part).** The review of the self-report questionnaires and the diagnostic instruments (PROGRESS.md D61 to D66) found where each wrong stored score comes from: the errors of the ADI-R, the ADOS, the SRS of a relative and the MARS are the export's, not the EMR's, so DEV-1 to DEV-3 and DEV-5 are rewritten; it recomputed the STAIC state and the BVAQ, split the ADHD-RS by age, answered parts of O2, O12, O13 and O17, and added DEV-15, DEV-16 and DM-23 to DM-24.
+
+**Update of 2026-11-20 (questionnaires, second part).** The review of the old forms (PROGRESS.md D67 to D75) read the scripts of the PSQI, the CCC-2, the ABC and the AIM, recomputed the CCC-2 composite and the four LSAS sub-scores, renamed the three pilot forms like BP, and added DEV-17, DM-25, DM-26 and PI-5. The definition of done of the 30 schemas of the new forms (D76, D77) found nine steps of the years and centres with no known cause (DM-26).
+
 ## To send at once
 
 These three answers change how every table is read. The work has started without them,
@@ -48,7 +52,7 @@ form 198 (D52): it prints the levels in the wording, so the wording is right and
 `npsy_6`) are written 1 yes, 2 no: the extraction holds 0, 1 and 9, never a 2. (d) The
 labels of `brief_cona` and `brief_cone` are exchanged. (e) The CRP is written in mmol/L;
 the values are mg/L. (f) The answer 9 of the question 19 of the ADHD-RS is written "child
-under 7"; it is on 50 visits, none of a child under 7. (g) The SRS is written "screening
+under 7"; it is on 50 visits, none of a child under 7 (answered: the form prints NA, D63). (g) The SRS is written "screening
 only"; the form of a relative is also on 527 inclusion and 121 follow-up visits. (h) Can
 the scoring rules be given: reversed items, the key of the BVAQ, of the Par-DD-QoL and of
 the EQ-5D index, how a T-score is read?
@@ -73,44 +77,49 @@ extraction?
 
 ## 1. For the EMR developers and whoever writes the export
 
-### Priority A: scores that the EMR computes wrongly
+### Priority A: scores that are computed wrongly, by the EMR or by the export
 
 Each was found by recomputing the stored score from its items; the corrected score is
-delivered and the stored one is kept as a check.
+delivered and the stored one is kept as a check. Since 2026-11-20 the scripts of the forms
+and the definitions of the export were read for each one (PROGRESS.md D64): the cause is
+named in the question.
 
-**DEV-1. ADI-R: the domain totals A and C, and the sub-score B3.** The stored total A
+**DEV-1. ADI-R: the domain totals A and C, the total D and the sub-score B3. The cause of the totals is the export** (`adir.yaml` of the export, lines 150-189; the script of the form, `200_score.js`, is right). The stored total A
 adds the items 64 and 65 both, where the algorithm counts one of them by age (951 of
 951 visits; it equals the sum of its own four sub-scores on 449 of 1,136 visits only).
 The stored total C adds the two items of C3 and of C4 instead of the higher one (1,109
 of 1,109). A stored total is up to 2 points (A) or 4 points (C) too high, and the
 cut-offs are 10 and 3. The stored B3 leaves out the item 38 from 2016 to 2020 (99 of
-the 117 visits where that item counts). The twelve sub-scores are otherwise right.
-*Questions:* can the three formulas be corrected, and the stored values recomputed?
+the 117 visits where that item counts). The twelve sub-scores are otherwise right. The stored A is above the
+published one on 659 of 1,089 visits and C on 424 of 1,109, and 8 of 679 complete visits of verbal subjects cross a cut-off on the stored totals and not on the published ones. The stored D is a partial sum
+on 432 of 1,184 visits (a missing item counts 0 in the export; the form leaves D empty unless the five items are present), and 12 visits
+of non-verbal subjects hold B2, B3 and the verbal B where the form leaves them empty.
+*Questions:* can the formulas of `adir.yaml` be corrected (the items 64 and 65, the higher item of C3 and C4, a strict D), and the stored values recomputed?
 Was the conclusion `adi_diag` read from the stored totals?
 *Today:* the totals are the sums of the sub-scores, B3 the four-item sum. (D8, O12)
 
-**DEV-2. SRS filled by a relative: no item is reversed.** The stored raw scores are
+**DEV-2. SRS filled by a relative: no item is reversed. The cause is the export** (`recsoc.yaml`: it expects answers written 0 to 3 and receives 1 to 4, counts a missing answer as 0 and reads T-score tables made for a raw range of 0 to 24); the scripts of the forms compute the published total (`211_score.js`, `212_score.js`, `256_score.js`, `257_score.js`). The stored raw scores are
 plain sums of the answers from 1 to 4 (1,722 of 1,722 visits); the publication counts 0
 to 3 and reverses seventeen items. A stored total is 20 to 114 points too high (median
 158 stored, 96 corrected). The T-scores are read from these sums, and the two total
 T-scores are sums of sub-scale T-scores (values from 260 to 522).
-*Questions:* can the formula be corrected? Which forms were given (school-age,
-adult relative)? Why does the adult self-report reverse fifteen items and not the
-items 52 and 55?
+*Questions:* can `recsoc.yaml` be corrected? The form is also picked from the age at the date of the form in the application and from the age at the visit here: 7 follow-up visits cross the age of 18.
+(Answered on 2026-11-20: the adult self-report words the items 52 and 55 as problems, so its key of fifteen reversed items follows the wording.)
 *Today:* the seven raw scores are computed with the published key; no T-score is
-delivered. (D8, O12)
+delivered. (D8, D64, O12)
 
-**DEV-3. ADOS: a code 3 counted as 3.** The algorithm counts a code 3 as 2. The two
+**DEV-3. ADOS: a code 3 counted as 3. The cause is the export** (`ados.yaml` lines 100-101 and 123-124 and `easperger_aut_c1ados.sql` lines 248-250 sum the raw codes; the script of the form, `281_score.js`, counts a 3 as 2). The algorithm counts a code 3 as 2. The two
 stored sub-scores of the module 4 (communication, social interaction) count it as 3 on
 every visit (476 of 477 and 157 of 157 visits with a code 3; 40 and 14 stored values
 above the maximum). The stored totals of the visits made with the first edition of the
 ADOS count it as 3 too: every such visit of the module 3 (21 of 21), 41 of 80 of the
 module 4 until 2017. And the module 4 total holds a 0 on 167 visits of 2013 to 2017
 where no item is recorded, 104 of them visits of the module 3.
+The zero totals (175, 167 with no item) come from the SQL, which computes the two sub-scores of the module 4 on every first-edition row without testing the module (`c1ados.sql` lines 248-251, `ados.yaml` line 81); the stereotyped-behaviours score of the module 4 holds the item C1 on 80 visits that the application dropped on 2018-12-11. `ados_diag` is the export's flag from the raw sums (6 'yes' that the published sums say no).
 *Questions:* can the formulas be corrected? From which date did each centre use the
 ADOS-2 (the item it added, B8 or B10, is empty until 2017 to 2019)? Was the
 classification read from the stored totals?
-*Today:* every score is recomputed with the published rule. (D8, O12)
+*Today:* every score is recomputed with the published rule. (D8, D64, O12)
 
 **DEV-4. PSQI: three components and the total.** The efficiency takes the hours in bed
 as the difference between the two clock times without crossing midnight (191 of 192
@@ -118,25 +127,31 @@ visits): a night from 23:00 to 07:00 counts sixteen hours. The disturbance compo
 3 as soon as one disturbance is reported (158 visits differ from the published rule).
 The daytime dysfunction does not follow its two items (98 visits). The stored total has
 a median of 9 where the corrected one has 7.
+The script of the form shows the mechanism (`249_score.js`): the efficiency takes the absolute difference of the two clock times, and the components 5 and 7 join the
+answers as text and compare the string (182 of 183 and 200 of 201 visits reproduced). The script also wants every answer 5b to 5j, so the component 5 is empty on the 17 visits
+that have no 5j.
 *Questions:* can the three formulas be corrected? The PSQI of BP, SZ and DR does
 not have the error: recomputed with the published rules, components 4, 5 and 7 equal
 the stored ones there (2 of 16,678 BP visits differ, none in SZ and DR; D22).
-*Today:* the three components and the total are recomputed. (D9, O13)
+*Today:* the three components and the total are recomputed. (D9, D70, O13; A74 of EXPORT_REQUESTS.md)
 
 **DEV-5. CTQ and MARS.** The stored CTQ physical abuse and emotional abuse leave out
-an item each (items 12 and 14), and the total with them; the stored emotional and
-physical neglect differ from the key on 83 and 26 visits with no rule found. The MARS
+an item each (items 12 and 14), and the total with them: **the script of the form** reads two radios, CTQ012 and CTQ014, that
+do not exist (`334_score.js` lines 45 and 72). The stored emotional and physical neglect differ from the key on 83 and 26 visits
+because the same script counts the answer 1 of a reversed item as 1 (line 15); the rule is found and reproduced on every visit. The MARS
 is stored 1 = yes, the other way round from BP, and its stored total counts poor
-adherence, as in DR.
-*Today:* the BP keys are delivered. (D8, O12)
+adherence, as in DR: **the cause is the export** (`mars.yaml` reverses the items 7 and 8 on the DR and ASP columns; the script `332_score.js` is right).
+*Questions:* can the script of the CTQ be corrected, and the export given a separate entry for DR and ASP with the items 1 to 6, 9 and 10 reversed?
+*Today:* the BP keys are delivered. (D8, D62, D64, O12)
 
 **DEV-5b. Sensory questionnaire (GSQ): the proprioceptive sub-score.** The thesaurus
 names the 21 sub-scores: hyper-sensitivity, hypo-sensitivity and their sum, for seven
 senses. For six senses the third is the sum of the two others. The proprioceptive one
 is not: it counts the item 40, a gustatory item, where the item 41 belongs (447 of 449
 complete visits).
+The error is in the script of the form, which writes the item 40 for the item 41 in that sum (`338_score.js` line 46).
 *Today:* the sub-score is delivered as the sum of its two parts; it differs from the
-stored one on 387 of 603 visits. (D14)
+stored one on 381 of the 440 complete visits. (D14, D64)
 
 ### Priority B: the export
 
@@ -195,6 +210,23 @@ of the follow-up form (`349_score.js`) does not exist. The domain scores, the su
 943 stored sums differ from the sum of the three domain scores (7 include the motor domain, 7 have the sum and the composite
 swapped, 4 hold a domain below 20). Can the EMR compute the sum and the composite from the domain scores?
 *Today:* the stored sum is delivered as typed and checked against the sum of the domains (23 visits flagged). (D54, O31; A67 of EXPORT_REQUESTS.md)
+
+**DEV-15. Defects of the scripts of the forms found by the review of the questionnaires.** (a) The STAIC state total reverses the ten
+positive adjectives (items 1, 3, 6, 8, 10, 12, 13, 14, 17, 20) instead of the ten negative ones, and its reversal map sends 1 to 3, 2 to 1 and 3 to 1 (`342_score.js` lines 8-15). (b) The ADOS-2 classification has an operator-precedence
+defect (`281_score.js` line 126): a stale or empty class on 28 of 1,349 visits of the module 4 and 2 of 795 of the module 3; the arrays of cut-offs of the module 2 look
+transposed (line 305, to verify). (c) The BVAQ script gave the factors inverted (24 minus the right sum) until a date that differs by centre, from 2021 to 2026: 289 of 441 complete visits. (d) The EQ-5D script
+needs the visual scale before it writes the index (34 visits with the five answers have none) and the BP and SZ script never tests it (`hetero_eq5d.js` lines 31 and 35, A18).
+*Questions:* can the scripts be corrected, and the stored values written again (the ASP form 342, 281, the BVAQ form 336)?
+*Today:* the STAIC state and the BVAQ are recomputed; the other values are delivered as stored. (D62, D64)
+
+**DEV-16. What the export does not carry.** (a) The Manual mode of the forms (radio 'Automatique / Manuel', `manuel_score.js`; the flag `score_manuell`, saved by `save_data.php`) is in no export model: the scores typed without their items cannot be told from scores written by the script. (b) The BRIEF
+of adults and the DCDQ hold two forms in the same columns (the informant form 264 and the self-report form 344; the parent form 224 and the adult form 223) and no column names the form or the respondent. (c) The
+export casts some ages and years with `~ '^[0-9]+$'`, which drops decimals and tokens (the years the BRIEF rater has known the patient, the ages of the tics). (d) The field of the CCC-2 composite is a `char(2)`, so the negative values are not in the extraction (`easperger.sql` line 3377); why the values from -9 to -1, which fit in two characters, are lost too is not established (R153).
+*Today:* delivered as extracted, the notes say which form a visit most probably holds. (D64; the requests are numbered in EXPORT_REQUESTS.md)
+
+**DEV-17. Defects of the scripts and of the export in the old forms.** (a) The CCC-2 script scores only below the age of 17 (`214_score.js` line 30) while the children's form is given to patients of 17 to 24 (17 visits with items and no score), and it tests the interests with `!=`, which would drop a scaled score of 0 (line 268; none present). (b) The ABC script counts a blank item as 0 (`255_score.js`): 36 visits with a blank item hold 61 stored scores, 55 equal the blank-as-0 sum and 6 scores of 5 visits another value (an item edited after the score). (c) The AIM script reverses the item 36 where the key says 37 (`230_score.js` line 35; no stored value is affected). (d) The Time box saves 00:00:00 when it is not touched: the CSHQ waking time on 18 of 119 visits and the PSQI rising time on 8 visits (A75; the 24-hour warning of the BP PSQI form is missing here). (e) The export computes the ALS depression with 10 items, without the item 1, where the application counts 11 (`229_score.js` line 170; M25), so the 4 visits of the pilot differ. (f) The HAM-D items 18a to 21 of the form and the five RBS-R factor columns of the script (`215_score.js` lines 183 to 310) are not in the extraction (R153). (g) The options of `TICVIE3` and `TICVIE4` in form 216 are those of the tic-free-period question (A82).
+*Questions:* can the scripts be corrected, and the fields exported?
+*Today:* the CCC-2 composite and the PSQI components are recomputed, 00:00:00 is read as not recorded, the others are delivered as stored. (D68 to D74; R153, A74, A75, A81, A82)
 
 ## 2. For the data managers
 
@@ -335,10 +367,27 @@ in adults (8% to 14% in 2016-2020, 44% in 2026 in the main later centre) and the
 2023-2025). Is the list filled for all the patients, or chosen by the centre and the rater?
 *Today:* delivered as recorded; the notes carry the steps and the schemas are `reviewed` all the same (a documented step with no known cause does not block). (D60, O36)
 
+**DM-23. The first edition of the ADOS in the ADOS-2 columns.** The export maps the items of the first edition into the columns of the ADOS-2 (`easperger_aut_c1ados.sql` lines 26-145): 36 item cells of the three modules
+lie outside the answer list of the ADOS-2 (the item B5 of the module 3 and the item B6 of the module 4 coded 3), 12 visits hold the items of another module than the one entered, and the column A22 of the staging is mapped to
+the items B9a and B9b of the module 2. How were these two items coded in the first edition, and is the A22 mapping a slip?
+*Today:* delivered as recorded (the codes 7 and 8 and the answers outside the list are flagged where the range says so). (D64)
+
+**DM-24. The BVAQ and the typed scores.** (a) The form of this cohort is a 20-item, 5-factor questionnaire where the published Bermond-Vorst questionnaire has 40 items: which version and which key was used, and on
+which date did each centre correct its script (the stored factors were inverted until 2021 to 2026, by centre)? (b) What rule does the centre that types its scores in the Manual mode apply on paper (the typed means of
+the STAIC, the CDI and the EQ differ from those of the computed scores)?
+*Today:* (a) the key of the script is delivered and the 20-item form is to verify; (b) the typed scores are kept as stored. (D62, D65, O17)
+
+**DM-25. Old questionnaires: who answers and what the boxes mean.** (a) The items of the CC-A (form 213) are in the first person ("I mix up ...", "people tell me ..."): is it answered by the patient, as the notes now say, and not by a relative? (b) `rep3syma` (0 to 13) is the number of what: the most severe of the 13 boxes of the form 218? (c) On the 8 PSQI visits whose rising time is the 00:00:00 default (a Time box left untouched) the bedtime is 00:00:00 too (41 bedtimes of 00:00:00 in all): is that bedtime the default as well (then 8 cells would become missing), or midnight? (d) What does the rater mean by `tourtt` ('tics and/or Tourette') when `tourdiag` is no (1 answer on 257 visits)? (e) Which form (223, adult retrospective, or 224, child) filled each DCDQ visit, and who answered the adult form (the export holds no form number and no respondent for it; R154)?
+*Today:* (a) the schema says the patient answers (to verify); (b) a number; (c) the bedtime as written; (d) as written; (e) one schema, the respondent in the label. (D69, D70, D74, O38)
+
+**DM-26. Steps of the years and centres of the new questionnaires.** Nine steps remain with no known cause (D77): the ADI-R totals fall from a median of 21 (2011 to 2013) to 10 to 12 from 2018 in children and adults alike, while the edition of the interview does not change; the ADOS module 3 of the main centre (total 16 in 2017, 8 in 2018, 13 in 2019); the Short Sensory Profile of 2018 to 2020 in both age groups; the median EQ-5D index of adults (0.80 to 0.91 in 2014 and 2015, 0.62 to 0.70 from 2019); the GAF of adults (52 in 2020 to 2022, 60 from 2024); the SRS of children (78 in 2014, 77 to 93 from 2022); the ASRS and the GSQ of centre D (median total 35 against 40 to 45, 63 against 74 to 81); the PRISE-M (median total 2 in centre B, 13 in C); and the BRIEF, the ADHD-RS and the SRS of children in centre C, which holds the years to 2015 and reads lower than centre A (140 against 160, 19 against 26, 85 against 92). Is each the case mix, the rater, or a change of setting (a form, a script, a way of filling) that the centres know?
+*Today:* delivered as recorded; the notes of the schemas carry the steps and the schemas are `reviewed` all the same (a documented step with no known cause does not block). (D77, O37)
+
 ## 3. For the principal investigator
 
 **PI-1. Were the wrong stored scores used?** The ADI-R totals, the SRS of a relative,
-the ADOS module 4 sub-scores, the PSQI and the CTQ have been stored with a wrong
+the ADOS module 4 sub-scores, the MARS total (all four written by the export), the PSQI, the CTQ, the STAIC state and the BVAQ factors before 2025 (written by the scripts of the forms)
+have been stored with a wrong
 formula for years. Have they been used in a publication or in a clinical report? The
 corrected values are in `data`; the stored ones can be delivered next to them on
 request.
@@ -354,6 +403,9 @@ CDI and BDI-II, BRIEF and BRIEF-A, WISC and WAIS). Is that the wanted reading?
 CCC-2 scaled scores and the ADOS comparison score are delivered as stored: they need
 norm tables that the project does not hold. Should the tables be obtained?
 
+**PI-5. Published sources and keys of the old forms.** The forms of the old set were identified from their wording, and the published source is not read for several: the criteria of the MCDD, the tic and obsessive-compulsive checklists (Yale-style), the THADA, the DCDQ'07 (sub-scales, age range of 5 to 15 years), the TCI edition with 125 items, the Attachment Style Questionnaire (Feeney and others, 1994, 40 items, or another), the key of the Social Anhedonia Scale (`anh_score` is not the plain sum of its 40 items on any of 4 visits), the grouping of the 24 LSAS situations (12 and 12 on the form and in the French validation; 13 and 11 in some English literature?). The pilot BIS is delivered with the four scores of BP: should ASP deliver the cognitive, behavioural and general scores too (they follow 5 - value, where the BP ones are 1 higher)?
+*Today:* the wording of the forms, no source asserted; the LSAS follows the form. (D67, D71, D74, O38)
+
 ## Added by the audit of 2026-11-14
 
-Eight questions, in PROGRESS O17: the rule behind the scores typed without their items (one centre per instrument), the SRS adult key, the EQ item 57, the years of education, the relative codes of the family history, the two copies of the WAIS-IV indices, the opening year of the first centre, and the column `cmdosu`.
+Eight questions, in PROGRESS O17: the rule behind the scores typed without their items (one centre per instrument; answered in part on 2026-11-20: they are typed in the Manual mode of the forms, DM-24), the SRS adult key (answered: it follows the wording), the EQ item 57 (answered: a translation effect, the key is kept), the years of education, the relative codes of the family history, the two copies of the WAIS-IV indices, the opening year of the first centre, and the column `cmdosu`.

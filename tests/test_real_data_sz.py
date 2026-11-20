@@ -156,24 +156,55 @@ def test_biology(qc):
 
 def test_auto_questionnaires(result, qc):
     tab = qc[qc["tab"] == "AUTO-QUESTIONNAIRE"]
-    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (475, 21, 0)
-    for name in ["ctq_total", "eq5d_index", "fagerstrom_total", "wurs_sum25", "sqol_index", "sqol_resilience"]:
+    # 475 -> 485 in the auto-questionnaires review (D82-D91): the S-QoL items 17 and 18, the psychological dimension and the index are
+    # no longer delivered (-4), and the seven DSM-5 forms gain two criteria counts each (+14).
+    assert (len(tab), tab["instrument"].nunique(), tab["unknown_code"].sum()) == (485, 21, 0)
+    for name in ["ctq_total", "eq5d_index", "fagerstrom_total", "wurs25_total", "sqol_resilience"]:
         assert qc.loc[name, "score_mismatch"] == 0, name
-    counts = (qc.loc["ctq_total", "n_valid"], qc.loc["eq5d_index", "n_valid"], qc.loc["fagerstrom_total", "n_valid"], qc.loc["wurs_sum25", "n_valid"])
+    counts = (qc.loc["ctq_total", "n_valid"], qc.loc["eq5d_index", "n_valid"], qc.loc["fagerstrom_total", "n_valid"], qc.loc["wurs25_total", "n_valid"])
     assert counts == (2166, 3909, 1981, 295)
+    # The CTQ denial score is the strict count of its three items, the same rule in the four cohorts (D82): the stored score counts a blank item as 0,
+    # so 43 values are gained (the stored score is missing where the three items are there) and 20 are lost (a stored score with one item blank).
+    denial = qc.loc["ctq_denial"]
+    assert (denial["n_valid"], denial["score_mismatch"], denial["score_not_recomputed"]) == (2191, 2, 20)
     assert (qc.loc["mars_total", "n_valid"], qc.loc["mars_total", "score_mismatch"]) == (4266, 2)
-    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unparsed"]) == (2960, 106, 26)
-    assert (qc.loc["birchwood_total", "n_valid"], qc.loc["birchwood_total", "score_mismatch"]) == (4244, 5)
-    # S-QoL: items 17 and 18 hold only three of their five answers; the stored dimension is delivered.
-    assert (qc.loc["sqol16", "n_valid"], qc.loc["sqol17", "n_valid"], qc.loc["sqol18", "n_valid"]) == (4267, 2734, 2784)
-    assert set(result.data["sqol17"].dropna()) == {2.0, 4.0, 5.0}
-    assert (qc.loc["sqol_psychological_wellbeing", "n_valid"], qc.loc["sqol_index", "n_valid"]) == (3506, 3033)
+    # PSQI: 35 totals gained (component 5 is computed from the items, a blank 5j counts 0), the latency is no longer winsorised (D83).
+    assert (qc.loc["psqi_total", "n_valid"], qc.loc["psqi_total", "score_mismatch"], qc.loc["psqi_latency", "unparsed"]) == (2995, 106, 26)
+    assert (qc.loc["psqi_disturbances", "n_valid"], qc.loc["psqi_disturbances", "score_mismatch"], qc.loc["psqi_dysfunction", "n_valid"], qc.loc["psqi_dysfunction", "score_mismatch"]) == (3161, 0, 3199, 0)
+    assert qc.loc["psqi_latency", "winsorised"] == 0 and qc.loc["psqi10f", "n_valid"] == 171
+    assert "psqi10e_text" not in result.data.columns and "psqi_disturbances_stored" not in result.data.columns
+    # Birchwood: a score typed with no item is delivered as stored (D86): 36, 32, 39 and 24 visits.
+    assert (qc.loc["birchwood_total", "n_valid"], qc.loc["birchwood_total", "score_mismatch"]) == (4268, 5)
+    assert [qc.loc["birchwood_" + name, "score_as_stored"] for name in ["symptoms", "illness", "treatment", "total"]] == [36, 32, 39, 24]
+    # S-QoL: items 17 and 18 are read with the wrong labels by the export, so they, the stored psychological dimension and the index are not
+    # delivered (D87, request R150); the seven other dimensions gain 671 cells with min_items (the mean of the items present, one missing at most).
+    for name in ["sqol17", "sqol18", "sqol_psychological_wellbeing", "sqol_index"]:
+        assert name not in result.data.columns and name not in qc.index, name
+    assert qc.loc["sqol16", "n_valid"] == 4267
+    dimensions = ["sentimental_life", "self_esteem", "family", "friends", "autonomy", "physical_wellbeing", "resilience"]
+    assert [qc.loc["sqol_" + name, "n_valid"] for name in dimensions] == [4195, 4331, 4304, 4247, 4321, 4324, 4277]
+    assert [qc.loc["sqol_" + name, "score_not_recomputed"] for name in dimensions] == [0] * 7
     assert (qc.loc["stori_stage1", "n_valid"], qc.loc["stori_stage1", "score_mismatch"]) == (3089, 2)
     assert (qc.loc["ephp_total", "n_valid"], qc.loc["ephp_total", "score_mismatch"], tab.loc[tab["instrument"] == "ephp", "missing_code"].sum()) == (1557, 4, 377)
     assert (qc.loc["ybocs_total", "n_valid"], qc.loc["ybocs_total", "score_mismatch"], qc.loc["sogs_total", "n_valid"]) == (281, 28, 122)
+    # SOGS: the 11 yes/no items 16a to 16k are 0 after a "no" to question 16 (asked_if, D88): 132 visits, 1,430 cells gained, 143 answered in all.
+    sogs16 = ["sogs16" + letter for letter in "abcdefghijk"]
+    assert int((result.data["sogs16"] == 0).sum()) == 132 and (result.data.loc[result.data["sogs16"] == 0, sogs16] == 0).all().all()
+    assert [qc.loc[name, "n_valid"] for name in sogs16] == [143] * 7 + [142] + [143] * 3
     assert (tab.loc[tab["instrument"] == "presenteeism", "out_of_range"].sum(), tab.loc[tab["instrument"] == "physical_activity", "out_of_range"].sum()) == (13, 4)
+    # Physical activity: hours and minutes of a duration are hidden by the number of days (D85): 7 cells typed under 0 days or an empty number.
+    assert tab.loc[tab["instrument"] == "physical_activity", "not_shown"].sum() == 7
     # Seven substances, the same twelve criteria; "do not know" is a missing code.
     assert (qc.loc["alcohol_larger_amounts", "n_valid"], qc.loc["alcohol_larger_amounts", "missing_code"], qc.loc["heroin_tolerance", "n_valid"]) == (2035, 9, 38)
+    # The stems of three forms are sedative_, opiate_ and other_substance_ (D90, as on the SUBSTANCES tab); no value changes.
+    assert [qc.loc[name, "n_valid"] for name in ["sedative_larger_amounts", "opiate_larger_amounts", "other_substance_larger_amounts"]] == [100, 52, 82]
+    assert not [name for name in result.data.columns if name.startswith(("sedatives_", "opiates_", "other_larger"))]
+    # The 14 criteria counts (D90): the number of yes among the eleven criteria a to k (all eleven needed), ever and in the last 12 months.
+    substances = ["alcohol", "cannabis", "cocaine", "heroin", "opiate", "sedative", "other_substance"]
+    criteria = qc.loc[[f"{name}_criteria_count{suffix}" for name in substances for suffix in ["", "_12m"]]]
+    assert criteria["n_valid"].tolist() == [1960, 1945, 1129, 1113, 175, 173, 37, 37, 52, 52, 94, 94, 78, 78]
+    assert (int(criteria["n_valid"].sum()), criteria["min"].min(), criteria["max"].max(), criteria["out_of_range"].sum()) == (7017, 0, 11, 0)
+    assert criteria[["score_mismatch", "score_not_recomputed"]].sum().sum() == 0
 
 
 def test_neuropsychology_first_part(result, qc):

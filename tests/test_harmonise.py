@@ -547,27 +547,6 @@ def test_prolactin_unit_follows_the_centre_and_the_period():
     assert pd.isna(unit[27]) and unit[28] == "ng/mL"
 
 
-def test_qids_total_takes_the_highest_item_of_a_symptom():
-    items = ["qidsr1" + str(number).zfill(2) for number in range(1, 17)]
-    rows = [[0] * 16,
-            [3, 1, 0, 2] + [1] + [0, 2, 1, 0] + [1, 1, 1, 1, 1] + [2, 3],
-            [1] * 15 + [np.nan]]
-    total = custom.qids_total(pd.DataFrame(rows, columns=items, dtype=float))
-    assert total[0] == 0
-    assert total[1] == 3 + 1 + 2 + 5 + 3               # sleep, item 5, appetite or weight, items 10 to 14, psychomotor
-    assert pd.isna(total[2])                           # one item is missing
-
-
-def test_qids_total_needs_one_answer_of_each_appetite_and_weight_pair():
-    items = ["qidsr1" + str(number).zfill(2) for number in range(1, 17)]
-    rows = [[1, 1, 1, 1] + [1] + [np.nan, 2, 3, np.nan] + [1, 1, 1, 1, 1] + [1, 1],     # item 7 and item 8, as the form asks
-            [1, 1, 1, 1] + [1] + [2, 1, np.nan, np.nan] + [1, 1, 1, 1, 1] + [1, 1],     # no weight item
-            [1, 1, 1, 1] + [1] + [np.nan, np.nan, 0, 0] + [1, 1, 1, 1, 1] + [1, 1]]     # no appetite item
-    total = custom.qids_total(pd.DataFrame(rows, columns=items, dtype=float))
-    assert total[0] == 1 + 1 + 3 + 5 + 1
-    assert total[1:].isna().all()
-
-
 def stai_answers(rows):
     """Twenty stored STAI answers per visit: the two given answers, then the first one again."""
     table = pd.DataFrame([[first, second] + [first] * 18 for first, second in rows], dtype=float)
@@ -591,16 +570,6 @@ def test_stai_shift_is_missing_when_a_centre_used_two_codings_in_a_year():
     values = stai_answers([(0, 3), (1, 4), (1, 3)])
     keys = pd.DataFrame({"siteid": ["01"] * 3, "visit_date": pd.to_datetime(["2015-03-01"] * 3)})
     assert pd.isna(custom.stai_shift(values, keys)[2])
-
-
-def test_shaps_counts_the_items_answered_disagree():
-    items = [f"shaps{number:02d}" for number in range(1, 15)]
-    rows = [[3] * 14, [0] * 14, [1, 0] + [2] * 12, [2, 2, 0, 3, 3, 0, 2, 0, 3, 0, 0, 0, 0, 0], [0] * 13 + [np.nan]]
-    values = pd.DataFrame(rows, columns=items, dtype=float)
-    assert list(custom.shaps_total(values)[:4]) == [0, 14, 2, 8]
-    assert pd.isna(custom.shaps_total(values)[4])                         # one item is missing
-    # The EMR counts "agree" on items 2, 4, 5, 7 and 9 and "disagree" on the nine others.
-    assert list(custom.shaps_total_as_stored(values)[:4]) == [5, 9, 5, 13]
 
 
 def test_psqi_components_follow_the_published_classes():

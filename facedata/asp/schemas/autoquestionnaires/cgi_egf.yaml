@@ -2,21 +2,36 @@ instrument: cgi_egf
 title: "CGI severity and Global Assessment of Functioning"
 tab: autoquestionnaires
 section: clinician ratings
-status: draft
+status: reviewed
 notes: >
   The severity item of the Clinical Global Impression (1 to 7) and the Global
-  Assessment of Functioning (EGF, 1 to 100): 1252 and 1226 inclusion visits,
-  120 and 125 follow-up visits, from 2013 to 2026. Children and adults.
+  Assessment of Functioning (EGF, 1 to 100): 1,249 and 1,226 inclusion visits,
+  119 and 125 follow-up visits, from 2011 to 2026. Children and adults.
 
-  Same two ratings as in FACE BP, SZ and DR, in other columns (gravmdi,
-  egfval), delivered under the same names. The improvement and the efficacy
-  index of the CGI are not in this extraction.
+  Same two ratings as in FACE BP, SZ and DR, in other columns (gravmdi, egfval),
+  delivered under the same names. The improvement and the efficacy index of the
+  CGI are not in this extraction. The EGF is typed in a box that takes digits
+  only, so no band ("51-60") arrives and none is read as a middle value; a 0 is
+  read as not recorded (none in this extraction), as the 0 of the CGI is "not
+  assessed" in the thesaurus.
 
   cgi_changed and gaf_changed are the boxes "changed since the last visit" of
-  the follow-up form. At follow-up the severity is filled on 72 of the 73
-  visits where the box is "yes" and on 48 of the 138 where it is "no". The boxes
-  are also filled at the inclusion visit until 2021 (385 visits), as the other
-  boxes of this kind in the old forms (D5); they say nothing there.
+  the follow-up form. At follow-up the severity is filled on 71 of the 73 visits
+  where the box is "yes" and on 48 of the 138 where it is "no". The boxes are
+  also filled at the inclusion visit until 2021 (385 visits), as the other boxes
+  of this kind in the old forms (D5); they say nothing there.
+
+  **Year and centre.** 1 of the 2 variables with a shift value reach 0.5 or more
+  (1 by year, 1 by centre): the severity of the CGI (1 to 7, median 4 in every
+  year but 2016, which is 5, and in every centre but D, 4.5, and F, 5), a median
+  that moves by one level of a seven-level scale. The GAF stands at 0.38 by year
+  and by centre (median 54.5 to 60). Both follow the age mix: children are 100%
+  of the visits of centre A, 42% to 57% of B and C, 2% of D and none of E; the
+  GAF median is 59 among the children and 55 among the adults, and it moves
+  inside each group: among adults 52 to 52.5 in 2020 to 2022 against 57 to 63 in
+  2014 to 2018 and 60 from 2024 (year shift 0.67), among children 50 in 2013 and
+  2016 against 55 to 60 from 2018 (0.64). Steps with no known cause (the case
+  mix or the rater; the GAF is typed in a box that takes digits only).
 
 defaults: {type: item}
 
@@ -33,4 +48,5 @@ variables:
     type: number
     range: [1, 100]
     winsor: false
+    missing: {"0": not_recorded}
   gaf_changed: {column: egfchang, type: category, label: "GAF changed since the last visit (box of the follow-up form)", codes: {"0": "no", "1": "yes"}}

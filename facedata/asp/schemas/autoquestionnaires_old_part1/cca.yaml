@@ -2,36 +2,57 @@ instrument: cca
 title: "Communication Checklist - Adult (CC-A)"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Seventy items answered from 0 to 3 by a relative and three composites:
-  195 inclusion visits (1 of children) and 40 follow-up visits, from 2013 to 2020. It belongs to the old set of forms.
+  Seventy items answered from 0 to 3 (how often the behaviour happens: 0 less
+  than once a week or never, 1 about once a week, 2 once or twice a day, 3
+  several times a day or continually) and three composites: 237 visits, 196
+  inclusion visits (1 of a child) and 41 follow-up visits, from 2009 to 2020.
+  The composites are stored on 235 of them; 2 hold items and the questions of
+  the adult form only. It belongs to the old set of forms.
 
   Identified from its seventy items and its three composites as the
-  Communication Checklist - Adult (Whitehouse and Bishop, 2009), sure.
+  Communication Checklist - Adult (Whitehouse and Bishop, 2009), sure. The items
+  of the form are worded in the first person ("I mix up ...", "people tell me
+  ..."), which reads as a self-report; the earlier note said the checklist is
+  answered by a relative, which is to verify.
 
-  **Two forms in the same seventy item columns, found in the data.** 106 visits
-  hold the ten scale scores of the Children's Communication Checklist (106 of
-  them are children) and 235 hold the three composites of the Communication
-  Checklist for adults (234 are adults); none holds both. The two forms are
-  two instruments (ccc2 and cca) with their own columns, and
-  communication_checklist_form says which one a visit holds. 21 visits hold
-  items and no score of either form: their form cannot be told and they are
-  not delivered (version_unknown).
+  **Two forms in the same seventy item columns, found in the data.** The form of
+  a visit is read from what only one form has (`version`, the first match wins;
+  ccc2.yaml gives the rule and the counts): the ten scale scores of the
+  children's checklist or the questions of the children's form make a CCC-2
+  visit (123 visits); the three composites of this checklist or the three
+  questions that only the adult form asks (age at the end of the studies, work,
+  speech therapist) make a CC-A visit (237 visits, 2 more than the 235 with a
+  composite). The language at home is asked in both forms and tells nothing. 2
+  visits hold items and nothing that gives the form (version_unknown, not
+  delivered).
 
   The three composites, each fitted on the data of this form:
 
-  - language structure: 21 items, 3 of the last twenty reversed, equal to the stored score on 220 of 220 visits.
-  - pragmatic skills: 22 items, equal to the stored score on 220 of 220 visits.
-  - social engagement: 27 items, 17 of the last twenty reversed, equal to the stored score on 220 of 220 visits.
+  - language structure: 21 items, 3 of the last twenty reversed, equal to the stored score on 227 of 227 visits that hold the 21 items and the score.
+  - pragmatic skills: 22 items, equal to the stored score on 232 of 232 visits.
+  - social engagement: 27 items, 17 of the last twenty reversed, equal to the stored score on 224 of 224 visits.
+
+  The stored composites exist on 233, 235 and 230 visits; on 6, 3 and 6 of them
+  an item is missing and the score cannot be recomputed
+  (`score_not_recomputed`).
+
+  **Year and centre.** 37 of the 73 variables reach 0.5 or more (31 by year, 17 by centre): items
+  answered 0 to 3 whose median moves by one unit, and none of the three composites (0.28 to 0.35
+  by year, 0.00 to 0.20 by centre). The visits are those of adults of two centres (D 161, E 69, C
+  7). Between years 1 of the 73 variables differs beyond chance (permutation test, p below 0.01);
+  between centres 7 do, 5 of them among adults: the pragmatic skills composite (median 20 in D and
+  13 in E), three of its items (5, 26 and 35) and one item of social engagement (39), a habit of
+  the centre.
 
   An instrument of the ASP cohort only.
 
 version:
   name: communication_checklist_form
   filled:                            # tested top to bottom, first match wins
-    ccc2: [comm_speech, comm_speechs, comm_speechp, comm_syntax, comm_syntaxs, comm_syntaxp, comm_semantic, comm_semantics, comm_semanticp, comm_coher, comm_cohers, comm_coherp, comm_inapp, comm_inapps, comm_inappp, comm_stereo, comm_stereos, comm_stereop, comm_context, comm_contexts, comm_contextp, comm_nverb, comm_nverbs, comm_nverbp, comm_social, comm_socials, comm_socialp, comm_interst, comm_intersts, comm_interstp, comm_gccs, comm_gccp, comm_sidcs]
-    cca: [comm_ls, comm_ps, comm_se]
+    ccc2: [comm_speech, comm_speechs, comm_speechp, comm_syntax, comm_syntaxs, comm_syntaxp, comm_semantic, comm_semantics, comm_semanticp, comm_coher, comm_cohers, comm_coherp, comm_inapp, comm_inapps, comm_inappp, comm_stereo, comm_stereos, comm_stereop, comm_context, comm_contexts, comm_contextp, comm_nverb, comm_nverbs, comm_nverbp, comm_social, comm_socials, comm_socialp, comm_interst, comm_intersts, comm_interstp, comm_gccs, comm_gccp, comm_sidcs, surd, phras, relenf, temps]
+    cca: [comm_ls, comm_ps, comm_se, arretud, orthopho, travail]
 
 defaults: {type: item, range: [0, 3], versions: [cca]}
 

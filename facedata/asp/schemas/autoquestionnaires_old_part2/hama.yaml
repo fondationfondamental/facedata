@@ -2,9 +2,9 @@ instrument: hama
 title: "Hamilton Anxiety Rating Scale (HAM-A)"
 tab: autoquestionnaires_old_part2
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  Fourteen items rated from 0 to 4 and a total: 277 inclusion visits (55 of children) and 82 follow-up visits, from 2013 to 2021.
+  Fourteen items rated from 0 to 4 and a total: 277 inclusion visits (55 of children) and 82 follow-up visits, from 2009 to 2021 (357 of the 359 from 2013).
   It belongs to the old set of forms.
 
   Identified from its name and its fourteen items as the Hamilton Anxiety
@@ -13,6 +13,17 @@ notes: >
   The scores, each fitted on the data:
 
   - HAM-A total (0 to 56): the sum of 14 items, equal to the stored score on 354 of 354 complete visits; typed without its items on fewer than five visits, where it is kept as stored.
+
+  The form has no age limit: 119 of the 359 visits with an item are of patients
+  under 18 (the youngest is 6 years old).
+
+  **Year and centre.** 8 of the 15 variables reach 0.5 or more (8 by year, 6 by centre), the total
+  at 0.71 by year and 0.36 by centre. The age mix explains the first part: children are 90% of the
+  visits of centre C, 1% of D and none of E, and 74% of the visits of 2013 fall to 22% in 2016 and
+  none from 2019; the median total is 1.5 among children and 10.5 among adults (11 in D and in E).
+  Among adults the median is 6 (2014), 10.5, 9.5, 12 (2017), 4.5 (2019) and 16 (2020), and inside
+  centre D alone 5 (2013), 17 (2016), 5 (2019) and 20 (2020; 21 visits in each of the last two
+  years): a step with no known cause (the rater or the case mix; no change of the form is known).
 
   An instrument of the ASP cohort only.
 
@@ -38,6 +49,7 @@ variables:
 scores:
   hama_total:
     label: "HAM-A total (0 to 56)"
+    range: [0, 56]
     sum: [hama01, hama02, hama03, hama04, hama05, hama06, hama07, hama08, hama09, hama10, hama11, hama12, hama13, hama14]
     compare: hama_total_stored
     otherwise: hama_total_stored

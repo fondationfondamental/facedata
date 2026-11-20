@@ -1,20 +1,41 @@
 instrument: repetitive_behaviours
-title: "Repetitive behaviours (section of the old forms)"
+title: "Sensations that come before repetitive behaviours (section 'cognition and repetitive acts' of the old forms)"
 tab: autoquestionnaires_old_part1
 section: old questionnaires
-status: draft
+status: reviewed
 notes: >
-  A section of the old forms on repetitive behaviours: for each kind of
-  behaviour, whether it is present (0 or 1), a description in free text, its
-  frequency and its severity; then the main compulsion with its frequency,
-  severity and age of onset. 182 inclusion visits (44 of children) and 47 follow-up visits, from 2013 to 2020.
+  The section 'cognition and repetitive acts' of the old forms (form 218), which
+  is not a repetitive behaviour scale (the RBS-R is rbs_r.yaml) and stores no
+  score. For each kind of sensation that comes before repetitive behaviours it
+  records whether the sensation is present (0 or 1), before which behaviours
+  (free text), its frequency (0 never to 4 always) and its severity (0 none to 4
+  extreme): 'just right' feelings of four sensory modalities (visual, tactile,
+  auditory, other), generalised inner tension or energy, an inner feeling of
+  incompleteness, other sensations, unpleasant physical sensations (with their
+  sensory modality and location), physical anxiety (13 boxes, the number of
+  symptoms and the most severe one) and a plain need to do the behaviours. Then
+  the main repetitive behaviour (free text) with its frequency, severity and age
+  of onset. 229 visits: 182 inclusion visits (44 of children) and 47 follow-up
+  visits, from 2012 to 2020. A visit after the change of set did not ask it: not
+  missing (D3 of PROGRESS.md).
 
-  The thesaurus calls the section "cognition and repetitive acts": the
-  sensations that come before repetitive behaviours ('just right' feelings,
-  tension, incompleteness, physical sensations, physical anxiety), each with
-  its presence, the behaviours it comes before, its frequency (0 never to 4)
-  and its severity (0 none to 4 extreme). A detail is filled only where the
-  behaviour is present.
+  A detail (frequency, severity) is filled only where the sensation is present:
+  none of the 9 questions with a frequency and a severity has a detail under a
+  no or an empty answer, so nothing is to blank and no `shown_if` is written.
+  `rep3syma`, the most severe symptom at present, is a number typed in a text
+  box: 0 to 13 on the data (the form does not say whether it numbers the 13
+  boxes).
+
+  **Year and centre.** 8 of the 59 variables reach 0.5 or more (6 by year, 6 by centre; 20
+  variables have a group of 20 values). A step with no known cause: five of the ten yes-or-no
+  boxes hold only 0 from the end of 2018: the 'just right' auditory (A.3) and unspecific (A.4)
+  sensations, the other perceptions (D), the physical anxiety (3) and the plain need to do the
+  behaviours (4). Their last yes is dated January 2018 (3), August 2018 (A.4 and D), December 2018
+  (A.3) and January 2019 (4), and they are answered 0 on 50 to 54 visits of 2019 and 2020 (1 yes
+  in 54 for the box 4), where they were yes on 17% to 51% of the visits of 2013 to 2016 (A.3 20%,
+  A.4 23%, D 17%, 3 31%, 4 51%). The five other boxes keep their yes (13% to 55% of the visits of
+  2019 and 2020). The visits from 2019 are almost all of centre D (54 of 55), so the centre and
+  the period cannot be told apart; the form shows no change that explains it.
 
   An instrument of the ASP cohort only.
 
@@ -69,7 +90,7 @@ variables:
   rep3sym_12: {column: rep3sym_12, type: item, label: "Sensory phenomena: physical anxiety, difficulty swallowing or lump in the throat (box) (0 no, 1 yes)", range: [0, 1]}
   rep3sym_13: {column: rep3sym_13, type: item, label: "Sensory phenomena: physical anxiety, other symptom (box) (0 no, 1 yes)", range: [0, 1]}
   rep3symn: {column: rep3symn, type: number, label: "Sensory phenomena: physical anxiety, number of symptoms", range: [0, 200], winsor: false}
-  rep3syma: {column: rep3syma, type: number, label: "Sensory phenomena: physical anxiety, most severe symptom at present", range: [0, 200], winsor: false}
+  rep3syma: {column: rep3syma, type: number, label: "Sensory phenomena: physical anxiety, most severe symptom at present (a number typed, 0 to 13)", range: [0, 13], winsor: false}
   rep4: {column: rep4, type: item, label: "Sensory phenomena: only a need to do the behaviours, present (0 no, 1 yes)", range: [0, 1]}
   rep4pr: {column: rep4pr, type: text, label: "Sensory phenomena: only a need to do the behaviours, before which behaviours, free text"}
   rep4fre: {column: rep4fre, type: item, label: "Sensory phenomena: only a need to do the behaviours, frequency (0 never to 4)", range: [0, 4]}

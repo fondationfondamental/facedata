@@ -2,7 +2,7 @@ instrument: mars
 title: Medication Adherence Rating Scale (MARS, 10 items)
 tab: AUTO-QUESTIONNAIRES
 section: MARS
-status: draft
+status: reviewed
 notes: >
   The BP scale, with the answers turned to the BP coding, and without the
   question added in 2021 (mars11). Ten yes/no questions on taking the
@@ -19,21 +19,30 @@ notes: >
   (6% to 31%). The ten items are delivered on the BP coding, 1 = no and 0 =
   yes (written as codes), so that they mean the same in the two cohorts.
 
-  Total: the stored one is wrong, not delivered. The total gives one point
-  for "no" to items 1 to 6, 9 and 10 and one point for "yes" to items 7 and
-  8: 0 to 10, higher is a better adherence. The EMR applies the BP formula
-  to the opposite coding, so the stored total (mars_) counts the answers
-  that show poor adherence: its median is 3, against 8 in BP. It is
-  reproduced exactly by the twin score mars_total_as_stored (10 minus the
-  total; no mismatch on 1,026 visits), which is not delivered. The
-  delivered total has a median of 7 (quartiles 6 and 8; BP 8, 6 and 9) and
-  falls when depression rises (r = -0.38 with the QIDS). Open question O17.
+  Total: the stored one is wrong, not delivered, and the error is the
+  export's, not the EMR's. The total gives one point for "no" to items 1 to 6,
+  9 and 10 and one point for "yes" to items 7 and 8: 0 to 10, higher is a
+  better adherence. The form's own script (form 220) turns items 1 to 6, 9 and
+  10 for the 1 = yes coding and is right. The score step of the export (the
+  definition mars.yaml) applies the BP formula, which turns items 7 and 8
+  only, to the columns of this cohort, whose coding is the opposite of BP's,
+  and writes the result in mars_: the stored total counts the answers that
+  show poor adherence, and its median is 3, against 8 in BP. It is reproduced
+  exactly by the twin score mars_total_as_stored (10 minus the total; no
+  mismatch on 1,026 visits), which is not delivered. The delivered total has a
+  median of 7 (quartiles 6 and 8; BP 8, 6 and 9) and falls when depression
+  rises (r = -0.38 with the QIDS). Open question O17. The export needs a
+  separate entry for this cohort, with items 1 to 6, 9 and 10 turned (request
+  R146).
 
-  The break of 2018 (open question O1). 90% and 87% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 40% to 48% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  The break of 2018 (open question O1, answered by the application). 90% and
+  87% of the inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the
+  scale, 40% to 48% in 2018 to 2020, 2021 to 2023 and 2024 to 2026. The MARS
+  (form 220) is one of the forms that the simplified visit leaves out
+  (visite.SVUPDES = 1, config/globale2.php, DESTVISIMP; PROGRESS.md D55): an
+  empty scale after 2018 is "not asked" on a simplified visit, not "no" and
+  not 0. The extraction does not say which visits were simplified (request
+  R127 and R155: the svupdes column; question M69).
 
 defaults: {type: item, range: [0, 1]}
 

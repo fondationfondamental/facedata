@@ -1,18 +1,23 @@
 instrument: stai_ya
-title: State-Trait Anxiety Inventory, form Y-A (state anxiety, 20 items)
+title: State-Trait Anxiety Inventory, form Y-A (state anxiety right now, 20 items)
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire STAI Y_A
 status: reviewed
 notes: >
-  Twenty items on how the patient feels right now. Filled at every visit.
+  Twenty items on how the patient feels right now (state anxiety, not the
+  trait). Filled at 89% to 95% of the visits other than the screening visit,
+  in every period (89% in 2019-21 and 2022-23, 91% from 2024); none of the
+  3,987 screening visits holds it.
 
   The items are stored 1 to 4 (1 = no, 4 = yes). The dictionary says 0 to 3;
   no cell holds a 0.
 
   Ten items describe calm (1, 2, 5, 8, 10, 11, 15, 16, 19 and 20) and are
   reversed in the total (5 - value), so that a higher total is more anxiety.
-  The total goes from 20 to 80. The stored total (staya) is exactly this sum
-  in every row where both exist (16,678).
+  The total goes from 20 to 80. The stored total (staya) is written by the
+  score step of the export (D120), not by the application, and is exactly
+  this sum in every row where both exist (16,678): it checks the items and
+  the export's formula.
 
 defaults: {type: item, range: [1, 4]}
 
@@ -47,4 +52,5 @@ scores:
           staya15, staya16, staya17, staya18, staya19, staya20]
     reverse: [staya01, staya02, staya05, staya08, staya10, staya11, staya15,
               staya16, staya19, staya20]
+    range: [20, 80]
     compare: staya_stored

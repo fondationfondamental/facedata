@@ -2,35 +2,55 @@ instrument: bvaq
 title: "Bermond-Vorst Alexithymia Questionnaire, 20 items"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
   Twenty items answered from 1 to 5 and eight scores, at the inclusion visit:
-  440 visits, from 2019 to 2026. It belongs to the new set of forms. It is filled by adults only.
+  611 visits, from 2018 to 2026, and 5 follow-up visits (616 in all). It belongs
+  to the new set of forms. It is filled by adults only.
 
   Identified from its name and its twenty items as a twenty-item form of the
-  Bermond-Vorst Alexithymia Questionnaire, likely. Its five dimensions have
-  four items each, and the eight scores look like the five dimensions, two
-  components and the total: the sum of the first five scores is the last one
-  on almost every visit.
+  Bermond-Vorst Alexithymia Questionnaire, likely: five dimensions of four items
+  each (verbalising, fantasising, identifying, emotionalising, analysing), two
+  components (affective and cognitive) and the total. The published
+  questionnaire has 40 items, so this short form and its key are to verify
+  against the publication.
 
-  **The scores do not follow the items.** No score is a sum of the twenty
-  items, reversed or not, and none is related to them by more than a
-  correlation of 0.25, although items and scores are filled on the same visits
-  (441 visits hold both). Either the items are not exported in the order of the
-  form, or the scores come from other answers (open question O12). Until this
-  is settled the items and the scores are both delivered as stored, and the
-  scores are not to be read as scores of these items.
+  **The scores are computed from the items.** The items are exported in the
+  order of the form (O12 (4) is answered). The script of the form
+  (`336_score.js`, lines 32-230) gives the stored scores from the items on every
+  visit since 2025. The key delivered is that of the script: verbalising is the
+  items 1, 6, 11 and 16 with 6 and 11 reversed; fantasising the items 2, 7, 12
+  and 17 with 7 and 17 reversed; identifying the items 3, 8, 13 and 18 with 8
+  and 18 reversed; emotionalising the items 4, 9, 14 and 19 with 9 and 19
+  reversed; analysing the items 5, 10, 15 and 20 with 10 and 20 reversed
+  (reversed as 6 minus the answer, 4 to 20 each). The affective component is
+  fantasising plus emotionalising, the cognitive component verbalising plus
+  identifying plus analysing, and the total (20 to 100) their sum. Each score is
+  compared with the stored one, and where no item is recorded the typed score is
+  delivered as stored (172 visits for the total, score_as_stored).
 
-  The scores, each fitted on the data:
+  **Before 2025 the stored factor scores were inverted.** On 289 of the 441
+  visits with the twenty items the stored factors equal 24 minus the right sum
+  (the sums of the key above): the visits dated before the form was corrected, a
+  date that differs by centre between 2021 and 2026 (the last inverted visit is
+  dated 2025-01-09). This is why the earlier version of this schema found that
+  no sum of the items reproduced the scores, and kept the factors as stored. The
+  scores are now recomputed and delivered: 262 to 272 visits per factor differ
+  from the stored value (349 for the affective component, 360 for the cognitive
+  one, 296 for the total), and the delivered scores follow the key of the script
+  on every visit. The scores typed without items (172 visits, two centres) are
+  in the right direction, but on 71 of them the stored affective and cognitive
+  components are exchanged; they are kept as stored and not corrected.
 
-  - BVAQ verbalising (factor 1: difficulty putting emotions into words): delivered as stored (603 visits); no sum of the items reproduces it.
-  - BVAQ fantasising (factor 2: reduced fantasy life): delivered as stored (603 visits); no sum of the items reproduces it.
-  - BVAQ identifying (factor 3: difficulty identifying emotions): delivered as stored (603 visits); no sum of the items reproduces it.
-  - BVAQ emotionalising (factor 4: low emotional reactivity): delivered as stored (603 visits); no sum of the items reproduces it.
-  - BVAQ analysing (factor 5: externally oriented thinking): delivered as stored (603 visits); no sum of the items reproduces it.
-  - BVAQ affective dimensions: delivered as stored (613 visits); no sum of the items reproduces it.
-  - BVAQ cognitive dimensions: delivered as stored (613 visits); no sum of the items reproduces it.
-  - BVAQ total: delivered as stored (614 visits); no sum of the items reproduces it.
+  **Year and centre.** 12 of the 28 variables reach 0.5 or more (10 by year, 11
+  by centre): the 20 items are on a 1 to 5 scale (one level is 1.0 or more of
+  the interquartile range); the eight scores stand at 0.14 to 0.50 by year and
+  0.17 to 0.50 by centre, the total at 0.29 and 0.29. Adults only, 2018 to 2026:
+  the seven years with 20 totals have a median of 52 to 60 with no trend, and
+  the centres 52 (E) to 61.5 (D). The factors that the form stored inverted
+  before 2025 are recomputed here (D62), so that change is not in the delivered
+  values. Centre B types all its 150 totals without items (and H 71%): median
+  55.5 typed against 57 computed. No step.
 
   An instrument of the ASP cohort only.
 
@@ -57,11 +77,58 @@ variables:
   bvaq18: {column: bvaq18, label: "Bermond-Vorst Alexithymia Questionnaire, 20 items, item 18"}
   bvaq19: {column: bvaq19, label: "Bermond-Vorst Alexithymia Questionnaire, 20 items, item 19"}
   bvaq20: {column: bvaq20, label: "Bermond-Vorst Alexithymia Questionnaire, 20 items, item 20"}
-  bvaq_verbalising: {column: bvaq21, type: number, range: [0, 100], winsor: false, label: "BVAQ verbalising (factor 1: difficulty putting emotions into words), as stored"}
-  bvaq_fantasising: {column: bvaq22, type: number, range: [0, 100], winsor: false, label: "BVAQ fantasising (factor 2: reduced fantasy life), as stored"}
-  bvaq_identifying: {column: bvaq23, type: number, range: [0, 100], winsor: false, label: "BVAQ identifying (factor 3: difficulty identifying emotions), as stored"}
-  bvaq_emotionalising: {column: bvaq24, type: number, range: [0, 100], winsor: false, label: "BVAQ emotionalising (factor 4: low emotional reactivity), as stored"}
-  bvaq_analysing: {column: bvaq25, type: number, range: [0, 100], winsor: false, label: "BVAQ analysing (factor 5: externally oriented thinking), as stored"}
-  bvaq_affective: {column: bvaq26, type: number, range: [0, 100], winsor: false, label: "BVAQ affective dimensions, as stored"}
-  bvaq_cognitive: {column: bvaq27, type: number, range: [0, 100], winsor: false, label: "BVAQ cognitive dimensions, as stored"}
-  bvaq_total: {column: bvaq28, type: number, range: [0, 100], winsor: false, label: "BVAQ total, as stored"}
+  bvaq_verbalising_stored: {column: bvaq21, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ verbalising (factor 1: difficulty putting emotions into words), as stored"}
+  bvaq_fantasising_stored: {column: bvaq22, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ fantasising (factor 2: reduced fantasy life), as stored"}
+  bvaq_identifying_stored: {column: bvaq23, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ identifying (factor 3: difficulty identifying emotions), as stored"}
+  bvaq_emotionalising_stored: {column: bvaq24, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ emotionalising (factor 4: low emotional reactivity), as stored"}
+  bvaq_analysing_stored: {column: bvaq25, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ analysing (factor 5: externally oriented thinking), as stored"}
+  bvaq_affective_stored: {column: bvaq26, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ affective dimensions, as stored"}
+  bvaq_cognitive_stored: {column: bvaq27, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ cognitive dimensions, as stored"}
+  bvaq_total_stored: {column: bvaq28, type: number, range: [0, 100], winsor: false, keep: false, label: "BVAQ total, as stored"}
+
+scores:
+  bvaq_verbalising:
+    label: "BVAQ verbalising (4 to 20, higher = more alexithymic)"
+    sum: [bvaq01, bvaq06, bvaq11, bvaq16]
+    reverse: [bvaq06, bvaq11]
+    compare: bvaq_verbalising_stored
+    otherwise: bvaq_verbalising_stored
+  bvaq_fantasising:
+    label: "BVAQ fantasising"
+    sum: [bvaq02, bvaq07, bvaq12, bvaq17]
+    reverse: [bvaq07, bvaq17]
+    compare: bvaq_fantasising_stored
+    otherwise: bvaq_fantasising_stored
+  bvaq_identifying:
+    label: "BVAQ identifying"
+    sum: [bvaq03, bvaq08, bvaq13, bvaq18]
+    reverse: [bvaq08, bvaq18]
+    compare: bvaq_identifying_stored
+    otherwise: bvaq_identifying_stored
+  bvaq_emotionalising:
+    label: "BVAQ emotionalising"
+    sum: [bvaq04, bvaq09, bvaq14, bvaq19]
+    reverse: [bvaq09, bvaq19]
+    compare: bvaq_emotionalising_stored
+    otherwise: bvaq_emotionalising_stored
+  bvaq_analysing:
+    label: "BVAQ analysing"
+    sum: [bvaq05, bvaq10, bvaq15, bvaq20]
+    reverse: [bvaq10, bvaq20]
+    compare: bvaq_analysing_stored
+    otherwise: bvaq_analysing_stored
+  bvaq_affective:
+    label: "BVAQ affective dimension (fantasising + emotionalising)"
+    sum: [bvaq_fantasising, bvaq_emotionalising]
+    compare: bvaq_affective_stored
+    otherwise: bvaq_affective_stored
+  bvaq_cognitive:
+    label: "BVAQ cognitive dimension (verbalising + identifying + analysing)"
+    sum: [bvaq_verbalising, bvaq_identifying, bvaq_analysing]
+    compare: bvaq_cognitive_stored
+    otherwise: bvaq_cognitive_stored
+  bvaq_total:
+    label: "BVAQ total (20 to 100)"
+    sum: [bvaq_affective, bvaq_cognitive]
+    compare: bvaq_total_stored
+    otherwise: bvaq_total_stored

@@ -2,44 +2,60 @@ instrument: ados_module3
 title: "ADOS-2, module 3"
 tab: autoquestionnaires
 section: diagnostic instruments
-status: draft
+status: reviewed
 notes: >
   The twenty-nine items of the module 3 (sections A to E), its algorithm scores,
-  its classification and its comparison score: 648 inclusion visits and
-  149 follow-up visits, from 2013 to 2026; children and adolescents with fluent speech
-  (646 of the inclusion visits are under 18).
+  its classification and its comparison score: 801 visits (652 at inclusion and
+  149 follow-up visits), from 2013 to 2026; children and adolescents with fluent
+  speech (650 of the inclusion visits are under 18).
 
   Identified as the module 3 with its revised algorithm (Gotham and others,
   2007), sure. Social affect is the sum of ten items (A7, A8, A9, B1, B2, B4,
   B7, B9, B10, B11), restricted and repetitive behaviour the sum of four (A4,
-  D1, D2, D4), and the total their sum. A code 3 counts 2, and the codes 7 and
-  8 count 0, as the publication says (the field points). The items are
-  delivered as recorded: **the codes 7 and 8 are not levels**; do not average
-  the items.
+  D1, D2, D4), and the total their sum. A code 3 counts 2, and the codes 7 and 8
+  count 0, as the publication says (the field points). The items are delivered
+  as recorded: **the codes 7 and 8 are not levels**; do not average the items.
 
   **Two editions of the form, found in the data.** The item B8 is the one that
-  the second edition (ADOS-2) added to the module. It is empty on 96 visits
-  that hold the other items (94 of them dated until 2017) and filled on 702: the
+  the second edition (ADOS-2) added to the module. It is empty on 96 visits that
+  hold the other items (94 of them dated until 2017) and filled on 702: the
   first were made with the first edition of the ADOS, the others with the
   ADOS-2. The comparison score, which only the ADOS-2 has, is filled from 2017.
   The items other than B8 are the same and are delivered in the same columns;
   **ados3_b08 is empty on a visit of the first edition**, which tells the two
   apart. The algorithm delivered is the same for both.
 
-  **The stored scores of the first edition count a code 3 as 3.** Where an item
-  of the algorithm is coded 3, the stored total of a visit of the ADOS-2 is the
-  published sum on 121 of 121; the stored total of a visit of the first
-  edition is the published sum on 0 of 21 and the sum with the 3 kept on
-  21 of 21. A stored score is there up to 5 points too high
-  (score_mismatch). The scores delivered follow the publication on every visit.
+  **The stored scores of the first edition count a code 3 as 3, and the cause is
+  the export.** The script of the form counts a 3 as 2 (`281_score.js`); the
+  export sums the raw codes (see the instrument ados). Where an item of the
+  algorithm is coded 3, the stored total of a visit of the ADOS-2 is the
+  published sum on 121 of 121; the stored total of a visit of the first edition
+  is the published sum on 0 of 21 and the sum with the 3 kept on 21 of 21. A
+  stored score is there up to 5 points too high (score_mismatch). The scores
+  delivered follow the publication on every visit. The edition is not a version
+  of the schema: both stay in the same columns (R28), with one revised rule.
 
   The classification follows the cut-offs of the module on the stored total
   (autism from 9, autism spectrum 7 and 8, non-spectrum below: 795 of 797
-  visits). It is delivered as stored; on fewer than five visits of the first edition the
-  corrected total gives another class.
-  The comparison score (1 to 10) is read by the EMR in a table of the manual
-  from the total and the age; it is delivered as stored and is filled from
-  2017 (700 visits).
+  visits). It is delivered as stored; on fewer than five visits of the first
+  edition the corrected total gives another class. The comparison score (1 to
+  10) is read by the form in a table of the manual from the total and the age;
+  it is delivered as stored and is filled from 2017 (700 visits). A defect of
+  the script of the form (`281_score.js`, line 126: an operator precedence)
+  leaves a stale or empty class on 2 of 795 visits of this module.
+
+  **Year and centre.** 18 of the 25 variables reach 0.5 or more (18 by year, 9
+  by centre): the items are whole numbers (0 to 3) and the four scores stand at
+  0.43 to 0.57 by year and 0.00 to 0.25 by centre. The centres do not explain
+  the years: children are 99% of the visits, centre A holds 601 of the 797
+  totals, B 136 and C 60. The step is the year inside centre A: the median total
+  is 10 in 2016, 16 in 2017 (21 visits), 8 in 2018 (74), 13 in 2019 and 10 to 12
+  from 2020, and the comparison score is 5 in 2018 against 6 to 8 in the other
+  years. The edition does not explain it: the median total is 12 on the 96
+  visits of the first edition and 11 on the 701 visits of the ADOS-2, and the
+  cohort moves from one to the other between 2016 and 2018 (3%, 33% then 100% of
+  the totals of the year are ADOS-2). A step with no known cause (the case mix
+  or the rater of one centre).
 
   An instrument of the ASP cohort only.
 

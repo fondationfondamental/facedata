@@ -2,7 +2,7 @@ instrument: mathys
 title: Multidimensional Assessment of Thymic States (MAThyS, 20 items)
 tab: AUTO-QUESTIONNAIRES
 section: MATHYS
-status: draft
+status: reviewed
 notes: >
   The BP schema as it is. Twenty visual scales from 0 to 10, on the last
   week. Filled at inclusion and at every follow-up visit: 1,043 visits. The
@@ -27,16 +27,42 @@ notes: >
   of the items with none reversed. The fifth sub-score, interpersonal
   communication, has no reversed item and never differs, and the stored
   total of the same visits is right. So the reversal was left out of the
-  sub-scores there, and the error is in the stored value, not in ours. In
-  BP the same error covered every visit until 2021, and since 10 November
-  2026 the data managers recalculate the sub-scores; this extraction is of
-  30 October 2026 (open question O14).
+  sub-scores there, and the error is in the stored value, not in ours.
 
-  The break of 2018 (open question O1). 92% and 87% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 44% to 48% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  Cause. The script of the form (141) carries a comment dated 10/12/2018 (10
+  December 2018) saying that it was changed that day "to take the reversed
+  values into account": before it, the sub-scores were summed with none
+  reversed. The 68 visits run from 2013-11-06 to 2018-12-18 and none is
+  later, so they are the visits saved by the old script (open question O14).
+  In BP the same error covered every visit until 2021, and since 10 November
+  2026 the data managers recalculate the sub-scores; this extraction is of
+  30 October 2026.
+
+  Limit: the direction of the form by centre. The key supposes that every
+  centre enters the eight reversed items as the form does. In three centres,
+  in some periods, the eight items go with the twelve others instead of
+  against them: 70 visits of one centre in 2013 to 2015 (the sum of the
+  eight items against the sum of the other twelve: r = +0.29; alpha with the
+  key 0.59), 30 visits of another from 2019 (r = +0.10 to +0.84 by period;
+  alpha 0.50 on the 13 visits of 2019 to 2021) and 15 of a third in 2022 to
+  2023 (r = +0.31; alpha 0.71), about 115 of the 937 visits with the twenty
+  items (12%). Two more centre-periods, 41 visits (r = +0.12; alpha 0.78)
+  and 9, are doubtful, so the limit is 115 to 165 visits (12% to 18%); the
+  22 other centre-periods with eight visits or more have r = -0.02 to -0.86
+  (711 visits) and alpha with the key is 0.83 over all the visits. Their
+  total and sub-scores are wrong in the way of BP's centres (see the BP
+  schema), and this schema, which names no centre, cannot tell them apart.
+  The question is in QUESTIONS.md.
+
+  The break of 2018 (open question O1, answered by the application). 92% and
+  87% of the inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the
+  scale, 44% to 48% in 2018 to 2020, 2021 to 2023 and 2024 to 2026. The MAThyS
+  (form 141, with the seven emotions of mathys_emotions.yaml) is one of the
+  forms that the simplified visit leaves out (visite.SVUPDES = 1,
+  config/globale2.php, DESTVISIMP; PROGRESS.md D55): an empty scale after 2018
+  is "not asked" on a simplified visit, not "no" and not 0. The extraction
+  does not say which visits were simplified (request R127 and R155: the
+  svupdes column; question M69).
 
 # A value above 10 has lost its decimal point: 55 is 5.5.
 defaults:

@@ -1,0 +1,67 @@
+instrument: wurs25
+title: Wender Utah Rating Scale, 25-item form (WURS-25), recall of childhood
+tab: AUTO-QUESTIONNAIRE
+section: Questionnaire WURS
+status: reviewed
+notes: >
+  Wender Utah Rating Scale, the 25-item form, a recall of childhood: 305
+  visits from 2012 (285 at inclusion, 125 dated before 2021), 295 of them with
+  the 25 items. The questions are numbered as in the 61-item questionnaire
+  (wurs25_03 is the question numbered 3 there, as in BP). The stored sum
+  (wurstot) equals the sum of the items on all 295.
+
+  Which form? The SZ form is the 25-item form only: its group is named
+  "Echelle WURS 25", its table holds exactly the 25 items numbered 3 to 59,
+  the score step of the export has a WURS-25 entry for the SZ table, and the
+  SZ application has no 61-item questionnaire (the open question O9 is
+  answered). In FACE BP the 61-item form was used until 2021 and the two forms
+  share columns, so BP has two schemas (wurs25 and wurs61) split by the ALS
+  and BIS answers of the visit; SZ needs no split and no ALS or BIS to read
+  it.
+
+  Who is asked. The WURS is not a questionnaire of every patient: 285 of the
+  2,353 inclusion visits have it. It follows the screening question on
+  attention deficit hyperactivity disorder asked at inclusion
+  (adhd_symptoms_v0): 240 of the 285 inclusion visits with a WURS have a yes
+  to it (84%), and 240 of the 309 yes have a WURS (78%). Its mean is that of a
+  selected group, not of the cohort. The form's box "done / not done"
+  (rad_wurs_nf) is not in the extraction (export request R152).
+
+defaults: {type: item, range: [0, 4]}
+
+variables:
+  wurs25_03: {column: wurs03, label: "WURS-25 item (number 3 of the WURS-61)"}
+  wurs25_04: {column: wurs04, label: "WURS-25 item (number 4 of the WURS-61)"}
+  wurs25_05: {column: wurs05, label: "WURS-25 item (number 5 of the WURS-61)"}
+  wurs25_06: {column: wurs06, label: "WURS-25 item (number 6 of the WURS-61)"}
+  wurs25_07: {column: wurs07, label: "WURS-25 item (number 7 of the WURS-61)"}
+  wurs25_09: {column: wurs09, label: "WURS-25 item (number 9 of the WURS-61)"}
+  wurs25_10: {column: wurs10, label: "WURS-25 item (number 10 of the WURS-61)"}
+  wurs25_11: {column: wurs11, label: "WURS-25 item (number 11 of the WURS-61)"}
+  wurs25_12: {column: wurs12, label: "WURS-25 item (number 12 of the WURS-61)"}
+  wurs25_15: {column: wurs15, label: "WURS-25 item (number 15 of the WURS-61)"}
+  wurs25_16: {column: wurs16, label: "WURS-25 item (number 16 of the WURS-61)"}
+  wurs25_17: {column: wurs17, label: "WURS-25 item (number 17 of the WURS-61)"}
+  wurs25_20: {column: wurs20, label: "WURS-25 item (number 20 of the WURS-61)"}
+  wurs25_21: {column: wurs21, label: "WURS-25 item (number 21 of the WURS-61)"}
+  wurs25_24: {column: wurs24, label: "WURS-25 item (number 24 of the WURS-61)"}
+  wurs25_25: {column: wurs25, label: "WURS-25 item (number 25 of the WURS-61)"}
+  wurs25_26: {column: wurs26, label: "WURS-25 item (number 26 of the WURS-61)"}
+  wurs25_27: {column: wurs27, label: "WURS-25 item (number 27 of the WURS-61)"}
+  wurs25_28: {column: wurs28, label: "WURS-25 item (number 28 of the WURS-61)"}
+  wurs25_29: {column: wurs29, label: "WURS-25 item (number 29 of the WURS-61)"}
+  wurs25_40: {column: wurs40, label: "WURS-25 item (number 40 of the WURS-61)"}
+  wurs25_41: {column: wurs41, label: "WURS-25 item (number 41 of the WURS-61)"}
+  wurs25_51: {column: wurs51, label: "WURS-25 item (number 51 of the WURS-61)"}
+  wurs25_56: {column: wurs56, label: "WURS-25 item (number 56 of the WURS-61)"}
+  wurs25_59: {column: wurs59, label: "WURS-25 item (number 59 of the WURS-61)"}
+  wurs25_total_stored: {column: wurstot, label: "WURS-25 total as stored", range: [0, 100], keep: false}
+
+scores:
+  wurs25_total:
+    label: WURS-25 total
+    sum: [wurs25_03, wurs25_04, wurs25_05, wurs25_06, wurs25_07, wurs25_09, wurs25_10, wurs25_11,
+          wurs25_12, wurs25_15, wurs25_16, wurs25_17, wurs25_20, wurs25_21, wurs25_24, wurs25_25,
+          wurs25_26, wurs25_27, wurs25_28, wurs25_29, wurs25_40, wurs25_41, wurs25_51, wurs25_56,
+          wurs25_59]
+    compare: wurs25_total_stored

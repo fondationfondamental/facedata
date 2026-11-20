@@ -2,54 +2,82 @@ instrument: ctq
 title: Childhood Trauma Questionnaire, short form (CTQ, 28 items)
 tab: AUTO-QUESTIONNAIRE
 section: Questionnaire CTQ
-status: draft
+status: reviewed
 notes: >
-  Childhood Trauma Questionnaire, filled once (1,919 inclusion visits, 247
-  later ones): 28 items of 1 to 5, five scales with their levels, a total
-  and a denial score. Same instrument and same schema as in FACE BP, where
-  the notes give the scoring keys. Every stored score equals ours: no
+  Childhood Trauma Questionnaire, short form: 28 items from 1 (never true) to
+  5 (very often true), about childhood and adolescence. Filled mostly once, at
+  inclusion: 2,216 visits have items (1,965 at inclusion) and 2,166 have a
+  stored total. Same instrument and same variables as in FACE BP, where the
+  notes give the scoring keys: five sub-scores of five items, seven items
+  worded as a good childhood that the score reverses, a total of 25 items and
+  a denial score of three. The labels give the sub-scale and the direction of
+  each item, not its text (the questionnaire is copyrighted). Every stored
+  sub-score and the stored total equal ours on the visits that have both: no
   score_mismatch on the 2,166 totals. The answers 1 to 5 all occur on every
-  item; the scan's lead (items that never hold an answer the others have)
-  came from the level columns, which go from 1 to 4. The levels follow the
-  limits of the manual on the delivered sub-scores in every row but six
-  (one or two per scale), where the level was not updated with its
-  sub-score; they keep the stored level. The item answers have the BP
+  item; the scan's lead (items that never hold an answer the others have) came
+  from the class columns, which go from 1 to 4. The item answers have the BP
   profile and every item rises with its scale (checked 2026-11-18).
 
-  Not loaded: ctq41, "risk of denial, yes or no", which is "denial score
-  above 0" on every row (ignored.yaml).
+  Denial. Items 10, 16 and 22 do not enter the sub-scores or the total. The
+  denial score is the number of them answered 5, exactly (0 to 3). The script
+  of the form counts a blank item as 0 (A73 of docs/EXPORT_REQUESTS.md), so
+  the stored score (ctq40) exists on 20 visits where one of the three items
+  is blank and is missing on 43 visits that have the three. The package
+  delivers the strict score: the three answers are needed. Against the stored
+  one that is 43 more values and 20 fewer (the 20 are
+  score_not_recomputed), and on the 2,148 visits that have
+  both the stored score is lower than the three items give on 2 visits (2013:
+  score_mismatch). 65 cells change. The stored score is kept as the hidden
+  check ctq_denial_stored. ctq41 only says whether the stored score is above 0
+  and is not read (ignored.yaml).
+
+  Severity classes. The EMR cuts each stored sub-score in four classes (1 none
+  to 4 severe) with the limits of the manual, which are not in the package;
+  the classes are delivered as stored and no class is computed here. A class
+  is empty on 45 (emotional abuse), 49 (physical abuse), 46 (sexual abuse), 48
+  (emotional neglect) and 46 (physical neglect) visits that have the
+  sub-score, both stored and recomputed: the EMR stored the sub-score and no
+  class (61 to 70 visits per sub-score have items and no class). The class is
+  not the class of its sub-score on 6 visits (one or two per sub-score), where
+  it was not updated with its sub-score; they keep the stored class. They are
+  doubtful wherever the sub-score is (derived_from).
+
+  The form has a box "done / not done" (rad_ctq_nf) that the export does not
+  select, as for the PSQI, MARS, Fagerström and the other questionnaires of
+  the tab (the extraction has no rad_*_nf column): a blank questionnaire
+  cannot be told from one that was not done (export request R152).
 
 defaults: {type: item, range: [1, 5]}
 
 variables:
-  ctq01: {label: "CTQ item 1"}
-  ctq02: {label: "CTQ item 2"}
-  ctq03: {label: "CTQ item 3"}
-  ctq04: {label: "CTQ item 4"}
-  ctq05: {label: "CTQ item 5"}
-  ctq06: {label: "CTQ item 6"}
-  ctq07: {label: "CTQ item 7"}
-  ctq08: {label: "CTQ item 8"}
-  ctq09: {label: "CTQ item 9"}
-  ctq10: {label: "CTQ item 10"}
-  ctq11: {label: "CTQ item 11"}
-  ctq12: {label: "CTQ item 12"}
-  ctq13: {label: "CTQ item 13"}
-  ctq14: {label: "CTQ item 14"}
-  ctq15: {label: "CTQ item 15"}
-  ctq16: {label: "CTQ item 16"}
-  ctq17: {label: "CTQ item 17"}
-  ctq18: {label: "CTQ item 18"}
-  ctq19: {label: "CTQ item 19"}
-  ctq20: {label: "CTQ item 20"}
-  ctq21: {label: "CTQ item 21"}
-  ctq22: {label: "CTQ item 22"}
-  ctq23: {label: "CTQ item 23"}
-  ctq24: {label: "CTQ item 24"}
-  ctq25: {label: "CTQ item 25"}
-  ctq26: {label: "CTQ item 26"}
-  ctq27: {label: "CTQ item 27"}
-  ctq28: {label: "CTQ item 28"}
+  ctq01: {label: "CTQ item 1: physical neglect, scored as answered; childhood and adolescence"}
+  ctq02: {label: "CTQ item 2: physical neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq03: {label: "CTQ item 3: emotional abuse, scored as answered; childhood and adolescence"}
+  ctq04: {label: "CTQ item 4: physical neglect, scored as answered; childhood and adolescence"}
+  ctq05: {label: "CTQ item 5: emotional neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq06: {label: "CTQ item 6: physical neglect, scored as answered; childhood and adolescence"}
+  ctq07: {label: "CTQ item 7: emotional neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq08: {label: "CTQ item 8: emotional abuse, scored as answered; childhood and adolescence"}
+  ctq09: {label: "CTQ item 9: physical abuse, scored as answered; childhood and adolescence"}
+  ctq10: {label: "CTQ item 10: denial (minimization), in the denial score only; childhood and adolescence"}
+  ctq11: {label: "CTQ item 11: physical abuse, scored as answered; childhood and adolescence"}
+  ctq12: {label: "CTQ item 12: physical abuse, scored as answered; childhood and adolescence"}
+  ctq13: {label: "CTQ item 13: emotional neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq14: {label: "CTQ item 14: emotional abuse, scored as answered; childhood and adolescence"}
+  ctq15: {label: "CTQ item 15: physical abuse, scored as answered; childhood and adolescence"}
+  ctq16: {label: "CTQ item 16: denial (minimization), in the denial score only; childhood and adolescence"}
+  ctq17: {label: "CTQ item 17: physical abuse, scored as answered; childhood and adolescence"}
+  ctq18: {label: "CTQ item 18: emotional abuse, scored as answered; childhood and adolescence"}
+  ctq19: {label: "CTQ item 19: emotional neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq20: {label: "CTQ item 20: sexual abuse, scored as answered; childhood and adolescence"}
+  ctq21: {label: "CTQ item 21: sexual abuse, scored as answered; childhood and adolescence"}
+  ctq22: {label: "CTQ item 22: denial (minimization), in the denial score only; childhood and adolescence"}
+  ctq23: {label: "CTQ item 23: sexual abuse, scored as answered; childhood and adolescence"}
+  ctq24: {label: "CTQ item 24: sexual abuse, scored as answered; childhood and adolescence"}
+  ctq25: {label: "CTQ item 25: emotional abuse, scored as answered; childhood and adolescence"}
+  ctq26: {label: "CTQ item 26: physical neglect, positive item (reversed in the score); childhood and adolescence"}
+  ctq27: {label: "CTQ item 27: sexual abuse, scored as answered; childhood and adolescence"}
+  ctq28: {label: "CTQ item 28: emotional neglect, positive item (reversed in the score); childhood and adolescence"}
 
   # Sub-scores and total as stored. Used only to check our own scores.
   ctq_emotional_abuse_stored: {column: ctq37, label: Emotional abuse as stored, range: [5, 25], keep: false}
@@ -58,6 +86,7 @@ variables:
   ctq_emotional_neglect_stored: {column: ctq31, label: Emotional neglect as stored, range: [5, 25], keep: false}
   ctq_physical_neglect_stored: {column: ctq33, label: Physical neglect as stored, range: [5, 25], keep: false}
   ctq_total_stored: {column: ctq39, label: CTQ total as stored, range: [25, 125], keep: false}
+  ctq_denial_stored: {column: ctq40, label: "Denial score as stored", range: [0, 3], keep: false}
 
   # Derived by the EMR from the stored sub-scores.
   ctq_emotional_abuse_class: {column: ctq38, label: "Emotional abuse, severity class (1 none to 4 severe)", range: [1, 4], derived_from: ctq_emotional_abuse}
@@ -65,7 +94,6 @@ variables:
   ctq_sexual_abuse_class: {column: ctq36, label: "Sexual abuse, severity class (1 none to 4 severe)", range: [1, 4], derived_from: ctq_sexual_abuse}
   ctq_emotional_neglect_class: {column: ctq32, label: "Emotional neglect, severity class (1 none to 4 severe)", range: [1, 4], derived_from: ctq_emotional_neglect}
   ctq_physical_neglect_class: {column: ctq34, label: "Physical neglect, severity class (1 none to 4 severe)", range: [1, 4], derived_from: ctq_physical_neglect}
-  ctq_denial: {column: ctq40, label: "Denial score (items 10, 16, 22 answered 5)", range: [0, 3]}
 
 scores:
   ctq_emotional_abuse: {label: CTQ emotional abuse, sum: [ctq03, ctq08, ctq14, ctq18, ctq25], compare: ctq_emotional_abuse_stored}
@@ -80,3 +108,8 @@ scores:
           ctq24, ctq25, ctq26, ctq27, ctq28]
     reverse: [ctq02, ctq05, ctq07, ctq13, ctq19, ctq26, ctq28]
     compare: ctq_total_stored
+  ctq_denial:
+    label: "CTQ denial (minimization) score: number of the items 10, 16 and 22 answered 5 (0 to 3)"
+    sum: [ctq10, ctq16, ctq22]
+    points: {"1": 0, "2": 0, "3": 0, "4": 0, "5": 1}
+    compare: ctq_denial_stored

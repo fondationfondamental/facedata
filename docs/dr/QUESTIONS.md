@@ -74,45 +74,72 @@ products; every line for the patients with one. (O27, D13, D50)
 **DEV-2. Three scales are stored on another coding than in BP, and their
 stored scores are computed with the BP formula.**
 - CTQ: the seven "good childhood" items (2, 5, 7, 13, 19, 26, 28) are stored
-  already reversed. In BP they fall when the abuse items rise (r = -0.30 to
-  -0.57); here they rise with them (+0.17 to +0.56), in every period and
-  centre. The stored emotional neglect, physical neglect and total reverse
-  them a second time: the stored emotional neglect falls when emotional
-  abuse rises (r = -0.61; +0.67 in BP).
+  already reversed (the form keys them 5 to 1, and its own script adds the
+  values as stored, which is right). In BP they fall when the abuse items
+  rise (r = -0.30 to -0.57); here they rise with them (+0.17 to +0.56), in
+  every period and centre. The stored emotional neglect, physical neglect and
+  total reverse them a second time: the stored emotional neglect falls when
+  emotional abuse rises (r = -0.61; +0.67 in BP). The cause is the export,
+  not the EMR: the score definition of the export (`ctq.yaml` of the nucleus,
+  lines 71 to 126) names the table of this cohort with the BP list of
+  reversed items. The definitions of the BIS-10 and the MARS name it the same
+  way.
 - BIS-10: the same for the eleven reverse-keyed items and every stored
   score (the stored values hold together better as they are, alpha 0.76,
-  than after the reversal of the key, 0.65; BP shows the opposite).
+  than after the reversal of the key, 0.65; BP shows the opposite). The
+  application's own sub-scores (`bis1035` to `bis1037`) are plain sums of the
+  items as stored and equal ours on 530 of 530 visits; the export reverses
+  the eleven items a second time and overwrites the application's total with
+  its 12-item sum.
 - MARS: 1 is "yes" here and "no" in BP (item 5: 14% of answers 1 against
   96%). The stored total counts poor adherence: its median is 3, against 8
-  in BP.
-*Question:* can you confirm it on the forms (the points attached to each
-answer), and correct the stored scores?
+  in BP. The script of the form (`220_score.js`) turns items 1 to 6, 9 and 10
+  for this coding and is right; the export applies the BP key (items 7 and 8
+  reversed) to this cohort's table: stored = 10 - right on 1,026 of 1,026
+  visits.
+*Question:* can you give this cohort its own score definitions (no reversed
+item for the CTQ and the BIS-10, whose items the forms store already turned:
+M20 is answered; items 1 to 6, 9 and 10 turned for the MARS), request R146?
 *Today:* the items are read back to the BP coding and the scores are
 recomputed (CTQ emotional neglect: mean 13.3, for 12.4 in BP; MARS median
 7). The stored scores are reproduced exactly by "as stored" formulas and are
-not delivered. (O17, D9)
+not delivered. (O17, D9, D67, D71, D72)
 
 **DEV-3. QIDS-SR16: no total when one item of each pair is answered.** The
 form asks for item 6 or 7 (appetite) and for item 8 or 9 (weight). Since
 2022 most patients answer one of each pair (26% of the QIDS visits of 2022,
 74% of those of 2026), and the EMR then stores no total: 227 visits.
-*Question:* did the form change in 2022? Can the total be computed with one
-answer per pair?
+*Answered by the source (D69):* the export takes the highest of each block in
+strict mode (`qids.yaml` of the nucleus, lines 19 to 30 and 46 to 60), so a
+blank partner blanks the total, whereas the application sets the unanswered
+partner to 0 and computes it (`126_score.js`, lines 35 to 45).
+*Question:* since when does the form show one item of each pair (the
+selectors QIDS6A and QIDS8A are not exported)? Can the export take the
+highest answered item of each pair, as the application does?
 *Today:* the total is computed when the twelve other items are filled and
 each pair has an answer (1,870 totals; 1,643 stored). The same rule now
-applies in BP. (O13, D9)
+applies in BP. Requests R147 (the export's strict maximum) and R155 (the
+selectors), and A77 (the form's rule that clears the wrong block when QIDS8A
+is 2: 2 visits). (O13, D9, D69)
 
 **DEV-4. Other scores that the EMR computes wrongly.**
 - SHAPS: the stored score counts "agree" on items 2, 4, 5, 7 and 9 and
   "disagree" on the nine others, while the fourteen stored items all point
-  the same way (943 of 943 visits reproduced). (O18)
+  the same way (943 of 943 visits reproduced). The export reverses these five
+  items (`shaps.yaml` of the nucleus, line 34); the script of the form counts
+  the fourteen items the same way (`224_score.js`). Request R147. (O18, D69)
 - Fagerström: item 3 is exported as the code of the answer (1 or 2) and the
-  total adds the code: 2 points too high on 129 of 392 visits. (O15)
+  total adds the code: 2 points too high on 129 of 392 visits. The script of
+  the form (`112_score.js`, line 49) and the export (`fagers.yaml`) both add
+  the code, so one fix serves both. (O15, D72)
 - MAThyS: on 68 visits of two centres (2013 to 2018) the stored sub-scores
-  add the items with none reversed; the stored total is right. In BP the
-  data managers recalculate these sub-scores since 10 November 2026. (O14)
+  add the items with none reversed; the stored total is right. The script of
+  the form was changed on 10 December 2018 to take the reversed values into
+  account, and these are the visits saved before; the stored values stay
+  wrong in the extraction. In BP the data managers recalculate these
+  sub-scores since 10 November 2026 (DM-13). (O14, closed, D72)
 - BFI: on 16 visits (four centres, 2014 to 2018) the stored
-  conscientiousness and neuroticism are each other's value. (O19)
+  conscientiousness and neuroticism are each other's value. (O19, D71)
 - Age: the stored `age` is the age at inclusion for the patients with one
   visit and up to five years more for the others. (O5)
 - SACHS (Bipolarity Index): the stored total is the sum of the five ratings
@@ -268,6 +295,38 @@ removed?
 symptoms are read from the list forms and, for visits to 2016, from the boxes
 of form 182. (D56, D64)
 
+**DEV-13. Defects of the sleep, trauma, QIDS and MDQ forms.**
+- PSQI: the script of the form (`192_score.js`, lines 165 to 196) takes the
+  absolute difference of the bedtime and the rising time for the efficiency,
+  which is wrong across midnight (16 hours in bed from 23:00 to 07:00); the
+  extraction is right only because the export computes the efficiency again
+  (A74). The Time widget saves its default 00:00:00 untouched (the rising time
+  of 39 visits). A bedtime typed 24:xx is exported as it is (7 visits), where
+  the BP export converts it to 0, and the warning for the 24-hour clock that
+  BP shows is missing (A75).
+- CTQ: the script counts an unanswered denial item as 0 (`eval_deni`), and the
+  stored denial score is empty on 93 visits that have the three items (A73).
+- QIDS: the selectors QIDS6A and QIDS8A are not exported (R155), and
+  `js/formulaires.js`, line 3965, clears the wrong block when QIDS8A is 2 (2
+  visits show an answer that the form hides: A77).
+- MDQ: questions 14 and 15 are hidden since January 2018 when no symptom is
+  ticked (`js/formulaires.js`, lines 5157 to 5170); the export cannot tell the
+  hidden questions from blanks.
+*Question:* can these be corrected or exported?
+*Today:* the delivered scores follow the application, not the stored values;
+the notes of the schemas say it. (O35, D68, D69, D70)
+
+**DEV-14. Old forms keyed differently.** The BIS form 138 (the form before
+215) keys items 33 and 34 as 4, 2, 3, 1 where form 215 keys them 4, 3, 2, 1
+(the answers "occasionally" and "often" swap); the BFI form 135 (the form
+before 214) keys item 29 from 5 to 1 where form 214 keys it 1 to 5 (found in
+two centres, on visits dated 2014 or earlier). Which visits used these forms
+is not in the extraction.
+*Question:* which visits used the forms 138 and 135, and can the keys be
+corrected (A82; the data managers, M75: until when and in which centres)?
+*Today:* the BIS items are read as form 215; the BFI item 29 is delivered as
+stored. (O37, D71)
+
 ## 2. For the data managers
 
 ### Priority A
@@ -290,7 +349,7 @@ left out too. The YMRS is filled on 90% of the V0 visits to 2017 and 50% since
 89% to 97% and five on 4% to 17%.
 *Question:* since when is the simplified visit used, and by which centres (M69)?
 Can the export carry the flag `svupdes` and the list of forms that the visit
-offered (R127, R139)?
+offered (R127, R139, R155)?
 *Today:* an empty scale since 2018 is missing data: without the flag it cannot
 be told from a form left blank; the notes of the scales say that the
 simplified visit omits them. (O1)
@@ -311,9 +370,13 @@ offered instead), the MINI (142 and 229), the Paykel list (166), the traumatic
 events (208), the SPIN (197) or the PTSD scale (216), and the thinning of these
 forms since 2018 may have the same cause (to confirm by the owners of those
 tabs; the neuropsychology form 199 is on the lists).
+The LEAPS (form 190) is in none of the four lists either, yet it is filled on
+64% to 69% of the V0 visits since 2018 (58% in 2012 to 2014): the lists do not
+explain every form (O38).
 *Question:* which of these are changes of the protocol, and from when? Is the ISF
-chosen per centre (M66)? (O22,
-O24, O25, O21, O30)
+chosen per centre (M66)? Do the lists cover every form offered on a simplified
+visit (M69, R155)? (O22,
+O24, O25, O21, O30, O38)
 
 ### Priority B
 
@@ -330,7 +393,8 @@ by centre). (O4)
 **DM-5. Typing.** HbA1c of 20 to 60 on 22 visits (mmol/mol?); 0 typed where
 a blood count was not measured (91 cells, one centre); sick leave above 53
 weeks in a year on 32 answers; time spent sitting above 24 hours a day on
-103 answers (the week?). (O11, O26, O21)
+103 answers (the week? 60 of the 75 weekday values are multiples of 5: M79).
+(O11, O26, O21)
 
 **DM-6. Forms saved blank.** At inclusion 17 to 19 forms of the medical
 history hold only the boxes at 0 (the gate of the section and every question
@@ -348,8 +412,11 @@ record is filled on 84% of them. The dictionary lists visit v0 only and the
 codes Y, N and U (the data are 1 and 0). The question is empty on 11% to 33%
 of the inclusions a year since 2016. The four DETC-CAGE items are shown only
 after a yes (21 of the 24 yes, none of the 558 no), but they are also filled
-on 79 of the 100 CAGE forms whose opening question is empty (all 2012 to
-2016), and they ask "have you ever..." under a question about the present.
+on 79 of the 100 CAGE forms whose opening question is empty (78 in 2012 to
+2015 and one in 2016; 78 of the 79 have a total of 0), and they ask "have you
+ever..." under a question about the present. The fall of the fill rate of the
+CAGE (45% of the inclusions of 2012 to 2014, 19% in 2015 to 2017, 2% to 5%
+since) follows this change of form.
 *Questions:* is the question asked at those three visits only, and is it
 still part of the protocol? Do the forms 103 and 119 (the items with no
 opening question) explain the 79 forms? Does a patient who stopped cannabis
@@ -400,6 +467,40 @@ fourteen items are lower.
 *Question:* did the instructions, the raters or the way the forms are filled
 change in these years?
 *Today:* delivered as typed; the schema notes say it. (D66)
+
+**DM-12. The period of the questions asked again at follow-up.** The traumatic
+events (form 208, no period printed) and the Paykel list (form 166, "in the
+preceding year") are asked again at 1, 2 and 4 years; of the traumatic events
+answered yes at inclusion, 21%, 17% and 14% are yes again at the three visits
+(105, 61 and 27 patients with both forms complete). The MDQ asks whether there
+"ever" was a period of elation, yet 47%, 47% and 39% of the yes answers of the
+inclusion are yes again. The Paykel month ("from 01 to 12") peaks at 1, 6 and
+12. The SPIN is offered at the initial visit only by the application, and 46
+of its 147 visits are follow-ups.
+*Question:* does a follow-up visit ask about the time since the previous
+visit? Is the Paykel month a calendar month or a number of months before the
+visit? Why does the SPIN reach follow-up visits?
+*Today:* delivered as recorded; the notes say that the follow-up answers are
+not cumulative, and the MDQ title says "lifetime at inclusion". (O34, D67,
+D70; M73 the follow-up MDQ, M74 the SPIN, M78 the Paykel month and the
+follow-up period)
+
+**DM-13. MAThyS: the direction of the scales by centre, and the stored
+sub-scores.** In three centres the eight reversed items go with the twelve
+others instead of against them in some periods (70 visits of one centre in
+2013 to 2015, 30 of another from 2019, 15 of a third in 2022 to 2023: about
+115 of the 937 complete visits, 12%; two more centre-periods of 41 and 9 visits
+are doubtful, so up to 165 and 18%). The same centre that is wrong in 2013 to
+2015 is right in 2016 to 2018. The 68 visits whose stored sub-scores are plain
+sums (2013 to 2018) are those saved before the script of the form was changed
+on 10 December 2018.
+*Question:* does the centre enter the scales in the old direction, or is a form
+version missing (BP has the same problem in two centres: BP D91, M47, M77)?
+Will the DR extraction be recalculated for the 68 visits, as BP's has been
+since 10 November 2026?
+*Today:* the key is applied to every visit: the total and the sub-scores of
+the visits in the wrong direction are wrong; the note of `mathys` states the
+limit. (O36, O14, D72)
 
 ## 3. For the principal investigator
 

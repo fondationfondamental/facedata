@@ -1,18 +1,28 @@
 instrument: asrs
-title: Adult ADHD Self-Report Scale (ASRS v1.1, 18 items)
+title: Adult ADHD Self-Report Scale (ASRS v1.1, 18 items), last 6 months
 tab: AUTO-QUESTIONNAIRES
 section: Questionnaire ASRS
 status: reviewed
 notes: >
   Two visits date from 2018 and 2020, 28 from 2021, the rest from 2022; filled
   at the inclusion visit (1,265 of 1,325 visits). Eighteen items, each 0
-  (never) to 4 (very often).
+  (never) to 4 (very often), about the last 6 months (the instruction of
+  the form).
 
-  The screening result (asrs_) is delivered as stored. It follows part A,
-  the first six items: an item counts when it is 2 or more (items 1 to 3) or
-  3 or more (items 4 to 6), and the result is positive from four items on.
-  This rule gives the stored result on all but 2 of 1,228 visits that have the six items; the result is empty on 92
-  more, and is "negative" on 6 visits whose part A is incomplete.
+  The screening result is computed here from part A, the first six items: an
+  item counts when it is 2 or more (items 1 to 3) or 3 or more (items 4 to
+  6), and the result is positive (1) from four items on, negative (0) below.
+  It exists on every visit that has the six items (1,320). The stored result
+  (asrs_) is the check and is not delivered, because the script of the
+  application tests the wrong variable for an unanswered item (it tests the
+  field and not the count, autoq_asrs.js, lines 20 to 60): an incomplete
+  part A gives "negative", and the result stays empty when the score button
+  is never clicked. Against the stored result, the rule gives 92 results
+  where it was empty (the six items answered, the button not clicked), 2
+  positive results where it was negative (count of 4 or 5), and no result on
+  6 visits where it was negative with an incomplete part A (score_not_recomputed): 100 cells
+  in all. Elsewhere the two agree on all of 1,226 visits. The name asrs_screen
+  now holds 1 or 0, not a category. The same part A is in the ASP schema.
 
   The extraction stores no total. The sum of the eighteen items is added
   here (0 to 72).
@@ -38,11 +48,13 @@ variables:
   asrs16: {label: "ASRS item 16"}
   asrs17: {label: "ASRS item 17"}
   asrs18: {label: "ASRS item 18"}
-  asrs_screen:
+  asrs_screen_stored:
     column: asrs_
-    type: category
-    label: ASRS screening result (part A)
-    codes: {Positif: positive, Négatif: negative, "N?gatif": negative}
+    type: item
+    label: ASRS screening result as stored (1 positive, 0 negative)
+    range: [0, 1]
+    codes: {Positif: 1, Négatif: 0, "N?gatif": 0}
+    keep: false
 
 scores:
   asrs_total:
@@ -64,3 +76,8 @@ scores:
   asrs_parta:
     label: ASRS part A, number of items past their threshold (0 to 6; 4 or more is a positive screen)
     sum: [asrs_a123, asrs_a456]
+  asrs_screen:
+    label: ASRS screen, part A (1 = positive, 4 or more items past their threshold)
+    sum: [asrs_parta]
+    points: {"0": 0, "1": 0, "2": 0, "3": 0, "4": 1, "5": 1, "6": 1}
+    compare: asrs_screen_stored

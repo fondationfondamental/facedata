@@ -2,12 +2,30 @@ instrument: prisem
 title: "PRISE-M side effects"
 tab: autoquestionnaires
 section: adult questionnaires
-status: draft
+status: reviewed
 notes: >
   The side-effect inventory of FACE BP and DR, in the same columns, at the
-  inclusion visit: 205 visits, from 2021 to 2026. It belongs to the new set of forms. It is filled by adults only.
+  inclusion visit: 205 visits, from 2020 to 2026, and 6 follow-up visits (211 in
+  all). It belongs to the new set of forms. It is filled by adults only.
 
-  Same instrument and same schema as in FACE BP.
+  Same instrument and same schema as in FACE BP. **The total needs 31 answers**:
+  the 30 questions common to both sexes and one of the two sex-specific
+  questions (irregular periods for women, erectile disorder for men), as the
+  scripts of the applications require (`333_score.js` here). `min_items: 31`
+  states it; the BP schema had 28, which let a partial sum of 28 to 30 items
+  through (239 BP totals). In this cohort every visit holds 31 answers or one
+  item: the total is delivered on 210 visits and equals the stored total on 210
+  of 210; one visit holds a single item and a stored total
+  (score_not_recomputed).
+
+  **Year and centre.** 5 of the 14 variables reach 0.5 or more (5 by year, 5 by
+  centre): the items are on a 0 to 2 scale and most of them have too few answers
+  by year or by centre to be compared. The total stands at 0.41 by year and by
+  centre: median 2 in centre B (22 totals), 6 in E, 8 in F, 9 in D and 13 in C
+  (69). The years follow the centres: 9 to 12 in 2021 to 2024 (centre C holds 54
+  of the 85 totals of 2023 and 2024), 7 in 2025 and 2 in 2026 (centres B and E
+  hold 25 of the 32 totals of 2026). The habit of the centre, with no known
+  cause (the case mix, the way the inventory is filled).
 
 defaults: {type: item, range: [0, 2]}
 
@@ -55,5 +73,5 @@ scores:
           prism06c, prism06d, prism07a, prism07b, prism08a, prism08b,
           prism08c, prism09a, prism09b, prism09c, prism09d, prism09e,
           prism09f, prism09g]
-    min_items: 28
+    min_items: 31
     compare: prism_stored

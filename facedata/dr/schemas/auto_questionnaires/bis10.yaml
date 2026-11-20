@@ -2,7 +2,7 @@ instrument: bis10
 title: Barratt Impulsiveness Scale, BIS-10 (34 items)
 tab: AUTO-QUESTIONNAIRES
 section: BIS
-status: draft
+status: reviewed
 notes: >
   The BP scale, with eleven items turned back to the answer as asked. Only
   the 34-item BIS-10 is in this extraction: no visit holds the twelve items
@@ -27,26 +27,42 @@ notes: >
   cohorts and the BP key applies. After this the item means of the two
   cohorts agree (r = 0.84 over the 34 items, 0.51 before).
 
-  Stored scores: wrong, not delivered. The EMR reverses the eleven items a
-  second time (6 - value, as it does in BP), which puts them back in the
-  wrong direction. Each stored score (bis10_imp_mot, bis10_imp_att,
-  bis10_imp_pla, bis10_score_total, bis11, bis10, bis1038) is reproduced
-  exactly by adding the items with none reversed, plus the BP offset of one
-  point per reversed item: these are the twin scores named _as_stored, read
-  to check the stored values and not delivered (no mismatch on the 530 to
-  547 visits where a twin exists). The delivered scores use the key (open
-  question O17). A stored score is also computed when an item is missing (5
-  to 19 visits); ours needs every item.
+  Stored scores: wrong, not delivered. The form keys the eleven items 4, 3, 2,
+  1 (form 215; the form 138 before it keys items 33 and 34 as 4, 2, 3, 1: A82,
+  M75), so the stored items are already reversed. The application adds the
+  items as they are stored, which is right for items stored reversed (the
+  sub-scores bis1035 to bis1037, below). The export then reverses the eleven
+  items a second time (6 - value, as it does in BP: the score definition of
+  the export names this cohort's table together with BP's) and writes its own
+  scores, which put them back in the wrong direction. The form's own keys and
+  script confirm that it stores the items already turned (question M20,
+  answered). Each stored score (bis10_imp_mot, bis10_imp_att, bis10_imp_pla,
+  bis10_score_total, bis11, bis10, bis1038) is reproduced exactly by adding
+  the items with none reversed, plus the BP offset of one point per reversed
+  item: these are the twin scores named _as_stored, read to check the stored
+  values and not delivered (no mismatch on the 530 to 547 visits where a twin
+  exists). The delivered scores use the key (open question O17, request R146).
+  A stored score is also computed when an item is missing (5 to 19 visits);
+  ours needs every item. The column bis11 is the export's sum of 12 items (1,
+  6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25), not the score of a BIS-11.
 
   Three more columns, bis1035 to bis1037, hold the motor, attention and
-  planning items added with none reversed. They are not read
-  (ignored.yaml).
+  planning sub-scores of the application: plain sums of the items as stored.
+  They are read as hidden checks (bis10_motor_app, bis10_attention_app,
+  bis10_planning_app) and each is compared with our sub-score of the same
+  name: they are equal on 530 visits of 530 for each of the three (no
+  mismatch). So the application's sub-scores agree with ours and the
+  export's agree with neither. Two application sums (one motor and one
+  planning, on two visits) are partial, with a value of 1, and out_of_range.
 
-  The break of 2018 (open question O1). 93% and 89% of the inclusion visits of
-  2012 to 2014 and of 2015 to 2017 hold the scale, 42% to 49% in the three
-  periods since 2018. It is the same fall in about a dozen
-  self-questionnaires, in most centres, and nobody knows its reason: an
-  empty scale after 2018 is missing data, not a scale that was not asked.
+  The break of 2018 (open question O1, answered by the application). 93% and
+  89% of the inclusion visits of 2012 to 2014 and of 2015 to 2017 hold the
+  scale, 43% to 49% in 2018 to 2020, 2021 to 2022 and 2023 to 2026. The BIS
+  (form 215) is one of the forms that the simplified visit leaves out
+  (visite.SVUPDES = 1, config/globale2.php, DESTVISIMP; PROGRESS.md D55): an
+  empty scale after 2018 is "not asked" on a simplified visit, not "no". The
+  extraction does not say which visits were simplified (request R127 and R155:
+  the svupdes column; question M69).
 
 version:
   name: bis_form
@@ -108,12 +124,18 @@ variables:
   bis10_behavioural_stored: {column: bis1039, type: number, range: [1, 4],     winsor: false, keep: false}
   bis10_general_stored:     {column: bis1040, type: number, range: [1.5, 4.5], winsor: false, keep: false}
 
+  # The application's own sub-scores (plain sums of the items as stored): the right values, kept as checks.
+  bis10_motor_app:          {column: bis1035, range: [11, 44], keep: false}
+  bis10_attention_app:      {column: bis1036, range: [8, 32],  keep: false}
+  bis10_planning_app:       {column: bis1037, range: [11, 44], keep: false}
+
 scores:
   bis10_motor:
     label: "Motor impulsivity (11 items)"
     sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020, bis1022, bis1023, bis1024, bis1028,
           bis1034]
     reverse: [bis1034]
+    compare: bis10_motor_app
   bis10_motor_as_stored:
     label: "Motor impulsivity (11 items), with no item reversed: what the EMR stores here"
     sum: [bis1002, bis1003, bis1004, bis1016, bis1017, bis1020, bis1022, bis1023, bis1024, bis1028,
@@ -125,6 +147,7 @@ scores:
     label: "Attentional impulsivity (8 items)"
     sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
     reverse: [bis1009, bis1021]
+    compare: bis10_attention_app
   bis10_attention_as_stored:
     label: "Attentional impulsivity (8 items), with no item reversed: what the EMR stores here"
     sum: [bis1005, bis1006, bis1009, bis1011, bis1021, bis1025, bis1030, bis1032]
@@ -136,6 +159,7 @@ scores:
     sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1014, bis1015, bis1018, bis1031,
           bis1033]
     reverse: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1015, bis1033]
+    compare: bis10_planning_app
   bis10_planning_as_stored:
     label: "Planning difficulty (11 items), with no item reversed: what the EMR stores here"
     sum: [bis1001, bis1007, bis1008, bis1010, bis1012, bis1013, bis1014, bis1015, bis1018, bis1031,
@@ -153,12 +177,12 @@ scores:
     compare_offset: 11
     keep: false
   bis10_score11:
-    label: "Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25)"
+    label: "Score stored as bis11: the export's set of 12 items (1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25), not the BIS-11"
     sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1019, bis1020, bis1022,
           bis1024, bis1025]
     reverse: [bis1001, bis1008, bis1009, bis1012]
   bis10_score11_as_stored:
-    label: "Score stored as bis11 (items 1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25), with no item reversed: what the EMR stores here"
+    label: "Score stored as bis11 (the export's set of 12 items, not the BIS-11), with no item reversed: what the EMR stores here"
     sum: [bis1001, bis1006, bis1008, bis1009, bis1012, bis1014, bis1017, bis1019, bis1020, bis1022,
           bis1024, bis1025]
     compare: bis10_score11_stored
