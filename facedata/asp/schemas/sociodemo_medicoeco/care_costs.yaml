@@ -2,32 +2,46 @@ instrument: care_costs
 title: "Costs of the care"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
-  Eleven amounts or numbers about what the care costs the family:
-  334 inclusion visits (332 of children, 2 of adults) and 48 follow-up visits, from 2021 to 2026.
+  Eleven amounts or numbers about what the care costs the family: 334
+  inclusion visits (332 of children, 2 of adults) and 48 follow-up visits,
+  from 2021 to 2026 (form 353, centres A and B).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. The amounts are in euros (thesaurus); the numbers are
-  delivered as stored.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`. The amounts are in euros (thesaurus); the numbers are delivered as
+  stored. Ranges are the limits of the form: a blocking check stops the counts above 50
+  (eASPERGER.js lines 3560 to 3925), the other numbers at the length of their box. The hours a week of a person minding the child stop at 48.
+
+  The distance to the farthest place of care is asked in metres: 18 of 303
+  values are under 100, perhaps kilometres typed in the box of metres;
+  delivered as typed (not converted: the unit of a value cannot be told).
 
   A section of the ASP cohort only.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the form is filled in centres A and B only; no
+  variable has a shift of half an interquartile range; no step.
 
 variables:
   pec011: {column: pec011, type: text, label: "Costs of the care: name of the parents' top-up health insurance (mutuelle), free text"}
   pec021: {column: pec021, type: item, label: "Costs of the care: the top-up health insurance (mutuelle) covers some of the child's care (0 no, 1 yes)", range: [0, 1]}
-  pec031: {column: pec031, type: number, label: "Costs of the care: distance from home to the farthest place of care, metres", range: [0, 459200], winsor: false}
+  pec031: {column: pec031, type: number, label: "Costs of the care: distance from home to the farthest place of care, metres", range: [0, 999999], winsor: false}
   pec041: {column: pec041, type: item, label: "Costs of the care: transport helped by an approved taxi or a light medical vehicle (VSL) (0 no, 1 yes)", range: [0, 1]}
-  pec051: {column: pec051, type: number, label: "Costs of the care: estimated total cost of the child's care in the last 12 months, in euros", range: [0, 18639], winsor: false}
+  pec051: {column: pec051, type: number, label: "Costs of the care: estimated total cost of the child's care in the last 12 months, in euros", range: [0, 999999], winsor: false}
   pec061: {column: pec061, type: item, label: "Costs of the care: a paid person minds the child or takes the child to activities (0 no, 1 yes)", range: [0, 1]}
-  pec061a: {column: pec061a, type: number, label: "Costs of the care: paid person minding the child, average hours a week", range: [0, 200], winsor: false}
-  pec061b: {column: pec061b, type: number, label: "Costs of the care: paid person minding the child, average spending in euros a month", range: [0, 2808], winsor: false}
+  pec061a: {column: pec061a, type: number, label: "Costs of the care: paid person minding the child, average hours a week", range: [0, 48], winsor: false}
+  pec061b: {column: pec061b, type: number, label: "Costs of the care: paid person minding the child, average spending in euros a month", range: [0, 9999], winsor: false}
   pec071: {column: pec071, type: item, label: "Costs of the care: an unpaid person minds the child or takes the child to activities (0 no, 1 yes)", range: [0, 1]}
-  pec071a: {column: pec071a, type: number, label: "Costs of the care: unpaid person minding the child, average hours a week", range: [0, 200], winsor: false}
+  pec071a: {column: pec071a, type: number, label: "Costs of the care: unpaid person minding the child, average hours a week", range: [0, 48], winsor: false}
   pec071b: {column: pec071b, type: text, label: "Costs of the care: unpaid person minding the child, relationship to the parents, free text"}

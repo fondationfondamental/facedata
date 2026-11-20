@@ -52,8 +52,14 @@ notes: >
   patients who live alone and 0 for 134 of them: some count themselves and
   some do not. Centre C writes 0 for 42 of its 99 patients who live alone,
   the other centres for 3% to 12%. The number is typed as text and the
-  export keeps its digits, so the five values above 20 (out of range) are
-  probably two numbers run together.
+  export keeps only its digits (ebipolar_social.sql line 108), so "2 ou 3"
+  becomes 23: the five values above 20 (out of range) are most likely two
+  numbers run together (request R42).
+
+  Age at the first job. The form offers "<15", 15 to 60 and ">60"; the
+  export keeps only the digits (ebipolar_social.sql line 74), so 15 holds
+  "<15" and 15 together (182 patients, against 434 at 16) and 60 holds
+  ">60" and 60 (3 patients). Delivered as exported (request R41).
 
   Durations of work, in years. Not winsorised: the long careers of the
   older patients are real (as in DR). A longest period or a total above 60
@@ -64,8 +70,10 @@ notes: >
 
   End of the last job. 1000-01-01 is the date the application writes in an
   empty date since July 2024 (D98): 176 cells, 171 of them from 2024, 168
-  on patients with another work status, who are not asked the question. 15
-  dates are after the visit.
+  on patients with another work status, who are not asked the question.
+  The question asks about a job that has ended, so a date on the day of the
+  visit or later is impossible (before_visit): 16 dates, 15 after the visit
+  and 1 on its day, are delivered as missing with out_of_range.
 
   Debt. The answer "Non renseigné" of the form is delivered as missing (not
   recorded): 153 inclusions, 85 of them until 2012.
@@ -156,6 +164,7 @@ variables:
     label: End of the last job (the unemployed)
     type: date
     range: [1950-01-01, 2026-12-31]
+    before_visit: true
   first_job_age: {column: profage, label: Age at the first job, type: item, range: [10, 70]}
   longest_job_years: {column: profdur, label: "Longest period of work, when the current one is not the longest", type: number, unit: years, range: [0, 60], winsor: false}
   total_work_years: {column: durtot, label: Total duration of work over the life, type: number, unit: years, range: [0, 60], winsor: false}

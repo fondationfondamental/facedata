@@ -2,28 +2,57 @@ instrument: mini_g_ocd
 title: "MINI, module G: obsessive-compulsive disorder"
 tab: MINI
 section: MINI G
-status: draft
+status: reviewed
 notes: >
   Module G: obsessive-compulsive disorder over the last month.
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  The conclusion (g) is yes on 3 visits; the items give it on 8.
+  Follow-up. This module asks about the present or the last month: its
+  variables are read at every visit (the lifetime questions of modules A
+  to D and H are split by visit, rule R32).
+
+  Skip. After G1 and G4 no the page hides and clears G2, G3, G5 and G6;
+  after G3 and G4 no, or G5 no, it hides and unticks G5 and G6: 1 of the
+  528 visits with G1 and G4 no holds a later answer (a 0).
+
+  Conclusion (rule R27). The form writes the conclusion (g) from G6, but
+  the handlers of G3, G4 and G5 set it back to no each time one of them is
+  changed after G6 (formulaires.js 1530-1580, defect A86): 5 visits with
+  G6 yes hold a stored no, and no visit with G6 no holds a stored yes.
+  mini_ocd_current is therefore G6 where G6 is answered (yes on 8 visits)
+  and the stored conclusion elsewhere (G6 not asked; the stored conclusion
+  is then 0): the highest of the two, which is the same thing since the
+  form can only reset the conclusion to no. The stored conclusion
+  (mini_ocd_current_stored, not delivered) is its check: score_mismatch on
+  the 5 visits.
 
 defaults: {type: item, range: [0, 1]}
 
@@ -34,4 +63,11 @@ variables:
   mini_g04: {column: g04, label: "G4) Au cours du mois écoulé, avez-vous souvent éprouvé le besoin de faire certaines choses sans cesse, sans pouvoir vous en empêcher, comme "}
   mini_g05: {column: g05, label: "G5) Avez-vous, à un moment donné, réalisé que ces idées envahissantes et/ou ces comportements répétitifs étaient irrationnels ou hors de pro"}
   mini_g06: {column: g06, label: "G6) Au cours de mois écoulé, ces pensées ou ces pulsions envahissantes et/ou ces comportements répétitifs vous ont-ils (elles) gêné(e) vraim"}
-  mini_ocd_current: {column: g, label: "Ocd current: TROUBLE OBSESSIONNEL COMPULSIF"}
+  mini_ocd_current_stored: {column: g, keep: false, label: "OCD current as stored: TROUBLE OBSESSIONNEL COMPULSIF (the form resets it after G6, defect A86)"}
+
+scores:
+  mini_ocd_current:
+    label: "Obsessive-compulsive disorder, current: G6 where it is answered, else the stored conclusion (rule R27, defect A86)"
+    max: [mini_g06, mini_ocd_current_stored]
+    min_items: 1
+    compare: mini_ocd_current_stored

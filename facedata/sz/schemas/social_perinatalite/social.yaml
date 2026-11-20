@@ -2,10 +2,10 @@ instrument: social
 title: Social situation
 tab: SOCIAL - PERINATALITE
 section: MODULE SOCIAL
-status: draft
+status: reviewed
 notes: >
   Marital status, children, education, work, housing and income, at the
-  inclusion visit (about 1,970 visits for the housing).
+  inclusion visit (1,983 visits, all at V0).
 
   Same instrument as in FACE BP with the columns that SZ holds. Three BP
   names are read otherwise here: the way of living is in the column vie
@@ -13,24 +13,60 @@ notes: >
   first job holds "Jamais travaillé" (149, a missing code: not applicable)
   and values under a limit (11, censored_left); "-1 an" is "less than a
   year" in the time in work. The number of children, the months in the
-  present job and the income level are SZ questions.
+  present job and the income level are SZ questions. The number of children
+  equals the daughters plus the sons of the family structure (tab
+  ANTECEDENTS) on 1,806 of the 1,819 visits that have both.
 
-  Answers are lost (open question O22, to send first). The marital status
-  never holds code 2 (married or living as a couple): it is 1 on 1,652
-  visits, 3 or 4 on 72, and empty on 12% to 20% of the visits of every
-  year, where patients who live in their own family home and have
-  children are found. The source of income never holds code 1 (salary) or
-  code 4 (disability pension): most employed patients have no source. So
-  an empty cell is often a lost answer, and the shares computed from these
-  two variables are wrong. Code 7 of the source of income is "Absence de
-  revenus" (no income) on the SZ form and code 8 is "Autres" (other); in BP
-  code 7 is "other" and the form has no "no income" (BP D94).
+  Marital status: an answer lost by the export (open question O22, request
+  R47). The form stores code 2 under the label "Marié (ou situation marital
+  depuis au moins 6 mois)/ Concubin / Pacsé" (eschizo.sql, line 7724) and the
+  export looks for "Marié / Concubin / Pacsé" (eschizo_social.sql, line 15),
+  which it never finds, so the cell is left empty. The marital status never
+  holds code 2: it is 1 on 1,652 visits, 3 or 4 on 72, 5 on 4, and empty on
+  8% to 19% of the inclusions of every year (253 of the 1,981 inclusions
+  with a social form, 167 of them patients who live in their own family
+  home). An empty cell is often a married patient or one living as a couple,
+  and the shares computed from this variable are wrong. Delivered as
+  extracted until the export is corrected.
 
-  A period without data (open question O23). The work status and the
-  source of income are empty on almost every visit from mid-2015 to 2018
-  (137 of 148 visits in 2016, 149 of 153 in 2017) and filled before and
-  after, while the housing and the income level are filled all along.
+  The source of income (saltyp) is not delivered (ignored.yaml, decision
+  D94, request R46). The form asks the types of income as eight boxes,
+  several of which can be ticked (salary, minimum income, disability
+  allowance, disability pension, unemployment benefit, housing benefit, no
+  income, other). The export keeps one code, the first that its own list of
+  labels finds (eschizo_social.sql, lines 85 to 95); it looks for "Salarié"
+  where the form writes "Salaire" (line 87) and never finds "Pension
+  d'invalidité" (line 90), so codes 1 and 4 are on none of the 1,100 filled
+  cells and 162 of the 236 employed patients have no source. The column is
+  neither the main source nor the list.
 
+  A period without work status (open question O23, request R48). The work
+  status is empty on most inclusions from the spring of 2015 to mid-2019 (17
+  of 44 visits in the second quarter of 2015, 140 of 151 in 2016, 149 of 153
+  in 2017, 159 of 204 in 2018, 62 of 149 in 2019, 2 of 25 in the last
+  quarter of 2019), and filled before and after, while the housing and the
+  income level are filled all along. In that period the question was asked
+  in the socio-demographic form (table socio_demog, with seven answers, the
+  types of income and other social questions), which the export does not
+  read: a comment of 27 May 2016 in the application (visite.php, lines 542
+  to 545) says that the variable was removed from the social form and is to
+  be read in socio_demog. The current social form asks it again. The
+  answers of the period are in socio_demog in the source database.
+
+  The age at the first job left the form in 2019: it is filled on 67% to
+  92% of the inclusions of 2010 to 2018, on 48 of 149 in 2019 and on 1 of
+  the 697 after; the current form has no such question.
+
+  The income bands are in euros of the day. The share of 1,000 to 1,500
+  euros is 11% to 13% of the inclusions of 2018 to 2021, 21% in 2022 and
+  2023, 24% in 2024 and 41% to 43% in 2025 and 2026, and that of 500 to
+  1,000 euros falls from 52% to 60% (2018 to 2021) to 28% and 18% (2025,
+  2026). Most of the move is among the unemployed patients (54 of the 137
+  included from 2024 are in 1,000 to 1,500 euros). A likely cause is the disability allowance (AAH), which
+  passed 1,000 euros a month in 2024; the step is documented here.
+
+  The work status holds codes 0 to 6: the export writes "Au foyer" as 5.
+  One number of months in the present job is over 600 (out_of_range).
   empjob, the class of the job, holds one code on 41 rows and is ignored
   (O2). The education level mixes years and words, as in BP.
 
@@ -73,7 +109,7 @@ variables:
     column: stprof
     label: Work status
     type: category
-    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: other, 7: homemaker}
+    codes: {0: unemployed, 1: employed, 2: retired, 3: student, 4: disability_pension, 5: homemaker, 6: other}
   job_duration:
     column: jobdur
     label: Time in work without a break of more than six months (the employed)
@@ -116,16 +152,3 @@ variables:
     label: Monthly income, all sources
     type: category
     codes: {"0-500 euros": 0_to_500, "500-1000 euros": 500_to_1000, "1000-1500 euros": 1000_to_1500, "1500-2000 euros": 1500_to_2000, ">2000 euros": over_2000}
-  income_source:
-    column: saltyp
-    label: Main source of income
-    type: category
-    codes:
-      1: salary
-      2: minimum_income
-      3: disability_allowance
-      4: disability_pension
-      5: unemployment_benefit
-      6: housing_benefit
-      7: no_income
-      8: other

@@ -2,17 +2,27 @@ instrument: puberty_and_handedness
 title: "Handedness and Tanner stages"
 tab: clinique
 section: clinical examination
-status: draft
+status: reviewed
 notes: >
-  lateral is the handedness, on 883 inclusion visits (right-handed on 745 of
-  them), delivered with the names of FACE BP (right, left, both).
+  lateral is the handedness, on 996 visits (883 at inclusion, 113 at
+  follow-up; right-handed on 836, 745 of them at inclusion), delivered with
+  the names of FACE BP (right, left, both). The follow-up form 245 asks the
+  same questions as the inclusion form 194 (codes as in the form and the
+  thesaurus); 69 of the 76 follow-up answers of patients with an inclusion
+  answer agree with it.
 
-  Four stages of puberty from 1 to 5, read as the Tanner stages: tang and tanpg
-  for the boys (218 of the 222 visits with tang are boys), tans and tanpf for
-  the girls (123 of 125). Which of each pair is the pubic hair is given by the
-  thesaurus. They are filled for adults too.
+  Four stages of puberty from 1 to 5, read as the Tanner stages: tang and
+  tanpg for the boys (tang on 292 visits, 222 at inclusion; 288 of them are
+  boys), tans and tanpf for the girls (tans on 134 visits, 125 at inclusion;
+  132 girls). Which of each pair is the pubic hair is given by the
+  thesaurus. They are filled for adults too. The form has no sex or age
+  gate: the 4 boys' stages typed for girls and the 2 girls' stages typed
+  for boys stay as recorded (R2).
 
-  fnmchang is a box of the follow-up form (98 visits, 0 on almost all).
+  fnmchang is a box of the follow-up form 245 (98 visits, 2014 to 2024; 1
+  on 3 of them). It sits after the Tanner block and before the neurological
+  examination, and the form does not say which block it covers (question
+  M84): the label says so.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
@@ -20,10 +30,15 @@ notes: >
 
   An instrument of the ASP cohort only.
 
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the Tanner stages of boys have a median of 1 in
+  centre A (children only) and 4 to 5 elsewhere, and of 1 in 2018 and 2019,
+  when A holds most visits: the age mix. Handedness has no step.
+
 variables:
   handedness: {column: lateral, type: category, codes: {"1": left, "2": right, "3": both}, label: "Handedness"}
   tanner_genital_boys: {column: tang, type: item, range: [1, 5], label: "Tanner stage, boys, genitals (1 to 5)"}
   tanner_pubic_boys: {column: tanpg, type: item, range: [1, 5], label: "Tanner stage, boys, pubic hair (1 to 5)"}
   tanner_breast_girls: {column: tans, type: item, range: [1, 5], label: "Tanner stage, girls, breasts (1 to 5)"}
   tanner_pubic_girls: {column: tanpf, type: item, range: [1, 5], label: "Tanner stage, girls, pubic hair (1 to 5)"}
-  puberty_handedness_changed: {column: fnmchang, type: item, range: [0, 1], label: "Puberty and handedness changed since the last visit (follow-up form)"}
+  puberty_handedness_changed: {column: fnmchang, type: item, range: [0, 1], label: "Change since the last visit (follow-up form; it sits between the Tanner stages and the neurological examination, and which block it covers is not stated)"}

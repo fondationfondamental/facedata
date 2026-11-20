@@ -118,7 +118,7 @@ Key columns first, then the harmonised variables of every instrument.
 | `visit_month` | Planned months since inclusion, read from the label (`V0` = 0, `V6_mois` = 6, `V1_an` = 12) |
 | `visit_date` | Visit date (from `svdtc`) |
 | `siteid` | Centre (text, leading zeros kept) |
-| `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The BP, SZ and ASP exports give the date of birth to the month only, so it is exact to about two weeks; the DR export keeps the day for 88 patients, which the DR schema sets to the 15th |
+| `age` | Age at the visit, in years with decimals (from `brthdtc` and the visit date). The BP, SZ and ASP exports give the date of birth to the month only, so it is exact to about two weeks; the DR export keeps the day for 88 patients: the DR schema sets the delivered `birth_date` to the 15th, and their age at the visit uses the day as exported (R162) |
 | harmonised variables | Numbers are floats in the schema's unit, categories are harmonised labels, dates are dates |
 
 (`usubjid`, `visit`) is unique inside a cohort: the export's visit preprocessing merges or deletes the records that share a label, and the real-data tests check it.

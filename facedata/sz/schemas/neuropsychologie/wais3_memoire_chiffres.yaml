@@ -2,7 +2,7 @@ instrument: wais3_memoire_chiffres
 title: WAIS-III digit span
 tab: NEUROPSYCHOLOGIE
 section: Mémoire des chiffres (WAIS-3) ancienne version
-status: draft
+status: reviewed
 notes: >
   WAIS-III and WAIS-IV are two instruments stored in the same columns
   (decision D10 of the BP file). This schema reads the digit-span columns on
@@ -48,21 +48,29 @@ notes: >
   (read with the typed age as it stands the table gives the stored score on
   all but 3 of the 704 visits that have a typed age). The z-score differs on
   the same 7. The z-score of the forward span differs from the stored one on
-  16 of 705 visits and that of the backward span on 17 of 705; the typed age
-  is more than a year from the age at the visit on 5 of each, and read with
-  the typed age as it stands the differences are 11 and 12. The typed age is
-  within a year of the age at the visit on 685 of the 706 visits that have a
-  total, farther on 19 and missing on 2.
+  16 of the 702 visits that have both, and that of the backward span on 17 of
+  702. The application computes it when the button is clicked, with the age
+  and the years of education in the form at that moment, and does not
+  recompute it after an edit. All but one difference are read in another cell
+  of the table: 5 with the typed age where it is more than a year from the age
+  at the visit, 4 with the lowest education class (education still empty at
+  the click), 3 with the education at a class bound read one class lower, 2
+  (forward) or 3 (backward) with a neighbouring education class and 1 with the
+  next age group. The tables and the bounds of the classes are those of the
+  script (psy_neuropsychologie_memchiffre_sz.js: 43 of 43 cells for each
+  span). 1 visit (2013, centre D) is not explained. The export gives one age
+  and one number of years of education for the three neuropsychology forms
+  (face_sz_4_neuropsychologie.sql, lines 15 and 17; request R168). The typed
+  age is within a year of the age at the visit on 685 of the 706 visits that
+  have a total, farther on 19 and missing on 2.
 
   Same instrument as in FACE BP, reduced to the summary scores; the z-scores
   of the spans are in the columns mcodempz_w and mcoiempz_w here. Two typed
   ages written 'NN ans' are unparsed; the age at the visit is used where the
-  typed one is not read (both visits have this subtest), and 2 education
-  cells hold a word and stay unparsed (visits with no test value). Draft
-  because: item 5, the z-scores of the forward and backward spans differ
-  from the stored ones on 16 and 17 of 705 visits and the typed age explains
-  only 5 of each: the other 11 and 12 visits (1.6% and 1.7%, 2011 to 2015, 8
-  centres) have no known cause.
+  typed one is not read (both visits have this subtest), and 2 education cells
+  hold a word and stay unparsed (visits with no test value). The stored
+  z-scores that differ were computed before an edit of the age or of the years
+  of education; the recomputed ones are delivered.
 
 version:
   name: wais_version

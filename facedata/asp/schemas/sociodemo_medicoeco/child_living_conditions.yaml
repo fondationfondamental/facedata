@@ -2,27 +2,68 @@ instrument: child_living_conditions
 title: "Living conditions of the child"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
   The housing (kind, garden, rooms, surface, own bedroom), schooling, leisure
-  and siblings: 947 inclusion visits (390 of children, 557 of adults) and 71 follow-up visits, from 2020 to 2026. Asked for children.
+  and siblings: 947 inclusion visits (390 of children, 557 of adults) and 71
+  follow-up visits, from 2020 to 2026. Asked of children (form 351).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`.
+
+  **Two forms in one table (R31).** The adult form 350 and the child form 351
+  write one table (aut_medeco2); the application chooses the form by age at the
+  visit. It writes a 0 into every unticked box on each save (D33), the boxes of
+  the form NOT shown included: the adult-only boxes hold 0 on 499 records that are
+  not adult forms (14,471 cells, never a 1) and the child-only boxes on 577 records
+  (4,039 cells, never a 1). The form of a visit is read from the questions that only
+  one form asks (`version: medeco_form`, `filled`): 519 adult forms, 441 child forms,
+  58 records with no answer of either form (`medeco_unidentified`: their boxes are
+  missing), none with both; an age band would misread 3 visits. The zeros never
+  asked are missing; no 1 is lost. In this schema 2,885 cells become missing (`defaults: versions:
+  [medeco_child]`).
+
+  The two boxes of the out-of-school activity are 1 'in a group' and 2 'alone'
+  on the form (351.php line 181); the thesaurus swaps them (R171). They are
+  written 0 on every save: `derived_from` the activity question (60
+  `derived_doubt` cells, the boxes beside an empty question). The sessions of
+  the siblings' group are 0 after a no (`asked_if`). Ranges are the limits of the form: a blocking check stops the counts above 50
+  (eASPERGER.js lines 3560 to 3925), the other numbers at the length of their box. The rooms and the
+  children of the sibship stop at 20, the siblings' group at 50 sessions.
 
   A section of the ASP cohort only.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): two centres (A and B). The garden is yes for 17% of
+  the children of centre A in 2021, 52% to 56% in 2022 and 2023, 22% to 26%
+  from 2025, and 50% to 69% in B every year; the group activity and bullying
+  move by 15 to 25 points between years. No known cause (the questions do not
+  change), documented here; the rooms differ by one (median 4 or 5).
+
+version:
+  name: medeco_form
+  filled:                            # the child form 351 and the adult form 350 write one table (aut_medeco2)
+    medeco_adult: [pe, ml, ce, sme, crpro, cpo, esat, ea, hooccur_avq1, hooccur_avq2, hav_child, ehaj, hooccur_groupe]
+    medeco_child: [psysco, pecs, habitat, jardin, scolar01, fratn, tsadtc, loisi01, demenag]
+    medeco_unidentified: [saltyp_1]  # the table is saved (its boxes are written 0) but no answer of either form tells which
+
+defaults: {versions: [medeco_child]}
 
 variables:
   habitat: {column: habitat, type: category, label: "Living conditions of the child: kind of housing", codes: {"1": flat, "2": house}}
   jardin: {column: jardin, type: item, label: "Living conditions of the child: the home has a garden (0 no, 1 yes)", range: [0, 1]}
-  nbpiece: {column: nbpiece, type: number, label: "Living conditions of the child: number of rooms of the home", range: [0, 200], winsor: false}
-  surface: {column: surface, type: number, label: "Living conditions of the child: size of the home, square metres", range: [0, 554], winsor: false}
+  nbpiece: {column: nbpiece, type: number, label: "Living conditions of the child: number of rooms of the home", range: [0, 20], winsor: false}
+  surface: {column: surface, type: number, label: "Living conditions of the child: size of the home, square metres", range: [0, 999], winsor: false}
   chambre: {column: chambre, type: item, label: "Living conditions of the child: the child has a bedroom of their own (0 no, 1 yes)", range: [0, 1]}
   demenag: {column: demenag, type: item, label: "Living conditions of the child: the family moved to be nearer the child's places of care (0 no, 1 yes)", range: [0, 1]}
   scolar01: {column: scolar01, type: item, label: "Living conditions of the child: the child has been bullied at school (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
@@ -30,15 +71,15 @@ variables:
   scolar03: {column: scolar03, type: item, label: "Living conditions of the child: sessions held to explain autism to the child's schoolmates (0 no, 1 yes)", range: [0, 1]}
   loisi01: {column: loisi01, type: item, label: "Living conditions of the child: the child has access to out-of-school activities (0 no, 1 yes)", range: [0, 1]}
   loisi01a: {column: loisi01a, type: text, label: "Living conditions of the child: out-of-school activity, which, free text"}
-  loisi01b_1: {column: loisi01b_1, type: item, label: "Living conditions of the child: out-of-school activity done alone (box) (0 no, 1 yes)", range: [0, 1]}
-  loisi01b_2: {column: loisi01b_2, type: item, label: "Living conditions of the child: out-of-school activity done in a group (box) (0 no, 1 yes)", range: [0, 1]}
+  loisi01b_1: {column: loisi01b_1, type: item, label: "Living conditions of the child: out-of-school activity done in a group (box) (0 no, 1 yes)", range: [0, 1], derived_from: loisi01}
+  loisi01b_2: {column: loisi01b_2, type: item, label: "Living conditions of the child: out-of-school activity done alone (box) (0 no, 1 yes)", range: [0, 1], derived_from: loisi01}
   loisi01c: {column: loisi01c, type: item, label: "Living conditions of the child: out-of-school activity through an autism inclusion association (0 no, 1 yes)", range: [0, 1]}
   loisi02: {column: loisi02, type: item, label: "Living conditions of the child: the child goes to holiday camps (0 no, 1 yes)", range: [0, 1]}
   loisi02a: {column: loisi02a, type: item, label: "Living conditions of the child: holiday camps through an autism inclusion association (0 no, 1 yes)", range: [0, 1]}
-  fratn: {column: fratn, type: number, label: "Living conditions of the child: number of children in the sibship, half- and step-siblings included", range: [0, 200], winsor: false}
+  fratn: {column: fratn, type: number, label: "Living conditions of the child: number of children in the sibship, half- and step-siblings included", range: [0, 20], winsor: false}
   dsm4s: {column: dsm4s, type: item, label: "Living conditions of the child: a sibling has a DSM diagnosis or a neurological or genetic disease (0 no, 1 yes)", range: [0, 1]}
   fratgr: {column: fratgr, type: item, label: "Living conditions of the child: a brother or sister takes part in a siblings' group (0 no, 1 yes)", range: [0, 1]}
-  nboccur_fratgr: {column: nboccur_fratgr, type: number, label: "Living conditions of the child: siblings' group, number of sessions in the last 12 months", range: [0, 200], winsor: false}
+  nboccur_fratgr: {column: nboccur_fratgr, type: number, label: "Living conditions of the child: siblings' group, number of sessions in the last 12 months", range: [0, 50], winsor: false, asked_if: fratgr}
   lieu_fratgr_1: {column: lieu_fratgr_1, type: item, label: "Living conditions of the child: siblings' group in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1]}
   lieu_fratgr_2: {column: lieu_fratgr_2, type: item, label: "Living conditions of the child: siblings' group in a hospital or mental health centre (CMP) (box) (0 no, 1 yes)", range: [0, 1]}
   lieu_fratgr_3: {column: lieu_fratgr_3, type: item, label: "Living conditions of the child: siblings' group in a medico-social service (box) (0 no, 1 yes)", range: [0, 1]}

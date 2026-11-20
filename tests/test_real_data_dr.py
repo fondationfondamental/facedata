@@ -73,8 +73,8 @@ def test_patient_and_inclusion_tabs(result, qc):
     # The stored age was computed at a later date for the patients who came back: the age at inclusion is recomputed.
     assert (patients["age_at_inclusion"].notna().sum(), patients["age_at_inclusion"].median()) == (634, 51)
     assert (qc.loc["age_at_inclusion", "score_mismatch"], qc.loc["birth_date", "date_partial"]) == (71, 88)
-    assert (qc.loc["referred_by", "n_valid"], qc.loc["visit_purpose_code", "n_valid"]) == (111, 593)
-    assert patients["visit_purpose_code"].value_counts().to_dict() == {"code_3": 307, "code_2": 250, "code_1": 36}
+    assert (qc.loc["referred_by", "n_valid"], qc.loc["visit_purpose", "n_valid"]) == (111, 593)
+    assert patients["visit_purpose"].value_counts().to_dict() == {"diagnosis_and_treatment": 307, "treatment": 250, "diagnosis": 36}
     assert qc.loc[qc["tab"].isin(["PATIENT", "INCLUSION"]), ["unknown_code", "unparsed", "out_of_range", "patient_value_varies"]].sum().sum() == 0
     # The criteria are ticked at the screening visit, for all patients but one.
     screening = result.data[result.data["visit"] == "screening"]
@@ -307,30 +307,31 @@ def test_neuropsychology(result, qc):
 def test_mini(result, qc):
     data = result.data
     tab = result.qc[result.qc["tab"] == "MINI"]
-    assert (len(tab), tab["instrument"].nunique()) == (318, 17)
+    assert (len(tab), tab["instrument"].nunique()) == (418, 17)
     assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["out_of_range"].sum()) == (0, 1, 2)
     # The interview is answered at screening, and again at 2 and 4 years.
     first = ["mini_a01a", "mini_b01", "mini_c01a", "mini_d01a", "mini_e01", "mini_f01", "mini_g01", "mini_h01", "mini_i01", "mini_j01a",
              "mini_k01a", "mini_l01c", "mini_m01", "mini_n01a", "mini_o01a", "mini_p01a"]
+    first += ["mini_a01a_fu", "mini_c01a_fu", "mini_d01a_fu", "mini_h01_fu", "mini_k01a_fu", "mini_p01a_fu"]      # the lifetime questions asked again at follow-up are their own variables (R32)
     answered = data[first].notna().any(axis=1)
     assert data.loc[answered, "visit"].value_counts().head(3).to_dict() == {"screening": 491, "V2_ans": 57, "V4_ans": 32}
     assert (answered.sum(), data.loc[answered, "usubjid"].nunique()) == (583, 493)
     # Boxes that the form sets to 0 when it is opened: flagged where the module has no answer.
     assert tab.groupby("instrument")["derived_doubt"].sum().loc[lambda s: s > 0].to_dict() == {
-        "mini_a_depression": 195, "mini_b_suicidality": 150, "mini_c_mania": 408, "mini_j_substances": 2769, "mini_q_conclusion": 1170}
+        "mini_a_depression": 289, "mini_b_suicidality": 166, "mini_c_mania": 408, "mini_j_substances": 2769, "mini_q_conclusion": 1170}
     assert (qc.loc["mini_mdd_current", "n_valid"], (data["mini_mdd_current"] == 1).sum(), (data["mini_mde_current"] == 1).sum()) == (630, 361, 308)
     # The suicidality score is the weighted sum of the MINI; 0 where no question is answered yes.
-    assert (qc.loc["mini_suicide_risk_score", "n_valid"], data["mini_suicide_risk_score"].median(), (data["mini_suicide_risk_score"] == 0).sum()) == (553, 4, 107)
-    points = {"mini_b02": 1, "mini_b03": 1, "mini_b04": 2, "mini_b05": 6, "mini_b06": 8, "mini_b07": 8, "mini_b08": 9, "mini_b09": 4, "mini_b10": 9, "mini_b11": 4}
+    assert (qc.loc["mini_suicide_risk_score", "n_valid"], data["mini_suicide_risk_score"].median(), (data["mini_suicide_risk_score"] == 0).sum()) == (559, 4, 108)
+    points = {"mini_b02": 1, "mini_b03": 1, "mini_b04": 2, "mini_b05": 6, "mini_b06": 8, "mini_b07": 8, "mini_b08": 9, "mini_b09": 4, "mini_b10": 9, "mini_b11": 4, "mini_b11_fu": 4}
     weighted = sum(data[name].fillna(0) * weight for name, weight in points.items())
     stored = data["mini_suicide_risk_score"] > 0
-    assert (weighted[stored] == data.loc[stored, "mini_suicide_risk_score"]).all() and stored.sum() == 446
+    assert (weighted[stored] == data.loc[stored, "mini_suicide_risk_score"]).all() and stored.sum() == 451
     assert data["mini_suicide_risk_level"].value_counts().sort_index().to_dict() == {1.0: 279, 2.0: 90, 3.0: 73}
     # Symptom counts and conclusions.
-    assert (qc.loc["mini_mde_symptoms_2_weeks", "n_valid"], data["mini_mde_symptoms_2_weeks"].median(), qc.loc["mini_mde_episodes", "missing_code"]) == (421, 7, 6)
-    yes = {name: int((data[name] == 1).sum()) for name in ["mini_panic_lifetime", "mini_gad_current", "mini_social_phobia_current", "mini_agoraphobia_current", "mini_ptsd_current",
+    assert (qc.loc["mini_mde_symptoms_2_weeks", "n_valid"], data["mini_mde_symptoms_2_weeks"].median(), qc.loc["mini_mde_episodes", "missing_code"]) == (421, 7, 5)
+    yes = {name: int((data[name] == 1).sum()) for name in ["mini_panic_lifetime", "mini_gad_current", "mini_social_phobia_current", "mini_agoraphobia_without_panic_current", "mini_ptsd_current",
                                                            "mini_alcohol_dependence_current", "mini_substance_dependence_current", "mini_antisocial_lifetime"]}
-    assert list(yes.values()) == [125, 175, 136, 104, 24, 23, 19, 6]
+    assert list(yes.values()) == [115, 175, 136, 104, 24, 29, 19, 4]      # inclusion only for the lifetime ones (R32); alcohol recomputed on three of seven criteria (R27)
     assert data["mini_social_phobia_type"].value_counts().to_dict() == {"generalised": 97, "non_generalised": 43}
     assert data["mini_o02"].value_counts().to_dict() == {"yes": 381, "no": 135, "uncertain": 26}
 
@@ -374,8 +375,8 @@ def test_suicide_mood_care_and_social_tabs(result, qc):
     # The lists of the most serious and of the most violent attempt are read from forms 151 and 152 (D46).
     assert data["serious_method"].value_counts().head(2).to_dict() == {"sedative_drugs": 61, "non_sedative_drugs_or_substances": 7}
     assert data["violent_method"].value_counts().to_dict() == {"other": 8, "hanging": 3, "immolation": 2, "drowning": 2, "jump": 1}
-    assert tab["not_shown"].sum() == 45                       # the five boxes of the consequences of another method, shown for that method only
-    assert data["closest_person_code"].value_counts().head(2).to_dict() == {"code_1": 330, "code_10": 117}
+    assert tab["not_shown"].sum() == 53                       # 45 in the five boxes of the consequences of another method, shown for that method only; 8 in the job details of another work status (D77)
+    assert data["closest_person"].value_counts().head(2).to_dict() == {"spouse": 330, "child": 117}
     # Sick leave, hospitalisations and care.
     assert (qc.loc["sick_leave_12m", "n_valid"], qc.loc["sick_leave_12m", "missing_code"], (data["sick_leave_12m"] == 1).sum(), qc.loc["sick_leave_weeks_12m", "out_of_range"]) == (433, 244, 241, 32)
     # The form has no yes/no question and states no cause: the names say any cause (D49); the days run from 0 to 730.

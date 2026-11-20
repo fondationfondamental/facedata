@@ -2,129 +2,188 @@ instrument: care_consumption
 title: "Use of care in the last year"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
   The date and the cost of the diagnosis, emergency visits, hospitalisations,
-  consultations by kind of professional (general practitioner, psychiatrist
-  or psychologist, speech therapist, psychomotor therapist, occupational
-  therapist, social skills group, orthoptist) in two places, the care package
-  and its length, travels for care and groups: 947 inclusion visits (390 of children, 557 of adults) and 71 follow-up visits,
-  from 2020 to 2026.
+  consultations by kind of professional (general practitioner or
+  paediatrician, psychiatrist, psychologist, speech therapist, psychomotor
+  therapist, occupational therapist, social skills group, orthoptist,
+  home-based practitioner, other) in two places (private practice, public
+  service), the care package and its length, travels for care and the groups
+  for the relatives: 947 inclusion visits (390 of children, 557 of adults) and
+  71 follow-up visits, from 2020 to 2026. Asked of children and adults (forms
+  351 and 350), apart from the relatives' group (adult form) and the
+  behavioural approach of the psychologist (child form).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. The two series of columns named lieu1 and lieu2 ask
-  the same professionals in two places (lieu1 is private practice, lieu2 a
-  public service). A number of times is asked after a yes. The boxes
-  (psyg_type, lieu_exam, hoterm_pec, lieu_groupe) hold a 0 or a 1 on every
-  visit that has the form. An emergency visit is reported on 101 of 889
-  inclusion visits with an answer.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`.
 
-  A section of the ASP cohort only.
+  **Two forms in one table (R31).** The adult form 350 and the child form 351
+  write one table (aut_medeco2); the application chooses the form by age at the
+  visit. It writes a 0 into every unticked box on each save (D33), the boxes of
+  the form NOT shown included: the adult-only boxes hold 0 on 499 records that are
+  not adult forms (14,471 cells, never a 1) and the child-only boxes on 577 records
+  (4,039 cells, never a 1). The form of a visit is read from the questions that only
+  one form asks (`version: medeco_form`, `filled`): 519 adult forms, 441 child forms,
+  58 records with no answer of either form (`medeco_unidentified`: their boxes are
+  missing), none with both; an age band would misread 3 visits. The zeros never
+  asked are missing; no 1 is lost. In this schema 2,651 cells become missing.
+
+  A number of consultations or sessions is asked after a yes: after a no it is
+  0 (`asked_if`, 27 counts, 19,464 cells). The form hides and clears the
+  questions under a no (masquer), so no count is typed under a no. The details
+  (session length, approach, place, wait) stay missing after a no (R1). The
+  boxes of the places of the examinations and of the relatives' group, of the
+  approaches of the psychologist and of the care hard to find are written 0 on
+  every save, after a no or with an empty question too: `derived_from` their
+  question (2,279 `derived_doubt` cells).
+
+  The counts of therapeutic flats, of the part-time therapeutic centre, of the
+  day and of the full-time hospitalisations are printed "Nombre de consultations
+  dans les 12 derniers mois" on the form: the day-hospital count is bimodal
+  (median 1 in centre A, 10 in centre B), so stays or days, the form does not
+  say (question M90). Ranges are the limits of the form: a blocking check stops the counts above 50
+  (eASPERGER.js lines 3560 to 3925), the other numbers at the length of their box. The session lengths stop at 99 minutes and the
+  longest wait at 999 months; the intensive intervention before 5 years at 20
+  hours a week and its ages at 50. An emergency visit is reported on 101 of
+  889 inclusion visits with an answer.
+
+  The forms 263 and 265 of an older 'Module social' (tables aut_medeco and
+  medeco_soin) are commented out of the application and not exported: do
+  their records hold answers (M91)?
+
+  A section of the ASP cohort only, apart from saw_gp and n_gp, which DR
+  delivers too (DR care over the year; the DR box accepts up to 365
+  consultations, the ASP form 50, and the ASP question includes the
+  paediatrician).
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the centres differ, mostly by the age of their
+  patients: the public psychiatrist is seen by 75% in A (children) and 34% to
+  51% elsewhere; the private psychologist 55% in A and 23% to 52% elsewhere.
+  Habits with no known cause, documented here: centre D has the fewest general
+  practitioner visits (44% saw one, median 0, against 76% to 84% and medians 2
+  to 5) and the fewest care hard to find (9%, against 27% to 61%); the private
+  examinations rise from 9% in 2021 to 38% in 2026 (in A, B and C alike) and
+  are 0% in H and 60% in E; the cost of the diagnosis has a median of 0 in A
+  and 400 euros in B; the private session lasts 45 minutes in A and 60 in B
+  and C.
+
+version:
+  name: medeco_form
+  filled:                            # the child form 351 and the adult form 350 write one table (aut_medeco2)
+    medeco_adult: [pe, ml, ce, sme, crpro, cpo, esat, ea, hooccur_avq1, hooccur_avq2, hav_child, ehaj, hooccur_groupe]
+    medeco_child: [psysco, pecs, habitat, jardin, scolar01, fratn, tsadtc, loisi01, demenag]
+    medeco_unidentified: [saltyp_1]  # the table is saved (its boxes are written 0) but no answer of either form tells which
 
 variables:
-  tsadtc: {column: tsadtc, type: date, label: "Date of the diagnosis of autism spectrum disorder (ASD)", range: [1990-01-01, 2026-12-31]}
-  tsaprix: {column: tsaprix, type: number, label: "Diagnosis of ASD: price of the assessments linked to the diagnosis, in euros", range: [0, 4000], winsor: false}
-  urg: {column: urg, type: item, label: "Use of care in the last year: visit to the psychiatric emergency department (0 no, 1 yes)", range: [0, 1]}
-  nboccur_urg: {column: nboccur_urg, type: number, label: "Psychiatric emergency department: number of visits in the last 12 months", range: [0, 200], winsor: false}
-  tpn_nb2: {column: tpn_nb2, type: item, label: "Use of care in the last year: care in therapeutic flats (0 no, 1 yes)", range: [0, 1]}
-  hosp_tpn_nb2: {column: hosp_tpn_nb2, type: number, label: "Care in therapeutic flats: number of times in the last 12 months", range: [0, 200], winsor: false}
-  tpl_nb3: {column: tpl_nb3, type: item, label: "Use of care in the last year: care at a part-time therapeutic centre (CATTP) (0 no, 1 yes)", range: [0, 1]}
-  hosp_tpl_nb3: {column: hosp_tpl_nb3, type: number, label: "Part-time therapeutic centre (CATTP): number of times in the last 12 months", range: [0, 200], winsor: false}
-  tpl_nb1: {column: tpl_nb1, type: item, label: "Use of care in the last year: day hospitalisations for a psychiatric reason (0 no, 1 yes)", range: [0, 1]}
-  hosp_tpl_nb1: {column: hosp_tpl_nb1, type: number, label: "Day hospitalisations for a psychiatric reason: number in the last 12 months", range: [0, 200], winsor: false}
-  tpn_nb1: {column: tpn_nb1, type: item, label: "Use of care in the last year: full-time hospitalisations for a psychiatric reason (0 no, 1 yes)", range: [0, 1]}
-  hosp_tpn_nb1: {column: hosp_tpn_nb1, type: number, label: "Full-time hospitalisations for a psychiatric reason: number in the last 12 months", range: [0, 200], winsor: false}
-  medg: {column: medg, type: item, label: "Use of care in the last year: general practitioner or paediatrician (0 no, 1 yes)", range: [0, 1]}
-  cons_nb1: {column: cons_nb1, type: number, label: "General practitioner or paediatrician: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  psysco: {column: psysco, type: item, label: "Use of care in the last year: school psychologist for the child (0 no, 1 yes)", range: [0, 1]}
-  nboccur_psysco: {column: nboccur_psysco, type: number, label: "School psychologist: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  exam: {column: exam, type: item, label: "Use of care in the last year: additional or laboratory examinations (MRI, EEG, audiogram, blood test) (0 no, 1 yes)", range: [0, 1]}
-  nboccur_exam: {column: nboccur_exam, type: number, label: "Additional or laboratory examinations: number in the last 12 months", range: [0, 200], winsor: false}
-  lieu_exam_1: {column: lieu_exam_1, type: item, label: "Use of care in the last year: examinations done in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1]}
-  lieu_exam_2: {column: lieu_exam_2, type: item, label: "Use of care in the last year: examinations done in a hospital or public service (box) (0 no, 1 yes)", range: [0, 1]}
-  medp_lieu2: {column: medp_lieu2, type: item, label: "Use of care in the last year: psychiatrist, child psychiatrist or neuropaediatrician in a public service (0 no, 1 yes)", range: [0, 1]}
-  cons_nb2_lieu2: {column: cons_nb2_lieu2, type: number, label: "Psychiatrist, child psychiatrist, neuropaediatrician in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  psyg_lieu2: {column: psyg_lieu2, type: item, label: "Use of care in the last year: psychologist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
-  cons_nb3_lieu2: {column: cons_nb3_lieu2, type: number, label: "Psychologist in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  hodur_psyg_lieu2: {column: hodur_psyg_lieu2, type: number, label: "Psychologist in a public service: length of the sessions, minutes", range: [0, 200], winsor: false}
-  psyg_type_lieu2_1: {column: psyg_type_lieu2_1, type: item, label: "Psychologist in a public service, approach: behavioural method (ABA, TEACCH, ESDM/Denver) (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_2: {column: psyg_type_lieu2_2, type: item, label: "Psychologist in a public service, approach: cognitive behavioural therapy (CBT) (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_3: {column: psyg_type_lieu2_3, type: item, label: "Psychologist in a public service, approach: cognitive remediation (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_4: {column: psyg_type_lieu2_4, type: item, label: "Psychologist in a public service, approach: psychoeducation (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_5: {column: psyg_type_lieu2_5, type: item, label: "Psychologist in a public service, approach: family therapy (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_6: {column: psyg_type_lieu2_6, type: item, label: "Psychologist in a public service, approach: psychodynamic or psychoanalytic (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_7: {column: psyg_type_lieu2_7, type: item, label: "Psychologist in a public service, approach: psychosocial rehabilitation programme (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_8: {column: psyg_type_lieu2_8, type: item, label: "Psychologist in a public service, approach: job coaching (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu2_9: {column: psyg_type_lieu2_9, type: item, label: "Psychologist in a public service, approach: other (box) (0 no, 1 yes)", range: [0, 1]}
-  prdecod_autre_lieu2: {column: prdecod_autre_lieu2, type: text, label: "Psychologist in a public service, approach: other, which, free text"}
-  orthoph_lieu2: {column: orthoph_lieu2, type: item, label: "Use of care in the last year: speech therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_orthoph_lieu2: {column: nboccur_orthoph_lieu2, type: number, label: "Speech therapist in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  psychom_lieu2: {column: psychom_lieu2, type: item, label: "Use of care in the last year: psychomotor therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_psychom_lieu2: {column: nboccur_psychom_lieu2, type: number, label: "Psychomotor therapist in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  ergo_lieu2: {column: ergo_lieu2, type: item, label: "Use of care in the last year: occupational therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_ergo_lieu2: {column: nboccur_ergo_lieu2, type: number, label: "Occupational therapist in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  hsoc_lieu2: {column: hsoc_lieu2, type: item, label: "Use of care in the last year: social skills group led by professionals in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_hsoc_lieu2: {column: nboccur_hsoc_lieu2, type: number, label: "Social skills group in a public service: number of sessions in the last 12 months", range: [0, 200], winsor: false}
-  orthopt_lieu2: {column: orthopt_lieu2, type: item, label: "Use of care in the last year: orthoptist in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_orthopt_lieu2: {column: nboccur_orthopt_lieu2, type: number, label: "Orthoptist in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  interv_lieu2: {column: interv_lieu2, type: item, label: "Use of care in the last year: home-based practitioner (ABA, TEACCH or similar method) in a public service (0 no, 1 yes)", range: [0, 1]}
-  nboccur_interv_lieu2: {column: nboccur_interv_lieu2, type: number, label: "Home-based practitioner in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  cons_aut_lieu2: {column: cons_aut_lieu2, type: item, label: "Use of care in the last year: other professional in a public service (0 no, 1 yes)", range: [0, 1]}
-  aut_lieu2: {column: aut_lieu2, type: text, label: "Use of care in the last year: other professional in a public service, which, free text"}
-  cons_nb4_lieu2: {column: cons_nb4_lieu2, type: number, label: "Other professional in a public service: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  medp_lieu1: {column: medp_lieu1, type: item, label: "Use of care in the last year: psychiatrist, child psychiatrist or neuropaediatrician in private practice (0 no, 1 yes)", range: [0, 1]}
-  cons_nb2_lieu1: {column: cons_nb2_lieu1, type: number, label: "Psychiatrist, child psychiatrist, neuropaediatrician in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  psyg_lieu1: {column: psyg_lieu1, type: item, label: "Use of care in the last year: psychologist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
-  cons_nb3_lieu1: {column: cons_nb3_lieu1, type: number, label: "Psychologist in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  hodur_psyg_lieu1: {column: hodur_psyg_lieu1, type: number, label: "Psychologist in private practice: length of the sessions, minutes", range: [0, 200], winsor: false}
-  psyg_type_lieu1_1: {column: psyg_type_lieu1_1, type: item, label: "Psychologist in private practice, approach: behavioural method (ABA, TEACCH, ESDM/Denver) (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_2: {column: psyg_type_lieu1_2, type: item, label: "Psychologist in private practice, approach: cognitive behavioural therapy (CBT) (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_3: {column: psyg_type_lieu1_3, type: item, label: "Psychologist in private practice, approach: cognitive remediation (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_4: {column: psyg_type_lieu1_4, type: item, label: "Psychologist in private practice, approach: psychoeducation (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_5: {column: psyg_type_lieu1_5, type: item, label: "Psychologist in private practice, approach: family therapy (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_6: {column: psyg_type_lieu1_6, type: item, label: "Psychologist in private practice, approach: psychodynamic or psychoanalytic (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_7: {column: psyg_type_lieu1_7, type: item, label: "Psychologist in private practice, approach: psychosocial rehabilitation programme (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_8: {column: psyg_type_lieu1_8, type: item, label: "Psychologist in private practice, approach: job coaching (box) (0 no, 1 yes)", range: [0, 1]}
-  psyg_type_lieu1_9: {column: psyg_type_lieu1_9, type: item, label: "Psychologist in private practice, approach: other (box) (0 no, 1 yes)", range: [0, 1]}
-  prdecod_autre_lieu1: {column: prdecod_autre_lieu1, type: text, label: "Psychologist in private practice, approach: other, which, free text"}
-  orthoph_lieu1: {column: orthoph_lieu1, type: item, label: "Use of care in the last year: speech therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_orthoph_lieu1: {column: nboccur_orthoph_lieu1, type: number, label: "Speech therapist in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  psychom_lieu1: {column: psychom_lieu1, type: item, label: "Use of care in the last year: psychomotor therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_psychom_lieu1: {column: nboccur_psychom_lieu1, type: number, label: "Psychomotor therapist in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  ergo_lieu1: {column: ergo_lieu1, type: item, label: "Use of care in the last year: occupational therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_ergo_lieu1: {column: nboccur_ergo_lieu1, type: number, label: "Occupational therapist in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  hsoc_lieu1: {column: hsoc_lieu1, type: item, label: "Use of care in the last year: social skills group led by professionals in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_hsoc_lieu1: {column: nboccur_hsoc_lieu1, type: number, label: "Social skills group in private practice: number of sessions in the last 12 months", range: [0, 200], winsor: false}
-  orthopt_lieu1: {column: orthopt_lieu1, type: item, label: "Use of care in the last year: orthoptist in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_orthopt_lieu1: {column: nboccur_orthopt_lieu1, type: number, label: "Orthoptist in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  interv_lieu1: {column: interv_lieu1, type: item, label: "Use of care in the last year: home-based practitioner (ABA, TEACCH or similar method) in private practice (0 no, 1 yes)", range: [0, 1]}
-  nboccur_interv_lieu1: {column: nboccur_interv_lieu1, type: number, label: "Home-based practitioner in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  cons_aut_lieu1: {column: cons_aut_lieu1, type: item, label: "Use of care in the last year: other professional in private practice (0 no, 1 yes)", range: [0, 1]}
-  aut_lieu1: {column: aut_lieu1, type: text, label: "Use of care in the last year: other professional in private practice, which, free text"}
-  cons_nb4_lieu1: {column: cons_nb4_lieu1, type: number, label: "Other professional in private practice: number of consultations in the last 12 months", range: [0, 200], winsor: false}
-  pecs: {column: pecs, type: item, label: "Care: the child uses PECS, Makaton or another adapted communication system (0 no, 1 yes)", range: [0, 1]}
-  pec5y: {column: pec5y, type: item, label: "Care: intensive behavioural intervention before the age of 5 years (0 no, 1 yes)", range: [0, 1]}
-  hodur_pec5y: {column: hodur_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, mean hours a week", range: [0, 200], winsor: false}
-  agedebut_pec5y: {column: agedebut_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, age at the start", range: [0, 200], winsor: false}
-  agefin_pec5y: {column: agefin_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, age at the end", range: [0, 200], winsor: false}
-  pec: {column: pec, type: item, label: "Care: had difficulty finding available care (0 no, 1 yes)", range: [0, 1]}
-  hoterm_pec_1: {column: hoterm_pec_1, type: item, label: "Care: difficulty finding a speech therapist (box) (0 no, 1 yes)", range: [0, 1]}
-  hoterm_pec_2: {column: hoterm_pec_2, type: item, label: "Care: difficulty finding a psychologist (box) (0 no, 1 yes)", range: [0, 1]}
-  hoterm_pec_3: {column: hoterm_pec_3, type: item, label: "Care: difficulty finding an occupational therapist (box) (0 no, 1 yes)", range: [0, 1]}
-  hoterm_pec_4: {column: hoterm_pec_4, type: item, label: "Care: difficulty finding a psychomotor therapist (box) (0 no, 1 yes)", range: [0, 1]}
-  hoterm_pec_5: {column: hoterm_pec_5, type: item, label: "Care: difficulty finding a social skills group (box) (0 no, 1 yes)", range: [0, 1]}
-  hodur_pec: {column: hodur_pec, type: number, label: "Care: longest wait before the start of the care, months", range: [0, 200], winsor: false}
-  voyage: {column: voyage, type: item, label: "Care: travelled in France or abroad for the diagnosis or the care (0 no, 1 yes)", range: [0, 1]}
-  depence_voyage: {column: depence_voyage, type: number, label: "Care: expenses of the travel for the diagnosis or the care, in euros", range: [0, 9239], winsor: false}
-  ss_voyage: {column: ss_voyage, type: number, label: "Care: part of the travel expenses paid by the health insurance (Sécurité Sociale), in euros", range: [0, 1457], winsor: false}
-  hooccur_groupe: {column: hooccur_groupe, type: item, label: "Care: the relatives take part in a group (0 no, 1 yes)", range: [0, 1]}
-  nboccur_groupe: {column: nboccur_groupe, type: number, label: "Group for the relatives: number of sessions in the last 12 months", range: [0, 200], winsor: false}
-  lieu_groupe_1: {column: lieu_groupe_1, type: item, label: "Care: group for the relatives held in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1]}
-  lieu_groupe_2: {column: lieu_groupe_2, type: item, label: "Care: group for the relatives held in a hospital or community mental health centre (CMP) (box) (0 no, 1 yes)", range: [0, 1]}
-  lieu_groupe_3: {column: lieu_groupe_3, type: item, label: "Care: group for the relatives held in a medico-social service (box) (0 no, 1 yes)", range: [0, 1]}
+  asd_diagnosis_date: {column: tsadtc, type: date, label: "Date of the diagnosis of autism spectrum disorder (ASD)", range: [1990-01-01, 2026-12-31]}
+  asd_diagnosis_cost_eur: {column: tsaprix, type: number, label: "Diagnosis of ASD: price of the assessments linked to the diagnosis, in euros", range: [0, 99999], winsor: false}
+  psychiatric_emergency_12m: {column: urg, type: item, label: "Use of care in the last year: visit to the psychiatric emergency department (0 no, 1 yes)", range: [0, 1]}
+  n_psychiatric_emergency_12m: {column: nboccur_urg, type: number, label: "Psychiatric emergency department: number of visits in the last 12 months", range: [0, 50], winsor: false, asked_if: psychiatric_emergency_12m}
+  therapeutic_flat_12m: {column: tpn_nb2, type: item, label: "Use of care in the last year: care in therapeutic flats (0 no, 1 yes)", range: [0, 1]}
+  n_therapeutic_flat_12m: {column: hosp_tpn_nb2, type: number, label: "Care in therapeutic flats: number of times in the last 12 months", range: [0, 50], winsor: false, asked_if: therapeutic_flat_12m}
+  cattp_12m: {column: tpl_nb3, type: item, label: "Use of care in the last year: care at a part-time therapeutic centre (CATTP) (0 no, 1 yes)", range: [0, 1]}
+  n_cattp_12m: {column: hosp_tpl_nb3, type: number, label: "Part-time therapeutic centre (CATTP): number of times in the last 12 months", range: [0, 50], winsor: false, asked_if: cattp_12m}
+  day_hospital_12m: {column: tpl_nb1, type: item, label: "Use of care in the last year: day hospitalisations for a psychiatric reason (0 no, 1 yes)", range: [0, 1]}
+  n_day_hospital_12m: {column: hosp_tpl_nb1, type: number, label: "Day hospitalisations for a psychiatric reason: number in the last 12 months (stays or days: the form does not say)", range: [0, 50], winsor: false, asked_if: day_hospital_12m}
+  full_time_hospital_12m: {column: tpn_nb1, type: item, label: "Use of care in the last year: full-time hospitalisations for a psychiatric reason (0 no, 1 yes)", range: [0, 1]}
+  n_full_time_hospital_12m: {column: hosp_tpn_nb1, type: number, label: "Full-time hospitalisations for a psychiatric reason: number in the last 12 months (stays or days: the form does not say)", range: [0, 50], winsor: false, asked_if: full_time_hospital_12m}
+  saw_gp: {column: medg, type: item, label: "Use of care in the last year: general practitioner or paediatrician (0 no, 1 yes)", range: [0, 1]}
+  n_gp: {column: cons_nb1, type: number, label: "General practitioner or paediatrician: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: saw_gp}
+  school_psychologist_12m: {column: psysco, type: item, label: "Use of care in the last year: school psychologist for the child (0 no, 1 yes)", range: [0, 1]}
+  n_school_psychologist_12m: {column: nboccur_psysco, type: number, label: "School psychologist: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: school_psychologist_12m}
+  examinations_12m: {column: exam, type: item, label: "Use of care in the last year: additional or laboratory examinations (MRI, EEG, audiogram, blood test) (0 no, 1 yes)", range: [0, 1]}
+  n_examinations_12m: {column: nboccur_exam, type: number, label: "Additional or laboratory examinations: number in the last 12 months", range: [0, 50], winsor: false, asked_if: examinations_12m}
+  examinations_private: {column: lieu_exam_1, type: item, label: "Use of care in the last year: examinations done in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1], derived_from: examinations_12m}
+  examinations_public: {column: lieu_exam_2, type: item, label: "Use of care in the last year: examinations done in a hospital or public service (box) (0 no, 1 yes)", range: [0, 1], derived_from: examinations_12m}
+  psychiatrist_public_12m: {column: medp_lieu2, type: item, label: "Use of care in the last year: psychiatrist, child psychiatrist or neuropaediatrician in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_psychiatrist_public_12m: {column: cons_nb2_lieu2, type: number, label: "Psychiatrist, child psychiatrist, neuropaediatrician in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychiatrist_public_12m}
+  psychologist_public_12m: {column: psyg_lieu2, type: item, label: "Use of care in the last year: psychologist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_psychologist_public_12m: {column: cons_nb3_lieu2, type: number, label: "Psychologist in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychologist_public_12m}
+  psychologist_public_session_minutes: {column: hodur_psyg_lieu2, type: number, label: "Psychologist in a public service: length of the sessions, minutes", range: [0, 99], winsor: false}
+  psychologist_public_behavioural: {column: psyg_type_lieu2_1, type: item, label: "Psychologist in a public service, approach: behavioural method (ABA, TEACCH, ESDM/Denver) (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m, versions: [medeco_child]}
+  psychologist_public_cbt: {column: psyg_type_lieu2_2, type: item, label: "Psychologist in a public service, approach: cognitive behavioural therapy (CBT) (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_cognitive_remediation: {column: psyg_type_lieu2_3, type: item, label: "Psychologist in a public service, approach: cognitive remediation (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_psychoeducation: {column: psyg_type_lieu2_4, type: item, label: "Psychologist in a public service, approach: psychoeducation (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_family_therapy: {column: psyg_type_lieu2_5, type: item, label: "Psychologist in a public service, approach: family therapy (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_psychodynamic: {column: psyg_type_lieu2_6, type: item, label: "Psychologist in a public service, approach: psychodynamic or psychoanalytic (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_psychosocial_rehabilitation: {column: psyg_type_lieu2_7, type: item, label: "Psychologist in a public service, approach: psychosocial rehabilitation programme (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_job_coaching: {column: psyg_type_lieu2_8, type: item, label: "Psychologist in a public service, approach: job coaching (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_other: {column: psyg_type_lieu2_9, type: item, label: "Psychologist in a public service, approach: other (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_public_12m}
+  psychologist_public_approach_other_text: {column: prdecod_autre_lieu2, type: text, label: "Psychologist in a public service, approach: other, which, free text"}
+  speech_therapist_public_12m: {column: orthoph_lieu2, type: item, label: "Use of care in the last year: speech therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_speech_therapist_public_12m: {column: nboccur_orthoph_lieu2, type: number, label: "Speech therapist in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: speech_therapist_public_12m}
+  psychomotor_therapist_public_12m: {column: psychom_lieu2, type: item, label: "Use of care in the last year: psychomotor therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_psychomotor_therapist_public_12m: {column: nboccur_psychom_lieu2, type: number, label: "Psychomotor therapist in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychomotor_therapist_public_12m}
+  occupational_therapist_public_12m: {column: ergo_lieu2, type: item, label: "Use of care in the last year: occupational therapist (individual follow-up) in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_occupational_therapist_public_12m: {column: nboccur_ergo_lieu2, type: number, label: "Occupational therapist in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: occupational_therapist_public_12m}
+  social_skills_group_public_12m: {column: hsoc_lieu2, type: item, label: "Use of care in the last year: social skills group led by professionals in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_social_skills_group_public_12m: {column: nboccur_hsoc_lieu2, type: number, label: "Social skills group in a public service: number of sessions in the last 12 months", range: [0, 50], winsor: false, asked_if: social_skills_group_public_12m}
+  orthoptist_public_12m: {column: orthopt_lieu2, type: item, label: "Use of care in the last year: orthoptist in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_orthoptist_public_12m: {column: nboccur_orthopt_lieu2, type: number, label: "Orthoptist in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: orthoptist_public_12m}
+  home_practitioner_public_12m: {column: interv_lieu2, type: item, label: "Use of care in the last year: home-based practitioner (ABA, TEACCH or similar method) in a public service (0 no, 1 yes)", range: [0, 1]}
+  n_home_practitioner_public_12m: {column: nboccur_interv_lieu2, type: number, label: "Home-based practitioner in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: home_practitioner_public_12m}
+  other_professional_public_12m: {column: cons_aut_lieu2, type: item, label: "Use of care in the last year: other professional in a public service (0 no, 1 yes)", range: [0, 1]}
+  other_professional_public_text: {column: aut_lieu2, type: text, label: "Use of care in the last year: other professional in a public service, which, free text"}
+  n_other_professional_public_12m: {column: cons_nb4_lieu2, type: number, label: "Other professional in a public service: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: other_professional_public_12m}
+  psychiatrist_private_12m: {column: medp_lieu1, type: item, label: "Use of care in the last year: psychiatrist, child psychiatrist or neuropaediatrician in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_psychiatrist_private_12m: {column: cons_nb2_lieu1, type: number, label: "Psychiatrist, child psychiatrist, neuropaediatrician in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychiatrist_private_12m}
+  psychologist_private_12m: {column: psyg_lieu1, type: item, label: "Use of care in the last year: psychologist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_psychologist_private_12m: {column: cons_nb3_lieu1, type: number, label: "Psychologist in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychologist_private_12m}
+  psychologist_private_session_minutes: {column: hodur_psyg_lieu1, type: number, label: "Psychologist in private practice: length of the sessions, minutes", range: [0, 99], winsor: false}
+  psychologist_private_behavioural: {column: psyg_type_lieu1_1, type: item, label: "Psychologist in private practice, approach: behavioural method (ABA, TEACCH, ESDM/Denver) (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m, versions: [medeco_child]}
+  psychologist_private_cbt: {column: psyg_type_lieu1_2, type: item, label: "Psychologist in private practice, approach: cognitive behavioural therapy (CBT) (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_cognitive_remediation: {column: psyg_type_lieu1_3, type: item, label: "Psychologist in private practice, approach: cognitive remediation (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_psychoeducation: {column: psyg_type_lieu1_4, type: item, label: "Psychologist in private practice, approach: psychoeducation (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_family_therapy: {column: psyg_type_lieu1_5, type: item, label: "Psychologist in private practice, approach: family therapy (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_psychodynamic: {column: psyg_type_lieu1_6, type: item, label: "Psychologist in private practice, approach: psychodynamic or psychoanalytic (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_psychosocial_rehabilitation: {column: psyg_type_lieu1_7, type: item, label: "Psychologist in private practice, approach: psychosocial rehabilitation programme (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_job_coaching: {column: psyg_type_lieu1_8, type: item, label: "Psychologist in private practice, approach: job coaching (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_other: {column: psyg_type_lieu1_9, type: item, label: "Psychologist in private practice, approach: other (box) (0 no, 1 yes)", range: [0, 1], derived_from: psychologist_private_12m}
+  psychologist_private_approach_other_text: {column: prdecod_autre_lieu1, type: text, label: "Psychologist in private practice, approach: other, which, free text"}
+  speech_therapist_private_12m: {column: orthoph_lieu1, type: item, label: "Use of care in the last year: speech therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_speech_therapist_private_12m: {column: nboccur_orthoph_lieu1, type: number, label: "Speech therapist in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: speech_therapist_private_12m}
+  psychomotor_therapist_private_12m: {column: psychom_lieu1, type: item, label: "Use of care in the last year: psychomotor therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_psychomotor_therapist_private_12m: {column: nboccur_psychom_lieu1, type: number, label: "Psychomotor therapist in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: psychomotor_therapist_private_12m}
+  occupational_therapist_private_12m: {column: ergo_lieu1, type: item, label: "Use of care in the last year: occupational therapist (individual follow-up) in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_occupational_therapist_private_12m: {column: nboccur_ergo_lieu1, type: number, label: "Occupational therapist in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: occupational_therapist_private_12m}
+  social_skills_group_private_12m: {column: hsoc_lieu1, type: item, label: "Use of care in the last year: social skills group led by professionals in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_social_skills_group_private_12m: {column: nboccur_hsoc_lieu1, type: number, label: "Social skills group in private practice: number of sessions in the last 12 months", range: [0, 50], winsor: false, asked_if: social_skills_group_private_12m}
+  orthoptist_private_12m: {column: orthopt_lieu1, type: item, label: "Use of care in the last year: orthoptist in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_orthoptist_private_12m: {column: nboccur_orthopt_lieu1, type: number, label: "Orthoptist in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: orthoptist_private_12m}
+  home_practitioner_private_12m: {column: interv_lieu1, type: item, label: "Use of care in the last year: home-based practitioner (ABA, TEACCH or similar method) in private practice (0 no, 1 yes)", range: [0, 1]}
+  n_home_practitioner_private_12m: {column: nboccur_interv_lieu1, type: number, label: "Home-based practitioner in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: home_practitioner_private_12m}
+  other_professional_private_12m: {column: cons_aut_lieu1, type: item, label: "Use of care in the last year: other professional in private practice (0 no, 1 yes)", range: [0, 1]}
+  other_professional_private_text: {column: aut_lieu1, type: text, label: "Use of care in the last year: other professional in private practice, which, free text"}
+  n_other_professional_private_12m: {column: cons_nb4_lieu1, type: number, label: "Other professional in private practice: number of consultations in the last 12 months", range: [0, 50], winsor: false, asked_if: other_professional_private_12m}
+  uses_adapted_communication: {column: pecs, type: item, label: "Care: the child uses PECS, Makaton or another adapted communication system (0 no, 1 yes)", range: [0, 1]}
+  early_intensive_intervention: {column: pec5y, type: item, label: "Care: intensive behavioural intervention before the age of 5 years (0 no, 1 yes)", range: [0, 1]}
+  early_intervention_hours_week: {column: hodur_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, mean hours a week", range: [0, 20], winsor: false}
+  early_intervention_start_age: {column: agedebut_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, age at the start", range: [0, 50], winsor: false}
+  early_intervention_end_age: {column: agefin_pec5y, type: number, label: "Care: intensive behavioural intervention before 5 years, age at the end", range: [0, 50], winsor: false}
+  care_hard_to_find: {column: pec, type: item, label: "Care: had difficulty finding available care (0 no, 1 yes)", range: [0, 1]}
+  care_hard_to_find_speech_therapist: {column: hoterm_pec_1, type: item, label: "Care: difficulty finding a speech therapist (box) (0 no, 1 yes)", range: [0, 1], derived_from: care_hard_to_find}
+  care_hard_to_find_psychologist: {column: hoterm_pec_2, type: item, label: "Care: difficulty finding a psychologist (box) (0 no, 1 yes)", range: [0, 1], derived_from: care_hard_to_find}
+  care_hard_to_find_occupational_therapist: {column: hoterm_pec_3, type: item, label: "Care: difficulty finding an occupational therapist (box) (0 no, 1 yes)", range: [0, 1], derived_from: care_hard_to_find}
+  care_hard_to_find_psychomotor_therapist: {column: hoterm_pec_4, type: item, label: "Care: difficulty finding a psychomotor therapist (box) (0 no, 1 yes)", range: [0, 1], derived_from: care_hard_to_find}
+  care_hard_to_find_social_skills_group: {column: hoterm_pec_5, type: item, label: "Care: difficulty finding a social skills group (box) (0 no, 1 yes)", range: [0, 1], derived_from: care_hard_to_find}
+  care_longest_wait_months: {column: hodur_pec, type: number, label: "Care: longest wait before the start of the care, months", range: [0, 999], winsor: false}
+  travel_for_care: {column: voyage, type: item, label: "Care: travelled in France or abroad for the diagnosis or the care (0 no, 1 yes)", range: [0, 1]}
+  travel_cost_eur: {column: depence_voyage, type: number, label: "Care: expenses of the travel for the diagnosis or the care, in euros", range: [0, 99999], winsor: false}
+  travel_cost_reimbursed_eur: {column: ss_voyage, type: number, label: "Care: part of the travel expenses paid by the health insurance (Sécurité Sociale), in euros", range: [0, 99999], winsor: false}
+  relatives_group: {column: hooccur_groupe, type: item, label: "Care: the relatives take part in a group (0 no, 1 yes)", range: [0, 1], versions: [medeco_adult]}
+  n_relatives_group_12m: {column: nboccur_groupe, type: number, label: "Group for the relatives: number of sessions in the last 12 months", range: [0, 99], winsor: false, asked_if: relatives_group}
+  relatives_group_private: {column: lieu_groupe_1, type: item, label: "Care: group for the relatives held in private practice or a private clinic (box) (0 no, 1 yes)", range: [0, 1], derived_from: relatives_group, versions: [medeco_adult]}
+  relatives_group_hospital: {column: lieu_groupe_2, type: item, label: "Care: group for the relatives held in a hospital or community mental health centre (CMP) (box) (0 no, 1 yes)", range: [0, 1], derived_from: relatives_group, versions: [medeco_adult]}
+  relatives_group_medico_social: {column: lieu_groupe_3, type: item, label: "Care: group for the relatives held in a medico-social service (box) (0 no, 1 yes)", range: [0, 1], derived_from: relatives_group, versions: [medeco_adult]}

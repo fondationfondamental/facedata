@@ -2,22 +2,27 @@ instrument: visit_record
 title: Visit record
 tab: patient
 section: visit
-status: draft
+status: reviewed
 notes: >
   One value per visit. The visit label, its date and the identifiers are key
   columns, built by the pipeline for every instrument. What is left is the
   date at which the visit record was typed.
 
   It is the visit date itself for 1,135 of the 4,500 rows. It is before the
-  visit date for 633 rows and a year or more after it for 553: it says when
-  the form was created, not when the patient came.
+  delivered visit date for 632 rows and a year or more after it for 549 (5
+  visit dates are out of range and not delivered): it says when the form was
+  created, not when the patient came.
 
   The visits: 2,318 inclusions, 1,809 screening visits, then one year (177),
   two years (112), three (41), four (29) and five (8); three more labels (six,
-  seven and nine years) are on fewer than five rows each. 42 visits are dated
+  seven and nine years) are on fewer than five rows each. 41 visits are dated
   before the visit that precedes them (visit_order).
 
   Same instrument as in FACE BP, SZ and DR.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): one delivered variable (the date of the record); no
+  step.
 
 variables:
   entry_date:

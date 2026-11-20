@@ -32,6 +32,9 @@ identite:
     schizophrenia; major depressive disorder; autism confirmed or not confirmed).
     The autism cohort has children and a group that was assessed and not
     diagnosed. fondacode is the patient code across the cohorts.
+    age_at_inclusion is the age that the export stores, in completed years at
+    the inclusion visit, in BP, SZ and ASP; the DR export takes it at another
+    visit (R10), so DR recomputes it from the birth date and the date of V0.
 
 visit_record:
   title: Visit record
@@ -49,9 +52,10 @@ provenance:
   use: [referred_by, catchment, heard_of_centre_from, visit_purpose]
   note: >
     In the table patients. referred_by is in the three cohorts. The catchment
-    area, how the patient heard of the centre and the purpose of the visit are
-    in BP and SZ; in DR the purpose is exported as a code that the dictionary
-    does not explain (visit_purpose_code), which cannot be compared.
+    area and how the patient heard of the centre are in BP and SZ; the purpose
+    of the visit is in BP, SZ and DR with the same three answers (DR codes read
+    from its form). In DR the export swaps the referrers inside and outside the
+    catchment area; the package reads them back as the form has them (R161).
 
 fin_de_suivi:
   title: End of follow-up
@@ -62,6 +66,8 @@ fin_de_suivi:
   note: >
     In the table patients. Filled for the few patients whose follow-up was
     closed; an empty cell does not mean that the patient is still followed.
+    DR has a form but its exported columns are empty; ASP's are not exported
+    (R164).
 
 # ---------------------------------------------------------------- Scales rated by the clinician
 
@@ -915,7 +921,10 @@ pression_arterielle:
   schemas: {bp: pression_arterielle, sz: pression_arterielle, dr: pression_arterielle, asp: pression_arterielle}
   stack: "yes"
   use: [systolic_supine, diastolic_supine, heart_rate_supine, systolic_standing, diastolic_standing]
-  note: The lying blood pressure is in the four cohorts, the lying heart rate in BP, DR and ASP, the standing measures in BP and DR.
+  note: >
+    The lying blood pressure is in the four cohorts, the lying heart rate in BP,
+    DR and ASP, the standing measures in BP and DR. DR asks for the mean of
+    three lying readings after 15 minutes; the other forms ask for one reading.
 
 ecg:
   title: Electrocardiogram
@@ -929,7 +938,10 @@ ecg:
     stored QTc only, with no way to check its formula. ASP has few ECGs.
     Prefer qtc_bazett: in BP and DR it is computed from the heart rate of the
     ECG, because the RR typed in the form does not always fit that heart
-    rate, and the stored QTc follows the typed RR.
+    rate, and the stored QTc follows the typed RR. The help text of the RR
+    field in the four applications says to divide the heart rate by 60, the
+    inverse of 60 / rate, and in some centres the typed RR is that (A84).
+    qtc_stored stays delivered in the four cohorts so that SZ can be joined.
 
 biochimie:
   title: Blood biochemistry
@@ -1418,9 +1430,12 @@ social:
     Education, work status and way of living are in BP, SZ and DR with the same
     labels; a full-time job is also in ASP. In SZ the export loses answers: no
     patient is recorded as married or living as a couple, and none with a salary
-    or a disability pension (an open question of SZ): do not compare
-    marital_status and income_source with SZ (SZ also has a "no income"
-    answer that BP has not). In BP the export writes the
+    or a disability pension (SZ O22; R46, R47): do not compare marital_status
+    with SZ. SZ asks the sources of income as eight boxes and the export keeps
+    one, so SZ delivers no income_source. The person the patient spends most
+    time with is in BP and DR (closest_person), the months in the present job
+    in SZ and DR (job_months), the INSEE class of the job in DR and ASP
+    (job_class). In BP the export writes the
     students with 'other' (student_or_other). The other questions differ.
 
 sick_leave_v0:

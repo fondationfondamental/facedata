@@ -2,15 +2,26 @@ instrument: pression_arterielle
 title: Blood pressure, lying
 tab: CONSTANTES et ECG
 section: Pression artérielle / fréquence cardiaque
-status: draft
+status: reviewed
 notes: >
   Blood pressure is in mmHg. A systolic pressure from 5 to 26, or a
   diastolic pressure from 3 to 18, can only be cmHg (12 for 120); it is
   multiplied by 10 and flagged unit_inferred.
 
   Same instrument as in FACE BP, with the two columns that the SZ extraction
-  holds: the pressures measured lying. The standing pressures and the heart
-  rates are not extracted.
+  holds: the pressures measured lying. The SZ form asks the lying pressures
+  only and no heart rate (the table of the application keeps unused columns
+  for the standing pressures and the heart rate). A pressure typed as two
+  numbers "a/b" is delivered by the export as their mean
+  (eschizo_infirmier.sql, lines 88 to 105; request R170); how many were typed
+  so is question M81.
+
+  Centre G writes 83% of its systolic pressures as a multiple of 10 (centre
+  J 85%, the others 11% to 30%) and its pressures are lower: median
+  systolic 110 against 119 to 126 mmHg in the other centres (110 to 120 in
+  each period at centre G), mean 116 against 119 to 127, diastolic median
+  70 against 71 to 80. Rounding to 10 alone would not lower the values; no
+  cause is known, the step is documented here.
 
 defaults: {type: number, unit: mmHg}
 

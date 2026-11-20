@@ -2,21 +2,35 @@ instrument: ecg
 title: Electrocardiogram
 tab: CONSTANTES et ECG
 section: ECG
-status: draft
+status: reviewed
 notes: >
   The SZ extraction holds one ECG column, the corrected QT interval that the
-  EMR stores. The QT and RR intervals and the heart rate, from which FACE BP
-  recomputes it, are not extracted, so it cannot be checked here.
+  EMR stores (2,855 visits). The form asks the QT and the RR intervals
+  (mesqt and elec_rr in the field table of the application), but the export
+  keeps the QTc only (eschizo_infirmier.sql, line 21; face_sz_7, line 21),
+  so the QTc cannot be recomputed here and item 5 of the definition of done
+  does not apply (request R159: export the QT and the RR). The form has no
+  heart rate. The script of the clone of the application has its QTc and
+  BMI handlers commented out (inf_dossier_infirmier.js, lines 39 to 43 and
+  93 to 95), yet a QTc is stored every year to 2026: which script computes
+  it in the centres is question M80.
 
-  It is in seconds in the dictionary. Part of the values are written in
-  milliseconds (413 for 0.413 s) or in hundredths of a second (39 for
-  0.39 s); the unit is recognised from the size of the value and the cell is
-  flagged unit_inferred. A value of 0 stands for "not measured": missing
-  code.
+  It is in seconds in the dictionary. The unit is recognised from the size
+  of the value and the cell is flagged unit_inferred: 1 value is in
+  milliseconds and none in hundredths of a second. 27 values fit no unit
+  and end out_of_range (12 under 0.05, 4 from 0.05 to 0.2, 11 from 0.7 to
+  2). A value of 0 would be "not measured" (missing code; none here).
 
   In BP the EMR computes this value from the QT and RR as typed, and it is
-  absurd where the two are not on the same scale (0.013 or 13). The same
-  values are found here and end out_of_range.
+  absurd where the two are not on the same scale (0.013 or 13); in all four
+  applications the help text of the RR field says to divide the heart rate
+  by 60, the inverse of the right 60 / rate (A84). The out-of-range values
+  here are of the same kind.
+
+  Centre E stores almost no QTc: 5 of its 428 visits with a height have
+  one (2014 to 2021), against 28% to 97% of these visits in the other
+  centres. The values do not step by year or by centre (medians 0.39 to
+  0.42 s).
 
   Same instrument as in FACE BP, reduced to the stored value.
 

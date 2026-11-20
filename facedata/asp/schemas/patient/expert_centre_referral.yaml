@@ -1,26 +1,39 @@
 instrument: expert_centre_referral
-title: "Boxes of the section oce"
+title: "Criteria for an assessment at the expert centre"
 tab: patient
 section: screening form
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. Six yes/no boxes (oce_1 to oce_6), a date and a
   remark, filled for about 985 patients (57% of the adults, 21% of the
-  children). Each box is yes for 96% to 100% of the patients: the section is
-  the checklist of the conditions of an assessment at the expert centre
-  (thesaurus: "orientation centre expert").
+  children). Each box is yes for 96% to 100% of the patients. The section
+  is the summary of the criteria for a full assessment at the expert centre
+  (form 241 lines 104-112: 'the patient must meet every criterion to be
+  referred to the expert centre'), not the referral of BP and SZ (who sent
+  the patient, from where): the names say criterion, not referral (decision
+  D79). Those referral fields of the application (rad_secteur, conais_ce,
+  prov_adrespar and the others) are not exported (request R164).
+
+  oce_date is the date of the first assessment at the expert centre (form
+  241: 'Date de la première évaluation'): the day of the inclusion visit for
+  589 of the 857 patients with a date, before it for 209 and after it for
+  59 (one date is out of range and not delivered).
 
   Not loaded: oce_medecin, the name of a clinician (ignored.yaml).
 
   An instrument of the ASP cohort only.
 
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): each criterion is yes for 96% to 100% of the
+  patients and no centre or year differs from another by 30 points: no step.
+
 variables:
-  referral_probable_asd: {column: oce_1, type: item, range: [0, 1], label: "Referral: probably an autism spectrum disorder without intellectual disability"}
-  referral_mental_state_compatible: {column: oce_2, type: item, range: [0, 1], label: "Referral: mental state compatible with the assessment"}
-  referral_functional_language: {column: oce_3, type: item, range: [0, 1], label: "Referral: language sufficient for the assessment at the expert centre"}
-  referral_by_physician: {column: oce_4, type: item, range: [0, 1], label: "Referral: referred by a physician who will receive the report"}
-  referral_costs_covered: {column: oce_5, type: item, range: [0, 1], label: "Referral: costs covered (full coverage, insurance, or the patient agrees to pay)"}
-  referral_consent: {column: oce_6, type: item, range: [0, 1], label: "Referral: the patient or the legal guardian agrees to the assessment"}
-  referral_date: {column: oce_date, type: date, range: [1950-01-01, 2026-12-31], label: "Date of the first assessment at the expert centre"}
-  referral_remark: {column: oce_rq, type: text, label: "Referral: remarks, free text"}
+  assessment_criterion_probable_asd: {column: oce_1, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: probably an autism spectrum disorder without intellectual disability"}
+  assessment_criterion_mental_state_compatible: {column: oce_2, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: mental state compatible with the assessment"}
+  assessment_criterion_functional_language: {column: oce_3, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: language sufficient for the assessment at the expert centre"}
+  assessment_criterion_by_physician: {column: oce_4, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: referred by a physician who will receive the report"}
+  assessment_criterion_costs_covered: {column: oce_5, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: costs covered (full coverage, insurance, or the patient agrees to pay)"}
+  assessment_criterion_consent: {column: oce_6, type: item, range: [0, 1], label: "Criterion for an assessment at the expert centre: the patient or the legal guardian agrees to the assessment"}
+  first_assessment_date: {column: oce_date, type: date, range: [1950-01-01, 2026-12-31], label: "Date of the first assessment at the expert centre"}
+  assessment_criteria_remark: {column: oce_rq, type: text, label: "Criteria for an assessment at the expert centre: remarks, free text"}

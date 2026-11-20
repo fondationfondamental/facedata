@@ -2,7 +2,7 @@ instrument: mini_q_conclusion
 title: "MINI, conclusion of the interview: mood disorders"
 tab: MINI
 section: MINI Q
-status: draft
+status: reviewed
 notes: >
   The conclusion of the interview for the mood disorders: major depressive
   disorder and the bipolar disorders, each current and past. Every column
@@ -11,8 +11,10 @@ notes: >
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -26,11 +28,26 @@ notes: >
   derived_from the first question of its module, and its 0 is flagged
   derived_doubt where that question is empty.
 
-  Major depressive disorder is ticked "current" on 361 visits and "past" on
-  200; 182 visits with an interview have neither. In a cohort of resistant
-  depression that is the unticked box again, not an absence of depression
-  (see mini_a_depression). The bipolar boxes are ticked on a handful of
-  visits.
+  The conclusion is the interviewer's summary of the mood disorders: no
+  script ticks a box. The script shows each block under its condition
+  (formulaires.js:2395-2510): major depressive disorder when A5bis is yes
+  and no manic, hypomanic or manic-symptom episode is coded; the ticks
+  respect it on 384 of 384 visits (how the rule changed over time:
+  question M88). Two tests of the script read 'cheked' and never hold
+  (defect A92). Major depressive disorder is ticked "current" on 361
+  visits and "past" on 200; 182 visits with an interview have neither. In
+  a cohort of resistant depression that is the unticked box again, not an
+  absence of depression (see mini_a_depression). The bipolar boxes are
+  ticked on a handful of visits; the most recent episode of a bipolar II
+  disorder has two answers in the form, 1 hypomanic and 2 depressive
+  (142.php:394; the dictionary lists five: request R171), one visit each.
+  The bipolar exclusion box of the inclusion form is 0 for every patient,
+  although 4 interviews conclude to a bipolar II or not specified disorder.
+
+  Centres (2026-11-20). The box major depressive disorder current is ticked
+  on 37% to 89% of the visits of the centres with 20 visits or more (24 of
+  27 in the centre that started in 2022, which raises 2022 to 2023): the
+  box is written by the form (see above); no known cause.
 
 defaults: {type: item, range: [0, 1]}
 
@@ -48,7 +65,7 @@ variables:
   mini_bipolar1_psychotic_past: {column: qbppsy2, derived_from: mini_q_interview_answered, label: "Bipolar1 psychotic past: avec caracteristique psychotique PASSE (a box: 0 is not ticked)"}
   mini_bipolar2_current: {column: qbp2a, derived_from: mini_q_interview_answered, label: "Bipolar2 current: TROUBLE BIPOLAIRE 2 ACTUEL (a box: 0 is not ticked)"}
   mini_bipolar2_past: {column: qbp2p, derived_from: mini_q_interview_answered, label: "Bipolar2 past: TROUBLE BIPOLAIRE 2 PASSE (a box: 0 is not ticked)"}
-  mini_bipolar2_recent_episode: {column: qbp2r, type: category, codes: {"1": manic, "2": depressive, "3": mixed, "4": hypomanic, "5": not_specified}, label: "Bipolar2 recent episode: épisode le plus récent (type)"}
+  mini_bipolar2_recent_episode: {column: qbp2r, type: category, codes: {"1": hypomanic, "2": depressive}, label: "Bipolar2 recent episode: épisode le plus récent (type)"}
   mini_bipolar2_recent_hypomanic_current: {column: qehman1, derived_from: mini_q_interview_answered, label: "Bipolar2 recent hypomanic current: épisode le plus récent hypomaniaque ACTUEL (a box: 0 is not ticked)"}
   mini_bipolar2_recent_hypomanic_past: {column: qehman2, derived_from: mini_q_interview_answered, label: "Bipolar2 recent hypomanic past: épisode le plus récent hypomaniaque PASSE (a box: 0 is not ticked)"}
   mini_bipolar2_recent_depressive_current: {column: qed1, derived_from: mini_q_interview_answered, label: "Bipolar2 recent depressive current: épisode le plus récent depressif ACTUEL (a box: 0 is not ticked)"}

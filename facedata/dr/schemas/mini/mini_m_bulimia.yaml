@@ -2,14 +2,16 @@ instrument: mini_m_bulimia
 title: "MINI, module M: bulimia nervosa"
 tab: MINI
 section: MINI M
-status: draft
+status: reviewed
 notes: >
   Module M: bulimia nervosa over the last three months.
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -23,16 +25,23 @@ notes: >
   derived_from the first question of its module, and its 0 is flagged
   derived_doubt where that question is empty.
 
-  Binge eating (M1) is answered yes on 65 visits; the conclusion is yes on
-  5. M7 is empty in the extraction (ignored.yaml).
+  Binge eating (M1) is answered yes on 65 visits; M2 to M4 are asked only
+  after a yes to M1, and are 0 after a no (asked_if, rule R24). M7 is asked
+  only after a yes to M6 (the patient has an anorexia), which no visit has
+  (M6 is answered no on 2 visits): it is empty in the extraction
+  (ignored.yaml). The two conclusions are set by the script of the form;
+  bulimia is yes on 5 visits, the binge-purge anorexia on none: delivered
+  as stored. The eating-disorder exclusion box of the inclusion form is 0 for every
+  patient, although 1 interview concludes to an anorexia and 5 to a
+  bulimia.
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
   mini_m01: {column: m01, label: "M1) Au cours de ces trois derniers mois, vous est-il arrivé d’avoir des crises de boulimie durant lesquelles vous mangiez de très grandes qu"}
-  mini_m02: {column: m02, label: "M2) Avez-vous eu de telles crises de boulimie au moins deux fois par semaine au cours de ces 3 derniers mois ?"}
-  mini_m03: {column: m03, label: "M3) Durant ces crises de boulimie, aviez-vous l’impression de ne pas pouvoir vous arrêter de manger ou de ne pas pouvoir contrôler la quanti"}
-  mini_m04: {column: m04, label: "M4) De façon à éviter une prise de poids après ces crises de boulimie, faisiez-vous certaines choses comme vous faire vomir, vous astreindre"}
+  mini_m02: {column: m02, asked_if: mini_m01, label: "M2) Avez-vous eu de telles crises de boulimie au moins deux fois par semaine au cours de ces 3 derniers mois ?"}
+  mini_m03: {column: m03, asked_if: mini_m01, label: "M3) Durant ces crises de boulimie, aviez-vous l’impression de ne pas pouvoir vous arrêter de manger ou de ne pas pouvoir contrôler la quanti"}
+  mini_m04: {column: m04, asked_if: mini_m01, label: "M4) De façon à éviter une prise de poids après ces crises de boulimie, faisiez-vous certaines choses comme vous faire vomir, vous astreindre"}
   mini_m05: {column: m05, label: "M5) L’opinion ou l’estime que vous avez de vous-même sont-elles largement influencées par votre poids ou vos formes corporelles ?"}
   mini_m06: {column: m06, label: "M6) LE PATIENT PRÉSENTE-T-IL UNE ANOREXIE MENTALE?"}
   mini_bulimia_current: {column: m08, label: "Bulimia current: M8) BOULIMIE ACTUELLE"}

@@ -2,7 +2,7 @@ instrument: parametres_physiques
 title: "Height, weight, waist and head circumference"
 tab: clinique
 section: clinical examination
-status: draft
+status: reviewed
 notes: >
   The measures of the clinical examination: height (978 inclusion visits),
   weight (975), head circumference (809), and from 2020 the waist
@@ -16,13 +16,42 @@ notes: >
   and are converted (unit_inferred); 9 lie between 2.5 and 80 and cannot be
   a height in any unit (out_of_range).
 
-  The stored body mass index is the weight over the square of the height on
-  577 of the 578 visits that hold the three numbers. bmi is recomputed from
-  the harmonised weight and height on every visit that has both, and compared
-  with the stored value.
+  The stored body mass index is computed by the inclusion form 194 only
+  (eASPERGER.js lines 9834-9841: the weight over the square of the height,
+  two decimals); the follow-up form 245 has no body mass index, waist or
+  ECG. bmi is recomputed from the harmonised weight and height on every
+  visit that has both (1,091; 513 of them have no stored value) and compared
+  with the stored value: it agrees within 0.051 wherever both are delivered
+  (no score_mismatch). Of the 578 visits that hold the three raw numbers, 5
+  stored values differ from the formula, 3 of them next to a height that is
+  not possible; 6 stored values are out of range and are not compared
+  (out_of_range of the hidden bmi_stored). Flags of the delivered values:
+  height out_of_range 9 and unit_inferred 3, head circumference out_of_range
+  5, weight out_of_range 1, bmi out_of_range 1 and score_not_recomputed 3.
+
+  No value is winsorised (winsor: false on the four measures and on bmi,
+  rule R34 of this review): the cohort pools children and adults (956 of the
+  2,318 patients are under 18; 561 of the 1,100 delivered heights are of
+  children), so the 1st and 99th percentiles of the pooled values cut the
+  smallest children and the tallest or heaviest adults, not errors. The
+  tails were clipped before (21 heights, 22 weights, 10 head
+  circumferences, 6 waists, 22 bmi; decision D80). The hard ranges are the
+  only check: they accept every age, so a value that is plausible for an
+  adult but not for the child (or the reverse) is not found, and no
+  growth-chart check by age and sex is made. No adult class of the body
+  mass index (overweight, obesity) is delivered: it would be wrong for the
+  children, whose classes depend on age and sex.
 
   eclichang is the box "changed since the last visit" of the clinical
-  examination: filled at 127 follow-up visits, from 2014 to 2019.
+  examination: filled at 127 follow-up visits, from 2014 to 2020.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): height, weight and head circumference differ by
+  centre (median height 150 cm in centre A, 162 to 173 elsewhere): the age
+  mix, as for the age at inclusion. The change box eclichang is yes on 98% of
+  the follow-up visits of centre C (2014 to 2020) and on 45% of A and 13% of D
+  (2016 to 2020): the box is read differently by the centres, no known cause,
+  documented here.
 
 defaults: {type: number}
 
@@ -35,6 +64,7 @@ variables:
       "cm": {factor: 1, expect: [80, 230]}
       "m": {factor: 100, expect: [0.8, 2.3]}
     range: [80, 230]
+    winsor: false
   weight:
     label: Weight
     column: c1expoid
@@ -42,6 +72,7 @@ variables:
     units:
       "kg": {factor: 1, expect: [10, 300]}
     range: [10, 300]
+    winsor: false
   waist:
     label: Waist circumference
     column: wstcir
@@ -49,6 +80,7 @@ variables:
     units:
       "cm": {factor: 1, expect: [40, 200]}
     range: [40, 200]
+    winsor: false
   head_circumference:
     label: Head circumference
     column: c1expc
@@ -56,6 +88,7 @@ variables:
     units:
       "cm": {factor: 1, expect: [30, 70]}
     range: [30, 70]
+    winsor: false
   bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
   clinical_examination_changed: {column: eclichang, type: item, range: [0, 1], label: "The clinical examination changed since the last visit (follow-up form)"}
 
@@ -66,4 +99,3 @@ scores:
     compare: bmi_stored
     compare_tolerance: 0.051
     range: [10, 80]
-    winsor: [0.01, 0.99]

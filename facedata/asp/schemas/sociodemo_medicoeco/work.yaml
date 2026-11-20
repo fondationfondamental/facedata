@@ -2,32 +2,55 @@ instrument: work
 title: "Work and living situation"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
-  The professional status, the length and the class of the job, sick leaves
-  and the living situation: 875 inclusion visits (369 of children, 506 of adults) and 64 follow-up visits, from 2020 to 2026.
+  The work contracts of the last 12 months, their length and kind, sick
+  leaves, the situation without a contract and the kind of housing: 875
+  inclusion visits (369 of children, 506 of adults) and 64 follow-up visits,
+  from 2020 to 2026 (forms 350 and 351, the same questions).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`.
 
-  The weeks of sick leave are 0 after a "no" (asked_if, 143 visits), as in
-  BP, SZ and DR (BP D123).
+  The weeks under contract are asked after a yes to 'one or more work
+  contracts in the last 12 months': the form hides and clears them after a no
+  (eASPERGER.js lines 10062 to 10080), so they are 0 after a no (`asked_if`,
+  683 cells); 1 value under an empty contract question is kept (R2). The weeks
+  of sick leave are 0 after a "no" (`asked_if`, 143 visits), as in BP, SZ and
+  DR (BP D123). The 'no' of the sick leave is 2 on the adult form (350.php
+  line 139) and 0 on the child form (351.php line 149); both read as no. The
+  situation without a contract: 2 'retired' is on the adult form (350.php line
+  142), 8 'minor' on the child form; the thesaurus lacks the 2 and its lists of
+  the kind of housing differ by form (R171). Full time is 1 and part time 2 on
+  these forms. The weeks stop at 52 (blocking check).
 
-  A section of the ASP cohort only.
+  A section of the ASP cohort only. Not the DR job_months nor the BP,
+  SZ and DR living arrangement: other questions.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): a work contract in the last year is 1% in centre A
+  (children) and 16% to 61% elsewhere: the age mix; the sick leave (23% in D
+  to 56% in E) and the full time (48% to 69%) are habits or small groups (25
+  to 100 visits). Full time is 82% in 2022 (28 visits) and 42% to 60% after.
+  No known cause, documented here.
 
 variables:
-  stpro1: {column: stpro1, type: item, label: "Work and living situation: had one or more work contracts in the last 12 months (0 no, 1 yes)", range: [0, 1]}
-  paral1: {column: paral1, type: item, label: "Work and living situation: the work was alongside studies (0 no, 1 yes)", range: [0, 1]}
-  paral2: {column: paral2, type: item, label: "Work and living situation: the work was part of an apprenticeship (0 no, 1 yes)", range: [0, 1]}
-  jobdur: {column: jobdur, type: number, label: "Work and living situation: total length of the work contracts in the last 12 months, sick leave included", range: [0, 200], winsor: false}
+  work_contract_12m: {column: stpro1, type: item, label: "Work and living situation: had one or more work contracts in the last 12 months (0 no, 1 yes)", range: [0, 1]}
+  work_alongside_studies: {column: paral1, type: item, label: "Work and living situation: the work was alongside studies (0 no, 1 yes)", range: [0, 1]}
+  work_apprenticeship: {column: paral2, type: item, label: "Work and living situation: the work was part of an apprenticeship (0 no, 1 yes)", range: [0, 1]}
+  work_weeks_12m: {column: jobdur, type: number, label: "Work and living situation: total length of the work contracts in the last 12 months, sick leave included, weeks", range: [0, 52], winsor: false, asked_if: work_contract_12m}
   job_full_time: {column: jobclas, type: item, range: [0, 1], codes: {"1": 1, "2": 0}, label: "Work and living situation: the work contract is full time (1) or part time (0)"}
-  sick_leave_12m: {column: hoocur_arret_travail, type: item, range: [0, 1], codes: {"1": 1, "2": 0, "0": 0}, label: "Work and living situation: off work during the work contracts of the last 12 months (the extraction writes no as 2, rarely 0)"}
+  sick_leave_12m: {column: hoocur_arret_travail, type: item, range: [0, 1], codes: {"1": 1, "2": 0, "0": 0}, label: "Work and living situation: off work during the work contracts of the last 12 months (no is 2 on the adult form 350, 0 on the child form 351)"}
   sick_leave_weeks_12m: {column: hodur_arret_travail, type: number, unit: weeks, range: [0, 53], winsor: false, asked_if: sick_leave_12m, label: "Work and living situation: sick leave during these work contracts, weeks"}
-  stpro2: {column: stpro2, type: category, label: "Work and living situation: situation when there was no work contract in the last 12 months", codes: {"8": minor_under_18, "3": student, "5": homemaker, "7": disability_because_of_illness, "0": without_employment}}
-  sd_lvsbjind: {column: lvsbjind, type: category, label: "Work and living situation: main kind of housing", codes: {"1": own_home, "2": family_home, "6": with_a_third_party, "9": supervised_therapeutic_flat, "7": medico_social_establishment, "10": boarding_school, "11": hostel, "8": other}}
+  situation_without_contract_12m: {column: stpro2, type: category, label: "Work and living situation: situation when there was no work contract in the last 12 months", codes: {"8": minor_under_18, "3": student, "5": homemaker, "7": disability_because_of_illness, "0": without_employment, "2": retired}}
+  main_housing: {column: lvsbjind, type: category, label: "Work and living situation: main kind of housing", codes: {"1": own_home, "2": family_home, "6": with_a_third_party, "9": supervised_therapeutic_flat, "7": medico_social_establishment, "10": boarding_school, "11": hostel, "8": other}}

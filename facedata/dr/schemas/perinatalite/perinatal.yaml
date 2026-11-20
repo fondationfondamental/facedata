@@ -2,19 +2,28 @@ instrument: perinatal
 title: "Birth and perinatal history"
 tab: PERINATALITE
 section: PERINATALITE
-status: draft
+status: reviewed
 level: patient
 notes: >
   The BP schema with the codes of this extraction. Asked once, at
-  inclusion: 532 patients.
+  inclusion: the form of the history (164) is shown at the inclusion visit
+  only (visit type 2, config/global.php): 532 patients.
 
-  Codes, from the dictionary: the term is 1 preterm, 2 at term, 3
-  post-term; the type of birth is 1 vaginal, 2 caesarean; 0 is "not known"
-  in both (missing_code). The neonatal hospitalisation is 0, 1 and 2, with
-  no code in the dictionary; the shares are those of BP's no, yes and "not
-  known" (84%, 4% and 12% here; 87%, 8% and 6% there), so 2 is read as "not
-  known". A 0 in a measure (ages of the parents, weight, length, head
-  circumference, Apgar scores) is "not recorded", as in BP.
+  Codes, from the form (164.php): the term is 1 preterm, 2 at term, 3
+  post-term, 0 "Ne sais pas"; the type of birth is 1 vaginal, 2 caesarean,
+  0 "ne sais pas"; the neonatal hospitalisation is 1 yes, 0 no, 2 "Ne sais
+  pas" (84%, 4% and 12% of the answers for no, yes and "not known"; 87%, 8%
+  and 6% in BP). "Not known" is a missing code (45, 51 and 63 cells). A 0
+  in a measure (ages of the parents, weight, length, head circumference,
+  gestational age, Apgar scores) is "not recorded", as in BP (8 gestational
+  ages). The weight is typed in grams (four digits) and the gestational age
+  in weeks (two digits). Out of range: one age of the mother of 86, one
+  gestational age of 19 weeks and two birth weights.
+
+  Centres and years (2026-11-20). The term of birth is answered for 58% to
+  97% of the patients of each centre but for 8 of the 44 of one centre,
+  and for 65% to 86% of the patients of each period from 2013: a fill
+  rate, with no known cause.
 
 variables:
   mother_age_at_birth:

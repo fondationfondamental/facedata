@@ -34,6 +34,10 @@ forms) closed O9 as to the wording and the levels of use of the substances (O8 (
 
 **Update of 2026-11-20 (questionnaires, second part).** The review of the old forms (PROGRESS.md D67 to D75) read the scripts of the PSQI, the CCC-2, the ABC and the AIM, recomputed the CCC-2 composite and the four LSAS sub-scores, renamed the three pilot forms like BP, and added DEV-17, DM-25, DM-26 and PI-5. The definition of done of the 30 schemas of the new forms (D76, D77) found nine steps of the years and centres with no known cause (DM-26).
 
+**Update of 2026-11-20 (small tabs).** The review of the patient, clinical examination and social cognition tabs (PROGRESS.md D78 to D81) answered ASP-3 from the code of the export, the parts of ASP-1 (a) about the screening form (the forms keep the lists in comments), and added DEV-18 and DM-27.
+
+**Update of 2026-11-20 (small tabs, medico-economic forms and definition of done).** The medico-economic forms (PROGRESS.md D82 to D86) split the adult and the child form written in one table (the 0 of the other form's boxes is 'never asked', DM-3), answered O15 (3) and (4), the `jobclas` and `hoocur` parts of O16 (9) and the cause of O17 (4) (two scales of the years of education by centre, M90). The definition of done of the 23 schemas (D87, D88) found the steps of the years and centres of DM-28. All 146 ASP schemas are reviewed.
+
 ## To send at once
 
 These three answers change how every table is read. The work has started without them,
@@ -43,7 +47,8 @@ on careful defaults.
 it.** The thesaurus names 4,063 of the 4,364 columns (230 more are in a range written
 with a typo). (a) Not documented: `arm` and `siteid` (named with no label), `diag1s_1`
 (codes 1 to 4, filled when an ASD is evoked at screening), `diag3s_1` and its eleven
-boxes (filled when the conclusion is deferred), the kinds 1 to 5 of non-drug care, the
+boxes (filled when the conclusion is deferred), the kinds 1 to 5 of non-drug care (these three
+answered: the forms 241 and 261 keep their lists in comments, D79; `arm` answered by the export, ASP-3), the
 code 3 of `dsmtype` (98 visits: answered, the form 202 prints MINI, D48), `ados_tot` and `ados_diag`, the sub-scores
 and T-scores of the SRS filled by a relative, the BIS scores. (b) The DSM-5 support
 levels are numbered backwards (level 1 "very substantial support") in the dictionary; the boxes written
@@ -73,7 +78,11 @@ period of use of each scale is read from the data. (O2, D3)
 an autism spectrum diagnosis confirmed at the expert centre and 0 as a patient assessed
 and not diagnosed. Is that right, and were the patients not diagnosed meant to be in the
 extraction?
-*Today:* both groups are delivered, with a `diagnosis` column. (O3, D3)
+*Answered on 2026-11-20 by the code of the export (D78).* The export writes into `arm` the conclusion of
+the DSM-5 criteria of autism of the inclusion visit (`cridsm26`, `face_asp_1_patients.sql` lines 25 and 122),
+equal on 2,318 of 2,318 patients: 1 confirmed, 0 not confirmed. Whether the patients not diagnosed are
+meant to stay is PI-2.
+*Today:* both groups are delivered, with a `diagnosis` column. (O3, D3, D78)
 
 ## 1. For the EMR developers and whoever writes the export
 
@@ -228,6 +237,10 @@ export casts some ages and years with `~ '^[0-9]+$'`, which drops decimals and t
 *Questions:* can the scripts be corrected, and the fields exported?
 *Today:* the CCC-2 composite and the PSQI components are recomputed, 00:00:00 is read as not recorded, the others are delivered as stored. (D68 to D74; R153, A74, A75, A81, A82)
 
+**DEV-18. The clinical examination and the screening form in the export and the forms.** (a) The box 'ECG done' (`egyn`), which gates the intervals in form 194, and the second cardiologist box (`cardyn`) are in the clean model and not in the extraction (R158). (b) The help text of the RR field says to divide the heart rate by 60, the inverse of the right 60 / rate (`194.php` lines 31-32; A84); in this cohort the typed RR follows 60 / rate. (c) The form checks the six emotion scores of the facial emotion test against 100 but not its total (`TREF01`) nor the faux pas score (`FAUPA01`) (`eASPERGER.js` lines 3024-3090; A94): 6 values in the 700s. (d) The referral fields of the patient form (sector, how the centre was known, who referred the patient and why, the dates of the letter and of the collection) and the end of follow-up (`fin_suivi`, `datedc`, `causdc`) are not exported (R164). (e) The 'other earlier diagnosis' is an 18-box multiple choice and the export keeps the lowest box ticked, labels the box 4 '4', gives the boxes 10 and 12 the same label, and writes the free text when no box is ticked (`easperger_screening.sql` lines 29-50; R165).
+*Questions:* can these fields be exported and the check be added?
+*Today:* the QTc is computed from the typed QT and RR; the 700s are out of range; the earlier diagnosis is delivered as the lowest box. (D79, D80, D81; R158, R164, R165, A84, A94)
+
 ## 2. For the data managers
 
 ### Priority A
@@ -254,6 +267,7 @@ on every visit that has the form: is a 0 "no" or "not answered"? (O14, O15)
 *Answered on 2026-11-19 by the code of the application (D33).* A box that is not ticked
 is saved 0 on every save (`class.update.php`): the 0 is "not ticked", never an explicit no.
 The boxes are delivered as recorded and flagged where the question above them is empty (gynaecology D33, pregnancy D39).
+*Medico-economic forms (2026-11-20, D82).* The adult form 350 and the child form 351 write one table and the save writes 0 into the boxes of the form not shown (14,471 and 4,039 cells, never a 1): those zeros are 'never asked' and are delivered missing; the form of a visit is read from the questions only one form asks. The same for the time at school of the 2019 inclusion form.
 
 **DM-4. The treatments.** Is the list the treatment on the day of the visit? 259
 inclusion visits declare a current treatment and hold no list. 203 names are not in
@@ -382,6 +396,12 @@ the STAIC, the CDI and the EQ differ from those of the computed scores)?
 
 **DM-26. Steps of the years and centres of the new questionnaires.** Nine steps remain with no known cause (D77): the ADI-R totals fall from a median of 21 (2011 to 2013) to 10 to 12 from 2018 in children and adults alike, while the edition of the interview does not change; the ADOS module 3 of the main centre (total 16 in 2017, 8 in 2018, 13 in 2019); the Short Sensory Profile of 2018 to 2020 in both age groups; the median EQ-5D index of adults (0.80 to 0.91 in 2014 and 2015, 0.62 to 0.70 from 2019); the GAF of adults (52 in 2020 to 2022, 60 from 2024); the SRS of children (78 in 2014, 77 to 93 from 2022); the ASRS and the GSQ of centre D (median total 35 against 40 to 45, 63 against 74 to 81); the PRISE-M (median total 2 in centre B, 13 in C); and the BRIEF, the ADHD-RS and the SRS of children in centre C, which holds the years to 2015 and reads lower than centre A (140 against 160, 19 against 26, 85 against 92). Is each the case mix, the rater, or a change of setting (a form, a script, a way of filling) that the centres know?
 *Today:* delivered as recorded; the notes of the schemas carry the steps and the schemas are `reviewed` all the same (a documented step with no known cause does not block). (D77, O37)
+
+**DM-27. The clinical examination and the social cognition tests.** (a) The tobacco dose `sudose_cig` is labelled pack-years: all 11 values above 60 come from one centre (B), whose 20 values have a median of 73 against 3.8 to 10 elsewhere, and 13 of its 16 values with known years of smoking mean more than a pack a day for every year smoked. What did that centre type (M83; O10)? (b) The box `fnmchang` of the follow-up form 245 sits between the Tanner stages and the neurological examination: which block does its 'change since the last visit' cover (M84)? (c) The non-drug care kinds 1 to 5 (CMP, CMPP, day hospital, IME, IMPRO) left the forms: on which date in each centre? The last ticks are on patients first seen in 2018 to 2020. (d) At centre D the facial emotion scores for anger, sadness, disgust and fear are one photo of nine lower than at B and C (adults), with no date and no scoring cause: is the test given or scored differently there?
+*Today:* (a) delivered as typed up to 200; (b) the label says the block is not stated; (c) the 0 from 2022 is missing; (d) delivered as recorded, the note documents the step. (D79, D81)
+
+**DM-28. The medico-economic forms and the steps of the small tabs.** (a) The day-hospital and full-time hospital counts are printed 'number of consultations in the last 12 months' and the day-hospital count is bimodal (median 1 in one centre, 10 in another): stays or days (M90)? (b) The years of education (EDULEVEL) are on two scales by centre (median 3 years in one centre, 13.5 to 14 in three others): which rule does each centre follow (M90; O17 (4))? (c) Do the records of the old 'Module social' (forms 263 and 265, commented out, global.php line 185) hold answers (M91)? (d) The distance `pec031` is asked in metres, and 18 of 303 values are under 100: kilometres typed in the box of metres? (e) One visit gives more than 7 days a week in the employment structures. (f) A parent who saw a general practitioner in the last 12 months (form 353) is 61% to 67% in 2021 and 7% to 25% from 2023 in both centres that fill the form, while the psychiatrist and the psychologist do not move: was the question, its default or its display changed in 2022? (g) The support at school of children falls from 43% to 46% (2016 to 2020) to 26% (from 2021) in the two children's centres; the garden of the home in one centre moves from 17% to 56% and back to 22%; centre D gave the information note to 45% to 75% of its patients until 2020; the change boxes of the follow-up forms are yes on 64% to 98% of the visits of one centre and 11% to 45% elsewhere. Is any of these a change of the forms or of the practice? (O39)
+*Today:* (a) labelled 'stays or days'; (b) read and not delivered (`education_years_as_stored`); (d) (e) delivered as typed; (f) (g) delivered as recorded, the notes carry the steps and the schemas are `reviewed` (a documented step with no known cause does not block). (D82 to D88)
 
 ## 3. For the principal investigator
 

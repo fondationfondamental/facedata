@@ -2,16 +2,17 @@ instrument: perinatal
 title: Birth and perinatal period
 tab: PERINATALITE
 section: PERINATALITE
-status: draft
+status: reviewed
 level: patient
 notes: >
   Ages of the parents at the birth of the patient, term, gestational age,
   type of birth, neonatal admission and birth weight (the BP questions),
-  and four questions that the SZ form adds from 2017: born in a town or in
-  the country, obstetric complications, a viral infection of the mother
-  during the pregnancy, and the events of the pregnancy. Filled at
-  inclusion (about 1,800 visits for the term, 1,048 for the weight, 430 to
-  620 for the questions of 2017).
+  and four questions that the SZ form adds: born in a town or in the
+  country, obstetric complications, a viral infection of the mother during
+  the pregnancy, and the events of the pregnancy. These four are filled from
+  2019 (1 or 2 visits of 2017 and of 2018 hold them). Filled at inclusion
+  (about 1,800 visits for the term, 1,048 for the weight, 427 to 624 for the
+  four questions).
 
   Same instrument as in FACE BP, without the birth length, the head
   circumference and the Apgar scores, which SZ does not have. The birth
@@ -21,7 +22,10 @@ notes: >
   Missing codes: 999 and 9999 ("does not know") in the ages of the parents,
   the gestational age and the weight, 0 as in BP, "Ne sais pas", "NC",
   "NSP" and "DCM". 7 weights under 400 g are out of range (typed in kg or
-  cut). The gestational age holds no value in months here.
+  cut). 17 gestational ages are typed as text and stay unparsed: weeks with
+  a word or a number of days (6), months (3), two numbers or a range (4)
+  and words without a number (4). 5 gestational ages outside 20 to 45 weeks
+  (1 under, 4 over) and 1 age of the mother over 60 are out_of_range.
 
   The events of the pregnancy are a list of nine boxes and "none", several
   of which can be ticked: one yes/no per event. 348 of 469 answers are

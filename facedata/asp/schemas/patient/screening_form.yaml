@@ -2,7 +2,7 @@ instrument: screening_form
 title: "Conclusion of the screening form"
 tab: patient
 section: screening form
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient, from the form filled before the assessment. Filled for
@@ -14,15 +14,25 @@ notes: >
   the patients for whom it is evoked, 811 have a confirmed diagnosis (arm 1)
   and 57 do not; of those deferred, 92 are confirmed and 54 are not.
 
-  Each answer opens its own block. When an ASD is evoked: diag1s_1 (a code
-  that the thesaurus does not document: 1 for 137 patients, 2 for 155, 4 for
-  21), whether an assessment was scheduled, why not, and whether the patient
-  agrees to be assessed later. When it is rejected: the probable diagnosis,
-  from a list, and a text. When the conclusion is deferred: a code and eleven
-  boxes that the thesaurus names with no label (O16), a text and a comment;
-  the boxes are filled for fewer than five patients. The eleven boxes
-  diag2s_1_1 to diag2s_1_11 (the type of a personality disorder) are empty on
-  every row (ignored.yaml).
+  Each answer opens its own block. When an ASD is evoked: the probable
+  diagnosis after the screening consultation (diag1s_1; the thesaurus gives
+  no label, the forms 241 line 49 and 261 line 67 do: 1 Asperger syndrome for
+  137 patients, 2 high-functioning autism for 155, 3 autism with
+  intellectual disability for 3, 4 ASD not otherwise specified without
+  intellectual disability for 21, 5 the same with intellectual disability
+  for 1), whether an assessment was scheduled, why not, and whether the
+  patient agrees to be assessed later. When it is rejected: the probable
+  diagnosis, from a list, and a text. When the conclusion is deferred: the
+  disorder evoked at the end of the assessment (diag3s_1, nineteen codes of
+  the forms 241 line 83 and 261 line 104: 1 Asperger syndrome for 80
+  patients, 19 other for 43, 11 ADHD for 5, and 12, 15, 2, 5 and 6 for 3 or
+  fewer), the eleven types of a personality disorder (diag3s_1_1 to
+  diag3s_1_11, form 241 lines 89-99; filled for 2 patients), a text and a
+  comment. The two lists are commented out of both forms: diag1s_1 is filled
+  for patients first seen from 2009 to 2020 (and one in 2025), diag3s_1 from
+  2013 to 2020 (O16 closed for them, decision D79). The eleven boxes
+  diag2s_1_1 to diag2s_1_11 (the type of a personality disorder) are empty
+  on every row (ignored.yaml).
 
   Three free texts: the clinical signs suggestive of an autism spectrum
   disorder (ece_tsa, 538 patients, almost all adults), the differential
@@ -31,28 +41,36 @@ notes: >
 
   An instrument of the ASP cohort only.
 
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the information note is ticked for 94% to 100% of
+  the patients of the other centres from 2016 and 97% to 100% of every centre
+  from 2021, but for 45% in centre D to 2015 and 75% in D from 2016 to 2020
+  (30% of the patients of 2014, 70% of 2015, 88% of 2016, 93% or more from
+  2017): the habit of one centre in the first years, no known cause,
+  documented here. The other answers have no group of 20 with a shift.
+
 variables:
   screening_conclusion: {column: diags, type: category, codes: {"1": asd_evoked, "2": asd_rejected, "3": deferred}, label: "An autism spectrum disorder is evoked at the end of the screening (the answer 'deferred' was removed in 2021)"}
-  asd_evoked_code: {column: diag1s_1, type: category, codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "5": code_5}, label: "ASD evoked: a code that the thesaurus does not document"}
+  screening_probable_diagnosis: {column: diag1s_1, type: category, codes: {"1": asperger_syndrome, "2": high_functioning_autism, "3": autism_with_intellectual_disability, "4": asd_nos_without_intellectual_disability, "5": asd_nos_with_intellectual_disability}, label: "ASD evoked: the probable diagnosis after the screening consultation (field removed from forms 241 and 261, last filled in 2020)"}
   assessment_scheduled: {column: diag1s_2, type: item, range: [0, 1], label: "ASD evoked: an assessment at the expert centre was scheduled"}
   assessment_not_scheduled_reason: {column: diag1s_3, type: category, codes: {"1": screening_consultation_sufficient, "2": clinical_state_not_compatible, "3": patient_not_available, "4": patient_refusal, "5": referral_criteria_not_met, "6": other}, label: "ASD evoked: why no assessment was scheduled"}
   assessment_not_scheduled_reason_text: {column: diag1s_3a, type: text, label: "ASD evoked: why no assessment was scheduled, free text"}
   agrees_to_later_assessment: {column: diag1s_4, type: item, range: [0, 1], label: "ASD evoked: if the clinical state does not allow the assessment now, the patient agrees to be assessed later"}
   rejected_probable_diagnosis: {column: diag2s_1, type: category, codes: {"1": schizophrenia, "2": other_psychotic_disorder, "3": intellectual_disability, "5": adhd, "6": depression_or_mood_disorder, "7": anxiety_disorder, "8": ocd, "9": personality_disorder, "10": learning_disorder, "11": specific_language_disorder, "12": dyspraxia, "13": other, "16": pragmatic_communication_disorder}, label: "ASD rejected: the probable diagnosis"}
   rejected_probable_diagnosis_text: {column: diag2s_1a, type: text, label: "ASD rejected: the probable diagnosis, free text"}
-  deferred_code: {column: diag3s_1, type: category, codes: {"1": code_1, "2": code_2, "5": code_5, "6": code_6, "11": code_11, "12": code_12, "15": code_15, "19": code_19}, label: "Conclusion deferred: a code that the thesaurus does not document"}
-  deferred_text: {column: diag3s_1a, type: text, label: "Conclusion deferred: free text"}
-  deferred_box01: {column: diag3s_1_1, type: item, range: [0, 1], label: "Conclusion deferred: box 1, not documented by the thesaurus"}
-  deferred_box02: {column: diag3s_1_2, type: item, range: [0, 1], label: "Conclusion deferred: box 2, not documented by the thesaurus"}
-  deferred_box03: {column: diag3s_1_3, type: item, range: [0, 1], label: "Conclusion deferred: box 3, not documented by the thesaurus"}
-  deferred_box04: {column: diag3s_1_4, type: item, range: [0, 1], label: "Conclusion deferred: box 4, not documented by the thesaurus"}
-  deferred_box05: {column: diag3s_1_5, type: item, range: [0, 1], label: "Conclusion deferred: box 5, not documented by the thesaurus"}
-  deferred_box06: {column: diag3s_1_6, type: item, range: [0, 1], label: "Conclusion deferred: box 6, not documented by the thesaurus"}
-  deferred_box07: {column: diag3s_1_7, type: item, range: [0, 1], label: "Conclusion deferred: box 7, not documented by the thesaurus"}
-  deferred_box08: {column: diag3s_1_8, type: item, range: [0, 1], label: "Conclusion deferred: box 8, not documented by the thesaurus"}
-  deferred_box09: {column: diag3s_1_9, type: item, range: [0, 1], label: "Conclusion deferred: box 9, not documented by the thesaurus"}
-  deferred_box10: {column: diag3s_1_10, type: item, range: [0, 1], label: "Conclusion deferred: box 10, not documented by the thesaurus"}
-  deferred_box11: {column: diag3s_1_11, type: item, range: [0, 1], label: "Conclusion deferred: box 11, not documented by the thesaurus"}
+  deferred_assessment_diagnosis: {column: diag3s_1, type: category, codes: {"1": asperger_syndrome, "2": high_functioning_autism, "3": autism_without_intellectual_disability, "4": autism_with_intellectual_disability, "5": asd_nos_without_intellectual_disability, "6": asd_nos_with_intellectual_disability, "7": schizophrenia, "8": other_psychotic_disorder, "9": intellectual_disability, "10": high_potential, "11": adhd, "12": depression_or_mood_disorder, "13": social_phobia, "14": ocd, "15": personality_disorder, "16": learning_disorder, "17": specific_language_disorder, "18": dyspraxia, "19": other}, label: "Conclusion deferred: the disorder evoked at the end of the assessment (field removed from forms 241 and 261)"}
+  deferred_assessment_diagnosis_text: {column: diag3s_1a, type: text, label: "Conclusion deferred: the disorder evoked when it is 'other', free text (field removed from forms 241 and 261)"}
+  deferred_personality_paranoid: {column: diag3s_1_1, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: paranoid type"}
+  deferred_personality_schizoid: {column: diag3s_1_2, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: schizoid type"}
+  deferred_personality_schizotypal: {column: diag3s_1_3, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: schizotypal type"}
+  deferred_personality_antisocial: {column: diag3s_1_4, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: antisocial type"}
+  deferred_personality_borderline: {column: diag3s_1_5, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: borderline type"}
+  deferred_personality_histrionic: {column: diag3s_1_6, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: histrionic type"}
+  deferred_personality_narcissistic: {column: diag3s_1_7, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: narcissistic type"}
+  deferred_personality_avoidant: {column: diag3s_1_8, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: avoidant type"}
+  deferred_personality_dependent: {column: diag3s_1_9, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: dependent type"}
+  deferred_personality_obsessive_compulsive: {column: diag3s_1_10, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: obsessive-compulsive type"}
+  deferred_personality_unspecified: {column: diag3s_1_11, type: item, range: [0, 1], label: "Conclusion deferred, personality disorder: unspecified type"}
   deferred_comment: {column: diag3s_2, type: text, label: "Conclusion deferred: comment, free text"}
   clinical_signs_text: {column: ece_tsa, type: text, label: "Clinical signs suggestive of an autism spectrum disorder, free text"}
   differential_diagnosis_text: {column: screen_diagdiff, type: text, label: "Differential diagnosis, free text"}

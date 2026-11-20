@@ -46,7 +46,10 @@ notes: >
   gestational age are two answers of the patient and often disagree: of
   the patients recorded as premature who give a gestational age, a third
   give 37 weeks or more; of those recorded as born at term, 30 of 911 give
-  less than 37 weeks and 94 give 42 or more.
+  less than 37 weeks and 94 give 42 or more. The gestational age is typed
+  as text and the export keeps its first whole number (ebipolar_mh.sql
+  lines 15 to 20): a half, or the days after the weeks, are lost (request
+  R33).
 
   Hard limits. Weight 400 to 6,500 g (17 values outside: 12 below 100, of
   which 10 are 47 to 57, a birth length typed in the weight field, and 2
@@ -69,7 +72,10 @@ notes: >
   than at a birth clinic, where 10 at one minute is unusual; the share goes
   from 45% to 95% between centres. Delivered as written. For 3 of the 837
   patients with both scores, the score at five minutes is lower than at one
-  minute.
+  minute. The export reads a score typed as two numbers "a/b" as their mean
+  ("8/10" gives 9; ebipolar_mh.sql lines 107 to 110 and 124 to 127), so
+  such a score cannot be told from a typed one; no delivered score holds a
+  half (request R33).
 
   The dictionary sheet of this tab has one more column than the others (a
   list of CDISC codes before the names); the names used here are those of

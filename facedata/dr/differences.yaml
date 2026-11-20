@@ -4,7 +4,7 @@
 
 # PATIENT
 identite: the diagnosis is that of the DR cohort; the day of birth is set to the 15th for the patients who keep another one; the stored age is not the age at inclusion, which is computed
-provenance: two of the BP questions only; the referrer has other texts and the purpose of the visit is exported as a code that the dictionary does not explain
+provenance: two of the BP questions only; the referrer has other texts; the purpose of the visit is stored as the numbers 1 to 3 of the form where BP holds the words
 
 # HETERO-QUESTIONNAIRES
 cgi_egf: the TRD extraction has the CGI severity and the GAF only (no improvement, no side effects, no efficacy index; the CGI-I of form 184 is not exported), the GAF is in the column egf_ and its box takes digits only, so no band is typed and the option bands is not set
@@ -62,7 +62,7 @@ perinatal: the answers are stored as numbers, with 0 or 2 for "not known"
 sick_leave_v0: the answers are 0, 1 and 2 (not applicable); the number of sick leaves is not in the extraction
 sick_leave_fu: other columns; the form has no yes/no question and no stated cause, so the names say any cause, the number of sick leaves is the answer and the export computes the yes/no from it (written Y and N); the length is in days
 hospitalisations_v0: the columns of this cohort (ever hospitalised, age at the first one, number, months), with no question on the first psychotic episode
-social: the time in the job is a number of months; the occupational class is added; the closest person is stored as a code that the dictionary does not explain; no questions on housing, income and debts
+social: the time in the job is a number of months (the SZ question, job_months); the occupational class is added; the person the patient spends most time with is added (the list of form 168); the code 12 of the education level is "BAC"; the questions of the job are gated on the work status; no questions on housing, income and debts
 
 # TRAITEMENTS
 medications: the lists of this extraction are crossed by the export (a product written next to every prescription line, request R122) and are put back with the field crossed; the name is the substance of the drug catalogue (substance_name), not the typed product; the daily dose is in mg as typed and the number of units a day is computed by the export; the generic name of the catalogue is looked up; no liquid strength; the form is added

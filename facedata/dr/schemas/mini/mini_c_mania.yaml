@@ -2,74 +2,173 @@ instrument: mini_c_mania
 title: "MINI, module C: manic and hypomanic episodes"
 tab: MINI
 section: MINI C
-status: draft
+status: reviewed
 notes: >
-  Module C: manic and hypomanic episodes, current (actuel) and past (pe).
+  Module C: manic and hypomanic episodes, current (actuel) and past (pe),
+  with the family history of bipolar disorder (C0).
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  Few patients of this cohort answer yes: an elated period on 27 visits, an
-  irritable one on 37. The conclusions (manic episode, hypomanic episode,
-  hypomanic symptoms) are each a yes/no and two boxes "current" and
-  "past"; the six boxes are written by the form.
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the yes answers of the screening visit that are
+  answered again at the first follow-up, C2a 5 of 5 and the family history
+  C0 10 of 10 are no (C1a: 2 yes at screening). The lifetime and
+  past-episode questions are therefore delivered at inclusion (screening
+  visit) only, and at follow-up in twins named _fu (versions read from the
+  visit label, block visit_form, as in the treatment schemas); the current
+  and past-month questions stay one variable. Here C0 and its text, C1a,
+  C2a, the past episode (the pe items), the three conclusions (episode
+  current or past), their boxes past and C7a to C7c (25 variables); C1b,
+  C2b, the current episode and the boxes current are one variable. C1b and
+  the boxes current hang on C1a, C2b on C2a: hidden variables read C1a and
+  C2a on every visit for them.
+
+  Few patients of this cohort answer yes: an elated period on 27 visits,
+  an irritable one on 37. The conclusions (manic episode, hypomanic
+  episode, hypomanic symptoms) are each a yes/no and two boxes current and
+  past; the six boxes are written by the form, derived_from C1a
+  (derived_doubt where it is empty: 68 visits, and 43 and 25 for the boxes
+  past at inclusion and follow-up).
+
+  Skip (form change of 2017). After C1a and C2a no, the page now hides and
+  clears module C and sets its conclusions to 0. Until 2017 it did not:
+  137 of the 506 visits with C1a and C2a no hold later answers, all dated
+  2012 to 2017 (2014: 43, 2015: 45, 2016: 25, 2017: 1 of 54), mostly zeros
+  (C7a to C7c: 121 each); 18 hold a yes (C3e past 7, C4 past 7). They are
+  delivered as recorded. The OR gate (C1a or C2a) of C3 to C7 is not
+  encoded: an empty item after a double no stays missing.
+
+  C1b and C2b (now) are set to 0 by the page after a C1a or C2a no: 0 is
+  read where they are empty after that no (asked_if: C1b 9 visits, C2b
+  136, 23 of them at follow-up; C1b and C2b hold 2 and 3 yes after a no,
+  kept).
+
+  C4 (longest duration): the form prints the first option as '3 jours au
+  moins' where the MINI says three days or less (142.php and 229.php, C113
+  and C114, defect A88); the codes are 1 three days or less (hypomanic
+  symptoms), 2 four to six days, 3 seven days or more. The dictionary
+  gives no coding for C02B (request R171).
+
+  Psychotic features. The diagnosis summary of the form (module Q) means
+  to read C3a past (c03a_pe), but a typo makes it ignore it
+  (attr('cheked'), formulaires.js 2447, defect A92).
+
+  mini_c00a (who in the family) is free text: delivered as type text, its
+  values are never printed.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_c01a: {column: c01a, label: "C1 a) Avez-vous déjà eu une période où vous vous sentiez tellement exalté(e) ou plein(e) d’énergie que cela vous a posé des problèmes?"}
-  mini_c00: {column: c00, label: "Avez-vous dans votre famille des antécédents de maladie maniaco-dépressive ou de trouble bipolaire ou avez-vous un membre de votre famille q"}
-  mini_c00a: {column: c00a, type: text, label: "si oui, veuillez preciser qui?"}
-  mini_c01b: {column: c01b, label: "b) Si oui, vous sentez-vous, en ce moment, exalté(e) ou plein(e)d’énergie ?"}
-  mini_c02a: {column: c02a, label: "C2 a) Avez-vous déjà eu une période de plusieurs jours où vous étiez tellement irritable que vous en arriviez à insulter les gens, à hurler,"}
-  mini_c02b: {column: c02b, label: "b) Vous sentez-vous excessivement irritable en ce moment ?"}
+  mini_c01a: {column: c01a, versions: [inclusion], label: "C1 a) Avez-vous déjà eu une période où vous vous sentiez tellement exalté(e) ou plein(e) d’énergie que cela vous a posé des problèmes?"}
+  mini_c01a_fu: {column: c01a, versions: [follow_up], label: "C1 a) Avez-vous déjà eu une période où vous vous sentiez tellement exalté(e) ou plein(e) d’énergie que cela vous a posé des problèmes?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c00: {column: c00, versions: [inclusion], label: "Avez-vous dans votre famille des antécédents de maladie maniaco-dépressive ou de trouble bipolaire ou avez-vous un membre de votre famille q"}
+  mini_c00_fu: {column: c00, versions: [follow_up], label: "Avez-vous dans votre famille des antécédents de maladie maniaco-dépressive ou de trouble bipolaire ou avez-vous un membre de votre famille q, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c00a: {column: c00a, versions: [inclusion], type: text, label: "si oui, veuillez preciser qui?"}
+  mini_c00a_fu: {column: c00a, versions: [follow_up], type: text, label: "si oui, veuillez preciser qui?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c01a_every_visit: {column: c01a, keep: false, label: "C1a read on every visit: the gate of C1b and of the boxes current"}
+  mini_c02a_every_visit: {column: c02a, keep: false, label: "C2a read on every visit: the gate of C2b"}
+  mini_c01b: {column: c01b, asked_if: mini_c01a_every_visit, label: "b) Si oui, vous sentez-vous, en ce moment, exalté(e) ou plein(e)d’énergie ?"}
+  mini_c02a: {column: c02a, versions: [inclusion], label: "C2 a) Avez-vous déjà eu une période de plusieurs jours où vous étiez tellement irritable que vous en arriviez à insulter les gens, à hurler,"}
+  mini_c02a_fu: {column: c02a, versions: [follow_up], label: "C2 a) Avez-vous déjà eu une période de plusieurs jours où vous étiez tellement irritable que vous en arriviez à insulter les gens, à hurler,, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c02b: {column: c02b, asked_if: mini_c02a_every_visit, label: "b) Vous sentez-vous excessivement irritable en ce moment ?"}
   mini_c03_actuel: {column: c03_actuel, label: "C3 a) Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particu"}
-  mini_c03_pe: {column: c03_pe, label: "Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particulièrem"}
+  mini_c03_pe: {column: c03_pe, versions: [inclusion], label: "Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particulièrem"}
+  mini_c03_pe_fu: {column: c03_pe, versions: [follow_up], label: "Aviez-vous le sentiment que vous auriez pu faire des choses dont les autres seraient incapables ou que vous étiez quelqu’un de particulièrem, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03a_actuel: {column: c03a_actuel, label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Actuel)"}
-  mini_c03a_pe: {column: c03a_pe, label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Passé)"}
+  mini_c03a_pe: {column: c03a_pe, versions: [inclusion], label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Passé)"}
+  mini_c03a_pe_fu: {column: c03a_pe, versions: [follow_up], label: "Si oui, demandez des exemples.les exemples concordent avec une idee délirante? (Episode Passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03b_actuel: {column: c03b_actuel, label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Actue"}
-  mini_c03b_pe: {column: c03b_pe, label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Passé"}
+  mini_c03b_pe: {column: c03b_pe, versions: [inclusion], label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Passé"}
+  mini_c03b_pe_fu: {column: c03b_pe, versions: [follow_up], label: "b) Aviez-vous moins besoin de sommeil que d’habitude (vous sentiez-vous reposé€ après seulement quelques heures de sommeil) ? (Episode Passé, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03c_actuel: {column: c03c_actuel, label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Actuel)"}
-  mini_c03c_pe: {column: c03c_pe, label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Passé)"}
+  mini_c03c_pe: {column: c03c_pe, versions: [inclusion], label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Passé)"}
+  mini_c03c_pe_fu: {column: c03c_pe, versions: [follow_up], label: "c) Parliez-vous sans arrêt ou si vite que les gens avaient du mal à vous comprendre ? (Episode Passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03d_actuel: {column: c03d_actuel, label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Actuel)"}
-  mini_c03d_pe: {column: c03d_pe, label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Passé)"}
+  mini_c03d_pe: {column: c03d_pe, versions: [inclusion], label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Passé)"}
+  mini_c03d_pe_fu: {column: c03d_pe, versions: [follow_up], label: "d) Vos pensées défilaient-elles dans votre tête que vous ne pouviez pas bien les suivre ? (Episode Passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03e_actuel: {column: c03e_actuel, label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Act"}
-  mini_c03e_pe: {column: c03e_pe, label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Pas"}
+  mini_c03e_pe: {column: c03e_pe, versions: [inclusion], label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Pas"}
+  mini_c03e_pe_fu: {column: c03e_pe, versions: [follow_up], label: "e) Etiez-vous facilement distrait(e) que la moindre interruption vous faisait perdre le fil de ce que vous faisiez ou pensiez ? (Episode Pas, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03f_actuel: {column: c03f_actuel, label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de"}
-  mini_c03f_pe: {column: c03f_pe, label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de"}
+  mini_c03f_pe: {column: c03f_pe, versions: [inclusion], label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de"}
+  mini_c03f_pe_fu: {column: c03f_pe, versions: [follow_up], label: "f) Etiez-vous nettement plus actif(e) et entreprenant(e), au travail, à l’école, socialement, sexuellement ou vous sentiez-vous incapable de, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03g_actuel: {column: c03g_actuel, label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq"}
-  mini_c03g_pe: {column: c03g_pe, label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq"}
+  mini_c03g_pe: {column: c03g_pe, versions: [inclusion], label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq"}
+  mini_c03g_pe_fu: {column: c03g_pe, versions: [follow_up], label: "g) Aviez-vous tellement envie de faire des choses qui vous paraissaient agréables ou tentantes que vous aviez tendance à en oublier les risq, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c03rec_actuel: {column: c03rec_actuel, label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est "}
-  mini_c03rec_pe: {column: c03rec_pe, label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est "}
-  mini_c04_actuel: {column: c04_actuel, range: [1, 3], label: "C4) Qu’elle a été la durée maximale pendant laquelle ces symptômes ont persisté ? (Episode Actuel)"}
-  mini_c04_pe: {column: c04_pe, range: [1, 3], label: "C4) Qu’elle a été la durée maximale pendant laquelle ces symptômes ont persisté ? (Episode Passé)"}
+  mini_c03rec_pe: {column: c03rec_pe, versions: [inclusion], label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est "}
+  mini_c03rec_pe_fu: {column: c03rec_pe, versions: [follow_up], label: "RECAPITULATIF C3 : est ce qu’au moins 3 reponses sont cotéees oui en c3 (ou au moins 4 si c1a est cotée non (pour episode passe) et c1b est , asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c04_actuel: {column: c04_actuel, range: [1, 3], label: "C4) Longest duration of the symptoms, current episode (1 three days or less, 2 four to six days, 3 seven days or more)"}
+  mini_c04_pe: {column: c04_pe, versions: [inclusion], range: [1, 3], label: "C4) Longest duration of the symptoms, past episode (1 three days or less, 2 four to six days, 3 seven days or more)"}
+  mini_c04_pe_fu: {column: c04_pe, versions: [follow_up], range: [1, 3], label: "C4) Longest duration of the symptoms, past episode (1 three days or less, 2 four to six days, 3 seven days or more), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c05_actuel: {column: c05_actuel, label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Actuel)"}
-  mini_c05_pe: {column: c05_pe, label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Passé)"}
+  mini_c05_pe: {column: c05_pe, versions: [inclusion], label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Passé)"}
+  mini_c05_pe_fu: {column: c05_pe, versions: [follow_up], label: "C5) Avez-vous été hospitalisé(e) à cause de ces problèmes ? (Episode Passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_c06_actuel: {column: c06_actuel, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio"}
-  mini_c06_pe: {column: c06_pe, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio"}
-  mini_manic_episode: {column: ceman, label: "Manic episode: ÉPISODE MANIAQUE"}
-  mini_manic_episode_current: {column: ceman1, derived_from: mini_c01a, label: "Manic episode current: actuel (a box: 0 is not ticked)"}
-  mini_manic_episode_past: {column: ceman2, derived_from: mini_c01a, label: "Manic episode past: passé (a box: 0 is not ticked)"}
-  mini_hypomanic_episode: {column: cehman, label: "Hypomanic episode: ÉPISODE HYPOMANIAQUE"}
-  mini_hypomanic_episode_current: {column: cehman1, derived_from: mini_c01a, label: "Hypomanic episode current: actuel (a box: 0 is not ticked)"}
-  mini_hypomanic_episode_past: {column: cehman2, derived_from: mini_c01a, label: "Hypomanic episode past: passé (a box: 0 is not ticked)"}
-  mini_hypomanic_symptoms: {column: cshman, label: "Hypomanic symptoms: SYMPTOMES HYPOMANIAQUES"}
-  mini_hypomanic_symptoms_current: {column: cshman1, derived_from: mini_c01a, label: "Hypomanic symptoms current: actuel (a box: 0 is not ticked)"}
-  mini_hypomanic_symptoms_past: {column: cshman2, derived_from: mini_c01a, label: "Hypomanic symptoms past: passé (a box: 0 is not ticked)"}
-  mini_c07a: {column: c07a, label: "C7 a) SI ÉPISODE MANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 épisodes maniaques (C4c) durant votre "}
-  mini_c07b: {column: c07b, label: "b) SI ÉPISODE HYPOMANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 ÉPISODES hypomaniaques (C4b) durant v"}
-  mini_c07c: {column: c07c, label: "c) SI « SYMPTÔMES HYPOMANIAQUES » PASSÉS EST POSITIF, DEMANDEZ : Avez-vous eu au moins 2 épisodes de SYMPTÔMES hypomaniaques (C4a) durant vo"}
+  mini_c06_pe: {column: c06_pe, versions: [inclusion], label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio"}
+  mini_c06_pe_fu: {column: c06_pe, versions: [follow_up], label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école, dans vos relatio, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_manic_episode: {column: ceman, versions: [inclusion], label: "Manic episode: ÉPISODE MANIAQUE"}
+  mini_manic_episode_fu: {column: ceman, versions: [follow_up], label: "Manic episode: ÉPISODE MANIAQUE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_manic_episode_current: {column: ceman1, derived_from: mini_c01a_every_visit, label: "Manic episode current: actuel (a box: 0 is not ticked)"}
+  mini_manic_episode_past: {column: ceman2, versions: [inclusion], derived_from: mini_c01a, label: "Manic episode past: passé (a box: 0 is not ticked)"}
+  mini_manic_episode_past_fu: {column: ceman2, versions: [follow_up], derived_from: mini_c01a_fu, label: "Manic episode past: passé (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_hypomanic_episode: {column: cehman, versions: [inclusion], label: "Hypomanic episode: ÉPISODE HYPOMANIAQUE"}
+  mini_hypomanic_episode_fu: {column: cehman, versions: [follow_up], label: "Hypomanic episode: ÉPISODE HYPOMANIAQUE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_hypomanic_episode_current: {column: cehman1, derived_from: mini_c01a_every_visit, label: "Hypomanic episode current: actuel (a box: 0 is not ticked)"}
+  mini_hypomanic_episode_past: {column: cehman2, versions: [inclusion], derived_from: mini_c01a, label: "Hypomanic episode past: passé (a box: 0 is not ticked)"}
+  mini_hypomanic_episode_past_fu: {column: cehman2, versions: [follow_up], derived_from: mini_c01a_fu, label: "Hypomanic episode past: passé (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_hypomanic_symptoms: {column: cshman, versions: [inclusion], label: "Hypomanic symptoms: SYMPTOMES HYPOMANIAQUES"}
+  mini_hypomanic_symptoms_fu: {column: cshman, versions: [follow_up], label: "Hypomanic symptoms: SYMPTOMES HYPOMANIAQUES, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_hypomanic_symptoms_current: {column: cshman1, derived_from: mini_c01a_every_visit, label: "Hypomanic symptoms current: actuel (a box: 0 is not ticked)"}
+  mini_hypomanic_symptoms_past: {column: cshman2, versions: [inclusion], derived_from: mini_c01a, label: "Hypomanic symptoms past: passé (a box: 0 is not ticked)"}
+  mini_hypomanic_symptoms_past_fu: {column: cshman2, versions: [follow_up], derived_from: mini_c01a_fu, label: "Hypomanic symptoms past: passé (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c07a: {column: c07a, versions: [inclusion], label: "C7 a) SI ÉPISODE MANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 épisodes maniaques (C4c) durant votre "}
+  mini_c07a_fu: {column: c07a, versions: [follow_up], label: "C7 a) SI ÉPISODE MANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 épisodes maniaques (C4c) durant votre , asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c07b: {column: c07b, versions: [inclusion], label: "b) SI ÉPISODE HYPOMANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 ÉPISODES hypomaniaques (C4b) durant v"}
+  mini_c07b_fu: {column: c07b, versions: [follow_up], label: "b) SI ÉPISODE HYPOMANIAQUE EST POSITIF POUR SOIT ACTUEL SOIT PASSÉ, DEMANDEZ : Avez-vous eu au moins 2 ÉPISODES hypomaniaques (C4b) durant v, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_c07c: {column: c07c, versions: [inclusion], label: "c) SI « SYMPTÔMES HYPOMANIAQUES » PASSÉS EST POSITIF, DEMANDEZ : Avez-vous eu au moins 2 épisodes de SYMPTÔMES hypomaniaques (C4a) durant vo"}
+  mini_c07c_fu: {column: c07c, versions: [follow_up], label: "c) SI « SYMPTÔMES HYPOMANIAQUES » PASSÉS EST POSITIF, DEMANDEZ : Avez-vous eu au moins 2 épisodes de SYMPTÔMES hypomaniaques (C4a) durant vo, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}

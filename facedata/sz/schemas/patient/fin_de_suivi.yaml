@@ -2,7 +2,7 @@ instrument: fin_de_suivi
 title: End of follow-up
 tab: PATIENT
 section: Fin de suivi
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. The three columns are not in the dictionary, which
@@ -21,11 +21,16 @@ notes: >
 
   Date of death. The column causedec_stopsuivi is named for the cause of
   death, and in BP it holds the cause. Here it holds dates: the empty date
-  0000-00-00 for about a thousand patients and a real date for 8, all of
-  them among the 12 patients recorded as deceased. The export filled it from
-  the date of death, the kind of error found in BP for the death of the
-  mother (decision D4 in PROGRESS.md). It is delivered as what it holds,
-  death_date, and the cause of death is not in the extraction.
+  0000-00-00 for 996 patients and a real date for 8, all of them among the
+  12 patients recorded as deceased. The cause is in the export: the clean
+  model puts the date of death (date_fin_suivi_arret_decede) in
+  LOST_TO_FOLLOW_UP_DCD (eschizo_stop_suivi.sql, line 15), and the SZ
+  export writes that column as CAUSEDEC_STOPSUIVI (face_sz_1_patients.sql,
+  line 36; decision D4 in PROGRESS.md). It is delivered as what it holds,
+  death_date. The cause of death (rad_fin_suivi_arret_decede, "Spécifier la
+  cause principale du décès") and the other fields of the form (the other
+  reason, the change of diagnosis and its date, the date of the
+  consultation) are not exported (request R163).
 
   The new centre is a free text, delivered as text; it never appears in the
   report.

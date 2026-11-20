@@ -2,24 +2,69 @@ instrument: adult_support
 title: "Support of the adult"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
   The employment and disability services used, the resources and allowances,
   the help with daily living, the housing support, the children of the
-  patient and their custody: 947 inclusion visits (390 of children, 557 of adults) and 71 follow-up visits, from 2020 to 2026. Asked for
-  adults.
+  patient and their custody: 947 inclusion visits (390 of children, 557 of
+  adults) and 71 follow-up visits, from 2020 to 2026. Asked of adults (form
+  350).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. The boxes (saltyp, saltypa, sdasa) hold a 0 or a 1 on
-  every visit that has the form.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`.
 
-  A section of the ASP cohort only.
+  **Two forms in one table (R31).** The adult form 350 and the child form 351
+  write one table (aut_medeco2); the application chooses the form by age at the
+  visit. It writes a 0 into every unticked box on each save (D33), the boxes of
+  the form NOT shown included: the adult-only boxes hold 0 on 499 records that are
+  not adult forms (14,471 cells, never a 1) and the child-only boxes on 577 records
+  (4,039 cells, never a 1). The form of a visit is read from the questions that only
+  one form asks (`version: medeco_form`, `filled`): 519 adult forms, 441 child forms,
+  58 records with no answer of either form (`medeco_unidentified`: their boxes are
+  missing), none with both; an age band would misread 3 visits. The zeros never
+  asked are missing; no 1 is lost. In this schema 12,974 cells become missing (`defaults: versions:
+  [medeco_adult]`).
+
+  The minutes of help of a relative, the visits of a home help service and the
+  number of dependent children are 0 after a no (`asked_if`). The twelve
+  benefit boxes (saltypa) are shown after the income box 'sickness or
+  disability benefits, family benefits and grants' and written 0 on every
+  save: `derived_from` that box. Ranges are the limits of the form: a blocking check stops the counts above 50
+  (eASPERGER.js lines 3560 to 3925), the other numbers at the length of their box. The minutes of help a day stop at 99
+  (11 of 117 typed values are 99: right-censored, delivered as typed); the
+  dependent children at 12 (the check of the parents' form; the box of the
+  adult form takes two digits, largest typed 8). One visit gives more than
+  7 days a week of attendance of the employment structures (the box takes two
+  digits).
+
+  A section of the ASP cohort only, apart from has_children, the name of the
+  same question in DR.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the sources of income differ by centre (wages 17% in
+  B to 50% in E, family support 0% in H, 23 visits, to 39% in B), and the
+  daily help of a relative 30% to 52%: habits of the centres or their
+  patients, no known cause, documented here. Wages rise from 18% in 2021 to
+  31% to 39% from 2022.
+
+version:
+  name: medeco_form
+  filled:                            # the child form 351 and the adult form 350 write one table (aut_medeco2)
+    medeco_adult: [pe, ml, ce, sme, crpro, cpo, esat, ea, hooccur_avq1, hooccur_avq2, hav_child, ehaj, hooccur_groupe]
+    medeco_child: [psysco, pecs, habitat, jardin, scolar01, fratn, tsadtc, loisi01, demenag]
+    medeco_unidentified: [saltyp_1]  # the table is saved (its boxes are written 0) but no answer of either form tells which
+
+defaults: {versions: [medeco_adult]}
 
 variables:
   pe: {column: pe, type: item, label: "Support of the adult: followed by the job centre (Pôle Emploi) (0 no, 1 yes)", range: [0, 1]}
@@ -30,42 +75,42 @@ variables:
   cpo: {column: cpo, type: item, label: "Support of the adult: followed by a pre-orientation centre (CPO) (0 no, 1 yes)", range: [0, 1]}
   esat: {column: esat, type: item, label: "Support of the adult: followed by a sheltered workshop (ESAT) (0 no, 1 yes)", range: [0, 1]}
   ea: {column: ea, type: item, label: "Support of the adult: followed by an adapted company (Entreprise Adaptée) (0 no, 1 yes)", range: [0, 1]}
-  nboccur_structure: {column: nboccur_structure, type: number, label: "Support of the adult: days a week of attendance, all the employment support structures together", range: [0, 200], winsor: false}
-  saltyp_1: {column: saltyp_1, type: item, label: "Income of the adult: wages, salaries and bonuses (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_2: {column: saltyp_2, type: item, label: "Income of the adult: income from self-employment (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_3: {column: saltyp_3, type: item, label: "Income of the adult: unemployment benefit (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_4: {column: saltyp_4, type: item, label: "Income of the adult: early retirement or retirement pension (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_5: {column: saltyp_5, type: item, label: "Income of the adult: sickness or disability benefits, family benefits and grants (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_6: {column: saltyp_6, type: item, label: "Income of the adult: housing benefit (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_7: {column: saltyp_7, type: item, label: "Income of the adult: minimum income benefit (RSA) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltyp_8: {column: saltyp_8, type: item, label: "Income of the adult: maintenance payments or regular financial help from parents, family or friends (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_1: {column: saltypa_1, type: item, label: "Income of the adult: benefit received, disability pension (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_2: {column: saltypa_2, type: item, label: "Income of the adult: benefit received, disabled adult allowance (AAH) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_3: {column: saltypa_3, type: item, label: "Income of the adult: benefit received, independent living supplement (MVA) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_4: {column: saltypa_4, type: item, label: "Income of the adult: benefit received, guaranteed income for disabled people (GRPH) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_5: {column: saltypa_5, type: item, label: "Income of the adult: benefit received, guaranteed income for disabled workers (GRTH) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_6: {column: saltypa_6, type: item, label: "Income of the adult: benefit received, disability compensation benefit (PCH) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_7: {column: saltypa_7, type: item, label: "Income of the adult: benefit received, personal autonomy allowance (APA) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_8: {column: saltypa_8, type: item, label: "Income of the adult: benefit received, daily parental presence allowance (AJPP) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_9: {column: saltypa_9, type: item, label: "Income of the adult: benefit received, education allowance for a disabled child (AEEH) (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_10: {column: saltypa_10, type: item, label: "Income of the adult: benefit received, family allowances (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_11: {column: saltypa_11, type: item, label: "Income of the adult: benefit received, study grant (box) (0 no, 1 yes)", range: [0, 1]}
-  saltypa_12: {column: saltypa_12, type: item, label: "Income of the adult: benefit received, other (box) (0 no, 1 yes)", range: [0, 1]}
+  employment_support_days_week: {column: nboccur_structure, type: number, label: "Support of the adult: days a week of attendance, all the employment support structures together", range: [0, 99], winsor: false}
+  income_salary: {column: saltyp_1, type: item, label: "Income of the adult: wages, salaries and bonuses (box) (0 no, 1 yes)", range: [0, 1]}
+  income_self_employment: {column: saltyp_2, type: item, label: "Income of the adult: income from self-employment (box) (0 no, 1 yes)", range: [0, 1]}
+  income_unemployment_benefit: {column: saltyp_3, type: item, label: "Income of the adult: unemployment benefit (box) (0 no, 1 yes)", range: [0, 1]}
+  income_pension: {column: saltyp_4, type: item, label: "Income of the adult: early retirement or retirement pension (box) (0 no, 1 yes)", range: [0, 1]}
+  income_sickness_disability_family_benefits: {column: saltyp_5, type: item, label: "Income of the adult: sickness or disability benefits, family benefits and grants (box) (0 no, 1 yes)", range: [0, 1]}
+  income_housing_benefit: {column: saltyp_6, type: item, label: "Income of the adult: housing benefit (box) (0 no, 1 yes)", range: [0, 1]}
+  income_minimum_income_rsa: {column: saltyp_7, type: item, label: "Income of the adult: minimum income benefit (RSA) (box) (0 no, 1 yes)", range: [0, 1]}
+  income_family_support: {column: saltyp_8, type: item, label: "Income of the adult: maintenance payments or regular financial help from parents, family or friends (box) (0 no, 1 yes)", range: [0, 1]}
+  benefit_disability_pension: {column: saltypa_1, type: item, label: "Income of the adult: benefit received, disability pension (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_aah: {column: saltypa_2, type: item, label: "Income of the adult: benefit received, disabled adult allowance (AAH) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_mva: {column: saltypa_3, type: item, label: "Income of the adult: benefit received, independent living supplement (MVA) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_grph: {column: saltypa_4, type: item, label: "Income of the adult: benefit received, guaranteed income for disabled people (GRPH) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_grth: {column: saltypa_5, type: item, label: "Income of the adult: benefit received, guaranteed income for disabled workers (GRTH) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_pch: {column: saltypa_6, type: item, label: "Income of the adult: benefit received, disability compensation benefit (PCH) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_apa: {column: saltypa_7, type: item, label: "Income of the adult: benefit received, personal autonomy allowance (APA) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_ajpp: {column: saltypa_8, type: item, label: "Income of the adult: benefit received, daily parental presence allowance (AJPP) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_aeeh: {column: saltypa_9, type: item, label: "Income of the adult: benefit received, education allowance for a disabled child (AEEH) (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_family_allowance: {column: saltypa_10, type: item, label: "Income of the adult: benefit received, family allowances (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_study_grant: {column: saltypa_11, type: item, label: "Income of the adult: benefit received, study grant (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
+  benefit_other: {column: saltypa_12, type: item, label: "Income of the adult: benefit received, other (box) (0 no, 1 yes)", range: [0, 1], derived_from: income_sickness_disability_family_benefits}
   saltypb: {column: saltypb, type: text, label: "Income of the adult: other benefit received, which, free text"}
-  hooccur_avq1: {column: hooccur_avq1, type: item, label: "Support of the adult: helped by a relative with activities of daily living (0 no, 1 yes)", range: [0, 1]}
-  hodur_avq1: {column: hodur_avq1, type: number, label: "Support of the adult: help of a relative with activities of daily living, minutes a day", range: [0, 200], winsor: false}
-  hooccur_avq2: {column: hooccur_avq2, type: item, label: "Support of the adult: helped by a home help service with activities of daily living (0 no, 1 yes)", range: [0, 1]}
-  hodur_avq2: {column: hodur_avq2, type: number, label: "Support of the adult: help of a home help service with daily living, number of visits a month", range: [0, 200], winsor: false}
-  ehaj: {column: ehaj, type: category, label: "Support of the adult: kind of residential or day care establishment", codes: {"1": specialised_care_home_mas, "2": medicalised_care_home_fam, "7": temporary_care_disabled_adults, "8": experimental_disabled_adults, "10": residential_hostel, "11": non_medical_residential_home, "12": multipurpose_residential_home, "151": school_for_intellectual_disability, "152": medico_educational_institute_ime, "6": medical_respite_beds_lhss}}
-  nboccur_ehaj: {column: nboccur_ehaj, type: number, label: "Support of the adult: residential or day care establishment, number of times in the last year", range: [0, 200], winsor: false}
+  daily_help_relative: {column: hooccur_avq1, type: item, label: "Support of the adult: helped by a relative with activities of daily living (0 no, 1 yes)", range: [0, 1]}
+  daily_help_relative_minutes_day: {column: hodur_avq1, type: number, label: "Support of the adult: help of a relative with activities of daily living, minutes a day", range: [0, 99], winsor: false, asked_if: daily_help_relative}
+  daily_help_service: {column: hooccur_avq2, type: item, label: "Support of the adult: helped by a home help service with activities of daily living (0 no, 1 yes)", range: [0, 1]}
+  daily_help_service_visits_month: {column: hodur_avq2, type: number, label: "Support of the adult: help of a home help service with daily living, number of visits a month", range: [0, 99], winsor: false, asked_if: daily_help_service}
+  residential_establishment: {column: ehaj, type: category, label: "Support of the adult: kind of residential or day care establishment", codes: {"1": specialised_care_home_mas, "2": medicalised_care_home_fam, "7": temporary_care_disabled_adults, "8": experimental_disabled_adults, "10": residential_hostel, "11": non_medical_residential_home, "12": multipurpose_residential_home, "151": school_for_intellectual_disability, "152": medico_educational_institute_ime, "6": medical_respite_beds_lhss}}
+  n_residential_establishment_12m: {column: nboccur_ehaj, type: number, label: "Support of the adult: residential or day care establishment, number of times in the last year", range: [0, 99], winsor: false}
   sdasa_1: {column: sdasa_1, type: item, label: "Support of the adult: medico-social support service for disabled adults (SAMSAH) (box) (0 no, 1 yes)", range: [0, 1]}
   sdasa_2: {column: sdasa_2, type: item, label: "Support of the adult: mutual support group (GEM) (box) (0 no, 1 yes)", range: [0, 1]}
   sdasa_3: {column: sdasa_3, type: item, label: "Support of the adult: social life support service (SAVS) (box) (0 no, 1 yes)", range: [0, 1]}
   sdasa_4: {column: sdasa_4, type: item, label: "Support of the adult: medical, psychological and educational centre (CMPP) (box) (0 no, 1 yes)", range: [0, 1]}
   sdasa_5: {column: sdasa_5, type: item, label: "Support of the adult: special education and home care service (SESSAD) (box) (0 no, 1 yes)", range: [0, 1]}
   sdasa_6: {column: sdasa_6, type: item, label: "Support of the adult: early medico-social action centre (CAMSP) (box) (0 no, 1 yes)", range: [0, 1]}
-  hav_child: {column: hav_child, type: item, label: "Support of the adult: has children (0 no, 1 yes)", range: [0, 1]}
-  biochin: {column: biochin, type: number, label: "Support of the adult: number of dependent children", range: [0, 200], winsor: false}
-  garde: {column: garde, type: category, label: "Support of the adult: custody of the children", codes: {"1": full_custody, "2": shared_custody, "3": visiting_rights}}
+  has_children: {column: hav_child, type: item, label: "Support of the adult: has children (0 no, 1 yes)", range: [0, 1]}
+  n_dependent_children: {column: biochin, type: number, label: "Support of the adult: number of dependent children", range: [0, 12], winsor: false, asked_if: has_children}
+  children_custody: {column: garde, type: category, label: "Support of the adult: custody of the children", codes: {"1": full_custody, "2": shared_custody, "3": visiting_rights}}
   servsoc: {column: servsoc, type: item, label: "Support of the adult: social services involved (0 no, 1 yes)", range: [0, 1]}
   aidemep: {column: aidemep, type: item, label: "Support of the adult: help set up, e.g. child health service (PMI), family support worker (TISF) (0 no, 1 yes)", range: [0, 1]}

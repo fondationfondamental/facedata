@@ -2,30 +2,38 @@ instrument: identite
 title: Patient identity
 tab: patient
 section: identity
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. The extraction repeats these columns on every visit
   row, and they never change between the visits of a patient.
 
   Same instrument as in FACE BP, SZ and DR, with the diagnosis of this
-  cohort. The column arm is 1 for 2,008 patients and 0 for 310: 1 is a
-  patient whose autism spectrum diagnosis was confirmed at the expert centre,
-  0 a patient who was assessed and not diagnosed (answer of the project lead,
-  decision D3; to confirm with the data managers, open question O3 in
-  PROGRESS.md). Both groups are delivered. 169 of the patients not diagnosed
-  are children and 141 are adults.
+  cohort. The column arm is 1 for 2,008 patients and 0 for 310: the export
+  writes into it the conclusion of the DSM-5 criteria of autism of the
+  inclusion visit (cridsm26 of form 198, face_asp_1_patients.sql lines 25 and
+  122; equal on 2,318 of 2,318 patients, dsm_criteria), so 1 is a patient
+  whose autism spectrum diagnosis was confirmed at the expert centre and 0 a
+  patient who was assessed and not diagnosed (decision D3, open question O3
+  closed). The conclusion is typed by the clinician, not computed from the
+  criteria (O27). Both groups are delivered. 169 of the patients not
+  diagnosed are children and 141 are adults.
 
   The cohort holds children and adults: 956 patients are 5 to 17 years old at
-  inclusion and 1,362 are 18 to 65, so the range of the age starts at 3.
+  inclusion and 1,362 are 18 to 65, so the range of the age starts at 3. The
+  export keeps only the patients aged 3 to 89 at the inclusion visit
+  (face_asp_1_patients.sql line 126).
 
   The date of birth is exported with the day set to the 15th for every
   patient, as in the other cohorts.
 
-  The stored age is the age at the inclusion visit for 2,314 of the 2,318
-  patients. age_at_inclusion is computed from the date of birth and the date
-  of the inclusion visit, as in FACE DR, and the stored age is read to be
-  compared with it.
+  age_at_inclusion is the stored age, as in FACE BP and SZ: the export
+  computes it as the completed years of the calendar between the date of
+  birth and the date of the inclusion visit (face_asp_1_patients.sql lines
+  26-30), and it is that age for 2,318 of the 2,318 patients. The package's
+  own computation (custom.age_at_inclusion, the days divided by 365.25, which
+  FACE DR uses) was one year short for 4 patients; these 4 values are now
+  the stored ones (decision D78).
 
   fondacode (the column subjid) is the patient code of the foundation, the
   same in every extraction and unique across the cohorts: no fondacode of
@@ -34,6 +42,12 @@ notes: >
   never appears in the report.
 
   usubjid and siteid are key columns.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the age at inclusion has a median of 11 in centre A
+  and 17 to 30 elsewhere, and 17 to 27 by year: the age mix of the centres
+  (children are 100% of A, 62% of B, 13% or fewer elsewhere apart from G). No
+  other step.
 
 variables:
   fondacode:
@@ -57,16 +71,8 @@ variables:
     type: date
     day: 15
     range: [1900-01-01, 2023-12-31]
-  age_stored:
+  age_at_inclusion:
     column: age
-    label: Age as stored
+    label: Age at the inclusion visit, in years
     type: item
     range: [3, 100]
-    keep: false
-
-scores:
-  age_at_inclusion:
-    custom: age_at_inclusion
-    compare: age_stored
-    compare_tolerance: 1
-    label: Age at the inclusion visit, in years

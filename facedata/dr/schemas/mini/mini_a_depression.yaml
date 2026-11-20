@@ -2,76 +2,161 @@ instrument: mini_a_depression
 title: "MINI, module A: major depressive episode"
 tab: MINI
 section: MINI A
-status: draft
+status: reviewed
 notes: >
   Module A: the symptoms of a major depressive episode, over the last two
   weeks (the columns that end in p2w) and in a past episode (pe).
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  Counts. mini_mde_symptoms_2_weeks and mini_mde_symptoms_past count the
-  nine symptoms (A1, A2 and the seven of A3) in each period; they need the
-  nine answers.
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the yes answers of the screening visit that are
+  answered again at the first follow-up, A1a 21 of 73, A2a 23 of 72 and
+  a05a 11 of 60 are no. The lifetime and past-episode questions are
+  therefore delivered at inclusion (screening visit) only, and at
+  follow-up in twins named _fu (versions read from the visit label, block
+  visit_form, as in the treatment schemas); the current and past-month
+  questions stay one variable. Here A1a, A2a, the past episode (the pe
+  items, A4 and A5), a05a, the boxes past and recurrent and the number of
+  episodes (16 variables) and the count of the past symptoms; the two-week
+  items and the box current are one variable.
 
-  The three boxes "current", "past" and "recurrent" do not give the
-  diagnosis. With the criteria of the interview (five symptoms of which A1
-  or A2, and A4), 402 visits have a current episode; the box "current" is
-  ticked on 244 of them and left at 0 on 158, and it is ticked on 64 visits
-  that do not meet the criteria. 175 visits have the box "recurrent" alone.
-  The box "recurrent" follows question A5 (350 of 353). To know whether a
-  patient is in an episode, use the symptoms and A4, not the boxes (open
-  question O24). mini_mde_criteria (a05a), which the interviewer answers
-  after the symptoms, agrees with them on 480 of 526 visits.
+  Counts. mini_mde_symptoms_2_weeks and mini_mde_symptoms_past
+  (mini_mde_symptoms_past_fu at follow-up) count the nine symptoms (A1, A2
+  and the seven of A3) in each period; they need the nine answers.
 
-  The number of episodes of the life (a06a) holds 99 on 6 visits, read as
-  "not known".
+  Criteria and boxes. The MINI 6.0.0 rule is five symptoms or more, A1 or
+  A2 among them, and A4 (local/out/scale_reference_rest.md).
+  mini_mde_criteria (a05a) is the interviewer's answer for the period
+  explored, current or past: it agrees with the items (the current or the
+  past episode meets the rule) on 480 of 526 visits. The boxes current,
+  past and recurrent are written by the form and are ticked only where
+  a05a is yes; they do not follow the 6.0 rule: 402 visits meet it for the
+  last two weeks, the box current is ticked on 244 of them and on 64 that
+  do not; 413 meet it for the past episode, the box past is ticked on 105
+  of them and on 9 that do not. The box recurrent is set from A5
+  (formulaires.js 1017-1019): ticked on 350 of the 380 visits with A5 yes
+  and on 3 others; 175 visits have it alone. The boxes are delivered as
+  stored: to know whether a patient is in an episode, use the symptoms and
+  A4 (open question O24). The box current is derived_from a05a (read on
+  every visit by a hidden variable), the box past from a05a, the box
+  recurrent from A5: derived_doubt where that answer is empty (the box
+  current on 104 visits; the boxes past and recurrent on 66 and 48 at
+  inclusion, 38 and 33 at follow-up).
+
+  Years and centres (2026-11-20). The box current is ticked on 75% of the
+  visits with five symptoms or more in the last two weeks in 2013 to 2015,
+  65% in 2016 to 2018 and 47% to 53% since 2019, while 94% to 100% of the
+  answered visits have five symptoms or more; the box past falls from 34%
+  of the visits in 2013 to 2015 to 0% to 12% since 2016: a step with no
+  known cause (the boxes are written by the form; read the symptoms). In
+  one centre (31 visits, 20 of them in 2013 to 2015) the past-episode items
+  are yes on 10% to 23% of the visits, against 44% to 100% elsewhere (but
+  23% for A3a in one other centre), with one box past ticked and a median
+  of 2 past symptoms (8 in the cohort): the past episode was mostly not
+  explored there; no known cause.
+
+  Psychotic features. a03ea_actuel and a03ea_pe (examples that match a
+  delusion) are answered on 55 and 59 visits. The diagnosis summary of the
+  form (module Q) means to read a03ea_actuel, but a typo makes it ignore
+  it (attr('cheked'), formulaires.js 2415 and 2447, defect A92).
+
+  The number of episodes of the life (a06a) holds 99 on 6 visits (5 at
+  inclusion, 1 at follow-up), read as "not known". One screening visit
+  holds a slash instead of a number (unparsed).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_a01a: {column: a01a, label: "A1 a) Vous est-il déjà arrivé de vous sentir particulièrement triste ou déprimé(e), la plupart du temps au cours de la journée, et ce, presq"}
+  mini_a01a: {column: a01a, versions: [inclusion], label: "A1 a) Vous est-il déjà arrivé de vous sentir particulièrement triste ou déprimé(e), la plupart du temps au cours de la journée, et ce, presq"}
+  mini_a01a_fu: {column: a01a, versions: [follow_up], label: "A1 a) Vous est-il déjà arrivé de vous sentir particulièrement triste ou déprimé(e), la plupart du temps au cours de la journée, et ce, presq, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a01b: {column: a01b, label: "b) Au cours des deux dernières semaines, vous êtes-vous senti(e) particulièrement triste, cafardeux(se), déprimé(e), la plupart du temps au "}
-  mini_a02a: {column: a02a, label: "A2 a) Vous êtes-vous déjà senti(e), pendant une période de deux semaines, nettement moins intéressé(e) par la plupart des choses, ou netteme"}
+  mini_a02a: {column: a02a, versions: [inclusion], label: "A2 a) Vous êtes-vous déjà senti(e), pendant une période de deux semaines, nettement moins intéressé(e) par la plupart des choses, ou netteme"}
+  mini_a02a_fu: {column: a02a, versions: [follow_up], label: "A2 a) Vous êtes-vous déjà senti(e), pendant une période de deux semaines, nettement moins intéressé(e) par la plupart des choses, ou netteme, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a02b: {column: a02b, label: "b) Au cours des deux dernières semaines, aviez-vous presque tout le temps le sentiment de n’avoir plus goût à rien, d’avoir perdu l’intérêt "}
   mini_a03a_p2w: {column: a03a_p2w, label: "A3 a)Votre appétit a-t-il notablement changé? (2 dernières semaines)"}
-  mini_a03a_pe: {column: a03a_pe, label: "a) Votre appétit a-t-il notablement changé? (Episode passé)"}
+  mini_a03a_pe: {column: a03a_pe, versions: [inclusion], label: "a) Votre appétit a-t-il notablement changé? (Episode passé)"}
+  mini_a03a_pe_fu: {column: a03a_pe, versions: [follow_up], label: "a) Votre appétit a-t-il notablement changé? (Episode passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03b_p2w: {column: a03b_p2w, label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (2 dernières semaines)"}
-  mini_a03b_pe: {column: a03b_pe, label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (Episode passé)"}
+  mini_a03b_pe: {column: a03b_pe, versions: [inclusion], label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (Episode passé)"}
+  mini_a03b_pe_fu: {column: a03b_pe, versions: [follow_up], label: "b) Aviez-vous des problèmes de sommeil presque toutes les nuits (Episode passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03c_p2w: {column: a03c_p2w, label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest"}
-  mini_a03c_pe: {column: a03c_pe, label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest"}
+  mini_a03c_pe: {column: a03c_pe, versions: [inclusion], label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest"}
+  mini_a03c_pe_fu: {column: a03c_pe, versions: [follow_up], label: "c) Parliez-vous ou vous déplacez-vous plus lentement que d’habitude ou, au contraire, vous sentiez-vous agité(e) et aviez-vous du mal à rest, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03d_p2w: {column: a03d_p2w, label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (2 dermières semaines)"}
-  mini_a03d_pe: {column: a03d_pe, label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03d_pe: {column: a03d_pe, versions: [inclusion], label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03d_pe_fu: {column: a03d_pe, versions: [follow_up], label: "d) Vous sentiez-vous fatigué(e), sans énergie, et ce presque tous les jours ? (Episode passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03e_p2w: {column: a03e_p2w, label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (2 dermières semaines)"}
-  mini_a03e_pe: {column: a03e_pe, label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03e_pe: {column: a03e_pe, versions: [inclusion], label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03e_pe_fu: {column: a03e_pe, versions: [follow_up], label: "e) Vous sentiez-vous sans valeur ou coupable, et ce presque tous les jours ? (Episode passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03ea_actuel: {column: a03ea_actuel, label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode actuel"}
-  mini_a03ea_pe: {column: a03ea_pe, label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode passé"}
+  mini_a03ea_pe: {column: a03ea_pe, versions: [inclusion], label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode passé"}
+  mini_a03ea_pe_fu: {column: a03ea_pe, versions: [follow_up], label: "e) si oui, demandez des exemples,les exemples concordent avec une idee delirante? Épisode passé, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03f_p2w: {column: a03f_p2w, label: "f ) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (2 dermières semaines)"}
-  mini_a03f_pe: {column: a03f_pe, label: "f) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03f_pe: {column: a03f_pe, versions: [inclusion], label: "f) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (Episode passé)"}
+  mini_a03f_pe_fu: {column: a03f_pe, versions: [follow_up], label: "f) Aviez-vous du mal à vous concentrer ou à prendre des décisions, et ce presque tous les jours ? (Episode passé), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a03g_p2w: {column: a03g_p2w, label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (2 dermière"}
-  mini_a03g_pe: {column: a03g_pe, label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (Episode pa"}
+  mini_a03g_pe: {column: a03g_pe, versions: [inclusion], label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (Episode pa"}
+  mini_a03g_pe_fu: {column: a03g_pe, versions: [follow_up], label: "g) Avez-vous, à plusieurs reprises, pensé qu’il vaudrait mieux que vous soyez mort(e), pensé au suicide ou à vous faire du mal ? (Episode pa, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_a04_p2w: {column: a04_p2w, label: "A4) Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos r"}
-  mini_a04_pe: {column: a04_pe, label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos relat"}
-  mini_a05_pe: {column: a05_pe, label: "A5) Entre 2 épisodes de dépression ou de perte d’intérêt pour la plupart des choses, vous êtes-vous senti(e) bien pendant au moins deux mois"}
-  mini_mde_criteria: {column: a05a, label: "Criteria of a major depressive episode met (5 symptoms and A4)"}
-  mini_mde_current: {column: aedm1, derived_from: mini_a01a, label: "Box: the episode is current (a box: 0 is not ticked)"}
-  mini_mde_past: {column: aedm2, derived_from: mini_a01a, label: "Box: the episode is past (a box: 0 is not ticked)"}
-  mini_mde_recurrent: {column: aedm3, derived_from: mini_a01a, label: "Box: the episode is recurrent (a box: 0 is not ticked)"}
-  mini_mde_episodes: {column: a06a, type: number, range: [0, 60], winsor: false, missing: {"99": unknown}, label: "Number of depressive episodes in the life"}
+  mini_a04_pe: {column: a04_pe, versions: [inclusion], label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos relat"}
+  mini_a04_pe_fu: {column: a04_pe, versions: [follow_up], label: "Les problèmes dont nous venons de parler ont-ils entraîné des difficultés significatives à la maison, au travail/à l’école ou dans vos relat, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_a05_pe: {column: a05_pe, versions: [inclusion], label: "A5) Entre 2 épisodes de dépression ou de perte d’intérêt pour la plupart des choses, vous êtes-vous senti(e) bien pendant au moins deux mois"}
+  mini_a05_pe_fu: {column: a05_pe, versions: [follow_up], label: "A5) Entre 2 épisodes de dépression ou de perte d’intérêt pour la plupart des choses, vous êtes-vous senti(e) bien pendant au moins deux mois, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mde_criteria: {column: a05a, versions: [inclusion], label: "Criteria met for the period explored (current or past): 5 or more of A1 to A3, with A1 or A2, and A4"}
+  mini_mde_criteria_fu: {column: a05a, versions: [follow_up], label: "Criteria met for the period explored (current or past): 5 or more of A1 to A3, with A1 or A2, and A4, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mde_criteria_every_visit: {column: a05a, keep: false, label: "a05a read on every visit: the box current is derived from it"}
+  mini_mde_current: {column: aedm1, derived_from: mini_mde_criteria_every_visit, label: "Box: the episode is current (a box: 0 is not ticked)"}
+  mini_mde_past: {column: aedm2, versions: [inclusion], derived_from: mini_mde_criteria, label: "Box: the episode is past (a box: 0 is not ticked)"}
+  mini_mde_past_fu: {column: aedm2, versions: [follow_up], derived_from: mini_mde_criteria_fu, label: "Box: the episode is past (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mde_recurrent: {column: aedm3, versions: [inclusion], derived_from: mini_a05_pe, label: "Box: the episode is recurrent (a box: 0 is not ticked)"}
+  mini_mde_recurrent_fu: {column: aedm3, versions: [follow_up], derived_from: mini_a05_pe_fu, label: "Box: the episode is recurrent (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mde_episodes: {column: a06a, versions: [inclusion], type: number, range: [0, 60], winsor: false, missing: {"99": unknown}, label: "Number of depressive episodes in the life"}
+  mini_mde_episodes_fu: {column: a06a, versions: [follow_up], type: number, range: [0, 60], winsor: false, missing: {"99": unknown}, label: "Number of depressive episodes in the life, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
 
 scores:
   mini_mde_symptoms_2_weeks:
@@ -80,3 +165,8 @@ scores:
   mini_mde_symptoms_past:
     label: "Number of the nine symptoms present in the past episode"
     sum: [mini_a01a, mini_a02a, mini_a03a_pe, mini_a03b_pe, mini_a03c_pe, mini_a03d_pe, mini_a03e_pe, mini_a03f_pe, mini_a03g_pe]
+    versions: [inclusion]
+  mini_mde_symptoms_past_fu:
+    label: "Number of the nine symptoms present in the past episode, at a follow-up visit"
+    sum: [mini_a01a_fu, mini_a02a_fu, mini_a03a_pe_fu, mini_a03b_pe_fu, mini_a03c_pe_fu, mini_a03d_pe_fu, mini_a03e_pe_fu, mini_a03f_pe_fu, mini_a03g_pe_fu]
+    versions: [follow_up]

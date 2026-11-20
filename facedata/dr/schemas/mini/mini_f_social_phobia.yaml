@@ -2,32 +2,60 @@ instrument: mini_f_social_phobia
 title: "MINI, module F: social phobia"
 tab: MINI
 section: MINI F
-status: draft
+status: reviewed
 notes: >
   Module F: social phobia over the last month.
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
+
+  Follow-up. This module asks about the present or the last month: its
+  variables are read at every visit (the lifetime questions of modules A
+  to D and H are split by visit, rule R32).
+
+  Skip. After the first no among F1 to F3 the page hides and clears the
+  next questions: no visit of the 428 screened out holds a later answer.
 
   The conclusion (f04a) is yes on 136 visits; 129 of them have F1 to F4
-  answered yes, and no visit has the four with a "no". The type (f05a) is
-  stored 1 and 0, where the dictionary says 1 and 2: it equals the answer
-  to "four situations or more" on 131 of 132 visits, so 1 is read as
-  generalised and 0 as not generalised.
+  answered yes. The check mini_social_phobia_check (F1 to F4 all yes, not
+  delivered) disagrees on 1 visit (a stored yes with one of the four no:
+  score_mismatch); the conclusion is delivered as stored. The type (f05a)
+  is stored 1 and 0, where the dictionary says 1 and 2 (request R171): it
+  equals the answer to "four situations or more" on 131 of 132 visits, so
+  1 is read as generalised and 0 as not generalised. The dictionary gives
+  no coding for F01 (R171).
+
+  Centres (2026-11-20). F1 is yes on 0 of 29 visits in one centre (the
+  centre that answers yes rarely in the anxiety modules: see module D) and
+  on 8% to 55% of the visits elsewhere; the type is generalised on 24 of
+  25 visits in another centre (50% elsewhere with 20 answers). Differences
+  of patients or interviewers, no known cause.
 
 defaults: {type: item, range: [0, 1]}
 
@@ -39,3 +67,6 @@ variables:
   mini_social_phobia_current: {column: f04a, label: "Social phobia current: PHOBIE SOCIALE ACTUELLE"}
   mini_f05: {column: f05, label: "Craignez-vous ou évitez-vous 4 situations sociales ou plus ?"}
   mini_social_phobia_type: {column: f05a, type: category, codes: {"1": generalised, "0": non_generalised}, label: "Social phobia type: PHOBIE SOCIALE (Trouble anxiété sociale) ACTUELLE"}
+
+scores:
+  mini_social_phobia_check: {min: [mini_f01, mini_f02, mini_f03, mini_f04], min_items: 4, compare: mini_social_phobia_current, keep: false, label: "Check: F1 to F4 all yes"}

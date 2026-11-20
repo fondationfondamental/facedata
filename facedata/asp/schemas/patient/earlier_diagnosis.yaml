@@ -2,7 +2,7 @@ instrument: earlier_diagnosis
 title: "Diagnoses made before the expert centre"
 tab: patient
 section: screening form
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient, from the form filled before the assessment (the
@@ -16,15 +16,36 @@ notes: >
   10: an earlier diagnosis of autism spectrum disorder, 9 read as "not known".
   Its date is given for 61 patients and "by whom" (oldiag_ki) for 95,
   (psychiatrist, paediatrician, general practitioner, other). diag_autr is
-  another earlier diagnosis (yes for 495 patients, no for 542, 9 for 22); its
-  kind is one of fifteen texts, and a free text adds to it for 143 patients.
+  another earlier diagnosis (yes for 495 patients, no for 542, 9 for 22); a
+  free text adds to it for 143 patients.
+
+  Its kind (diag_autr_kel) is a list of 18 boxes in form 241 (lines 15-37),
+  several of which can be ticked, and the export keeps one: the label of the
+  lowest-numbered box ticked (easperger_screening.sql lines 29-50). It is
+  delivered as a category with the labels of the export (490 patients, 15
+  labels: depression or mood disorder 131, ADHD 106, other 89, the others 36
+  or fewer); the other boxes ticked are lost (request R165). Three limits:
+  the boxes 10 and 12 both carry the label 'Nevrose obsessionnelle' and the
+  boxes 4 and 8 'Trouble de l'attachement' in the form (the export writes
+  '4' for the box 4); an older list of the form (commented out, line 14)
+  had other kinds under the same numbers (box 1 'Psychose infantile', 10
+  OCD, 11 social phobia, 16 dyspraxia), so a label may stand for the old
+  kind of its box on the forms of the first years; and with no box ticked
+  the export writes the free text into this column (line 48), which no row
+  of this extraction holds (decision D79).
 
   An instrument of the ASP cohort only.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the other earlier diagnosis is yes for 36% to 79% of
+  the patients by centre and period (A 52%, B 51%, C 41%, D 45%, E 58%, F 58%,
+  G 65%) and 40% to 54% by year from 2015: a habit of the centres around a yes
+  near one half, which flips the median; no step by year.
 
 variables:
   earlier_asd_diagnosis: {column: oldiag, type: item, range: [0, 1], missing: {"9": unknown}, label: "An autism spectrum diagnosis was made before the consultation"}
   earlier_asd_diagnosis_date: {column: oldiag_date, type: date, range: [1950-01-01, 2026-12-31], label: "Date of the earlier diagnosis"}
   earlier_asd_diagnosis_by: {column: oldiag_ki, type: category, codes: {"1": psychiatrist, "2": paediatrician, "3": general_practitioner, "4": other}, label: "Who made the earlier diagnosis"}
   other_earlier_diagnosis: {column: diag_autr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Another diagnosis was made before the consultation"}
-  other_earlier_diagnosis_kind: {column: diag_autr_kel, type: text, label: "Kind of the other diagnosis, as written (one of fifteen texts)"}
+  other_earlier_diagnosis_kind: {column: diag_autr_kel, type: category, codes: {"Trouble de la communication": communication_disorder, "Schizophrénie": schizophrenia, "Autre trouble psychotique": other_psychotic_disorder, "4": attachment_disorder, "Déficience intellectuel": intellectual_disability, "Haut potentiel intellectuel": high_intellectual_potential, "Trouble deficit attentionnel/ Hyperactivité (TDAH)": adhd, "Trouble de l attachement": attachment_disorder, "Dépression / Trouble de l humeur": depression_or_mood_disorder, "Nevrose obsessionnelle": obsessional_neurosis, "Trouble anxieux": anxiety_disorder, "Trouble de la personnalité": personality_disorder, "Trouble des apprentissages": learning_disorder, "Trouble du langage": language_disorder, "Trouble d acquisition de la coordination": developmental_coordination_disorder, "Autre": other, "Trouble oppositionnel avec provocation": oppositional_defiant_disorder}, label: "Kind of the other diagnosis: the lowest-numbered box ticked (the form is a multiple choice; the export keeps one box)"}
   other_earlier_diagnosis_text: {column: diag_autr_kela, type: text, label: "The other diagnosis, free text"}
