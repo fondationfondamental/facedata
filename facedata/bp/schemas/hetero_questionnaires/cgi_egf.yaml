@@ -17,20 +17,56 @@ notes: >
   from the visit label); the inclusion values are not delivered. The
   severity and the EGF are delivered at every visit.
 
-  The efficacy index is (therapeutic effect - 1) x 4 + side effects, the
-  formula of the scoring script of the application. A schema cannot write a
-  product, so the custom check cgi_index_differs compares the stored index
-  with that formula: it holds on 7,911 of the 7,985 follow-up visits that
-  have the three values, and the 74 others get check_failed. They differ by
-  a multiple of 4, as if the therapeutic effect had been changed after the
-  index was computed: the application computes it on a button.
+  The efficacy index is a score: 4 x (therapeutic effect - 1) + side
+  effects, the formula of the scoring script of the application, so it goes
+  from 1 to 16 (cgi_te_steps is the first term, not delivered). The stored
+  index (cgi_efficacy_index_stored, not delivered) is the check. The
+  application computes the index only when a side-effect option is clicked
+  (the tooltip of the field says to tick the side effects again after
+  changing the effect), so the stored index is stale after an edit of the
+  therapeutic effect. On the 7,985 follow-up visits that have the effect,
+  the side effects and the stored index, the stored index differs from the
+  formula on 74 (score_mismatch): always by a multiple of 4 (the stored one
+  is 4 higher on 41, 4 lower on 20, and 8 or 12 away on 13), as if the effect
+  had been changed after the index was computed. The recomputed value is
+  delivered: 74 values recomputed, 6 visits with an effect and side effects
+  and no stored index get the index, and 6 visits hold a stored index with
+  the effect or the side effects missing: the index is missing there
+  (score_not_recomputed).
+  Before this review the stored index was delivered and checked by a custom
+  function (check_failed on the same 74 visits).
 
-  The EGF is a number from 1 to 100, typed in a free field under the ten
-  anchors of the scale. 149 cells hold a band of ten points instead
-  ("60-51", "90-81"), 87 of them in one centre. They are read as the middle
-  of the band (55.5) and flagged band_middle (decision D24 in PROGRESS.md).
-  One band is impossible and ends out_of_range. Two cells hold 0 (missing
-  code). Eight values in ten are multiples of 5.
+  The numbers 1 to 16 are the cell labels of the grid of Guy's ECDEU
+  Assessment Manual (1976): rows are the therapeutic effect (marked,
+  moderate, minimal, unchanged or worse), columns the side effects, numbered
+  row by row (6 = moderate effect, side effects that do not interfere
+  significantly, the example printed on the form). They are position labels,
+  not an ordered score: Guy gives a table from the cell to a ratio of effect
+  to side effects (0.25 to 4.00), and the cell number does not rise with that
+  ratio (scale_reference.md, section 3; the table itself to verify on the
+  scan). The side-effect question is shown only after a therapeutic effect
+  from 1 to 4 (the form hides it after "not assessed"): 1 side-effect value
+  sits under "not assessed" and 2 under an empty effect, kept as recorded
+  (a rule would mostly blank values under an empty parent), and 107 of the
+  9,174 effects from 1 to 4 have no side-effect answer.
+
+  The EGF is a number from 1 to 100, typed in a free text field (no limit in
+  the form) under the ten bands of the scale. The form prints the bands from
+  100-91 down to 1-10; the five lowest are written from the low number up
+  (41-50, 31-40, 21-30, 11-21, 1-10) and "11-21" is a misprint for 11-20, the
+  published band. 149 cells hold a band of ten points instead of a number
+  ("60-51", "90-81"), 87 of them in one centre: 140 in the wording printed on
+  the form (8 of them 100-91), 6 written in rising order (71-80, 51-60, 61-70,
+  81-90, 91-100: not the printed wording), 3 with another separator or a
+  typing slip. They are read as the middle of the band (55.5) and flagged
+  band_middle (decision D24 in PROGRESS.md). One band is impossible and ends
+  out_of_range. Two cells hold 0 (missing code: in the published scale 0
+  means inadequate information). 81% of the numbers typed are multiples of 5
+  (47% of 10).
+
+  The CGI-I at inclusion is not delivered (D113): its 1,068 values at
+  inclusion correlate with the severity as strongly as the follow-up ones do,
+  so they do not look like a blank form (open question, no change).
 
 version:
   name: visit_form
@@ -84,12 +120,13 @@ variables:
     versions: [follow_up]
     label: "CGI side effects, from 1 (none) to 4 (outweigh the therapeutic effect)"
     range: [1, 4]
-  cgi_efficacy_index:
+  cgi_efficacy_index_stored:
     column: cgi03
     versions: [follow_up]
-    label: "CGI efficacy index, from 1 to 16"
+    label: "CGI efficacy index as stored, from 1 to 16"
     range: [1, 16]
     missing: {0: not_recorded}
+    keep: false
   gaf:
     column: egf
     label: "Global Assessment of Functioning (EGF), from 1 to 100"
@@ -99,5 +136,14 @@ variables:
     bands: middle
     winsor: false
 
-checks:
-  cgi_efficacy_index: cgi_index_differs
+scores:
+  cgi_te_steps:
+    label: "4 x (therapeutic effect - 1)"
+    sum: [cgi_therapeutic_effect]
+    scale: [4, -4]
+    keep: false
+  cgi_efficacy_index:
+    label: "CGI efficacy index (cell of Guy's grid, 4 x (effect - 1) + side effects), from 1 to 16"
+    sum: [cgi_te_steps, cgi_side_effects]
+    range: [1, 16]
+    compare: cgi_efficacy_index_stored

@@ -36,7 +36,8 @@ notes: >
   ">89": "<5" is read as 5 and censored_left (2 patients), ">89" as 89 and
   censored_right (none), as for the age at the first hospitalisation (D54,
   D122). 4 ages are above the age at the inclusion visit (by 0.1, 0.4, 2.3
-  and 4.2 years); they are delivered as written.
+  and 4.2 years: only the two above one year are errors); they are
+  delivered as written.
 
   The postpartum question is asked of every patient: the 1,628 men who
   answer give 0, and 169 of the 2,712 women (6.2%) give 1, so a rate is
@@ -59,6 +60,7 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm4]}
 

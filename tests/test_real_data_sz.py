@@ -81,11 +81,13 @@ def test_patient_tab(result, qc):
 
 def test_hetero_questionnaires(result, qc):
     tab = qc[qc["tab"] == "HETERO-QUESTIONNAIRE"]
-    assert (len(tab), tab["instrument"].nunique()) == (130, 10)
+    assert (len(tab), tab["instrument"].nunique()) == (131, 10)
     assert tab[["unknown_code", "unparsed"]].sum().sum() == 0
     # PANSS: the three scales, the total and the fifteen factor scores are the sums of their items.
     panss = tab[tab["instrument"] == "panss"]
-    assert (len(panss), panss["score_mismatch"].sum()) == (49, 0)
+    assert (len(panss), panss["score_mismatch"].sum()) == (50, 0)
+    # The composite (positive minus negative scale) is a score of the package: no stored twin, no flag (D77).
+    assert (qc.loc["panss_composite", "n_valid"], qc.loc["panss_composite", "min"], qc.loc["panss_composite", "max"]) == (4656, -33, 25)
     stored = result.flags[result.flags["variable"].str.startswith("panss_") & result.flags["variable"].str.endswith("_stored")]
     assert len(stored) == 0                               # every stored PANSS score is inside its limits and compared
     assert (qc.loc["panss_total", "n_valid"], qc.loc["panss_total", "min"], qc.loc["panss_total", "max"]) == (4646, 30, 160)
@@ -98,10 +100,10 @@ def test_hetero_questionnaires(result, qc):
         assert published.equals(data[name]), name
         assert name + "_as_stored" not in data.columns            # the stored formula is only a check
     assert (qc.loc["panss_wallwork_negative", "n_valid"], qc.loc["panss_lancon_negative", "n_valid"]) == (4662, 4660)
-    # Calgary: eight items; item 8 is not in the extraction, so no CDSS total.
-    assert (qc.loc["calgary_sum8", "n_valid"], qc.loc["calgary_sum8", "max"]) == (4672, 20)
-    assert "calgary08" not in result.data.columns and "calgary_total" not in result.data.columns
-    # YMRS: items 5, 8 and 9 are stored as levels (0 to 4) and delivered in points, as published and as in BP (D26).
+    # Calgary: eight items; the export mis-wires items 7 to 9 (D76: item 8 is the suicide item, in the column named for item 9; item 9 is not exported), so no CDSS total.
+    assert (qc.loc["calgary_sum8", "n_valid"], qc.loc["calgary_sum8", "max"], qc.loc["calgary08", "n_valid"]) == (4672, 20, 4674)
+    assert "calgary08" in result.data.columns and "calgary09" not in result.data.columns and "calgary_total" not in result.data.columns
+    # YMRS: items 5, 8 and 9 are exported as levels (0 to 4: a slip of the export, request R135) and delivered in points, as published and as in BP (D75).
     assert (qc.loc["ymrs_total", "n_valid"], qc.loc["ymrs_total", "score_mismatch"], qc.loc["ymrs_total", "max"]) == (4538, 0, 38)
     for item in ["ymrs05", "ymrs06", "ymrs08", "ymrs09"]:
         assert set(data[item].dropna()) <= {0, 2, 4, 6, 8}, item
@@ -109,7 +111,10 @@ def test_hetero_questionnaires(result, qc):
     higher = data["ymrs_total"].notna() & (data["ymrs05"] + data["ymrs08"] + data["ymrs09"] > 0)
     assert higher.sum() == 776                                     # visits whose published total is above the stored one
     assert (qc.loc["barnes_sum", "score_mismatch"], qc.loc["esrsa_mean", "score_mismatch"]) == (3, 10)
-    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["psp_band", "check_failed"]) == (23, 215)
+    # The efficacy index is a score recomputed from the effect and the side effects (D79); the stored one is the check.
+    index = qc.loc["cgi_efficacy_index"]
+    assert (index["n_valid"], index["score_mismatch"], index["score_not_recomputed"], index["check_failed"]) == (2036, 23, 3, 0)
+    assert qc.loc["psp_band", "check_failed"] == 215
     assert (qc.loc["bars_doses_per_day", "out_of_range"], qc.loc["psp_total", "out_of_range"]) == (250, 3)
     assert (qc.loc["cgi_severity", "missing_code"], qc.loc["cgi_improvement", "missing_code"]) == (12, 125)
     # The improvement, the therapeutic effect and the index are asked at the follow-up visits only, as in BP.
@@ -295,8 +300,17 @@ def test_medical_evaluation_care_and_social(result, qc):
     data = result.data
     assert shape_of(qc, "PERINATALITE") == (19, 1, 0, 17)
     assert (qc.loc["birth_weight", "n_valid"], qc.loc["gestational_age", "n_valid"]) == (1017, 822)     # per patient, as in BP
-    assert shape_of(qc, "EVALUATION MEDICALE") == (91, 3, 0, 2)
+    assert shape_of(qc, "EVALUATION MEDICALE") == (92, 3, 0, 2)
     assert (qc.loc["n_psychotic_episodes", "n_valid"], data["symptom_persecution_ever"].sum(), data["violence_verbal"].sum()) == (1899, 1807, 925)
+    # The clinical-scales review (D80): the age at the first psychotic episode has its own name (DR's first_episode_age is another question).
+    assert qc.loc["first_psychotic_episode_age", "n_valid"] == 2165 and "first_episode_age" not in data.columns
+    # The last-month question of the 22 symptoms is 0 after a "no" to the first question (all at inclusion): 43,053 valid cells.
+    last_month = [name for name in qc.index if name.endswith("_last_month")]
+    assert (len(last_month), int(qc.loc[last_month, "n_valid"].sum())) == (22, 43053)
+    # The number of suicide attempts of the past year is 0 after a "no" (+4,319 zeros; the largest is 17).
+    assert (qc.loc["n_suicide_attempts_12m", "n_valid"], qc.loc["n_suicide_attempts_12m", "max"]) == (4487, 17)
+    # Homicide is delivered since the review: asked after physical violence, 8 yes among 1,798 answers.
+    assert (qc.loc["violence_physical_homicide", "n_valid"], data["violence_physical_homicide"].sum()) == (1798, 8)
     assert shape_of(qc, "SOIN SUIVI HOSP ARRET TRAVAIL") == (27, 5, 0, 25)
     assert (qc.loc["first_hospitalisation_age", "n_valid"], qc.loc["hospitalisation_months_v0", "censored_right"], qc.loc["hospitalised_12m", "n_valid"]) == (1868, 105, 4494)
     # The lifetime block is hidden after "Pas d'hospitalisations" (D70): 0 on the 384, 384, 388 and 397 cells that the form hides; "ever hospitalised" is derived from the number by the export (44 "Ne sais pas" read as yes).
@@ -358,7 +372,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = sz.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1667, 53, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1668, 52, 0)
     assert counts["covered"] + counts["ignored"] == 1720
 
 

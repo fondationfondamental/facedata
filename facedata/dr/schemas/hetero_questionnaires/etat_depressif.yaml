@@ -1,36 +1,63 @@
 instrument: etat_depressif
-title: Current major depressive episode (DSM-IV symptom checklist)
+title: Depressive symptoms present at the visit (DSM-IV criterion A checklist)
 tab: HETERO-QUESTIONNAIRES
 section: Episode depressif majeur actuel
-status: draft
+status: reviewed
 notes: >
-  A DSM-IV symptom checklist, filled at the inclusion visit (605 visits) and
-  at the follow-up visits (874). Nine symptoms, answered 1 (yes), 0 (no) or
-  2 ("does not know", a missing code); the extraction of BP writes Y, N and
-  U for the same form. No count of symptoms is stored here: etatd_total is
-  the number of symptoms present, when the nine are answered.
+  A checklist of the nine DSM-IV criterion A symptoms of a major depressive
+  episode, filled at the inclusion visit (605 visits) and at the follow-up
+  visits (874). The form says to fill it whatever the mood state: it lists
+  the symptoms present at the visit and is not an episode (the dictionary
+  calls it one: request R144). Nine symptoms, answered 1 (yes), 0 (no) or 2
+  ("does not know", a missing code); the extraction of BP writes Y, N and U
+  for the same form. No count of symptoms is stored here (the BP count is
+  the application's own, computed on a button): etatd_total is the number
+  of symptoms present, when the nine are answered yes or no (1,403 visits;
+  75 visits have a "does not know" and get no count).
 
-  Five symptoms have a detail that says which way the change goes, asked
-  when the symptom is present. In TRD each detail is two yes/no boxes
-  (hyper- and hypo-reactivity, agitation and retardation, racing and slowed
-  thoughts), where BP has one answer.
+  Five symptoms have a detail that says which way the change goes. The form
+  shows it only after a yes to the symptom (js/formulaires.js, lines
+  4607-4616). In TRD the details of mood reactivity, psychomotor change and
+  thinking speed are each two yes/no boxes (hyper- and hypo-reactivity,
+  agitation and retardation, racing and slowed thoughts), where BP has one
+  answer. After a no they are empty and are 0 (asked_if: 3,001 cells,
+  487 and 488, 598 and 598, 415 and 415); after a "does not know" they stay
+  missing. Under a yes both boxes are answered on 972 of 980, 858 of 863 and
+  1,051 of 1,058 visits, neither on 3, 1 and 2: the boxes are radios, so
+  there is no box_list.
 
   Two forms in the same columns, for the details of weight and of sleep
-  (decision D6 in PROGRESS.md). Until 2016 the form had two boxes for each:
-  etatd03b "loss" and etatd03c "gain", etatd04b "insomnia" and etatd04c
-  "hypersomnia" (348 visits). The other form, used by a few centres from
-  2013 and by all from 2017, has one list in etatd03b and one in etatd04b,
-  with the codes 1, 2 and 3; etatd03c and etatd04c are then empty. No
-  column names the form: a visit that holds etatd03c or etatd04c has the
-  boxes, the others the list (etatd_detail_form). The dictionary describes
-  the boxes only. The codes of the list were read from the other scales of
-  the same visits: with code 1 the MADRS item "reduced appetite" has a mean
-  of 2.3 and the QIDS item "weight loss" 1.4; with code 2 they are 0.7 and
-  0.2, and the QIDS item "weight gain" is 1.7. So 1 is a loss, 2 a gain and
-  3 both; and for sleep 1 is insomnia (MADRS "reduced sleep" 3.4), 2
-  hypersomnia (1.1) and 3 both. The two forms are delivered in columns of
-  their own: the boxes as four yes/no items, the list under the BP names
-  etatd03a and etatd04a.
+  (decision D6 in PROGRESS.md). Form 182 has two boxes for each: etatd03b
+  "loss" and etatd03c "gain", etatd04b "insomnia" and etatd04c "hypersomnia"
+  (348 visits). Forms 128 (inclusion) and 183 (follow-up) have one list for
+  each, in etatd03b and etatd04b, with the options 1 (loss, insomnia), 2
+  (gain, hypersomnia) and 3 ("ne sais pas"); etatd03c and etatd04c are then
+  empty. Form 182 is in no menu and in no list of simplified visits now
+  (request A70; its "Score total" ETAT_SCORE is never filled); the boxes
+  last appear between 2016-02 and 2016-12, in 10 centres, and no visit from
+  2017 holds them. No column names the form: a visit that holds etatd03c or
+  etatd04c has the boxes (etatd_detail_form), the others the list, which
+  includes 429 visits with no detail at all (weight and sleep both "no", or
+  the detail left empty): 148 of them are dated to 2016 and 144 of these
+  have weight and sleep both "no", so their form is unknown; they are
+  delivered as list. By the detail columns alone the two forms meet in 9 of
+  the 146 centre-years; counting the visits with no detail as list, in 28
+  (and the list is in 6 centres in 2012-13 and 12 of 14 by 2016-09, against
+  3 and 6 by the detail columns alone). A comparison of the yes rates by form
+  is therefore biased.
+
+  The option 3 of the list is "ne sais pas", not "both". An earlier reading
+  of the other scales of the same visits (the MADRS "reduced appetite" and
+  the QIDS "weight loss" are high with code 1 and low with code 2, which
+  stands: 1 is a loss or an insomnia, 2 a gain or a hypersomnia) had called
+  3 "both". The options of ETAT6 and ETAT9 in forms 128 and 183 settle it, so
+  3 is a missing code: 44 cells (29 weight, 15 sleep) go from a category to
+  missing.
+
+  The wording of etatd09 adds "or a specific plan" to the BP wording
+  ("ou plan precis pour se suicider"): the yes rates are not comparable. At
+  a MADRS suicide item of 2, 64% of the DR visits answer yes against 38% in
+  BP; at 3, 87% against 73%; at 4, 96% against 86%.
 
   Same instrument as in FACE BP, with the codings and the details of the TRD
   form.
@@ -45,8 +72,8 @@ defaults: {type: item, range: [0, 1]}
 
 variables:
   etatd01: {label: "Humeur dépressive la majeure partie de la journée", missing: {"2": unknown}}
-  etatd01_hyper_reactivity: {column: etatd01b, label: "Mood: feeling of emotional hyper-reactivity (asked when the symptom is present)", missing: {"2": unknown}}
-  etatd01_hypo_reactivity: {column: etatd01c, label: "Mood: feeling of hypo-reactivity or anaesthesia (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd01_hyper_reactivity: {column: etatd01b, label: "Mood: feeling of emotional hyper-reactivity (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd01}
+  etatd01_hypo_reactivity: {column: etatd01c, label: "Mood: feeling of hypo-reactivity or anaesthesia (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd01}
   etatd02: {label: "Diminution marquée d'intérêt ou de plaisir dans toutes ou presque les activités habituelles, presque toute la journée", missing: {"2": unknown}}
   etatd03: {label: "Perte ou gain de poids significatif, ou, diminution ou augmentation de l'appétit", missing: {"2": unknown}}
   etatd03_loss_box: {column: etatd03b, versions: [boxes], label: "Weight or appetite: loss (form with two boxes, until 2016)", missing: {"2": unknown}}
@@ -56,7 +83,8 @@ variables:
     versions: [list]
     label: "Weight or appetite change (form with one list; asked when the symptom is present)"
     type: category
-    codes: {"1": loss, "2": gain, "3": loss_and_gain}
+    codes: {"1": loss, "2": gain}
+    missing: {"3": unknown}
   etatd04: {label: "Insomnie ou hypersomnie", missing: {"2": unknown}}
   etatd04_insomnia_box: {column: etatd04b, versions: [boxes], label: "Sleep: insomnia (form with two boxes, until 2016)", missing: {"2": unknown}}
   etatd04_hypersomnia_box: {column: etatd04c, versions: [boxes], label: "Sleep: hypersomnia (form with two boxes, until 2016)", missing: {"2": unknown}}
@@ -65,15 +93,16 @@ variables:
     versions: [list]
     label: "Sleep change (form with one list; asked when the symptom is present)"
     type: category
-    codes: {"1": insomnia, "2": hypersomnia, "3": insomnia_and_hypersomnia}
+    codes: {"1": insomnia, "2": hypersomnia}
+    missing: {"3": unknown}
   etatd05: {label: "Agitation ou ralentissement psychomoteur", missing: {"2": unknown}}
-  etatd05_agitation: {column: etatd05b, label: "Psychomotor: agitation (asked when the symptom is present)", missing: {"2": unknown}}
-  etatd05_retardation: {column: etatd05c, label: "Psychomotor: retardation (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd05_agitation: {column: etatd05b, label: "Psychomotor: agitation (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd05}
+  etatd05_retardation: {column: etatd05c, label: "Psychomotor: retardation (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd05}
   etatd06: {label: "Fatigue ou perte d'énergie", missing: {"2": unknown}}
   etatd07: {label: "Sentiment d'indignité, d'auto-accusation ou de culpabilité excessive ou inappropriée", missing: {"2": unknown}}
   etatd08: {label: "Diminution de l'aptitude à penser ou se concentrer ou indécision chaque jour", missing: {"2": unknown}}
-  etatd08_racing_thoughts: {column: etatd08b, label: "Thinking: feeling of racing thoughts (asked when the symptom is present)", missing: {"2": unknown}}
-  etatd08_slowed_thinking: {column: etatd08c, label: "Thinking: feeling of slowed thinking (asked when the symptom is present)", missing: {"2": unknown}}
+  etatd08_racing_thoughts: {column: etatd08b, label: "Thinking: feeling of racing thoughts (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd08}
+  etatd08_slowed_thinking: {column: etatd08c, label: "Thinking: feeling of slowed thinking (asked when the symptom is present)", missing: {"2": unknown}, asked_if: etatd08}
   etatd09: {label: "Pensées récurrentes de mort, idéation suicidaire récurrente sans plan spécifique, ou tentative de suicide", missing: {"2": unknown}}
 
 scores:

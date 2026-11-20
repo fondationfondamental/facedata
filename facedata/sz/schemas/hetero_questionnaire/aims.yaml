@@ -2,7 +2,7 @@ instrument: aims
 title: Abnormal Involuntary Movement Scale (AIMS)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire AIMS
-status: draft
+status: reviewed
 notes: >
   Rated by the clinician at every visit. Seven items on the movements
   (face, lips, jaw, tongue, upper limbs, lower limbs, trunk), then the
@@ -10,18 +10,27 @@ notes: >
   from 0 to 4, and two yes/no items on the teeth. The dictionary gives the
   body parts of items 1 to 9.
 
-  Total. The extraction stores no AIMS score. aims_movements is the usual
-  one, the sum of the seven movement items (0 to 28); it needs its seven
-  items and cannot be compared with a stored value.
+  Total. The extraction stores no AIMS score and the application computes
+  none. aims_movements is the sum of the seven movement items (0 to 28 by
+  construction, 0 to 24 observed on 4,149 visits); it needs its seven items
+  and cannot be compared with a stored value. In the one source read the
+  published total is the ten components, items 1 to 10 (0 to 40), and whether
+  items 8 to 12 enter a total of the manual is to verify (Menzies and Farrell
+  2002 after Guy 1976; scale_reference.md, section 9). The overall severity
+  (item 8) equals the highest of items 1 to 7 on 3,422 of 4,111 visits (it is
+  higher on 18 and lower on 671); the rule that links them, if there is one, is
+  to verify.
 
-  Teeth. aims0111 and aims0112 are in the extraction but not in the
-  dictionary's list of columns, which names them in one line with two
-  orders: "11: portprothese, 12: pbactu" for the labels, and "rad_pbactu et
-  rad_portprothese" for the fields. In the published scale item 11 is
-  "current problems with teeth or dentures" and item 12 "usually wears
-  dentures". The first is "yes" on 13% of the visits and the second on 6%,
-  which fits the published order, used here (open question O6 in
-  PROGRESS.md).
+  Teeth (decision D78; closes open question O6). aims0111 is item 11, current
+  problems with teeth or dentures (field rad_pbactu, order 18 in the form), and
+  aims0112 is item 12, the patient usually wears dentures (rad_portprothese,
+  order 19). The form and the export agree on this (eschizo_hetero_aims.sql,
+  lines 84 to 91). Only the dictionary swaps them: it names them in one line
+  with two orders, "11: portprothese, 12: pbactu" for the labels and
+  "rad_pbactu et rad_portprothese" for the fields, copied from the order of the
+  columns of the table. The first is "yes" on 13% of the visits and the second
+  on 6%. In the published scale item 11 is current problems with teeth or
+  dentures and item 12 usually wears dentures (coding to verify).
 
   No item loses an answer: the levels 0 to 4 all occur, the highest rarely.
 

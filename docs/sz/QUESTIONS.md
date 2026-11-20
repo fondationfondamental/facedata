@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-7, PI-1, O31), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -34,7 +34,7 @@ on request. The questions already answered for FACE BP are not asked again;
 the BP answers are in [the BP questions](../bp/QUESTIONS.md). Where a BP
 answer may not hold for SZ, the question says so.
 
-**Four questions to send first.** DEV-1 (Calgary item 8), DEV-3 (marital
+**Four questions to send first.** DEV-1 (Calgary items 8 and 9), DEV-3 (marital
 status and source of income), DEV-4 (occupation of the Barona estimate) and
 DEV-5 (scores computed wrongly). Each concerns a main variable of the cohort,
 and each looks like an error of the export or of the EMR that a developer can
@@ -46,14 +46,22 @@ inclusion), by the export model on 19 November 2026.
 
 ### Priority A
 
-**DEV-1. Calgary depression scale: item 8 is lost.** The column `calgar08`
-holds the answer to item 7 on every row, and the stored total `calgar`
-counts item 7 twice. Item 8 (suicide) is not in the extraction at all. The
-total of the scale, with its threshold of 6, is a main outcome of the cohort:
-on one visit in ten the stored total is wrong.
-*Question:* can the export read the field of item 8?
-*Today:* eight items and their sum (`calgary_sum8`); no total of the scale is
-delivered. (O4, D5)
+**DEV-1. Calgary depression scale: the export wires the wrong fields into the
+last three items.** In the extraction `calgar07` is item 7 (early wakening),
+`calgar08` is a copy of item 7 on every row, `calgar09` is item 8 (suicide), and
+item 9 (observed depression, the observation of the interviewer) is in no
+column. The model reads the early-wakening field twice and the suicide field
+once (`eschizo_hetero_calgary.sql`, lines 35 to 43) and does not export the
+observed-depression field, which the script of the form adds as item 9
+(`hetero_calgary.js`, lines 20 to 22). The stored total `calgar` is the strict
+sum of the nine exported columns, so it is the true total minus item 9 plus
+item 7. The total of the scale, with its threshold of "above 6", is a main
+outcome of the cohort: item 7 is above 0 on one visit in ten.
+*Question:* can the export read `radhtml_calgary_suicide` for CALGAR08 and
+`radhtml_calgary_depobservee` for CALGAR09, in the WHEN and in the CAST (request
+R136)?
+*Today:* items 1 to 8 (`calgary08` is the suicide item, read in `calgar09`) and
+their sum (`calgary_sum8`); no total of the scale is delivered. (O4, D5, D76)
 
 **DEV-2. Substance use disorder at the inclusion visit: the first question
 is built by the export.** `rad_tb_subst` holds "Ne sais pas" on 975 of the
@@ -101,20 +109,26 @@ three expected IQs, three differences). (O17, D13)
 the stored scores with their items and with the publications.
 
 - PANSS: three of the fifteen five-factor scores sum a wrong item. Wallwork
-  positive counts N2 where the paper has G9 (it differs on 3,282 of 4,667
-  visits); Wallwork negative counts N5 for N6; Lançon negative counts N7 for
-  G7.
+  positive counts N2 where the paper and the script of the form have G9 (it
+  differs on 3,276 of 4,661 visits); Wallwork negative counts N5 for N6 (2,973
+  of 4,656); Lançon negative counts N7 for G7 (2,830 of 4,660). The wrong items
+  are in the score step of the export (`panss.yaml`, lines 88, 99 and 156; the
+  script of the form has the right ones, `hetero_panss.js` lines 70, 74 and
+  75), which overwrites the columns (request R137).
 - WAIS-IV: the stored working memory index (`imt02_wais4`) always ends in .3
   and the stored full-scale IQ (`ei23_wais4`) in .1. Their percentile ranks,
   and the Barona difference of the same visit, are those of the stored value
   plus 0.7 and plus 2.9. At the centre of the sum of scaled scores, where
   every index is 100, they are 99.3 and 97.1.
 
-*Question:* which program computes these scores, the EMR or the export, and
-can the formulas be corrected there?
-*Today:* the package delivers the corrected values (the published items for
+*Answered on 2026-11-20 for the PANSS (D77):* both programs compute the factors,
+the form on a button with the right items and the score step of the export with
+three wrong item references; the stored columns are the export's.
+*Question:* can the three item references of the export be corrected, and which
+program computes the WAIS-IV indices, the EMR or the export?
+*Today:* the package delivers the corrected values (the items of the form for
 the PANSS; the stored index plus 0.7 and plus 2.9 for the WAIS-IV) and keeps
-the stored ones as checks. (O5, O15, D10, D12)
+the stored ones as checks. (O5, O15, D10, D12, D77)
 
 **DEV-6. CVLT: the z-score of trials 1 to 5 is wrong on 291 visits, from
 October 2021 to June 2026.** The median of `cvlt01z_` is about -1.5 in
@@ -257,10 +271,11 @@ no longer computed, or no longer exported?
 
 **DEV-13. The dictionary.** 201 columns of the extraction are not in it. For
 most the instrument makes the meaning clear; for these the question itself is
-unknown: `rad_ecv_vp5`, the "level" columns of the Yale-Brown scale
+unknown: the "level" columns of the Yale-Brown scale
 (`ybobse1`...), and four z-scores of the six elements test (`elem616_`,
-`elem620_`, `elem623_`, `elem625_`). Three others were read in the field
-tables of the application on 2026-11-19: `rad_add_4` (question 4 of the
+`elem620_`, `elem623_`, `elem625_`). Four others were read in the field
+tables of the application on 2026-11-19 and 2026-11-20: `rad_ecv_vp5` (the question
+"Homicide" of the physical violence: D80), `rad_add_4` (question 4 of the
 addiction form, "more than ten times in your life": D63), `rad_add_heroin7a`
 (the heroin question 7a, "a symptom of a use disorder over the whole life":
 D66; not delivered yet, O21) and the screening questions of the anxiety
@@ -268,7 +283,7 @@ section (`rad_attaq_paniq`, `rad_peur_*`, `rad_trouble_compulsif`: D60). Other p
 named for the cause of death, holds the date of death; "Arme à feu" is
 written "Arme ? feu"; the sisters, brothers and children of the family
 history hold the same lists of disorders as the parents, not "yes, no,
-unknown". (O21, O10, D4, D18, D20, D60, D63, D66)
+unknown". (O21, O10, D4, D18, D20, D60, D63, D66, D80)
 
 ## 2. For the data managers
 
@@ -343,11 +358,14 @@ could be computed for every visit.
 *Today:* recomputed from the 30 ratings with the reference ratings found in the
 script of the application (D48): 28 visits differ from the stored score. (O18)
 
-**DM-7. AIMS, items 11 and 12.** The dictionary names them in two orders in
-the same line.
-*Question:* which column is "current problems with teeth or dentures" and
-which is "wears dentures"?
-*Today:* the order of the published scale. (O6)
+**DM-7. AIMS, items 11 and 12.** *Answered on 2026-11-20 by the field table of
+the application and the export model (D78).* Item 11 is "current problems with
+teeth or dentures" (`rad_pbactu`) and item 12 "usually wears dentures"
+(`rad_portprothese`) in the form and in the export (`eschizo_hetero_aims.sql`,
+lines 84 to 91); the dictionary names them in the order of the columns of the
+table. The schema had the right order.
+*Question left:* correct the dictionary row, and the Barnes global item, which
+has six options (0 to 5) where the dictionary says 0 to 4 (request R144).
 
 **DM-8. Medical history at the follow-up visits.** A disease answered yes at
 inclusion is most often answered no later (39 of 47 follow-up answers for a
@@ -379,9 +397,10 @@ medications of 11,038 keep an unknown name. (D19, D73; BP O36)
 **PI-1. PANSS five-factor scores.** (1) Lançon 1998: the corrected negative
 factor (G7 in place of N7) rests on the abstract of the paper and on the
 number of items per factor; the five lists of items could not be read in the
-paper itself. Can they be confirmed? (2) van der Gaag 2006: the stored scores
-keep 29 of the 45 terms of the published formula, and neither of its two
-subtractions. Which version is wanted?
+paper itself, but the script of the form itself uses G7 as the corrected factor
+does (D77). Can the lists be confirmed in the paper? (2) van der Gaag 2006: the
+stored scores keep 29 terms of 28 items of the 45 terms of the published
+formula, and neither of its two subtractions. Which version is wanted?
 *Today:* Wallwork (two factors) and Lançon (one factor) corrected; van der
 Gaag as stored, labelled with its items. (O5, D10)
 
@@ -429,7 +448,17 @@ delivered. (O2)
 
 **Unit of vitamin D by centre (O30).**
 
-**YMRS, three items stored as levels (O31, for the EMR developers).** Items 5 (irritability), 8 (content) and 9 (disruptive and aggressive behaviour) are stored 0 to 4 where the scale scores them 0, 2, 4, 6 or 8, in every year and every centre, and the stored total adds them once; item 6 is stored in points. FACE BP and FACE DR store the points. The loader delivers the published total, which is higher than the stored one on 776 of 4,538 visits. Can the form store the points and the published total?
+**YMRS, three items stored as levels (O31, answered on 2026-11-20).** Items 5
+(irritability), 8 (content) and 9 (disruptive and aggressive behaviour) are
+stored 0 to 4 where the scale scores them 0, 2, 4, 6 or 8, in every year and
+nearly every centre, and the stored total adds them once; item 6 is stored in
+points. The form is the one of FACE BP and the script of the form doubles the
+four items: the export maps the letters of items 5, 8 and 9 to the levels
+(`eschizo_hetero_ymrs.sql`, lines 47 to 86), a slip of the export and not another
+form (D75, request R135). The loader reads the levels as points (0, 2, 4, 6, 8)
+and delivers the published total, higher than the stored one on 776 of 4,538
+visits. *Question left:* when the export is corrected the cells hold the
+points, and the package must then stop reading them through the codes.
 
 ## Added by the ANTECEDENTS review of 2026-11-19
 
@@ -542,3 +571,38 @@ inclusion visit are 5.0 to 5.9 for the inclusions of 2011 to 2017 and 2.5 to
 patient with a list for the inclusions of 2011 to 2017, 1.6 to 2.5 from 2018).
 Did the form or the practice stop asking for the history of treatments in
 2018? Today the lists are delivered as typed (D74).
+
+## Added by the CLINICAL SCALES review of 2026-11-20
+
+**DEV-17. The clinical scales: what the forms and the export do wrongly (for the
+EMR developers and whoever writes the export).** (1) YMRS: the export gives the
+letters of items 5, 8 and 9 the levels 0 to 4 where the form, FACE BP and FACE DR
+give 0, 2, 4, 6, 8 (R135, D75). (2) Calgary: items 8 and 9 (DEV-1, R136). (3)
+SUMD: the script of the form ticks attribution radios for the three general items
+(`labelfieldsradhtml_attribu10`, 20, 30) that the form does not have, and stops
+with an error before it sets the attribution of a symptom to 0 where its
+awareness is 0 or 3: 530 attributions of 1 to 3 remain under such an awareness,
+12.1% of the cells concerned on the visits where a general item is 0 or 3
+against 0.2% elsewhere (A62, D78). (4) BARS: the first question (doses per day)
+has no upper limit where the two others are limited to 0 to 31: 250 values above
+20, 193 of them exactly 100 and 146 of those with a percentage of 100, so a
+percentage was typed in the dose field; 271 visits have 0 doses (A65, D78). (5)
+Scores computed on a button are stale after an edit of an item: the CGI
+efficacy index differs from its items on 23 visits, the Barnes sum on 3, the
+extrapyramidal mean on 10, always lower than the items for the last two. (6) The
+export drops the EGF texts that are not a whole number although the field is
+varchar(25) (R138), the done / not-done flags of the CGI-EGF and PSP forms and
+the follow-up diagnostic form with its course, violence and substances (R141),
+and the dictionary swaps the AIMS items 11 and 12 and gives the Barnes global
+item 0 to 4 (R144).
+*Question:* can they be corrected, and can the scores be computed when the form
+is saved?
+*Today:* the package reads the YMRS levels as points, delivers items 1 to 8 of the
+Calgary scale, recomputes the CGI index, and keeps the other cells as typed.
+(D75, D76, D78, D79)
+
+**Duplicates of the evaluation row (DM-11, for the data managers).** The model of
+the evaluation tab (`face_sz_9_evaluation_medicale.sql`, lines 118 to 133) keeps
+one row per visit, the one with the most filled fields, and breaks ties
+arbitrarily. No visit of the extraction has a duplicate. Does the application
+ever hold two rows of a visit in this tab, and what are they (R141, D80)?

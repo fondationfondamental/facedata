@@ -2,35 +2,62 @@ instrument: bas
 title: Brief Anxiety Scale (Tyrer)
 tab: HETERO-QUESTIONNAIRES
 section: BAS (Tyrer Brief Anxiety Scale, Tyrer P et al. 1984)
-status: draft
+status: reviewed
 notes: >
   Ten items rated 0 to 6 by the clinician; the total is their sum (0 to 60).
-  The stored total equals the sum on all 1,034 visits that have both; 4
-  visits have the ten items and no stored total, and get the recomputed one.
+  The stored total (the application's own, written when the form is saved:
+  js_scores/124_score.js, which empties it when an item is empty) equals the
+  sum on all 1,034 visits that have both; 4 visits have the ten items and no
+  stored total, and get the recomputed one. 1,038 visits have the ten items;
+  the observed maximum is 39.
 
-  Rated at the inclusion and follow-up visits. Filled at about 90% of the
-  inclusion visits until 2017 and at about half of them since 2018 (open
-  question O1 in PROGRESS.md).
+  The scale is Tyrer's Brief Scale for Anxiety (Tyrer, Owen and Cicchetti
+  1984; scale_reference.md, section 15; the original item list and the
+  split between reported and observed items are still to verify).
+
+  The items are named for the field of the form, not for the screen
+  position, and the dictionary labels them by screen position (decision D57
+  in PROGRESS.md; rule R12 of the review). The form numbers its fields out of
+  screen order (form 124): the screen shows BAS1 to BAS5 (inner tension,
+  hostile feelings, hypochondria, phobias, worry over trifles), then BAS9
+  (reduced sleep), BAS10 (autonomic disturbances reported by the patient)
+  and BAS6 (pain) as the last three of the block of symptoms expressed by
+  the patient, then BAS7 (autonomic disturbances observed) and BAS8 (muscular
+  tension) as the block of observed symptoms. The export names its columns
+  by field number, so bas06 holds pain, bas07 the observed autonomic signs,
+  bas08 the muscular tension, bas09 the reduced sleep and bas10 the reported
+  autonomic symptoms; the dictionary (and an earlier version of this schema)
+  read them as sleep, reported autonomic, pain, observed autonomic and
+  muscular tension. The data agree with the form: bas09 correlates with
+  the MADRS item "reduced sleep" at 0.89 (1,026 visits; 0.79 to 0.93 in the
+  six periods) and bas06 at 0.14; bas01 with the MADRS "inner tension" at
+  0.85; the reported (bas10) and observed (bas07) autonomic items at 0.56.
+  The total does not depend on the order; no value changes.
+
+  Rated at the inclusion and follow-up visits. Filled at 90% of the V0
+  visits until 2017 and at 53% of them since 2018, and at 75% of all visits
+  in 2016 and about 28% in 2024-2026 (open question O1: the BAS is one of the
+  forms that the simplified visit omits, PROGRESS.md D55; request R139).
 
   A scale that FACE BP and FACE SZ do not have.
 
 defaults: {type: item, range: [0, 6]}
 
 variables:
-  bas01: {label: "BAS 1: Inner tension"}
-  bas02: {label: "BAS 2: Hostile feelings"}
-  bas03: {label: "BAS 3: Hypochondriasis"}
-  bas04: {label: "BAS 4: Phobias"}
-  bas05: {label: "BAS 5: Worrying over trifles"}
-  bas06: {label: "BAS 6: Reduced sleep"}
-  bas07: {label: "BAS 7: Autonomic disturbances (reported)"}
-  bas08: {label: "BAS 8: Aches and pains"}
-  bas09: {label: "BAS 9: Autonomic disturbances (observed)"}
-  bas10: {label: "BAS 10: Muscular tension"}
+  bas01: {label: "BAS 1: Inner tension (reported)"}
+  bas02: {label: "BAS 2: Hostile feelings (reported)"}
+  bas03: {label: "BAS 3: Hypochondriasis (reported)"}
+  bas04: {label: "BAS 4: Phobias (reported)"}
+  bas05: {label: "BAS 5: Worrying over trifles (reported)"}
+  bas09: {label: "BAS 9: Reduced sleep (reported, 6th on the screen)"}
+  bas10: {label: "BAS 10: Autonomic disturbances (reported, 7th on the screen)"}
+  bas06: {label: "BAS 6: Pain (reported, 8th on the screen)"}
+  bas07: {label: "BAS 7: Autonomic disturbances (observed, 9th on the screen)"}
+  bas08: {label: "BAS 8: Muscular tension (observed, 10th on the screen)"}
   bas_total_stored: {column: bas_, label: "BAS total as stored", range: [0, 60], keep: false}
 
 scores:
   bas_total:
     label: "BAS total (0 to 60)"
-    sum: [bas01, bas02, bas03, bas04, bas05, bas06, bas07, bas08, bas09, bas10]
+    sum: [bas01, bas02, bas03, bas04, bas05, bas09, bas10, bas06, bas07, bas08]
     compare: bas_total_stored

@@ -5,14 +5,27 @@ section: Questionnaire YMRS
 status: reviewed
 notes: >
   Eleven items. Items 5, 6, 8 and 9 count double and are scored 0, 2, 4, 6 or
-  8; the others are scored 0 to 4. The total goes up to 60.
+  8 (the form offers the letters a to e, and the script of the application
+  and the export both turn them into 0, 2, 4, 6, 8: hetero_ymrs.js,
+  ebipolar_hetero_ymrs.sql); the others are scored 0 to 4. The total goes up
+  to 60 (7 items of 0 to 4 and 4 of 0 to 8, the item ranges of the published
+  scale, Young and others 1978, scale_reference.md section 2; the total is
+  their sum). The observed maximum is 36.
 
   The stored total equals the sum of the 11 items on all 17,246 visits that
-  have one, the rule of the scoring script of the application. A total
+  have one: no score_mismatch. That is true by construction and checks the
+  items and the formula of the export, not the application. The score step
+  of the export (nucleus, ymrs.yaml: a strict sum of the 11 items) writes
+  ymrs_ again after its models (D120; its changelog lists 215 rows of the BP
+  table changed in the run of 2026-11-13). The application computes the
+  total only when the button "Calculer le score" is clicked
+  (hetero_ymrs.js, lines 21 to 32), so its stored value is stale after an
+  edit and says "Questionnaire incomplet" when an item is missing: a total
   needs all its items. No doubled item holds an odd value.
 
   The dictionary gives no label for the items; the labels here are those of
-  the published scale.
+  the published scale. The columns ending in _n1 are the mood at the
+  neuropsychological assessment (see madrs): not loaded (D27).
 
 defaults: {type: item, range: [0, 4]}
 
@@ -35,4 +48,5 @@ scores:
     label: "YMRS total (11 items)"
     sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
           ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
+    range: [0, 60]
     compare: ymrs_total_stored

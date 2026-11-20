@@ -2,7 +2,7 @@ instrument: panss
 title: Positive and Negative Syndrome Scale (PANSS)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire Positive and negative Syndrome Scale for Schizophrenia PANSS
-status: draft
+status: reviewed
 notes: >
   Rated by the clinician at every visit: 30 items from 1 (absent) to 7
   (extreme). The columns panss101 to panss107 are P1 to P7, panss108 to
@@ -17,52 +17,70 @@ notes: >
 
   The five-factor scores. The extraction stores fifteen of them, five for
   each of three published models (Wallwork 2012, Lançon 1998, van der Gaag
-  2006). Each stored score was fitted on the 30 items: all fifteen are
-  plain sums of items, exact on the 4,646 complete visits, in every year
-  from 2010. A program computes them (they exist exactly where the items
-  of their formula are filled, also for visits older than the
-  publications); they are not typed. The formulas were then compared with
-  the publications (decision D10 in PROGRESS.md).
+  2006). All fifteen are plain sums of items, exact on the 4,646 complete
+  visits, in every year from 2010, and they exist exactly where the items of
+  their formula are filled, also for visits older than the publications. They
+  are not typed. Two programs compute them: the form of the application, on a
+  button, with the formulas of hetero_panss.js (lines 70 to 88), and the score
+  step of the export, which adds the items again with strict sums and
+  overwrites the column (nucleus score definition panss.yaml). The two agree
+  on 12 of the 15 and the stored value is the export's (decisions D10 and
+  D77).
 
-  Three stored scores sum a wrong item. They are corrected here: the score
-  delivered follows the publication, and a second score, not delivered,
-  repeats the stored formula so that the stored column is still checked.
+  Three stored scores, those of the export, sum a wrong item (request R137).
+  They are corrected here: the score delivered follows the application and the
+  publication, and a second score, not delivered, repeats the stored formula
+  so that the stored column is still checked.
 
-  - Wallwork, positive factor. Published: P1, P3, P5, G9 (the table of the
-    paper). Stored: P1, P3, P5, N2. G9 is the 23rd of the 30 items; the
-    formula takes the 9th, which is N2. The two differ on 3,282 of 4,667
-    visits.
-  - Wallwork, negative factor. Published: N1, N2, N3, N4, N6, G7. Stored:
-    N1, N2, N3, N4, N5, G7: N5 in place of N6, one item off. They differ on
-    2,973 of 4,656 visits. With these two slips the stored model counts N2
-    and N5 twice and has 18 items, where the paper has 20, each in one
+  - Wallwork, positive factor. Application and publication: P1, P3, P5, G9
+    (hetero_panss.js line 70; the table of the paper as reproduced by Pinna
+    et al. 2014; the primary table is to verify). Stored: P1, P3, P5, N2.
+    G9 is the 23rd of the 30 items (PANSS123); the export lists PANSS109, which
+    is N2 (panss.yaml line 88). The two differ on 3,276 of 4,661 visits that
+    have both; on 6 more visits the factor is stored although G9 is empty.
+  - Wallwork, negative factor. Application and publication: N1, N2, N3, N4,
+    N6, G7 (line 74). Stored: N1, N2, N3, N4, N5, G7: PANSS112 (N5) in place
+    of PANSS113 (N6), one item off (panss.yaml line 99). They differ on 2,973
+    of 4,656 visits. With these two slips the stored model counts N2 and N5
+    twice and has 18 items, where the paper has 20, each in one factor.
+  - Lançon, negative factor. Application: N1, N2, N3, N4, N6, G7, G16 (line
+    75). Stored: N1, N2, N3, N4, N6, N7, G16: PANSS114 (N7) in place of
+    PANSS121 (G7) (panss.yaml line 156; the comment of line 161 repeats the
+    letter N7). The paper left six items out of its analysis, N7 among them,
+    and kept 24. The stored formulas use 24 items, each once: the 23 others
+    that the paper kept, and N7. The one kept item that they do not use is G7.
+    So the published factor has G7 where the stored formula has N7, which is
+    what the application does. The two differ on 2,830 of 4,660 visits. The
+    paper's own table could not be read (open question O5): the choice rests
+    on the application, on the abstract and on the number of items of each
     factor.
-  - Lançon, negative factor. Stored: N1, N2, N3, N4, N6, N7, G16. The paper
-    left six items out of its analysis, N7 among them, and kept 24. The
-    stored formulas use 24 items, each once: the 23 others that the paper
-    kept, and N7. The one kept item that they do not use is G7. So the
-    published factor is N1, N2, N3, N4, N6, G7, G16, with G7 where the
-    formula has N7: the letter was mistaken. The two differ on 2,830 of
-    4,660 visits. This rests on the abstract of
-    the paper and on the number of items of each factor, not on its table,
-    which we could not read (open question O5).
+
+  The twelve other factor scores are the same in the application, in the
+  export and here, and are delivered with that formula. For Wallwork
+  (disorganised, excited, depressed) it is the published one. For Lançon the
+  four other factors fit the paper's count of items per factor; their items
+  could not be read in the paper either.
 
   The Wallwork paper reports each factor as the mean of its items; the
-  extraction stores sums, and so does this schema, for the three models
-  alike. A mean is the sum divided by the number of items.
+  extraction stores sums, and so does this schema, for the three models alike.
+  A mean is the sum divided by the number of items.
 
-  The twelve other stored scores are delivered with the stored formula.
-  For Wallwork (disorganised, excited, depressed) it is the published one.
-  For Lançon the four other factors fit the paper's count of items per
-  factor; their items could not be read in the paper either. For van der
-  Gaag the stored scores are shorter than the published formula as two
-  later papers quote it: that formula uses the 30 items, some in two or
-  three factors, and subtracts N5 from the positive factor and P2 from the
-  negative one. The stored scores keep 29 of its 45 terms and no
-  subtraction. This is a simpler version of the model, not a slip, and it
-  is delivered as stored; its labels name its items (open question O5).
+  van der Gaag. The stored scores are the application's own lists, labelled
+  van der Gaag 2006: 29 terms of 28 items (G8 in two factors, G1 and G15
+  absent), each item in one factor except G8, and no subtraction. The
+  published model (van der Gaag et al. 2006) is a revised model in which items
+  load on several factors and all 30 items are used; two later papers quote it
+  with 45 terms and with N5 subtracted from the positive factor and P2 from
+  the negative one. Whether the application's lists are a simplification of it
+  or another formula is to verify (scale_reference.md, section 7). They are
+  delivered as stored and their labels name their items (open question O5).
   The positive factors of Lançon and van der Gaag are the same sum, and so
   are the excited factors of Wallwork and van der Gaag.
+
+  The composite. panss_composite is the positive scale minus the negative scale
+  (Kay et al. 1987; scale_reference.md, section 7), from -42 to 42; it is not
+  stored and not computed by the application. It exists on 4,656 visits and
+  runs from -33 to 25.
 
 defaults: {type: item, range: [1, 7]}
 
@@ -191,22 +209,26 @@ scores:
     sum: [panss_g1, panss_g2, panss_g3, panss_g6]
     compare: panss_lancon_depressed_stored
   panss_vandergaag_positive:
-    label: "Positive factor, the shortened sum that the EMR calls van der Gaag 2006 (not the published 25-item formula): P1, P3, P5, P6, G9"
+    label: "Positive factor, van der Gaag 2006 as the application sums it (its own list; the published model is more complex: to verify): P1, P3, P5, P6, G9"
     sum: [panss_p1, panss_p3, panss_p5, panss_p6, panss_g9]
     compare: panss_vandergaag_positive_stored
   panss_vandergaag_negative:
-    label: "Negative factor, the shortened sum that the EMR calls van der Gaag 2006 (not the published 25-item formula): N1, N2, N3, N4, N6, G7, G8, G16"
+    label: "Negative factor, van der Gaag 2006 as the application sums it (its own list; the published model is more complex: to verify): N1, N2, N3, N4, N6, G7, G8, G16"
     sum: [panss_n1, panss_n2, panss_n3, panss_n4, panss_n6, panss_g7, panss_g8, panss_g16]
     compare: panss_vandergaag_negative_stored
   panss_vandergaag_disorganised:
-    label: "Disorganised factor, the shortened sum that the EMR calls van der Gaag 2006 (not the published 25-item formula): P2, N5, N7, G5, G10, G11, G12, G13"
+    label: "Disorganised factor, van der Gaag 2006 as the application sums it (its own list; the published model is more complex: to verify): P2, N5, N7, G5, G10, G11, G12, G13"
     sum: [panss_p2, panss_n5, panss_n7, panss_g5, panss_g10, panss_g11, panss_g12, panss_g13]
     compare: panss_vandergaag_disorganised_stored
   panss_vandergaag_excited:
-    label: "Excited factor, the shortened sum that the EMR calls van der Gaag 2006 (not the published 25-item formula): P4, P7, G8, G14"
+    label: "Excited factor, van der Gaag 2006 as the application sums it (its own list; the published model is more complex: to verify): P4, P7, G8, G14"
     sum: [panss_p4, panss_p7, panss_g8, panss_g14]
     compare: panss_vandergaag_excited_stored
   panss_vandergaag_depressed:
-    label: "Emotional distress factor, the shortened sum that the EMR calls van der Gaag 2006 (not the published 25-item formula): G2, G3, G4, G6"
+    label: "Emotional distress factor, van der Gaag 2006 as the application sums it (its own list; the published model is more complex: to verify): G2, G3, G4, G6"
     sum: [panss_g2, panss_g3, panss_g4, panss_g6]
     compare: panss_vandergaag_depressed_stored
+  panss_composite:
+    label: "PANSS composite (positive minus negative scale, -42 to 42)"
+    sum: [panss_positive]
+    minus: [panss_negative]

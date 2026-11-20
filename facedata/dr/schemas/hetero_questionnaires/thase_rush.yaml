@@ -2,17 +2,34 @@ instrument: thase_rush
 title: Stage of treatment resistance (Thase and Rush)
 tab: HETERO-QUESTIONNAIRES
 section: THASE ET RUSH
-status: draft
+status: reviewed
 notes: >
   One rating at the screening visit: the stage of resistance of Thase and
-  Rush, from 1 (failure of one adequate antidepressant trial) to 5 (failure
-  of bilateral electroconvulsive therapy as well). Filled for 517 of the 634
-  patients: about 90% of the screening visits until 2019, 53% to 72% since
-  2021. Stage 2 for 256 patients, 3 for 211, 4 for 22, 5 for 26.
+  Rush (Thase and Rush 1995 and 1997; scale_reference.md, section 19), from
+  1 (failure of one adequate antidepressant trial) to 5 (failure of
+  bilateral electroconvulsive therapy as well; each stage includes the one
+  before). It is the clinician's radio button (form 122, THASE1): no formula
+  and no link with the ATHF. Filled for 517 of the 634 patients: 81% to 96%
+  of the screening visits a year until 2020, 53% to 72% since 2021. Stage 2
+  for 256 patients, 3 for 211, 4 for 22, 5 for 26, and 1 for 2.
 
-  The inclusion criterion "stage 2 or more" (inclusion_criteria) is ticked
-  for 631 patients: 115 of them have no stage here, and fewer than five have
-  a stage 1.
+  The application copies the stage into the inclusion box "stage 2 or more"
+  when form 122 is saved (js/DRONE.js, case 122: 1 for stages 2 to 5, 0 for
+  stage 1). The inclusion criterion "stage 2 or more" (inclusion_criteria,
+  incl03) is ticked for 631 patients: all 515 patients with a stage from 2
+  to 5 have it ticked, 1 of the 2 patients at stage 1 has it ticked (the
+  script writes 0 for stage 1) and 115 patients have it ticked and no stage
+  here (the box can be ticked by hand in the inclusion form 193). The box is
+  therefore what the application wrote where there is a stage, and what the
+  clinician ticked elsewhere.
+
+  Agreement with the ATHF, over the 445 patients with a stage and an ATHF at
+  some visit (the highest rating of each line over the visits): at stage 3
+  (180 patients) 93% have a tricyclic trial rated above 0 and 24% an
+  adequate one (3 or more on the dose line); at stage 4 (19 patients) 58%
+  have a MAOI trial; at stage 5 (24 patients) 88% have a bilateral ECT
+  rating of 3 or more on the key of the form. The stage is declared, not
+  derived from the ATHF.
 
   An instrument of the TRD cohort only.
 

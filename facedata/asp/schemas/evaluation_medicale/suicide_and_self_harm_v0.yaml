@@ -2,27 +2,63 @@ instrument: suicide_and_self_harm_v0
 title: "Suicide attempts and self-injurious behaviour in the life (inclusion form)"
 tab: evaluation_medicale
 section: comorbidities
-status: draft
+status: reviewed
 notes: >
-  Two questions of the clinician at the inclusion visit, on 1,671 visits (9 is
-  read as "not known"): a suicide attempt (yes on 191 visits), with the age at
-  the first and at the most recent attempt, their number and whether one was
-  serious; self-injurious behaviour (auag, yes on 365 visits), with the age at
-  the first one and its kind at the first episode and now (biting, hitting
-  oneself, scratching, burning, cutting, amputation).
+  Two questions of the clinician at the inclusion visit (form 203, "Autres
+  troubles associes", section G.4.2 "Conduites auto-agressives (LIFETIME)"),
+  answered on 1,671 V0 visits for the first (9 is read as "not known", 13
+  times) and 1,680 for the second: a suicide attempt (yes on 191 visits), with
+  the age at the first and at the most recent attempt (168 and 114 answers),
+  their number (156) and whether one was serious (186); self-injurious
+  behaviour (auag, yes on 365 visits), with the age at the first one and its
+  kind at the first episode and now (biting, hitting oneself, scratching,
+  burning, cutting, amputation). The screening visits hold none.
+
+  Names (clinical scales review). The question is the one of the ISF in the
+  other cohorts: `isf05_lifetime` is the name BP, SZ and DR give to "attempted
+  suicide, ever", and `n_attempts` to the number of attempts. The form words
+  the question "conduites suicidaires" (suicidal behaviour; the thesaurus
+  too) and its details "TS", the French abbreviation of a suicide attempt:
+  the names follow the details. The yes rate is 11.5% (191 of 1,658
+  answers), 15.0% in adults (161 of 1,071) and 5.1% in children (30 of 587),
+  against 38% of the BP inclusions: the populations differ, and whether the
+  question is answered as an attempt only is not known (question to the
+  clinicians). `serious_suicide_attempt` keeps a name of its own: the form
+  gives no definition of "grave", it is not BP's "intensive care" attempt.
+  `self_harm` has no equivalent in the other cohorts (it is not the C-SSRS
+  self-injurious item).
+
+  The questions hang on a yes. The form hides the ages, the number and the
+  serious attempt after a no or a not known (eASPERGER.js:5960-5973), and
+  the kind and the age of the self-injurious behaviour after its no (5974-5983). The
+  serious attempt is never filled under a no: 0 of 1,467 inclusion visits
+  that say no, so it is 0 after a no (`asked_if: isf05_lifetime`, +1,467
+  cells; a not known stays missing), as the number of attempts already was.
+  The ages, kinds and the age of the first self-injury are details: they
+  stay missing after a no.
+
+  Two forms share these columns. At follow-up the same form 203 is shown with
+  a question "changement depuis la derniere visite" (OTRCHANG, shown from
+  the third visit type only and mandatory there: 203.php:92,
+  eASPERGER.js:688-700); the answers of the follow-up visits are in
+  suicide_and_self_harm_fu, which keeps `_fu` names and not `since_visit`:
+  the form is titled LIFETIME at every visit, unlike the BP and SZ
+  follow-up forms (R22).
+
+  The ranges: ages 0 to 99 in years (the largest answer is 50), the number of
+  attempts 0 to 50 as in the other cohorts (the largest is 30). No cell
+  changes.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
   D14).
 
-  Two forms share these columns. Within patients the follow-up answers do
-  not repeat the inclusion ones: of the 7 follow-up answers of patients with
-  a suicide attempt at inclusion, 2 say yes; of the 45 of patients with
-  self-injurious behaviour at inclusion, 20 say yes. The follow-up form
-  therefore asks about the time since the last visit, to confirm (open question
-  O9), and its answers are delivered in columns of their own.
-
   An instrument of the ASP cohort only.
+
+  **Year and centre.** 3 of the 9 variables reach 0.5 or more, all ages: the first attempt at 13 years in
+  children and 17 in adults, the last attempt at 13.5 and 20.5, the first self-harm at 8 and 15 (age mix; the
+  first attempt is 15 to 20 years by centre). The question of the attempt (11.5% yes) has no defined shift
+  (yes under 25%); it is 15.0% yes in adults and 5.1% in children, and the BP comparison is O30.
 
 version:
   name: visit_form
@@ -42,12 +78,12 @@ version:
 defaults: {versions: [inclusion]}
 
 variables:
-  suicide_attempt_lifetime: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Suicide attempt in the life"}
-  first_suicide_attempt_age_lifetime: {column: tsprema, type: number, range: [0, 70], winsor: false, label: "Age at the first suicide attempt in the life"}
-  last_suicide_attempt_age_lifetime: {column: tsreca, type: number, range: [0, 70], winsor: false, label: "Age at the most recent suicide attempt in the life"}
-  n_suicide_attempts_lifetime: {column: tsnb, type: number, range: [0, 99], winsor: false, asked_if: suicide_attempt_lifetime, label: "Number of suicide attempts in the life"}
-  serious_suicide_attempt_lifetime: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, label: "A serious suicide attempt in the life"}
+  isf05_lifetime: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Attempted suicide - ever (the form: suicidal behaviour, TS)"}
+  first_attempt_age: {column: tsprema, type: number, unit: years, range: [0, 99], winsor: false, label: "Age at the first suicide attempt"}
+  last_attempt_age: {column: tsreca, type: number, unit: years, range: [0, 99], winsor: false, label: "Age at the most recent suicide attempt"}
+  n_attempts: {column: tsnb, type: number, range: [0, 50], winsor: false, asked_if: isf05_lifetime, label: "Number of suicide attempts"}
+  serious_suicide_attempt: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: isf05_lifetime, label: "A serious suicide attempt (undefined: the clinician's judgement)"}
   self_harm_lifetime: {column: auag, type: item, range: [0, 1], missing: {"9": unknown}, label: "Self-injurious behaviour in the life"}
-  self_harm_first_age_lifetime: {column: auagpra, type: number, range: [0, 70], winsor: false, label: "Self-injurious behaviour in the life: age at the first one"}
+  self_harm_first_age_lifetime: {column: auagpra, type: number, unit: years, range: [0, 99], winsor: false, label: "Self-injurious behaviour in the life: age at the first one"}
   self_harm_first_kind_lifetime: {column: auagprty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour in the life: kind, first episode"}
   self_harm_current_kind_lifetime: {column: auagsvty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour in the life: kind, at present"}

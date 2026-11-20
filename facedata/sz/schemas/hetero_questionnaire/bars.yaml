@@ -2,20 +2,37 @@ instrument: bars
 title: Brief Adherence Rating Scale (BARS)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire Brief Adherence Rating Scale BARS
-status: draft
+status: reviewed
 notes: >
-  Adherence to the treatment over the 30 days before the visit, rated by
-  the clinician at every visit: three questions and a percentage.
+  Adherence to the treatment over the 30 days before the visit, rated by the
+  clinician at every visit: three questions and a percentage. It is the
+  Brief Adherence Rating Scale (Byerly, Nakonezny and Rush 2008;
+  scale_reference.md, section 11), not the Barnes akathisia scale: the Barnes
+  columns are bars0101 to bars0106 (barnes.yaml) and share only the prefix of
+  the dictionary. The three questions are counts (doses prescribed per day,
+  days without the treatment, days with less than the prescribed dose), and
+  the clinician's own estimate of the percentage of doses taken is the score;
+  whether a formula links it to the three counts is to verify.
 
-  Doses per day. Most answers are 1 to 10. 250 cells hold a number above
-  20 (100 on 193 cells, 50, 999...), two thirds of them in one centre and
-  5% to 15% of the answers of each year since 2018: not a number of doses a
-  day. They end out_of_range.
+  Doses per day. The form puts no upper limit on this question (it only asks
+  for digits: eschizo_data.sql line 94850) where the two questions on days are
+  limited to 0 to 31. Most answers are 1 to 10. 250 cells hold a number above
+  20 (100 on 193 cells, 50 and 80 on a few, 999 on 8...): two thirds of them in
+  one centre and 4% to 15% of the answers of each year since 2018; on 146 of
+  the 193 cells at 100 the percentage is 100 too, so a percentage was typed in
+  the field of the doses. These cells end out_of_range. 271 visits hold 0
+  doses, which is hard to read for a patient under treatment.
 
-  The percentage is the clinician's own estimate, as the dictionary says:
-  three values in four are multiples of ten, and it is not a formula of the
-  two numbers of days (it equals the share of days with the treatment
-  taken on 2,675 of 4,283 visits). It is delivered as stored.
+  Days. On 85 of 4,265 visits the days missed and the days with a reduced dose
+  add up to more than the 30 days of the period.
+
+  The percentage is the clinician's own estimate, as the dictionary says: 73%
+  of the values are multiples of ten. It is not a formula of the days: it
+  equals the share of days with the treatment taken, rounded, on 2,334 of 4,283
+  visits (within one point on 2,675) and differs on 1,949. It is delivered as
+  stored. The unlimited dose question and the percentage typed in the dose
+  field are defects of the form of the application, not of the export (request
+  A65).
 
 defaults: {type: item}
 

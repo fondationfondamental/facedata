@@ -2,23 +2,43 @@ instrument: asdi
 title: "Asperger Syndrome Diagnostic Interview (ASDI)"
 tab: evaluation_medicale
 section: diagnosis
-status: draft
+status: reviewed
 notes: >
-  Twenty items named asdi1 to asdi20, each rated 0, 1 or 2 (9 is read as "not
-  known"), with a box before them (asdinf) and one after (asdicrit), on 407
-  inclusion visits from 2011 to 2025, three in four of them adults.
+  Twenty items named asdi1 to asdi20, each answered 1 yes, 2 'a little' ('Oui, un peu'), 0 no or 9 'Non connu' (a missing code),
+  with a box before them (asdinf, 'ASDI réalisé ?') and one after (asdicrit, 'Critères diagnostiques Asperger selon ASDI'): form
+  198, section G.1.3, table aut_c1cridsm. The items are answered on 423 visits (408 at inclusion, 15 at follow-up) from November
+  2009 to February 2026, on 79% of the inclusions to 2014 and 9% of those from 2021; 78% of the inclusion visits are adults.
+  The schema is not split into _v0 and _fu (15 follow-up visits, same columns and meaning).
 
-  Identified from its name and its twenty items as the Asperger Syndrome
-  Diagnostic Interview (Gillberg and others, 2001), whose twenty items are
-  grouped in six areas. The thesaurus confirms the instrument. Its answers are
-  not in order: 1 is yes, 2 is "a little" and 0 is no. The data agree (the
-  criteria are met on 35% of the answers 0, 61% of the answers 2 and 67% of the
-  answers 1), so the items are delivered as words (no, a_little, yes), not as
-  numbers. No total is stored and none is computed. asdicrit is yes on 252
-  visits: the diagnostic criteria of Asperger syndrome are met according to the
-  ASDI. asdinf (yes on 149 visits, from 2018) says that the ASDI was done.
+  Identified as the Asperger Syndrome (and high-functioning autism) Diagnostic Interview (Gillberg, Gillberg, Rastam and Wentz,
+  2001; the thesaurus confirms the instrument). The form groups the twenty items in six domains with the number of symptoms
+  that each requires: social interaction (items 1 to 4, at least 2), narrow interests (5 to 7, at least 1), routines (8 and 9,
+  at least 2), speech and language (10 to 14, at least 3), non-verbal communication (15 to 19, at least 1) and motor clumsiness
+  (item 20, 1); all six must be met. The published rule for the routines domain is 'at least one of the two' in the secondary
+  sources found (the form requires both); the 2001 paper was not read: to verify. The ASDI is built for informants who knew the
+  person as a child.
+
+  The answers are not in order: 1 is yes, 2 is 'a little' and 0 is no (the form and the dictionary agree). The data agree too
+  (the criteria are met on 35% of the answers 0, 61% of the answers 2 and 67% of the answers 1), so the items are delivered as
+  words (no, a_little, yes), not as numbers. How a 'a little' counts in the published scoring is not known (to verify).
+
+  No total exists and none is computed: asdinf is used by no script, and asdicrit is typed. Recomputing it with the form's own
+  thresholds (2, 1, 2, 3, 1 and 1 across the six domains) on the 290 inclusion visits with the twenty items and the box agrees
+  with the stored value on 199 visits when 'a little' counts as a symptom (214 if the routines domain needs only one of its two
+  items) and on 161 when only 'yes' counts (176): the stored value follows no rule that reproduces it, and no score is
+  proposed. 13 visits have the twenty items at no and asdicrit at 0 (the shortcut 'Non pour tous les critères', ASDIN, ticks no
+  on the items and on the box). asdicrit is yes on 252 inclusion visits.
+
+  asdinf ('ASDI done') is answered on 483 visits from December 2017 (yes on 149, the first in January 2018, no on 334); 279 visits
+  with items hold no answer to it (233 dated to 2017, 46 from 2018 on), and items are filled on 7 visits where it says no.
 
   An instrument of the ASP cohort only.
+
+  **Year and centre.** 2 of the 22 variables reach 1.0. The box 'interview done' (`asdinf`, from December
+  2017; 483 answers) is yes for 60% of the visits of 2020, 41%, 35%, 21%, 24% and 22% in 2021 to 2025, and 12%
+  to 77% by centre (four centres with 20 answers): the habit of the centre. The conclusion box (`asdicrit`,
+  453 answers, 57% yes) runs from 38% to 87% by year (groups of 21 to 64) and from 42% to 83% by centre. The
+  items show no step; the rule of the box is O28.
 
 variables:
   asdi_done: {column: asdinf, type: item, range: [0, 1], label: "ASDI done"}

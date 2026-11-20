@@ -2,17 +2,30 @@ instrument: cgi_egf
 title: Clinical Global Impression and Global Assessment of Functioning
 tab: HETERO-QUESTIONNAIRES
 section: CGI
-status: draft
+status: reviewed
 notes: >
   Two ratings by the clinician, at the inclusion and follow-up visits: the
-  CGI severity (1,434 visits) and the GAF, called EGF in French (1,351
-  visits). The TRD form has no CGI improvement and no efficacy index, which
-  BP and SZ have.
+  CGI severity (1,434 visits, form 127) and the GAF, called EGF in French
+  (1,351 visits, form 140). The two are two forms of the application and two
+  tables (hetero_cgi_egf holds CGI1 only; hetero_egf holds the EGF), both on
+  the simplified visit. The TRD extraction has no CGI improvement and no
+  efficacy index, which BP and SZ have: the application does have a CGI-I
+  (form 184, table autoq_cgi_i, CGII1, offered at the follow-up visits) and
+  the clean model of the export reads it, but the hub table of this tab does
+  not select it (request to the data managers; PROGRESS.md D61).
 
   CGI severity: 0 means "not assessed" and is a missing code (2 visits).
 
-  The GAF is typed in round numbers: 4 values in 10 end in 0 and almost as
-  many in 5.
+  The GAF is the column egf_ (EGF_SCORE; the dictionary maps it to
+  EGD_SCORE, a second column of the table that the export does not read:
+  request R144). The form box is a digit-filtered text field of three
+  characters (a char(3) column), so a band cannot be typed: BP's form lets
+  the rater type a band ("60-51") that is read as the middle of the band, and
+  its schema carries bands: middle; here the option is not set (it never had
+  an effect: 0 cells, every one of the 1,351 cells is a whole number from 1
+  to 100). The export keeps digits only (request R138, which changes
+  nothing for DR). The GAF is typed in round numbers: 40% of the values are
+  multiples of 10 and 77% of 5.
 
   Same instrument as in FACE BP and FACE SZ, with the two columns that the
   TRD extraction holds.
@@ -31,5 +44,4 @@ variables:
     type: number
     range: [1, 100]
     missing: {0: not_recorded}
-    bands: middle
     winsor: false

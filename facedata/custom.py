@@ -23,16 +23,6 @@ import numpy as np
 import pandas as pd
 
 
-def cgi_index_differs(values):
-    """CGI efficacy index: (therapeutic effect - 1) x 4 + side effects.
-
-    True where the stored index is another number.
-    """
-    expected = (values["cgi_therapeutic_effect"] - 1) * 4 + values["cgi_side_effects"]
-    stored = values["cgi_efficacy_index"]
-    return stored.notna() & expected.notna() & (stored != expected)
-
-
 def psp_band_differs(values):
     """PSP: the ten-point band of the score, from 1 (100 to 91) to 10 (10 to 1).
 

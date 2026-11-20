@@ -2,18 +2,39 @@ instrument: wisc5_indices
 title: "WISC-V: the five indices and the full-scale IQ"
 tab: evaluation_medicale
 section: intellectual assessment
-status: draft
+status: reviewed
 notes: >
-  The indices of the Wechsler Intelligence Scale for Children, fifth edition: verbal comprehension, visual spatial, fluid reasoning, working memory, processing speed and the full-scale IQ, as the clinician copied them into the medical
-  evaluation. A box says that this edition was used (wis5: yes on 657 of
-  1,234 inclusion visits); the indices are filled only after a yes. The first
-  index is on 654 inclusion visits (635 children, 19 adults), from 2017
-  to 2026; the full-scale IQ on 555: it is not computed when the
-  indices differ too much.
+  The indices of the Wechsler Intelligence Scale for Children, fifth edition:
+  verbal comprehension, visual spatial, fluid reasoning, working memory,
+  processing speed and the full-scale IQ, as the clinician copied them into
+  the medical evaluation (form 119; typed numbers, no script). A box says that
+  this edition was used (wis5: yes on 657 of the 1,234 inclusion answers); the
+  indices are filled only after a yes (657 visits, all inclusion visits). The
+  first index is on 654 inclusion visits (635 children, 19 adults), from 2017
+  to 2026; the full-scale IQ on 555.
+
+  The full-scale IQ is typed whether or not the indices agree (the form says
+  so in red: 119.php:8) and is missing on 95 of the 650 visits that hold the
+  five indices (15%); the median spread between the highest and the lowest
+  index is 26 points where it is typed and 29 where it is missing: no clear
+  sign that it is left out when the indices differ. It is more than 10 points
+  outside all five indices on 3 visits.
 
   One schema per edition: an index of one edition is never delivered in the
   column of another. The indices need the norm tables of the test, which are
-  not available: they are delivered as stored, between 40 and 160.
+  not available: they are delivered as typed. Each index has its own hard
+  limits, those of the publisher: 45 to 155 for the five primary indices and
+  40 to 160 for the full-scale IQ (WISC-V interpretive report sample, Pearson
+  2020; Canivez and Watkins 2016: scale_reference.md, confirmed in source).
+  Three low values are outside (two visual spatial indices, one processing
+  speed index, all below 40) and one full-scale IQ above 160: removed
+  (out_of_range) as before, the 45 and 155 limits change no cell.
+
+  Edition against age: the box is ticked on 19 visits of patients aged 18 or
+  more at the visit, and 2 of the 18 with a date of assessment were 18 or
+  more on that date (iq_assessment_date): the indices belong to that date,
+  not to the visit. The general ability index of iq_assessment is one field for the
+  three editions and cannot be tied to one.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
@@ -21,11 +42,15 @@ notes: >
 
   An instrument of the ASP cohort only.
 
+  **Year and centre.** 1 of the 7 variables reaches 1.0: the box 'WISC-V done' is yes for 88% of the children
+  and 4% of the adults, 0% to 93% by centre and 0% in 2016 (25 answers: the edition starts in 2017) to 77% by
+  year: age mix. The six indices show no shift of 0.5.
+
 variables:
   wisc5_done: {column: wis5, type: item, range: [0, 1], label: "This edition was used (WISC-V)"}
-  wisc5_icv_index: {column: wis5cv, type: number, range: [40, 160], winsor: false, label: "WISC-V, verbal comprehension index"}
-  wisc5_ivs_index: {column: wis5iv, type: number, range: [40, 160], winsor: false, label: "WISC-V, visual spatial index"}
-  wisc5_irf_index: {column: wis5irf, type: number, range: [40, 160], winsor: false, label: "WISC-V, fluid reasoning index"}
-  wisc5_imt_index: {column: wis5mt, type: number, range: [40, 160], winsor: false, label: "WISC-V, working memory index"}
-  wisc5_ivt_index: {column: wis5vt, type: number, range: [40, 160], winsor: false, label: "WISC-V, processing speed index"}
-  wisc5_qit: {column: wis5qt, type: number, range: [40, 160], winsor: false, label: "WISC-V, full-scale iq"}
+  wisc5_icv_index: {column: wis5cv, type: number, range: [45, 155], winsor: false, label: "WISC-V, verbal comprehension index"}
+  wisc5_ivs_index: {column: wis5iv, type: number, range: [45, 155], winsor: false, label: "WISC-V, visual spatial index"}
+  wisc5_irf_index: {column: wis5irf, type: number, range: [45, 155], winsor: false, label: "WISC-V, fluid reasoning index"}
+  wisc5_imt_index: {column: wis5mt, type: number, range: [45, 155], winsor: false, label: "WISC-V, working memory index"}
+  wisc5_ivt_index: {column: wis5vt, type: number, range: [45, 155], winsor: false, label: "WISC-V, processing speed index"}
+  wisc5_qit: {column: wis5qt, type: number, range: [40, 160], winsor: false, label: "WISC-V, full-scale IQ"}

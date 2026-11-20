@@ -32,10 +32,10 @@ notes: >
   The DSM-5 form has no mixed episode: the four mixed-episode columns are
   not read here. It asks instead about depressive and manic episodes with
   mixed features in the year (two yes/no and two numbers), which the
-  extraction does not hold. 9 inclusions labelled DSM-5 (2018 to 2022) also
-  hold a DSM-IV record (a lifetime number of mixed episodes). The export
-  takes each cell of this section from the DSM-IV record first, so their
-  answers here may be those of the DSM-IV form; 5 of them hold
+  extraction does not hold (R140). 9 inclusions labelled DSM-5 (2018 to
+  2022) also hold a DSM-IV record (a lifetime number of mixed episodes).
+  The export takes each cell of this section from the DSM-IV record first,
+  so their answers here may be those of the DSM-IV form; 5 of them hold
   mixed-episode cells, which are not read. They are delivered (R70).
 
   The numbers. The form asks a number for each kind of episode, 0 to 20 or
@@ -68,7 +68,12 @@ notes: >
   a no and 1 gives numbers with no first answer; 1 says yes to a depressive
   episode with psychotic features after 0 depressive episodes; 4 give more
   depressive episodes with psychotic features than depressive episodes, and
-  1 more manic ones than manic episodes.
+  1 more manic ones than manic episodes; the number of episodes in the year
+  is above the lifetime number for 10 inclusions (3 depressive, 5 hypomanic
+  and 3 manic numbers); 6 of the 380 inclusions in a current episode that
+  answer here say no mood episode in the year, and so do 25 of the 694 with
+  a most recent episode that started or ended within the year before the
+  visit (dsm5_episode_recent.yaml).
 
   Centres. Centre A fills this section for 4 of its 145 DSM-5 inclusions
   (O40) and centre C for none of its 119 (R20); in the other centres the
@@ -88,6 +93,7 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm5]}
 

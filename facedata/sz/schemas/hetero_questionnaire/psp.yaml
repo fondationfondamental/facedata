@@ -2,20 +2,35 @@ instrument: psp
 title: Personal and Social Performance scale (PSP)
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire PSP
-status: draft
+status: reviewed
 notes: >
-  Rated by the clinician at every visit, from 2012 on. Four domains from 0
-  (absent) to 5 (very severe): socially useful activities, personal and
-  social relationships, self-care, disturbing and aggressive behaviours.
+  Rated by the clinician at every visit, from 2012 on, but the form came into
+  use slowly: it is filled on 8% of the inclusion visits of 2012, 13% in
+  2013, 33% in 2014, 53% in 2015, 74% in 2016 and 80% to 94% from 2017 (at
+  follow-up 4% in 2013, 17% in 2014, 62% in 2015 and 77% to 94% from 2016).
+  Four domains from 0 (absent) to 5 (very severe): socially useful
+  activities, personal and social relationships, self-care, disturbing and
+  aggressive behaviours.
   From them the clinician chooses a band of ten points, then a score from
   1 to 100 inside it (higher is better).
 
   The band is coded 1 (100 to 91) to 10 (10 to 1). It is the band of the
   stored score on 3,047 of 3,262 visits; the custom check psp_band_differs
-  flags the others (check_failed). The values are kept: the cell does not
-  tell which of the two the clinician meant.
+  flags the 215 others (check_failed), 190 of them by one band. The values are
+  kept: the cell does not tell which of the two the clinician meant.
 
-  Three scores are outside 1 to 100 (one above 300) and end out_of_range.
+  Nothing is computed. The form has no script and the export no formula: the
+  four ratings, the band and the score are typed, and the band is typed
+  independently of the score (the form is stored in the auto-questionnaire
+  group of the application, but the clinician rates it). It is the PSP of
+  Morosini et al. 2000 (scale_reference.md, section 14); the dictionary numbers
+  the levels 0 to 5 where the publication numbers them 1 to 6. A band that
+  differs from the score is more frequent where the score ends in 0 (12.5% of
+  771 visits, the top of a band) or in 5 (7.3% of 1,090, the middle) than where
+  it ends in 1 (2.3% of 750, the bottom).
+
+  Three scores are outside 1 to 100 (one above 300) and end out_of_range. The
+  export drops the done / not done flag of the form (rad_psp_nf, request R141).
 
 defaults: {type: item, range: [0, 5]}
 

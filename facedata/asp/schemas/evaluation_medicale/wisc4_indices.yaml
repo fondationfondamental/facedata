@@ -2,18 +2,41 @@ instrument: wisc4_indices
 title: "WISC-IV: the four indices and the full-scale IQ"
 tab: evaluation_medicale
 section: intellectual assessment
-status: draft
+status: reviewed
 notes: >
-  The indices of the Wechsler Intelligence Scale for Children, fourth edition: verbal comprehension, perceptual reasoning, working memory, processing speed and the full-scale IQ, as the clinician copied them into the medical
-  evaluation. A box says that this edition was used (wis4: yes on 155 of
-  1,208 inclusion visits); the indices are filled only after a yes. The first
-  index is on 151 inclusion visits (115 children, 36 adults), from 2013
-  to 2025; the full-scale IQ on 67: it is not computed when the
-  indices differ too much.
+  The indices of the Wechsler Intelligence Scale for Children, fourth edition:
+  verbal comprehension, perceptual reasoning, working memory, processing speed
+  and the full-scale IQ, as the clinician copied them into the medical
+  evaluation (form 119; typed numbers, no script). A box says that this
+  edition was used (wis4: yes on 155 of the 1,208 inclusion answers, 215
+  visits in all); the indices are filled only after a yes (213 visits hold
+  one). The first index is on 151 inclusion visits (115 children, 36 adults),
+  from 2013 to 2026, and 59 follow-up visits hold one; the full-scale IQ is
+  on 81.
+
+  The full-scale IQ is typed whether or not the indices agree (the form
+  says so in red: 119.php:8) and is missing on 119 of the 198 visits that
+  hold the four indices (60%). Here the spread is larger where it is missing:
+  the median distance between the highest and the lowest index is 37 points
+  against 24 where it is typed, so for this edition the raters may well leave
+  it out of a heterogeneous profile (the WAIS-IV and the WISC-V show hardly
+  any difference); no value is typed more than 10 points outside all its
+  indices.
 
   One schema per edition: an index of one edition is never delivered in the
   column of another. The indices need the norm tables of the test, which are
-  not available: they are delivered as stored, between 40 and 160.
+  not available: they are delivered as typed. Each index has its own hard
+  limits: 45 to 155 for the four indices and 40 to 160 for the full-scale
+  IQ, the ranges that Pearson gives for the WISC-V (WISC-V interpretive
+  report sample, 2020) and Canivez and Watkins (2016); no source read states
+  them for the WISC-IV (scale_reference.md, 'to verify'). No typed value
+  falls outside them (the lowest index is 45, the highest 155, the full-scale
+  IQ runs from 40 to 158), so the limits change no cell.
+
+  Edition against age: the box is ticked on 37 visits of patients aged 18 or
+  more at the visit, but only 5 of the 34 with a date of assessment were 18
+  or more on that date (iq_assessment_date): the indices belong to that date,
+  not to the visit.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
@@ -21,10 +44,15 @@ notes: >
 
   An instrument of the ASP cohort only.
 
+  **Year and centre.** 4 of the 6 variables reach 0.5 or more: the four indices (199 to 213 values; verbal
+  comprehension median 101 in children and 129 in 36 adult visits, O33) differ by year (72 to 114 for verbal
+  comprehension, five years with 20 values; the edition is used mostly to 2017, 138 visits, and on 67 visits
+  since 2018) and by centre (79 to 118, three centres): age mix and small groups; no step with a known cause.
+
 variables:
   wisc4_done: {column: wis4, type: item, range: [0, 1], label: "This edition was used (WISC-IV)"}
-  wisc4_icv_index: {column: wis4cv, type: number, range: [40, 160], winsor: false, label: "WISC-IV, verbal comprehension index"}
-  wisc4_irp_index: {column: wis4irp, type: number, range: [40, 160], winsor: false, label: "WISC-IV, perceptual reasoning index"}
-  wisc4_imt_index: {column: wis4mt, type: number, range: [40, 160], winsor: false, label: "WISC-IV, working memory index"}
-  wisc4_ivt_index: {column: wis4vt, type: number, range: [40, 160], winsor: false, label: "WISC-IV, processing speed index"}
-  wisc4_qit: {column: wis4qt, type: number, range: [40, 160], winsor: false, label: "WISC-IV, full-scale iq"}
+  wisc4_icv_index: {column: wis4cv, type: number, range: [45, 155], winsor: false, label: "WISC-IV, verbal comprehension index"}
+  wisc4_irp_index: {column: wis4irp, type: number, range: [45, 155], winsor: false, label: "WISC-IV, perceptual reasoning index"}
+  wisc4_imt_index: {column: wis4mt, type: number, range: [45, 155], winsor: false, label: "WISC-IV, working memory index"}
+  wisc4_ivt_index: {column: wis4vt, type: number, range: [45, 155], winsor: false, label: "WISC-IV, processing speed index"}
+  wisc4_qit: {column: wis4qt, type: number, range: [40, 160], winsor: false, label: "WISC-IV, full-scale IQ"}

@@ -32,8 +32,9 @@ asked again ([BP questions](../bp/QUESTIONS.md), [SZ questions](../sz/QUESTIONS.
 
 **Five questions to send first.** DEV-1 (the medication lists are crossed),
 DEV-2 (three scales scored on the wrong coding), DEV-3 (no QIDS total on
-most recent visits), DM-1 (a dozen scales half empty since 2018) and PI-1
-(were the wrong stored scores used). Each concerns a main variable of the
+most recent visits), DM-1 (a dozen scales half empty since 2018: the simplified
+visit explains it, the flag is still missing) and PI-1 (were the wrong stored
+scores used). Each concerns a main variable of the
 cohort.
 
 ## 1. For the EMR developers and whoever writes the export
@@ -114,6 +115,16 @@ applies in BP. (O13, D9)
   conscientiousness and neuroticism are each other's value. (O19)
 - Age: the stored `age` is the age at inclusion for the patients with one
   visit and up to five years more for the others. (O5)
+- SACHS (Bipolarity Index): the stored total is the sum of the five ratings
+  each brought to its points, as the script of form 225 does, on 239 of 242
+  visits; on the 3 others, the three earliest visits of one centre where the
+  keys differ from the points (March, June and December 2016), it is the
+  plain sum of the keys. Did the script of that centre change between
+  December 2016 and March 2017? (D58)
+- FAST: the script of form 130 empties all six domain scores and the total
+  when one item is blank, where the BP domain scripts sum each domain alone;
+  and 95 of the 527 domains whose items are all 0 are left empty on complete
+  visits (A66, M68). (D61)
 *Today:* each score is recomputed from its items; the stored values that
 differ are flagged.
 
@@ -167,8 +178,12 @@ other cells are removed and flagged. (O10, O12)
 
 **DEV-9. What does not reach the extraction.** The end of follow-up (six
 columns) is empty on every row, while 284 of 634 patients never came back.
-One depressive episode per visit is exported, although the form numbers the
-episodes. The dates of birth of the relatives are empty. Four columns
+The export keeps one arbitrary row of the episode table per visit (`select
+distinct on` with no order: the number typed on the row kept is 1 on 102 of 220
+rows), and neither the resistance of the first episode (`TYPE_PREM_EPIR` of
+form 116) nor the fields of form 183 that give, since the last visit, the
+mixed psychotic episodes, the complete and incomplete remission and the
+seasonal pattern (R142, D65). The dates of birth of the relatives are empty. Four columns
 (`etat_epi_maj`, `fetat_epi_edm`, `etat_epi_depress`, `etat_sui_nb`) are
 copies of other columns at follow-up. The follow-up form of the medical
 history (191) has a date for another cardiovascular disease that the inclusion
@@ -181,7 +196,10 @@ no order, so one affected child and one affected sibling, chosen by chance):
 13 patients counted 2 or more affected children and 54 siblings, and 6 and 25
 counted a relative and have no row (R110). The psychotherapy form (155) has
 sixteen kinds and a reason for the end of each therapy; the extraction holds
-fourteen kinds and no reason (R133, O33). The same `select distinct on` with
+fourteen kinds and no reason (R133, O33). The clean model of the export reads
+the CGI improvement of the TRD application (form 184, table `autoq_cgi_i`,
+`CGII1`, offered at the follow-up visits) and `face_dr_3_heteroquestionnaires`
+selects the CGI severity only, so the extraction has no CGI-I (R145, D61). The same `select distinct on` with
 no order keeps one arbitrary row per visit of the hospitalisations, the day
 hospitalisations and the specialists of the care-use form (R122). The
 Columbia scale has two forms in the table `cssrs` (the full one, 39 yes/no
@@ -217,17 +235,38 @@ stored 1/0/2, and its ISF rows list the visit "v0" only while the form is
 shown at 24 and 48 months too (R130). The lists of the medical history and the
 two lists of the family (the kind of mood disorder and the suicide of a
 relative) are not in the dictionary either, but the forms give them (D34,
-D37): please add them. The dictionary names the field of the type of diabetes
+D37): please add them. The dictionary lists the visits of `MHOCCUR_EMAN_PSY`,
+`MHOCCUR_EIND` and `EVNUM_SUICID` as 6 months and 1 year only, and those of
+the YMRS as inclusion, 6 months and 1 year, while later visits hold them
+(R144, D65); it maps `EGF_` to `EGD_SCORE`, a column that the export does not
+read (R144, D61). The dictionary names the field of the type of diabetes
 of the siblings `ATCDFAMCV_FRATRIE_TYPDIAB` and the application
 `ATCDFAMCV_ENFANT_TYPDIAB` (form 165 line 133): the export maps it correctly.
-Wordings that are missing: the 53 Amiel-Lebigre events and the four codes of their second
-column, the 64 Paykel events (the dictionary announces 61), the 17
-traumatic events, the items of the SHAPS, the SPIN and the MDQ, the two
-columns called bupropion and the two called antipsychotics in the ATHF.
+Wordings that are missing: the 64 Paykel events (the dictionary announces 61),
+the 17 traumatic events, the items of the SHAPS, the SPIN and the MDQ. The 53
+Amiel-Lebigre events and the options of their second column (forms 209 and
+210, D60), the ATHF columns called bupropion twice and antipsychotics twice and
+the keys of its lithium, carbamazepine and bilateral ECT lines (form 154, D59)
+and the options of the SACHS (form 225, D58) are in the forms: please add
+them to the dictionary.
 *Today:* the lists that BP has are read in the order of the BP list where
 the shares agree (handedness, type of diabetes); the lists that a form gives
 are read from the form; every other list is delivered as `code_N`. (O4, O8,
 O9, O20, O23, O25, O26, O28, O29)
+
+**DEV-12. Two defects of the mood forms.** The form of the depressive
+symptoms in boxes (182) is in no menu and in no list of simplified visits, and
+its "Score total" is never filled; the list forms 128 (inclusion) and 183
+(follow-up) are the ones in use (A70). In forms 116 and 183 the psychotic count
+of the manic episodes since the last visit is shown only when the hypomanic
+count is above 0 (`js/formulaires.js` line 4617, and line 4618 for the mixed
+count): the yes/no beside it is filled on 17 follow-up visits and the count on
+791 (A71).
+*Question:* is line 4617 meant to read a manic count, and is form 182 to be
+removed?
+*Today:* the count is delivered and the yes/no is not gated; the depressive
+symptoms are read from the list forms and, for visits to 2016, from the boxes
+of form 182. (D56, D64)
 
 ## 2. For the data managers
 
@@ -241,9 +280,20 @@ goes from about 80% to 19% to 34%. The QIDS, the MADRS, the EQ-5D, the MDQ
 and the CTQ stay high. For the STAI, 10 of the 12 centres that included
 before 2018 were at 80% or more; since 2018, 2 centres of 14 are at 80% or
 more and 4 at 10% or less.
-*Question:* was a shorter set of questionnaires allowed from 2018, and in
-which centres?
-*Today:* an empty scale after 2018 is missing data, not "not asked". (O1)
+*Answered by the application (2026-11-19, D55):* the simplified visit
+(`visite.SVUPDES = 1`; `DESTVISIMP` in `config/globale2.php`) offers a short
+list of forms, and the fourteen scales are exactly the ones that no list
+holds (the QIDS, the MADRS, the EQ-5D and the MDQ are on it): an empty scale
+since 2018 is "not asked" on a simplified visit. The SACHS and the ERD are
+left out too. The YMRS is filled on 90% of the V0 visits to 2017 and 50% since
+2018; since 2018 three of the 12 centres with 10 V0 visits or more fill it on
+89% to 97% and five on 4% to 17%.
+*Question:* since when is the simplified visit used, and by which centres (M69)?
+Can the export carry the flag `svupdes` and the list of forms that the visit
+offered (R127, R139)?
+*Today:* an empty scale since 2018 is missing data: without the flag it cannot
+be told from a form left blank; the notes of the scales say that the
+simplified visit omits them. (O1)
 
 **DM-2. Other forms that thin out.** The neuropsychological assessment (three
 inclusions in four until 2020, one in two since) and the MINI (82% to 89%
@@ -255,6 +305,12 @@ auditory span, between 2018 and 2021); SPIN, DETC-CAGE and PCL-S, filled by
 a few percent of the patients since 2024; and the list of current psychotropic
 treatments (79% to 94% of the patients included until 2019 have one, 50% to
 68% of those included since 2021).
+*Answered in part by the application (2026-11-19, D55):* the lists of the
+simplified visit do not hold the ISF (form 145; the short Columbia form 230 is
+offered instead), the MINI (142 and 229), the Paykel list (166), the traumatic
+events (208), the SPIN (197) or the PTSD scale (216), and the thinning of these
+forms since 2018 may have the same cause (to confirm by the owners of those
+tabs; the neuropsychology form 199 is on the lists).
 *Question:* which of these are changes of the protocol, and from when? Is the ISF
 chosen per centre (M66)? (O22,
 O24, O25, O21, O30)
@@ -326,6 +382,25 @@ the two missing kinds and the reasons be exported?
 *Today:* the question is delivered as stored, the kinds as answered, and no
 "any psychotherapy" is derived. (O33, D51)
 
+**DM-10. FAST domains left empty.** On the 513 visits that have the 24 items,
+95 of the 527 domains whose items are all 0 have no stored score (7, 10, 3,
+59, 5 and 11 per domain), where the 432 others hold 0. The script of form 130
+(A66) explains the visits with a blank item, not these.
+*Question:* what leaves a domain empty when its items are all 0 (M68)?
+*Today:* the domain score is recomputed from its items, 0 included; the stored
+one is a check. (D61)
+
+**DM-11. Two steps in time.** The Amiel-Lebigre list at inclusion has a median
+of 4 or 5 events a visit from 2015 to 2018 and 11 to 16 from 2019, inside the
+centres (7 of the 8 centres with 6 visits or more in each period rise): the
+events ticked "whole life" go from a median of 0 to 6 a visit, and the form and
+its four options are the same since 2014. The ERD total has a median of 7 and 9
+in 2020 and 2021 against 13 in the other years, in the same centres, and all
+fourteen items are lower.
+*Question:* did the instructions, the raters or the way the forms are filled
+change in these years?
+*Today:* delivered as typed; the schema notes say it. (D66)
+
 ## 3. For the principal investigator
 
 ### Priority A
@@ -362,12 +437,14 @@ which has the criteria in its items. Which version of the MINI is the form
 
 ### Priority B
 
-**PI-4. Instruments to name.** Is the "SACHS" the Bipolarity Index (Sachs
-2004), and does the form let the rater tick several statements of a
-dimension (104 of 242 visits hold a value between two points of the scale)?
-Is the word-list test of the neuropsychology the RL/RI-16, and the test for
+**PI-4. Instruments to name.** Is the word-list test of the neuropsychology the RL/RI-16, and the test for
 designs the Designs subtest of the WMS-IV? Which letter and category does
-each of the two forms of the verbal fluency use? (O7, O23)
+each of the two forms of the verbal fluency use? (O23)
+*Answered by form 225 and its script (2026-11-19, D58; O7 closed):* the
+"SACHS" is the Bipolarity Index (Aiken, Weisler and Sachs 2015); the form lets
+the rater tick one statement per dimension, and the 104 of 242 visits that hold
+a value between two points hold a key of a further statement of the same points
+(the label of each statement starts with its points).
 *Answered by the eCEDR form (2026-11-19, D32):* the word-list test is the
 RL/RI-16 (16 items), the test for designs is the Designs subtest of the WMS-IV
 (MEM IV), and the fluency forms are letter P with animals and letter R with
@@ -376,4 +453,14 @@ fruits.
 **PI-5. Mood history.** The type of the first episode has the answers
 "resistant" and "not resistant" next to the kinds of episode (21 visits).
 "Délai (semaines)": a delay between what and what? Is a resistance score
-computed from the ATHF somewhere? None is in the extraction. (O26, O8)
+computed from the ATHF somewhere? None is in the extraction.
+*Answered by form 116 (2026-11-20, D65; O26(2)):* the list of the form stops at
+"Ne sais pas"; the resistance of the first episode is a separate radio
+(`TYPE_PREM_EPIR`) that the export does not select (R142), and the 21 answers
+are delivered as missing. The delay is `DELAI_CHRONO_EPI` (weeks, "Max 52"),
+and the form does not say a delay of what: still open (equal to the untreated
+weeks of the current episode on 52 of 130 rows).
+*Answered by form 154 (2026-11-19, D59; O8 closed):* the application has no
+script and no total for the ATHF; the published form has none either (number
+of trials, number of failed adequate trials, most potent rating, total potency).
+(O26)

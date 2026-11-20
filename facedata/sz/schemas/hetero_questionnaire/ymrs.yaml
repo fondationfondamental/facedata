@@ -2,34 +2,57 @@ instrument: ymrs
 title: "Young Mania Rating Scale (YMRS)"
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire YMRS
-status: draft
+status: reviewed
 notes: >
   Eleven items. Items 5, 6, 8 and 9 count double and are scored 0, 2, 4, 6 or
-  8; the others are scored 0 to 4. The total goes up to 60.
+  8; the others are scored 0 to 4. The total goes up to 60 (Young et al. 1978;
+  scale_reference.md, section 2).
 
-  Three of the double items are stored as levels here. Items 5
-  (irritability), 8 (content) and 9 (disruptive and aggressive behaviour) hold
-  0, 1, 2, 3 or 4 in this extraction: never a value above 4, and an odd value
-  on 80%, 56% and 96% of the visits where the item is not 0, in every year
-  from 2010 to 2026 and in each of the 12 centres. Item 6 (speech) holds 0, 2,
-  4, 6 or 8 as published, never an odd value. In FACE BP and FACE DR the four
-  items hold 0, 2, 4, 6 or 8 (no odd value on 17,246 and 1,033 visits). So the
-  form of this cohort records the level of items 5, 8 and 9 (0 to 4), not
-  their points. The three items are delivered in points (twice the level), so
-  that ymrs05, ymrs08 and ymrs09 mean the same in the cohorts and the total is
-  the published one.
+  The form is the one of FACE BP. Each item is a row of five options (a to e);
+  the script of the form (hetero_ymrs.js) gives the position of the option for
+  items 1 to 4, 7, 10 and 11 and twice the position for items 5, 6, 8 and 9,
+  and the total adds the eleven. The cell of the extraction is the option
+  turned into a number by the export, and the export does it in two ways
+  (eschizo_hetero_ymrs.sql, lines 47 to 86): items 5, 8 and 9 give a to e as
+  0, 1, 2, 3, 4, the levels, where the form, FACE BP and FACE DR give points
+  (0, 2, 4, 6, 8); only item 6 gives points. This is a slip of the export
+  (request R135), not another form: the earlier reading that "the SZ form
+  stores levels" (decision D26, open question O31) is wrong.
 
-  Stored total: wrong, not delivered. The EMR adds the eleven columns as they
-  are, so its total counts items 5, 8 and 9 once. It is reproduced exactly by
-  the twin score ymrs_total_as_stored, which is read to check the stored value
-  and is not delivered (no mismatch on the 4,538 visits that have one). The
-  delivered total is higher than the stored one on the 776 visits (17%) where
-  one of the three items is not 0, by 2.1 points on average and by 9 at most;
-  at inclusion its mean is 2.25 where the stored one gives 1.86. A total needs
-  all its items.
+  The extraction therefore holds 0, 1, 2, 3 or 4 for items 5, 8 and 9: never a
+  value above 4, and an odd value on 80%, 56% and 96% of the visits where the
+  item is not 0, in every one of the 17 years from 2010 to 2026 and in 11 of
+  the 12 centres (the twelfth holds one rating). Item 6 holds 0, 2, 4, 6 or 8
+  as published. In FACE BP and FACE DR the four items hold 0, 2, 4, 6 or 8 (no
+  odd value on 17,246 and 1,033 visits). Items 5, 8 and 9 are read through the
+  codes 0, 1, 2, 3, 4 to 0, 2, 4, 6, 8: they are real items of 0 to 8 and mean
+  the same as in the other cohorts, and the total is the published one.
 
-  The dictionary gives no label for the items; the labels here are those of
-  the published scale.
+  WARNING. These codes are right for this extraction only. When the export is
+  corrected (R135) the cells will hold the points, and the codes must then be
+  taken out (or read as points, 0 to 0, 2 to 2, 4 to 4, 6 to 6, 8 to 8), or
+  every value would be doubled without any flag.
+
+  Stored total: not delivered. The nucleus score step of the export adds the
+  eleven columns as they are (nucleus definition ymrs.yaml, strict sum; it
+  overwrites the column of the application), so with the levels of items 5, 8
+  and 9 the stored total counts them once. It is reproduced exactly by the twin
+  score ymrs_total_as_stored, which reads the levels (the hidden variables
+  ymrs05_level, ymrs08_level and ymrs09_level), checks the stored value and is
+  not delivered (no mismatch on the 4,538 visits that have one). The delivered
+  total is higher than the stored one on the 776 visits (17%) where one of the
+  three items is not 0, by 2.1 points on average and by 9 at most; at inclusion
+  its mean is 2.25 where the stored one gives 1.86. The gap moves the totals
+  across the usual lines: 57 visits reach 12 with the delivered total and not
+  with the stored one, and 18 reach 21; 129 patients reach 12 or more at some
+  visit (78 with the stored total) and 25 reach 21 or more (8). The
+  dictionary calls a total of 12 or more a current manic episode (conventions
+  for 12, 7 and 25 are in scale_reference.md, section 2). A total needs all
+  its items.
+
+  The dictionary gives no label for the items and says "0 normal to 4 severe
+  anomaly" for all of them, which hides the items of 0 to 8; the labels here
+  are those of the published scale (item names confirmed in scale_reference.md).
 
 defaults: {type: item, range: [0, 4]}
 
@@ -38,27 +61,27 @@ variables:
   ymrs02: {label: "Increased motor activity and energy"}
   ymrs03: {label: "Sexual interest"}
   ymrs04: {label: "Sleep"}
-  ymrs05_level: {column: ymrs05, label: "Irritability, level 0 to 4 as stored", keep: false}
+  ymrs05: {label: "Irritability (0, 2, 4, 6 or 8; the extraction holds the level 0 to 4)", range: [0, 8], codes: {"0": 0, "1": 2, "2": 4, "3": 6, "4": 8}}
   ymrs06: {label: "Speech (rate and amount)", range: [0, 8]}
   ymrs07: {label: "Language and thought disorder"}
-  ymrs08_level: {column: ymrs08, label: "Content, level 0 to 4 as stored", keep: false}
-  ymrs09_level: {column: ymrs09, label: "Disruptive and aggressive behaviour, level 0 to 4 as stored", keep: false}
+  ymrs08: {label: "Content (0, 2, 4, 6 or 8; the extraction holds the level 0 to 4)", range: [0, 8], codes: {"0": 0, "1": 2, "2": 4, "3": 6, "4": 8}}
+  ymrs09: {label: "Disruptive and aggressive behaviour (0, 2, 4, 6 or 8; the extraction holds the level 0 to 4)", range: [0, 8], codes: {"0": 0, "1": 2, "2": 4, "3": 6, "4": 8}}
   ymrs10: {label: "Appearance"}
   ymrs11: {label: "Insight"}
+  ymrs05_level: {column: ymrs05, label: "Irritability, level 0 to 4 as stored", keep: false}
+  ymrs08_level: {column: ymrs08, label: "Content, level 0 to 4 as stored", keep: false}
+  ymrs09_level: {column: ymrs09, label: "Disruptive and aggressive behaviour, level 0 to 4 as stored", keep: false}
   ymrs_total_stored: {column: ymrs_, label: "Total as stored", range: [0, 60], keep: false}
 
 scores:
-  # The three items in points, as published and as in BP: twice the level that this form stores.
-  ymrs05: {label: "Irritability", sum: [ymrs05_level], scale: [2, 0]}
-  ymrs08: {label: "Content", sum: [ymrs08_level], scale: [2, 0]}
-  ymrs09: {label: "Disruptive and aggressive behaviour", sum: [ymrs09_level], scale: [2, 0]}
   ymrs_total:
-    label: "YMRS total (11 items)"
+    label: "YMRS total (11 items, 0 to 60)"
     sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05, ymrs06,
           ymrs07, ymrs08, ymrs09, ymrs10, ymrs11]
-  # What the EMR adds: items 5, 8 and 9 counted once. Read to check the stored total, not delivered.
+    range: [0, 60]
+  # What the export adds: items 5, 8 and 9 counted once (levels). Read to check the stored total, not delivered.
   ymrs_total_as_stored:
-    label: "YMRS total with items 5, 8 and 9 counted once, as the EMR adds it"
+    label: "YMRS total with items 5, 8 and 9 counted once, as the export adds it"
     sum: [ymrs01, ymrs02, ymrs03, ymrs04, ymrs05_level, ymrs06,
           ymrs07, ymrs08_level, ymrs09_level, ymrs10, ymrs11]
     compare: ymrs_total_stored

@@ -25,6 +25,11 @@ to compute them. One wrong score was found through it (DEV-5b).
 on every row: the application saves 0 for a box that is not ticked) and added DEV-10 to
 DEV-12 and DM-8 to DM-14 (PROGRESS.md D31 to D47).
 
+**Update of 2026-11-20.** The review of the medical evaluation (ASP, the comorbidity list, the DSM criteria and the ASDI)
+split six schemas into `_v0` and `_fu` (D49), answered the code 3 of `dsmtype` (the MINI, D48) and the numbering of the
+support levels (D52), and added DEV-13 and DM-15 to DM-17 (PROGRESS.md D48 to D53). The second part (the intellectual assessment, the Vineland, the suicide and substance
+forms) closed O9 as to the wording and the levels of use of the substances (O8 (3); D56, D57), and added DEV-14 and DM-18 to DM-22 (D54 to D60); DM-2 is corrected.
+
 ## To send at once
 
 These three answers change how every table is read. The work has started without them,
@@ -35,11 +40,11 @@ it.** The thesaurus names 4,063 of the 4,364 columns (230 more are in a range wr
 with a typo). (a) Not documented: `arm` and `siteid` (named with no label), `diag1s_1`
 (codes 1 to 4, filled when an ASD is evoked at screening), `diag3s_1` and its eleven
 boxes (filled when the conclusion is deferred), the kinds 1 to 5 of non-drug care, the
-code 3 of `dsmtype` (98 visits: the MINI?), `ados_tot` and `ados_diag`, the sub-scores
+code 3 of `dsmtype` (98 visits: answered, the form 202 prints MINI, D48), `ados_tot` and `ados_diag`, the sub-scores
 and T-scores of the SRS filled by a relative, the BIS scores. (b) The DSM-5 support
-levels are numbered backwards (level 1 "very substantial support"); the boxes written
-"level 3: support" are the most ticked (594 and 606 visits, against 127 and 115). Is
-the wording right and the number wrong? (c) Twelve yes/no columns (`neuro_*`, `npsy_5`,
+levels are numbered backwards (level 1 "very substantial support") in the dictionary; the boxes written
+"level 3: support" are the most ticked (594 and 606 visits, against 127 and 115). Answered for the
+form 198 (D52): it prints the levels in the wording, so the wording is right and the dictionary's number is wrong. (c) Twelve yes/no columns (`neuro_*`, `npsy_5`,
 `npsy_6`) are written 1 yes, 2 no: the extraction holds 0, 1 and 9, never a 2. (d) The
 labels of `brief_cona` and `brief_cone` are exchanged. (e) The CRP is written in mmol/L;
 the values are mg/L. (f) The answer 9 of the question 19 of the ADHD-RS is written "child
@@ -175,13 +180,28 @@ inclusion visits of each year 2012 to 2019, 45% in 2020, 4% in 2021 and on none 
 Can the export read the right table, and the shortcut too?
 *Today:* delivered as recorded; empty from 2021, the note says so. (D43, O21; R108 of EXPORT_REQUESTS.md)
 
+**DEV-13. Form fields that the export leaves out.** The ADHD sub-type radio (TBATHT: combined, inattentive, hyperactive)
+is in the clean model and not selected: the three old boxes stop in 2021, so 274 visits with ADHD yes from 2021 hold no
+sub-type. The shortcut boxes 'Non pour tous les critères' of the DSM-5 criteria and of the ASDI (DSM5N, ASDIN) are not in the
+extraction either: 90 inclusion visits have the nine criteria at 0 and a conclusion of 0, and a zero ticked by the shortcut
+cannot be told from a typed zero. The DSM-IV criteria of the old form (CRIDSM1 to CRIDSM16, DSM4N) are in the clean model and
+not selected. Can the export carry the three?
+*Today:* the sub-type is missing, the shortcut zeros are delivered as typed. (D51, D52; R143 of EXPORT_REQUESTS.md)
+
+**DEV-14. The Vineland sum and composite are typed.** The script of the form (`119_score.js`) would write the sums of the raw
+scores of the sub-domains into the fields that the form labels standard scores of the domains, and it never runs: the call is
+commented out (`eASPERGER.js` line 3951), the global field is commented out of the form (`119.php` line 110) and the script
+of the follow-up form (`349_score.js`) does not exist. The domain scores, the sum and the composite are therefore typed: 41 of the
+943 stored sums differ from the sum of the three domain scores (7 include the motor domain, 7 have the sum and the composite
+swapped, 4 hold a domain below 20). Can the EMR compute the sum and the composite from the domain scores?
+*Today:* the stored sum is delivered as typed and checked against the sum of the domains (23 visits flagged). (D54, O31; A67 of EXPORT_REQUESTS.md)
+
 ## 2. For the data managers
 
 ### Priority A
 
 **DM-1. What the thesaurus does not say, form by form.** The thesaurus gave the wording
-of almost every question and list (applied on 2026-11-14). It leaves out: the code 3 of
-the interview used for the DSM summary (98 visits), the code 0 of the occupation and
+of almost every question and list (applied on 2026-11-14). It leaves out: the code 0 of the occupation and
 the code 8 of the level of education of the Barona estimate, the code 8 of the vaccine
 lines, and the blocks named in ASP-1. Four lists hold other codes than the thesaurus
 writes: `jobclas1` and `jobclas2` (0 and 1, for "1 full time, 2 part time"),
@@ -191,7 +211,7 @@ each A-TAC module, which holds a number above 2 (an age?). Which is right? (ASP-
 **DM-2. Two editions and two forms found in the data.** The ADOS first edition and the
 ADOS-2 (the added item is empty on 96 and 254 visits); the BRIEF of children (86 items,
 581 visits) and the BRIEF-A (75 items, 591); the CCC-2 and the CC-A in the same seventy
-columns; the WISC-IV until 2016 and the WISC-V from 2017. Can each be confirmed, with
+columns; the WISC-IV mostly until 2017 (and on 67 visits from 2018: DM-20) and the WISC-V from 2017. Can each be confirmed, with
 its date? The summary sheet of the thesaurus also lists two forms of the SRS filled by
 a relative, for a child and for an adult, in the same columns: we tell them apart by
 the age at the visit, under 18 or not. Is that how the form is chosen? (D5, D8, D9, D14)
@@ -261,6 +281,59 @@ how the answer is entered? *Today:* delivered as recorded and stated in the note
 periods, where the other questions change little. Was the allergy question or the way it is
 shown changed at the end of 2023? *Today:* delivered as recorded and stated in the note; `somatic_history_v0`
 is `reviewed` all the same (a documented step with no known cause does not block). (D47, O26)
+
+**DM-15. The conclusion of the DSM-5 criteria of autism.** `cridsm26` is typed, with no script, and the instruction at the top
+of form 198 is the DSM-IV count ('6 items or more'). On the 1,831 inclusion visits with the nine criteria the conclusion differs
+from the DSM-5 rule (all three A, at least two of four B, C and D) on 138 (133 yes with the criteria not met, 5 no with all
+met). Is it the clinician's diagnosis, and will the instruction be corrected?
+*Today:* delivered as typed; the note says so. (D52, O27)
+
+**DM-16. The ASDI: the rule of the box and the answer 'a little'.** The form requires both items of the routines domain (the
+published rule in the secondary sources found is at least one of two), and `asdicrit` is typed. Recomputed with the form's own
+thresholds the box is reproduced on 199 of the 290 inclusion visits (214 with one item for routines; 161 and 176 counting only
+'yes'). On what rule is it ticked, and how does 'a little' count?
+*Today:* delivered as typed, no total. (D52, O28)
+
+**DM-17. The comorbidity list at the yearly visits.** The summary form 348 has a change question and the sleep and
+self-injury form 203 has one; the learning form 120 has none. An empty yearly section is read as 'no change'. The change box
+is yes on 50 visits and all hold the section, no on 162 of which 26 hold it (sleep: yes 34 of 34, no 26 of 150). Is the yearly
+list an update filled for what changed?
+*Today:* two sets of columns (`_v0`, `_fu`), an empty yearly section stays missing. (D49, O29)
+
+**DM-18. What is `TS`?** The first question of the suicide form is labelled 'Conduites suicidaires' (suicidal behaviour) and its
+details are 'age of the first TS', 'number of TS' and 'serious attempt'. Is it a suicide attempt, as the fifth question of the ISF of
+the other cohorts, or any suicidal behaviour? The yes rate is 11.5% (15.0% in adults, 5.1% in children) against 38% of the BP
+inclusions.
+*Today:* delivered as `isf05_lifetime`, the note gives the label of the form. (D56, O30)
+
+**DM-19. The Vineland: typed numbers.** 23 visits have a stored sum that differs from the sum of the domain scores (on 19 the
+composite follows the stored sum, so a domain score is probably mistyped), 7 have the sum and the composite swapped (one centre,
+2019-2020; 6 of the swapped composites lie inside the range), and 32 sums have no socialisation score. Can the centres check
+them (the visit counts can be sent)? And the standard scores of the children fall in 2018-2021 and return from 2022 (socialisation
+76, 45, 63) in the two centres that hold them while the raw scores do not move: was the table or the rule of conversion changed?
+15% of the socialisation scores are 20, the lowest of the scale: typed as the floor, or in place of a value below 20?
+*Today:* delivered as typed; the notes say it. (D54, D60, O31; M72 of EXPORT_REQUESTS.md)
+
+**DM-20. The general ability index and the editions of the Wechsler scales.** The general ability index (`iag`) is one text field
+for the three editions (301 of the 675 are children). In one centre (81 values, all children, 75 from 2023) its median is 66, 46
+points below the WISC-V full-scale IQ of the same visit (r 0.43; +2 points and r 0.97 in the other centres): a sum of scaled scores?
+The WISC-IV box is ticked on 37 visits of patients aged 18 or more at the visit (5 of the 34 with a date were 18 or more at the
+assessment), the WISC-V box on 19, the WISC-IV indices exist to 2026 (67 visits from 2018), 10 WAIS-IV assessments are dated under
+16 and 5 visits tick two editions: old forms kept, a wrong tick, or the wrong edition for the age?
+*Today:* delivered per edition as ticked; the notes say that the indices belong to the date of the assessment. (D55, D60, O32, O33)
+
+**DM-21. The full-scale IQ and `qirea`.** The WISC-IV full-scale IQ is missing on 60% of the visits with the four indices (WAIS-IV 20%,
+WISC-V 15%) and the spread of the indices is larger where it is missing, while form 119 says in red to fill it even if the profile is
+heterogeneous: is the instruction not followed for this edition? And `qirea` ('IQ already done') left the form around 2021: on 268 visits it
+says no and 205 of them hold an index: was it replaced by the boxes of the editions?
+*Today:* delivered as typed, never computed. (D55, O34, O35)
+
+**DM-22. The comorbidity list by centre and year.** The share of inclusions that answer the axis I list runs from 14% to 87% among the
+five centres with 100 or more inclusions, with clear shifts at three (M71 of EXPORT_REQUESTS.md), and three yes rates step with no setting that
+explains it: insomnia (in the centre that answers alone to 2017 the adults fall from 52% to 85% in 2014-2017 to 19% to 45% in 2018-2022), ADHD
+in adults (8% to 14% in 2016-2020, 44% in 2026 in the main later centre) and the depressive episode in adults (44% to 67% to 2022, 30% to 40% in
+2023-2025). Is the list filled for all the patients, or chosen by the centre and the rater?
+*Today:* delivered as recorded; the notes carry the steps and the schemas are `reviewed` all the same (a documented step with no known cause does not block). (D60, O36)
 
 ## 3. For the principal investigator
 

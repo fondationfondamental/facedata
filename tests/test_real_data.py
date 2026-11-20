@@ -49,12 +49,13 @@ def test_versions(result):
     data = result.data
     assert data["bis_form"].value_counts().to_dict() == {"bis10": 4689, "bis12": 1451}
     assert data["wais_version"].value_counts().to_dict() == {"wais4": 5011, "wais3": 1302}
-    assert data["dsm_version"].value_counts().to_dict() == {"dsm4": 16331, "dsm5": 5541}
+    assert data["dsm_version"].value_counts().to_dict() == {"dsm4": 16380, "dsm5": 5506}
     assert data["visit_form"].value_counts().to_dict() == {"follow_up": 11686, "inclusion": 6498}
     # Counted on every visit that holds a value of a mood section (inclusion and follow-up forms).
     flags = result.flags[result.flags["variable"] == "dsm_version"]["flag"].value_counts().to_dict()
-    # A placeholder date alone does not make a form filled (D122).
-    assert flags == {"version_inferred": 359, "version_unknown": 32}
+    # A placeholder date alone does not make a form filled (D122). A follow-up that holds a column of the old form is
+    # DSM-IV whatever its label or date (D180): 35 labelled DSM-5 are overridden, 14 with no version get none.
+    assert flags == {"version_inferred": 359, "version_overridden": 35, "version_unknown": 18}
 
 
 def test_scores_agree_with_the_stored_ones(result, qc):
@@ -134,7 +135,9 @@ def test_hetero_questionnaires(result, qc):
     assert (qc.loc["etatd_total", "n_valid"], qc.loc["etatd_total", "score_mismatch"]) == (15414, 61)
     assert (qc.loc["etatm_total", "n_valid"], qc.loc["etatm_total", "score_mismatch"]) == (15283, 22)
     assert (qc.loc["gaf", "n_valid"], qc.loc["gaf", "band_middle"], qc.loc["gaf", "unparsed"]) == (14728, 149, 0)
-    assert (qc.loc["cgi_efficacy_index", "check_failed"], qc.loc["cgi_severity", "missing_code"]) == (74, 247)
+    # The efficacy index is a score from the effect and the side effects; the stored one is the check (D170).
+    assert [qc.loc["cgi_efficacy_index", flag] for flag in ["score_mismatch", "score_not_recomputed"]] == [74, 6]
+    assert qc.loc["cgi_severity", "missing_code"] == 247
     # The improvement, the therapeutic effect and the index are asked at the follow-up visits only: 1,068 inclusion values are left out.
     at_inclusion = result.data["visit_month"] == 0
     assert (qc.loc["cgi_improvement", "n_valid"], result.data.loc[at_inclusion, "cgi_improvement"].notna().sum()) == (8932, 0)
@@ -348,11 +351,11 @@ def test_evaluation_medicale(result, qc):
     assert (qc.loc["dsm5_lt_n_mde", "n_valid"], qc.loc["dsm5_lt_n_mde", "censored_right"]) == (923, 58)
     # Counts asked only after a yes: 0 where there was no episode in the past year, or since the last visit.
     assert (qc.loc["dsm4_ly_n_mde", "n_valid"], int((data["dsm4_ly_n_mde"] == 0).sum())) == (4036, 1387)
-    assert (qc.loc["dsm4_fu_n_mde", "n_valid"], int((data["dsm4_fu_n_mde"] == 0).sum())) == (6875, 4610)
+    assert (qc.loc["dsm4_fu_n_mde", "n_valid"], int((data["dsm4_fu_n_mde"] == 0).sum())) == (6924, 4617)
     # One visit holds a count typed after a "no": a cell that is not empty is kept as written.
     assert (data.loc[data["dsm4_ly_any_episode"] == 0, "dsm4_ly_n_mde"] > 0).sum() == 1
     # The current episode is asked at every visit; the psychotic disorder is split like the comorbidities.
-    assert (qc.loc["dsm4_current_episode", "n_valid"], qc.loc["dsm5_current_episode", "n_valid"]) == (11709, 3491)
+    assert (qc.loc["dsm4_current_episode", "n_valid"], qc.loc["dsm5_current_episode", "n_valid"]) == (11758, 3456)
     assert (qc.loc["psychotic_disorder_v0", "n_valid"], qc.loc["psychotic_disorder_fu", "n_valid"]) == (5394, 9389)
     assert qc.loc["psychotic_onset_date_v0", "date_placeholder"] + qc.loc["psychotic_onset_date_fu", "date_placeholder"] == 741
     # DSM-5 form: the column is the age at the first depressive episode; the first episode is the earliest of three ages (D89).
@@ -366,13 +369,25 @@ def test_evaluation_medicale(result, qc):
     assert [qc.loc[name, "n_valid"] for name in totals] == [45, 41, 41, 42] and qc.loc[totals, "score_mismatch"].sum() == 7
     # Counts of episodes are mostly 0 and are not winsorised: the rare episodes keep their number.
     assert tab["winsorised"].sum() == 0
-    assert (data["dsm4_fu_n_mixed_psychotic"].max(), int((data["dsm4_fu_n_mixed_psychotic"] > 0).sum())) == (4, 43)
+    assert (data["dsm4_fu_n_mixed_psychotic"].max(), int((data["dsm4_fu_n_mixed_psychotic"] > 0).sum())) == (4, 44)   # 44 since the override (D180)
     # A question that the form hides, or that is implied, after a count of 0 of its kind is 0 (D122).
-    assert [qc.loc[name, "n_valid"] for name in ["dsm5_ly_mania_psychotic", "dsm5_lt_mania_psychotic", "dsm4_ly_mde_psychotic", "dsm4_fu_n_mde_psychotic"]] == [1007, 971, 4050, 6627]
+    assert [qc.loc[name, "n_valid"] for name in ["dsm5_ly_mania_psychotic", "dsm5_lt_mania_psychotic", "dsm4_ly_mde_psychotic", "dsm4_fu_n_mde_psychotic"]] == [1007, 971, 4050, 6672]
     # The export loses the DSM-5 count of manic episodes with psychotic features (R68): not delivered.
     assert "dsm5_lt_n_mania_psychotic" not in data.columns
-    # The follow-up total is the sum of its counts; the stored one is a check.
-    assert (qc.loc["dsm5_fu_n_episodes", "n_valid"], qc.loc["dsm5_fu_n_episodes", "score_mismatch"]) == (2174, 6)
+    # The follow-up total is the sum of its counts; the stored one is a check. No DSM-5 visit holds a stored total any more:
+    # the total exists on the old form only and the 35 DSM-5 visits that held one are read as DSM-IV (D180).
+    assert (qc.loc["dsm5_fu_n_episodes", "n_valid"], qc.loc["dsm5_fu_n_episodes", "score_mismatch"]) == (2143, 0)
+    # The old form's total is the sum of its four counts; the typed total is the check, and is delivered (score_as_stored)
+    # where a count is unknown or empty: the sum is a hidden score that is the only item of the delivered one (D177).
+    assert [qc.loc["dsm4_fu_n_episodes", name] for name in ["n_valid", "score_mismatch", "score_as_stored"]] == [6905, 204, 349]
+    assert "dsm4_fu_n_episodes_sum" not in data.columns and "dsm4_fu_n_episodes_stored" not in data.columns
+    # Lifetime counts stop at 20 like the form (D176); the three psychotic yes/no are 0 after a count of 0 (D178).
+    counts = [name for name in qc.index if name.startswith(("dsm4_lt_n_", "dsm5_lt_n_"))]
+    assert qc.loc[counts, "max"].max() == 20 and qc.loc[counts, "out_of_range"].sum() == 0
+    assert [qc.loc[name, "n_valid"] for name in ["dsm4_lt_mde_psychotic", "dsm4_lt_mania_psychotic", "dsm4_lt_mixed_psychotic"]] == [4169, 4244, 4110]
+    # The details of the most recent episode follow the display rule of the form; its start must precede the visit (D179).
+    assert [qc.loc[name, "not_shown"] for name in ["dsm4_recent_specifier", "dsm4_recent_chronic", "dsm4_recent_severity", "dsm4_recent_postpartum"]] == [7, 13, 6, 2]
+    assert (qc.loc["dsm4_recent_start_date", "out_of_range"], qc.loc["dsm4_recent_start_date", "n_valid"]) == (100, 3723)
 
 
 def test_care_and_sick_leave(result, qc):

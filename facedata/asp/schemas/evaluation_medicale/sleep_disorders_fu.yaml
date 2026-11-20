@@ -1,0 +1,70 @@
+instrument: sleep_disorders_fu
+title: "Insomnia and hypersomnia at the yearly follow-up visits"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  Two questions of the clinician in form 203 (table aut_c1trsomm, 'Autres troubles associés', section G.4.1; 9 'Non connu' is
+  a missing code): insomnia (insom) with three boxes (difficulty falling asleep, difficulty staying asleep, non-restorative
+  sleep), the age at the first episode (insom4) and the remission, and hypersomnia (hypers) with two boxes (episodes of
+  prolonged night sleep, of prolonged daytime sleep), the age at the first episode (hypers3) and the remission. The names are
+  from the thesaurus V2.13 (PROGRESS.md D13 and D14). The same form holds the self-injurious behaviour (G.4.2, 'LIFETIME': the
+  schemas suicide_and_self_harm_v0 and _fu) and one change question for the whole form (otrchang, 'Changement depuis la
+  dernière visite'): the form shows it at follow-up visits only (203.php:92, visit type above 2) and requires it
+  (eASPERGER.js:688-700). It is delivered here as sleep_self_harm_changed (it covers the sleep part and the self-injury part):
+  it was read in developmental_disorders as comorbidities_changed.
+
+  The boxes and the remission stay missing after a no (a 0 on a remission would read 'disorder present, not in remission');
+  the age at the first episode is in years (unit). A sleep complaint is a state: a yes at inclusion and a no later is not a
+  contradiction (insomnia: 9 of 20 pairs).
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At the yearly visits. 60 follow-up visits answer a sleep question: insomnia yes on 28 of 60 and hypersomnia on 6 of 56; 184
+  visits hold the change question: yes on 34 and all 34 hold the sleep section; no on 150, of which 26 (17%) hold it. An empty
+  yearly sleep section therefore means 'no change' (R25) and stays missing; it is never 'no sleep disorder'.
+
+  **Year and centre.** 60 answers: the one variable that reaches 1.0 (insomnia, 30% to 57% yes between the two
+  centres with 20 answers) is within chance.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [follow_up]}
+
+variables:
+  sleep_self_harm_changed_fu: {column: otrchang, type: item, range: [0, 1], label: "Sleep and self-injury form: change since the last visit (0 no, 1 yes), at follow-up"}
+  insomnia_fu: {column: insom, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia, at follow-up"}
+  insomnia_sleep_onset_fu: {column: insom1, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: difficulty falling asleep, at follow-up"}
+  insomnia_sleep_maintenance_fu: {column: insom2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: difficulty staying asleep, at follow-up"}
+  insomnia_non_restorative_sleep_fu: {column: insom3, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: non-restorative sleep, at follow-up"}
+  insomnia_onset_age_fu: {column: insom4, type: number, unit: years, range: [0, 70], winsor: false, label: "Insomnia: age at the first episode, at follow-up"}
+  insomnia_remission_fu: {column: insom5, type: item, range: [0, 1], missing: {"9": unknown}, label: "Insomnia: in remission, at follow-up"}
+  hypersomnia_fu: {column: hypers, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia, at follow-up"}
+  hypersomnia_long_night_sleep_fu: {column: hypers1, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: episodes of prolonged night sleep, at follow-up"}
+  hypersomnia_long_day_sleep_fu: {column: hypers2, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: episodes of prolonged daytime sleep, at follow-up"}
+  hypersomnia_onset_age_fu: {column: hypers3, type: number, unit: years, range: [0, 70], winsor: false, label: "Hypersomnia: age at the first episode, at follow-up"}
+  hypersomnia_remission_fu: {column: hypers4, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypersomnia: in remission, at follow-up"}

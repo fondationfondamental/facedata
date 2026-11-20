@@ -1,24 +1,53 @@
 instrument: suicide_and_self_harm_fu
-title: "Suicide attempts and self-injurious behaviour since the last visit (follow-up form)"
+title: "Suicide attempts and self-injurious behaviour at the follow-up visits (the lifetime form asked again)"
 tab: evaluation_medicale
 section: comorbidities
-status: draft
+status: reviewed
 notes: >
-  The same two questions at the follow-up visits: 124 answers, 4 of them yes for
-  a suicide attempt and 21 for self-injurious behaviour.
+  The same two questions at the follow-up visits (form 203, one form for all
+  the visits): 124 answers, 4 of them yes for a suicide attempt and 21 for
+  self-injurious behaviour. They are the columns of suicide_and_self_harm_v0,
+  read on the follow-up visits only and named like it, with the ending _fu:
+  `isf05_lifetime_fu` (as DR's follow-up ISF), `first_attempt_age_fu`,
+  `last_attempt_age_fu`, `n_attempts_fu`, `serious_suicide_attempt_fu` and the
+  four `self_harm_*_fu`.
+
+  The period. The section of the form is titled LIFETIME at every visit and
+  the questions print no period, so the form does not ask "since the last
+  visit" as the BP and SZ follow-up forms do (R22): the names end _fu and not
+  _since_visit, and the answers are not joined with those of BP and SZ
+  (`n_suicide_attempts_since_visit` is DR's different question, the
+  clinician's summary of the course). Within patients the follow-up answers
+  do not repeat the inclusion ones, so raters read the question as "since the
+  last visit" or as "now": of the 7 follow-up answers of patients with a suicide attempt at
+  inclusion, 2 say yes and 5 no; of the 45 of patients with self-injurious
+  behaviour at inclusion, 20 say yes and 25 no (open question O9, closed
+  as to the wording, open as to what the raters meant).
+
+  The change question. The form shows "changement depuis la derniere
+  visite" (OTRCHANG) from the third visit type only, and it is mandatory
+  there (203.php:92, eASPERGER.js:688-700); another schema reads it (the
+  sleep and self-injury block, table aut_c1trsomm). It does not stop the
+  questions below it: of the 150
+  follow-up visits that say no change, 93 still answer the attempt question
+  (the same 93 answer the self-injury question); of the 34 that say change,
+  31 answer; of the 189 with the box empty, none. An empty follow-up answer
+  therefore means that nothing was asked or typed, and a no is an answer.
+
+  The serious attempt is never filled under a no (0 of 120 follow-up visits
+  that say no): it is 0 after a no (`asked_if: isf05_lifetime_fu`, +120
+  cells), as the number of attempts. The ages are details and stay missing.
+  Ages are 0 to 99 in years and the number of attempts 0 to 50, as in the
+  other cohorts (three answers of each here).
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
   D14).
 
-  Two forms share these columns. Within patients the follow-up answers do
-  not repeat the inclusion ones: of the 7 follow-up answers of patients with
-  a suicide attempt at inclusion, 2 say yes; of the 45 of patients with
-  self-injurious behaviour at inclusion, 20 say yes. The follow-up form
-  therefore asks about the time since the last visit, to confirm (open question
-  O9), and its answers are delivered in columns of their own.
-
   An instrument of the ASP cohort only.
+
+  **Year and centre.** No variable has a year or a centre with 20 values (124 answers): there is nothing to
+  screen.
 
 version:
   name: visit_form
@@ -38,12 +67,12 @@ version:
 defaults: {versions: [follow_up]}
 
 variables:
-  suicide_attempt_since_visit: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Suicide attempt since the last visit"}
-  first_suicide_attempt_age_since_visit: {column: tsprema, type: number, range: [0, 70], winsor: false, label: "Age at the first suicide attempt since the last visit"}
-  last_suicide_attempt_age_since_visit: {column: tsreca, type: number, range: [0, 70], winsor: false, label: "Age at the most recent suicide attempt since the last visit"}
-  n_suicide_attempts_since_visit: {column: tsnb, type: number, range: [0, 99], winsor: false, asked_if: suicide_attempt_since_visit, label: "Number of suicide attempts since the last visit"}
-  serious_suicide_attempt_since_visit: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, label: "A serious suicide attempt since the last visit"}
-  self_harm_since_visit: {column: auag, type: item, range: [0, 1], missing: {"9": unknown}, label: "Self-injurious behaviour since the last visit"}
-  self_harm_first_age_since_visit: {column: auagpra, type: number, range: [0, 70], winsor: false, label: "Self-injurious behaviour since the last visit: age at the first one"}
-  self_harm_first_kind_since_visit: {column: auagprty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour since the last visit: kind, first episode"}
-  self_harm_current_kind_since_visit: {column: auagsvty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour since the last visit: kind, at present"}
+  isf05_lifetime_fu: {column: ts, type: item, range: [0, 1], missing: {"9": unknown}, label: "Attempted suicide - ever, asked again at a follow-up visit (the form says: in the life)"}
+  first_attempt_age_fu: {column: tsprema, type: number, unit: years, range: [0, 99], winsor: false, label: "Age at the first suicide attempt, asked again at a follow-up visit"}
+  last_attempt_age_fu: {column: tsreca, type: number, unit: years, range: [0, 99], winsor: false, label: "Age at the most recent suicide attempt, asked again at a follow-up visit"}
+  n_attempts_fu: {column: tsnb, type: number, range: [0, 50], winsor: false, asked_if: isf05_lifetime_fu, label: "Number of suicide attempts, asked again at a follow-up visit"}
+  serious_suicide_attempt_fu: {column: tsgrav, type: item, range: [0, 1], missing: {"9": unknown}, asked_if: isf05_lifetime_fu, label: "A serious suicide attempt (undefined: the clinician's judgement), asked again at a follow-up visit"}
+  self_harm_fu: {column: auag, type: item, range: [0, 1], missing: {"9": unknown}, label: "Self-injurious behaviour, asked again at a follow-up visit (the form says: in the life)"}
+  self_harm_first_age_fu: {column: auagpra, type: number, unit: years, range: [0, 99], winsor: false, label: "Self-injurious behaviour: age at the first one, asked again at a follow-up visit"}
+  self_harm_first_kind_fu: {column: auagprty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour: kind, first episode, asked again at a follow-up visit"}
+  self_harm_current_kind_fu: {column: auagsvty2, type: category, codes: {"1": biting, "2": hitting_oneself, "3": scratching, "4": burning, "5": cutting, "6": amputation}, label: "Self-injurious behaviour: kind, at present, asked again at a follow-up visit"}

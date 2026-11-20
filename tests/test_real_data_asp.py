@@ -92,28 +92,42 @@ def test_patient_table(result, qc):
 def test_medical_evaluation(result, qc):
     data = result.data
     table = qc[qc["tab"] == "evaluation_medicale"]
-    assert (table["instrument"].nunique(), len(table)) == (16, 339)
+    # 22 instruments: six of the old ones are split into an inclusion and a follow-up schema (clinical scales review, D48-D53).
+    assert (table["instrument"].nunique(), len(table)) == (22, 545)
     flags = result.flags[result.flags["variable"].isin(set(table.index) | {"vineland_sum_check"})]
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 2345, "out_of_range": 44, "score_mismatch": 30}
+    assert flags["flag"].value_counts().to_dict() == {"missing_code": 2373, "out_of_range": 44, "score_mismatch": 23}      # a not known 9 is flagged on the 0/1 substance twins (+28); the Vineland check adds the motor domain (-7)
     v0 = data[data["visit"] == "V0"]
     # The conclusion of the DSM criteria is the diagnosis of the cohort.
     assert (v0["dsm_asd_conclusion"] == 1).sum() == 2008 and v0["dsm_asd_conclusion"].notna().all()
     assert (v0[[f"dsm_criterion_{k}" for k in ["a1", "a2", "a3", "b1", "b2", "b3", "b4", "c", "d"]]] == 1).all(axis=1).sum() == 944
-    assert v0["dsm_interview"].value_counts().to_dict() == {"kiddie_sads": 725, "digs": 427, "code_3": 98}       # the code 3 is not in the thesaurus
+    assert v0["axis1_interview_v0"].value_counts().to_dict() == {"kiddie_sads": 725, "digs": 427, "mini": 98}       # the code 3 is the MINI; the thesaurus lists two interviews only
     # The support levels are named from their wording: the thesaurus numbers them backwards.
     assert ((v0["severity_social_support"] == 1).sum(), (v0["severity_social_very_substantial"] == 1).sum()) == (594, 127)
     # ASDI: the codes are not in order (1 yes, 2 a little, 0 no), so the answers are delivered as words.
     assert v0["asdi01"].value_counts().to_dict() == {"yes": 317, "no": 49, "a_little": 39} and (v0["asdi_criteria_met"] == 1).sum() == 252
     # An age that was first read as a list of codes.
-    assert (data["language_disorder_onset_age"].notna().sum(), data["language_disorder_onset_age"].median()) == (50, 3)
-    assert v0["tobacco_use_disorder"].value_counts().to_dict() == {"dependence": 86, "no": 38, "abuse": 12}
-    known = {name: (int(v0[name].notna().sum()), int((v0[name] == 1).sum())) for name in ["depressive_episode", "anxiety_disorder", "adhd", "insomnia"]}
-    assert known == {"depressive_episode": (1522, 434), "anxiety_disorder": (1525, 899), "adhd": (1411, 475), "insomnia": (1645, 569)}
-    assert (data["depressive_episode_n_episodes"] == 0).sum() == 1144               # a count is 0 where the disorder is absent
-    # Two forms in the same columns: the life at inclusion, since the last visit at follow-up.
-    assert (data["suicide_attempt_lifetime"].notna().sum(), (data["suicide_attempt_lifetime"] == 1).sum()) == (1658, 191)
-    assert (data["suicide_attempt_since_visit"].notna().sum(), (data["suicide_attempt_since_visit"] == 1).sum()) == (124, 4)
-    assert data.loc[data["suicide_attempt_since_visit"].notna(), "visit"].isin(["V0", "screening"]).sum() == 0
+    assert (data["language_disorder_onset_age_v0"].notna().sum(), data["language_disorder_onset_age_v0"].median()) == (50, 3)
+    assert v0["tobacco_use_disorder_v0"].value_counts().to_dict() == {"dependence": 86, "no": 38, "abuse": 12}
+    known = {name: (int(v0[name].notna().sum()), int((v0[name] == 1).sum())) for name in ["depressive_episode_v0", "anxiety_disorder_v0", "adhd_v0", "insomnia_v0"]}
+    assert known == {"depressive_episode_v0": (1522, 434), "anxiety_disorder_v0": (1525, 899), "adhd_v0": (1411, 475), "insomnia_v0": (1645, 569)}
+    assert (data["depressive_episode_n_episodes_v0"] == 0).sum() == 1088               # a count is 0 where the disorder is absent; the 56 zeros of 1,144 that sat at follow-up are in the _fu twin
+    # The anxiety, developmental, psychotic, learning and sleep lists are one schema at inclusion and one at follow-up (an empty follow-up list means no change).
+    assert (int(data["panic_disorder_v0"].notna().sum()), int((data["panic_disorder_v0"] == 1).sum())) == (1430, 157)      # the highest of the two panic questions
+    assert (int(data["panic_disorder_fu"].notna().sum()), int((data["panic_disorder_fu"] == 1).sum())) == (63, 4)
+    assert int(data["delusions_v0"].notna().sum()) == 1506                                  # the four psychotic groups are asked after the gate: 0 after a no
+    assert (data.loc[data["depressive_episode_fu"].notna(), "visit"].isin(["V0", "screening"]).sum(), int(data["axis1_summary_changed_fu"].notna().sum())) == (0, 212)
+    # Two forms in the same columns: the life at inclusion, the same life asked again at follow-up (form 203 prints no period).
+    assert (data["isf05_lifetime"].notna().sum(), (data["isf05_lifetime"] == 1).sum()) == (1658, 191)
+    assert (data["isf05_lifetime_fu"].notna().sum(), (data["isf05_lifetime_fu"] == 1).sum()) == (124, 4)
+    assert data.loc[data["isf05_lifetime_fu"].notna(), "visit"].isin(["V0", "screening"]).sum() == 0
+    # The serious attempt is 0 after a no (never filled under a no), a count of attempts is not.
+    assert (int(data["serious_suicide_attempt"].notna().sum()), int((data["serious_suicide_attempt"] == 0).sum()), int(data["serious_suicide_attempt_fu"].notna().sum())) == (1632, 1542, 124)
+    # Substances: the clinician's list at inclusion, one 0/1 item per substance that is 0 after a no to the opening question (as BP and SZ).
+    gate = data["substance_disorder_v0"]
+    assert (int(gate.notna().sum()), int((gate == 1).sum()), int((gate == 0).sum()), set(data.loc[gate.notna(), "visit"])) == (1523, 142, 1381, {"V0"})
+    assert {name: (int(data[name].notna().sum()), int((data[name] == 1).sum())) for name in ["alcohol_disorder_v0", "cannabis_disorder_v0", "tobacco_disorder_v0"]} == {
+        "alcohol_disorder_v0": (1510, 61), "cannabis_disorder_v0": (1518, 67), "tobacco_disorder_v0": (1517, 98)}
+    assert (int(data["alcohol_onset_age_v0"].notna().sum()), data["alcohol_onset_age_v0"].median(), int(data["smoking_start_age_clinician"].notna().sum())) == (42, 18.5, 68)
     # One schema per edition of the Wechsler scales.
     valid = {name: int(data[name].notna().sum()) for name in ["wisc4_icv_index", "wisc5_icv_index", "wais4_icv_index_clinician", "gai_index"]}
     assert valid == {"wisc4_icv_index": 205, "wisc5_icv_index": 654, "wais4_icv_index_clinician": 995, "gai_index": 666}      # the clinician's copy of the WAIS-IV indices keeps its own names (WAIS review, D138-D143)
@@ -122,7 +136,7 @@ def test_medical_evaluation(result, qc):
     assert (data["vineland_receptive_raw"].notna().sum(), data["vineland_receptive_raw"].max()) == (1108, 40)
     assert (data["vineland_composite"].notna().sum(), data["vineland_composite"].median()) == (974, 63)
     # The check is not delivered: its mismatch is filed under the stored sum that the analyst sees.
-    assert ((result.flags["variable"] == "vineland_sum_standard") & (result.flags["flag"] == "score_mismatch")).sum() == 30
+    assert ((result.flags["variable"] == "vineland_sum_standard") & (result.flags["flag"] == "score_mismatch")).sum() == 23      # the check adds the motor domain: 7 four-domain sums now agree
 
 
 def test_clinical_measures_and_biology(result, qc):

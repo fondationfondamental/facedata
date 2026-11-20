@@ -2,35 +2,70 @@ instrument: sachs
 title: SACHS score (Bipolarity Index)
 tab: HETERO-QUESTIONNAIRES
 section: SACHS
-status: draft
+status: reviewed
 notes: >
   Five ratings and their sum, filled at the inclusion visit from 2014 (243
-  visits). The dictionary gives no label and no coding ("Items de la
-  SACHS"). The values are those of the Bipolarity Index of Sachs: five
-  dimensions (episode characteristics, age of onset, course of illness,
-  response to treatment, family history), each rated 0, 2, 5, 10, 15 or 20,
-  and a total from 0 to 100. The second column never holds a 2, as the age
-  of onset in that index. The labels below follow the published order and
-  are to be confirmed (open question O7 in PROGRESS.md).
+  visits, and one at screening and one at six months), on 46% of the V0
+  visits from 2015 (71% in 2016, 41% to 73% a year since 2017). The dictionary gives no
+  label and no coding ("Items de la SACHS"). The form (form 225, "Bipolarite
+  de Sachs") is the Bipolarity Index of Sachs (Aiken, Weisler and Sachs 2015;
+  the scoring sheet; scale_reference.md, section 17): five dimensions
+  (episode characteristics, age of onset, course of illness with associated
+  features, response to treatment, family history), each a single choice
+  among statements that carry 20, 15, 10, 5, 2 or 0 points (the age of onset
+  has no 2-point level), the highest true statement counting, and a total
+  from 0 to 100 (50 or more: bipolar disorder likely, to read as a
+  published threshold only: the stored total is 50 on 3 visits, median 21).
+  The labels below follow that order, which the form confirms.
 
-  From 2016, 104 of the 242 visits hold a value that is not one of these
-  points in at least one column: 3, 6, 7, 8, 11, 16 or 21. The stored total
-  does not count them as typed: it equals the sum of the five ratings, each
-  brought down to the point it reaches (7 counts 5, 11 counts 10), on 238
-  of 242 visits, and the plain sum on 141 only. The ratings are delivered
-  the way the stored total counts them (decision D6), so that a dimension
-  is on one scale; the 4 other visits get score_mismatch.
+  The stored option key is not always the points. Where a dimension holds
+  several statements of the same points, the form keys the extra ones 1, 3,
+  4, 6 to 9, 11, 12, 16 or 21 (the label of each statement starts with its
+  points, "10 - Manie secondaire a l'utilisation d'antidepresseur" is key
+  11). The application brings each key back to its points when it computes
+  the total (js_scores/225_score.js, val_inverse: 15 to 19 count 15, 10 to
+  14 count 10, 5 to 9 and 21 count 5, 1 to 4 count 2). The table of the form
+  and the script give the same points for every key, and the schema is the
+  complete key table (decision D58 in PROGRESS.md), per column: episode
+  3 counts 2, 6 to 8 count 5, 11 counts 10; course 1, 3 and 4 count 2, 6 to
+  9 and 21 count 5, 11 and 12 count 10, 16 counts 15; response to treatment
+  6 counts 5, 11 and 12 count 10, 16 counts 15; family history 3 counts 2,
+  6 counts 5, 11 counts 10, 16 counts 15; age of onset has none. Key 21 of
+  the course ("worsening of mood during the menstrual cycle", 5 points in
+  the published index) counted 20 in an earlier version of this schema: one
+  course cell and one total (27, now 12) change. 104 of the 242 visits with
+  a total hold a key that is not a point, all from 2016 on.
 
-  An instrument that FACE BP and FACE SZ do not have.
+  The ratings are delivered in points, so that a dimension is on one scale.
+  The stored total (the application's own, written when the form is saved)
+  equals the sum of the five delivered ratings on 239 of 242 visits (the
+  plain sum of the keys on 141); the 3 others (score_mismatch) are the 3
+  earliest visits of one centre where the recode matters, in March, June and
+  December 2016, where the stored total is the plain sum of the keys. On the
+  other 101 of the 104 visits where the recode matters the stored total
+  equals the recode, and the 12 later visits of that centre (from March 2017)
+  do too: the application script probably changed there between December
+  2016 and March 2017. This is read from the data, not from the history of
+  the application, which starts in 2024.
+
+  Dimension II (age of onset) matches the published age bands of the form
+  on 123 of the 153 visits that have the age at the first mood episode in
+  the mood history (80%; 83% if the age of 30 belongs to the 30-45 band).
+  It is 0 on 11 visits ("no mood disorder") although the cohort requires a
+  depressive episode: delivered as written. One visit lacks the course
+  and treatment ratings and another the course alone: they have no total.
+
+  An instrument that FACE BP and FACE SZ do not have. The SACHS is one of
+  the forms that the simplified visit omits (PROGRESS.md D55, request R139).
 
 defaults: {type: item, range: [0, 20]}
 
 variables:
-  sachs_episode: {column: sachs01, codes: {"3": 2, "6": 5, "7": 5, "8": 5}, label: "Bipolarity Index I: episode characteristics (to be confirmed)"}
-  sachs_age_of_onset: {column: sachs02, label: "Bipolarity Index II: age of onset (to be confirmed)"}
-  sachs_course: {column: sachs03, codes: {"6": 5, "7": 5, "8": 5, "11": 10, "16": 15, "21": 20}, label: "Bipolarity Index III: course of illness and associated features (to be confirmed)"}
-  sachs_treatment_response: {column: sachs04, codes: {"11": 10, "16": 15}, label: "Bipolarity Index IV: response to treatment (to be confirmed)"}
-  sachs_family_history: {column: sachs05, codes: {"3": 2, "6": 5, "11": 10, "16": 15}, label: "Bipolarity Index V: family history (to be confirmed)"}
+  sachs_episode: {column: sachs01, codes: {"3": 2, "6": 5, "7": 5, "8": 5, "11": 10}, label: "Bipolarity Index I: episode characteristics"}
+  sachs_age_of_onset: {column: sachs02, label: "Bipolarity Index II: age of onset"}
+  sachs_course: {column: sachs03, codes: {"1": 2, "3": 2, "4": 2, "6": 5, "7": 5, "8": 5, "9": 5, "11": 10, "12": 10, "16": 15, "21": 5}, label: "Bipolarity Index III: course of illness and associated features"}
+  sachs_treatment_response: {column: sachs04, codes: {"6": 5, "11": 10, "12": 10, "16": 15}, label: "Bipolarity Index IV: response to treatment"}
+  sachs_family_history: {column: sachs05, codes: {"3": 2, "6": 5, "11": 10, "16": 15}, label: "Bipolarity Index V: family history"}
   sachs_total_stored: {column: sachs_, label: "SACHS total as stored", range: [0, 100], keep: false}
 
 scores:

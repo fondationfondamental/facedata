@@ -2,31 +2,49 @@ instrument: wais4_indices
 title: "WAIS-IV: the four indices and the full-scale IQ"
 tab: evaluation_medicale
 section: intellectual assessment
-status: draft
+status: reviewed
 notes: >
   The indices of the Wechsler Adult Intelligence Scale, fourth edition: verbal
   comprehension, perceptual reasoning, working memory, processing speed and
-  the full-scale IQ, as the clinician copied them into the medical evaluation.
-  A box says that this edition was used (wai4: yes on 1,043 of 2,318 inclusion
-  visits, 1,053 visits in all); the indices are filled only after a yes (1,044
-  visits hold one, all with the box ticked). The first index is on 986
-  inclusion visits (75 children, 911 adults), from 2012 to 2026; the
-  full-scale IQ on 784: it is not computed when the indices differ too much.
+  the full-scale IQ, as the clinician copied them into the medical evaluation
+  (form 119; typed numbers, no script). A box says that this edition was used
+  (wai4: yes on 1,043 of the 1,750 inclusion answers, 1,053 visits in all);
+  the indices are filled only after a yes (1,041 visits hold one, all with
+  the box ticked, 9 of them follow-up visits). The first index is on 987
+  inclusion visits (75 children, 912 adults), from 2012 to 2026; the
+  full-scale IQ on 788.
+
+  The full-scale IQ is typed whether or not the indices agree. The form says
+  it in red: "Le QIT est a renseigner meme s'il est heterogene"
+  (119.php:8; the radio "homogene / heterogene" is commented out, line 51).
+  Yet it is missing on 193 of the 974 visits that hold the four indices
+  (20%); the median spread between the highest and the lowest index is 29
+  points where the full-scale IQ is typed and 31 where it is missing, so the
+  idea that it is left out when the indices differ too much is not
+  supported (the WISC-IV differs, see wisc4_indices). It is more than 10
+  points outside all four indices on 4 visits (typed against the profile).
 
   One schema per edition: an index of one edition is never delivered in the
   column of another. The medical evaluation holds the indices and no sum of
   scaled scores to read them with in the norm tables: they are delivered as
-  stored, between 40 and 160.
+  typed. Hard limits as in the neuropsychology schemas for the same
+  indices: 45 to 155 for verbal comprehension and perceptual reasoning, 50
+  to 150 for working memory and processing speed, 40 to 160 for the
+  full-scale IQ (the full-scale IQ range is Canivez 2010; the index ranges
+  are not confirmed by a source read: scale_reference.md 'to verify').
+  Four typed values are below the limits (one verbal comprehension, one
+  perceptual reasoning, one processing speed and one full-scale IQ) and are
+  removed (out_of_range): the limits change no cell.
 
-  The schema was written from the column names and the answers, then checked
-  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
-  D14).
+  Edition against age. The box is ticked for adults almost always (975 of
+  1,053 visits are aged 18 or more at the visit) and 10 assessments are
+  dated when the patient was under 16: the indices belong to the date of the
+  assessment (iq_assessment_date), not to the visit. The French WAIS-IV is
+  normed from 16 years. Five visits tick two editions (four the WAIS-IV and
+  the WISC-IV, one the WAIS-IV and the WISC-V): read the box of each schema.
 
-  An instrument of the ASP cohort only.
-
-  Not recomputed. The medical evaluation holds no sum of scaled scores, so no
-  index of this schema can be read in a table here; they stay as stored. The
-  same indices, recomputed from the sums of the neuropsychology form, are in
+  The clinician's copy against the neuropsychology form. The same indices,
+  recomputed from the sums of the neuropsychology form, are in
   wais4_efficience.yaml and wais4_code_symboles_ivt.yaml, under the names that
   BP, SZ and DR give them (wais4_icv_index, wais4_irp_index, wais4_imt_index,
   wais4_ivt_index, wais4_qit); the names of this copy end in _clinician so
@@ -34,8 +52,22 @@ notes: >
   187 visits for verbal comprehension, 157 of 188 for perceptual reasoning,
   176 of 192 for working memory, 185 of 206 for processing speed and 120 of
   159 for the full-scale IQ (the clinician's copy against the recomputed index
-  of the form; the stored indices of the form agree on 161, 156, 168, 185 and
-  115).
+  of the form). The agreement does not depend on the gap between the dates of
+  the two assessments: for verbal comprehension 83 of 96 are equal within 31
+  days and 25 of 28 further apart; 28 of the 39 full-scale IQ differences are
+  2 points or less. The copy has 808 to 819 visits per index (628 for the
+  full-scale IQ) that the neuropsychology form lacks, and 15 to 56 the other
+  way round. Both are kept (D28).
+
+  The schema was written from the column names and the answers, then checked
+  against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
+  D14).
+
+  An instrument of the ASP cohort only.
+
+  **Year and centre.** 1 of the 6 variables reaches 1.0: the box 'WAIS-IV done' is yes for 89% of the adults
+  and 11% of the children, 1% to 100% by centre and 30% to 71% by year: the box follows the age and the share
+  of children differs by centre and year (age mix). The five indices show no shift of 0.5.
 
 variables:
   wais4_done: {column: wai4, type: item, range: [0, 1], label: "This edition was used (WAIS-IV)"}
@@ -43,4 +75,4 @@ variables:
   wais4_irp_index_clinician: {column: wai4irp, type: number, range: [45, 155], winsor: false, label: "WAIS-IV, perceptual reasoning index, the clinician's copy"}
   wais4_imt_index_clinician: {column: wai4imt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, working memory index, the clinician's copy"}
   wais4_ivt_index_clinician: {column: wai4ivt, type: number, range: [50, 150], winsor: false, label: "WAIS-IV, processing speed index, the clinician's copy"}
-  wais4_qit_clinician: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale iq, the clinician's copy"}
+  wais4_qit_clinician: {column: wai4qit, type: number, range: [40, 160], winsor: false, label: "WAIS-IV, full-scale IQ, the clinician's copy"}

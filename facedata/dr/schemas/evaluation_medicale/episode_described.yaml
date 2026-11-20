@@ -2,18 +2,37 @@ instrument: episode_described
 title: "One depressive episode described at inclusion"
 tab: EVALUATION MEDICALE
 section: Episodes
-status: draft
+status: reviewed
 notes: >
-  One depressive episode described at the inclusion visit: its number, its
-  length, and whether it was treated, resistant, hospitalised, with
-  psychotic or mixed features, seasonal, followed by a full remission. 221
-  visits (50% of the inclusions until 2014, 22% to 31% since 2018). Not in
-  BP or SZ.
+  One episode described at the inclusion visit: its number, its length, and
+  whether it was treated, resistant, hospitalised, with psychotic or mixed
+  features, seasonal, followed by a full remission. 221 inclusion visits
+  (220 with the number of the episode): 42% to 59% of the inclusion visits
+  of each year from 2012 to 2017 (45% in all, 122 of 271) and 18% to 37% of
+  those of 2018 to 2026 (27%, 98 of 363). Not in BP or SZ. No rename: the
+  table is headed "Episodes" in form 116, not "depressive", and its
+  questions (resistant, recurrence under treatment, switch under an
+  antidepressant) are those of a depressive episode; which episode a row
+  describes is not stated (low confidence, the name stays).
 
-  The extraction holds one episode per visit, although the form numbers
-  them (episode 1 on 102 visits, 2 on 55, 3 on 36): if the form lists
-  several, only one reaches the extraction (open question O26). 2 is "DM",
-  missing data (29 cells).
+  One row per visit reaches the extraction, although the form is a table
+  with an add-row button and no limit (episode numbers 1 to 20: 1 on 102
+  visits, 2 on 55, 3 on 36, 4 on 14). The export keeps one arbitrary row
+  per visit (face_dr_10 lines 5-7: select distinct on (usubjid, visitnum)
+  with no ORDER BY): the number typed on the row kept is 1 on only 102 of
+  220 rows, so the pick is not the first episode. The other episodes of the
+  form are lost to this extraction, not left out by the raters (the table
+  of the application has a row id, EPISODE, that the clean model keeps:
+  request R142, all rows). Answers O26(1).
+
+  The counts of episodes of mood_history_v0 include the current episode (a
+  single-episode course has a count of 1 on 58 of 70 visits, a recurrent
+  course 2 or more on 256 of 270). The number of the episode described is
+  above the total counted (depressive, hypomanic, manic and mixed) on 8 of
+  213 visits, and the episode is ticked resistant with a resistant count of
+  0 on 4 of 117 visits that have the count (123 resistant episodes in all).
+
+  2 is "DM", missing data (29 cells).
 
 defaults: {type: item}
 

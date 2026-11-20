@@ -60,7 +60,13 @@ notes: >
   say yes and then give 0 for every kind of episode; 2 give a number above
   0 after a no and 4 give numbers with no first answer or "Ne sais pas"; 23
   say yes to psychotic features with no episode of that kind; 9 give more
-  episodes with psychotic features than episodes of that kind.
+  episodes with psychotic features than episodes of that kind; the number
+  of episodes in the year is above the lifetime number for 88 inclusions
+  (14 depressive, 29 hypomanic, 23 manic and 25 mixed numbers); 80 of the
+  1,386 inclusions in a current episode that answer here say no mood
+  episode in the year, and so do 154 of the 2,871 with a most recent
+  episode that started or ended within the year before the visit
+  (dsm4_episode_recent.yaml).
 
 version:
   name: dsm_version
@@ -71,6 +77,7 @@ version:
   by_inclusion_date:
     dsm4: [1900-01-01, 2019-12-31]
     dsm5: [2023-01-01, 2100-12-31]
+  override: {dsm4: [evnum_epmixt_spv, evnum_epmixt_psy_spv, evnum_epthym_spv]}
 
 defaults: {versions: [dsm4]}
 

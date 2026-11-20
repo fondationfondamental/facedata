@@ -1,0 +1,135 @@
+instrument: mood_disorders_v0
+title: "Mood disorders in the life of the patient, at inclusion"
+tab: evaluation_medicale
+section: comorbidities
+status: reviewed
+notes: >
+  The mood part of the clinician's list of psychiatric comorbidities, in the summary that the application heads 'axe I' (table
+  aut_c1dsmdigs: form 202 at inclusion, form 348 at the yearly visits, 'Résumé diagnostic DSM-5'). Eight questions, each
+  answered yes, no or 'Non connu' (9, a missing code): a major depressive episode (edm), a manic episode (man), a hypomanic
+  episode (hman), a mixed episode (mix), a single-episode depressive disorder (tdi), a recurrent depressive disorder (tdr), a
+  dysthymic disorder (td) and a bipolar disorder (tb, with a box for type I and one for type II). After a yes the form asks
+  the number of episodes, the age at the first episode, the age at the first treatment and whether the patient is in remission
+  now. The names come from the thesaurus V2.13 (PROGRESS.md D13 and D14).
+
+  The interview used for the summary (dsmtype: 1 DIGS, 2 Kiddie-SADS, 3 MINI) is the first field of the same form (forms 202
+  and 348 print it at the top, above the episodes): it was read in dsm_criteria, where the dictionary files it, and is
+  delivered here as axis1_interview. The code 3 is the MINI, as the form says; the dictionary lists the first two only.
+
+  Gates and counts. A number of episodes is 0 after a no (asked_if). The ages and the remission stay missing after a no: a 0
+  on a remission would read 'disorder present, not in remission'. The two type boxes of the bipolar disorder likewise. The 9
+  of the remission of the mixed episode is a missing code (the form offers 'Non connu'; no 9 is on the column). The age at the
+  first treatment of the mixed episode (mixagtt) is in the form and selected by the export, but its column is empty on all
+  4,500 rows (ignored.yaml). The counts include the current episode: the form says so for the four episode kinds, 'y compris
+  l'épisode actuel', and the labels of the three disorders say so too. They keep the names <kind>_n_episodes and are not
+  renamed to the BP names dsm4_lt_n_* and dsm5_lt_n_* ('over the life', with no word on the current episode: not known to be
+  the same measure); a count written '01' is read as 1. The ages at the first treatment stay <kind>_first_treatment_age: they
+  are the age at the first treatment of the disorder, not BP's age at the first psychotropic. No mood variable has a BP, SZ or
+  DR name.
+
+  Two forms in the same columns, so two instruments (PROGRESS.md D49). The inclusion form and the yearly form hold the same
+  questions and print no period, so a follow-up answer is an update given at that visit (BP decision D84): neither a history
+  of the whole life nor strictly the time since the last visit, and not the BP or SZ 'since the last visit' (rule R22 of the
+  review): the follow-up instrument is _fu without since_visit and is not joined with those. Within patients the follow-up
+  answers do not repeat the inclusion ones. Over the six sections of the comorbidity forms (49 yes/no questions) there are 290
+  patient-question pairs with a yes at inclusion and a later answer, and the last later answer is no for 60 of them (21%;
+  insomnia 9 of 20, reading disorder 4 of 4, recurrent depressive disorder 2 of 2); the ages at onset are given again in 110
+  of 114 pairs, and a count of episodes that is above 0 twice never falls (13 pairs: 8 equal, 5 higher). So the columns are
+  two sets, _v0 (the screening and inclusion visits) and _fu (the yearly visits); visit_form says which form a visit used and
+  is read from the visit label, as in the other twin schemas of the cohort (suicide_and_self_harm_v0, somatic_history_v0). An
+  empty section at a yearly visit means 'no change' when the form has a change question, never 'no disorder' (rule R25 of the
+  review).
+
+  At inclusion. 1,551 inclusion visits answer at least one question (1,522 the first one): yes for 434 major depressive
+  episodes, 10 manic, 23 hypomanic and 5 mixed episodes, 147 single-episode and 152 recurrent depressive disorders, 80
+  dysthymic disorders and 12 bipolar disorders. The list is answered on 83% to 85% of the inclusions to 2015 and on 44% (2024)
+  to 57% (2023) of those of the last two full years; among the five centres with 100 inclusions or more the share runs from
+  16% to 88%, and by period (to 2018, 2019-2021, 2022 on) one falls from 62% to 8% and 4%, one from 92% to 82% and 59%, one
+  rises from 20% (5 inclusions) to 83% and 93%, the two others stay between 54% and 89%: unexplained, the pattern of open
+  question O40 of BP.
+
+  The interview is filled on 95% to 97% of the inclusions of 2013 and 2014, 82% to 89% in 2015-2017 and 34% to 67% from 2018:
+  DIGS 427, Kiddie-SADS 725 and MINI 98 visits; the MINI is on 1 visit in 2017, 4 in 2020, 32 in 2021, 42 in 2022 and then 8,
+  6, 4 and 1 (its 98 cells were read as code_3 before the form was read: closes O16 (1)).
+
+  The old forms also fill the change question at inclusion: 825 answers (129 yes) from 2009 to 2021, on 85% to 96% of the
+  inclusions of 2015-2019, then 3% in 2021 and one in 2025. It means nothing at inclusion (the current form 202 has no such
+  question: it is commented out there) and it is read and not delivered (axis1_summary_changed_v0, keep: false), so that every
+  column of the form stays read.
+
+  Checks, on the inclusion visits (aggregates). The first treatment is before the first episode for 15 pairs of ages over the
+  two editions (major depressive episode 11 of 203 pairs here and 11 of 209 with the follow-up, single-episode 1 of 63,
+  recurrent 3 of 67): a treatment can come before a diagnosed episode, so it is not an error. 7 age cells are above the age at
+  the visit: 6 by less than one year (an age typed in whole years) and 1 by 6.2 years (dysthymic disorder). A single-episode
+  disorder with a count above 1: 31 of 124 answered counts (34 of 132 with the follow-up); a recurrent disorder with a count
+  of 1: 2 of 78 (3 of 82); a yes with a count of 0: 2 (one single-episode, one dysthymic); the count is missing under a yes
+  for 115 of the 434 major depressive episodes (26%), 23 of 147 single-episode, 74 of 152 recurrent and 58 of 80 dysthymic
+  disorders. All are delivered as recorded.
+
+  **Year and centre.** 6 of the 38 variables reach a year or centre shift of 0.5 or more (groups of 20 values
+  or more). The yes of a major depressive episode is 10% in children and 49% in adults: the share of children
+  among the inclusions is 0% to 100% by centre and 9% to 59% by year (age mix). Among adults it runs from 25%
+  to 87% by centre (seven centres with 20 answers: the habit of the centre). By year it is 44% to 67% from
+  2014 to 2022 among adults, then 30% to 40% in 2023 to 2025 (40 to 48 answers each; 49% in 2026) while the
+  list is answered on 44% to 58% of the inclusions of 2023 to 2025 against 63% to 76% in 2019 to 2022: a fall
+  with no known cause (M71 of EXPORT_REQUESTS.md asks about the share by centre). The ages at the first
+  episode are 13 in children and 17 in adults (age mix). The remissions (39% to 80% yes by year, 23 to 51
+  answers) and the details of the single-episode, recurrent and dysthymic disorders are small groups.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [inclusion]}
+
+variables:
+  axis1_summary_changed_v0: {column: reschang, type: item, range: [0, 1], keep: false, label: "Axis I summary: change since the last visit, as typed at inclusion and not delivered (0 no, 1 yes)"}
+  axis1_interview_v0: {column: dsmtype, type: category, codes: {"1": digs, "2": kiddie_sads, "3": mini}, label: "Interview used for the axis I summary (DIGS, Kiddie-SADS or MINI), at inclusion"}
+  depressive_episode_v0: {column: edm, type: item, range: [0, 1], missing: {"9": unknown}, label: "Major depressive episode, at inclusion"}
+  depressive_episode_n_episodes_v0: {column: edmnbep, type: number, range: [0, 99], winsor: false, asked_if: depressive_episode_v0, label: "Major depressive episode: number of episodes, including the current episode, at inclusion"}
+  depressive_episode_first_age_v0: {column: edmagep, type: number, unit: years, range: [0, 70], winsor: false, label: "Major depressive episode: age at the first episode, at inclusion"}
+  depressive_episode_first_treatment_age_v0: {column: edmagtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Major depressive episode: age at the first treatment, at inclusion"}
+  depressive_episode_remission_v0: {column: edmrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Major depressive episode: in remission, at inclusion"}
+  manic_episode_v0: {column: man, type: item, range: [0, 1], missing: {"9": unknown}, label: "Manic episode, at inclusion"}
+  manic_episode_n_episodes_v0: {column: mannbep, type: number, range: [0, 99], winsor: false, asked_if: manic_episode_v0, label: "Manic episode: number of episodes, including the current episode, at inclusion"}
+  manic_episode_first_age_v0: {column: managep, type: number, unit: years, range: [0, 70], winsor: false, label: "Manic episode: age at the first episode, at inclusion"}
+  manic_episode_first_treatment_age_v0: {column: managtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Manic episode: age at the first treatment, at inclusion"}
+  manic_episode_remission_v0: {column: manrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Manic episode: in remission, at inclusion"}
+  hypomanic_episode_v0: {column: hman, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypomanic episode, at inclusion"}
+  hypomanic_episode_n_episodes_v0: {column: hmannbep, type: number, range: [0, 99], winsor: false, asked_if: hypomanic_episode_v0, label: "Hypomanic episode: number of episodes, including the current episode, at inclusion"}
+  hypomanic_episode_first_age_v0: {column: hmanagep, type: number, unit: years, range: [0, 70], winsor: false, label: "Hypomanic episode: age at the first episode, at inclusion"}
+  hypomanic_episode_first_treatment_age_v0: {column: hmanagtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Hypomanic episode: age at the first treatment, at inclusion"}
+  hypomanic_episode_remission_v0: {column: hmanrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Hypomanic episode: in remission, at inclusion"}
+  mixed_episode_v0: {column: mix, type: item, range: [0, 1], missing: {"9": unknown}, label: "Mixed episode, at inclusion"}
+  mixed_episode_n_episodes_v0: {column: mixnbep, type: number, range: [0, 99], winsor: false, asked_if: mixed_episode_v0, label: "Mixed episode: number of episodes, including the current episode, at inclusion"}
+  mixed_episode_first_age_v0: {column: mixabep, type: number, unit: years, range: [0, 70], winsor: false, label: "Mixed episode: age at the first episode, at inclusion"}
+  mixed_episode_remission_v0: {column: mixrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Mixed episode: in remission, at inclusion"}
+  depressive_disorder_single_episode_v0: {column: tdi, type: item, range: [0, 1], missing: {"9": unknown}, label: "Depressive disorder, single episode, at inclusion"}
+  depressive_disorder_single_episode_n_episodes_v0: {column: tdinbep, type: number, range: [0, 99], winsor: false, asked_if: depressive_disorder_single_episode_v0, label: "Depressive disorder, single episode: number of episodes, the current one included, at inclusion"}
+  depressive_disorder_single_episode_first_age_v0: {column: tdiagep, type: number, unit: years, range: [0, 70], winsor: false, label: "Depressive disorder, single episode: age at the first episode, at inclusion"}
+  depressive_disorder_single_episode_first_treatment_age_v0: {column: tdiagtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Depressive disorder, single episode: age at the first treatment, at inclusion"}
+  depressive_disorder_single_episode_remission_v0: {column: tdirema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Depressive disorder, single episode: in remission now, at inclusion"}
+  depressive_disorder_recurrent_v0: {column: tdr, type: item, range: [0, 1], missing: {"9": unknown}, label: "Recurrent depressive disorder, at inclusion"}
+  depressive_disorder_recurrent_n_episodes_v0: {column: tdrnbep, type: number, range: [0, 99], winsor: false, asked_if: depressive_disorder_recurrent_v0, label: "Recurrent depressive disorder: number of episodes, the current one included, at inclusion"}
+  depressive_disorder_recurrent_first_age_v0: {column: tdragep, type: number, unit: years, range: [0, 70], winsor: false, label: "Recurrent depressive disorder: age at the first episode, at inclusion"}
+  depressive_disorder_recurrent_first_treatment_age_v0: {column: tdragtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Recurrent depressive disorder: age at the first treatment, at inclusion"}
+  depressive_disorder_recurrent_remission_v0: {column: tdrrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Recurrent depressive disorder: in remission now, at inclusion"}
+  dysthymic_disorder_v0: {column: td, type: item, range: [0, 1], missing: {"9": unknown}, label: "Dysthymic disorder, at inclusion"}
+  dysthymic_disorder_n_episodes_v0: {column: tdnbep, type: number, range: [0, 99], winsor: false, asked_if: dysthymic_disorder_v0, label: "Dysthymic disorder: number of episodes, the current one included, at inclusion"}
+  dysthymic_disorder_first_age_v0: {column: tdagep, type: number, unit: years, range: [0, 70], winsor: false, label: "Dysthymic disorder: age at the first episode, at inclusion"}
+  dysthymic_disorder_first_treatment_age_v0: {column: tdagtt, type: number, unit: years, range: [0, 70], winsor: false, label: "Dysthymic disorder: age at the first treatment, at inclusion"}
+  dysthymic_disorder_remission_v0: {column: tdrema, type: item, range: [0, 1], missing: {"9": unknown}, label: "Dysthymic disorder: in remission now, at inclusion"}
+  bipolar_disorder_v0: {column: tb, type: item, range: [0, 1], missing: {"9": unknown}, label: "Bipolar disorder, at inclusion"}
+  bipolar_disorder_type1_v0: {column: tbt1, type: item, range: [0, 1], label: "Bipolar disorder: type I, at inclusion"}
+  bipolar_disorder_type2_v0: {column: tbt2, type: item, range: [0, 1], label: "Bipolar disorder: type II, at inclusion"}

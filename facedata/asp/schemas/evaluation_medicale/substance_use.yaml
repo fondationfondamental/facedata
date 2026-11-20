@@ -1,51 +1,178 @@
 instrument: substance_use
-title: "Substance use"
+title: "Substance use disorders at inclusion (clinician's list)"
 tab: evaluation_medicale
 section: comorbidities
-status: draft
+status: reviewed
 notes: >
-  The clinician's list of psychiatric comorbidities, substance part. A first
-  question (utisubst, yes on 142 of 1,538 inclusion visits; 9 is read as "not
-  known") opens nine substances: tobacco, alcohol, benzodiazepines, cannabis,
-  stimulants, cocaine, hallucinogens, a substance named utiste and solvents.
-  For each: a level of use coded 0, 1 or 2 (tobacco: 0 on 38 visits, 1 on 12, 2
-  on 86), the age at the first use and a status coded 1 or 2. The two lists are
-  those of the thesaurus: no, abuse, dependence; past, current.
+  The clinician's list of psychiatric comorbidities, substance part (form
+  202 at inclusion, form 348 at follow-up). A first question, "trouble
+  d'utilisation de substances" (utisubst), opens nine substances: tobacco,
+  alcohol, benzodiazepines, cannabis, psychostimulants, cocaine,
+  hallucinogens, androgenic steroids (the column utiste: the form says
+  "steroides androgenes") and solvents. The form hides all of them after a
+  no or a not known (eASPERGER.js:5533-5535). For each substance: a level
+  coded 0 no, 1 abuse, 2 dependence or 9 not known, then the age at onset
+  (tobacco: the age at the start of smoking) and a status coded 1 past or 2
+  current (steroids have no age and no status in the extraction).
+
+  Two forms in the same columns, as for the suicide questions. The inclusion
+  form is delivered here, in variables ending in _v0, on the V0 visits only
+  (1,538 answers: yes 142, no 1,381, not known 15; the screening visits hold
+  none). The follow-up form (348) is read by variables that are not
+  delivered (substance_disorder_fu and the _fu twins, keep: false): 70
+  follow-up answers, 69 no and one yes, whose substance cells (9 levels, 4
+  ages or statuses) are the only filled ones; they are not delivered
+  because 70 answers do not make an instrument, and the coverage check
+  counts them as read. The change box of form 348 (RESCHANG, filled on 212
+  follow-up visits) heads the whole axis I section and is delivered with it,
+  not here. There is no _fu schema.
+
+  The substances are 0 after a no. After a no to the opening question the
+  nine substance boxes, ages and statuses are empty in the extraction (0 of
+  the 1,381 inclusion no answers hold one), because the form hides them:
+  each substance has a second variable, `<substance>_disorder_v0`, that
+  reads the same column once more (separator, codes 0 no, 1 and 2 yes, so
+  that abuse and dependence are one yes) and is 0 after a no
+  (`asked_if: substance_disorder_v0`; 1,381 cells per substance, 12,429 in
+  all; a not known stays missing, the ages and statuses stay missing after a
+  no). Where a substance has the same name as in BP (alcohol, cannabis,
+  cocaine, stimulant, hallucinogen) the question is the same as BP's
+  abuse or dependence. The benzodiazepines are narrower than BP's
+  sedatives, hypnotics and anxiolytics and the solvents are one of the
+  substances of BP's "other substance": they keep names of their own, as the
+  tobacco (a schema of its own in BP and SZ, not a disorder) and the
+  steroids. ASP has no question on opiates. The three-level answers are
+  delivered too (`<substance>_use_disorder_v0`: no, abuse, dependence).
+
+  The age is the age at onset of the disorder. The form says "age de debut
+  de l'alcoolisme", "age de debut du tabagisme" and "age de debut"; the
+  dictionary says the same. The alcohol median is 18.5 (42 answers),
+  as the SZ onset of the use disorder (18, 281 answers) and not the SZ age at
+  the first use (15, 465): the variables are named `_onset_age_v0` as in BP
+  and SZ (they were `_first_age`). The cells at inclusion: tobacco 68,
+  alcohol 42, cannabis 40, cocaine 7, stimulants 6, hallucinogens 2,
+  benzodiazepines 9 (and one at a follow-up visit), solvents 2; the largest
+  age is 46. The tobacco age of this form is `smoking_start_age_clinician`:
+  the tobacco examination of the clinical tab (tobacco.yaml) asks the same
+  thing as `smoking_start_age`; the two are equal on 12 of the 13 visits
+  that have both, and the name of the examination is kept. SZ's
+  tobacco_first_age is the age at the first cigarette, another question: the
+  names must not meet. The status (past or current) is another question than
+  BP's "in the past month" (`_last_month_v0`): it keeps its name.
+
+  The ages and the statuses are details of a substance, and stay missing
+  after a no (R1): 174 of the 176 ages sit under an abuse or a dependence
+  (one under a not known, one under an empty level) and 89 of the 263 abuse
+  or dependence answers have no age; 225 of the 240 statuses sit under an
+  abuse or a dependence (8 under a no, 4 under a not known, 3 under an empty
+  level) and 38 of those 263 have none. Nothing is blanked.
+
+  Almost all the answers are those of adults (128 of 137 for tobacco).
+  Tobacco: 0 on 38 inclusion visits (39 with the follow-up one), abuse on 12,
+  dependence on 86. The utiste columns for the age and the status
+  (utisteag, utistest) are empty on every row (ignored.yaml). Of the 142 yes
+  answers to the opening question, 140 have at least one substance answered.
 
   The schema was written from the column names and the answers, then checked
   against the thesaurus V2.13, which names these columns (PROGRESS.md D13 and
-  D14).
+  D14) and against forms 202 and 348.
 
-  Almost all the answers are those of adults (128 of 137 for tobacco). The
-  utiste columns for the age and the status are empty on every row
-  (ignored.yaml).
+  An instrument of the ASP cohort only; its names follow BP's substance_v0
+  where the question is the same.
 
-  An instrument of the ASP cohort only.
+  **Year and centre.** No variable reaches 0.5, but the screen is not defined for a yes under 25%, so the
+  rates were read directly: the opening question is yes for 1% of the children and 18% of the adults (age
+  mix), 0% to 39% by centre (eight centres) and 0% to 26% by year (14 years); alcohol 0% to 16% by centre,
+  cannabis 0% to 18%, tobacco 0% to 29%. The list is answered on 91% of the inclusions of 2013, 64% to 80% in
+  2018 to 2022 and 43% to 63% in 2023 to 2026 (M71).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V1_an: follow_up
+    V2_ans: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
+    V6_ans: follow_up
+    V7_ans: follow_up
+    V9_ans: follow_up
+
+defaults: {versions: [inclusion]}
 
 variables:
-  substance_use: {column: utisubst, type: item, range: [0, 1], missing: {"9": unknown}, label: "Use of a substance"}
-  tobacco_use_disorder: {column: utitab, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Tobacco: abuse or dependence"}
-  tobacco_first_age: {column: utitabag, type: number, range: [0, 70], winsor: false, label: "Tobacco: age at the first use"}
-  tobacco_use_status: {column: utitabst, type: category, codes: {"1": past, "2": current}, label: "Tobacco: the abuse or dependence is past or current"}
-  alcohol_use_disorder: {column: utialc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Alcohol: abuse or dependence"}
-  alcohol_first_age: {column: utialcag, type: number, range: [0, 90], winsor: false, label: "Alcohol: age at the first use"}
-  alcohol_use_status: {column: utialcst, type: category, codes: {"1": past, "2": current}, label: "Alcohol: the abuse or dependence is past or current"}
-  benzodiazepines_use_disorder: {column: utiben, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Benzodiazepines: abuse or dependence"}
-  benzodiazepines_first_age: {column: utibenag, type: number, range: [0, 70], winsor: false, label: "Benzodiazepines: age at the first use"}
-  benzodiazepines_use_status: {column: utibenst, type: category, codes: {"1": past, "2": current}, label: "Benzodiazepines: the abuse or dependence is past or current"}
-  cannabis_use_disorder: {column: utican, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cannabis: abuse or dependence"}
-  cannabis_first_age: {column: uticanag, type: number, range: [0, 90], winsor: false, label: "Cannabis: age at the first use"}
-  cannabis_use_status: {column: uticanst, type: category, codes: {"1": past, "2": current}, label: "Cannabis: the abuse or dependence is past or current"}
-  stimulants_use_disorder: {column: utisti, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Psychostimulants: abuse or dependence"}
-  stimulants_first_age: {column: utistiag, type: number, range: [0, 70], winsor: false, label: "Stimulants: age at the first use"}
-  stimulants_use_status: {column: utistist, type: category, codes: {"1": past, "2": current}, label: "Psychostimulants: the abuse or dependence is past or current"}
-  cocaine_use_disorder: {column: uticoc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cocaine: abuse or dependence"}
-  cocaine_first_age: {column: uticocag, type: number, range: [0, 90], winsor: false, label: "Cocaine: age at the first use"}
-  cocaine_use_status: {column: uticocst, type: category, codes: {"1": past, "2": current}, label: "Cocaine: the abuse or dependence is past or current"}
-  hallucinogens_use_disorder: {column: utihal, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Hallucinogens: abuse or dependence"}
-  hallucinogens_first_age: {column: utihalag, type: number, range: [0, 70], winsor: false, label: "Hallucinogens: age at the first use"}
-  hallucinogens_use_status: {column: utihalst, type: category, codes: {"1": past, "2": current}, label: "Hallucinogens: the abuse or dependence is past or current"}
-  steroids_use_disorder: {column: utiste, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Androgenic steroids: abuse or dependence"}
-  solvents_use_disorder: {column: utisol, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Solvents: abuse or dependence"}
-  solvents_first_age: {column: utisolag, type: number, range: [0, 70], winsor: false, label: "Solvents: age at the first use"}
-  solvents_use_status: {column: utisolst, type: category, codes: {"1": past, "2": current}, label: "Solvents: the abuse or dependence is past or current"}
+  substance_disorder_v0: {column: utisubst, type: item, range: [0, 1], missing: {"9": unknown}, label: "Has a substance use disorder (abuse or dependence), at inclusion"}
+
+  tobacco_disorder_v0: {column: utitab, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Tobacco: abuse or dependence (yes or no), at inclusion"}
+  tobacco_use_disorder_v0: {column: utitab, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Tobacco: no, abuse or dependence, at inclusion"}
+  smoking_start_age_clinician: {column: utitabag, type: number, unit: years, range: [0, 90], winsor: false, label: "Tobacco: age at the start of smoking, as the clinician records it, at inclusion"}
+  tobacco_use_status_v0: {column: utitabst, type: category, codes: {"1": past, "2": current}, label: "Tobacco: the abuse or dependence is past or current, at inclusion"}
+
+  alcohol_disorder_v0: {column: utialc, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Alcohol: abuse or dependence (yes or no), at inclusion"}
+  alcohol_use_disorder_v0: {column: utialc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Alcohol: no, abuse or dependence, at inclusion"}
+  alcohol_onset_age_v0: {column: utialcag, type: number, unit: years, range: [0, 90], winsor: false, label: "Alcohol: age at onset of the abuse or dependence, at inclusion"}
+  alcohol_use_status_v0: {column: utialcst, type: category, codes: {"1": past, "2": current}, label: "Alcohol: the abuse or dependence is past or current, at inclusion"}
+
+  benzodiazepines_disorder_v0: {column: utiben, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Benzodiazepines: abuse or dependence (yes or no), at inclusion"}
+  benzodiazepines_use_disorder_v0: {column: utiben, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Benzodiazepines: no, abuse or dependence, at inclusion"}
+  benzodiazepines_onset_age_v0: {column: utibenag, type: number, unit: years, range: [0, 90], winsor: false, label: "Benzodiazepines: age at onset of the abuse or dependence, at inclusion"}
+  benzodiazepines_use_status_v0: {column: utibenst, type: category, codes: {"1": past, "2": current}, label: "Benzodiazepines: the abuse or dependence is past or current, at inclusion"}
+
+  cannabis_disorder_v0: {column: utican, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Cannabis: abuse or dependence (yes or no), at inclusion"}
+  cannabis_use_disorder_v0: {column: utican, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cannabis: no, abuse or dependence, at inclusion"}
+  cannabis_onset_age_v0: {column: uticanag, type: number, unit: years, range: [0, 90], winsor: false, label: "Cannabis: age at onset of the abuse or dependence, at inclusion"}
+  cannabis_use_status_v0: {column: uticanst, type: category, codes: {"1": past, "2": current}, label: "Cannabis: the abuse or dependence is past or current, at inclusion"}
+
+  stimulant_disorder_v0: {column: utisti, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Psychostimulants: abuse or dependence (yes or no), at inclusion"}
+  stimulants_use_disorder_v0: {column: utisti, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Psychostimulants: no, abuse or dependence, at inclusion"}
+  stimulant_onset_age_v0: {column: utistiag, type: number, unit: years, range: [0, 90], winsor: false, label: "Psychostimulants: age at onset of the abuse or dependence, at inclusion"}
+  stimulants_use_status_v0: {column: utistist, type: category, codes: {"1": past, "2": current}, label: "Psychostimulants: the abuse or dependence is past or current, at inclusion"}
+
+  cocaine_disorder_v0: {column: uticoc, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Cocaine: abuse or dependence (yes or no), at inclusion"}
+  cocaine_use_disorder_v0: {column: uticoc, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Cocaine: no, abuse or dependence, at inclusion"}
+  cocaine_onset_age_v0: {column: uticocag, type: number, unit: years, range: [0, 90], winsor: false, label: "Cocaine: age at onset of the abuse or dependence, at inclusion"}
+  cocaine_use_status_v0: {column: uticocst, type: category, codes: {"1": past, "2": current}, label: "Cocaine: the abuse or dependence is past or current, at inclusion"}
+
+  hallucinogen_disorder_v0: {column: utihal, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Hallucinogens: abuse or dependence (yes or no), at inclusion"}
+  hallucinogens_use_disorder_v0: {column: utihal, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Hallucinogens: no, abuse or dependence, at inclusion"}
+  hallucinogen_onset_age_v0: {column: utihalag, type: number, unit: years, range: [0, 90], winsor: false, label: "Hallucinogens: age at onset of the abuse or dependence, at inclusion"}
+  hallucinogens_use_status_v0: {column: utihalst, type: category, codes: {"1": past, "2": current}, label: "Hallucinogens: the abuse or dependence is past or current, at inclusion"}
+
+  steroids_disorder_v0: {column: utiste, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Androgenic steroids: abuse or dependence (yes or no), at inclusion"}
+  steroids_use_disorder_v0: {column: utiste, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Androgenic steroids: no, abuse or dependence, at inclusion"}
+
+  solvents_disorder_v0: {column: utisol, type: item, range: [0, 1], separator: ",", codes: {"0": 0, "1": 1, "2": 1}, missing: {"9": unknown}, asked_if: substance_disorder_v0, label: "Solvents: abuse or dependence (yes or no), at inclusion"}
+  solvents_use_disorder_v0: {column: utisol, type: category, codes: {"0": "no", "1": abuse, "2": dependence}, missing: {"9": unknown}, label: "Solvents: no, abuse or dependence, at inclusion"}
+  solvents_onset_age_v0: {column: utisolag, type: number, unit: years, range: [0, 90], winsor: false, label: "Solvents: age at onset of the abuse or dependence, at inclusion"}
+  solvents_use_status_v0: {column: utisolst, type: category, codes: {"1": past, "2": current}, label: "Solvents: the abuse or dependence is past or current, at inclusion"}
+
+  # The answers of the follow-up visits (form 348) are read and not delivered (70 visits, one yes).
+  substance_disorder_fu: {column: utisubst, type: item, range: [0, 1], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Substance use disorder, asked again at a follow-up visit (not delivered)"}
+  tobacco_use_disorder_fu: {column: utitab, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Tobacco: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  tobacco_onset_age_fu: {column: utitabag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Tobacco: age at onset, asked again at a follow-up visit (not delivered)"}
+  tobacco_use_status_fu: {column: utitabst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Tobacco: past or current, asked again at a follow-up visit (not delivered)"}
+  alcohol_use_disorder_fu: {column: utialc, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Alcohol: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  alcohol_onset_age_fu: {column: utialcag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Alcohol: age at onset, asked again at a follow-up visit (not delivered)"}
+  alcohol_use_status_fu: {column: utialcst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Alcohol: past or current, asked again at a follow-up visit (not delivered)"}
+  benzodiazepines_use_disorder_fu: {column: utiben, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Benzodiazepines: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  benzodiazepines_onset_age_fu: {column: utibenag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Benzodiazepines: age at onset, asked again at a follow-up visit (not delivered)"}
+  benzodiazepines_use_status_fu: {column: utibenst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Benzodiazepines: past or current, asked again at a follow-up visit (not delivered)"}
+  cannabis_use_disorder_fu: {column: utican, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Cannabis: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  cannabis_onset_age_fu: {column: uticanag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Cannabis: age at onset, asked again at a follow-up visit (not delivered)"}
+  cannabis_use_status_fu: {column: uticanst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Cannabis: past or current, asked again at a follow-up visit (not delivered)"}
+  stimulants_use_disorder_fu: {column: utisti, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Psychostimulants: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  stimulants_onset_age_fu: {column: utistiag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Psychostimulants: age at onset, asked again at a follow-up visit (not delivered)"}
+  stimulants_use_status_fu: {column: utistist, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Psychostimulants: past or current, asked again at a follow-up visit (not delivered)"}
+  cocaine_use_disorder_fu: {column: uticoc, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Cocaine: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  cocaine_onset_age_fu: {column: uticocag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Cocaine: age at onset, asked again at a follow-up visit (not delivered)"}
+  cocaine_use_status_fu: {column: uticocst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Cocaine: past or current, asked again at a follow-up visit (not delivered)"}
+  hallucinogens_use_disorder_fu: {column: utihal, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Hallucinogens: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  hallucinogens_onset_age_fu: {column: utihalag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Hallucinogens: age at onset, asked again at a follow-up visit (not delivered)"}
+  hallucinogens_use_status_fu: {column: utihalst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Hallucinogens: past or current, asked again at a follow-up visit (not delivered)"}
+  steroids_use_disorder_fu: {column: utiste, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Androgenic steroids: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  solvents_use_disorder_fu: {column: utisol, type: item, range: [0, 2], missing: {"9": unknown}, versions: [follow_up], keep: false, label: "Solvents: no, abuse or dependence, asked again at a follow-up visit (not delivered)"}
+  solvents_onset_age_fu: {column: utisolag, type: number, range: [0, 90], winsor: false, versions: [follow_up], keep: false, label: "Solvents: age at onset, asked again at a follow-up visit (not delivered)"}
+  solvents_use_status_fu: {column: utisolst, type: item, range: [1, 2], versions: [follow_up], keep: false, label: "Solvents: past or current, asked again at a follow-up visit (not delivered)"}

@@ -2,7 +2,7 @@ instrument: cgi_egf
 title: "Clinical Global Impression (CGI) and Global Assessment of Functioning (EGF)"
 tab: HETERO-QUESTIONNAIRE
 section: Questionnaire CGI-EGF
-status: draft
+status: reviewed
 notes: >
   The code 0 means "not assessed" for the severity, the improvement, the
   therapeutic effect and the efficacy index. It is read as a missing code.
@@ -14,13 +14,47 @@ notes: >
   353 to 650 of the 2,231 inclusion visits with a CGI. These variables are
   read at the follow-up visits only (visit_form, from the visit label).
 
-  The efficacy index is (therapeutic effect - 1) x 4 + side effects. A schema
-  cannot write a product, so the custom check cgi_index_differs compares the
-  stored index with that formula: it holds on 2,013 of the 2,036 follow-up
-  visits that have the three values, and the 23 others get check_failed.
+  The efficacy index is a score: 4 x (therapeutic effect - 1) + side
+  effects, the formula of the script of the form (hetero_cgi_egf.js, line 23),
+  so it goes from 1 to 16 (cgi_te_steps is the first term, not delivered). The
+  stored index (cgi_efficacy_index_stored, not delivered) is the check. The
+  application computes the index only when a side-effects option is clicked
+  (the tooltip of the field says to tick the side effects again after changing
+  the effect), so the stored index is stale after an edit of the therapeutic
+  effect. On the 2,036 follow-up visits that have the effect, the side effects
+  and the stored index, the stored index differs from the formula on 23
+  (score_mismatch): always by a multiple of 4 (4 higher on 9, 4 lower on 10, 8
+  or 12 away on 4), as if the effect had been changed after the index was
+  computed. The recomputed value is delivered: 23 values recomputed, no visit
+  with an effect and side effects and no stored index, and 3 visits hold a
+  stored index with the effect or the side effects missing: the index is
+  missing there (score_not_recomputed). Before this review the stored index
+  was delivered and checked by a custom function (check_failed on the same 23
+  visits).
 
-  The EGF is a number from 1 to 100 in every cell: no band of ten points, as
-  some BP cells hold.
+  The numbers 1 to 16 are the cell labels of the grid of Guy's ECDEU
+  Assessment Manual (1976): rows are the therapeutic effect (marked, moderate,
+  minimal, unchanged or worse), columns the side effects, numbered row by row
+  (6 = moderate effect, side effects that do not interfere significantly, the
+  example printed on the form). They are position labels, not an ordered
+  score: Guy gives a table from the cell to a ratio of effect to side effects
+  (0.25 to 4.00), and the cell number does not rise with that ratio
+  (scale_reference.md, section 3; the table itself to verify on the scan).
+
+  The EGF is a free text field in the form (varchar(25), NOT NULL, no pattern)
+  under the ten bands of the scale, so a band such as "60-51" can be typed, as
+  in BP. It is a whole number in every cell of this extraction (2 to 100
+  observed): the earlier note that SZ holds no band is an artefact of the
+  export, which casts the field to a whole number and drops every other text
+  (eschizo_hetero_cgi_egf.sql, lines 21 and 22; request R138: keep the raw
+  text). The variable keeps bands: middle for the day the text arrives. The
+  form prints '41-50' and '11-21' (the published band is 11-20) and has no
+  100-91 band, which the BP form has. 123 of the 4,647 visits with a CGI
+  severity have no EGF (2.6%).
+
+  The export drops the Fait / Non fait flags of the CGI-EGF form and of the PSP
+  form (rad_cgi_egf_nf and rad_psp_nf): a visit with an empty form cannot be
+  told from a visit where it was not done (request R141).
 
   The severity is rated at every visit.
 
@@ -79,12 +113,13 @@ variables:
     versions: [follow_up]
     label: "CGI side effects, from 1 (none) to 4 (outweigh the therapeutic effect)"
     range: [1, 4]
-  cgi_efficacy_index:
+  cgi_efficacy_index_stored:
     column: cgi0103
     versions: [follow_up]
-    label: "CGI efficacy index, from 1 to 16"
+    label: "CGI efficacy index as stored, from 1 to 16"
     range: [1, 16]
     missing: {0: not_recorded}
+    keep: false
   gaf:
     column: egf
     label: "Global Assessment of Functioning (EGF), from 1 to 100"
@@ -94,5 +129,14 @@ variables:
     bands: middle
     winsor: false
 
-checks:
-  cgi_efficacy_index: cgi_index_differs
+scores:
+  cgi_te_steps:
+    label: "4 x (therapeutic effect - 1)"
+    sum: [cgi_therapeutic_effect]
+    scale: [4, -4]
+    keep: false
+  cgi_efficacy_index:
+    label: "CGI efficacy index (cell of Guy's grid, 4 x (effect - 1) + side effects), from 1 to 16"
+    sum: [cgi_te_steps, cgi_side_effects]
+    range: [1, 16]
+    compare: cgi_efficacy_index_stored
