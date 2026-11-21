@@ -42,29 +42,29 @@ norms and the dictionaries are not part of the package (see [Data](#data)).
 **In another project, with uv:**
 
 ```bash
-uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
 ```
 
 **In another project, with pip:**
 
 ```bash
-pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
 ```
 
-`@v0.1.0` pins a released version, so an analysis keeps giving the same
+`@v0.2.0` pins a released version, so an analysis keeps giving the same
 results when the package changes. Leave it out to take the latest `main`.
 
 `coverage()` reads the thesaurus workbooks and needs the extra `thesaurus`
 (openpyxl). With uv:
 
 ```bash
-uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
 ```
 
 The same with pip:
 
 ```bash
-pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
 ```
 
 **From a local copy that you are changing:** an editable install sees your
