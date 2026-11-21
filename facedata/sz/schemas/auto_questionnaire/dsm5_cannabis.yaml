@@ -14,14 +14,20 @@ notes: >
   of the 12-month criteria comes from asked_if. Under a yes, 23 are empty
   and 27 are "do not know".
 
-  The block is shown after a yes to the question "more than ten times in
-  your life" of the SUBSTANCES tab (cannabis_over_ten_times; addict.js,
-  lines 50 to 56). It is not written as a shown_if: the form hides the block
-  but keeps what was typed, and 78 delivered cells on 5 visits sit under a
-  no, 24 on 1 visit under an empty answer. A block empty on a visit was not
-  answered: it is not a string of no. The criteria carry no asked_if on the
-  use question, which would turn the blocks never asked into 0: a no there
-  means ten times or fewer.
+  The block is shown after a yes to the question "more than ten times in your
+  life" of the SUBSTANCES tab (cannabis_over_ten_times; addict.js, lines 50 to
+  56). It is not written as a shown_if: the form hides the block but keeps
+  what was typed, and 78 delivered cells on 5 visits sit under a no, 24 on 1
+  visit under an empty answer. A block empty on a visit with a yes to the use
+  question was not answered: it stays missing, as it does where the use
+  question is empty. After a no (ten times or fewer in the life) the block is
+  never asked, and its criteria are 0: asked_if on
+  cannabis_over_ten_times_gate, a hidden reader of the SUBSTANCES column
+  suoccur_cannabislt (the user's decision of 2026-11-21). 21,439 cells of the
+  criteria ever and as many of the 12-month criteria (asked after a yes to
+  ever, so 0 too) become 0, on 1,787 visits; the two counts are 0 there (the
+  count ever is filled on 1,129 visits before, 2,916 after). A criterion typed
+  under a no is read as typed.
 
   The same twelve questions are asked for seven substances, in seven schemas
   with the same variables (dsm5_alcohol.yaml and the others; the stems are
@@ -37,36 +43,40 @@ notes: >
   (calcul_sympt, addict.js, lines 448 to 490) and does not store the count.
 
   The same form is used at inclusion and at the yearly visits (the yearly
-  update, no split). The count "ever" is not always kept from one year to
-  the next: 38 of the 225 yearly answers of the patients with one criterion
-  or more at inclusion give a count of 0.
+  update, no split). The count "ever" is not always kept from one year to the
+  next: 38 of the 225 yearly answers of the patients with one criterion or
+  more at inclusion give a count of 0. With the gate on the use question, 77
+  of 265: at 40 yearly visits these patients answer no to "more than ten times
+  in your life", although they met a criterion at inclusion: these zeros come
+  from the use question, not from the criteria.
 
 defaults: {type: item, range: [0, 1], missing: {2: unknown}}
 
 variables:
-  cannabis_larger_amounts: {column: cannaba1, label: "Cannabis, criterion a: took larger amounts than intended, ever"}
+  cannabis_over_ten_times_gate: {column: suoccur_cannabislt, codes: {Y: 1, N: 0}, keep: false, label: "Cannabis: more than ten times in your life (the SUBSTANCES tab question, delivered as cannabis_over_ten_times; not delivered here, the gate of the criteria ever)"}
+  cannabis_larger_amounts: {column: cannaba1, label: "Cannabis, criterion a: took larger amounts than intended, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_larger_amounts_12m: {column: cannaba2, label: "Cannabis, criterion a: took larger amounts than intended, in the last 12 months", asked_if: cannabis_larger_amounts}
-  cannabis_cut_down: {column: cannabb1, label: "Cannabis, criterion b: tried to cut down or stop, ever"}
+  cannabis_cut_down: {column: cannabb1, label: "Cannabis, criterion b: tried to cut down or stop, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_cut_down_12m: {column: cannabb2, label: "Cannabis, criterion b: tried to cut down or stop, in the last 12 months", asked_if: cannabis_cut_down}
-  cannabis_time_spent: {column: cannabc1, label: "Cannabis, criterion c: spends time obtaining, using or recovering, ever"}
+  cannabis_time_spent: {column: cannabc1, label: "Cannabis, criterion c: spends time obtaining, using or recovering, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_time_spent_12m: {column: cannabc2, label: "Cannabis, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: cannabis_time_spent}
-  cannabis_craving: {column: cannabd1, label: "Cannabis, criterion d: craving, ever"}
+  cannabis_craving: {column: cannabd1, label: "Cannabis, criterion d: craving, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_craving_12m: {column: cannabd2, label: "Cannabis, criterion d: craving, in the last 12 months", asked_if: cannabis_craving}
-  cannabis_obligations: {column: cannabe1, label: "Cannabis, criterion e: failed major obligations at work, at home or at school, ever"}
+  cannabis_obligations: {column: cannabe1, label: "Cannabis, criterion e: failed major obligations at work, at home or at school, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_obligations_12m: {column: cannabe2, label: "Cannabis, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: cannabis_obligations}
-  cannabis_interpersonal: {column: cannabf1, label: "Cannabis, criterion f: went on using in spite of interpersonal consequences, ever"}
+  cannabis_interpersonal: {column: cannabf1, label: "Cannabis, criterion f: went on using in spite of interpersonal consequences, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_interpersonal_12m: {column: cannabf2, label: "Cannabis, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: cannabis_interpersonal}
-  cannabis_activities_given_up: {column: cannabg1, label: "Cannabis, criterion g: gave up social, occupational or leisure activities, ever"}
+  cannabis_activities_given_up: {column: cannabg1, label: "Cannabis, criterion g: gave up social, occupational or leisure activities, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_activities_given_up_12m: {column: cannabg2, label: "Cannabis, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: cannabis_activities_given_up}
-  cannabis_hazardous_use: {column: cannabh1, label: "Cannabis, criterion h: repeated use when it can be dangerous, ever"}
+  cannabis_hazardous_use: {column: cannabh1, label: "Cannabis, criterion h: repeated use when it can be dangerous, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_hazardous_use_12m: {column: cannabh2, label: "Cannabis, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: cannabis_hazardous_use}
-  cannabis_despite_problems: {column: cannabi1, label: "Cannabis, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  cannabis_despite_problems: {column: cannabi1, label: "Cannabis, criterion i: went on using in spite of psychological or physical problems it causes, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_despite_problems_12m: {column: cannabi2, label: "Cannabis, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: cannabis_despite_problems}
-  cannabis_tolerance: {column: cannabj1, label: "Cannabis, criterion j: tolerance, ever"}
+  cannabis_tolerance: {column: cannabj1, label: "Cannabis, criterion j: tolerance, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_tolerance_12m: {column: cannabj2, label: "Cannabis, criterion j: tolerance, in the last 12 months", asked_if: cannabis_tolerance}
-  cannabis_withdrawal: {column: cannabk1, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  cannabis_withdrawal: {column: cannabk1, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_withdrawal_12m: {column: cannabk2, label: "Cannabis, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: cannabis_withdrawal}
-  cannabis_legal_problems: {column: cannabl1, label: "Cannabis, criterion l: legal problems linked to the use, ever"}
+  cannabis_legal_problems: {column: cannabl1, label: "Cannabis, criterion l: legal problems linked to the use, ever", asked_if: cannabis_over_ten_times_gate}
   cannabis_legal_problems_12m: {column: cannabl2, label: "Cannabis, criterion l: legal problems linked to the use, in the last 12 months", asked_if: cannabis_legal_problems}
 
 scores:

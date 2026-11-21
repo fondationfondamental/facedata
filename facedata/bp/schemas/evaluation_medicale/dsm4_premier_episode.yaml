@@ -37,7 +37,8 @@ notes: >
   censored_right (none), as for the age at the first hospitalisation (D54,
   D122). 4 ages are above the age at the inclusion visit (by 0.1, 0.4, 2.3
   and 4.2 years: only the two above one year are errors); they are
-  delivered as written.
+  delivered as written and flagged check_failed (not_above the age at the
+  visit).
 
   The postpartum question is asked of every patient: the 1,628 men who
   answer give 0, and 169 of the 2,712 women (6.2%) give 1, so a rate is
@@ -66,6 +67,6 @@ defaults: {versions: [dsm4]}
 
 variables:
   dsm4_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic, "Mixte sans caractéristiques psychotiques": mixed, "Mixte avec caractéristiques psychotiques": mixed_psychotic}, label: "Type of the first mood episode"}
-  dsm4_first_episode_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first mood episode"}
+  dsm4_first_episode_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first mood episode", not_above: age}
   dsm4_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
   dsm4_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}

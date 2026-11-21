@@ -81,10 +81,18 @@ notes: >
   one by hand (66 of the 73 visits at 1 point, 6 of 6 at 9, 1 of 1 at 17).
   The published bands of MINI 7.0.2 are 1 to 8 low, 9 to 16 moderate, 17
   or more high (MINI 7.0.2 form, 2016); the bands of the French 6.0.0 were
-  not found in the literature check of 2026-11-21 (question M87); the
-  stored level follows
-  them on 430 of 439 visits (3 visits at 9 points are low). The level is
-  delivered as stored.
+  not found in the literature check of 2026-11-21 (question M87).
+  mini_suicide_risk_level is recomputed from the recomputed score with the
+  7.0.2 bands (decision D85, function mini_risk_level of custom.py); a
+  score of 0 has no level, as in the form (mini_suicide_risk is 0 there).
+  The stored level (bc, mini_suicide_risk_level_stored, not delivered) is
+  its check: it follows the bands on 432 of the 442 visits where both
+  exist. The 10 others are a hand level that the score does not give (3 at
+  9 points and 2 at 10 or 12 are low, 3 at 19 to 40 low, 1 at 20
+  moderate, 1 at 16 high): score_mismatch. 9 visits with a score and no
+  stored level get one (7 at 1 point, the button left them empty; 2 where
+  the button was not pressed). If the French 6.0.0 has other bands (M87),
+  only the function changes.
 
   Centres (2026-11-20). B2 (hopelessness) is yes on 8 of 26 visits in the
   centre that started in 2022 (47% to 83% in the other centres with 20
@@ -132,7 +140,7 @@ variables:
   mini_b11_fu: {column: b11, versions: [follow_up], label: "B11) Avez-vous déjà fait une tentative de suicide ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_suicide_risk: {column: ba, label: "Current suicide risk"}
   mini_suicide_risk_score_stored: {column: bb, type: number, range: [0, 52], winsor: false, asked_if: mini_suicide_risk, keep: false, label: "Suicide risk score as stored (0 where there is no risk)"}
-  mini_suicide_risk_level: {column: bc, range: [1, 3], label: "Suicide risk level (1 low, 2 moderate, 3 high)"}
+  mini_suicide_risk_level_stored: {column: bc, range: [1, 3], keep: false, label: "Suicide risk level as stored (1 low, 2 moderate, 3 high; the button leaves 1, 9 and 17 points without a level, A85)"}
   mini_suicide_risk_comment: {column: bd, type: text, label: "Comment on the suicide risk, as written"}
 
 scores:
@@ -148,3 +156,8 @@ scores:
     range: [0, 52]
     min_items: 1
     compare: mini_suicide_risk_score_stored
+  mini_suicide_risk_level:
+    label: "Suicide risk level (1 low, 2 moderate, 3 high): the bands of MINI 7.0.2 on the score, 1-8, 9-16, 17 or more; none at 0"
+    custom: mini_risk_level
+    range: [1, 3]
+    compare: mini_suicide_risk_level_stored

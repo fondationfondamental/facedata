@@ -11,21 +11,35 @@ notes: >
   later visits 12).
 
   The code 7 is "cannot be assessed": 377 cells on 231 visits, read as a
-  missing code.
+  missing code in the items (ephp01 to ephp13), and as 0 in the scores.
 
-  Scores. The four stored sub-scores are the sums of their items (1 to 4, 5
-  to 8, 9 to 11, 12 and 13), and the total is their sum: 1 to 4
-  score_mismatch each. A sum needs all its items, so no score is delivered
-  where an item is 7 (225 visits with a stored total): the strict score is
-  kept. On those visits the stored scores count the 7 as 7 points: the total
-  is the sum with the 7 on 224 of the 225, and 16 stored totals are above
-  the maximum of 78 (up to 82). The EMR script counted the 7 as 7 until
-  2026-10-28 and counts it as 0 since (the commit "score non-evaluable
-  answers as zero"; A80 of docs/EXPORT_REQUESTS.md). No published rule for a
-  non-evaluable item was found: the article (Passerieux, Bulot and
-  Hardy-Baylé, Alter 2012) could not be read and no other source gives the
-  scoring (literature check 2026-11-21). The 17 visits with an item empty
-  for another reason have no stored score.
+  Scores. The four stored sub-scores are the sums of their items (1 to 4, 5 to
+  8, 9 to 11, 12 and 13), and the total is their sum. The scores count the
+  code 7 as 0 points, as the application does since 2026-10-28 (the commit
+  "score non-evaluable answers as zero"; A80 of docs/EXPORT_REQUESTS.md): the
+  user's decision of 2026-11-21. They add up hidden copies of the items
+  (ephp01_scored to ephp13_scored, keep: false) that keep the 7 (missing: {})
+  and count it 0 (points); the items themselves are delivered with the 7 as
+  missing. A sum needs all its items, so the 17 visits with an item empty for
+  another reason have no score (and no stored score).
+
+  Since 0 means great difficulty, a score leans toward the worst rating where
+  an item could not be assessed. No published rule for a non-evaluable item
+  was found: the article (Passerieux, Bulot and Hardy-Baylé, Alter 2012) could
+  not be read and no other source gives the scoring (literature check
+  2026-11-21). The scores gain a value on the visits with a 7: cognition 66
+  (1,727 to 1,793 visits), motivation 118 (1,673 to 1,791), communication 87
+  (1,704 to 1,791), self-assessment 46 (1,748 to 1,794), total 228 (1,557 to
+  1,785).
+
+  The stored scores stay the check. Until 2026-10-28 the EMR script counted
+  the 7 as 7 points, and every stored score of the extraction was computed so:
+  the total is the sum with the 7 on 224 of the 225 visits with a 7 and a
+  stored total, and 16 stored totals are above the maximum of 78 (up to 82).
+  These visits get score_mismatch (total 4 to 229, cognition 2 to 67,
+  motivation 2 to 120, communication 1 to 87, self-assessment 1 to 45); the
+  score_not_recomputed of the stored scores (225 on the total) are gone.
+  Outside the 7 the scores match the stored ones but for 1 to 4 visits each.
 
 defaults: {type: item, range: [0, 6], missing: {7: not_applicable}}
 
@@ -43,6 +57,19 @@ variables:
   ephp11: {label: "EPHP item 11 (0 great difficulty to 6 no difficulty)"}
   ephp12: {label: "EPHP item 12 (0 great difficulty to 6 no difficulty)"}
   ephp13: {label: "EPHP item 13 (0 great difficulty to 6 no difficulty)"}
+  ephp01_scored: {column: ephp01, range: [0, 7], missing: {}, keep: false, label: "EPHP item 1 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp02_scored: {column: ephp02, range: [0, 7], missing: {}, keep: false, label: "EPHP item 2 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp03_scored: {column: ephp03, range: [0, 7], missing: {}, keep: false, label: "EPHP item 3 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp04_scored: {column: ephp04, range: [0, 7], missing: {}, keep: false, label: "EPHP item 4 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp05_scored: {column: ephp05, range: [0, 7], missing: {}, keep: false, label: "EPHP item 5 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp06_scored: {column: ephp06, range: [0, 7], missing: {}, keep: false, label: "EPHP item 6 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp07_scored: {column: ephp07, range: [0, 7], missing: {}, keep: false, label: "EPHP item 7 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp08_scored: {column: ephp08, range: [0, 7], missing: {}, keep: false, label: "EPHP item 8 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp09_scored: {column: ephp09, range: [0, 7], missing: {}, keep: false, label: "EPHP item 9 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp10_scored: {column: ephp10, range: [0, 7], missing: {}, keep: false, label: "EPHP item 10 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp11_scored: {column: ephp11, range: [0, 7], missing: {}, keep: false, label: "EPHP item 11 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp12_scored: {column: ephp12, range: [0, 7], missing: {}, keep: false, label: "EPHP item 12 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
+  ephp13_scored: {column: ephp13, range: [0, 7], missing: {}, keep: false, label: "EPHP item 13 as the scores read it (the code 7, cannot be assessed, is kept and counts 0 points)"}
   ephp_cognition_stored: {column: ephp14, type: number, label: EPHP cognitive abilities as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
   ephp_motivation_stored: {column: ephp15, type: number, label: EPHP motivation as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
   ephp_social_cognition_stored: {column: ephp16, type: number, label: EPHP communication and understanding of others as stored, range: [0, 30], winsor: false, keep: false, missing: {}}
@@ -52,19 +79,23 @@ variables:
 scores:
   ephp_cognition:
     label: "EPHP cognitive abilities (items 1 to 4, 0 to 24)"
-    sum: [ephp01, ephp02, ephp03, ephp04]
+    sum: [ephp01_scored, ephp02_scored, ephp03_scored, ephp04_scored]
+    points: {"7": 0}
     compare: ephp_cognition_stored
   ephp_motivation:
     label: "EPHP motivation (items 5 to 8, 0 to 24)"
-    sum: [ephp05, ephp06, ephp07, ephp08]
+    sum: [ephp05_scored, ephp06_scored, ephp07_scored, ephp08_scored]
+    points: {"7": 0}
     compare: ephp_motivation_stored
   ephp_social_cognition:
     label: "EPHP communication and understanding of others (items 9 to 11, 0 to 18)"
-    sum: [ephp09, ephp10, ephp11]
+    sum: [ephp09_scored, ephp10_scored, ephp11_scored]
+    points: {"7": 0}
     compare: ephp_social_cognition_stored
   ephp_self_assessment:
     label: "EPHP self-assessment of abilities and asking for help (items 12 to 13, 0 to 12)"
-    sum: [ephp12, ephp13]
+    sum: [ephp12_scored, ephp13_scored]
+    points: {"7": 0}
     compare: ephp_self_assessment_stored
   ephp_total:
     label: "EPHP total (13 items, 0 to 78, higher is less handicap)"

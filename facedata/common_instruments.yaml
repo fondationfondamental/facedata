@@ -754,10 +754,13 @@ current_mood_episode:
   domain: Diagnosis, comorbidities and substances
   schemas: {bp: dsm4_episode_actuel, dr: mood_history_v0}
   stack: with care
-  use: [dsm4_current_severity, dsm4_current_chronic, dsm4_current_postpartum]
+  use: [dsm4_current_severity, dsm4_current_chronic, dsm4_current_postpartum, dsm4_current_specifier]
   note: >
     The severity, the chronic course and the postpartum onset of the current
-    episode, read from the same raw columns as in BP.
+    episode, read from the same raw columns as in BP. The specifier of a
+    current depressive episode (none, melancholic, atypical, catatonic): the
+    same question and answers, read from cedecodtrouble_humeur_actuel_type in
+    BP and from cedecodtrouble_humeur_actuel in DR.
 
 isf_lifetime_fu:
   title: Suicidal thoughts and acts, the lifetime form asked again at a follow-up visit

@@ -60,7 +60,8 @@ notes: >
   say yes and then give 0 for every kind of episode; 2 give a number above
   0 after a no and 4 give numbers with no first answer or "Ne sais pas"; 23
   say yes to psychotic features with no episode of that kind; 9 give more
-  episodes with psychotic features than episodes of that kind; the number
+  episodes with psychotic features than episodes of that kind (3
+  depressive, 4 manic, 2 mixed; flagged check_failed, not_above); the number
   of episodes in the year is above the lifetime number for 88 inclusions
   (14 depressive, 29 hypomanic, 23 manic and 25 mixed numbers); 80 of the
   1,386 inclusions in a current episode that answer here say no mood
@@ -87,14 +88,14 @@ variables:
   dsm4_ly_mde: {column: mhoccur_edm_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one major depressive episode in the past year"}
   dsm4_ly_n_mde: {column: evnum_edm_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of major depressive episodes in the past year"}
   dsm4_ly_mde_psychotic: {column: mhoccur_edmpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mde, label: "At least one major depressive episode with psychotic features in the past year"}
-  dsm4_ly_n_mde_psychotic: {column: evnum_edmpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mde_psychotic, label: "Number of major depressive episodes with psychotic features in the past year"}
+  dsm4_ly_n_mde_psychotic: {column: evnum_edmpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mde_psychotic, label: "Number of major depressive episodes with psychotic features in the past year", not_above: dsm4_ly_n_mde}
   dsm4_ly_hypomania: {column: mhoccur_ehman_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one hypomanic episode in the past year"}
   dsm4_ly_n_hypomania: {column: evnum_ehman_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of hypomanic episodes in the past year"}
   dsm4_ly_mania: {column: mhoccur_epman_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one manic episode in the past year"}
   dsm4_ly_n_mania: {column: evnum_epman_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of manic episodes in the past year"}
   dsm4_ly_mania_psychotic: {column: mhoccur_epman_psy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mania, label: "At least one manic episode with psychotic features in the past year"}
-  dsm4_ly_n_mania_psychotic: {column: evnum_epman_psy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mania_psychotic, label: "Number of manic episodes with psychotic features in the past year"}
+  dsm4_ly_n_mania_psychotic: {column: evnum_epman_psy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mania_psychotic, label: "Number of manic episodes with psychotic features in the past year", not_above: dsm4_ly_n_mania}
   dsm4_ly_mixed: {column: mhoccur_epmixt_ly, type: item, range: [0, 1], asked_if: dsm4_ly_any_episode, label: "At least one mixed episode in the past year"}
   dsm4_ly_n_mixed: {column: evnum_epmixt_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_any_episode, label: "Number of mixed episodes in the past year"}
   dsm4_ly_mixed_psychotic: {column: mhoccur_epmixtpsy_ly, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_ly_mixed, label: "At least one mixed episode with psychotic features in the past year"}
-  dsm4_ly_n_mixed_psychotic: {column: evnum_epmixtpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mixed_psychotic, label: "Number of mixed episodes with psychotic features in the past year"}
+  dsm4_ly_n_mixed_psychotic: {column: evnum_epmixtpsy_ly, type: number, range: [0, 20], winsor: false, asked_if: dsm4_ly_mixed_psychotic, label: "Number of mixed episodes with psychotic features in the past year", not_above: dsm4_ly_n_mixed}

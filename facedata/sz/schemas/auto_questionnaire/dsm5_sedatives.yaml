@@ -14,14 +14,25 @@ notes: >
   the 12-month criteria comes from asked_if. Under a yes, 3 are "do not
   know".
 
-  The block is shown after a yes to the question "more than ten times in
-  your life" of the SUBSTANCES tab (sedative_over_ten_times; addict.js,
-  lines 50 to 56). It is not written as a shown_if: the form hides the block
-  but keeps what was typed, and 26 delivered cells on 2 visits sit under a
-  no, 72 on 3 visits under an empty answer. A block empty on a visit was not
-  answered: it is not a string of no. The criteria carry no asked_if on the
-  use question, which would turn the blocks never asked into 0: a no there
-  means ten times or fewer.
+  The block is shown after a yes to the question "more than ten times in your
+  life" of the SUBSTANCES tab (sedative_over_ten_times; addict.js, lines 50 to
+  56). It is not written as a shown_if: the form hides the block but keeps
+  what was typed, and 26 delivered cells on 2 visits sit under a no, 72 on 3
+  visits under an empty answer. A block empty on a visit with a yes to the use
+  question was not answered: it stays missing, as it does where the use
+  question is empty. After a no (ten times or fewer in the life) the block is
+  never asked, and its criteria are 0 (the user's decisions of 2026-11-21).
+  The use question of this substance (sedative_over_ten_times) is itself asked
+  only after a yes to illicit drugs more than ten times (rad_add_4,
+  illicit_drugs_over_ten_times of drug_use.yaml), and drug_use.yaml delivers
+  it as 0 after a no there. The gate reproduces that chain with two hidden
+  readers: sedative_illicit_drugs_gate reads rad_add_4, and
+  sedative_over_ten_times_gate reads the SUBSTANCES column suoccur_sedatiflt
+  with asked_if on it, so the criteria are 0 wherever the delivered
+  sedative_over_ten_times is 0. 39,371 cells of the criteria ever and as many
+  of the 12-month criteria (asked after a yes to ever, so 0 too) become 0, on
+  3,281 visits; the two counts are 0 there (the count ever is filled on 94
+  visits before, 3,375 after). A criterion typed under a no is read as typed.
 
   The same twelve questions are asked for seven substances, in seven schemas
   with the same variables (dsm5_alcohol.yaml and the others; the stems are
@@ -37,36 +48,41 @@ notes: >
   (calcul_sympt, addict.js, lines 448 to 490) and does not store the count.
 
   The same form is used at inclusion and at the yearly visits (the yearly
-  update, no split). The count "ever" is not always kept from one year to
-  the next: 2 of the 10 yearly answers of the patients with one criterion or
-  more at inclusion give a count of 0.
+  update, no split). The count "ever" is not always kept from one year to the
+  next: 2 of the 10 yearly answers of the patients with one criterion or more
+  at inclusion give a count of 0. With the gate on the use question, 40 of 48:
+  at 38 yearly visits these patients answer no to "more than ten times in your
+  life" (or to the illicit-drugs question), although they met a criterion at
+  inclusion: these zeros come from the use question, not from the criteria.
 
 defaults: {type: item, range: [0, 1], missing: {2: unknown}}
 
 variables:
-  sedative_larger_amounts: {column: sedatia1, label: "Sedatives, criterion a: took larger amounts than intended, ever"}
+  sedative_illicit_drugs_gate: {column: rad_add_4, codes: {Oui: 1, Non: 0}, keep: false, label: "Illicit drugs or medicines without a prescription: more than ten times in your life (the opening question of drug_use.yaml, delivered as illicit_drugs_over_ten_times; not delivered here, the gate of the substance question)"}
+  sedative_over_ten_times_gate: {column: suoccur_sedatiflt, codes: {Y: 1, N: 0}, keep: false, label: "Sedatives: more than ten times in your life (the SUBSTANCES tab question, delivered as sedative_over_ten_times; not delivered here, the gate of the criteria ever)", asked_if: sedative_illicit_drugs_gate}
+  sedative_larger_amounts: {column: sedatia1, label: "Sedatives, criterion a: took larger amounts than intended, ever", asked_if: sedative_over_ten_times_gate}
   sedative_larger_amounts_12m: {column: sedatia2, label: "Sedatives, criterion a: took larger amounts than intended, in the last 12 months", asked_if: sedative_larger_amounts}
-  sedative_cut_down: {column: sedatib1, label: "Sedatives, criterion b: tried to cut down or stop, ever"}
+  sedative_cut_down: {column: sedatib1, label: "Sedatives, criterion b: tried to cut down or stop, ever", asked_if: sedative_over_ten_times_gate}
   sedative_cut_down_12m: {column: sedatib2, label: "Sedatives, criterion b: tried to cut down or stop, in the last 12 months", asked_if: sedative_cut_down}
-  sedative_time_spent: {column: sedatic1, label: "Sedatives, criterion c: spends time obtaining, using or recovering, ever"}
+  sedative_time_spent: {column: sedatic1, label: "Sedatives, criterion c: spends time obtaining, using or recovering, ever", asked_if: sedative_over_ten_times_gate}
   sedative_time_spent_12m: {column: sedatic2, label: "Sedatives, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: sedative_time_spent}
-  sedative_craving: {column: sedatid1, label: "Sedatives, criterion d: craving, ever"}
+  sedative_craving: {column: sedatid1, label: "Sedatives, criterion d: craving, ever", asked_if: sedative_over_ten_times_gate}
   sedative_craving_12m: {column: sedatid2, label: "Sedatives, criterion d: craving, in the last 12 months", asked_if: sedative_craving}
-  sedative_obligations: {column: sedatie1, label: "Sedatives, criterion e: failed major obligations at work, at home or at school, ever"}
+  sedative_obligations: {column: sedatie1, label: "Sedatives, criterion e: failed major obligations at work, at home or at school, ever", asked_if: sedative_over_ten_times_gate}
   sedative_obligations_12m: {column: sedatie2, label: "Sedatives, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: sedative_obligations}
-  sedative_interpersonal: {column: sedatif1, label: "Sedatives, criterion f: went on using in spite of interpersonal consequences, ever"}
+  sedative_interpersonal: {column: sedatif1, label: "Sedatives, criterion f: went on using in spite of interpersonal consequences, ever", asked_if: sedative_over_ten_times_gate}
   sedative_interpersonal_12m: {column: sedatif2, label: "Sedatives, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: sedative_interpersonal}
-  sedative_activities_given_up: {column: sedatig1, label: "Sedatives, criterion g: gave up social, occupational or leisure activities, ever"}
+  sedative_activities_given_up: {column: sedatig1, label: "Sedatives, criterion g: gave up social, occupational or leisure activities, ever", asked_if: sedative_over_ten_times_gate}
   sedative_activities_given_up_12m: {column: sedatig2, label: "Sedatives, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: sedative_activities_given_up}
-  sedative_hazardous_use: {column: sedatih1, label: "Sedatives, criterion h: repeated use when it can be dangerous, ever"}
+  sedative_hazardous_use: {column: sedatih1, label: "Sedatives, criterion h: repeated use when it can be dangerous, ever", asked_if: sedative_over_ten_times_gate}
   sedative_hazardous_use_12m: {column: sedatih2, label: "Sedatives, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: sedative_hazardous_use}
-  sedative_despite_problems: {column: sedatii1, label: "Sedatives, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  sedative_despite_problems: {column: sedatii1, label: "Sedatives, criterion i: went on using in spite of psychological or physical problems it causes, ever", asked_if: sedative_over_ten_times_gate}
   sedative_despite_problems_12m: {column: sedatii2, label: "Sedatives, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: sedative_despite_problems}
-  sedative_tolerance: {column: sedatij1, label: "Sedatives, criterion j: tolerance, ever"}
+  sedative_tolerance: {column: sedatij1, label: "Sedatives, criterion j: tolerance, ever", asked_if: sedative_over_ten_times_gate}
   sedative_tolerance_12m: {column: sedatij2, label: "Sedatives, criterion j: tolerance, in the last 12 months", asked_if: sedative_tolerance}
-  sedative_withdrawal: {column: sedatik1, label: "Sedatives, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  sedative_withdrawal: {column: sedatik1, label: "Sedatives, criterion k: withdrawal symptoms, or use to avoid them, ever", asked_if: sedative_over_ten_times_gate}
   sedative_withdrawal_12m: {column: sedatik2, label: "Sedatives, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: sedative_withdrawal}
-  sedative_legal_problems: {column: sedatil1, label: "Sedatives, criterion l: legal problems linked to the use, ever"}
+  sedative_legal_problems: {column: sedatil1, label: "Sedatives, criterion l: legal problems linked to the use, ever", asked_if: sedative_over_ten_times_gate}
   sedative_legal_problems_12m: {column: sedatil2, label: "Sedatives, criterion l: legal problems linked to the use, in the last 12 months", asked_if: sedative_legal_problems}
 
 scores:

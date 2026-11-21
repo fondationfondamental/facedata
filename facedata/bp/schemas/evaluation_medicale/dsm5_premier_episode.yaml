@@ -79,7 +79,8 @@ notes: >
 
   Delivered as written: 13 ages are above the age at the inclusion visit,
   by up to 1.3 years (11 at the first mood stabiliser, 1 at the first
-  depressive and 1 at the first hypomanic episode); one man answers yes to
+  depressive and 1 at the first hypomanic episode), flagged check_failed
+  (not_above the age at the visit, D199); one man answers yes to
   the postpartum question; 7 of the 29 first episodes that are depressive
   with psychotic features go with a lifetime "no" to psychotic features of
   depressive episodes (22 yes, 11 with no answer); 4 first episodes are of
@@ -106,14 +107,14 @@ defaults: {versions: [dsm5]}
 
 variables:
   dsm5_first_episode_type: {column: cetermpremier_episode, type: category, codes: {"Episode Dépressif Majeur sans caractéristiques psychotiques": mde, "Episode Dépressif Majeur avec caractéristiques psychotiques": mde_psychotic, "Hypomanie": hypomania, "Manie sans caractéristiques psychotiques": mania, "Manie avec caractéristiques psychotiques": mania_psychotic}, label: "Type of the first mood episode"}
-  dsm5_first_mde_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first major depressive episode"}
+  dsm5_first_mde_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first major depressive episode", not_above: age}
   dsm5_first_episode_postpartum: {column: ppartpremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "First episode within six months of a birth"}
   dsm5_first_episode_cyclothymic: {column: cyclopremier_episode, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "A cyclothymic period of more than two years came first"}
 
   # Three columns that only the DSM-5 form has; the dictionary lists them without a label, the form gives it.
-  dsm5_first_hypomania_age: {column: age_ehman, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first hypomanic episode"}
-  dsm5_first_mania_age: {column: age_epman, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first manic episode"}
-  dsm5_first_mood_stabiliser_age: {column: rad_agethym, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first mood stabiliser"}
+  dsm5_first_hypomania_age: {column: age_ehman, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first hypomanic episode", not_above: age}
+  dsm5_first_mania_age: {column: age_epman, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first manic episode", not_above: age}
+  dsm5_first_mood_stabiliser_age: {column: rad_agethym, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first mood stabiliser", not_above: age}
 
 scores:
   # The earliest of the three ages that the DSM-5 form asks; one known age is enough.

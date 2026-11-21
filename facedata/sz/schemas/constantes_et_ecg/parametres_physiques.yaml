@@ -30,6 +30,14 @@ notes: >
 
   Same instrument and same schema as in FACE BP.
 
+  No value is winsorised (winsor: false on the height, the weight and the
+  waist, and no winsor on the score bmi), the user's decision of 2026-11-21
+  for BP, SZ and DR, as in ASP (D80, rule R34): the hard ranges remove the
+  impossible values, and the values beyond the 1st and 99th percentiles are
+  real measures (obesity, hypertension, a slow or fast pulse) that the default
+  would bring back to the percentile. Cells no longer clipped: height 74
+  cells, weight 79, waist 74, body mass index 86 (winsorised 313 -> 0).
+
 defaults: {type: number}
 
 variables:
@@ -42,6 +50,7 @@ variables:
       "cm, two decimals, point lost": {factor: 0.01, expect: [10000, 23000]}
       m: {factor: 100, expect: [1, 2.3]}
     range: [100, 230]
+    winsor: false
   weight:
     label: Weight
     unit: kg
@@ -50,6 +59,7 @@ variables:
       0.1 kg: {factor: 0.1, expect: [300, 2500]}
       0.01 kg: {factor: 0.01, expect: [2500, 25000]}
     range: [25, 300]
+    winsor: false
   waist:
     column: wstcir
     label: Waist circumference
@@ -58,6 +68,7 @@ variables:
       cm: {factor: 1, expect: [40, 200]}
       mm: {factor: 0.1, expect: [400, 2000]}
     range: [40, 200]
+    winsor: false
   bmi_stored: {column: bmi, label: Body mass index as stored, range: [5, 300], winsor: false, keep: false}
 
 scores:
@@ -67,4 +78,3 @@ scores:
     compare: bmi_stored
     compare_tolerance: 0.051
     range: [10, 80]
-    winsor: [0.01, 0.99]

@@ -44,18 +44,30 @@ notes: >
   369 visits with E1 no. The dictionary gives no coding for E01 (request
   R171).
 
-  Conclusions against the criteria (E2, with the panic disorder of module
-  D: the lifetime disorder D5 for the agoraphobia without a history of
-  panic disorder, the current disorder for the two others; measured
-  2026-11-20 on the visits where the conclusion is stored, an empty item
-  read as no): agoraphobia without panic disorder agrees on 525 of 534
-  visits, panic disorder with agoraphobia on 514 of 529, panic disorder
-  without agoraphobia on 497 of 516 (on the visits where E2 and the panic
-  conclusion are both answered: 516 of 524, 481 of 486, 467 of 475). Most
-  differences (33 of 43) are a conclusion yes that the items do not give.
-  The conclusions are delivered as stored. The conclusion 'agoraphobia current without
-  a history of panic disorder' (ec) is named
-  mini_agoraphobia_without_panic_current (it was
+  Conclusions (decision D85). The form writes the three conclusions from
+  E2 and module D when E2, D5 or D7 is answered (gere_mode,
+  formulaires.js 1424-1455), as the MINI 6.0.0 defines them: panic
+  disorder current with agoraphobia is E2 yes and D7 (panic disorder
+  current) yes; without agoraphobia, E2 no and D7 yes; agoraphobia current
+  without a history of panic disorder, E2 yes and D5 (panic disorder
+  lifetime) no. The rater can also tick them by hand, and the script does
+  not run again when an answer is changed later. They are recomputed with
+  these rules (scores min, with reverse for the "no"); D5 and D7 are read
+  again here on every visit by hidden variables, and D7 is 0 where D5 is
+  no and D7 is empty (34 visits: the current disorder needs the lifetime
+  one, as the D schema reads it). A conclusion is missing where E2 or the
+  D answer it needs is missing. The stored conclusions (ea, eb, ec, the
+  _stored variables, not delivered) are their checks. Agreement before
+  (2026-11-20, an empty item read as no): agoraphobia without panic 525 of
+  534 visits, panic with agoraphobia 514 of 529, panic without
+  agoraphobia 497 of 516. With the rules on the visits where both exist:
+  516 of 524, 506 of 513, 490 of 501 (score_mismatch: 7, 6 and 7 stored
+  yes that the items give no; 1, 1 and 4 the other way). The rule cannot
+  be computed on 10, 16 and 15 visits with a stored conclusion (E2 or the
+  D answer is empty; 1, 9 and 4 of them stored yes): score_not_recomputed.
+  36, 38 and 50 visits with the answers and no stored conclusion get one.
+  The conclusion 'agoraphobia current without a history of panic
+  disorder' (ec) is named mini_agoraphobia_without_panic_current (it was
   mini_agoraphobia_current), as the form labels it.
 
   Centres (2026-11-20). One centre (27 to 29 visits, 2013 to 2022)
@@ -72,6 +84,24 @@ defaults: {type: item, range: [0, 1]}
 variables:
   mini_e01: {column: e01, label: "E1) Etes- vous anxieux(se) ou particulièrement mal à l’aise dans les endroits ou dans des situations dont il est difficile ou gênant de s’éc"}
   mini_e02: {column: e02, label: "E2) Redoutez-vous tellement ces situations qu’en pratique vous les évitez ou bien êtes-vous extrêmement mal à l’aise lorsque vous les affron"}
-  mini_panic_with_agoraphobia_current: {column: ea, label: "Panic with agoraphobia current: TROUBLE PANIQUE avec Agoraphobie ACTUEL"}
-  mini_panic_without_agoraphobia_current: {column: eb, label: "Panic without agoraphobia current: TROUBLE PANIQUE sans Agoraphobie ACTUEL"}
-  mini_agoraphobia_without_panic_current: {column: ec, label: "Agoraphobia current: AGORAPHOBIE ACTUELLE sans antécédents de Trouble panique"}
+  mini_panic_lifetime_every_visit: {column: d05, keep: false, label: "D5 (panic disorder lifetime) read on every visit, for the conclusions"}
+  mini_d07_every_visit: {column: d07, asked_if: mini_panic_lifetime_every_visit, keep: false, label: "D7 (panic disorder current) read here; 0 where D5 is no, as the disorder needs D5"}
+  mini_panic_with_agoraphobia_current_stored: {column: ea, keep: false, label: "Panic with agoraphobia current, as stored: TROUBLE PANIQUE avec Agoraphobie ACTUEL"}
+  mini_panic_without_agoraphobia_current_stored: {column: eb, keep: false, label: "Panic without agoraphobia current, as stored: TROUBLE PANIQUE sans Agoraphobie ACTUEL"}
+  mini_agoraphobia_without_panic_current_stored: {column: ec, keep: false, label: "Agoraphobia current without a history of panic disorder, as stored: AGORAPHOBIE ACTUELLE sans antécédents de Trouble panique"}
+
+scores:
+  mini_panic_with_agoraphobia_current:
+    label: "Panic disorder current with agoraphobia: E2 yes and D7 yes (formulaires.js gere_mode)"
+    min: [mini_e02, mini_d07_every_visit]
+    compare: mini_panic_with_agoraphobia_current_stored
+  mini_panic_without_agoraphobia_current:
+    label: "Panic disorder current without agoraphobia: E2 no and D7 yes (formulaires.js gere_mode)"
+    min: [mini_e02, mini_d07_every_visit]
+    reverse: [mini_e02]
+    compare: mini_panic_without_agoraphobia_current_stored
+  mini_agoraphobia_without_panic_current:
+    label: "Agoraphobia current without a history of panic disorder: E2 yes and D5 no (formulaires.js gere_mode)"
+    min: [mini_e02, mini_panic_lifetime_every_visit]
+    reverse: [mini_panic_lifetime_every_visit]
+    compare: mini_agoraphobia_without_panic_current_stored

@@ -28,10 +28,14 @@ notes: >
   163, one year less for 8). age_at_inclusion is therefore computed from the
   date of birth and the date of the inclusion visit (decision D4); the
   stored age is read to be compared with it and is not delivered. With a
-  tolerance of one year it differs for 71 patients (score_mismatch). The
-  function counts whole years as days / 365.25, which is one year less than
-  the calendar age for 2 patients (a correction of the function is held for
-  the user).
+  tolerance of one year it differs for 70 patients (score_mismatch; 71
+  before D82). The
+  function counts completed calendar years, as the BP, SZ and ASP exports
+  store the age: the year of the visit minus the year of birth, one less
+  when the birthday has not come yet that year (decision of the user,
+  2026-11-21; it counted days / 365.25 before, one year less for 2
+  patients). It reads the date of birth as exported (birth_date_stored,
+  hidden), with the real day of the 88 patients who keep one.
 
   fondacode (the column subjid) is the patient code of the foundation, the
   same in every extraction and unique across the cohorts: no fondacode of
@@ -63,6 +67,12 @@ variables:
     type: date
     day: 15
     range: [1900-01-01, 2012-12-31]
+  birth_date_stored:
+    column: brthdtc
+    label: Date of birth as exported (the real day for 88 patients), for the age at inclusion
+    type: date
+    range: [1900-01-01, 2012-12-31]
+    keep: false
   age_stored:
     column: age
     label: Age as stored, computed at a date that is not always the inclusion

@@ -100,10 +100,9 @@ def instrument_page(schema, data, qc, flags, folder):
         plot_variable(plots / f"{variable}.png", title, row["type"], before, after,
                       value_classes(after, own_flags), data, limits)
         figures.append(f"<h3 id='{variable}'>{html.escape(title)}</h3><img src='plots/{name}/{variable}.png' alt='{variable}'>")
-        for score, raw_names in schema.get("sign", {}).get("pairs", {}).items():
-            if score == variable:
-                raw_names = [raw_names] if isinstance(raw_names, str) else raw_names
-                sign_pairs[score] = (data[raw_names].sum(axis=1, min_count=len(raw_names)), before)
+        sign = schema.get("sign", {})
+        if variable in sign.get("turn", []) and "against" in sign:     # each turned variable against the reference
+            sign_pairs[variable] = (data[sign["against"]].sum(axis=1, min_count=len(sign["against"])), before)
     delivered = data[[v for v in qc["variable"] if v in data.columns]]
     unit = {"patient": "patients", "list": "items", "relatives": "relatives"}.get(schema.get("level"), "visits")
     plot_instrument(plots / "_instrument.png", schema["title"], delivered, version, sign_pairs, data, unit)

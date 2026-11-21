@@ -14,7 +14,11 @@ notes: >
   takes two digits, where BP, SZ and DR write hours and minutes, so the efficiency is coarser. On 8 visits the
   rising time is 00:00:00, the bedtime of the same visits is 00:00:00 too and no hours of sleep are typed: the
   rising time is the untouched default of the time field and is read as missing (not_recorded); the bedtime
-  of these visits is delivered as written (midnight is a possible answer).
+  of these visits is delivered as written (midnight is a possible answer). The delivered bedtime
+  (psqi_bedtime, a score of custom.py) is corrected as in BP: the 5 bedtimes typed on a 12-hour clock (a bedtime
+  from 6:00 to 17:00 with more than 16 hours in bed, the test of the efficiency) get 12 hours and the 2 typed
+  24:00:00 become 0, as the BP export writes them (decision of the user, 2026-11-21). The bedtime as typed is read
+  as psqi_bedtime_typed and not delivered; the efficiency reads it.
 
   Here the seven components are stored, and each was checked
   against the published rule:
@@ -62,7 +66,7 @@ notes: >
   wraps at midnight: 25% to 57% of the bedtimes of a year (8 visits or more) are before 06:00 (41 of
   the 206 are exactly 00:00:00), and the median jumps between evening and night when that share crosses a half
   (52% in 2019, 54% in 2020); counted past 24 hours the median is 23 to 24 in every year with 8
-  visits or more (the 24-hour bedtime function is held, A2-11). The latency, efficiency,
+  visits or more (measured on the bedtimes as typed; A2-11, the 24:00:00 bedtimes, is decided: they become 0). The latency, efficiency,
   disturbances and dysfunction components are whole numbers from 0 to 3 whose median moves by one
   unit, and the hours of sleep move from 7 to 8 in 2019. The disturbances component is higher in
   2020 (mean 1.74 against 1.12 to 1.44 in 2013 to 2019) and in centre E (1.80 against 1.29 in D),
@@ -72,7 +76,7 @@ notes: >
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  psqi_bedtime: {column: psqi1, type: time, label: Usual bedtime (hours), range: [0, 24]}
+  psqi_bedtime_typed: {column: psqi1, type: time, label: Usual bedtime as typed (hours), range: [0, 24], keep: false}
   psqi_latency: {column: psqi2, type: number, label: Minutes to fall asleep, unit: min, range: [0, 240], winsor: false}
   psqi_rising_time: {column: psqi3, type: time, label: Usual rising time (hours), range: [0, 24], missing: {"00:00:00": not_recorded}}
   psqi_sleep_hours: {column: psqi4, type: number, label: Hours of sleep per night, unit: h, range: [0, 24], winsor: false}
@@ -110,6 +114,9 @@ variables:
   psqi_stored: {column: psqi_score, label: PSQI total as stored, range: [0, 21], keep: false}
 
 scores:
+  psqi_bedtime:
+    label: Usual bedtime (hours, 0 to 24; a bedtime typed on a 12-hour clock gets 12 hours)
+    custom: psqi_bedtime
   psqi_latency_component:
     label: Component 2 - sleep latency
     custom: psqi_latency

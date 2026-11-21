@@ -53,7 +53,8 @@ notes: >
   above 0 are typed after a no (2 depressive and 3 manic with psychotic
   features, 2 induced), and 17 induced numbers "Ne sais pas" after a no
   stay missing; the number with psychotic features is above the number of
-  that kind of episode for 15 manic and 8 mixed; a yes to psychotic
+  that kind of episode for 15 manic and 8 mixed (flagged check_failed,
+  not_above); a yes to psychotic
   features goes with no episode of that kind for 10 manic and 12 mixed.
 
   The age at the first psychotropic treatment is a list from "<5" to ">89"
@@ -64,7 +65,8 @@ notes: >
   treatment can come before the first mood episode, so this is not an
   error); 21 give an age at the first treatment above their age at
   inclusion (by up to 18.9 years; 8 by more than a year and 7 by two years
-  or more, and only a difference above one year is an error). In one centre
+  or more, and only a difference above one year is an error); the 21 are
+  flagged check_failed (not_above the age at the visit). In one centre
   (J, 74 inclusions of 2015 to 2022) the first treatment comes a median 6
   years after the first episode, against 0 to 1 year in the other large
   centres.
@@ -93,18 +95,18 @@ defaults: {versions: [dsm4]}
 variables:
   dsm4_lt_n_mde: {column: evnum_edm_lt, type: number, range: [0, 20], winsor: false, label: "Number of major depressive episodes over the life"}
   dsm4_lt_mde_psychotic: {column: mhoccur_edm_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_lt_n_mde, label: "At least one major depressive episode with psychotic features"}
-  dsm4_lt_n_mde_psychotic: {column: evnum_edm_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mde_psychotic, label: "Number of major depressive episodes with psychotic features"}
+  dsm4_lt_n_mde_psychotic: {column: evnum_edm_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mde_psychotic, label: "Number of major depressive episodes with psychotic features", not_above: dsm4_lt_n_mde}
   dsm4_lt_n_hypomania: {column: evnum_ehman_lt, type: number, range: [0, 20], winsor: false, label: "Number of hypomanic episodes over the life"}
   dsm4_lt_n_mania: {column: evnum_epman_lt, type: number, range: [0, 20], winsor: false, label: "Number of manic episodes over the life"}
   dsm4_lt_mania_psychotic: {column: mhoccur_epman_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_lt_n_mania, label: "At least one manic episode with psychotic features"}
-  dsm4_lt_n_mania_psychotic: {column: evnum_epman_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mania_psychotic, label: "Number of manic episodes with psychotic features"}
+  dsm4_lt_n_mania_psychotic: {column: evnum_epman_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mania_psychotic, label: "Number of manic episodes with psychotic features", not_above: dsm4_lt_n_mania}
   dsm4_lt_n_mixed: {column: evnum_epmixt_lt, type: number, range: [0, 20], winsor: false, label: "Number of mixed episodes over the life"}
   dsm4_lt_mixed_psychotic: {column: mhoccur_epmixt_psy_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: dsm4_lt_n_mixed, label: "At least one mixed episode with psychotic features"}
-  dsm4_lt_n_mixed_psychotic: {column: evnum_epmixt_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mixed_psychotic, label: "Number of mixed episodes with psychotic features"}
+  dsm4_lt_n_mixed_psychotic: {column: evnum_epmixt_psy_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_mixed_psychotic, label: "Number of mixed episodes with psychotic features", not_above: dsm4_lt_n_mixed}
   dsm4_lt_induced: {column: mhoccur_epind_lt, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "At least one induced episode (switch under antidepressants or ECT)"}
   dsm4_lt_n_induced: {column: evnum_epind_lt, type: number, range: [0, 20], winsor: false, asked_if: dsm4_lt_induced, label: "Number of induced episodes"}
 
   dsm4_lt_rapid_cycling: {column: cyclerap, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Rapid cycling, now or in the past"}
   dsm4_lt_full_remission: {column: remisc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Full remission between the episodes"}
   dsm4_lt_seasonal: {column: saison, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Seasonal pattern"}
-  dsm4_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first psychotropic treatment"}
+  dsm4_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first psychotropic treatment", not_above: age}

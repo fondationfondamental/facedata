@@ -72,7 +72,8 @@ notes: >
   episode; where that age is known the count is 22 of 686 (22 and 50 make
   the 72). Against the first depressive episode (dsm5_first_mde_age) it is
   42 of 691. 1 of the 1,003 ages is above the age at inclusion, by less
-  than a year. Delivered as written.
+  than a year. Delivered as written and flagged check_failed (not_above the
+  age at the visit, D199).
 
   Centres. There is no value from centre C (R20), and centre A has values
   for only 6 of its 145 DSM-5 inclusions (O40). Centre H reports a seasonal
@@ -115,4 +116,4 @@ variables:
   dsm5_lt_rapid_cycling: {column: cyclerap, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Rapid cycling, now or in the past"}
   dsm5_lt_full_remission: {column: remisc, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Full remission between the episodes"}
   dsm5_lt_seasonal: {column: saison, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Seasonal pattern"}
-  dsm5_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first psychotropic treatment"}
+  dsm5_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: "Age at the first psychotropic treatment", not_above: age}

@@ -195,9 +195,10 @@ def test_auto_questionnaires(result, qc):
     # MAThyS: a lost decimal point is repaired.
     assert qc.loc[qc["instrument"] == "mathys", "unit_inferred"].sum() == 52
     # The old form stored the eight reversed items already turned: they are turned back before September 2021,
-    # and they are not delivered while the centres changed form, until the end of 2022 (D91).
+    # and they are not delivered while the centres changed form, until the end of 2022 (D91); from 2023 a centre and year
+    # whose visits clearly lean to the old direction are turned too (84 visits of one centre in 2024 and 2025, D200).
     mathys = result.data
-    assert (qc.loc["mathys17", "sign_flipped"], qc.loc["mathys17", "period_removed"], qc.loc["mathys11", "period_removed"]) == (11357, 1433, 0)
+    assert (qc.loc["mathys17", "sign_flipped"], qc.loc["mathys17", "period_removed"], qc.loc["mathys11", "period_removed"]) == (11441, 1433, 0)
     assert (qc.loc["mathys_total", "n_valid"], qc.loc["mathys_interaction", "n_valid"]) == (14251, 15811)
     changing = mathys["visit_date"].between("2021-09-01", "2022-12-31")
     assert mathys.loc[changing, ["mathys_total", "mathys_cognition", "mathys17"]].notna().sum().sum() == 0

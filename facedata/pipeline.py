@@ -119,9 +119,8 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
     winsorise_values: False leaves the tails of the continuous variables as they are.
 
     Returns a dict: values (one column per variable and score), cens, version,
-    flags, limits (winsor limits used), n_rows (cells read), n_filled (cells
-    that held something) and switch (the dates at which centres changed sign
-    convention).
+    flags, limits (winsor limits used), n_rows (cells read) and n_filled (cells
+    that held something).
     """
     limits = limits or {}
     flags = []
@@ -157,9 +156,8 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
         n_rows = {name: int(read.sum()) for name, read in is_read.items()}
         n_filled = {name: int(cells.sum()) for name, cells in filled.items()}
 
-    switch = {}
     if "sign" in schema:
-        values, sign_flags, switch = fix_sign(values, keys, schema)
+        values, sign_flags = fix_sign(values, keys, schema)
         flags.append(sign_flags)
 
     for name, variable in schema["variables"].items():
@@ -188,6 +186,11 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
     for name, check in schema.get("checks", {}).items():     # custom checks: True where the row fails
         failed = getattr(custom, check)(values) & values[name].notna()     # an empty cell is never flagged
         flags.append(make_flags(failed, name, "check_failed", check))
+    for name, variable in schema["variables"].items():
+        if "not_above" in variable:                  # a value above another one of the same row: kept and flagged
+            other = variable["not_above"]
+            failed = values[name] > (values[other] if other in values else keys[other])     # False where either is empty
+            flags.append(make_flags(failed, name, "check_failed", "above " + other))
 
     used_limits = {}
     for name, variable in schema["variables"].items():
@@ -201,7 +204,7 @@ def run_instrument(raw, keys, schema, limits=None, norms=None, winsorise_values=
             flags.append(winsor_flags)
 
     return {"values": values, "cens": cens, "version": version, "flags": stack_flags(flags),
-            "limits": used_limits, "n_rows": n_rows, "n_filled": n_filled, "switch": switch}
+            "limits": used_limits, "n_rows": n_rows, "n_filled": n_filled}
 
 
 def delivered_columns(schema, result):

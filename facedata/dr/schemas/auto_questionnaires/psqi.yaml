@@ -16,12 +16,14 @@ notes: >
   widget saved untouched, not an answer: it is a missing code (not_recorded;
   A75) on 39 visits, and the efficiency and the total are then missing on 3
   visits. A bedtime of 00:00:00 is a real answer. A bedtime after midnight is
-  a small number (00:30 is 0.5), and one typed 24:xx (7 visits) is delivered
-  as 24.0, where the BP export converts it to 0 (a 24-hour function is a
-  decision for the user, not applied). So the median and the year and centre
-  panels of the bedtime mix bedtimes before and after midnight (the median of
-  the 21 visits of 2024 is 11.0) and say nothing of the sleep: read the
-  efficiency and the hours of sleep.
+  a small number (00:30 is 0.5). The delivered bedtime (psqi_bedtime, a
+  score of custom.py) is corrected as in BP: the 19 bedtimes typed on a
+  12-hour clock get 12 hours (see the efficiency below), and the 7 typed
+  24:00:00 become 0, as the BP export writes them (decision of the user,
+  2026-11-21). The bedtime as typed is read as psqi_bedtime_typed and not
+  delivered (its one unparsed cell is flagged there). The median and the
+  year and centre panels of the bedtime still mix bedtimes before and after
+  midnight: read the efficiency and the hours of sleep.
 
   Minutes to fall asleep (psqi02): the BP rule. A value above 240 is the
   minutes multiplied by 60 and is divided by 60 (unit_inferred, 1 visit).
@@ -81,7 +83,7 @@ notes: >
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours), range: [0, 24]}
+  psqi_bedtime_typed: {column: psqi01, type: time, label: Usual bedtime as typed (hours), range: [0, 24], keep: false}
   psqi_latency:
     column: psqi02
     type: number
@@ -129,6 +131,9 @@ variables:
   psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
 
 scores:
+  psqi_bedtime:
+    label: Usual bedtime (hours, 0 to 24; a bedtime typed on a 12-hour clock gets 12 hours)
+    custom: psqi_bedtime
   psqi_disturbances:
     label: Component 5 - sleep disturbances
     custom: psqi_disturbances

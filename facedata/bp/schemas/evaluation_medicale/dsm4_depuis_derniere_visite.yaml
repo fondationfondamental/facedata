@@ -119,7 +119,7 @@ notes: >
   Answers that contradict each other are delivered as typed: 3 totals and 1
   number with psychotic features above 0 are typed after a no, and a number
   with psychotic features is above the number of that kind of episode on 13
-  visits.
+  visits (4 depressive, 2 manic, 7 mixed; flagged check_failed, not_above).
   32 visits answer yes and give 0 for every number. Of the 1,616 follow-up
   visits in a current episode (dsm4_episode_actuel.yaml) that answer this
   question, 377 say that no episode occurred since the last visit (the
@@ -164,14 +164,14 @@ variables:
   dsm4_fu_n_episodes_stored: {column: evnum_epthym_spv,     label: Number of mood episodes since the last visit as stored, keep: false, asked_if: dsm4_fu_any_episode}
   dsm4_fu_mde:               {column: mhoccur_edm_spv,      label: At least one major depressive episode since the last visit, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
   dsm4_fu_n_mde:             {column: evnum_edm_spv,        label: Number of major depressive episodes since the last visit, asked_if: dsm4_fu_any_episode}
-  dsm4_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,    label: Number of major depressive episodes with psychotic features since the last visit, asked_if: dsm4_fu_mde}
+  dsm4_fu_n_mde_psychotic:   {column: evnum_edm_psy_spv,    label: Number of major depressive episodes with psychotic features since the last visit, asked_if: dsm4_fu_mde, not_above: dsm4_fu_n_mde}
   dsm4_fu_hypomania:         {column: mhoccur_ehman_spv,    label: At least one hypomanic episode since the last visit, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
   dsm4_fu_n_hypomania:       {column: evnum_ehman_spv,      label: Number of hypomanic episodes since the last visit, asked_if: dsm4_fu_any_episode}
   dsm4_fu_mania:             {column: mhoccur_epman_spv,    label: At least one manic episode since the last visit, type: item, range: [0, 1], asked_if: dsm4_fu_any_episode}
   dsm4_fu_n_mania:           {column: evnum_epman_spv,      label: Number of manic episodes since the last visit, asked_if: dsm4_fu_any_episode}
-  dsm4_fu_n_mania_psychotic: {column: evnum_epman_psy_spv,  label: Number of manic episodes with psychotic features since the last visit, asked_if: dsm4_fu_mania}
+  dsm4_fu_n_mania_psychotic: {column: evnum_epman_psy_spv,  label: Number of manic episodes with psychotic features since the last visit, asked_if: dsm4_fu_mania, not_above: dsm4_fu_n_mania}
   dsm4_fu_n_mixed:           {column: evnum_epmixt_spv,     label: Number of mixed episodes since the last visit, asked_if: dsm4_fu_any_episode}
-  dsm4_fu_n_mixed_psychotic: {column: evnum_epmixt_psy_spv, label: Number of mixed episodes with psychotic features since the last visit, asked_if: dsm4_fu_n_mixed}
+  dsm4_fu_n_mixed_psychotic: {column: evnum_epmixt_psy_spv, label: Number of mixed episodes with psychotic features since the last visit, asked_if: dsm4_fu_n_mixed, not_above: dsm4_fu_n_mixed}
   dsm4_fu_recent_type:
     column: cetermepisode_recent_type
     label: Type of the most recent episode since the last visit

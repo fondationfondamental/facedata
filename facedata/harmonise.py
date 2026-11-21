@@ -166,7 +166,7 @@ def convert_units(values, labels, name, variable, keys=None, wholes=None):
     return converted, flags
 
 
-# ---------------------------------------------------------------- step 8: sign conventions
+# ---------------------------------------------------------------- step 8: directions that changed
 
 def rank_correlation(a, b):
     """Spearman correlation: the usual correlation, computed on the ranks."""
@@ -176,112 +176,54 @@ def rank_correlation(a, b):
     return a[both].rank().corr(b[both].rank())
 
 
-def mean_correlation(table, scores, flip_before=None):
-    """Average over the pairs of the rank correlation between raw value and standard score.
+# The data decide the direction of a group when its correlation is this many standard errors away from 0.
+CLEAR_SIGN = 2
 
-    With flip_before, the standard scores dated before it are multiplied by -1 first.
+
+def direction_strength(group, turned, reference, wanted):
+    """For each row, how clearly the visits of its group follow the wanted direction.
+
+    The rank correlation of the two sums over the complete rows of the group,
+    times wanted (-1 or +1), times the square root of their number minus one.
+    Missing for a row with no group or in a group of fewer than 10 complete rows.
     """
-    results = []
-    for score in scores:
-        standard = table[score]
-        if flip_before is not None:
-            standard = standard.where(table["date"] >= flip_before, -standard)
-        results.append(rank_correlation(table["raw of " + score], standard))
-    results = [result for result in results if not np.isnan(result)]
-    return np.mean(results) if results else np.nan
-
-
-# A centre is flipped only if, before the switch, its scores follow the wrong sign this strongly (mean rank correlation).
-CLEAR_SIGN = 0.5
-
-
-def find_switch_date(table, scores, wanted):
-    """The month before which the standard scores of one centre move the wrong way.
-
-    wanted is -1 or +1: the sign the correlation must have. Returns the month
-    (None when the centre never changed convention) and whether the scores
-    before it clearly follow the other convention.
-    """
-    best_date = None
-    best = wanted * mean_correlation(table, scores)
-    last_month = table["date"].max() + pd.offsets.MonthBegin(1)
-    for month in pd.date_range(table["date"].min(), last_month, freq="MS"):
-        if (table["date"] < month).sum() < 10:
-            continue
-        agreement = wanted * mean_correlation(table, scores, flip_before=month)
-        if np.isnan(agreement):
-            continue
-        if np.isnan(best) or agreement > best + 1e-9:
-            best_date, best = month, agreement
-    if best_date is None:
-        return None, False
-    before = table[table["date"] < best_date]
-    agreement_before = wanted * mean_correlation(before, scores)
-    if not agreement_before < 0:                       # the scores before it do not move the wrong way
-        return None, False
-    return best_date, agreement_before <= -CLEAR_SIGN
+    strength = pd.Series(np.nan, index=group.index)
+    for _, rows in group.groupby(group).groups.items():
+        complete = (turned[rows].notna() & reference[rows].notna()).sum()
+        if complete >= 10:
+            strength[rows] = wanted * rank_correlation(turned[rows], reference[rows]) * np.sqrt(complete - 1)
+    return strength
 
 
 def fix_sign(values, keys, schema):
-    """Bring standard scores to one sign convention.
+    """Turn the variables of the visits stored in the other direction (SCHEMA_SPEC, section 9).
 
-    Returns the values, the flags and the switch date found in each centre.
-    """
-    sign = schema["sign"]
-    if "before" in sign:                               # the day of the change is known: nothing to search
-        return turn_before(values, keys, schema)
-    wanted = -1 if sign["relation"] == "negative" else 1
-    scores = list(sign["pairs"])
-    table = pd.DataFrame({"date": keys["visit_date"], "group": keys[sign["by"]]})
-    for score, raw_names in sign["pairs"].items():
-        raw_names = [raw_names] if isinstance(raw_names, str) else raw_names
-        table[score] = values[score]
-        table["raw of " + score] = values[raw_names].sum(axis=1, min_count=len(raw_names))
-
-    usable = table[table[scores].notna().any(axis=1) & table["date"].notna()]
-    switch, unsure = {}, {}
-    for group, rows in usable.groupby("group"):
-        date, is_clear = find_switch_date(rows, scores, wanted)
-        if date is not None and is_clear:
-            switch[group] = date
-        elif date is not None:                         # a mixture of the two conventions: nothing is flipped
-            unsure[group] = date
-    switch_date = pd.to_datetime(table["group"].map(switch))     # missing where nothing changed
-    unsure_date = pd.to_datetime(table["group"].map(unsure))
-
-    flags = []
-    days_apart = (table["date"] - switch_date).dt.days.abs()
-    for score in scores:
-        present = values[score].notna()
-        before = present & (table["date"] < switch_date)
-        doubtful = present & switch_date.notna() & ((days_apart <= 90) | table["date"].isna())
-        values[score] = values[score].where(~before, -values[score])
-        flags.append(make_flags(before, score, "sign_flipped"))
-        flags.append(make_flags(doubtful, score, "sign_doubt", "close to the centre's change of convention"))
-        maybe_old = present & (table["date"] < unsure_date)
-        flags.append(make_flags(maybe_old, score, "sign_doubt", "the early scores of the centre may follow the other convention"))
-    return values, stack_flags(flags), switch
-
-
-def turn_before(values, keys, schema):
-    """Turn the variables of the visits dated before a known change of direction.
-
-    A variable with a range is turned around its middle (min + max - value);
-    one without a range changes sign. Returns the values, the flags and no
-    switch date.
+    A visit dated before the day `before` is expected in the other direction.
+    With `against`, the data decide in each group of the key column and year
+    where they are clear; elsewhere the expected direction stays, with
+    sign_doubt where the data lean the other way. Returns the values and the flags.
     """
     sign = schema["sign"]
     date = keys["visit_date"]
-    close = (date - sign["before"]).dt.days.abs() <= 90
+    turn = date < sign.get("before", pd.NaT)           # False with no day, or no date
+    strength = pd.Series(np.nan, index=date.index)
+    if "against" in sign:
+        group = (keys[sign["by"]].astype(str) + " " + date.dt.year.astype(str)).where(date.notna())
+        turned = values[sign["turn"]].sum(axis=1, min_count=len(sign["turn"]))
+        reference = values[sign["against"]].sum(axis=1, min_count=len(sign["against"]))
+        strength = direction_strength(group, turned, reference, -1 if sign["relation"] == "negative" else 1)
+    leans_away = (strength.abs() < CLEAR_SIGN) & ((strength < 0) != turn)
+    turn = turn.mask(strength <= -CLEAR_SIGN, True).mask(strength >= CLEAR_SIGN, False)
+    close = (date - sign.get("before", pd.NaT)).dt.days.abs() <= 90
     flags = []
     for name in sign["turn"]:
         present = values[name].notna()
-        before = present & (date < sign["before"])
         middle = sum(schema["variables"][name].get("range", [0, 0]))
-        values[name] = values[name].where(~before, middle - values[name])
-        flags.append(make_flags(before, name, "sign_flipped"))
+        values[name] = values[name].where(~(present & turn), middle - values[name])
+        flags.append(make_flags(present & turn, name, "sign_flipped"))
         flags.append(make_flags(present & (close | date.isna()), name, "sign_doubt", "close to the change of form"))
-    return values, stack_flags(flags), {}
+        flags.append(make_flags(present & leans_away, name, "sign_doubt", "the centre's visits of this year lean to the other direction"))
+    return values, stack_flags(flags)
 
 
 # ---------------------------------------------------------------- step 9: range

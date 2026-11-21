@@ -19,6 +19,15 @@ notes: >
   standing on 3.7% of the visits. One centre records the pressure on 17% of
   its visits; the others on 55% to 85%.
 
+  No value is winsorised (winsor: false on every pressure and heart rate), the
+  user's decision of 2026-11-21 for BP, SZ and DR, as in ASP (D80, rule R34):
+  the hard ranges remove the impossible values, and the values beyond the 1st
+  and 99th percentiles are real measures (obesity, hypertension, a slow or
+  fast pulse) that the default would bring back to the percentile. Cells no
+  longer clipped: lying systolic 284, lying diastolic 259, standing systolic
+  240, standing diastolic 206, lying heart rate 268, standing heart rate 267
+  cells (winsorised 1,524 -> 0).
+
 defaults: {type: number, unit: mmHg}
 
 variables:
@@ -29,6 +38,7 @@ variables:
       mmHg: {factor: 1, expect: [50, 260]}
       cmHg: {factor: 10, expect: [5, 26]}
     range: [50, 260]
+    winsor: false
   diastolic_supine:
     column: diabpsupine
     label: Diastolic blood pressure, lying
@@ -36,6 +46,7 @@ variables:
       mmHg: {factor: 1, expect: [30, 180]}
       cmHg: {factor: 10, expect: [3, 18]}
     range: [30, 180]
+    winsor: false
   systolic_standing:
     column: sysbpstanding
     label: Systolic blood pressure, standing
@@ -43,6 +54,7 @@ variables:
       mmHg: {factor: 1, expect: [50, 260]}
       cmHg: {factor: 10, expect: [5, 26]}
     range: [50, 260]
+    winsor: false
   diastolic_standing:
     column: diabpstanding
     label: Diastolic blood pressure, standing
@@ -50,5 +62,6 @@ variables:
       mmHg: {factor: 1, expect: [30, 180]}
       cmHg: {factor: 10, expect: [3, 18]}
     range: [30, 180]
-  heart_rate_supine:   {column: hrsupine,   label: Heart rate lying (beats per minute),    unit: bpm, range: [30, 220]}
-  heart_rate_standing: {column: hrstanding, label: Heart rate standing (beats per minute), unit: bpm, range: [30, 220]}
+    winsor: false
+  heart_rate_supine:   {column: hrsupine,   label: Heart rate lying (beats per minute),    unit: bpm, range: [30, 220], winsor: false}
+  heart_rate_standing: {column: hrstanding, label: Heart rate standing (beats per minute), unit: bpm, range: [30, 220], winsor: false}

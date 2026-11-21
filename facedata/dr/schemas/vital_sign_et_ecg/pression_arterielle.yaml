@@ -22,6 +22,15 @@ notes: >
 
   Same instrument as in FACE BP; FACE SZ has the lying pressures only.
 
+  No value is winsorised (winsor: false on every pressure and heart rate), the
+  user's decision of 2026-11-21 for BP, SZ and DR, as in ASP (D80, rule R34):
+  the hard ranges remove the impossible values, and the values beyond the 1st
+  and 99th percentiles are real measures (obesity, hypertension, a slow or
+  fast pulse) that the default would bring back to the percentile. Cells no
+  longer clipped: lying systolic 23, lying diastolic 23, standing systolic 23,
+  standing diastolic 17, lying heart rate 19, standing heart rate 21 cells
+  (winsorised 126 -> 0).
+
 defaults: {type: number, unit: mmHg}
 
 variables:
@@ -32,6 +41,7 @@ variables:
       mmHg: {factor: 1, expect: [50, 260]}
       cmHg: {factor: 10, expect: [5, 26]}
     range: [50, 260]
+    winsor: false
   diastolic_supine:
     column: diabpsupine
     label: Diastolic blood pressure, lying
@@ -39,6 +49,7 @@ variables:
       mmHg: {factor: 1, expect: [30, 180]}
       cmHg: {factor: 10, expect: [3, 18]}
     range: [30, 180]
+    winsor: false
   systolic_standing:
     column: sysbpstanding
     label: Systolic blood pressure, standing
@@ -46,6 +57,7 @@ variables:
       mmHg: {factor: 1, expect: [50, 260]}
       cmHg: {factor: 10, expect: [5, 26]}
     range: [50, 260]
+    winsor: false
   diastolic_standing:
     column: diabpstanding
     label: Diastolic blood pressure, standing
@@ -53,5 +65,6 @@ variables:
       mmHg: {factor: 1, expect: [30, 180]}
       cmHg: {factor: 10, expect: [3, 18]}
     range: [30, 180]
-  heart_rate_supine:   {column: hrsupine,   label: Heart rate lying (beats per minute),    unit: bpm, range: [30, 220]}
-  heart_rate_standing: {column: hrstanding, label: Heart rate standing (beats per minute), unit: bpm, range: [30, 220]}
+    winsor: false
+  heart_rate_supine:   {column: hrsupine,   label: Heart rate lying (beats per minute),    unit: bpm, range: [30, 220], winsor: false}
+  heart_rate_standing: {column: hrstanding, label: Heart rate standing (beats per minute), unit: bpm, range: [30, 220], winsor: false}

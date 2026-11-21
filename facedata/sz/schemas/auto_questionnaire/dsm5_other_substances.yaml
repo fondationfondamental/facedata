@@ -14,14 +14,26 @@ notes: >
   the 12-month criteria comes from asked_if. Under a yes, none is empty and
   none is "do not know".
 
-  The block is shown after a yes to the question "more than ten times in
-  your life" of the SUBSTANCES tab (other_product_over_ten_times; addict.js,
-  lines 50 to 56). It is not written as a shown_if: the form hides the block
-  but keeps what was typed, and 24 delivered cells on 1 visit sit under a
-  no, none under an empty answer. A block empty on a visit was not answered:
-  it is not a string of no. The criteria carry no asked_if on the use
-  question, which would turn the blocks never asked into 0: a no there means
-  ten times or fewer.
+  The block is shown after a yes to the question "more than ten times in your
+  life" of the SUBSTANCES tab (other_product_over_ten_times; addict.js, lines
+  50 to 56). It is not written as a shown_if: the form hides the block but
+  keeps what was typed, and 24 delivered cells on 1 visit sit under a no, none
+  under an empty answer. A block empty on a visit with a yes to the use
+  question was not answered: it stays missing, as it does where the use
+  question is empty. After a no (ten times or fewer in the life) the block is
+  never asked, and its criteria are 0 (the user's decisions of 2026-11-21).
+  The use question of this substance (other_product_over_ten_times) is itself
+  asked only after a yes to illicit drugs more than ten times (rad_add_4,
+  illicit_drugs_over_ten_times of drug_use.yaml), and drug_use.yaml delivers
+  it as 0 after a no there. The gate reproduces that chain with two hidden
+  readers: other_substance_illicit_drugs_gate reads rad_add_4, and
+  other_substance_over_ten_times_gate reads the SUBSTANCES column
+  suoccur_autre_produitlt with asked_if on it, so the criteria are 0 wherever
+  the delivered other_product_over_ten_times is 0. 38,688 cells of the
+  criteria ever and as many of the 12-month criteria (asked after a yes to
+  ever, so 0 too) become 0, on 3,224 visits; the two counts are 0 there (the
+  count ever is filled on 78 visits before, 3,302 after). A criterion typed
+  under a no is read as typed.
 
   The same twelve questions are asked for seven substances, in seven schemas
   with the same variables (dsm5_alcohol.yaml and the others; the stems are
@@ -37,36 +49,41 @@ notes: >
   (calcul_sympt, addict.js, lines 448 to 490) and does not store the count.
 
   The same form is used at inclusion and at the yearly visits (the yearly
-  update, no split). The count "ever" is not always kept from one year to
-  the next: 2 of the 5 yearly answers of the patients with one criterion or
-  more at inclusion give a count of 0.
+  update, no split). The count "ever" is not always kept from one year to the
+  next: 2 of the 5 yearly answers of the patients with one criterion or more
+  at inclusion give a count of 0. With the gate on the use question, 14 of 17:
+  at 12 yearly visits these patients answer no to "more than ten times in your
+  life" (or to the illicit-drugs question), although they met a criterion at
+  inclusion: these zeros come from the use question, not from the criteria.
 
 defaults: {type: item, range: [0, 1], missing: {2: unknown}}
 
 variables:
-  other_substance_larger_amounts: {column: autrea1, label: "Other substances, criterion a: took larger amounts than intended, ever"}
+  other_substance_illicit_drugs_gate: {column: rad_add_4, codes: {Oui: 1, Non: 0}, keep: false, label: "Illicit drugs or medicines without a prescription: more than ten times in your life (the opening question of drug_use.yaml, delivered as illicit_drugs_over_ten_times; not delivered here, the gate of the substance question)"}
+  other_substance_over_ten_times_gate: {column: suoccur_autre_produitlt, codes: {Y: 1, N: 0}, keep: false, label: "Other products: more than ten times in your life (the SUBSTANCES tab question, delivered as other_product_over_ten_times; not delivered here, the gate of the criteria ever)", asked_if: other_substance_illicit_drugs_gate}
+  other_substance_larger_amounts: {column: autrea1, label: "Other substances, criterion a: took larger amounts than intended, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_larger_amounts_12m: {column: autrea2, label: "Other substances, criterion a: took larger amounts than intended, in the last 12 months", asked_if: other_substance_larger_amounts}
-  other_substance_cut_down: {column: autreb1, label: "Other substances, criterion b: tried to cut down or stop, ever"}
+  other_substance_cut_down: {column: autreb1, label: "Other substances, criterion b: tried to cut down or stop, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_cut_down_12m: {column: autreb2, label: "Other substances, criterion b: tried to cut down or stop, in the last 12 months", asked_if: other_substance_cut_down}
-  other_substance_time_spent: {column: autrec1, label: "Other substances, criterion c: spends time obtaining, using or recovering, ever"}
+  other_substance_time_spent: {column: autrec1, label: "Other substances, criterion c: spends time obtaining, using or recovering, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_time_spent_12m: {column: autrec2, label: "Other substances, criterion c: spends time obtaining, using or recovering, in the last 12 months", asked_if: other_substance_time_spent}
-  other_substance_craving: {column: autred1, label: "Other substances, criterion d: craving, ever"}
+  other_substance_craving: {column: autred1, label: "Other substances, criterion d: craving, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_craving_12m: {column: autred2, label: "Other substances, criterion d: craving, in the last 12 months", asked_if: other_substance_craving}
-  other_substance_obligations: {column: autree1, label: "Other substances, criterion e: failed major obligations at work, at home or at school, ever"}
+  other_substance_obligations: {column: autree1, label: "Other substances, criterion e: failed major obligations at work, at home or at school, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_obligations_12m: {column: autree2, label: "Other substances, criterion e: failed major obligations at work, at home or at school, in the last 12 months", asked_if: other_substance_obligations}
-  other_substance_interpersonal: {column: autref1, label: "Other substances, criterion f: went on using in spite of interpersonal consequences, ever"}
+  other_substance_interpersonal: {column: autref1, label: "Other substances, criterion f: went on using in spite of interpersonal consequences, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_interpersonal_12m: {column: autref2, label: "Other substances, criterion f: went on using in spite of interpersonal consequences, in the last 12 months", asked_if: other_substance_interpersonal}
-  other_substance_activities_given_up: {column: autreg1, label: "Other substances, criterion g: gave up social, occupational or leisure activities, ever"}
+  other_substance_activities_given_up: {column: autreg1, label: "Other substances, criterion g: gave up social, occupational or leisure activities, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_activities_given_up_12m: {column: autreg2, label: "Other substances, criterion g: gave up social, occupational or leisure activities, in the last 12 months", asked_if: other_substance_activities_given_up}
-  other_substance_hazardous_use: {column: autreh1, label: "Other substances, criterion h: repeated use when it can be dangerous, ever"}
+  other_substance_hazardous_use: {column: autreh1, label: "Other substances, criterion h: repeated use when it can be dangerous, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_hazardous_use_12m: {column: autreh2, label: "Other substances, criterion h: repeated use when it can be dangerous, in the last 12 months", asked_if: other_substance_hazardous_use}
-  other_substance_despite_problems: {column: autrei1, label: "Other substances, criterion i: went on using in spite of psychological or physical problems it causes, ever"}
+  other_substance_despite_problems: {column: autrei1, label: "Other substances, criterion i: went on using in spite of psychological or physical problems it causes, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_despite_problems_12m: {column: autrei2, label: "Other substances, criterion i: went on using in spite of psychological or physical problems it causes, in the last 12 months", asked_if: other_substance_despite_problems}
-  other_substance_tolerance: {column: autrej1, label: "Other substances, criterion j: tolerance, ever"}
+  other_substance_tolerance: {column: autrej1, label: "Other substances, criterion j: tolerance, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_tolerance_12m: {column: autrej2, label: "Other substances, criterion j: tolerance, in the last 12 months", asked_if: other_substance_tolerance}
-  other_substance_withdrawal: {column: autrek1, label: "Other substances, criterion k: withdrawal symptoms, or use to avoid them, ever"}
+  other_substance_withdrawal: {column: autrek1, label: "Other substances, criterion k: withdrawal symptoms, or use to avoid them, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_withdrawal_12m: {column: autrek2, label: "Other substances, criterion k: withdrawal symptoms, or use to avoid them, in the last 12 months", asked_if: other_substance_withdrawal}
-  other_substance_legal_problems: {column: autrel1, label: "Other substances, criterion l: legal problems linked to the use, ever"}
+  other_substance_legal_problems: {column: autrel1, label: "Other substances, criterion l: legal problems linked to the use, ever", asked_if: other_substance_over_ten_times_gate}
   other_substance_legal_problems_12m: {column: autrel2, label: "Other substances, criterion l: legal problems linked to the use, in the last 12 months", asked_if: other_substance_legal_problems}
 
 scores:

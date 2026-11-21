@@ -50,7 +50,8 @@ notes: >
 
   Consistency. The age at the first episode is above the age at the visit on 8
   visits (2 by more than a year), and the age at the first antipsychotic
-  treatment on 17 (2 by more than a year). The first treatment is before the
+  treatment on 17 (2 by more than a year): they are delivered as written and
+  flagged check_failed (not_above the age at the visit). The first treatment is before the
   first episode on 65 of 2,093 visits that have both (50 by 2 years or more).
   The course says a single episode and the number of episodes is 2 or more on
   33 of 168 visits (165 have a number); it says episodic and the number is 1 on
@@ -59,8 +60,8 @@ notes: >
   number on 135.
 
 variables:
-  first_psychotic_episode_age: {column: agepisod, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotic episode}
-  first_antipsychotic_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first antipsychotic treatment}
+  first_psychotic_episode_age: {column: agepisod, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotic episode, not_above: age}
+  first_antipsychotic_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first antipsychotic treatment, not_above: age}
   untreated_psychosis_months: {column: duree, type: number, unit: months, range: [0, 600], missing: {999: unknown}, label: Duration of untreated psychosis}
   n_psychotic_episodes: {column: evnum_tbpsy_lt, type: number, range: [0, 20], codes: {Aucun: 0}, winsor: false, label: Number of psychotic episodes}
   symptom_course:
