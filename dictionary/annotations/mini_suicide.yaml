@@ -1,0 +1,1371 @@
+# Annotations of the group mini_suicide: the suicide forms of FACE BP, SZ and DR, and the 17 modules of the MINI
+# interview of FACE DR. Every statement comes from the schema notes, the variable labels, the progress files or
+# local/out/scale_reference*.md. A field that is left out is not documented in those files.
+
+# ------------------------------------------------------------------------------------------------ C-SSRS
+
+cssrs_fu:
+  description: >-
+    Columbia Suicide Severity Rating Scale (C-SSRS) at the follow-up visits, rated by the clinician: five yes/no
+    questions on suicidal ideation of rising severity, the most severe ideation as rated (1 to 5) and five ratings
+    of its intensity, with their sum. BP holds the ideation part only. DR also holds the suicidal behaviours
+    (actual, interrupted and aborted attempts, preparatory acts, self-injury without intent) and the lethality of
+    three attempts.
+  version: "BP: ideation part only (11 variables). DR: the full scale (form 150) or, on a simplified visit, a short form of ten questions (form 230)"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: "since the last visit (BP: the form says so; DR: the form prints no period and the raters read it both ways, see flags)"
+  sources:
+    - "schema notes (bp cssrs_fu, dr cssrs_fu)"
+    - "variable labels of the two schemas"
+    - "facedata/common_instruments.yaml (cssrs_fu)"
+    - "docs/bp/PROGRESS.md D125, D158, D159"
+  scores:
+    cssrs_intensity_since_visit:
+      meaning: Intensity of the suicidal ideation since the last visit, the sum of the five intensity ratings (frequency, duration, controllability, deterrents, reasons); given only where the five ratings are.
+      higher_means: more intense suicidal ideation
+      polarity: worse
+      basis: anchors
+      source: "labels of the five ratings: frequency 1 less than once a week to 5 many times a day; duration 1 a few seconds or minutes to 5 more than 8 hours; controllability 1 easily to 5 unable; deterrents 1 definitely stopped to 5 did not stop at all; reasons 1 only to get attention to 5 only to end the pain"
+  variables:
+    "cssrs0*_since_visit":
+      meaning: One of the five ideation questions of rising severity (1 wish to be dead, 2 non-specific active thoughts, 3 with a method, 4 with some intent, 5 with a plan and intent); 1 yes, 0 no. Questions 3 to 5 are 0 after a no to question 2.
+      higher_means: 1 means this level of ideation is present
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cssrs_fu): 'five yes/no questions of rising severity, delivered as 1 (yes) and 0 (no)'"
+    "cssrs_most_severe_*":
+      meaning: The most severe level of ideation as the rater wrote it, from 1 to 5 (the levels of the five questions). It has no 0.
+      higher_means: more severe ideation
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cssrs_fu): questions 'of rising severity' and 'the most severe ideation as rated (1 to 5)'"
+    "cssrs_frequency_*":
+      higher_means: more frequent ideation
+      polarity: worse
+      basis: anchors
+      source: "label: 1 less than once a week to 5 many times a day"
+    "cssrs_duration_*":
+      higher_means: longer lasting ideation
+      polarity: worse
+      basis: anchors
+      source: "label: 1 a few seconds or minutes to 5 more than 8 hours"
+    "cssrs_control_*":
+      higher_means: less able to control the thoughts (0 is 'does not try to control', not the mild end)
+      polarity: worse
+      basis: anchors
+      source: "label: 1 easily to 5 unable, 0 does not try; schema notes (bp cssrs_fu) on code 0"
+    "cssrs_deterrents_*":
+      higher_means: deterrents stop the patient less (0 is 'does not apply', not the mild end)
+      polarity: worse
+      basis: anchors
+      source: "label: 1 definitely stopped to 5 did not stop at all, 0 does not apply; schema notes (bp cssrs_fu) on code 0"
+    "cssrs_reasons_*":
+      higher_means: the ideation is more to end the pain and less to get attention (0 is 'does not apply')
+      basis: anchors
+      source: "label: 1 only to get attention to 5 only to end the pain, 0 does not apply"
+    "cssrs_n_*_since_visit":
+      meaning: DR only. Number of actual, of interrupted or of aborted attempts; 0 after a no to its own question.
+      construct: suicidal_behaviour
+      higher_means: more attempts
+      polarity: worse
+      basis: anchors
+      source: "labels (dr cssrs_fu): 'Number of actual attempts', 'Number of interrupted attempts', 'Number of aborted attempts'"
+    "cssrs_*_lethality_since_visit":
+      meaning: DR only. Actual lethality of the most recent, the most lethal or the first attempt, from 0 to 5.
+      construct: suicidal_behaviour
+      higher_means: more severe physical damage
+      polarity: worse
+      basis: anchors
+      source: "label (dr cssrs_fu): 'actual lethality (0 no physical damage to 5 death)'"
+    "cssrs_*_potential_since_visit":
+      meaning: DR only. Potential lethality of the most recent, the most lethal or the first attempt, from 0 to 2.
+      construct: suicidal_behaviour
+      higher_means: the act was more likely to kill
+      polarity: worse
+      basis: anchors
+      source: "label (dr cssrs_fu): 'potential lethality (0 not likely to injure to 2 likely to kill)'"
+  flags:
+    - "DR: form 150 prints no period. At follow-up the same form is asked again and the raters read it both ways (whole life or since the last visit, rule R14c). The names _since_visit are kept only so that the schema stacks with BP ('stack with care' in common_instruments.yaml)."
+    - "DR: the dates of the attempts at follow-up are not 'since the last visit': 37 of the 55 most-recent and 36 of the 44 first-attempt dates are older than the previous visit."
+    - "BP: the form says 'since the last visit' (not a yearly update). The suicide forms have no 'no change' question: an empty follow-up form means not done."
+    - "BP: the C-SSRS takes the place of the five ISF questions (isf_since_visit) at three centres from 2022 or 2024. Unlike isf_since_visit it shows no peak in 2022 and 2023, and those years are delivered."
+    - "The most severe ideation as rated often differs from the highest question answered yes (BP: 187 of the 428 visits that rate it) and is often empty after a yes; it is delivered as rated. An empty cell is not 'no ideation'."
+    - "Intensity: code 0 of controllability, deterrents and reasons is not the mild end of the scale; the sum counts it as 0 (the official rule, as the schema notes say)."
+    - "The most severe ideation and the intensity ratings should follow a yes to question 1 or 2, but the application does not enforce it (BP: 40 visits rate one of them after two no; delivered as rated)."
+    - "BP: the deterrents item shows the text of the controllability question above its options (application defect A59). The behaviour section of the form is not in the BP extraction (request R126)."
+    - "DR: about a quarter of the visits (from 2018) are simplified visits with a form of ten questions; the extraction does not tell them apart (request R127), so an empty field of the full form can mean 'not asked', not 'no'."
+    - "DR: the aborted-attempt question and the counts of interrupted and aborted attempts exist from late 2017 only."
+    - "DR: cssrs_behaviour_since_visit is the rater's own summary; over the two forms it is 'no' on 183 of the 214 visits that answer it and report a behaviour. Do not use it as the presence of a suicidal behaviour."
+    - "DR: the potential lethality is filled under a non-zero actual lethality on 233 of the 365 filled cells, although the scale rates it for an attempt that caused no damage."
+    - "No citation of the C-SSRS in the schema notes or in the literature notes: no reference is given."
+
+cssrs_v0:
+  description: >-
+    Columbia Suicide Severity Rating Scale (C-SSRS) at the inclusion visit, rated by the clinician: five yes/no
+    questions on suicidal ideation of rising severity, the most severe ideation as rated (1 to 5) and five ratings
+    of its intensity, with their sum. BP asks about the past week and holds the ideation part only. DR asks about
+    the whole life and also holds the suicidal behaviours and the lethality of three attempts.
+  version: "BP: ideation part only (11 variables). DR: the full scale (form 150) or, on a simplified visit, a short form of ten questions (form 230)"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: "BP: past week (variables ending in _past_week). DR: lifetime (variables ending in _lifetime)."
+  sources:
+    - "schema notes (bp cssrs_v0, dr cssrs_v0)"
+    - "variable labels of the two schemas"
+    - "facedata/common_instruments.yaml (cssrs_v0)"
+    - "docs/bp/PROGRESS.md D125, D158, D159, O52"
+  scores:
+    cssrs_intensity_past_week:
+      meaning: BP. Intensity of the suicidal ideation of the past week, the sum of the five intensity ratings (frequency, duration, controllability, deterrents, reasons); given only where the five ratings are.
+      higher_means: more intense suicidal ideation
+      polarity: worse
+      basis: anchors
+      source: "labels of the five ratings: frequency 1 less than once a week to 5 many times a day; duration 1 a few seconds or minutes to 5 more than 8 hours; controllability 1 easily to 5 unable; deterrents 1 definitely stopped to 5 did not stop at all; reasons 1 only to get attention to 5 only to end the pain"
+    cssrs_intensity_lifetime:
+      meaning: DR. Intensity of the suicidal ideation over the whole life, the sum of the five intensity ratings, as in BP.
+      higher_means: more intense suicidal ideation
+      polarity: worse
+      basis: anchors
+      source: "labels of the five ratings (dr cssrs_v0), the same anchors as in BP; schema notes (dr cssrs_v0): 'The intensity score is the sum of the five ratings, as in BP'"
+  variables:
+    "cssrs0*_past_week":
+      meaning: BP. One of the five ideation questions of rising severity (1 wish to be dead, 2 non-specific active thoughts, 3 with a method, 4 with some intent, 5 with a plan and intent), about the past week; 1 yes, 0 no. Questions 3 to 5 are 0 after a no to question 2.
+      higher_means: 1 means this level of ideation is present
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cssrs_v0): 'five yes/no questions of rising severity, delivered as 1 (yes) and 0 (no)'"
+    "cssrs0*_lifetime":
+      meaning: DR. One of the five ideation questions of rising severity, about the whole life; 1 yes, 0 no. Questions 3 to 5 are 0 after a no to question 2.
+      higher_means: 1 means this level of ideation is present
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr cssrs_v0): 'five levels of ideation (yes or no ...)'; labels 'whole life'"
+    "cssrs_most_severe_*":
+      meaning: The most severe level of ideation as the rater wrote it, from 1 to 5 (the levels of the five questions). It has no 0.
+      higher_means: more severe ideation
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cssrs_v0): questions 'of rising severity' and 'the most severe ideation as rated (1 to 5)'"
+    "cssrs_frequency_*":
+      higher_means: more frequent ideation
+      polarity: worse
+      basis: anchors
+      source: "label: 1 less than once a week to 5 many times a day"
+    "cssrs_duration_*":
+      higher_means: longer lasting ideation
+      polarity: worse
+      basis: anchors
+      source: "label: 1 a few seconds or minutes to 5 more than 8 hours"
+    "cssrs_control_*":
+      higher_means: less able to control the thoughts (0 is 'does not try to control', not the mild end)
+      polarity: worse
+      basis: anchors
+      source: "label: 1 easily to 5 unable, 0 does not try; schema notes (bp cssrs_v0) on code 0"
+    "cssrs_deterrents_*":
+      higher_means: deterrents stop the patient less (0 is 'does not apply', not the mild end)
+      polarity: worse
+      basis: anchors
+      source: "label: 1 definitely stopped to 5 did not stop at all, 0 does not apply; schema notes (bp cssrs_v0) on code 0"
+    "cssrs_reasons_*":
+      higher_means: the ideation is more to end the pain and less to get attention (0 is 'does not apply')
+      basis: anchors
+      source: "label: 1 only to get attention to 5 only to end the pain, 0 does not apply"
+    "cssrs_n_*_lifetime":
+      meaning: DR only. Number of actual, of interrupted or of aborted attempts over the whole life; 0 after a no to its own question.
+      construct: suicidal_behaviour
+      higher_means: more attempts
+      polarity: worse
+      basis: anchors
+      source: "labels (dr cssrs_v0): 'Number of actual attempts', 'Number of interrupted attempts', 'Number of aborted attempts'"
+    "cssrs_*_lethality_lifetime":
+      meaning: DR only. Actual lethality of the most recent, the most lethal or the first attempt, from 0 to 5.
+      construct: suicidal_behaviour
+      higher_means: more severe physical damage
+      polarity: worse
+      basis: anchors
+      source: "label (dr cssrs_v0): 'actual lethality (0 no physical damage to 5 death)'"
+    "cssrs_*_potential_lifetime":
+      meaning: DR only. Potential lethality of the most recent, the most lethal or the first attempt, from 0 to 2.
+      construct: suicidal_behaviour
+      higher_means: the act was more likely to kill
+      polarity: worse
+      basis: anchors
+      source: "label (dr cssrs_v0): 'potential lethality (0 not likely to injure to 2 likely to kill)'"
+  flags:
+    - "Two periods under one instrument name: BP's inclusion form asks about the past week, DR's about the whole life. The two schemas are not stacked (common_instruments.yaml: stack 'no')."
+    - "BP: two centres, and partly two more, answer yes far more often and rate a higher intensity; they may rate a longer period than the past week (open question O52). Delivered as rated."
+    - "The most severe ideation as rated often differs from the highest question answered yes (BP: 108 of the 250 visits that rate it) and is often empty after a yes; it is delivered as rated. An empty cell is not 'no ideation' (DR: a stored 0 is out_of_range)."
+    - "Intensity: code 0 of controllability, deterrents and reasons is not the mild end of the scale; the sum counts it as 0 (the official rule, as the schema notes say)."
+    - "The most severe ideation and the intensity ratings should follow a yes to question 1 or 2, but the application does not enforce it (BP: 38 visits rate one of them after two no; delivered as rated)."
+    - "BP: the deterrents item shows the text of the controllability question above its options (application defect A59). The behaviour section of the form is not in the BP extraction (request R126)."
+    - "DR: about a quarter of the visits (from 2018) are simplified visits with a form of ten questions; the extraction does not tell them apart (request R127), so an empty field of the full form can mean 'not asked', not 'no'."
+    - "DR: the aborted-attempt question and the counts of interrupted and aborted attempts exist from late 2017 only."
+    - "DR: cssrs_behaviour_lifetime is the rater's own summary; over the two forms it is 'no' on 183 of the 214 visits that answer it and report a behaviour. Do not use it as the presence of a suicidal behaviour."
+    - "DR: the potential lethality is filled under a non-zero actual lethality on 233 of the 365 filled cells, although the scale rates it for an attempt that caused no damage."
+    - "No citation of the C-SSRS in the schema notes or in the literature notes: no reference is given."
+
+# ------------------------------------------------------------------------------------------------ Five suicide questions (ISF)
+
+isf_lifetime:
+  description: >-
+    Five yes/no questions of rising severity on suicidal thoughts and acts over the whole life ("have you
+    ever..."), from life not worth living to a suicide attempt, each followed by "when did it last happen?".
+    Asked at the inclusion visit in BP, SZ and DR.
+  version: "5 questions, inclusion form ('have you ever'); DR form 145"
+  reference: "Paykel ES, Myers JK, Lindenthal JJ, Tanner J. Suicidal feelings in the general population: a prevalence study. Br J Psychiatry 1974;124:460-469 (PMID 4836376)"
+  reference_confidence: "Record confirmed (no abstract). The schema notes do not name the form: it is matched to this scale on its five questions only (to verify)"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: lifetime
+  sources:
+    - "schema notes (bp, sz, dr isf_lifetime)"
+    - "facedata/common_instruments.yaml (isf_lifetime)"
+    - "scale_reference_aq_general.md section 27 (Paykel Suicide Scale)"
+    - "docs/bp/PROGRESS.md D46, D85, D159"
+  items:
+    higher_means: 1 is yes, 0 is no; the five questions rise in severity
+    polarity: worse
+    basis: stated
+    source: "schema notes (bp isf_lifetime): 'Five yes/no questions of rising severity ... Delivered as 1 (yes) and 0 (no)'"
+  variables:
+    isf05_lifetime:
+      meaning: Has ever attempted suicide (1 yes, 0 no). It is the gate of the history of attempts (suicide_attempts).
+      construct: suicidal_behaviour
+      higher_means: 1 means a suicide attempt in the life
+      polarity: worse
+      basis: stated
+      source: "label 'Attempted suicide - ever'; schema notes (bp isf_lifetime)"
+    "isf0*_lifetime_when":
+      meaning: When it last happened, asked after a yes (last week, two weeks to a year ago, more than a year ago).
+      polarity: not_applicable
+  flags:
+    - "Not the follow-up question: at follow-up BP and SZ ask the same five questions 'since the last visit' (isf_since_visit), and DR asks the lifetime form again (isf_lifetime_fu). The inclusion and follow-up answers share raw columns and are never delivered in one column."
+    - "The questions do not always nest (BP: 11% of the visits with five answers say yes to a question after a no to a milder one)."
+    - "BP: the share who have attempted suicide dips to 30% in 2022 and 2023 (36% to 43% before, 37% from 2024); nothing explains it yet."
+    - "BP: from the end of 2021 the inclusion form also shows the history of attempts after a no to 'attempted'; 51 inclusions that say no here give a number of attempts above 0 in suicide_attempts. Both are delivered as written."
+    - "DR: since 2018 the Columbia scale (cssrs_v0) replaces this form in part of the centres (missing by centre, open question O25)."
+    - "ASP asks the fifth question only and its yes rate is far lower: common_instruments.yaml says not to compare before the clinicians say what the question means."
+    - "Literature notes (section 27): the published time frame is the past year in the usual form, lifetime in some uses; French version not found (to verify). No total score is delivered."
+
+isf_since_visit:
+  description: >-
+    The five yes/no questions of isf_lifetime (from life not worth living to a suicide attempt), asked at the
+    follow-up visits of BP and SZ about the time since the last visit, each followed by "when did it last
+    happen?" (last week, or between a week ago and the last visit).
+  version: "5 questions, follow-up form ('since the last visit')"
+  reference: "Paykel ES, Myers JK, Lindenthal JJ, Tanner J. Suicidal feelings in the general population: a prevalence study. Br J Psychiatry 1974;124:460-469 (PMID 4836376)"
+  reference_confidence: "Record confirmed (no abstract). The schema notes do not name the form: it is matched to this scale on its five questions only (to verify)"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: since the last visit
+  sources:
+    - "schema notes (bp, sz isf_since_visit)"
+    - "facedata/common_instruments.yaml (isf_since_visit)"
+    - "scale_reference_aq_general.md section 27 (Paykel Suicide Scale)"
+    - "docs/bp/PROGRESS.md D85, D88, D125, D159"
+  items:
+    higher_means: 1 is yes, 0 is no; the five questions rise in severity
+    polarity: worse
+    basis: stated
+    source: "schema notes (bp isf_since_visit): 'The five yes/no questions of isf_lifetime ... Delivered as 1 (yes) and 0 (no)'"
+  variables:
+    isf05_since_visit:
+      meaning: Attempted suicide since the last visit (1 yes, 0 no). It is the gate of the counts of suicide_attempts_since_visit.
+      construct: suicidal_behaviour
+      higher_means: 1 means a suicide attempt since the last visit
+      polarity: worse
+      basis: stated
+      source: "label 'Attempted suicide - since the last visit'; schema notes (bp isf_since_visit)"
+    "isf0*_since_visit_when":
+      meaning: When it last happened, asked after a yes (last week, or between a week ago and the last visit).
+      polarity: not_applicable
+  flags:
+    - "BP: every answer of a follow-up visit dated 2021-11-01 to 2023-12-31 is delivered as missing with the flag period_removed, the yes and the no alike (decisions D88 and D125): at some centres the follow-up form of that time also asked about the whole life (attempts read 16% in 2022 against 1.5% to 3.7% a year before). 6,360 cells of 1,002 visits."
+    - "BP: from 2024 the first three questions are higher than before 2022 in four centres (first question 47% against 35%); compare the thought questions across periods with care."
+    - "BP: three centres use the C-SSRS (cssrs_fu) instead of these questions from 2022 or 2024; the share of follow-up visits that answer them falls from 82% to 95% a year (2012 to 2021) to 45% to 63% (2022 to 2025)."
+    - "The answers are about the time since the last visit, not a yearly update. The form has no 'no change' question: an empty follow-up form means not done."
+    - "SZ: no doubtful period, nothing is removed. The form is shown at the annual evaluation only."
+    - "DR has no form with this wording: its follow-up answers are isf_lifetime_fu and are not joined with these."
+    - "Literature notes (section 27): the published time frame is the past year in the usual form; French version not found (to verify). No total score is delivered."
+
+isf_lifetime_fu:
+  description: >-
+    The five yes/no questions of isf_lifetime (from life not worth living to a suicide attempt, each with "when
+    last"), asked again in DR at the visits of 24 and 48 months with the same lifetime wording.
+  version: "5 questions, DR form 145 shown again at follow-up"
+  reference: "Paykel ES, Myers JK, Lindenthal JJ, Tanner J. Suicidal feelings in the general population: a prevalence study. Br J Psychiatry 1974;124:460-469 (PMID 4836376)"
+  reference_confidence: "Record confirmed (no abstract). The schema notes do not name the form: it is matched to this scale on its five questions only (to verify)"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: "not fixed: the form says 'ever' and prints no period; at follow-up the raters read it both ways (whole life or since the last visit)"
+  sources:
+    - "schema notes (dr isf_lifetime_fu, dr isf_lifetime)"
+    - "facedata/common_instruments.yaml (isf_since_visit)"
+    - "scale_reference_aq_general.md section 27 (Paykel Suicide Scale)"
+  items:
+    higher_means: 1 is yes, 0 is no; the five questions rise in severity
+    polarity: worse
+    basis: stated
+    source: "schema notes (dr isf_lifetime_fu): 'The five questions of isf_lifetime.yaml asked again at follow-up'; schema notes (bp isf_lifetime) for the coding"
+  variables:
+    isf05_lifetime_fu:
+      meaning: Attempted suicide, the lifetime question asked again at follow-up (1 yes, 0 no). It is the gate of the counts of suicide_attempts_fu.
+      construct: suicidal_behaviour
+      higher_means: 1 means a suicide attempt (period read both ways)
+      polarity: worse
+      basis: stated
+      source: "label 'Attempted suicide - ever, asked again at a follow-up visit (the question has no period)'"
+    "isf0*_lifetime_fu_when":
+      meaning: When it last happened (last week, two weeks to a year ago, more than a year ago).
+      polarity: not_applicable
+  flags:
+    - "The period is ambiguous: 26 of the 44 follow-up visits of patients who reported an attempt at inclusion answer no (read as since the last visit), and 29 of the 91 yes to the first question are dated more than a year ago (read as the whole life)."
+    - "Not the BP and SZ follow-up question: it is not joined with isf_since_visit, whose form says 'since the last visit'. 'Attempted' is yes on 18.6% of these visits against 2.4% in BP and SZ."
+    - "140 visits only, most of them from 2015 to 2019. An empty form means not done."
+
+# ------------------------------------------------------------------------------------------------ Most serious and most violent attempt
+
+most_serious_attempt:
+  description: >-
+    The most serious non-violent suicide attempt of the whole life: its method (drugs with or without a sedative
+    effect, or cutting), the kind of drug, its medical consequences on a scale with its own wording for each
+    method, and whether an event triggered it. Asked after a yes to serious attempts. BP reads the inclusion
+    visit only; DR has one schema for the inclusion visit and the visits of 24 and 48 months.
+  version: "section 'Columbia TS la plus grave' of the suicide form (DR form 151)"
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: lifetime
+  sources:
+    - "schema notes (bp, dr most_serious_attempt)"
+    - "facedata/common_instruments.yaml (most_serious_attempt)"
+    - "docs/bp/PROGRESS.md D125, D159, D160"
+  variables:
+    "serious_*_lethality":
+      meaning: Medical consequences of the attempt, one list for each method, delivered as short names in the order of the scale (sedative drugs from fully conscious to coma with all reflexes absent, other drugs from none or minimal to major systemic effects, cutting from scratches to severe blood loss; BP lists end with death).
+      polarity: not_applicable
+    serious_triggered:
+      meaning: A precise event seems to have triggered the attempt (1 yes, 0 no; 'not known' is a missing code in DR).
+      polarity: not_applicable
+  flags:
+    - "BP: the section left the forms during 2021 (application defect A60): the method is given on 89% of the visits with a serious attempt up to 2021 and on 2 of the 136 from 2022. An empty section from 2022 is 'not asked'."
+    - "BP: four centres never give a method although they report serious attempts."
+    - "BP: a filled cell that the form did not show (a list of another method, a trigger without a yes) is delivered as missing with the flag not_shown (80 cells, nearly all from forms of 2009-2010 that saved the first option of hidden lists)."
+    - "BP: 'death' is given on 2 visits; the patient was seen at that visit, so it cannot describe the patient's own attempt. Delivered as written."
+    - "DR: the lists have no 'death' level and the trigger has one kind more ('other, specify'). The form is filled on 55 of the 66 visits with a serious attempt and on 11 of the 102 without."
+    - "BP follow-up visits are another instrument (most_serious_attempt_since_visit); DR's schema holds its follow-up visits too (12 of 70 visits)."
+    - "A drug type 'Inconnu' is a missing code. The lethality scale is not named or cited in the notes: no reference is given."
+
+most_serious_attempt_since_visit:
+  description: >-
+    The section on the most serious non-violent suicide attempt as the BP follow-up form asked it: the most
+    serious attempt since the last visit (method, kind of drug, medical consequences, trigger), asked after a yes
+    to serious attempts since the last visit.
+  version: "section 'Columbia TS la plus grave' of the BP follow-up suicide form"
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: since the last visit
+  sources:
+    - "schema notes (bp most_serious_attempt_since_visit, bp most_serious_attempt)"
+    - "docs/bp/PROGRESS.md D125, D159, D160"
+  variables:
+    "serious_*_lethality_since_visit":
+      meaning: Medical consequences of the attempt, one list for each method, delivered as short names in the order of the scale; the code lists are those of most_serious_attempt.
+      polarity: not_applicable
+    serious_triggered_since_visit:
+      meaning: A precise event seems to have triggered the attempt (1 yes, 0 no).
+      polarity: not_applicable
+  flags:
+    - "Very few answers: 24 methods on 27 follow-up visits, from 2010 to September 2020. The section left the forms during 2021 (application defect A60)."
+    - "The answer describes an attempt since the last visit, not the lifetime attempt of most_serious_attempt (for 14 of the 24 patients the inclusion visit counts no serious attempt)."
+    - "The one visit of the removed period (2021-11-01 to 2023-12-31, decisions D88 and D125) is delivered as missing (period_removed); 20 cells of 2010 that the form did not show are missing with not_shown."
+    - "The lethality scale is not named or cited in the notes: no reference is given."
+
+most_violent_attempt:
+  description: >-
+    The most violent suicide attempt of the whole life: its method (firearm, immolation, drowning, hanging, jump
+    or another), its medical consequences on a scale with its own wording for each method, and whether an event
+    triggered it. Asked after a yes to violent attempts. BP reads the inclusion visit only; DR has one schema for
+    all visits.
+  version: "section 'Columbia TS la plus violente' of the suicide form (DR form 152)"
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: lifetime
+  sources:
+    - "schema notes (bp, dr most_violent_attempt)"
+    - "facedata/common_instruments.yaml (most_violent_attempt)"
+    - "docs/bp/PROGRESS.md D125, D159, D160"
+  variables:
+    "violent_*_lethality":
+      meaning: Medical consequences of the attempt, one list for each method, delivered as short names in the order of the scale, from no damage to death (the DR lists stop before death).
+      polarity: not_applicable
+    "violent_other_lethality_*":
+      meaning: DR only. Five boxes for the five levels of the consequences when the method is 'another one' (no damage or minor bruises, light, moderate, severe, life-threatening injuries); one box is ticked. BP delivers one list (violent_other_lethality).
+      polarity: not_applicable
+    violent_triggered:
+      meaning: A precise event seems to have triggered the attempt (1 yes, 0 no; 'not known' is a missing code in DR).
+      polarity: not_applicable
+  flags:
+    - "BP: the section left the forms during 2021 (application defect A60): the method is given on 94% of the visits with a violent attempt up to 2021 and on none of the 108 from 2022. An empty section from 2022 is 'not asked'."
+    - "BP: four centres never give a method although they report violent attempts."
+    - "BP: a filled cell that the form did not show is delivered as missing with the flag not_shown (113 cells, nearly all from forms of 2009-2010 that saved the first option of hidden lists)."
+    - "BP: 'death' is given on 2 visits; the patient was seen at that visit, so it cannot describe the patient's own attempt. Delivered as written."
+    - "DR: 17 visits only (12 inclusion, 1 screening, 4 follow-up); filled on 14 of the 41 visits with a violent attempt and on 3 of the 135 without."
+    - "BP follow-up visits are another instrument (most_violent_attempt_since_visit)."
+    - "The lethality scale is not named or cited in the notes: no reference is given."
+
+most_violent_attempt_since_visit:
+  description: >-
+    The section on the most violent suicide attempt as the BP follow-up form asked it: the most violent attempt
+    since the last visit (method, medical consequences, trigger), asked after a yes to violent attempts since the
+    last visit.
+  version: "section 'Columbia TS la plus violente' of the BP follow-up suicide form"
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: since the last visit
+  sources:
+    - "schema notes (bp most_violent_attempt_since_visit, bp most_violent_attempt)"
+    - "docs/bp/PROGRESS.md D125, D159, D160"
+  variables:
+    "violent_*_lethality_since_visit":
+      meaning: Medical consequences of the attempt, one list for each method, delivered as short names in the order of the scale; the code lists hold the whole scale of the form.
+      polarity: not_applicable
+    violent_triggered_since_visit:
+      meaning: A precise event seems to have triggered the attempt (1 yes, 0 no).
+      polarity: not_applicable
+  flags:
+    - "Very few answers: 16 methods on 18 follow-up visits, from 2013 to September 2021. The section left the forms during 2021 (application defect A60)."
+    - "The answer describes an attempt since the last visit, not the lifetime attempt of most_violent_attempt (for 13 of the 16 patients the inclusion visit counts no violent attempt)."
+    - "The one visit of the removed period (2021-11-01 to 2023-12-31, decisions D88 and D125) is delivered as missing (period_removed); 28 cells of 2010 that the form did not show are missing with not_shown."
+    - "3 visits answer the section after a no to 'attempted suicide since the last visit', where the form does not show it; delivered as written."
+    - "The lethality scale is not named or cited in the notes: no reference is given."
+
+# ------------------------------------------------------------------------------------------------ History of suicide attempts
+
+suicide_attempts:
+  description: >-
+    History of suicide attempts over the whole life, asked at the inclusion visit in BP, SZ and DR: the date of
+    the first attempt, the number of attempts, and whether some were violent (firearm, hanging, jump...) or
+    serious without being violent (intensive care after drugs or cutting), with how many of each. DR adds the
+    dates of the most violent and of the most serious attempt.
+  version: "section 'Histoire des conduites suicidaires' of the inclusion suicide form (DR form 145)"
+  reference: not_applicable
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: lifetime
+  sources:
+    - "schema notes (bp, sz, dr suicide_attempts)"
+    - "facedata/common_instruments.yaml (suicide_attempts)"
+    - "docs/bp/PROGRESS.md D86, D125, D159"
+  variables:
+    "n_*attempts":
+      meaning: Number of suicide attempts of the whole life (all, violent, or serious non-violent). 0 by logic after a no to 'ever attempted' (isf05_lifetime) or to its own yes/no question.
+      higher_means: more suicide attempts
+      polarity: worse
+      basis: anchors
+      source: "labels: 'Number of suicide attempts', 'Number of violent suicide attempts', 'Number of serious non-violent suicide attempts (intensive care)'"
+    violent_attempts:
+      meaning: Has made violent suicide attempts (1 yes, 0 no; 0 after 0 attempts; 'not known' is a missing code).
+      higher_means: 1 means at least one violent attempt
+      polarity: worse
+      basis: stated
+      source: "label 'Has made violent suicide attempts'; schema notes (bp suicide_attempts): 'Yes/no answers are delivered as 1 and 0'"
+    serious_attempts:
+      meaning: Has made serious non-violent suicide attempts, meaning intensive care after drugs or cutting (1 yes, 0 no; 0 after 0 attempts; 'not known' is a missing code).
+      higher_means: 1 means at least one serious non-violent attempt
+      polarity: worse
+      basis: stated
+      source: "label 'Has made serious non-violent suicide attempts (intensive care)'; schema notes (bp suicide_attempts)"
+    first_attempt_date:
+      meaning: Date of the first suicide attempt. A date on or after the visit is delivered as missing (out_of_range).
+      polarity: not_applicable
+  flags:
+    - "Inclusion visit only, about the whole life. The follow-up visits are other instruments: suicide_attempts_since_visit in BP and SZ ('since the last visit'), suicide_attempts_fu in DR (the lifetime form asked again). Do not join them."
+    - "Violent and serious are two separate groups of the form; 'serious' means non-violent with intensive care."
+    - "BP: until 2020 a no to 'attempted' left the history empty; from the end of 2021 the form shows it to every patient, a 0 is often typed after a no, and 51 inclusions that say no give a number above 0. Delivered as typed. Compare the counts among the patients with at least one attempt, where the number is steady."
+    - "First-attempt dates are often rounded (a first of January, or a 15th where only the year or the month was known). BP: 306 dates on or after the visit are delivered as missing."
+    - "The ranges of the schema (0 to 50, 0 to 20) are plausible limits, not the form's (0 to 99)."
+    - "SZ: the question 'how many times in the last 12 months' of its form is not in the export (request R131)."
+    - "DR: a visit that leaves 'ever attempted' empty keeps the whole history missing (816 inclusion visits)."
+
+suicide_attempts_since_visit:
+  description: >-
+    The number of suicide attempts since the last visit, and whether some were violent or serious without being
+    violent (intensive care after drugs or cutting), with how many of each, as asked at the follow-up visits of
+    BP and SZ after a yes to "attempted suicide since the last visit".
+  version: "section 'Histoire des conduites suicidaires' of the follow-up suicide form"
+  reference: not_applicable
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: since the last visit
+  sources:
+    - "schema notes (bp, sz suicide_attempts_since_visit)"
+    - "facedata/common_instruments.yaml (suicide_attempts_since_visit)"
+    - "docs/bp/PROGRESS.md D85, D86, D88, D125, D159"
+  variables:
+    "n_*_since_visit":
+      meaning: Number of suicide attempts since the last visit (all, violent, or serious non-violent). 0 by logic after a no to 'attempted since the last visit' (isf05_since_visit) or to its own yes/no question.
+      higher_means: more suicide attempts since the last visit
+      polarity: worse
+      basis: anchors
+      source: "labels: 'Number of suicide attempts - since the last visit' and the two like it"
+    violent_attempts_since_visit:
+      meaning: Has made violent suicide attempts since the last visit (1 yes, 0 no; 0 after a no to 'attempted').
+      higher_means: 1 means at least one violent attempt since the last visit
+      polarity: worse
+      basis: stated
+      source: "label; schema notes (bp suicide_attempts_since_visit): 'Yes/no answers are delivered as 1 and 0'"
+    serious_attempts_since_visit:
+      meaning: Has made serious non-violent suicide attempts (intensive care) since the last visit (1 yes, 0 no; 0 after a no to 'attempted').
+      higher_means: 1 means at least one serious non-violent attempt since the last visit
+      polarity: worse
+      basis: stated
+      source: "label; schema notes (bp suicide_attempts_since_visit)"
+  flags:
+    - "BP: every answer of a follow-up visit dated 2021-11-01 to 2023-12-31 is delivered as missing with the flag period_removed (decisions D85, D88, D125): at some centres the follow-up form of that time also asked about the whole life, and the lifetime number of attempts was often typed again. 376 cells. A removed answer gives no 0."
+    - "SZ: no doubtful period, nothing is removed."
+    - "The answers are about the time since the last visit, not a yearly update and not the lifetime count of suicide_attempts. An empty follow-up form means not done."
+    - "The date of the first attempt typed at a BP follow-up visit is read and not delivered; it comes from the inclusion visit (suicide_attempts)."
+    - "DR is not in this instrument: its lifetime form asked again is suicide_attempts_fu, and its number of attempts since the last visit comes from another question (n_suicide_attempts_since_visit of mood_course_fu)."
+    - "The ranges of the schema (0 to 50, 0 to 20) are plausible limits, not the form's (0 to 99)."
+
+suicide_attempts_fu:
+  description: >-
+    The history of suicide attempts of the DR inclusion form (number of attempts, violent and serious non-violent
+    attempts with how many of each, dates of the most violent and of the most serious one), asked again at the
+    follow-up visits, mostly at 24 and 48 months, with the same lifetime wording.
+  version: "section 'Histoire des conduites suicidaires' of DR form 145, shown again at follow-up"
+  reference: not_applicable
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: "not fixed: the form says 'ever' and prints no period; at follow-up the raters read it both ways (whole life or since the last visit)"
+  sources:
+    - "schema notes (dr suicide_attempts_fu, dr isf_lifetime_fu)"
+    - "facedata/common_instruments.yaml (suicide_attempts)"
+  variables:
+    "n_*_fu":
+      meaning: Number of suicide attempts (all, violent, or serious non-violent), the lifetime question asked again at follow-up. 0 by logic after a no to 'attempted' (isf05_lifetime_fu) or to its own yes/no question.
+      higher_means: more suicide attempts (period read both ways)
+      polarity: worse
+      basis: anchors
+      source: "labels: 'Number of suicide attempts, asked again at a follow-up visit' and the two like it"
+    violent_attempts_fu:
+      meaning: Has made violent suicide attempts, asked again at follow-up (1 yes, 0 no).
+      higher_means: 1 means at least one violent attempt (period read both ways)
+      polarity: worse
+      basis: stated
+      source: "label 'Has made violent suicide attempts, asked again at a follow-up visit'"
+    serious_attempts_fu:
+      meaning: Has made serious non-violent suicide attempts (intensive care), asked again at follow-up (1 yes, 0 no).
+      higher_means: 1 means at least one serious non-violent attempt (period read both ways)
+      polarity: worse
+      basis: stated
+      source: "label 'Has made serious non-violent suicide attempts (intensive care), asked again at a follow-up visit'"
+  flags:
+    - "The period is ambiguous: the DR form says 'ever' at follow-up too and the raters read it both ways (see isf_lifetime_fu). These are not the BP and SZ questions 'since the last visit' and the schema is not joined with suicide_attempts_since_visit."
+    - "140 visits answer the gate (26 yes, 114 no); the number of attempts is typed on 22 visits and is 0 by logic on 114."
+    - "The date of the first attempt is not delivered at follow-up; the dates of the most violent and of the most serious attempt are (9 cells each)."
+    - "An empty form means not done (no 'no change' gate)."
+
+# ------------------------------------------------------------------------------------------------ Suicide Intent Scale
+
+sis:
+  description: >-
+    Suicide Intent Scale (DR only): fifteen items rated 0 to 2 on the circumstances of a suicide attempt and on
+    what the patient expected, with their sum. The form is shown only after a yes to "attempted suicide" (ISF5).
+  version: "15 items (DR form 153)"
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: "the attempt described; at follow-up the form is asked again and 15 of the 18 follow-up ratings describe an attempt dated more than a year before the visit"
+  sources:
+    - "schema notes (dr sis)"
+    - "variable labels (dr sis)"
+    - "docs/dr/PROGRESS.md D47"
+  scores:
+    sis_total:
+      meaning: Sum of the fifteen items, 0 to 30; given only where the fifteen items are answered. It equals the stored score on all 139 visits.
+  variables:
+    sis04:
+      meaning: Seeking help during or after the attempt (0 told a potential rescuer, 1 contacted one without mentioning the act, 2 told no one).
+      higher_means: sought less help (2 is told no one)
+      polarity: worse
+      basis: anchors
+      source: "label 'Seeking help (0 told a rescuer, 2 told no one)'; schema notes (dr sis)"
+  flags:
+    - "The direction of sis_total and of the items other than sis04 is not stated in the schema notes, and the scale is not in the literature notes: no direction, no cut-off and no reference are given."
+    - "Rated only after a reported attempt: 140 visits (122 inclusion or screening, 18 follow-up); 46 of the 186 visits with a yes to 'attempted' have no SIS."
+    - "One schema for the inclusion and follow-up visits. Of the 8 patients rated at both, 6 have answers that differ."
+
+# ------------------------------------------------------------------------------------------------ MINI (FACE DR)
+
+mini_a_depression:
+  description: >-
+    Module A of the MINI structured diagnostic interview (DR only): the nine symptoms of a major depressive
+    episode over the last two weeks and in a past episode, the impairment question, the number of episodes of the
+    life, and the conclusions. Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: depression
+  period: "last two weeks (variables ending in _p2w, A1b, A2b) and a past episode of the life (variables ending in _pe, A1a, A2a)"
+  sources:
+    - "schema notes (dr mini_a_depression)"
+    - "scale_reference_rest.md section 1 (MINI)"
+    - "docs/dr/PROGRESS.md D78, D85"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_a_depression): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_mde_symptoms_2_weeks:
+      meaning: Number of the nine symptoms of a depressive episode (A1, A2 and the seven of A3) present in the last two weeks; needs the nine answers.
+      higher_means: more depressive symptoms
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the nine symptoms of a depressive episode present in the last two weeks' (a count of symptoms)"
+      cutoffs:
+        - {value: "5 or more, A1b or A2b among them, and A4 yes", meaning: "major depressive episode, current (MINI 6.0.0 rule)", source: "schema notes (dr mini_a_depression); scale_reference_rest.md section 1, module A", confidence: "Confirmed (5.0.0 form; 6.0.0 form adds 'and A4 [impairment] YES')"}
+    mini_mde_symptoms_past:
+      meaning: Number of the nine symptoms present in the past episode, at the screening visit; needs the nine answers.
+      higher_means: more depressive symptoms in the past episode
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the nine symptoms present in the past episode' (a count of symptoms)"
+      cutoffs:
+        - {value: "5 or more, A1a or A2a among them, and the past A4 yes", meaning: "major depressive episode, past (MINI 6.0.0 rule)", source: "schema notes (dr mini_a_depression); scale_reference_rest.md section 1, module A", confidence: "Confirmed (5.0.0 form; 6.0.0 form adds 'and A4 [impairment] YES')"}
+    mini_mde_symptoms_past_fu:
+      meaning: Number of the nine symptoms present in the past episode, as answered at a follow-up visit (lifetime wording, answered as since the last visit).
+      higher_means: more depressive symptoms in the past episode
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the nine symptoms present in the past episode, at a follow-up visit' (a count of symptoms)"
+      cutoffs:
+        - {value: "5 or more, A1a or A2a among them, and the past A4 yes", meaning: "major depressive episode, past (MINI 6.0.0 rule)", source: "schema notes (dr mini_a_depression); scale_reference_rest.md section 1, module A", confidence: "Confirmed (5.0.0 form; 6.0.0 form adds 'and A4 [impairment] YES')"}
+    mini_mde_current:
+      meaning: Major depressive episode in the last two weeks, recomputed from the items with the MINI 6.0.0 rule (5 or more of A1b, A2b and the seven A3, A1b or A2b among them, and A4). 1 rule met, 0 not met or A1b and A2b both no, missing where empty answers could change the result. The ticked box is delivered where the items do not tell (flag score_as_stored).
+      higher_means: 1 means a current major depressive episode
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_a_depression), decision D85: '1 where the rule is met; 0 where it is not'"
+    mini_mde_past:
+      meaning: Major depressive episode in the past, at the screening visit, recomputed from the items of the past episode with the same rule. 1 rule met, 0 not met. The ticked box is delivered where the items do not tell (flag score_as_stored).
+      higher_means: 1 means a past major depressive episode
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_a_depression), decision D85"
+    mini_mde_past_fu:
+      meaning: Major depressive episode in the past as answered at a follow-up visit (the _fu items; lifetime wording, answered as since the last visit), recomputed with the same rule.
+      higher_means: 1 means a past major depressive episode (period read as since the last visit)
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_a_depression), decision D85 and rule R32"
+  variables:
+    "mini_mde_criteria*":
+      meaning: The interviewer's own answer to 'criteria met for the period explored', current or past; the variable does not say which period. Delivered as stored; it agrees with the items on 480 of 526 visits.
+      higher_means: 1 means the interviewer judged the criteria met
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_a_depression): 'mini_mde_criteria (a05a) is the interviewer's answer for the period explored, current or past'"
+    "mini_mde_recurrent*":
+      meaning: Box 'the episode is recurrent', set by the form from A5. Delivered as stored; flagged derived_doubt where A5 is empty.
+      polarity: not_applicable
+    "mini_mde_episodes*":
+      meaning: Number of depressive episodes in the life (0 to 60); 99 is read as 'not known'.
+      higher_means: more depressive episodes
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of depressive episodes in the life'"
+  flags:
+    - "Use mini_mde_current, mini_mde_past and mini_mde_past_fu. The stored boxes 'current' and 'past' were ticked by hand and do not follow the rule (the box agrees with the rule on 325 of 527 visits for current and 186 of 455 for past), and they are ticked less often over the years; they are not delivered."
+    - "Where the rule cannot be computed, the value is the ticked box (flag score_as_stored: 20, 1 and 1 visits) or stays missing (score_not_recomputed: 83, 59 and 25 visits)."
+    - "Variables ending in _fu: the follow-up form asks the lifetime and past-episode questions again with the lifetime wording, but the interviewers answered them as 'since the last visit' (rule R32, question M87). Never mix a _fu variable with its inclusion twin."
+    - "A box that the form writes holds 0 on every opened interview: an unticked box is not an answer 'no'."
+    - "In one centre the past episode was mostly not explored (median of 2 past symptoms against 8 in the cohort)."
+    - "The rule and thresholds are those of MINI 6.0.0; the literature notes read them on an English 5.0.0 form checked against the 6.0.0 and 7.0.2 forms."
+
+mini_b_suicidality:
+  description: >-
+    Module B of the MINI structured diagnostic interview (DR only): suicidality over the last month (B1 to B10:
+    hopelessness, wish to be dead, self-harm, suicidal thoughts, plan, preparation, attempt) and the attempts of
+    the life (B11), with a weighted risk score and a risk level. Asked by an interviewer at the screening visit
+    and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), long item list B1 to B11, forms 142 and 229; the version and its suicidality points are open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: suicidal_ideation
+  period: "past month (B1 to B10); lifetime for the attempt question B11"
+  sources:
+    - "schema notes (dr mini_b_suicidality)"
+    - "scale_reference_rest.md section 1 (MINI, suicidality)"
+    - "docs/dr/PROGRESS.md D78, D85, D88"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_b_suicidality): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_suicide_risk_score:
+      meaning: Suicide risk score, 0 to 52, the weighted sum that the form computes (1 point for B2 and B3, 2 for B4, 6 for B5, 8 for B6 and B7, 9 for B8 and B10, 4 for B9 and B11 or its follow-up twin). Recomputed from the items; it needs one answered item.
+      higher_means: higher suicide risk
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_b_suicidality): weighted sum of the yes answers, with bands low, moderate and high rising with the score"
+      cutoffs:
+        - {value: "1 to 8", meaning: low risk, source: "MINI 7.0.2 form (2016), reported in schema notes (dr mini_b_suicidality) and scale_reference_rest.md section 1", confidence: "Confirmed from the 7.0.2 form; the bands of the French 6.0.0 were not found (question M87)"}
+        - {value: "9 to 16", meaning: moderate risk, source: "MINI 7.0.2 form (2016), reported in schema notes (dr mini_b_suicidality) and scale_reference_rest.md section 1", confidence: "Confirmed from the 7.0.2 form; the bands of the French 6.0.0 were not found (question M87)"}
+        - {value: "17 or more", meaning: high risk, source: "MINI 7.0.2 form (2016), reported in schema notes (dr mini_b_suicidality) and scale_reference_rest.md section 1", confidence: "Confirmed from the 7.0.2 form; the bands of the French 6.0.0 were not found (question M87)"}
+    mini_suicide_risk_level:
+      meaning: Suicide risk level from the recomputed score with the bands of MINI 7.0.2 (1 low for 1 to 8, 2 moderate for 9 to 16, 3 high for 17 or more); no level at a score of 0.
+      higher_means: higher suicide risk
+      polarity: worse
+      basis: stated
+      source: "label: 'Suicide risk level (1 low, 2 moderate, 3 high)'; schema notes (dr mini_b_suicidality), decision D85"
+  variables:
+    mini_suicide_risk:
+      meaning: Current suicide risk (1 yes, 0 no). It is 0 where no question is answered yes; the form then stores no score.
+      higher_means: 1 means a current suicide risk
+      polarity: worse
+      basis: stated
+      source: "label 'Current suicide risk'; schema notes (dr mini_b_suicidality)"
+    mini_b05a:
+      meaning: Frequency of the suicidal thoughts, asked after B5 yes.
+      higher_means: more frequent suicidal thoughts
+      polarity: worse
+      basis: anchors
+      source: "label: 'frequency (1 occasionally, 2 often, 3 very often)'"
+    mini_b05b:
+      meaning: Intensity of the suicidal thoughts, asked after B5 yes.
+      higher_means: more intense suicidal thoughts
+      polarity: worse
+      basis: anchors
+      source: "label: 'intensity (1 mild, 2 moderate, 3 severe)'"
+    mini_b11_fu:
+      meaning: B11 (a suicide attempt in the life) asked again at a follow-up visit; lifetime wording, answered as since the last visit.
+      construct: suicidal_behaviour
+      polarity: not_applicable
+  flags:
+    - "The points are those of the form's script; whether they are those of the French MINI 6.0.0 is open (question M87). The 9-item English form of 2006 gives 10 points, not 9, to an attempt of the last month (read from a garbled copy: to verify); the weight 9 is kept (decision D88)."
+    - "The level uses the bands of MINI 7.0.2 (1 to 8, 9 to 16, 17 or more); the bands of the French 6.0.0 were not found. The 6-item list of the 1998 MINI (Lim 2014: low 1 to 5, moderate 6 to 9, then high) is another item list and does not apply here."
+    - "The form's button left scores of 1, 9 and 17 without a level (defect A85) and raters typed some levels by hand; the delivered level is recomputed, and the 10 stored levels that the score does not give are flagged score_mismatch."
+    - "Two periods in one score: B2 to B10 are about the last month, B11 about the whole life. At follow-up B11 is mini_b11_fu (answered as since the last visit, rule R32) and takes the place of B11 in the score."
+    - "B5a is a frequency and B5b an intensity, as the form asks; the dictionary of the export codes B05A as an intensity (request R171)."
+    - "mini_b10a and mini_b10b are boxes written by the form: a 0 is not an answer 'no' where B10 is empty (derived_doubt)."
+
+mini_c_mania:
+  description: >-
+    Module C of the MINI structured diagnostic interview (DR only): manic and hypomanic episodes, current and
+    past, with the family history of bipolar disorder (C0) and three conclusions (manic episode, hypomanic
+    episode, hypomanic symptoms). Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: mania
+  period: "current episode (variables ending in _actuel, C1b, C2b) and a past episode of the life (variables ending in _pe, C1a, C2a)"
+  sources:
+    - "schema notes (dr mini_c_mania)"
+    - "scale_reference_rest.md section 1 (MINI)"
+    - "docs/dr/PROGRESS.md D78"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_c_mania): 'Answers are 1 for yes and 0 for no'"
+  variables:
+    "mini_c04_*":
+      meaning: Longest duration of the symptoms of the episode (1 three days or less, 2 four to six days, 3 seven days or more).
+      higher_means: longer episode
+      polarity: worse
+      basis: anchors
+      source: "label: 'Longest duration of the symptoms ... (1 three days or less, 2 four to six days, 3 seven days or more)'"
+    "mini_*_current":
+      meaning: Box 'current' of a conclusion (manic episode, hypomanic episode, hypomanic symptoms), written by the form. A 0 is an unticked box, flagged derived_doubt where C1a is empty.
+      polarity: not_applicable
+    "mini_*_past*":
+      meaning: Box 'past' of a conclusion, written by the form (the _fu twin at follow-up). A 0 is an unticked box, flagged derived_doubt where C1a is empty.
+      polarity: not_applicable
+  flags:
+    - "Few patients of this cohort answer yes: an elated period on 27 visits, an irritable one on 37."
+    - "The three conclusions are each a yes/no and two boxes 'current' and 'past'; the six boxes are written by the form and an unticked box is not an answer 'no'. No conclusion is recomputed."
+    - "Form change of 2017: after C1a and C2a no, the page now hides and clears the module. Until 2017 it did not: 137 of the 506 such visits hold later answers (mostly zeros), delivered as recorded."
+    - "Variables ending in _fu (C0, C1a, C2a, the past episode, the conclusions, C7a to C7c): the follow-up form uses the lifetime wording but the interviewers answered as 'since the last visit' (rule R32, question M87). Never mix them with the inclusion variables."
+    - "C4: the form prints the first option as '3 jours au moins' where the MINI says three days or less (defect A88)."
+    - "The literature notes give the published rule (3 symptoms or more if elated, 4 if irritable only; a week or more, or significant problems or hospitalisation, makes the episode manic, else hypomanic) for the 5.0.0 form; no symptom count is delivered here."
+
+mini_d_panic:
+  description: >-
+    Module D of the MINI structured diagnostic interview (DR only): panic disorder over the life (the attacks, the
+    thirteen symptoms of the worst one) and the attacks of the last month (D7), with the conclusions lifetime and
+    current. Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: anxiety
+  period: "lifetime (D1 to D6); past month (D7 and the current panic disorder)"
+  sources:
+    - "schema notes (dr mini_d_panic)"
+    - "scale_reference_rest.md section 1 (MINI; panic disorder is module E of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D78"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_d_panic): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_panic_symptoms:
+      meaning: Number of the thirteen symptoms of the worst panic attack of the life, at the screening visit.
+      higher_means: more symptoms in the worst panic attack
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the thirteen symptoms of the worst panic attack' (a count of symptoms)"
+      cutoffs:
+        - {value: "4 or more of 13, with D1a, D1b, D2 and D3 yes", meaning: "panic disorder, lifetime", source: "schema notes (dr mini_d_panic): 'D1a, D1b, D2, D3 and four symptoms'; scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+    mini_panic_symptoms_fu:
+      meaning: Number of the thirteen symptoms of the worst panic attack, as answered at a follow-up visit (lifetime wording, answered as since the last visit).
+      higher_means: more symptoms in the worst panic attack
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the thirteen symptoms of the worst panic attack, at a follow-up visit' (a count of symptoms)"
+      cutoffs:
+        - {value: "4 or more of 13, with D1a, D1b, D2 and D3 yes", meaning: "panic disorder (lifetime wording)", source: "schema notes (dr mini_d_panic): 'D1a, D1b, D2, D3 and four symptoms'; scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+  variables:
+    "mini_panic_lifetime*":
+      meaning: Conclusion 'panic disorder, lifetime' (D5), delivered as stored. Of the 125 yes, 113 meet the criteria as the items give them and 12 do not; no visit meets them with a no.
+      higher_means: 1 means a lifetime panic disorder
+      polarity: worse
+      basis: stated
+      source: "label 'TROUBLE PANIQUE VIE ENTIÈRE'; schema notes (dr mini_d_panic)"
+    mini_panic_current:
+      meaning: Conclusion 'panic disorder, current', written by the form from D7 (attacks in the last month); delivered as stored. It agrees with D7 on all visits but 1.
+      higher_means: 1 means a current panic disorder
+      polarity: worse
+      basis: stated
+      source: "label 'TROUBLE PANIQUE ACTUEL'; schema notes (dr mini_d_panic)"
+    "mini_limited_symptom_attacks_lifetime*":
+      meaning: Conclusion 'limited-symptom attacks, lifetime' (D6). The form clears it when a saved interview is opened again (defect A87); it stays missing where empty.
+      polarity: not_applicable
+  flags:
+    - "Variables ending in _fu (D1a to D3, the thirteen symptoms, the lifetime conclusions, the symptom count): the follow-up form uses the lifetime wording but the interviewers answered as 'since the last visit' (rule R32; 26 of 40 yes to D1a turn to no at the first follow-up). Never mix them with the inclusion variables."
+    - "The conclusions are delivered as stored, not recomputed."
+    - "D6 is cleared each time a saved interview is opened again where D3 is not yes and no symptom is ticked (defect A87): it is empty on 324 of the 393 visits screened out and stays missing there."
+    - "One centre answers yes far less often than the others in the anxiety modules (D1a on 2 of 27 visits against 31% to 80% elsewhere); no known cause."
+
+mini_e_agoraphobia:
+  description: >-
+    Module E of the MINI structured diagnostic interview (DR only): two questions on agoraphobia and three
+    conclusions that combine them with module D (panic disorder with or without agoraphobia, agoraphobia without a
+    history of panic disorder). Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: anxiety
+  period: current (the present or the last month)
+  sources:
+    - "schema notes (dr mini_e_agoraphobia)"
+    - "scale_reference_rest.md section 1 (MINI; agoraphobia is module F of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D78, D85"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_e_agoraphobia): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_panic_with_agoraphobia_current:
+      meaning: Panic disorder current with agoraphobia, recomputed from the items (E2 yes and D7, panic disorder current, yes). Missing where E2 or the D answer is missing.
+      higher_means: 1 means the conclusion is met
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_e_agoraphobia), decision D85; scale_reference_rest.md section 1, Confirmed (5.0.0 form)"
+    mini_panic_without_agoraphobia_current:
+      meaning: Panic disorder current without agoraphobia, recomputed from the items (E2 no and D7 yes). Missing where E2 or the D answer is missing.
+      higher_means: 1 means the conclusion is met
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_e_agoraphobia), decision D85; scale_reference_rest.md section 1, Confirmed (5.0.0 form)"
+    mini_agoraphobia_without_panic_current:
+      meaning: Agoraphobia current without a history of panic disorder, recomputed from the items (E2 yes and D5, panic disorder lifetime, no). Missing where E2 or the D answer is missing.
+      higher_means: 1 means the conclusion is met
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_e_agoraphobia), decision D85; scale_reference_rest.md section 1, Confirmed (5.0.0 form)"
+  flags:
+    - "The three conclusions are recomputed (decision D85); the stored ones, which the rater could tick by hand and which were not refreshed after a changed answer, are checks only (score_mismatch: agoraphobia without panic 8 visits, panic with agoraphobia 7, panic without agoraphobia 11)."
+    - "mini_agoraphobia_without_panic_current is 'agoraphobia current without a history of panic disorder' (E2 yes and D5 no), as the form labels it, not agoraphobia as such; it was named mini_agoraphobia_current before."
+    - "E2 is set to 0 by the page after an E1 no."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_f_social_phobia:
+  description: >-
+    Module F of the MINI structured diagnostic interview (DR only): four questions on social phobia over the last
+    month, the conclusion and its type (generalised or not). Asked by an interviewer at the screening visit and
+    again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: social_anxiety
+  period: past month
+  sources:
+    - "schema notes (dr mini_f_social_phobia)"
+    - "scale_reference_rest.md section 1 (MINI; social phobia is module G of the 5.0.0 form)"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_f_social_phobia): 'Answers are 1 for yes and 0 for no'"
+  variables:
+    mini_social_phobia_current:
+      meaning: Conclusion 'social phobia, current', delivered as stored. The published rule is F1 to F4 all yes; the stored yes disagrees with it on 1 visit.
+      higher_means: 1 means a current social phobia
+      polarity: worse
+      basis: stated
+      source: "label 'PHOBIE SOCIALE ACTUELLE'; schema notes (dr mini_f_social_phobia); scale_reference_rest.md section 1, Confirmed (5.0.0 form)"
+    mini_social_phobia_type:
+      meaning: Type of the social phobia, generalised or not generalised (generalised when four situations or more are feared). Stored 1 and 0; read as generalised and not generalised because it follows the answer to 'four situations or more' on 131 of 132 visits.
+      polarity: not_applicable
+  flags:
+    - "The conclusion is delivered as stored, not recomputed."
+    - "The type is stored 1 and 0 where the dictionary of the export says 1 and 2 (request R171)."
+    - "F1 is yes on 0 of 29 visits in one centre (8% to 55% elsewhere); no known cause."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_g_ocd:
+  description: >-
+    Module G of the MINI structured diagnostic interview (DR only): six questions on obsessions and compulsions
+    over the last month and the conclusion. Asked by an interviewer at the screening visit and again at 2 and 4
+    years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: ocd_symptoms
+  period: past month
+  sources:
+    - "schema notes (dr mini_g_ocd)"
+    - "scale_reference_rest.md section 1 (MINI; OCD is module H of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D78"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_g_ocd): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_ocd_current:
+      meaning: Obsessive-compulsive disorder, current. It is G6 where G6 is answered and the stored conclusion elsewhere (rule R27), because the form reset the conclusion to no after G6 (defect A86).
+      higher_means: 1 means a current obsessive-compulsive disorder
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_g_ocd), rule R27"
+  flags:
+    - "The stored conclusion is wrong on 5 visits (G6 yes, stored no; defect A86): use mini_ocd_current."
+    - "Rare in this cohort: G6 is yes on 8 visits."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_h_ptsd:
+  description: >-
+    Module H of the MINI structured diagnostic interview (DR only): post-traumatic stress disorder. A traumatic
+    event in the life and the reaction to it (H1, H2), then the symptoms of the last month (H3, seven H4, five H5,
+    H6) and the conclusion. Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI 6.0.0 (DSM-IV), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: ptsd_symptoms
+  period: "lifetime for the event (H1, H2); past month for the symptoms (H3 to H6) and the conclusion"
+  sources:
+    - "schema notes (dr mini_h_ptsd)"
+    - "scale_reference_rest.md section 1 (MINI; PTSD is module I of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D78"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_h_ptsd): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_ptsd_avoidance_count:
+      meaning: Number of the seven H4 symptoms answered yes, last month.
+      higher_means: more avoidance symptoms (H4)
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the seven H4 symptoms (3 needed)' (a count of symptoms)"
+      cutoffs:
+        - {value: "3 or more of 7", meaning: "H4 criterion of post-traumatic stress disorder met (the diagnosis also needs H1, H2, H3, two of H5 and H6)", source: "label of the score; schema notes (dr mini_h_ptsd); scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+    mini_ptsd_arousal_count:
+      meaning: Number of the five H5 symptoms answered yes, last month.
+      higher_means: more arousal symptoms (H5)
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the five H5 symptoms (2 needed)' (a count of symptoms)"
+      cutoffs:
+        - {value: "2 or more of 5", meaning: "H5 criterion of post-traumatic stress disorder met (the diagnosis also needs H1, H2, H3, three of H4 and H6)", source: "label of the score; schema notes (dr mini_h_ptsd); scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+  variables:
+    mini_ptsd_current:
+      meaning: Conclusion 'post-traumatic stress disorder, current', written by the form from H6 and delivered as stored. Of the 24 yes, 19 meet the criteria as the items give them; no visit meets them with a no.
+      higher_means: 1 means a current post-traumatic stress disorder
+      polarity: worse
+      basis: stated
+      source: "label 'ETAT DE STRESS POST-TRAUMATIQUE ACTUEL'; schema notes (dr mini_h_ptsd)"
+  flags:
+    - "H5 is asked only after three H4 yes in practice (defect A98: shown from two when a saved interview is opened, from three when H4 is changed): H5 is answered on 29 visits only, all with three H4 yes or more."
+    - "mini_h01_fu and mini_h02_fu: the lifetime event asked again at follow-up, answered as 'since the last visit' (rule R32; 20 of 25 yes to H1 turn to no). Never mix them with H1 and H2 of the screening visit."
+    - "The conclusion is delivered as stored, not recomputed."
+    - "H1 differs widely between centres (1 of 27 visits in one, 15 of 20 in another, 4% to 44% elsewhere); no known cause."
+    - "Literature notes: the seven items counted first are the avoidance items and the five others the arousal items (I4 and I5 of the 5.0.0 form, H4 and H5 here)."
+
+mini_i_alcohol:
+  description: >-
+    Module I of the MINI structured diagnostic interview (DR only): alcohol dependence (seven criteria, I2) and
+    abuse (four questions, I3) over the last twelve months, after a screening question on heavy drinking (I1).
+    Asked by an interviewer at the screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: alcohol
+  period: past 12 months
+  sources:
+    - "schema notes (dr mini_i_alcohol)"
+    - "scale_reference_rest.md section 1 (MINI; alcohol is module J of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D79"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_i_alcohol): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_alcohol_dependence_criteria:
+      meaning: Number of the seven criteria of alcohol dependence (I2a to I2g) answered yes, last twelve months; 0 after a no to I1.
+      higher_means: more criteria of alcohol dependence
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the seven criteria of alcohol dependence, last twelve months' (a count of criteria)"
+      cutoffs:
+        - {value: "3 or more of 7", meaning: "alcohol dependence, current", source: "schema notes (dr mini_i_alcohol); scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+    mini_alcohol_dependence_current:
+      meaning: Alcohol dependence in the last twelve months, recomputed (rule R27). 1 where I1 is yes and three or more of the seven criteria are yes, 0 after an I1 no; an unanswered criterion counts as no.
+      higher_means: 1 means a current alcohol dependence
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_i_alcohol), rule R27"
+  variables:
+    mini_alcohol_abuse_current:
+      meaning: Conclusion 'alcohol abuse, current' (one of the four I3), delivered as stored; it agrees with the items on 539 of 542 visits.
+      higher_means: 1 means a current alcohol abuse
+      polarity: worse
+      basis: stated
+      source: "label: ABUS D'ALCOOL ACTUEL; schema notes (dr mini_i_alcohol)"
+  flags:
+    - "The script of the form counted I2a to I2e only (defect A89): the stored dependence is wrong on 8 visits with three criteria or more. Use mini_alcohol_dependence_current (29 visits with a dependence, 23 stored)."
+    - "The MINI codes an abuse only without a dependence, yet on 7 of the 8 visits whose dependence was corrected to yes the stored abuse is yes: read the two conclusions together."
+    - "The literature notes add that MINI 7.0.2 (DSM-5) uses another rule (2 or more of 11 criteria); it is not the rule of this form."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_j_substances:
+  description: >-
+    Module J of the MINI structured diagnostic interview (DR only): dependence on and abuse of substances other
+    than alcohol over the last twelve months. A list of 39 substances in eight classes, seven dependence criteria
+    for the substance used most (J2), abuse questions (J3) and two conclusions. Asked by an interviewer at the
+    screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: substance_use
+  period: past 12 months
+  sources:
+    - "schema notes (dr mini_j_substances)"
+    - "scale_reference_rest.md section 1 (MINI; substances are module K of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D79"
+  items:
+    higher_means: 1 is yes, 0 is no (for a substance box, 0 is 'not ticked')
+    basis: stated
+    source: "schema notes (dr mini_j_substances): 'Answers are 1 for yes and 0 for no'; labels '(a box: 0 is not ticked)'"
+  scores:
+    mini_substance_dependence_criteria:
+      meaning: Number of the seven criteria of substance dependence (J2a to J2g) answered yes for the substance used most, last twelve months; 0 after a no to J1a.
+      higher_means: more criteria of substance dependence
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the seven criteria of substance dependence, last twelve months' (a count of criteria)"
+      cutoffs:
+        - {value: "3 or more of 7", meaning: "substance dependence, current (same threshold as for alcohol)", source: "scale_reference_rest.md section 1 (module K of the 5.0.0 form)", confidence: "Confirmed (5.0.0 form)"}
+    "mini_*_used_12m":
+      meaning: A class of substances (stimulants, cocaine, opiates, hallucinogens, solvents and poppers, sedatives, steroids) used more than once in the last twelve months to get high. 1 where J1a is yes and a box of the class is ticked, 0 after a J1a no or with no box of the class, missing where J1a is empty.
+      higher_means: 1 means the class was used
+      polarity: worse
+      basis: stated
+      source: "labels of the scores: '... used more than once in the last twelve months to get high (J1a yes and a box of the class ticked; 0 after a J1a no)'"
+    mini_cannabis_used_12m:
+      meaning: Cannabis (hashish, THC, cannabis, grass, shit) used more than once in the last twelve months to get high. 1 where J1a is yes and a cannabis box is ticked, 0 after a J1a no, missing where J1a is empty.
+      construct: cannabis
+      higher_means: 1 means cannabis was used
+      polarity: worse
+      basis: stated
+      source: "label of the score: 'Cannabis ... used more than once in the last twelve months to get high (J1a yes and a box of the class ticked; 0 after a J1a no)'"
+  variables:
+    mini_substance_dependence_current:
+      meaning: Conclusion 'substance dependence, current', delivered as stored; it agrees with the criteria on 538 of 539 visits.
+      higher_means: 1 means a current substance dependence
+      polarity: worse
+      basis: stated
+      source: "label 'DÉPENDANCE à une (des) substance(s) ACTUELLE'; schema notes (dr mini_j_substances)"
+    mini_substance_abuse_current:
+      meaning: Conclusion 'substance abuse, current', delivered as stored; it agrees with the criteria on 526 of 526 visits.
+      higher_means: 1 means a current substance abuse
+      polarity: worse
+      basis: stated
+      source: "label 'ABUS DE SUBSTANCE(S) ACTUEL'; schema notes (dr mini_j_substances)"
+  flags:
+    - "The 39 substance boxes (mini_j01a01 to mini_j01a39) are written by the form: a 0 is 'not ticked', and says nothing where J1a is empty. Use the eight class variables mini_*_used_12m."
+    - "Very few users: cannabis 25 visits, sedatives 20, opiates 5, cocaine 2, solvents 2, stimulants 1, hallucinogens 1, steroids 0."
+    - "'Used' means more than once in the last twelve months to get high, not any use."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_k_psychotic:
+  description: >-
+    Module K of the MINI structured diagnostic interview (DR only): psychotic symptoms in the life (the 'a'
+    questions) and now or in the past month (the 'b' questions), signs observed by the interviewer, and the
+    conclusions (psychotic syndrome current and lifetime, mood disorder with psychotic features). Asked at the
+    screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychotic_symptoms
+  period: "lifetime (the 'a' questions) and current, now or the past month (the 'b' questions)"
+  sources:
+    - "schema notes (dr mini_k_psychotic)"
+    - "scale_reference_rest.md section 1 (MINI; psychotic disorders are module L of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D79"
+  items:
+    higher_means: 1 is yes, 0 is no; K1 to K7 have a third answer, 2 for 'yes, bizarre'
+    basis: stated
+    source: "schema notes (dr mini_k_psychotic): 'Questions K1 to K7 have a third answer, yes bizarre, stored 2'"
+  scores:
+    mini_psychotic_syndrome_lifetime:
+      meaning: Psychotic syndrome in the life, at the screening visit. The larger of the current syndrome (K13) and the stored lifetime conclusion (K14), because the form says the lifetime syndrome is yes when the current one is (rule R33).
+      higher_means: 1 means a lifetime psychotic syndrome
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_k_psychotic), rule R33"
+    mini_psychotic_syndrome_lifetime_fu:
+      meaning: Psychotic syndrome in the life as answered at a follow-up visit (lifetime wording, answered as since the last visit). The larger of the current syndrome and the stored lifetime conclusion.
+      higher_means: 1 means a psychotic syndrome (period read as since the last visit)
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr mini_k_psychotic), rules R32 and R33"
+  variables:
+    mini_psychotic_syndrome_current:
+      meaning: Conclusion 'psychotic syndrome, current', delivered as stored.
+      higher_means: 1 means a current psychotic syndrome
+      polarity: worse
+      basis: stated
+      source: "label 'SYNDROME PSYCHOTIQUE ACTUEL'; schema notes (dr mini_k_psychotic): 'the other conclusions are delivered as stored'"
+    "mini_mood_disorder_psychotic_*":
+      meaning: Conclusions 'mood disorder with psychotic features', lifetime (with a _fu twin) and current, delivered as stored.
+      higher_means: 1 means a mood disorder with psychotic features
+      polarity: worse
+      basis: stated
+      source: "labels of the conclusions (mood disorder with psychotic features, lifetime and current); schema notes (dr mini_k_psychotic): 'the other conclusions are delivered as stored'"
+  flags:
+    - "K1 to K7 are not plain 0/1 items: they have three answers, 0 no, 1 yes and 2 'yes, bizarre' (10 cells)."
+    - "Variables ending in _fu: the lifetime 'a' questions asked again at follow-up were answered as 'since the last visit' (rule R32: all 14 lifetime yes answered again are no). Never mix them with the inclusion variables."
+    - "The 'b' questions are 0 by logic after a no to their 'a' question."
+    - "The form hides the wrong questions after K1b yes (defect A97)."
+    - "One centre (from 2022) rates the current disorganised speech, disorganised behaviour and negative symptoms (K8b, K9b, K10b) yes far more often than the others; no known cause."
+    - "Rare in this cohort: 11 visits have the lifetime syndrome."
+
+mini_l_anorexia:
+  description: >-
+    Module L of the MINI structured diagnostic interview (DR only): anorexia nervosa over the last three months.
+    Height, lowest weight, whether the weight is under the threshold for the height, then the questions asked
+    only under that threshold, and the conclusion. Asked at the screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: past 3 months
+  sources:
+    - "schema notes (dr mini_l_anorexia)"
+    - "scale_reference_rest.md section 1 (MINI; anorexia is module M of the 5.0.0 form)"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_l_anorexia): 'Answers are 1 for yes and 0 for no'"
+  variables:
+    mini_l01a:
+      meaning: Height as asked in the interview, in cm (whole number only in the export).
+      polarity: neutral
+    mini_l01b:
+      meaning: Lowest weight of the last three months as asked in the interview, in kg (whole number only in the export).
+      polarity: neutral
+    mini_anorexia_current:
+      meaning: Conclusion 'anorexia nervosa, current', set by the script of the form and delivered as stored; yes on 1 visit.
+      higher_means: 1 means a current anorexia nervosa
+      polarity: worse
+      basis: stated
+      source: "label 'ANOREXIE MENTALE ACTUELLE'; schema notes (dr mini_l_anorexia)"
+  flags:
+    - "The module stops after the weight question for nearly every patient (the weight is under the threshold on 7 visits); L2 to L4c are 0 by logic after a no to L1c."
+    - "The weight threshold is not in the schema; the literature notes give BMI 17.5 for the 5.0.0 form and 17.0 for 7.0.2."
+    - "Height and lowest weight are asked in the interview (questions L1a and L1b); two weights are out of range."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_m_bulimia:
+  description: >-
+    Module M of the MINI structured diagnostic interview (DR only): bulimia nervosa over the last three months
+    (binge eating, its frequency, loss of control, compensation, self-esteem and weight) and two conclusions.
+    Asked at the screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: past 3 months
+  sources:
+    - "schema notes (dr mini_m_bulimia)"
+    - "scale_reference_rest.md section 1 (MINI; bulimia is module N of the 5.0.0 form)"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_m_bulimia): 'Answers are 1 for yes and 0 for no'"
+  variables:
+    mini_bulimia_current:
+      meaning: Conclusion 'bulimia nervosa, current', set by the script of the form and delivered as stored; yes on 5 visits.
+      higher_means: 1 means a current bulimia nervosa
+      polarity: worse
+      basis: stated
+      source: "label 'BOULIMIE ACTUELLE'; schema notes (dr mini_m_bulimia)"
+    mini_anorexia_binge_purge_current:
+      meaning: Conclusion 'anorexia nervosa, binge-eating and purging type, current', set by the script of the form and delivered as stored; yes on no visit.
+      higher_means: 1 means a current anorexia of the binge-purge type
+      polarity: worse
+      basis: stated
+      source: "label 'ANOREXIE MENTALE Boulimie/ Type avec vomissements ou prise de purgatifs ACTUELLE'; schema notes (dr mini_m_bulimia)"
+  flags:
+    - "M2 to M4 are 0 by logic after a no to M1 (binge eating, yes on 65 visits). M7 is empty in the extraction."
+    - "The conclusions are delivered as stored, not recomputed."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_n_gad:
+  description: >-
+    Module N of the MINI structured diagnostic interview (DR only): generalised anxiety disorder over the last six
+    months (excessive worry, its control, six symptoms, impairment) and the conclusion. Asked at the screening
+    visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: anxiety
+  period: past 6 months
+  sources:
+    - "schema notes (dr mini_n_gad)"
+    - "scale_reference_rest.md section 1 (MINI; generalised anxiety is module O of the 5.0.0 form)"
+    - "docs/dr/PROGRESS.md D79"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_n_gad): 'Answers are 1 for yes and 0 for no'"
+  scores:
+    mini_gad_symptoms:
+      meaning: Number of the six symptoms of generalised anxiety (N3a to N3f) answered yes, last six months; 0 after a no to N1a.
+      higher_means: more symptoms of generalised anxiety
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of the six symptoms of generalised anxiety, last six months' (a count of symptoms)"
+      cutoffs:
+        - {value: "3 or more of 6, with N1a, N1b and N2 yes", meaning: "generalised anxiety disorder, current", source: "schema notes (dr mini_n_gad): 'N1a, N1b, N2 and three symptoms'; scale_reference_rest.md section 1", confidence: "Confirmed (5.0.0 form)"}
+  variables:
+    mini_gad_current:
+      meaning: Conclusion 'generalised anxiety, current', delivered as stored (the clinician sees it and can change it). Of the 175 yes, 152 meet the criteria as the items give them and 23 do not; 6 visits meet them with a no.
+      higher_means: 1 means a current generalised anxiety disorder
+      polarity: worse
+      basis: stated
+      source: "label 'ANXIETE GENERALISEE ACTUELLE'; schema notes (dr mini_n_gad), rule R33"
+  flags:
+    - "The script of the form has two faults (defect A90): N4 is hidden and cleared when a saved interview is opened again with three symptoms or more (N4 is empty on 124 of 143 such visits), and a 'no' to N2 cannot be saved. Do not read an empty N4 or N2 as 'no'."
+    - "The conclusion is delivered as stored, not recomputed: 23 yes do not meet the criteria as the items give them, and 6 visits meet them with a no."
+    - "One centre answers yes far less often than the others in the anxiety modules (N1a on 5 of 29 visits against 46% to 81% elsewhere); no known cause."
+    - "Read at every visit: this module has no _fu twins."
+
+mini_o_organic:
+  description: >-
+    Module O of the MINI structured diagnostic interview (DR only): three questions answered yes, no or uncertain.
+    Was a medication or a physical illness present just before the symptoms began, and has an organic cause been
+    ruled out. Asked at the screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  sources:
+    - "schema notes (dr mini_o_organic)"
+    - "scale_reference_rest.md section 1 (MINI)"
+  variables:
+    mini_o02:
+      meaning: Has an organic cause been ruled out (yes, no, uncertain). A 'no' means 'not ruled out'.
+      polarity: not_applicable
+  flags:
+    - "O2 may have been read the other way round by some interviewers: 123 visits answer 'no' (not ruled out) although O1a and O1b are no, where yes is expected (question M89). Do not use a 'no' as evidence of an organic cause."
+    - "The interview asks this module when a disorder is current; the form shows it always (answered on 542 of 630 visits)."
+    - "The literature notes say the MINI 5.0.0 has no separate organic exclusion module and that MINI 7.0.2 adds the 'O2 summary' step."
+    - "Delivered as categories (yes, no, uncertain), not as 0/1."
+
+mini_p_antisocial:
+  description: >-
+    Module P of the MINI structured diagnostic interview (DR only): antisocial personality disorder, with six
+    questions on conduct before the age of 15 (P1), six on conduct since (P2) and the conclusion. Asked at the
+    screening visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: lifetime
+  sources:
+    - "schema notes (dr mini_p_antisocial)"
+    - "scale_reference_rest.md section 1 (MINI, module P)"
+    - "docs/dr/PROGRESS.md D79"
+  items:
+    higher_means: 1 is yes, 0 is no
+    basis: stated
+    source: "schema notes (dr mini_p_antisocial): 'Answers are 1 for yes and 0 for no'"
+  variables:
+    "mini_antisocial_lifetime*":
+      meaning: Conclusion 'antisocial personality disorder, lifetime', set by the form from P2 alone and delivered as stored. It is yes on 6 visits and none of them has the criteria in its items (two of P1 and three of P2).
+      polarity: not_applicable
+  flags:
+    - "Do not trust the conclusion: the script of the form sets it from P2 alone, whatever P1, and none of the 6 yes meets the criteria (defect A91)."
+    - "P2 is hidden and cleared where two or more P1 answers are yes, the opposite of the rule of the interview: P2 is answered on 98 visits only and stays missing elsewhere. An empty P2 is not 'no'."
+    - "Published rule (literature notes, Confirmed, 5.0.0 form): 2 or more of the 6 P1 and 3 or more of the 6 P2. No count is delivered."
+    - "Variables ending in _fu: the lifetime questions asked again at follow-up were answered as 'since the last visit' (rule R32). Never mix them with the inclusion variables."
+
+mini_q_conclusion:
+  description: >-
+    Conclusion page of the MINI structured diagnostic interview (DR only) for the mood disorders: boxes ticked by
+    the interviewer for major depressive disorder, bipolar I, bipolar II and bipolar disorder not specified, each
+    current and past, with psychotic features and the type of the most recent episode. Filled at the screening
+    visit and again at 2 and 4 years.
+  version: "MINI version 6 (modules and suicidality points), forms 142 and 229 of the application; the version is open question M87"
+  reference: "Sheehan DV, Lecrubier Y, et al. J Clin Psychiatry 1998;59(suppl 20):22-33 (PMID 9881538)"
+  reference_confidence: "confirmed for authorship (search snippet); French validation (Lecrubier et al., Eur Psychiatry 1997;12:224-231) not read: to verify"
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  period: current and past (one box for each)
+  sources:
+    - "schema notes (dr mini_q_conclusion)"
+    - "scale_reference_rest.md section 1 (MINI)"
+    - "docs/dr/PROGRESS.md D79, O24"
+  variables:
+    "mini_*_current":
+      meaning: Box 'current' of a mood-disorder conclusion, ticked by hand by the interviewer (no script ticks it). 1 ticked, 0 not ticked.
+      polarity: not_applicable
+    "mini_*_past":
+      meaning: Box 'past' of a mood-disorder conclusion, ticked by hand by the interviewer. 1 ticked, 0 not ticked.
+      polarity: not_applicable
+    mini_bipolar2_recent_episode:
+      meaning: Type of the most recent episode of a bipolar II disorder (hypomanic or depressive); one visit each.
+      polarity: not_applicable
+  flags:
+    - "Every column is a box that the form sets to 0 when the interview is opened: a 0 is 'not ticked', not 'no disorder'. Major depressive disorder is ticked current on 361 visits and past on 200, and 182 visits with an interview have neither, in a cohort of resistant depression."
+    - "See mini_a_depression: the depressive episode is recomputed there from the items (mini_mde_current, mini_mde_past)."
+    - "The share of ticked boxes differs by centre (major depressive disorder current on 37% to 89% of the visits); no known cause."
+    - "The bipolar boxes are ticked on a handful of visits. Two tests of the script never hold (defect A92); how the display rule changed over time is question M88."
+    - "No _fu twins: the boxes are read at every visit."

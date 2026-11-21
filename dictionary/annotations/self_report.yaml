@@ -1,0 +1,2234 @@
+# Annotations of the questionnaires filled by the patient (group self_report), for the FACE data dictionary.
+# Drafted on 2026-11-21 from the schema notes and from local/out/scale_reference_aq_general.md.
+# Only what a document states is written. A field left out means that no project document states it.
+# "section N" in a source is a section of local/out/scale_reference_aq_general.md; the confidence tags are copied from it.
+
+# ---------------------------------------------------------------- FACE BP (and the same scales in SZ, DR, ASP)
+
+aim20:
+  description: Affect Intensity Measure in its 20-item form. Twenty items answered by the patient from 1 (never) to 6 (always), mostly at the inclusion visit.
+  version: "AIM-20: the 20-item form that replaced the 40-item AIM between January 2021 and January 2023, depending on the centre; its questions are 20 of the 40"
+  reference: "Larsen RJ. Theory and measurement of affect intensity as an individual difference characteristic. Dissertation Abstracts International 1984;85:2297B; Larsen RJ, Diener E. J Res Pers 1987;21:1-39"
+  reference_confidence: To verify (from memory)
+  respondent: patient
+  construct: emotional_reactivity
+  sources: ["schema notes (bp aim20)", "scale_reference_aq_general.md section 19"]
+  items:
+    higher_means: the statement applies more often (1 never to 6 always)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (bp aim20): 'Each item is 1 (never) to 6 (always)'"
+  scores:
+    aim20_score:
+      meaning: Mean of the 20 items (1 to 6), six of them reversed (7 - value).
+      higher_means: greater affect intensity
+      polarity: neutral
+      basis: literature
+      source: "section 19: '1 never to 6 always; higher = greater affect intensity', Confirmed (direct: Yang 2026) for the AIM; the 20-item form itself is 'To verify'"
+  flags:
+    - Which form a visit used is not recorded. It is read from the ALS and the BIS of the same visit, which is an assumption.
+    - Whether this form is the published 20-item short form (Geuens and De Pelsmacker 2002, 'To verify' in the literature notes) is not stated anywhere. No French version was found.
+    - "Not to be mixed with aim40_score20: the same 20 questions asked inside the 40-item questionnaire are a separate column."
+    - Visits dated before 2021 that look like the 20-item form are not delivered (version_unknown).
+
+aim40:
+  description: Affect Intensity Measure in its 40-item form, filled by the patient once, at the inclusion visit, until 2021. Each item is answered from 1 (never) to 6 (always). Only the 20 items that the AIM-20 also has are in the extraction.
+  version: "AIM, 40 items (20 of them exported)"
+  reference: "Larsen RJ. Theory and measurement of affect intensity as an individual difference characteristic. Dissertation Abstracts International 1984;85:2297B; Larsen RJ, Diener E. J Res Pers 1987;21:1-39"
+  reference_confidence: To verify (from memory)
+  respondent: patient
+  construct: emotional_reactivity
+  sources: ["schema notes (bp aim40)", "scale_reference_aq_general.md section 19"]
+  items:
+    higher_means: the statement applies more often (1 never to 6 always)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (bp aim40): 'Each item is 1 (never) to 6 (always)'"
+  scores:
+    aim40_score20:
+      meaning: Mean of the 20 items that the AIM-20 also has (1 to 6), six of them reversed. It is the score of the AIM-20 computed inside the 40-item questionnaire.
+      higher_means: greater affect intensity
+      polarity: neutral
+      basis: literature
+      source: "section 19: '1 never to 6 always; higher = greater affect intensity', Confirmed (direct: Yang 2026)"
+  flags:
+    - The score of the 40 items is not in the extraction. The 20 other items were not exported.
+    - "aim40_score20 and aim20_score are separate columns: whether the same question asked inside a 40-item and a 20-item questionnaire can be compared is a scientific choice."
+    - Which form a visit used is read from the ALS and the BIS of the same visit (an assumption). A visit with neither has no form and is not delivered.
+    - The list of the reversed items of the long form is 'To verify' in the literature notes. The six reversed here come from the application.
+
+als18:
+  description: Affective Lability Scale in its 18-item form. Eighteen statements rated by the patient from 0 (not at all like me) to 3 (very much like me), once, at the inclusion visit.
+  version: "ALS-18: 18 of the 54 items, used from 2021 (September 2021 to May 2022 depending on the centre)"
+  reference: "Oliver MNI, Simons JS. Pers Individ Dif 2004;37:1279-1288"
+  reference_confidence: "To verify (paper not read). The three factors and their ranges are Confirmed (direct: Pehlivanidis 2025; Kanj 2026)"
+  respondent: patient
+  construct: affective_lability
+  sources: ["schema notes (bp als18)", "scale_reference_aq_general.md section 20", "docs/bp/PROGRESS.md D67, D72"]
+  items:
+    higher_means: the statement is more like the patient (0 not at all like me to 3 very much like me)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp als18): 'Each item is 0 (not at all like me) to 3 (very much like me)'"
+  scores:
+    als18_anxiety_depression:
+      meaning: Mean of 5 items (0 to 3), the anxiety-depression factor of the ALS-18.
+      higher_means: the statements of the scale are more like the patient (more affective lability between anxiety and depression)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als18): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als18_depression_elation:
+      meaning: Mean of 8 items (0 to 3), the depression-elation factor of the ALS-18.
+      higher_means: the statements of the scale are more like the patient (more affective lability between depression and elation)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als18): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als18_anger:
+      meaning: Mean of 5 items (0 to 3), the anger factor of the ALS-18.
+      higher_means: the statements of the scale are more like the patient (more lability of anger)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als18): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als18_total:
+      meaning: Mean of the 18 items (0 to 3).
+      higher_means: the statements of the scale are more like the patient (more affective lability)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als18): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+  flags:
+    - The published ALS-18 scores are sums (0 to 15, 0 to 24, 0 to 15, total 0 to 54). The scores delivered here are means (0 to 3).
+    - The items of each factor come from the application and were confirmed by the data managers (D67). The published item lists were not found ('To verify').
+    - The extraction stores these scores under names of the long form (Depression, Elation, Anger). The names here follow the ALS-18.
+    - "Not to be mixed with the als54_*18 scores: the same questions asked inside the 54-item questionnaire are separate columns."
+    - Visits dated before 2021 that look like the 18-item form are not delivered (version_unknown).
+
+als54:
+  description: Affective Lability Scale in its 54-item form, filled by the patient once, at the inclusion visit, until 2021. Each item is 0 (not at all like me) to 3 (very much like me). Only the 18 items that the ALS-18 also has are in the extraction, with three stored scores of the long form.
+  version: "ALS, 54 items (18 of them exported)"
+  reference: "Harvey PD, Greenberg BR, Serper MR. The affective lability scales. J Clin Psychol 1989;45:786-793"
+  reference_confidence: To verify (from memory)
+  respondent: patient
+  construct: affective_lability
+  sources: ["schema notes (bp als54)", "scale_reference_aq_general.md section 20", "docs/bp/PROGRESS.md D67, D72"]
+  items:
+    higher_means: the statement is more like the patient (0 not at all like me to 3 very much like me)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp als54): 'Each item is 0 (not at all like me) to 3 (very much like me)'"
+  scores:
+    als54_anxiety_depression18:
+      meaning: Mean of the 5 anxiety-depression items of the ALS-18 (0 to 3), answered inside the 54-item questionnaire.
+      higher_means: the statements of the scale are more like the patient (more affective lability between anxiety and depression)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als54): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als54_depression_elation18:
+      meaning: Mean of the 8 depression-elation items of the ALS-18 (0 to 3), answered inside the 54-item questionnaire.
+      higher_means: the statements of the scale are more like the patient (more affective lability between depression and elation)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als54): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als54_anger18:
+      meaning: Mean of the 5 anger items of the ALS-18 (0 to 3), answered inside the 54-item questionnaire.
+      higher_means: the statements of the scale are more like the patient (more lability of anger)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als54): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+    als54_total18:
+      meaning: Mean of the 18 items that the ALS-18 also has (0 to 3), answered inside the 54-item questionnaire.
+      higher_means: the statements of the scale are more like the patient (more affective lability)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als54): items 0 (not at all like me) to 3 (very much like me), mean with no item reversed"
+  variables:
+    als54_anxiety_depression:
+      meaning: Anxiety-depression score of the 54-item form, as stored (0 to 3). The data managers recomputed it as the mean of eight items of the long form.
+      higher_means: the statements of the scale are more like the patient
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp als54): the mean of eight items of the long form, each 0 (not at all like me) to 3 (very much like me)"
+    als54_anxiety:
+      meaning: Anxiety score of the 54-item form, as stored (0 to 3). Its items are not in the extraction, so it cannot be checked.
+    als54_bipolar:
+      meaning: Bipolar score of the 54-item form, as stored (0 to 3). Its items are not in the extraction, so it cannot be checked.
+  flags:
+    - Only 18 of the 54 items are exported. The total of the 54 items is not in the extraction.
+    - "The als54_*18 scores and the als18_* scores are separate columns: whether an answer given inside a 54-item questionnaire can be compared with the same question in an 18-item one is a scientific choice."
+    - Which form a visit used is not recorded. It is read from the long ALS scores and the BIS items of the same visit.
+    - The formula of als54_anxiety and als54_bipolar is not documented, so no direction is given for them. The names of the six scales of the long form are 'To verify' in the literature notes.
+
+altman:
+  description: Altman Self-Rating Mania Scale. Five items (cheerfulness, self-confidence, reduced need for sleep, talkativeness, activity), each rated by the patient from 0 to 4 for the past week.
+  version: ASRM, 5 items
+  reference: "Altman EG, Hedeker D, Peterson JL, Davis JM. Biol Psychiatry 1997;42:948-955 (PMID 9359982)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: mania
+  period: past week
+  sources: ["schema notes (bp altman, dr altman)", "scale_reference_aq_general.md section 15"]
+  scores:
+    altman_total:
+      meaning: Sum of the five items (0 to 20).
+      higher_means: more manic symptoms
+      polarity: worse
+      basis: literature
+      source: "section 15: total 0-20, cut-off above 5, Confirmed (abstract: Altman 1997); a total of 10 or more is read as a high likelihood of mania in one study ('To verify')"
+      cutoffs:
+        - value: "above 5 (6 or more)"
+          meaning: "cut-off of the original paper (sensitivity 85.5 %, specificity 87.3 %)"
+          source: "Altman 1997, section 15"
+          confidence: "Confirmed (abstract: Altman 1997; direct: Petrosellini 2025 uses '>= 6')"
+        - value: "0 to 5, 6 to 9, 10 or more"
+          meaning: "no significant manic symptoms, mild to moderate, high likelihood of mania (bands of one study, not of the original paper)"
+          source: "Kokwaro 2025, section 15"
+          confidence: To verify
+  flags:
+    - The coding of the items (five statements scored 0 to 4) is 'To verify' in the literature notes. No French validation was found.
+    - In DR an empty scale since 2018 can be 'not asked' (simplified visit). It is missing, not 0.
+    - In BP it is also filled at the screening visit. In DR it is not.
+
+aq12:
+  description: Short aggression questionnaire of 12 items, each rated by the patient from 1 (not at all like me) to 6 (completely like me). Four sub-scores of three items. Filled at the inclusion visit from 2021, when it took the place of the BDHI.
+  version: "12 items, named AQ12 by the EMR; four sub-scores that are the four factors of the Buss-Perry Aggression Questionnaire"
+  reference: "Bryant FB, Smith BD. Refining the architecture of aggression: a measurement model for the Buss-Perry Aggression Questionnaire. J Res Pers 2001;35:138-167"
+  reference_confidence: "Cited by papers read (direct); original not read. That the form is this published short form could not be confirmed (schema notes)"
+  respondent: patient
+  construct: aggression_hostility
+  sources: ["schema notes (bp aq12)", "scale_reference_aq_general.md section 21"]
+  items:
+    higher_means: the statement is more like the patient (1 not at all like me to 6 completely like me)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp aq12): 'each 1 (not at all like me) to 6 (completely like me)'"
+  scores:
+    aq12_physical:
+      meaning: Sum of items 1, 5 and 9 (3 to 18), physical aggression.
+      higher_means: the statements are more like the patient (more physical aggression)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp aq12): items 1 (not at all like me) to 6 (completely like me), plain sum"
+    aq12_verbal:
+      meaning: Sum of items 2, 6 and 10 (3 to 18), verbal aggression.
+      higher_means: the statements are more like the patient (more verbal aggression)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp aq12): items 1 (not at all like me) to 6 (completely like me), plain sum"
+    aq12_anger:
+      meaning: Sum of items 3, 7 and 11 (3 to 18), anger.
+      higher_means: the statements are more like the patient (more anger)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp aq12): items 1 (not at all like me) to 6 (completely like me), plain sum"
+    aq12_hostility:
+      meaning: Sum of items 4, 8 and 12 (3 to 18), hostility.
+      higher_means: the statements are more like the patient (more hostility)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp aq12): items 1 (not at all like me) to 6 (completely like me), plain sum"
+    aq12_total:
+      meaning: Sum of the twelve items (12 to 72). Added by the package; the extraction stores no total.
+      higher_means: the statements are more like the patient (more aggression)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp aq12): items 1 (not at all like me) to 6 (completely like me), plain sum"
+  flags:
+    - That these twelve items are the published 12-item form (Bryant and Smith 2001; French version of Genoud and Zimmermann 2009) and the published item numbers of each sub-score could not be confirmed.
+    - "Not the Autism-Spectrum Quotient: in the ASP extraction the variable aq12 is item 12 of that other scale."
+    - That the 12-item form has no reversed item is 'To verify' in the literature notes. The application reverses none.
+
+asrs:
+  description: Adult ADHD Self-Report Scale. Eighteen items on how often symptoms occurred over the last 6 months, each from 0 (never) to 4 (very often), filled by adult patients at the inclusion visit.
+  version: ASRS v1.1, 18 items
+  reference: "Kessler RC, Adler L, Ames M, et al. Psychol Med 2005;35:245-256 (PMID 15841682)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: adhd_symptoms
+  period: last 6 months
+  sources: ["schema notes (bp asrs, asp asrs)", "scale_reference_aq_general.md section 13"]
+  items:
+    higher_means: the symptom is more frequent (0 never to 4 very often)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp asrs): 'each 0 (never) to 4 (very often)'"
+  scores:
+    asrs_total:
+      meaning: Sum of the eighteen items (0 to 72). Added by the package; the extraction stores no total.
+      higher_means: ADHD symptoms more frequent
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp asrs): items 0 (never) to 4 (very often), plain sum; section 13: the items ask the frequency of the symptoms, Confirmed (abstract: Kessler 2005)"
+    asrs_parta:
+      meaning: Number of the six items of part A past their threshold (0 to 6). Items 1 to 3 count at 2 (sometimes) or more, items 4 to 6 at 3 (often) or more.
+      higher_means: more screening items past their threshold
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'number of items past their threshold (0 to 6; 4 or more is a positive screen)'"
+      cutoffs:
+        - value: "4 or more"
+          meaning: "positive screen: symptoms highly consistent with adult ADHD"
+          source: "schema notes (bp asrs); section 13"
+          confidence: "Confirmed (direct: Superbia-Guimarães 2026; Taguchi 2026; Park and Rho 2026)"
+    asrs_screen:
+      meaning: Screening result of part A. 1 is positive (4 or more items past their threshold), 0 is negative.
+      higher_means: positive screen (1) against negative (0)
+      polarity: worse
+      basis: stated
+      source: "label of the score: 'ASRS screen, part A (1 = positive, 4 or more items past their threshold)'"
+  flags:
+    - "The literature notes report that the 6-item screener outperformed the 18-item sum (Kessler 2005, abstract)."
+    - The stored BP screening result is a check and is not delivered. The application gives 'negative' on an incomplete part A and leaves the result empty when the score button is not clicked.
+    - No inattention or hyperactivity sub-score is delivered. Their item lists are 'To verify' in the literature notes.
+    - In BP mostly from 2021 and 2022. In ASP from 2019, adults only.
+
+bdhi:
+  description: Buss-Durkee Hostility Inventory. Seventy-five true/false statements answered by the patient once, at the inclusion visit, until 2022. Eight sub-scores, two components and a total.
+  version: 75 items, true or false
+  reference: "Buss AH, Durkee A. An inventory for assessing different kinds of hostility. J Consult Psychol 1957;21:343-349"
+  reference_confidence: To verify
+  respondent: patient
+  construct: aggression_hostility
+  sources: ["schema notes (bp bdhi)", "scale_reference_aq_general.md section 22"]
+  items:
+    higher_means: "true (1) against false (0); true is the hostile answer, except on fifteen statements where it is false"
+    polarity: worse
+    basis: stated
+    source: "schema notes (bp bdhi): 'The items are delivered as asked, 1 true and 0 false: the fifteen statements for which false is the hostile answer ... the sub-scores reverse them'"
+  scores:
+    bdhi_assault:
+      meaning: Number of hostile answers among the 10 assault items.
+      higher_means: more hostile answers (more assault)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_indirect:
+      meaning: Number of hostile answers among the 9 items of indirect hostility.
+      higher_means: more hostile answers (more indirect hostility)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_irritability:
+      meaning: Number of hostile answers among the 11 irritability items.
+      higher_means: more hostile answers (more irritability)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_negativism:
+      meaning: Number of hostile answers among the 5 negativism items.
+      higher_means: more hostile answers (more negativism)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_resentment:
+      meaning: Number of hostile answers among the 8 resentment items.
+      higher_means: more hostile answers (more resentment)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_suspicion:
+      meaning: Number of hostile answers among the 10 suspicion items.
+      higher_means: more hostile answers (more suspicion)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_verbal:
+      meaning: Number of hostile answers among the 13 items of verbal hostility.
+      higher_means: more hostile answers (more verbal hostility)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the sub-scores count the hostile answer of each item, true or false as keyed"
+    bdhi_guilt:
+      meaning: Number of keyed answers among the 9 guilt items. Guilt is left out of the total.
+      construct: {other: guilt}
+      higher_means: more keyed answers on the guilt items (more guilt)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): the items are keyed so that 1 is the keyed answer, and a sub-score is their count"
+    bdhi_attitudinal:
+      meaning: Attitudinal component, the sum of resentment and suspicion.
+      higher_means: more hostile answers (more attitudinal hostility)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): sum of two sub-scores that count hostile answers"
+    bdhi_motor:
+      meaning: Motor component, the sum of assault, indirect hostility, irritability and verbal hostility.
+      higher_means: more hostile answers (more motor hostility)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): sum of four sub-scores that count hostile answers"
+    bdhi_total:
+      meaning: Total hostility, the seven hostility sub-scores (66 items), guilt left out. Added by the package; the extraction stores no total.
+      higher_means: more hostile answers (more hostility)
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp bdhi): sum of the seven sub-scores that count hostile answers"
+  flags:
+    - The item lists of the sub-scores were read from the data (each stored sub-score is reproduced). The published item keys were not found ('To verify').
+    - "The two components follow the literature notes (attitudinal = resentment + suspicion, motor = assault + indirect + verbal + irritability, Confirmed, direct: Etain 2025). Some papers also put guilt in the attitudinal score; here it is not."
+    - The short aggression questionnaire (aq12) took its place from 2021 to 2022.
+
+bis10:
+  description: Barratt Impulsiveness Scale, 34-item form, filled by the patient. Each item is coded 1 to 4. Three sub-scores, a total, and four scores built on the 12 items that the BIS-12 also has.
+  version: "BIS-10, 34 items on a 4-point scale; it fits the French BIS-10 of Baylé et al. 2000, which could not be confirmed beyond the abstract"
+  reference: "Baylé FJ, Bourdel MC, Caci H, Gorwood P, Chignon JM, Adès J, Lôo H. Factor analysis of the French translation of the BIS-10. Can J Psychiatry 2000;45:156-165 (PMID 10742875)"
+  reference_confidence: "Confirmed (abstract; paywalled). The item keys, the reversed items and the coding are 'To verify' (Baylé 2000 full text)"
+  respondent: patient
+  construct: impulsivity
+  sources: ["schema notes (bp bis10, dr bis10)", "scale_reference_aq_general.md section 1", "docs/bp/PROGRESS.md D92"]
+  scores:
+    bis10_motor:
+      meaning: Motor impulsivity, the sum of 11 items, one of them reversed (5 - value).
+    bis10_attention:
+      meaning: Attentional impulsivity, the sum of 8 items, two of them reversed.
+    bis10_planning:
+      meaning: Planning difficulty, the sum of 11 items, eight of them reversed.
+    bis10_total:
+      meaning: Sum of the motor, attention and planning sub-scores (30 items).
+    bis10_score11:
+      meaning: Sum of the export's own set of 12 items (1, 6, 8, 9, 12, 14, 17, 19, 20, 22, 24, 25), stored under the name bis11. It is not the BIS-11.
+    bis10_sum12:
+      meaning: Sum of the 12 items that the BIS-12 also has, five of them reversed. The bridge to bis12_total.
+    bis10_cognitive:
+      meaning: Cognitive impulsivity, the mean of 5 of the 12 shared items, all reversed.
+    bis10_behavioural:
+      meaning: Behavioural impulsivity, the mean of 7 of the 12 shared items, none reversed.
+    bis10_general:
+      meaning: General impulsivity, the mean of the cognitive and behavioural scores.
+  flags:
+    - "Direction left out: no project document states what a higher BIS-10 score means. The literature notes confirm 'higher = more impulsive' for the total of the BIS-11 only (Patton 1995, abstract), and the item keys of the French BIS-10 are 'To verify'."
+    - The scores reverse an item as 5 - value. The scores stored by the export use 6 - value and are one point higher per reversed item; they are checks only.
+    - bis10_score11 is not a score of the BIS-11, which is another form of 30 items.
+    - "The last four scores use only the 12 items that the BIS-12 also has. They are the only bridge to bis12 and are separate columns: whether the two can be compared is a scientific choice."
+    - In DR eleven items are stored reversed and are read back to the answer as asked. The stored DR scores are wrong and are not delivered.
+    - In DR an empty scale after 2018 can be 'not asked' (simplified visit).
+    - No official cut-off (literature notes).
+
+bis12:
+  description: The 12-item form of the Barratt Impulsiveness Scale that the EMR prints from 2021, filled by the patient. Its twelve questions are BIS-10 items, each coded 1 to 4.
+  version: "12-item form (BIS-10 items 1, 6, 8, 9, 12, 14, 17, 20, 21, 23, 25 and 28); 'BIS-12' is not a published version name"
+  respondent: patient
+  construct: impulsivity
+  sources: ["schema notes (bp bis12)", "scale_reference_aq_general.md section 1", "docs/bp/PROGRESS.md D8, D92"]
+  scores:
+    bis12_total:
+      meaning: Sum of the twelve items, five of them reversed (5 - value).
+    bis12_cognitive:
+      meaning: Cognitive impulsivity, the mean of 5 items, all reversed.
+    bis12_behavioural:
+      meaning: Behavioural impulsivity, the mean of 7 items, none reversed.
+    bis12_general:
+      meaning: General impulsivity, the mean of the cognitive and behavioural scores.
+  flags:
+    - "Direction left out: no project document states what a higher score means (see bis10)."
+    - No published version called BIS-12 was found. Whether the twelve items are a published short form or a selection by the developers stays open, so no reference is given.
+    - The variables are numbered 1 to 12 in the order of the questions; the form prints the BIS-10 numbers.
+    - "bis12_total and bis10_sum12 are separate columns: the same items asked inside a 12-item and a 34-item questionnaire."
+    - Visits dated before 2021 that look like the 12-item form are not delivered (version_unknown).
+
+circadian:
+  description: Circadian Type Inventory in its French version (Inventaire du type circadien). Eleven items on habits around sleep, each answered by the patient from 1 (almost never) to 5 (almost always), at the inclusion visit and, for part of the patients, at the yearly visits.
+  version: "French version (ITC), 11 items, two scales"
+  reference: "Folkard and colleagues, 1979 (exact citation and French validation unknown)"
+  reference_confidence: "cited in schema notes; the literature check of 2026-11-21 found no source on this instrument"
+  respondent: patient
+  construct: chronotype
+  period: "no time frame (what the patient prefers or is able to do)"
+  sources: ["schema notes (bp circadian)"]
+  items:
+    higher_means: more flexible (flexibility items) or more languid (languidness items); 1 almost never to 5 almost always
+    polarity: neutral
+    basis: stated
+    source: "schema notes (bp circadian): 'a higher answer is more flexible (flexibility) or more languid (languidness) on every item, so nothing is reversed'"
+  scores:
+    circadian_flexibility:
+      meaning: Sum of items 2, 4, 6, 8 and 10 (5 to 25), the flexibility or rigidity of the sleep habits.
+      higher_means: more flexible sleep habits (lower is more rigid)
+      polarity: neutral
+      basis: stated
+      source: "schema notes (bp circadian): 'a higher answer is more flexible (flexibility) ... on every item'"
+    circadian_languidness:
+      meaning: Sum of items 1, 3, 5, 7, 9 and 11 (6 to 30), languidness, the difficulty to overcome drowsiness.
+      higher_means: more languid, more difficulty to overcome drowsiness (lower is more vigorous)
+      polarity: neutral
+      basis: stated
+      source: "schema notes (bp circadian): 'a higher answer is ... more languid (languidness) on every item'"
+  flags:
+    - No publication of this instrument was read. The item lists of the two scores were read from the data.
+
+csm:
+  description: Composite Scale of Morningness. Thirteen questions on the preferred hours of the day, answered by the patient, mostly at the inclusion visit.
+  version: 13 items
+  reference: "Smith CS, Reilly C, Midkiff K. Evaluation of three circadian rhythm questionnaires with suggestions for an improved measure of morningness. J Appl Psychol 1989;74:728-738"
+  reference_confidence: Confirmed as cited by Shahid 2012 (original not read)
+  respondent: patient
+  construct: chronotype
+  period: no time frame (preferred rhythm)
+  sources: ["schema notes (bp csm, dr csm)", "scale_reference_aq_general.md section 2"]
+  items:
+    higher_means: the more morning-type answer
+    polarity: neutral
+    basis: stated
+    source: "schema notes (bp csm): 'a higher value is the more morning-type answer, for every item'"
+  scores:
+    csm_total:
+      meaning: Sum of the thirteen items (13 to 55).
+      higher_means: more of a morning type (lower is more of an evening type)
+      polarity: neutral
+      basis: stated
+      source: "label of the score: 'CSM total (higher is more of a morning type)'; section 2: 'higher = more morning', Confirmed (direct: Shahid 2012)"
+      cutoffs:
+        - value: "22 or less"
+          meaning: "evening type, original cut-off (23 to 44 intermediate)"
+          source: "Smith 1989 as cited by Shahid 2012, section 2"
+          confidence: "Confirmed (direct: Shahid 2012 citing Smith 1989)"
+        - value: "above 44"
+          meaning: morning type, original and French cut-off
+          source: "Smith 1989 as cited by Shahid 2012; Caci 1999; section 2"
+          confidence: "Confirmed (direct: Shahid 2012 citing Smith 1989; extracted: Caci 1999, abstract)"
+        - value: "under 31 (under 32 in a later paper)"
+          meaning: evening type, provisional French cut-off
+          source: "Caci 1999 (abstract) and Spano 2022, section 2"
+          confidence: "Confirmed (extracted: Caci 1999, abstract); Spano 2022 (direct) restates it as under 32: the lower bound differs by one point, check the Caci 1999 full text"
+  flags:
+    - "Published cut-offs give poor concordance of chronotypes across scales; age-normed scores are called for (Caci 2009, abstract). None is used in the code."
+    - Items 1, 2 and 7 have five answers, the others four. The items are stored as points; the numbers of the dictionary are not those of the data.
+    - In DR an empty scale after 2018 can be 'not asked' (simplified visit).
+
+ctq:
+  description: Childhood Trauma Questionnaire, short form. Twenty-eight items about the patient's childhood and adolescence, each answered from 1 (never true) to 5 (very often true), filled once, at the inclusion visit. Five sub-scores, a total and a denial score.
+  version: CTQ short form, 28 items
+  reference: "Bernstein DP, Stein JA, Newcomb MD, et al. Child Abuse Negl 2003;27:169-190 (PMID 12615092)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: childhood_trauma
+  period: childhood and adolescence
+  sources: ["schema notes (bp, sz, dr, asp ctq)", "scale_reference_aq_general.md section 9", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: "the statement was more often true (1 never true to 5 very often true); more maltreatment, except on the seven items that describe a good childhood (2, 5, 7, 13, 19, 26, 28), which the scores reverse"
+    polarity: worse
+    basis: stated
+    source: "schema notes (bp ctq): 'The items are delivered as the form stores them, 1 (never true) to 5 (very often true); the seven positive items ... are reversed in the scores, not recoded'"
+  scores:
+    ctq_emotional_abuse:
+      meaning: Sum of items 3, 8, 14, 18 and 25 (5 to 25).
+      higher_means: more emotional abuse reported
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp ctq): items 1 (never true) to 5 (very often true), plain sum; section 9"
+      cutoffs:
+        - value: "13 or more"
+          meaning: moderate to severe
+          source: "PMC13706073 citing the manual, section 9"
+          confidence: "Confirmed (direct: PMC13706073, citing the manual)"
+    ctq_physical_abuse:
+      meaning: Sum of items 9, 11, 12, 15 and 17 (5 to 25).
+      higher_means: more physical abuse reported
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp ctq): items 1 (never true) to 5 (very often true), plain sum; section 9"
+      cutoffs:
+        - value: "10 or more"
+          meaning: moderate to severe
+          source: "PMC13706073 citing the manual, section 9"
+          confidence: "Confirmed (direct: PMC13706073, citing the manual)"
+    ctq_sexual_abuse:
+      meaning: Sum of items 20, 21, 23, 24 and 27 (5 to 25).
+      higher_means: more sexual abuse reported
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp ctq): items 1 (never true) to 5 (very often true), plain sum; section 9"
+      cutoffs:
+        - value: "8 or more"
+          meaning: moderate to severe
+          source: "PMC13706073 citing the manual, section 9"
+          confidence: "Confirmed (direct: PMC13706073, citing the manual)"
+    ctq_emotional_neglect:
+      meaning: Sum of items 5, 7, 13, 19 and 28, all reversed (5 to 25).
+      higher_means: more emotional neglect reported
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp ctq): 'Seven items describe a good childhood and are reversed (6 - value)'; (dr ctq): 'The delivered emotional neglect rises with emotional abuse'"
+      cutoffs:
+        - value: "15 or more"
+          meaning: moderate to severe
+          source: "PMC13706073 citing the manual, section 9"
+          confidence: "Confirmed (direct: PMC13706073, citing the manual)"
+    ctq_physical_neglect:
+      meaning: Sum of items 1, 2, 4, 6 and 26, items 2 and 26 reversed (5 to 25).
+      higher_means: more physical neglect reported
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp ctq): 'Seven items describe a good childhood and are reversed (6 - value)'"
+      cutoffs:
+        - value: "10 or more"
+          meaning: moderate to severe
+          source: "PMC13706073 citing the manual, section 9"
+          confidence: "Confirmed (direct: PMC13706073, citing the manual)"
+    ctq_total:
+      meaning: Sum of the five sub-scores (25 items, 25 to 125). The three denial items are left out.
+      higher_means: more childhood maltreatment reported
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp ctq): sum of the five sub-scores, the seven good-childhood items reversed; section 9: total 25-125, Confirmed (direct)"
+    ctq_denial:
+      meaning: Number of the items 10, 16 and 22 answered 5 (0 to 3), the minimisation or denial scale. Computed only when the three items are answered.
+      construct: {other: response validity}
+      higher_means: more minimisation or denial of maltreatment
+      polarity: neutral
+      basis: anchors
+      source: "label of the score: 'number of the items 10, 16 and 22 answered 5 (0 to 3)'; section 9: minimisation/denial items"
+      cutoffs:
+        - value: "1 or more"
+          meaning: minimisation or denial positive (at least one of the three items answered 5)
+          source: "PMC13706073, section 9"
+          confidence: "Confirmed (direct: PMC13706073); the 0 to 3 count form is 'To verify' (manual)"
+  variables:
+    "ctq_*_class":
+      meaning: "Severity class of the sub-score as the EMR stored it: 1 none, 2 low, 3 moderate, 4 severe. Delivered in BP and SZ only."
+      higher_means: more severe
+      polarity: worse
+      basis: anchors
+      source: "label of the variable: 'severity class (1 none to 4 severe)'"
+  flags:
+    - The severity classes are delivered as stored, not computed again. Their limits are those of the manual, a table that the package does not hold. They are empty on some visits where the sub-score exists and stale on a few.
+    - The full four-band table of the manual is 'To verify' in the literature notes; only the moderate-to-severe cut-offs are confirmed. No cut-off is used in the code.
+    - In DR seven items are stored reversed and are read back to the answer as asked. The stored DR neglect scores and total are wrong and not delivered. In ASP two stored abuse scores leave out an item and the stored neglect scores follow a faulty script; the recomputed scores are delivered.
+    - The stored denial score is a check and is not delivered. The application counts an unanswered item as 0.
+    - Filled by adults. In ASP from 2020.
+
+epworth:
+  description: Epworth Sleepiness Scale. Eight situations of daily life; for each, the patient rates the chance of dozing off from 0 (would never doze) to 3 (high chance).
+  version: "8 items; the French form adds a ninth question on when the sleepiness comes"
+  reference: "Johns MW. Sleep 1991;14:540-545 (PMID 1798888)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: sleepiness
+  period: "the recent months (instruction of the BP and DR forms; the ASP form states none)"
+  sources: ["schema notes (bp, dr, asp epworth)", "scale_reference_aq_general.md section 10"]
+  items:
+    higher_means: higher chance of dozing off (0 would never doze to 3 high chance)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp epworth): 'the chance of dozing off, from 0 (would never doze) to 3 (high chance)'"
+  scores:
+    epworth_total:
+      meaning: Sum of the eight items (0 to 24).
+      higher_means: sleepier
+      polarity: worse
+      basis: stated
+      source: "label of the score: 'Epworth total (0 to 24, higher is sleepier)'; section 10: Confirmed (direct: Staykov 2026; Karim 2026)"
+      cutoffs:
+        - value: "above 10 (11 or more)"
+          meaning: excessive daytime sleepiness (0 to 10 normal)
+          source: "section 10"
+          confidence: "Confirmed (direct: Karim 2026 '>= 11'; Muhaisen 2026 '> 10'; Bant 2026 '<= 10 normal')"
+  variables:
+    epworth_when:
+      meaning: "When the sleepiness comes (after meals, at fixed hours, at night, at any time). A category added by the French form; it is not part of the total."
+      polarity: not_applicable
+  flags:
+    - Until the extraction of November 2026 only the answers equal to 0 reached the BP extraction. The export was corrected (D64).
+    - In DR an empty scale since 2018 can be 'not asked' (simplified visit). In ASP it is filled by adults, from 2020.
+
+eq5d:
+  description: EQ-5D-5L. Five dimensions of health (mobility, self-care, usual activities, pain or discomfort, anxiety or depression), each rated by the patient from 1 (no problem) to 5 (extreme problem), and a visual scale of the health of today from 0 to 100.
+  version: EQ-5D-5L (five levels)
+  reference: "van Hout B, Janssen MF, Feng YS, et al. Interim scoring for the EQ-5D-5L: mapping the EQ-5D-5L to EQ-5D-3L value sets. Value Health 2012;15:708-715 (PMID 22867780); the crosswalk used for the index, no citation of the questionnaire itself is given in the project documents"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: quality_of_life
+  period: today
+  sources: ["schema notes (bp, sz, dr, asp eq5d)", "scale_reference_aq_general.md section 5", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: more problems on the dimension (1 no problem to 5 extreme problem)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp eq5d): 'each rated 1 (no problem) to 5 (extreme problem)'"
+  scores:
+    eq5d_index:
+      meaning: Utility index read in a table from the five answers, one value per profile. It is the EuroQol crosswalk of the five-level profile to the French three-level value set.
+      higher_means: better health state (1 is full health, 0 is dead, below 0 is worse than dead)
+      polarity: better
+      basis: literature
+      source: "section 5: 'Index anchors: 1 = full health, 0 = dead; values below 0 = worse than dead', Confirmed (direct: Andrade 2020)"
+  variables:
+    eq5d_vas:
+      meaning: Health today on a visual scale from 0 to 100. Not part of the index.
+      higher_means: better health today, as the patient rates it
+      polarity: better
+      basis: literature
+      source: "section 5: 'EQ VAS 0-100 (worst to best imaginable health)', To verify (not stated in a page read)"
+  flags:
+    - "The index is a crosswalk value, not a value set built on five-level preferences. A French EQ-5D-5L value set exists (Andrade et al. 2020) and is not used; the two indexes are not interchangeable."
+    - The lowest value in the data is -0.53. The index is delivered from the five answers in the four cohorts, also where the visual scale is empty.
+    - The stored index is a check (BP, SZ, ASP). DR stores none.
+    - In ASP 344 visits are of patients under 18, who fill the same adult form.
+
+fagerstrom:
+  description: Fagerström Test for Nicotine Dependence. Six questions for smokers, answered by the patients who smoke. Items 1 and 4 are scored 0 to 3, the others 0 or 1.
+  version: 6 items
+  reference: "Heatherton TF, Kozlowski LT, Frecker RC, Fagerström KO. Br J Addict 1991;86:1119-1127 (PMID 1932883)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: tobacco
+  sources: ["schema notes (bp, sz, dr, asp fagerstrom)", "scale_reference_aq_general.md section 31", "scale_reference_rest.md section 11", "facedata/common_instruments.yaml"]
+  scores:
+    fagerstrom_total:
+      meaning: Sum of the six items (0 to 10). The six items are needed.
+      higher_means: more nicotine dependence
+      polarity: worse
+      basis: literature
+      source: "section 31 and scale_reference_rest.md section 11: classes from '0-2 very low' to '8-10 very high' (a common convention), To verify; the total 0-10 is Confirmed"
+      cutoffs:
+        - value: "0 to 2, 3 to 4, 5, 6 to 7, 8 to 10"
+          meaning: very low, low, medium, high, very high (one common convention)
+          source: "section 31; scale_reference_rest.md section 11"
+          confidence: To verify
+  variables:
+    ever_smoked:
+      meaning: Has ever smoked (ASP only).
+      polarity: not_applicable
+    smokes_now:
+      meaning: Smokes now (ASP only). The six items are asked only after a yes.
+      polarity: not_applicable
+  flags:
+    - "Filled by smokers only: the total is missing, not 0, for a patient who does not smoke. The SZ form shows the items to everyone, so SZ also holds items of non-smokers."
+    - In DR item 3 is stored as the code of its answer and the stored total is 2 points too high on the visits with the answer 'any other'. The item is read back to its points and the recomputed total is delivered.
+    - Until the extraction of November 2026 the answer 'any other' of item 3 was lost by the export (BP, SZ). It is back.
+
+mars:
+  description: Medication Adherence Rating Scale. Ten yes/no questions on taking the treatment, answered by the patient about the past week.
+  version: 10 items
+  reference: "Thompson K, Kulkarni J, Sergejew AA. Reliability and validity of a new Medication Adherence Rating Scale (MARS) for the psychoses. Schizophr Res 2000;42:241-247"
+  reference_confidence: Cited by the papers read; original not read
+  respondent: patient
+  construct: adherence
+  period: "past week (instructions of the BP form; the ASP form states no time frame)"
+  sources: ["schema notes (bp, sz, dr, asp mars)", "scale_reference_aq_general.md section 17", "docs/bp/PROGRESS.md D37"]
+  items:
+    higher_means: "the answer no (1 = no, 0 = yes), which is the adherent answer on items 1 to 6, 9 and 10; on items 7 and 8 yes is the adherent answer and the total reverses them"
+    polarity: better
+    basis: stated
+    source: "schema notes (bp mars): 'The items are therefore read as 1 = no and 0 = yes'; section 17: adherent answer 'no' on items 1-6, 9, 10 and 'yes' on items 7 and 8, Confirmed (direct)"
+  scores:
+    mars_total:
+      meaning: Number of adherent answers (0 to 10). One point for no to items 1 to 6, 9 and 10 and one point for yes to items 7 and 8.
+      higher_means: better adherence to the treatment
+      polarity: better
+      basis: stated
+      source: "schema notes (bp mars): 'A higher total is a better adherence (0 to 10)'; section 17: Confirmed (direct: Misdrahi 2023; Al Rashdi 2026)"
+      cutoffs:
+        - value: "7 or more"
+          meaning: good adherence (used with the French version)
+          source: "Tshangala Kavunga 2026 citing earlier work, section 17"
+          confidence: "Partial (direct: Tshangala Kavunga 2026, citing earlier work; not the original paper)"
+  variables:
+    mars11:
+      meaning: Takes a medication at present (1 = yes, 0 = no). BP only, from 2021. The form shows the ten items only after a yes.
+      polarity: not_applicable
+  flags:
+    - "The items are delivered as 1 = no and 0 = yes in the four cohorts, the opposite of what the dictionary says. DR and ASP store 1 = yes and are read back to this coding."
+    - The stored DR and ASP totals count the answers of poor adherence (10 minus the delivered total). They are not delivered.
+    - In BP the MARS is missing, not 0, for a patient who takes no medication. SZ has no such question.
+    - In DR an empty scale after 2018 can be 'not asked' (simplified visit). In ASP it is filled by adults, from 2020.
+
+mathys:
+  description: Multidimensional Assessment of Thymic States. Twenty visual scales from 0 to 10 on which the patient rates the past week, from inhibition to activation. A total and five sub-scores.
+  version: 20 items
+  reference: "Henry C, M'Bailara K, Mathieu F, Poinsot R, Falissard B. BMC Psychiatry 2008;8:82 (PMC2561027)"
+  reference_confidence: Confirmed (direct)
+  respondent: patient
+  construct: thymic_activation
+  period: past week
+  sources: ["schema notes (bp mathys, dr mathys)", "scale_reference_aq_general.md section 18", "docs/bp/PROGRESS.md D91, D190", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: "towards excitation on the twelve items that are not reversed (0 inhibition, 5 usual state, 10 excitation); the eight others (5 to 10, 17, 18) are printed the other way and are delivered as written on the form of today"
+    polarity: neutral
+    basis: literature
+    source: "section 18: 'Item score 0-10 per line: 0 = inhibition, 5 = usual state, 10 = excitation' and reversed items 5, 6, 7, 8, 9, 10, 17, 18, Confirmed (direct: Henry 2008; Henry 2013)"
+  scores:
+    mathys_total:
+      meaning: Sum of the twenty items, eight of them reversed (10 - value), from 0 to 200.
+      higher_means: more activation (lower is inhibition)
+      polarity: neutral
+      basis: stated
+      source: "label of the score: 'MAThyS total (0 inhibition to 200 activation)'; section 18: 'low = inhibition, high = activation', Confirmed (direct: Henry 2008; Henry 2013)"
+    mathys_emotion:
+      meaning: Emotional reactivity, the sum of items 3, 7, 10 and 18, three of them reversed (0 to 40).
+      construct: emotional_reactivity
+      higher_means: more activation of emotional reactivity (lower is inhibition)
+      polarity: neutral
+      basis: literature
+      source: "section 18: each item 0 = inhibition to 10 = excitation once the reversed items are turned, Confirmed (direct: Henry 2008); sub-score range arithmetic"
+    mathys_motivation:
+      meaning: Motivation, the sum of items 2, 11, 12, 15, 16, 17 and 19, item 17 reversed (0 to 70).
+      higher_means: more activation of motivation and psychomotor function (lower is inhibition)
+      polarity: neutral
+      basis: literature
+      source: "section 18: each item 0 = inhibition to 10 = excitation once the reversed items are turned, Confirmed (direct: Henry 2008); sub-score range arithmetic"
+    mathys_perception:
+      meaning: Sensory perception, the sum of items 1, 6, 8, 13 and 20, items 6 and 8 reversed (0 to 50).
+      higher_means: more activation of sensory perception (lower is inhibition)
+      polarity: neutral
+      basis: literature
+      source: "section 18: each item 0 = inhibition to 10 = excitation once the reversed items are turned, Confirmed (direct: Henry 2008); sub-score range arithmetic"
+    mathys_interaction:
+      meaning: Interpersonal communication, the sum of items 4 and 14, none reversed (0 to 20).
+      higher_means: more activation of interpersonal communication (lower is inhibition)
+      polarity: neutral
+      basis: literature
+      source: "section 18: each item 0 = inhibition to 10 = excitation, Confirmed (direct: Henry 2008); sub-score range arithmetic"
+    mathys_cognition:
+      meaning: Cognition, the sum of items 5 and 9, both reversed (0 to 20).
+      higher_means: more activation of cognition (lower is inhibition)
+      polarity: neutral
+      basis: literature
+      source: "section 18: each item 0 = inhibition to 10 = excitation once the reversed items are turned, Confirmed (direct: Henry 2008); sub-score range arithmetic"
+  flags:
+    - "The direction of eight items changed with the form in BP (decision D91). The old form stored the eight reversed scales (5 to 10, 17, 18) already turned; the form that replaced it, centre by centre between September 2021 and May 2022, stores them as written. The delivered scores always run from inhibition (low) to activation (high)."
+    - "BP visits dated before 2021-09-01: the eight items are turned back (10 - value, flag sign_flipped) before the key is applied."
+    - "BP visits from 2021-09-01 to 2022-12-31: the two directions are mixed, so the eight items, the total and the four sub-scores that use them are not delivered (period_removed). The twelve other items and mathys_interaction are."
+    - "From 2023 the items are read as stored. Where the data of a centre and year are clear they decide, whatever the date; elsewhere the date decides, and a centre-year whose data lean the other way gets the flag sign_doubt on its eight items (1,134 BP visits, 77 DR visits). An analysis of the scores from 2023 should allow for the centre."
+    - In DR the key holds in every year. The 25 visits of one centre-year are turned, and about 90 visits that may be in the old direction stay as stored.
+    - "About 100 is the level of controls and euthymic patients (literature notes): a low total and a high total both depart from the usual state, hence the neutral polarity."
+    - The total and the sub-scores stored in the BP extraction are not delivered. In DR the stored sub-scores are wrong on 68 visits and the recomputed ones are delivered.
+    - "Item 5 was unstable in the French wording and was excluded from the factor analysis of 2013 (Henry 2013)."
+    - In DR an empty scale after 2018 can be 'not asked' (simplified visit). It is missing, not 0.
+
+mathys_emotions:
+  description: The second part of the MAThyS form. The patient says how often each of seven emotions (sadness, joy, irritability, panic, anxiety, anger, elation) was felt during the past week, from 0 (never) to 4 (constantly). No score.
+  version: 7 items, second part of the MAThyS form
+  reference: "Henry C, M'Bailara K, Mathieu F, Poinsot R, Falissard B. BMC Psychiatry 2008;8:82 (PMC2561027)"
+  reference_confidence: "Partial: a second part of the MAThyS is mentioned by one paper (direct: Leclerc 2026); its content is 'To verify'"
+  respondent: patient
+  construct: emotions
+  period: past week
+  sources: ["schema notes (bp mathys_emotions, dr mathys_emotions)", "scale_reference_aq_general.md section 18"]
+  items:
+    higher_means: the emotion was felt more often (0 never to 4 constantly)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (bp mathys_emotions): 'from 0 (never) to 4 (constantly)'"
+  variables:
+    mathys_other_emotion:
+      meaning: Other emotions felt, a free text (DR only).
+      polarity: not_applicable
+  flags:
+    - These items are not part of the MAThyS total and have no score of their own.
+    - In DR an empty questionnaire after 2018 can be 'not asked' (simplified visit).
+
+mdq:
+  description: Mood Disorder Questionnaire. Thirteen yes/no questions on past periods of elation, then two questions (did several happen during the same period, and how much of a problem they were), answered by the patient.
+  version: 13 symptoms and two questions
+  reference: "Hirschfeld RM, Williams JB, Spitzer RL, et al. Am J Psychiatry 2000;157:1873-1875 (PMID 11058490)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: bipolarity
+  period: "lifetime (the form asks whether there 'ever' was such a period)"
+  sources: ["schema notes (bp mdq, dr mdq)", "scale_reference_aq_general.md section 16", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: yes, the symptom was present (1 = yes)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp mdq): 'Thirteen yes/no questions on past periods of elation (1 = yes)'"
+  scores:
+    mdq_total:
+      meaning: Number of yes among the thirteen symptom questions (0 to 13).
+      higher_means: more symptoms of elation reported
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'MDQ number of symptoms (13 items)'; schema notes (bp mdq): the number of yes among the thirteen questions"
+      cutoffs:
+        - value: "7 or more, with mdq14 yes and mdq15 at 2 or more"
+          meaning: "positive screen (the published rule, and the rule of the stored result)"
+          source: "schema notes (bp mdq); Hirschfeld 2000, section 16"
+          confidence: "Confirmed (direct: Kim 2025; abstract: Hirschfeld 2000)"
+  variables:
+    mdq_screen:
+      meaning: "Screening result as stored, positive or negative. Positive when the total is 7 or more, mdq14 is yes and mdq15 is 2 or more."
+      polarity: not_applicable
+    mdq14:
+      meaning: Several of the symptoms happened during the same period (1 = yes).
+      polarity: not_applicable
+    mdq15:
+      meaning: How much of a problem the symptoms were (0 none to 3 serious).
+      higher_means: more of a problem
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp mdq): 'how much of a problem they were (mdq15, 0 none to 3 serious)'"
+  flags:
+    - "The stored screening result is negative on visits where question 14 or 15 is empty, even with 7 yes or more (17 BP visits and 1 DR visit are flagged score_mismatch). It is not changed."
+    - "In BP it is filled once, at the screening visit. In DR it is filled at inclusion and at the yearly visits, where the answers do not behave as lifetime ones: about half of the yes of the inclusion are no a year later."
+    - In DR questions 14 and 15 are hidden since 2018 when no symptom is ticked.
+
+prisem:
+  description: Patient-Rated Inventory of Side Effects, modified. Thirty-two symptoms in nine groups, each rated by the patient 0 (absent), 1 (tolerable) or 2 (distressing) for the past week, only if the patient thinks they are side effects of the current treatment.
+  version: "PRISE-M, 32 items (two are for one sex only, so a patient answers 31)"
+  respondent: patient
+  construct: side_effects
+  period: past week
+  sources: ["schema notes (bp, dr, asp prisem)", "scale_reference_aq_general.md section 32"]
+  items:
+    higher_means: the side effect is present and more distressing (0 absent, 1 tolerable, 2 distressing)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp prisem): 'each rated 0 (absent), 1 (tolerable) or 2 (distressing)'"
+  scores:
+    prisem_total:
+      meaning: Sum of the items, computed when at least 31 of the 32 are filled.
+      higher_means: more side effects, or more distressing ones
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp prisem): items 0 (absent), 1 (tolerable), 2 (distressing), plain sum"
+  flags:
+    - "No reference is given: the literature notes hold no original citation. They cite Vidal et al. 2024 (Depress Anxiety, PMC11918507) for its origin, the PRISE of STAR*D extended by 24 items."
+    - The total is not a validated score ('To verify' in the literature notes).
+    - The total needs 31 answers, as in the applications. A stored total over fewer items is a partial sum and is not delivered.
+    - In BP, from 2021, the form is shown only after a yes to 'do you take a medication at present?'. In DR an empty scale after 2018 can be 'not asked' (simplified visit). In ASP it is filled by adults, from 2020.
+
+psqi:
+  description: Pittsburgh Sleep Quality Index. The patient describes the sleep of the last 30 days. Four questions ask for a time or a duration, the others are rated 0 to 3. Seven components of 0 to 3 add up to the total.
+  version: "19 questions and 7 components; the questions on the bed partner are asked in SZ, DR and ASP only"
+  reference: "Buysse DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ. Psychiatry Res 1989;28:193-213 (PMID 2748771)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: sleep_quality
+  period: last 30 days
+  sources: ["schema notes (bp, sz, dr, asp psqi)", "scale_reference_aq_general.md section 7", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: the sleep problem is more frequent or worse (items rated 0 to 3)
+    polarity: worse
+    basis: literature
+    source: "section 7: Q5 to Q10 are 0-3 and add up to components of a global score where higher = worse, Confirmed (direct)"
+  scores:
+    psqi_bedtime:
+      meaning: "Usual bedtime in hours (0 to 24; 23:30 is 23.5). A bedtime typed on a 12-hour clock gets 12 hours."
+      polarity: neutral
+    psqi_latency_component:
+      meaning: Component 2, sleep latency (0 to 3), from the minutes to fall asleep and item 5a.
+      higher_means: longer time to fall asleep
+      polarity: worse
+      basis: literature
+      source: "section 7: C2, more minutes and a higher Q5a give a higher component, Confirmed (direct)"
+    psqi_efficiency:
+      meaning: "Component 4, habitual sleep efficiency (0 to 3): the hours asleep over the hours in bed. 85 % or more counts 0 and under 65 % counts 3."
+      higher_means: lower sleep efficiency
+      polarity: worse
+      basis: literature
+      source: "section 7: C4 bands, Confirmed (direct); the boundaries are partial"
+    psqi_disturbances:
+      meaning: Component 5, sleep disturbances (0 to 3), from the sum of items 5b to 5j.
+      higher_means: more frequent sleep disturbances
+      polarity: worse
+      basis: literature
+      source: "section 7: C5, Confirmed (direct)"
+    psqi_dysfunction:
+      meaning: Component 7, daytime dysfunction (0 to 3), from items 8 and 9.
+      higher_means: more daytime dysfunction
+      polarity: worse
+      basis: literature
+      source: "section 7: C7, Confirmed (direct)"
+    psqi_total:
+      meaning: Sum of the seven components (0 to 21).
+      higher_means: worse sleep quality
+      polarity: worse
+      basis: stated
+      source: "label of the score: 'PSQI total (0 to 21, higher is worse)'; section 7: Confirmed (direct; abstract)"
+      cutoffs:
+        - value: "above 5"
+          meaning: "poor sleeper (sensitivity 89.6 %, specificity 86.5 %)"
+          source: "Buysse 1989, section 7"
+          confidence: "Confirmed (abstract: Buysse 1989; direct: Exhibit A)"
+  variables:
+    psqi_latency:
+      meaning: Minutes to fall asleep. A value above 240 is divided by 60 (minutes multiplied by 60 by the patient).
+      higher_means: longer time to fall asleep
+      polarity: worse
+      basis: anchors
+      source: "label of the variable: 'Minutes to fall asleep'"
+    psqi_rising_time:
+      meaning: Usual rising time, in hours.
+      polarity: neutral
+    psqi_sleep_hours:
+      meaning: Hours of sleep per night.
+      higher_means: more hours of sleep
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable: 'Hours of sleep per night'"
+    psqi_duration:
+      meaning: Component 3, sleep duration (0 to 3), as stored. Seven hours or more counts 0.
+      higher_means: shorter sleep
+      polarity: worse
+      basis: literature
+      source: "section 7: C3, more than 7 hours = 0 ... under 5 hours = 3, Confirmed (direct); the boundaries are partial"
+    psqi06:
+      meaning: Question 6, which is component 1, subjective sleep quality (0 to 3).
+      higher_means: worse sleep quality, as the patient rates it
+      polarity: worse
+      basis: literature
+      source: "section 7: C1 is Q6 (0-3), a component of a global score where higher = worse, Confirmed (direct)"
+    psqi07:
+      meaning: Question 7, which is component 6, use of sleep medication (0 to 3).
+      higher_means: more frequent use of sleep medication
+      polarity: worse
+      basis: literature
+      source: "section 7: C6 is Q7 (0-3), a component of a global score where higher = worse, Confirmed (direct)"
+    "psqi10*":
+      meaning: Questions on the bed partner and on what the partner sees (SZ, DR and ASP only). They enter no component.
+  flags:
+    - Components 2, 4, 5 and 7 and the total are recomputed with the published rules in the four cohorts. The stored ones are checks and differ on some visits (725 stored BP totals).
+    - A blank item 5j counts 0, as on the published scoring sheet since 2005.
+    - Exactly 7 hours of sleep count 0 in the duration component, as in the application. The published sheet leaves 7 hours open.
+    - psqi_bedtime is a clock time. A bedtime after midnight is a small number, so a higher value is not simply a later bedtime.
+    - In DR an empty PSQI since 2018 can be 'not asked' (simplified visit). In ASP the form belongs to the old set (2009 to 2021, adults) and the hours of sleep are whole numbers.
+
+qids_sr16:
+  description: Quick Inventory of Depressive Symptomatology, self-report. Sixteen items, each rated by the patient from 0 to 3, on the last seven days. They cover nine symptoms of depression.
+  version: QIDS-SR16
+  reference: "Rush AJ, Trivedi MH, Ibrahim HM, et al. Biol Psychiatry 2003;54:573-583 (PMID 12946886)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: depression
+  period: "last 7 days (the two weight items: last 15 days)"
+  sources: ["schema notes (bp qids_sr16, dr qids_sr16)", "scale_reference_aq_general.md section 12", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: more severe symptom (0 to 3)
+    polarity: worse
+    basis: literature
+    source: "section 12: 16 items each 0-3, summed by domain into a total with severity bands, Confirmed (direct)"
+  scores:
+    qids_total:
+      meaning: "Sum of nine symptom values (0 to 27): the highest of the four sleep items, item 5, the highest of the four appetite and weight items, items 10 to 14, and the highest of the two psychomotor items."
+      higher_means: more severe depression
+      polarity: worse
+      basis: literature
+      source: "section 12: severity bands from '0-5 none' to '21-27 very severe', Confirmed (direct: Czech 2025; Tandon 2026)"
+      cutoffs:
+        - value: "0 to 5"
+          meaning: no depression
+          source: "section 12"
+          confidence: "Confirmed (direct: Czech 2025; Tandon 2026)"
+        - value: "6 to 10"
+          meaning: mild
+          source: "section 12"
+          confidence: "Confirmed (direct: Czech 2025; Tandon 2026)"
+        - value: "11 to 15"
+          meaning: moderate
+          source: "section 12"
+          confidence: "Confirmed (direct: Czech 2025; Tandon 2026)"
+        - value: "16 to 20"
+          meaning: severe
+          source: "section 12"
+          confidence: "Confirmed (direct: Czech 2025; Tandon 2026)"
+        - value: "21 to 27"
+          meaning: very severe
+          source: "section 12"
+          confidence: "Confirmed (direct: Czech 2025; Tandon 2026)"
+        - value: "5 or less"
+          meaning: remission (a response is a decrease of 50 % or more)
+          source: "Pastuszak 2025, section 12"
+          confidence: "Partial (direct: Pastuszak 2025 reports studies using these; not a validation paper)"
+  variables:
+    qidsr112:
+      meaning: Item 12, thoughts of death or suicide (0 to 3).
+      construct: suicidal_ideation
+      higher_means: more severe thoughts of death or suicide
+      polarity: worse
+      basis: literature
+      source: "section 12: 'suicidal ideation = item 12', items 0-3, Confirmed (direct)"
+  flags:
+    - "One answer of each pair is enough: appetite down or up (items 6, 7) and weight down or up (items 8, 9). The package then computes a total that the export leaves empty (99 BP and 227 DR visits)."
+    - The total is not the sum of the sixteen items.
+    - The DR totals are higher than in BP (mean 15.1 against 9.4), as expected in resistant depression; it is not a difference of coding.
+    - No French validation paper was found ('To verify'). No cut-off is used in the code.
+
+stai_ya:
+  description: State-Trait Anxiety Inventory, form Y-A. Twenty items on how the patient feels right now (state anxiety, not the trait), each on four levels from 1 (no) to 4 (yes).
+  version: "Form Y-A (state), 20 items"
+  reference: "Spielberger CD, Gorsuch RL, Lushene R, Vagg PR, Jacobs GA. Manual for the State-Trait Anxiety Inventory (Form Y). Palo Alto: Consulting Psychologists Press, 1983"
+  reference_confidence: Not read (book)
+  respondent: patient
+  construct: anxiety
+  period: right now
+  sources: ["schema notes (bp, dr, asp stai_ya)", "scale_reference_aq_general.md section 11", "facedata/common_instruments.yaml"]
+  items:
+    higher_means: "the feeling is more present (1 = no, 4 = yes); more anxiety on the ten items that the total does not reverse, more calm on the ten others (1, 2, 5, 8, 10, 11, 15, 16, 19, 20)"
+    polarity: worse
+    basis: stated
+    source: "schema notes (bp stai_ya): 'The items are stored 1 to 4 (1 = no, 4 = yes) ... Ten items describe calm ... and are reversed in the total'"
+  scores:
+    staya_total:
+      meaning: Sum of the twenty items, the ten calm items reversed (20 to 80).
+      higher_means: more state anxiety
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp stai_ya): 'so that a higher total is more anxiety'; section 11: 'higher = more anxious', Confirmed (direct)"
+    staya_shift:
+      meaning: "What was added to the stored answers of the visit to bring them to the coding 1 to 4: +1, 0 or -1 (DR and ASP). Missing when the coding of the visit cannot be told."
+      polarity: not_applicable
+    "staya0*":
+      meaning: STAI-YA item on the coding 1 to 4 (1 = no, 4 = yes). In DR and ASP it is the stored answer plus the shift of the visit.
+    "staya1*":
+      meaning: STAI-YA item on the coding 1 to 4 (1 = no, 4 = yes). In DR and ASP it is the stored answer plus the shift of the visit.
+    staya20:
+      meaning: STAI-YA item on the coding 1 to 4 (1 = no, 4 = yes). In DR and ASP it is the stored answer plus the shift of the visit.
+  flags:
+    - "DR stores the answers on three codings (0 to 3, 1 to 4, 2 to 5) and ASP on 0 to 3. The coding of a visit is read from its answers, or from its centre and year, and the items are delivered on the coding 1 to 4. The total does not depend on the coding."
+    - The item entries carry no single direction, because ten items describe calm and ten describe anxiety.
+    - No universal cut-off. The bands of the French manual are 'To verify' in the literature notes.
+    - In DR an empty scale since 2018 can be 'not asked' (simplified visit). In ASP it is filled by adults, from 2018.
+
+stop_bang:
+  description: STOP-BANG questionnaire on the risk of obstructive sleep apnoea. Seven yes/no questions answered by the patient (snoring, tiredness, observed apnoea, blood pressure, body mass index above 35, age above 50, neck size), and a risk class written by the EMR.
+  version: "seven questions; male sex, the eighth criterion, is not read"
+  respondent: patient
+  construct: sleep_apnoea_risk
+  sources: ["schema notes (bp stop_bang)", "docs/bp/PROGRESS.md D134"]
+  items:
+    higher_means: yes, the criterion is met (1 = yes)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp stop_bang): 'Seven yes/no questions (1 = yes)'"
+  scores:
+    stopbang_count7:
+      meaning: Number of the seven criteria met (0 to 7). Add 1 for male sex to get the published total of 0 to 8.
+      higher_means: more criteria of sleep apnoea risk met
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'number of the seven criteria met (0 to 7; add 1 for male sex)'"
+      cutoffs:
+        - value: "3 or 4"
+          meaning: intermediate risk in the rule of the application (low below 3)
+          source: "schema notes (bp stop_bang)"
+          confidence: "rule of the application, not the published count"
+        - value: "5 or more"
+          meaning: "high risk in the rule of the application; also high from 2 of the first 4 questions with male sex, a body mass index above 35 or a large neck"
+          source: "schema notes (bp stop_bang)"
+          confidence: "rule of the application, not the published count"
+  variables:
+    stopbang_risk:
+      meaning: "Risk class as the EMR wrote it: low, intermediate or high. It follows the rule of the application, where male sex is not added to the count."
+      polarity: not_applicable
+  flags:
+    - The risk class differs from the published rule (male sex counted in the total) on 182 of the 3,939 visits that have a sex and a class, mostly men with 2 criteria shown as low.
+    - The class is computed on a click. It is empty on 89 visits that answer the seven questions and does not follow the rule on 26.
+    - No reference is given in the project documents, and the literature notes have no section on this instrument.
+    - In the extraction from 2021, regular from 2022.
+
+wurs25:
+  description: Wender Utah Rating Scale, 25-item form. The adult patient recalls symptoms of attention deficit and hyperactivity in childhood. Each item is 0 (not at all) to 4 (very much).
+  version: WURS-25
+  reference: "Ward MF, Wender PH, Reimherr FW. Am J Psychiatry 1993;150:885-890 (PMID 8494063)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: adhd_symptoms
+  period: childhood (recall)
+  sources: ["schema notes (bp wurs25, sz wurs25)", "scale_reference_aq_general.md section 14"]
+  items:
+    higher_means: the childhood symptom was more marked (0 not at all to 4 very much)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp wurs25): 'symptoms of attention deficit and hyperactivity in childhood. Each item is 0 (not at all) to 4 (very much)'"
+  scores:
+    wurs25_total:
+      meaning: Sum of the 25 items (0 to 100).
+      higher_means: more symptoms of attention deficit and hyperactivity in childhood
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp wurs25): items 0 (not at all) to 4 (very much), plain sum"
+      cutoffs:
+        - value: "46 or more"
+          meaning: "original cut-off: 86 % of ADHD patients, 99 % of normal adults and 81 % of depressed adults correctly classified"
+          source: "Ward 1993, section 14"
+          confidence: "Confirmed (abstract: Ward 1993)"
+        - value: "44 or more"
+          meaning: "French-speaking adults, DIVA 2.0 as reference (DSM-IV and DSM-5)"
+          source: "Caci 2023, section 14"
+          confidence: "Confirmed (abstract: Caci H, Didier C, Wynchank D. Encéphale 2023)"
+  flags:
+    - "In BP the form of a visit is not recorded: it is read from the ALS and the BIS of the same visit (an assumption). Not to be mixed with wurs61_sum25."
+    - BP visits dated before 2021 that look like the 25-item form are not delivered (version_unknown).
+    - In SZ the scale follows a screening question on ADHD, so its mean is that of a selected group, not of the cohort.
+    - That the 25 items have no reversed item is 'To verify' in the literature notes. The application reverses none.
+
+wurs61:
+  description: Wender Utah Rating Scale, 61-item form, filled by the patient once, at the inclusion visit, until 2021. A recall of symptoms of attention deficit and hyperactivity in childhood, each item 0 (not at all) to 4 (very much). Only the 25 items that the WURS-25 also has are in the extraction.
+  version: "WURS, 61 items (25 of them exported)"
+  reference: "Ward MF, Wender PH, Reimherr FW. Am J Psychiatry 1993;150:885-890 (PMID 8494063)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: adhd_symptoms
+  period: childhood (recall)
+  sources: ["schema notes (bp wurs61)", "scale_reference_aq_general.md section 14"]
+  items:
+    higher_means: the childhood symptom was more marked (0 not at all to 4 very much)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp wurs61): 'Each item is 0 (not at all) to 4 (very much)'"
+  scores:
+    wurs61_sum25:
+      meaning: Sum of the 25 items that the WURS-25 also has (0 to 100), answered inside the 61-item questionnaire.
+      higher_means: more symptoms of attention deficit and hyperactivity in childhood
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp wurs61): items 0 (not at all) to 4 (very much), plain sum"
+      cutoffs:
+        - value: "46 or more"
+          meaning: "original cut-off on the sum of the 25 items: 86 % of ADHD patients, 99 % of normal adults and 81 % of depressed adults correctly classified"
+          source: "Ward 1993, section 14"
+          confidence: "Confirmed (abstract: Ward 1993)"
+        - value: "44 or more"
+          meaning: "French-speaking adults, DIVA 2.0 as reference (published for the WURS-25)"
+          source: "Caci 2023, section 14"
+          confidence: "Confirmed (abstract: Caci H, Didier C, Wynchank D. Encéphale 2023)"
+  flags:
+    - Only 25 of the 61 items are exported. A total of the 61 items is not in the extraction.
+    - "wurs61_sum25 and wurs25_total are separate columns: whether an answer given inside a 61-item questionnaire can be compared with the same question in a 25-item one is a scientific choice."
+    - Which form a visit used is read from the ALS and the BIS of the same visit. This stays an assumption until the export names the form; a visit with neither is not delivered.
+
+# ---------------------------------------------------------------- FACE SZ
+
+birchwood:
+  description: Birchwood Insight Scale. Eight statements answered by the patient at every visit, each 0 (disagree), 1 (unsure) or 2 (agree). Three sub-scores and a total.
+  version: 8 items
+  reference: "Birchwood M, Smith J, Drury V, et al. Acta Psychiatr Scand 1994;89:62-67 (PMID 7908156)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: insight
+  sources: ["schema notes (sz birchwood)", "scale_reference_aq_general.md section 29"]
+  items:
+    higher_means: more agreement with the statement (0 disagree, 1 unsure, 2 agree); items 2, 3 and 6 are reversed in the scores
+    basis: anchors
+    source: "labels of the items: '(0 disagree, 1 unsure, 2 agree)'"
+  scores:
+    birchwood_symptoms:
+      meaning: Awareness of symptoms, item 1 plus item 8 (0 to 4).
+      higher_means: better awareness of symptoms
+      polarity: better
+      basis: stated
+      source: "label of birchwood_total: 'higher is better insight'; the total is the plain sum of the three sub-scores"
+    birchwood_illness:
+      meaning: Awareness of illness, item 7 plus item 2 reversed (0 to 4).
+      higher_means: better awareness of illness
+      polarity: better
+      basis: stated
+      source: "label of birchwood_total: 'higher is better insight'; the total is the plain sum of the three sub-scores"
+    birchwood_treatment:
+      meaning: Need for treatment, items 4 and 5 plus items 3 and 6 reversed, halved (0 to 4).
+      higher_means: better recognition of the need for treatment
+      polarity: better
+      basis: stated
+      source: "label of birchwood_total: 'higher is better insight'; the total is the plain sum of the three sub-scores"
+    birchwood_total:
+      meaning: Sum of the three sub-scores (0 to 12).
+      higher_means: better insight
+      polarity: better
+      basis: stated
+      source: "label of the score: 'Birchwood total (0 to 12, higher is better insight)'"
+  flags:
+    - The scores were fitted on the items. Which answer is the insightful one for each item and the item weighting are 'To verify' in the literature notes.
+    - The literature notes name the three components awareness of illness, relabelling of symptoms and need for treatment.
+    - On some visits of 2011 to 2016 a stored score is delivered with no item (flag score_as_stored), because the export lost the answers 'agree' and 'disagree'.
+    - No cut-off is documented.
+
+dsm5_alcohol:
+  description: Twelve criteria of a use disorder for alcohol, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: alcohol
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_alcohol)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_alcohol): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    alcohol_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of an alcohol use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    alcohol_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of an alcohol use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_alcohol); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "alcohol_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - "The count 'ever' is not always kept from one year to the next: some patients with a criterion at inclusion give 0 at a yearly visit."
+
+dsm5_cannabis:
+  description: Twelve criteria of a use disorder for cannabis, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: cannabis
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_cannabis)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_cannabis): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    cannabis_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of a cannabis use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    cannabis_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of a cannabis use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_cannabis); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "cannabis_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - "The count 'ever' is not always kept from one year to the next: some patients with a criterion at inclusion give 0 at a yearly visit."
+
+dsm5_cocaine:
+  description: Twelve criteria of a use disorder for cocaine, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: substance_use
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_cocaine)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_cocaine): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    cocaine_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of a cocaine use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    cocaine_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of a cocaine use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_cocaine); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "cocaine_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' for this substance, or for illicit drugs, the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - "The count 'ever' is not always kept from one year to the next: some patients with a criterion at inclusion give 0 at a yearly visit."
+
+dsm5_heroin:
+  description: Twelve criteria of a use disorder for heroin, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: substance_use
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_heroin)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_heroin): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    heroin_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of a heroin use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    heroin_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of a heroin use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_heroin); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "heroin_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' for this substance, or for illicit drugs, the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - Whether tolerance and withdrawal count under medical supervision is 'To verify' in the literature notes.
+
+dsm5_opiates:
+  description: Twelve criteria of a use disorder for opiates, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: substance_use
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_opiates)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_opiates): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    opiate_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of an opiate use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    opiate_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of an opiate use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_opiates); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "opiate_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' for this substance, or for illicit drugs, the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - Whether tolerance and withdrawal count under medical supervision is 'To verify' in the literature notes.
+
+dsm5_other_substances:
+  description: Twelve criteria of a use disorder for other substances, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: substance_use
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_other_substances)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_other_substances): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    other_substance_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of a use disorder for other substances met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    other_substance_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of a use disorder for other substances met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_other_substances); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "other_substance_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' for this group of substances, or for illicit drugs, the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - That the withdrawal criterion does not apply to some substances (hallucinogens, inhalants) is 'To verify' in the literature notes.
+
+dsm5_sedatives:
+  description: Twelve criteria of a use disorder for sedatives, answered yes or no by the patient, each asked twice (ever, and in the last 12 months). The first eleven are the DSM-5 criteria; the twelfth, legal problems, is a DSM-IV criterion.
+  version: DSM-5 criteria used as a self-report checklist
+  reference: "American Psychiatric Association 2013 (DSM-5), as stated by Miller AP et al. JAMA Netw Open 2023 (PMC10565602) and Choi NG, Morris JA, Marti CN. Int J Environ Res Public Health 2025 (PMC12193663)"
+  reference_confidence: "Confirmed (direct: Miller 2023; Choi 2025); the manual itself was not read"
+  respondent: patient
+  construct: substance_use
+  period: lifetime and last 12 months
+  sources: ["schema notes (sz dsm5_sedatives)", "scale_reference_aq_general.md section 3"]
+  items:
+    higher_means: yes, the criterion is met (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz dsm5_sedatives): '1 is yes, 0 is no, and 2 is do not know, read as a missing code'"
+  scores:
+    sedative_criteria_count:
+      meaning: Number of the DSM-5 criteria a to k answered yes, ever (0 to 11).
+      higher_means: more criteria of a sedative use disorder met, ever
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, ever (criteria a to k, 0 to 11)'"
+    sedative_criteria_count_12m:
+      meaning: Number of the DSM-5 criteria a to k answered yes for the last 12 months (0 to 11).
+      higher_means: more criteria of a sedative use disorder met in the last 12 months
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DSM-5 criteria met, in the last 12 months (criteria a to k, 0 to 11)'"
+      cutoffs:
+        - value: "2 or more"
+          meaning: threshold of a use disorder (2 of 11 criteria within a 12-month period)
+          source: "Miller 2023, section 3"
+          confidence: "Confirmed (direct: Miller 2023, for alcohol use disorder)"
+        - value: "2 to 3, 4 to 5, 6 or more"
+          meaning: mild, moderate, severe
+          source: "schema notes (sz dsm5_sedatives); Miller 2023 and Choi 2025, section 3"
+          confidence: "Confirmed (direct: Miller 2023; Choi 2025)"
+  variables:
+    "sedative_legal_problems*":
+      meaning: Legal problems linked to the use, a DSM-IV criterion. It is not counted in the two counts.
+      polarity: not_applicable
+  flags:
+    - A checklist filled by the patient is not the DSM-5 interview. No severity band is delivered.
+    - After a no to the question 'more than ten times in your life' for this substance, or for illicit drugs, the criteria are not asked and are delivered as 0. The 12-month question is asked only after a yes to 'ever'.
+    - A 'do not know' leaves the count missing.
+    - Whether tolerance and withdrawal count under medical supervision is 'To verify' in the literature notes.
+
+ephp:
+  description: EPHP, the scale of assessment of the processes of psychic handicap. Thirteen items from 0 (great difficulty) to 6 (no difficulty), in four domains, filled by someone close to the patient.
+  version: 13 items
+  reference: "Passerieux C, Bulot V, Hardy-Baylé MC. Une contribution à l'évaluation du handicap psychique : l'échelle d'évaluation des processus du handicap psychique (EPHP). Alter - European Journal of Disability Research 2012"
+  reference_confidence: "Partial (secondary; the article was not read). Volume and pages to verify"
+  respondent: relative
+  construct: psychosocial_functioning
+  sources: ["schema notes (sz ephp)", "scale_reference_aq_general.md section 4"]
+  items:
+    higher_means: less difficulty (0 great difficulty to 6 no difficulty)
+    polarity: better
+    basis: anchors
+    source: "labels of the items: '(0 great difficulty to 6 no difficulty)'"
+  scores:
+    ephp_cognition:
+      meaning: Cognitive abilities, the sum of items 1 to 4 (0 to 24).
+      higher_means: less difficulty with cognitive abilities
+      polarity: better
+      basis: anchors
+      source: "labels of the items: '(0 great difficulty to 6 no difficulty)', plain sum"
+    ephp_motivation:
+      meaning: Motivation, the sum of items 5 to 8 (0 to 24).
+      higher_means: less difficulty with motivation
+      polarity: better
+      basis: anchors
+      source: "labels of the items: '(0 great difficulty to 6 no difficulty)', plain sum"
+    ephp_social_cognition:
+      meaning: Communication and understanding of others, the sum of items 9 to 11 (0 to 18).
+      construct: social_cognition
+      higher_means: less difficulty with communication and the understanding of others
+      polarity: better
+      basis: anchors
+      source: "labels of the items: '(0 great difficulty to 6 no difficulty)', plain sum"
+    ephp_self_assessment:
+      meaning: Self-assessment of abilities and asking for help, the sum of items 12 and 13 (0 to 12).
+      higher_means: less difficulty with the self-assessment of abilities and asking for help
+      polarity: better
+      basis: anchors
+      source: "labels of the items: '(0 great difficulty to 6 no difficulty)', plain sum"
+    ephp_total:
+      meaning: Sum of the four sub-scores (13 items, 0 to 78).
+      higher_means: less handicap
+      polarity: better
+      basis: stated
+      source: "label of the score: 'EPHP total (13 items, 0 to 78, higher is less handicap)'"
+  flags:
+    - "The answer 7, 'cannot be assessed', is missing in the items and counts 0 points in the scores, as the application does since 2026-10-28. A score therefore leans toward the worst rating where an item could not be assessed (228 totals)."
+    - No published scoring rule was found. The rater, the response scale and the sub-scores are 'To verify' in the literature notes; the dictionary says that someone close to the patient fills it.
+    - The stored scores counted the 7 as 7 points and are checks only.
+
+physical_activity:
+  description: Physical activity over the last seven days, reported by the patient. Days of vigorous activity, of moderate activity and of walking, the time per day, the walking pace and the time spent sitting. No score.
+  respondent: patient
+  construct: physical_activity
+  period: last seven days
+  sources: ["schema notes (sz physical_activity, dr physical_activity)", "scale_reference_aq_general.md section 33", "facedata/common_instruments.yaml"]
+  variables:
+    vigorous_days:
+      meaning: Days of vigorous physical activity in the last 7 days (0 to 7).
+      higher_means: more days of vigorous activity
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable"
+    moderate_days:
+      meaning: Days of moderate physical activity in the last 7 days (0 to 7).
+      higher_means: more days of moderate activity
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable"
+    walking_days:
+      meaning: Days with a walk of ten minutes or more in the last 7 days (0 to 7).
+      higher_means: more days with a walk
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable"
+    walking_pace:
+      meaning: Usual walking pace (1 slow, 2 moderate, 3 brisk). The DR form stores it the other way round and is read back.
+      higher_means: brisker pace
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable: '(1 slow, 2 moderate, 3 brisk)'"
+    "*_hours":
+      meaning: The hours typed for the duration on such a day. One of two fields of a duration, delivered as typed.
+    "*_minutes":
+      meaning: The minutes typed for the duration on such a day. One of two fields of a duration, delivered as typed; some cells hold a whole duration in minutes.
+  flags:
+    - "Each duration has two fields, hours and minutes, which the patients use in three ways (both, hours only, minutes only). No duration and no total is computed: the analyst decides the rule."
+    - The schema does not name the questionnaire and gives no reference. Its content is that of the IPAQ short form described in the literature notes (section 33), which is not confirmed as the form used.
+    - The hours, the minutes and the pace are shown only after a number of days of 1 or more.
+    - In DR a sitting time above 24 hours is not delivered.
+
+presenteeism:
+  description: Questions B3 to B11 of a questionnaire on work, filled by the patients who work. Hours worked and expected, days of work missed or worked extra in the last 28 days, and three ratings of performance from 0 to 10. No score.
+  respondent: patient
+  construct: work_productivity
+  period: last 7 days and last 28 days
+  sources: ["schema notes (sz presenteeism)"]
+  variables:
+    work_hours_7_days:
+      meaning: Hours worked in the last 7 days.
+      polarity: neutral
+    work_hours_expected:
+      meaning: Hours the employer expects in a typical week of 7 days.
+      polarity: neutral
+    work_hours_28_days:
+      meaning: Hours worked in the last 28 days.
+      polarity: neutral
+    work_days_missed_health:
+      meaning: Whole days of work missed for a physical or mental health problem, in the last 28 days.
+      higher_means: more days of work missed for health
+      polarity: worse
+      basis: anchors
+      source: "label of the variable"
+    work_days_part_missed_health:
+      meaning: Days of work missed in part for a physical or mental health problem, in the last 28 days.
+      higher_means: more days of work missed in part for health
+      polarity: worse
+      basis: anchors
+      source: "label of the variable"
+    work_days_missed_other:
+      meaning: Whole days of work missed for any other reason, in the last 28 days.
+      polarity: neutral
+    work_days_part_missed_other:
+      meaning: Days of work missed in part for any other reason, in the last 28 days.
+      polarity: neutral
+    work_days_extra:
+      meaning: Days of coming early, leaving late or working on a day off, in the last 28 days.
+      polarity: neutral
+    work_performance_others:
+      meaning: Usual performance of most workers in a similar job (0 worst to 10 best).
+      higher_means: better performance
+      polarity: better
+      basis: anchors
+      source: "label of the variable: '(0 worst to 10 best)'"
+    work_performance_usual:
+      meaning: Own usual performance over the last year or two (0 worst to 10 best).
+      higher_means: better performance
+      polarity: better
+      basis: anchors
+      source: "label of the variable: '(0 worst to 10 best)'"
+    work_performance_28_days:
+      meaning: Own performance on the days worked in the last 28 days (0 worst to 10 best).
+      higher_means: better performance
+      polarity: better
+      basis: anchors
+      source: "label of the variable: '(0 worst to 10 best)'"
+  flags:
+    - The schema does not name the questionnaire and gives no reference. No score is computed.
+    - "The numbers are typed freely. Impossible values are out of range, and two inconsistencies between questions are kept as typed (days missed adding up to more than 28; hours of 28 days under those of the last 7)."
+    - Filled only by the patients who work.
+
+sogs:
+  description: South Oaks Gambling Screen, filled by few patients. Kinds of gambling, the largest amount gambled, and yes/no questions on gambling problems and on borrowed money. The total is delivered as stored.
+  reference: "Lesieur HR, Blume SB. Am J Psychiatry 1987;144:1184-1188 (PMID 3631315)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: gambling
+  period: "lifetime in the original; questions 4, 5 and 6 are worded for the last 12 months"
+  sources: ["schema notes (sz sogs)", "scale_reference_aq_general.md section 8"]
+  variables:
+    sogs_total:
+      meaning: SOGS total as stored (0 to 20), computed by the application. It is not recomputed by the package.
+      higher_means: more gambling problems
+      polarity: worse
+      basis: literature
+      source: "section 8: '0 no problem; 1-4 some problems; >= 5 probable pathological gambler', Confirmed (direct)"
+      cutoffs:
+        - value: "5 or more"
+          meaning: "probable pathological gambler (published reading; 1 to 4 some problems, 0 no problem)"
+          source: "score sheet of 2003, section 8"
+          confidence: "Confirmed (direct). The key of the application differs: item 4 counts 1 for any answer, so every stored total is 1 or more"
+    sogs_largest_amount:
+      meaning: Largest amount gambled in one day. The unit is not given.
+      higher_means: larger amount
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable"
+    "sogs01*":
+      meaning: "A kind of gambling: 0 never, 1 at least once a week, 2 less than once a week. The codes are not in order of frequency, and the item is not counted in the total."
+      polarity: not_applicable
+    sogs04:
+      meaning: "Went back another day to win back the money lost: 0 never, 1 most of the times I lose, 2 sometimes, 3 every time. The codes are not in order of frequency."
+      polarity: not_applicable
+    sogs06:
+      meaning: "Had a gambling problem in the last 12 months: 0 no, 1 yes some months ago but not now. The answer 'yes' is lost by the export."
+      polarity: not_applicable
+  flags:
+    - "The stored total follows the key of the application, where item 4 counts 1 for any answer, 'never' included. The published form scores item 4 only for 'most of the time' and 'every time' (this rule is partial in the literature notes)."
+    - The total is not recomputed while the export loses the answer 'yes' of item 6 and some answers written with an apostrophe.
+    - The French version is 'To verify' in the literature notes.
+
+sqol:
+  description: Schizophrenia Quality of Life questionnaire, 18-item form, filled by the patient at every visit. Items of 1 to 5 and dimensions from 0 to 100. Seven of the eight dimensions are delivered.
+  version: S-QoL 18
+  reference: "Boyer L, Simeoni MC, Loundou A, et al. The development of the S-QoL 18. Schizophr Res 2010;121:241-250"
+  reference_confidence: "To verify (from memory). The 18 items and 8 dimensions are Confirmed (direct: Boyer 2022, J Clin Med, PMC8836740)"
+  respondent: patient
+  construct: quality_of_life
+  sources: ["schema notes (sz sqol)", "scale_reference_aq_general.md section 30"]
+  items:
+    higher_means: better quality of life on the item (1 to 5; a dimension is the mean of its items, none reversed)
+    polarity: better
+    basis: literature
+    source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022); schema notes (sz sqol): a dimension is (mean - 1) x 25"
+  scores:
+    sqol_sentimental_life:
+      meaning: Sentimental life, the mean of items 14 and 15 brought to 0 to 100.
+      higher_means: better quality of life in sentimental life
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_self_esteem:
+      meaning: Self-esteem, the mean of items 1 and 4 brought to 0 to 100.
+      construct: self_esteem
+      higher_means: better self-esteem
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_family:
+      meaning: Relations with the family, the mean of items 10 and 11 brought to 0 to 100.
+      higher_means: better quality of life in the relations with the family
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_friends:
+      meaning: Relations with friends, the mean of items 12 and 13 brought to 0 to 100.
+      higher_means: better quality of life in the relations with friends
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_autonomy:
+      meaning: Autonomy, the mean of items 5 and 6 brought to 0 to 100.
+      higher_means: better autonomy
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_physical_wellbeing:
+      meaning: Physical well-being, the mean of items 8 and 9 brought to 0 to 100.
+      higher_means: better physical well-being
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_resilience:
+      meaning: Resilience, the mean of items 2, 3 and 7 brought to 0 to 100.
+      higher_means: better resilience
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+  flags:
+    - Items 17 and 18, the psychological well-being dimension and the index are not delivered. The export mis-codes the two items, so the dimension and every stored index carry the error.
+    - A dimension is computed when at most one of its items is missing.
+    - The period of the questions (last 4 weeks) is 'To verify' in the literature notes. No cut-off is documented.
+
+stori:
+  description: Stages of Recovery Instrument. Fifty statements rated by the patient from 0 (not at all true now) to 5 (completely true now), ten for each of the five stages of recovery.
+  version: 50 items
+  reference: "Andresen R, Caputi P, Oades L. Stages of recovery instrument: development of a measure of recovery from serious mental illness. Aust N Z J Psychiatry 2006;40:972-980"
+  reference_confidence: To verify (not read)
+  respondent: patient
+  construct: recovery
+  period: now (the present)
+  sources: ["schema notes (sz stori)", "scale_reference_aq_general.md section 28"]
+  items:
+    higher_means: the statement is more true now (0 not at all true to 5 completely true)
+    polarity: neutral
+    basis: anchors
+    source: "labels of the items: '(0 not at all true to 5 completely true)'"
+  scores:
+    stori_stage1:
+      meaning: Stage 1, moratorium, the sum of items 1, 6, ... 46 (0 to 50).
+      higher_means: the statements of the moratorium stage are more true now
+      polarity: neutral
+      basis: anchors
+      source: "labels of the items: '(0 not at all true to 5 completely true)', plain sum"
+    stori_stage2:
+      meaning: Stage 2, awareness, the sum of items 2, 7, ... 47 (0 to 50).
+      higher_means: the statements of the awareness stage are more true now
+      polarity: neutral
+      basis: anchors
+      source: "labels of the items: '(0 not at all true to 5 completely true)', plain sum"
+    stori_stage3:
+      meaning: Stage 3, preparation, the sum of items 3, 8, ... 48 (0 to 50).
+      higher_means: the statements of the preparation stage are more true now
+      polarity: neutral
+      basis: anchors
+      source: "labels of the items: '(0 not at all true to 5 completely true)', plain sum"
+    stori_stage4:
+      meaning: Stage 4, rebuilding, the sum of items 4, 9, ... 49 (0 to 50).
+      higher_means: the statements of the rebuilding stage are more true now
+      polarity: neutral
+      basis: anchors
+      source: "labels of the items: '(0 not at all true to 5 completely true)', plain sum"
+    stori_stage5:
+      meaning: Stage 5, growth, the sum of items 5, 10, ... 50 (0 to 50).
+      higher_means: the statements of the growth stage are more true now
+      polarity: neutral
+      basis: anchors
+      source: "labels of the items: '(0 not at all true to 5 completely true)', plain sum"
+  flags:
+    - "Five scores, one per stage; no single stage is delivered. In the published use the stage with the highest score is the allocated stage; that rule is 'To verify' in the literature notes."
+    - The polarity is left neutral because a stage score says how much the patient is in that stage, not how far the recovery has gone.
+
+yale_brown:
+  description: Yale-Brown Obsessive Compulsive Scale, filled about the past week by the patients with obsessions or compulsions. Five items for the obsessions and five for the compulsions (time occupied, interference, distress, resistance, control), each 0 (none) to 4 (extreme).
+  version: 10 severity items, self-report form
+  reference: "Goodman et al. 1989 (the literature notes give no full citation)"
+  reference_confidence: To verify
+  respondent: patient
+  construct: ocd_symptoms
+  period: past week
+  sources: ["schema notes (sz yale_brown)", "scale_reference_aq_general.md section 35"]
+  items:
+    higher_means: more severe (0 none to 4 extreme)
+    polarity: worse
+    basis: anchors
+    source: "labels of the items: '(0 none to 4 extreme)'"
+  scores:
+    ybocs_obsessions_total:
+      meaning: Sum of the five obsession items (0 to 20).
+      higher_means: more severe obsessions
+      polarity: worse
+      basis: anchors
+      source: "labels of the items: '(0 none to 4 extreme)', plain sum"
+    ybocs_compulsions_total:
+      meaning: Sum of the five compulsion items (0 to 20).
+      higher_means: more severe compulsions
+      polarity: worse
+      basis: anchors
+      source: "labels of the items: '(0 none to 4 extreme)', plain sum"
+    ybocs_total:
+      meaning: Sum of the two sub-totals (0 to 40).
+      higher_means: more severe obsessions and compulsions
+      polarity: worse
+      basis: anchors
+      source: "labels of the items: '(0 none to 4 extreme)', plain sum"
+      cutoffs:
+        - value: "0 to 7, 8 to 15, 16 to 23, 24 to 31, 32 to 40"
+          meaning: subclinical, mild, moderate, severe, extreme
+          source: "section 35"
+          confidence: To verify
+  flags:
+    - Filled only by the patients with obsessions or compulsions, from 2015.
+    - The delivered sums add the ten items. On some visits of 2015 and 2016 the stored totals added a summary block typed apart and differ (score_mismatch).
+    - The item names are those of the published scale in its order; the dictionary does not name them. The details of the self-report form are 'To verify' in the literature notes.
+
+# ---------------------------------------------------------------- FACE DR
+
+alimentaire:
+  description: Food frequency questionnaire. Twenty-three questions (question 9 has two parts) on how much of each food the patient takes per day, per week or per month. Each answer is a class of quantity numbered from 0. No score.
+  version: 23 questions
+  respondent: patient
+  construct: diet
+  sources: ["schema notes (dr alimentaire)"]
+  items:
+    higher_means: a larger class of quantity (the classes differ from one question to the other)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (dr alimentaire): 'Each answer is a class of quantity, numbered from 0 ... for bread: 0 none, 1 for 30 g, up to 7 for 150 g or more'"
+  flags:
+    - "The classes are not quantities and differ between questions: the number of classes gives the range of each variable. No score is computed."
+    - No reference is given in the project documents.
+    - Not in BP. The SZ application has the same form but the SZ extraction does not carry it.
+
+bfi:
+  description: Big Five Inventory, French version. Forty-five statements, each rated by the patient from 1 (strongly disagree) to 5 (strongly agree). Five dimensions of personality, each the mean of its items.
+  version: BFI-Fr, 45 items
+  reference: "Plaisant O, Courtois R, Réveillère C, Mendelsohn GA, John OP. Validation par analyse factorielle du Big Five Inventory français (BFI-Fr). Ann Méd Psychol 2010;168:97-106"
+  reference_confidence: "45 items confirmed (extracted: Lignier 2016, abstract); citation confirmed (search result + em-consulte record)"
+  respondent: patient
+  construct: personality_temperament
+  sources: ["schema notes (dr bfi)", "scale_reference_aq_general.md section 23"]
+  items:
+    higher_means: "more agreement with the statement (1 strongly disagree to 5 strongly agree, as asked); 17 statements describe the opposite pole of their dimension and are reversed in the scores"
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (dr bfi): 'every item is 1 strongly disagree to 5 strongly agree, and the key is in the scores (reverse)'"
+  scores:
+    bfi_extraversion:
+      meaning: Extraversion, the mean of 8 items (1 to 5), three of them reversed.
+      higher_means: more extraversion
+      polarity: neutral
+      basis: stated
+      source: "schema notes (dr bfi): 'The published key reverses 17 statements, those that describe the opposite pole of their dimension'; items 1 strongly disagree to 5 strongly agree"
+    bfi_agreeableness:
+      meaning: Agreeableness, the mean of 10 items (1 to 5), five of them reversed.
+      higher_means: more agreeableness
+      polarity: neutral
+      basis: stated
+      source: "schema notes (dr bfi): 'The published key reverses 17 statements, those that describe the opposite pole of their dimension'; items 1 strongly disagree to 5 strongly agree"
+    bfi_conscientiousness:
+      meaning: Conscientiousness, the mean of 9 items (1 to 5), four of them reversed.
+      higher_means: more conscientiousness
+      polarity: neutral
+      basis: stated
+      source: "schema notes (dr bfi): 'The published key reverses 17 statements, those that describe the opposite pole of their dimension'; items 1 strongly disagree to 5 strongly agree"
+    bfi_neuroticism:
+      meaning: Neuroticism, the mean of 8 items (1 to 5), three of them reversed.
+      higher_means: more neuroticism
+      polarity: neutral
+      basis: stated
+      source: "schema notes (dr bfi): 'Direction. Neuroticism rises with depression (r = 0.49 with the QIDS); the four other dimensions fall'; the key reverses the statements of the opposite pole"
+    bfi_openness:
+      meaning: Openness, the mean of 10 items (1 to 5), two of them reversed.
+      higher_means: more openness
+      polarity: neutral
+      basis: stated
+      source: "schema notes (dr bfi): 'The published key reverses 17 statements, those that describe the opposite pole of their dimension'; items 1 strongly disagree to 5 strongly agree"
+  flags:
+    - "The key reverses 17 statements: the 16 of the English 44-item form and item 45. The French list of reversed items and the dimension of the 45th item are 'To verify' in the literature notes."
+    - The form stores the 17 statements already reversed; they are read back to the answer as asked.
+    - An older form keyed item 29 the other way on some visits of 2014 or earlier. Which visits is not known, so item 29 is delivered as stored.
+    - On 16 visits the stored conscientiousness and neuroticism are swapped. The recomputed scores are delivered.
+    - An empty scale after 2018 can be 'not asked' (simplified visit).
+
+detc_cage:
+  description: DETC-CAGE for cannabis. Four yes/no questions answered by the patient (need to cut down, remarks of the family, feeling of smoking too much, cannabis in the morning).
+  version: 4 questions
+  respondent: patient
+  construct: cannabis
+  period: "lifetime (the questions ask whether it 'ever' happened)"
+  sources: ["schema notes (dr detc_cage)", "labels of the items"]
+  scores:
+    detc_cage_total:
+      meaning: Number of yes among the four questions (0 to 4). Computed by the package; the extraction stores none.
+      higher_means: more signs of a problem use of cannabis answered yes
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'DETC-CAGE cannabis: number of yes (0 to 4)'"
+  flags:
+    - "The totals of 2012 to 2015 and those from 2016 are not comparable. Until 2015 everybody who filled the form answered, and a 0 is mostly a patient who does not use cannabis; from 2016 the items are shown only after a yes to the question on cannabis use."
+    - No reference and no cut-off are given in the project documents, and the literature notes have no section on this instrument.
+    - Filled on 100 visits only. Whether the scale is still part of the protocol is an open question.
+
+leaps:
+  description: Lam Employment Absence and Productivity Scale. The patient gives the kind of work, the hours scheduled and missed over the last two weeks, and, if working, rates seven problems at work from 0 (none of the time) to 4 (all the time).
+  reference: "Lam RW, Michalak EE, Yatham LN. BMC Psychiatry 2009;9:78"
+  reference_confidence: To verify (not read)
+  respondent: patient
+  construct: work_productivity
+  period: last two weeks
+  sources: ["schema notes (dr leaps)", "scale_reference_aq_general.md section 34"]
+  items:
+    higher_means: the problem at work was felt more of the time (0 none of the time to 4 all the time)
+    polarity: worse
+    basis: anchors
+    source: "labels of the items: '(0 none of the time to 4 all the time)'"
+  scores:
+    leaps_total:
+      meaning: Sum of the seven items (0 to 28).
+      higher_means: more impairment at work
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr leaps): 'The sum of the seven items (0 to 28, higher is more impairment at work)'"
+  variables:
+    leaps_hours_scheduled:
+      meaning: Hours of work scheduled in the last two weeks.
+      polarity: neutral
+    leaps_hours_missed:
+      meaning: Hours of work missed in the last two weeks because of how the patient felt.
+      higher_means: more hours of work missed
+      polarity: worse
+      basis: anchors
+      source: "label of the variable"
+    leaps_not_working:
+      meaning: Not working at present (sick leave, disability, retirement); 1 is ticked. The seven items are shown only when it is not ticked.
+      polarity: not_applicable
+    leaps_work_kind:
+      meaning: Kind of paid work, a free text.
+      polarity: not_applicable
+  flags:
+    - "The seven items and the total exist only for the patients who work (168 visits): the total is missing, not 0, for the others."
+    - The literature notes describe a published scale of 10 items; the total of the first 7 items (0 to 28) and its severity bands are 'To verify'. A change of 3 points is the minimal important difference (Sachdeva 2026, abstract).
+    - The hours missed are above the hours scheduled on some visits and are kept as typed.
+
+paykel:
+  description: Paykel list of life events. In an interview, the patient is asked for each of 64 events whether it happened in the 12 months before the visit and the month it started; the interviewer rates how independent of the illness it was and its negative impact.
+  version: "64 events (the dictionary announces 61)"
+  respondent: clinician
+  construct: life_events
+  period: the 12 months before the visit
+  sources: ["schema notes (dr paykel)"]
+  scores:
+    paykel_events:
+      meaning: Number of the 64 events answered yes (0 to 64). The 64 answers are needed.
+      higher_means: more life events in the 12 months before the visit
+      polarity: neutral
+      basis: anchors
+      source: "label of the score: 'Number of Paykel life events answered yes (0 to 64)'"
+  variables:
+    "paykel*_month":
+      meaning: Month of onset of the event, 1 to 12 as printed on the form. Whether it is a calendar month or a number of months before the visit is not told.
+      polarity: not_applicable
+    "paykel*_independence":
+      meaning: Independence of the event from the illness, rated by the interviewer (1 almost entirely independent to 5 almost entirely dependent).
+      higher_means: the event depends more on the illness
+      polarity: neutral
+      basis: anchors
+      source: "label of the variable: '(1 almost entirely independent to 5 almost entirely dependent)'"
+    "paykel*_impact":
+      meaning: Objective negative impact of the event, rated by the interviewer (1 severe to 5 none).
+      higher_means: less negative impact
+      polarity: better
+      basis: anchors
+      source: "label of the variable: '(1 severe to 5 none)'"
+  flags:
+    - "No reference is given: the schema notes cite none, and section 27 of the literature notes describes the Paykel Suicide Scale, which is another instrument."
+    - The count mixes events of every kind, wanted ones included (a marriage, a financial improvement), hence the neutral polarity.
+    - Each visit asks about the year before it, so the answers of two visits do not add up. Whether the visits of 2 and 4 years meant the interval since the previous visit is an open question.
+    - The month, the independence and the impact are filled only after a yes. Values out of the scale (0, above 5, a month above 12) are not delivered.
+    - An empty list since 2018 can be 'not asked' (simplified visit).
+
+pcl_s:
+  description: PTSD Checklist, specific version. Seventeen symptoms, each rated by the patient from 1 (not at all) to 5 (very often), about a stressful episode. The checklist does not say which event the patient has in mind.
+  version: "PCL-S (specific version, DSM-IV), 17 items"
+  reference: "Weathers FW, Litz BT, Herman DS, Huska JA, Keane TM. The PTSD Checklist: reliability, validity and diagnostic utility. ISTSS annual meeting, San Antonio, 1993 (conference paper)"
+  reference_confidence: Confirmed (ISTSS list, extracted)
+  respondent: patient
+  construct: ptsd_symptoms
+  period: "none printed on the form (the published PCL-S asks about the past month)"
+  sources: ["schema notes (dr pcl_s)", "scale_reference_aq_general.md section 6"]
+  items:
+    higher_means: the symptom is more present (1 not at all to 5 very often)
+    polarity: worse
+    basis: anchors
+    source: "labels of the items: '1 not at all to 5 very often'"
+  scores:
+    ptsd_total:
+      meaning: Sum of the seventeen items (17 to 85).
+      higher_means: more post-traumatic stress symptoms
+      polarity: worse
+      basis: anchors
+      source: "labels of the items: '1 not at all to 5 very often', plain sum; schema notes (dr pcl_s): 'Every item rises with the others'"
+      cutoffs:
+        - value: "44"
+          meaning: "French PCLS: separates PTSD from controls (diagnostic efficacy 0.94)"
+          source: "Ventureyra 2002, section 6"
+          confidence: "Confirmed (abstract: Ventureyra 2002)"
+        - value: "44"
+          meaning: victims of motor vehicle accidents and of sexual assault (Blanchard 1996)
+          source: "ISTSS page, section 6"
+          confidence: "Confirmed (extracted: ISTSS)"
+        - value: "50"
+          meaning: combat veterans (Weathers 1993)
+          source: "ISTSS page, section 6"
+          confidence: "Confirmed (extracted: ISTSS)"
+  flags:
+    - The labels give the three clusters of the published checklist (re-experiencing items 1 to 5, avoidance and numbing 6 to 12, hyperarousal 13 to 17). No cluster score is delivered.
+    - The form labels the answer 5 'very often'; the published anchor is 'extremely'.
+    - Filled on 127 visits only. On half of them no event of the list of traumatic events is answered yes.
+    - Not to be confused with the PCL-5 (DSM-5, 20 items).
+
+rosenberg:
+  description: Rosenberg self-esteem scale. Ten items on how the patient sees himself in general, each from 1 (strongly disagree) to 4 (strongly agree).
+  version: 10 items
+  reference: "Rosenberg 1965 (the literature notes give no full citation)"
+  reference_confidence: To verify
+  respondent: patient
+  construct: self_esteem
+  period: in general
+  sources: ["schema notes (dr rosenberg)", "scale_reference_aq_general.md section 24"]
+  items:
+    higher_means: "more agreement with the statement (1 strongly disagree to 4 strongly agree, as asked); better self-esteem, except on the five items worded negatively (3, 5, 8, 9, 10), which the total reverses"
+    polarity: better
+    basis: stated
+    source: "schema notes (dr rosenberg): 'The five items are read back to the answer as asked ... the total reverses the same five items'"
+  scores:
+    rosenberg_total:
+      meaning: Sum of the ten items after the reversal of the five negative ones (10 to 40).
+      higher_means: better self-esteem
+      polarity: better
+      basis: stated
+      source: "schema notes (dr rosenberg): '10 to 40, higher is a better self-esteem'; section 24: Confirmed (direct)"
+  flags:
+    - "No official cut-off (literature notes)."
+    - The form stores the five negative items already reversed; they are read back to the answer as asked.
+    - "The reversed items here are 3, 5, 8, 9 and 10. The literature notes list 2, 5, 6, 8, 9 for the English order and warn that the French item order may differ."
+    - An empty scale since 2018 can be 'not asked' (simplified visit). It is missing, never 0.
+
+shaps:
+  description: Snaith-Hamilton Pleasure Scale. Fourteen situations that usually give pleasure, rated by the patient about these last days on four levels, stored 0 (strongly disagree) to 3 (strongly agree).
+  version: 14 items
+  reference: "Snaith RP, Hamilton M, Morley S, et al. Br J Psychiatry 1995;167:99-103 (PMID 7551619)"
+  reference_confidence: Confirmed (abstract)
+  respondent: patient
+  construct: anhedonia
+  period: these last days
+  sources: ["schema notes (dr shaps)", "scale_reference_aq_general.md section 25"]
+  items:
+    higher_means: more pleasure (0 strongly disagree to 3 strongly agree); a low value is the answer of anhedonia
+    polarity: better
+    basis: stated
+    source: "schema notes (dr shaps): 'a low value is the answer of anhedonia for every item'"
+  scores:
+    shaps_total:
+      meaning: Number of the fourteen items answered disagree or strongly disagree (0 to 14).
+      higher_means: more anhedonia
+      polarity: worse
+      basis: stated
+      source: "label of the score: '0 to 14, higher is more anhedonia'; section 25: Confirmed (direct: Kong 2026)"
+      cutoffs:
+        - value: "above 2"
+          meaning: abnormal (original cut-off)
+          source: "Kong 2026, section 25"
+          confidence: "Partial (direct: Kong 2026 states 'a cut-off score of 2'; whether abnormal is 2 or more or above 2 is to verify in Snaith 1995; commonly above 2)"
+  flags:
+    - "The items and the score run in opposite directions: a high item is pleasure, a high score is anhedonia."
+    - The stored score is wrong (the export reverses five items before the count) and is not delivered.
+    - In the extraction from 2015.
+
+spin:
+  description: Social Phobia Inventory. Seventeen items, each rated by the patient from 0 (not at all) to 4 (extremely), on how much the problems bothered the patient during the last weeks.
+  version: 17 items
+  reference: "Connor KM, Davidson JR, Churchill LE, Sherwood A, Foa E, Weisler RH. Psychometric properties of the Social Phobia Inventory (SPIN). Br J Psychiatry 2000;176:379-386"
+  reference_confidence: To verify (not read)
+  respondent: patient
+  construct: social_anxiety
+  period: "the last weeks (the form's own words; the published SPIN says the past week)"
+  sources: ["schema notes (dr spin)", "scale_reference_aq_general.md section 26"]
+  items:
+    higher_means: the problem bothered the patient more (0 not at all to 4 extremely)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (dr spin): 'each 0 (not at all) to 4 (extremely)'"
+  scores:
+    spin_total:
+      meaning: Sum of the seventeen items (0 to 68).
+      higher_means: more social anxiety
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr spin): '0 to 68, higher is more social anxiety'"
+      cutoffs:
+        - value: "19"
+          meaning: cut-off of the original paper (Connor 2000)
+          source: "section 26"
+          confidence: To verify
+        - value: "21"
+          meaning: separates clinical from subclinical
+          source: "Laizane 2026 and Schmidt-Peter 2026, section 26"
+          confidence: "Confirmed (direct: Laizane 2026; Schmidt-Peter 2026)"
+        - value: "25"
+          meaning: used in student samples
+          source: "Laizane 2026 and Schmidt-Peter 2026, section 26"
+          confidence: "Confirmed (direct: Laizane 2026; Schmidt-Peter 2026)"
+  flags:
+    - Filled on 147 visits only, by few patients and less and less. Why a third of them are follow-up visits is an open question.
+    - The fear, avoidance and physiological sub-scales are 'To verify' in the literature notes and are not delivered. No French version was found.
+
+traumatic_events:
+  description: List of seventeen traumatic life events (the sixteen events of the Life Events Checklist and one other). For each, the patient says whether it happened, the age at the event and whether it had a negative impact.
+  version: 17 events
+  respondent: patient
+  construct: life_events
+  period: "none printed on the form; the published checklist asks about the whole life and the inclusion answers are read so"
+  sources: ["schema notes (dr traumatic_events)"]
+  scores:
+    trauma_events:
+      meaning: Number of the seventeen events answered yes (0 to 17). The seventeen answers are needed.
+      higher_means: more kinds of traumatic events reported
+      polarity: worse
+      basis: anchors
+      source: "label of the score: 'Number of traumatic life events answered yes (0 to 17)'"
+  variables:
+    "trau*_age":
+      meaning: Age at the event, in years.
+      polarity: neutral
+    "trau*_impact":
+      meaning: Negative impact box (1 ticked, 0 not ticked). The form also writes 0 where the event did not happen.
+      higher_means: a negative impact is ticked
+      polarity: worse
+      basis: anchors
+      source: "label of the variable: 'negative impact box (1 ticked, 0 not ticked; the form also writes 0 where the event did not happen)'"
+    trau17_detail:
+      meaning: Other very stressful event, a free text.
+      polarity: not_applicable
+  flags:
+    - "At follow-up the answers are not cumulative: most events answered yes at inclusion are not answered yes again, and new events appear. What the follow-up form asks is an open question."
+    - "Count the visits of this form with the events, not with the impacts: an impact of 0 is also written where no event is answered (flag derived_doubt)."
+    - No reference is given in the project documents. Event 15 differs from the published checklist item and is to verify against the French version used.
+    - The PCL-S is another form and does not say which event of this list its items are about.
+    - An empty list since 2018 can be 'not asked' (simplified visit).

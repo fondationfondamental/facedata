@@ -1,0 +1,1941 @@
+# Annotations of the group forms_and_laboratory: forms of the application and laboratory panels of FACE BP, SZ, DR
+# and ASP. Written from the schema notes and from local/out/scale_reference_rest.md; a field left out is not documented.
+allergic_history_fu:
+  description: 'Medical history at the yearly follow-up visits: allergic and inflammatory diseases (asthma, another allergy,
+    lupus, rheumatoid arthritis, another autoimmune disease). The inclusion form asked again, as an update given at that
+    visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr allergic_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'SZ asks about ''allergic diseases'' only (asthma and allergy; the gate is named allergic_disease_*): it is not the
+    BP and DR question, and 29% of its inclusion answers are yes against 8.8% in BP. In SZ lupus and rheumatoid arthritis
+    are in the auto-immune section.'
+  - This section has no 'no for all' shortcut and is not emptied in 2022, unlike most sections of the BP medical history.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+allergic_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: allergic and inflammatory diseases (asthma,
+    another allergy, lupus, rheumatoid arthritis, another autoimmune disease).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr allergic_history_v0)
+  flags:
+  - 'SZ asks about ''allergic diseases'' only (asthma and allergy; the gate is named allergic_disease_*): it is not the
+    BP and DR question, and 29% of its inclusion answers are yes against 8.8% in BP. In SZ lupus and rheumatoid arthritis
+    are in the auto-immune section.'
+  - This section has no 'no for all' shortcut and is not emptied in 2022, unlike most sections of the BP medical history.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+cardiovascular_history_fu:
+  description: 'Medical history at the yearly follow-up visits: cardiovascular diseases (hypertension, coronary disease,
+    myocardial infarction, heart rhythm disorder, another one). The inclusion form asked again, as an update given at that
+    visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr cardiovascular_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 21% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+cardiovascular_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: cardiovascular diseases (hypertension, coronary
+    disease, myocardial infarction, heart rhythm disorder, another one).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr cardiovascular_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 21% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+digestive_history_fu:
+  description: 'Medical history at the yearly follow-up visits: diseases of the liver and the digestive tract (chronic inflammatory
+    bowel disease and its type, cirrhosis, gastric or duodenal ulcer, drug-induced hepatitis; SZ adds diarrhoea and constipation,
+    asked from 2015). The inclusion form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr digestive_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 16% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ from 2022: the section is answered at 42% of the inclusion visits, against 83% from 2016 to 2021 (the shortcut ''no
+    for all'' stopped copying ''no''): an empty section is missing, not ''no''; do not compute a prevalence on the inclusions
+    from 2022.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+digestive_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: diseases of the liver and the digestive tract
+    (chronic inflammatory bowel disease and its type, cirrhosis, gastric or duodenal ulcer, drug-induced hepatitis; SZ adds
+    diarrhoea and constipation, asked from 2015).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr digestive_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 16% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ from 2022: the section is answered at 42% of the inclusion visits, against 83% from 2016 to 2021 (the shortcut ''no
+    for all'' stopped copying ''no''): an empty section is missing, not ''no''; do not compute a prevalence on the inclusions
+    from 2022.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+endocrine_history_fu:
+  description: 'Medical history at the yearly follow-up visits: endocrine and metabolic diseases (diabetes and its type,
+    thyroid disorder, dyslipidaemia and its type, another one). The inclusion form asked again, as an update given at that
+    visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr endocrine_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 30% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - SZ asks about type 2 diabetes here (type 1 is in its auto-immune section), where BP and DR ask one question and then
+    the type.
+  - '''Induced by'' (lithium or another treatment) is empty under most thyroid disorders: an empty cell must not be read
+    as ''not induced''.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+endocrine_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: endocrine and metabolic diseases (diabetes
+    and its type, thyroid disorder, dyslipidaemia and its type, another one).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr endocrine_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 30% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - SZ asks about type 2 diabetes here (type 1 is in its auto-immune section), where BP and DR ask one question and then
+    the type.
+  - '''Induced by'' (lithium or another treatment) is empty under most thyroid disorders: an empty cell must not be read
+    as ''not induced''.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+family_history:
+  description: 'Family history, one row per patient and relative in the table relatives: the mood or psychotic disorder
+    of the relative and suicide, and in BP and DR also substances, anxiety, dementia and cardiovascular risk factors (BP:
+    also the birth and the death of the relative). A family is described once, most often at the inclusion visit, and the
+    first answer is kept.'
+  reference: not_applicable
+  respondent: clinician
+  construct: family_history
+  sources:
+  - schema notes (bp, sz, dr family_history)
+  - docs/ARCHITECTURE.md section 4 (relatives)
+  - docs/SCHEMA_SPEC.md section 16
+  flags:
+  - A row does not say that the relative has a disorder (half of the BP rows hold only a birth date or a death), and a relative
+    answered 'no' in family_structure has nothing to describe. To ask 'does a relative have it', use the columns fdr_ and
+    gp_ of the table patients (1, 0 or missing), not the rows.
+  - 'BP: ''sister 1'' is the first of the affected sisters, not the eldest; at most five relatives of a kind are described.'
+  - 'SZ: the parents, the sisters and the brothers only, with two questions (disorder, suicide); filter degree == 1 to compare
+    with BP.'
+  - 'DR: the children and the siblings are one arbitrary relative per group (the export keeps one record), so these rows
+    do not join the BP rows; DR asks the kind of mood disorder (relative_mood_disorder_kind), not the BP list relative_disorder.'
+  - 'relative_suicide is one answer (none, attempt, completed): a relative who died by suicide is not among the attempts.'
+  - 'BP: an empty relative_deceased is not ''alive'' (the question was not asked everywhere before 2014), and from 2022
+    the dates of birth and of death are almost never typed.'
+family_structure:
+  description: 'Family structure, one value per patient in the table patients: how many daughters, sons, sisters and brothers
+    the patient has, how many of them are ''affected'', and whether each parent (and each grandparent in BP and DR) is.
+    Asked once, most often at inclusion; the first answer is kept.'
+  reference: not_applicable
+  respondent: clinician
+  construct: family_history
+  sources:
+  - schema notes (bp, sz, dr family_structure)
+  flags:
+  - 'BP and SZ: ''affected'' means a psychiatric disorder, an abuse of or dependence on a substance, a suicide attempt or
+    a cardiovascular risk factor. A yes is therefore not a psychiatric history: it can be hypertension alone.'
+  - 'DR asks the psychiatric history and the cardiovascular risk factors as two questions, under other names (mother_psychiatric_history,
+    n_siblings_cardiovascular_risk): not the BP and SZ variables.'
+  - 'BP and SZ: the answer ''more than 5'' relatives is lost by the export (empty cell). A 5 is exactly five, and an empty
+    number beside a filled number of affected relatives may be ''more than 5''.'
+  - 'SZ: the share of parents answered yes falls with the year of inclusion (mothers 43% in 2010-2017, 30% in 2018-2026);
+    the cause is not known.'
+gynaecological_history_fu:
+  description: 'Medical history at the yearly follow-up visits: numbers of pregnancies, live births, miscarriages and terminations,
+    menopause, its date and its hormone therapy, and a gynaecological disease other than a cancer (SZ: number of pregnancies,
+    menopause and hormone therapy only). The inclusion form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr gynaecological_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP and SZ show the section to everyone: some men have answers (almost always ''none'' and ''no''). Filter on the sex
+    of the patient. In DR the section is hidden for men.'
+  - The numbers of pregnancies and the menopause mostly agree between the inclusion and the yearly answers; only the gynaecological
+    disease behaves like the diseases of the other sections.
+  - This section has no 'no for all' shortcut and is not emptied in 2022.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+gynaecological_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: numbers of pregnancies, live births, miscarriages
+    and terminations, menopause, its date and its hormone therapy, and a gynaecological disease other than a cancer (SZ:
+    number of pregnancies, menopause and hormone therapy only).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr gynaecological_history_v0)
+  flags:
+  - 'BP and SZ show the section to everyone: some men have answers (almost always ''none'' and ''no''). Filter on the sex
+    of the patient. In DR the section is hidden for men.'
+  - The numbers of pregnancies and the menopause mostly agree between the inclusion and the yearly answers; only the gynaecological
+    disease behaves like the diseases of the other sections.
+  - This section has no 'no for all' shortcut and is not emptied in 2022.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+neurological_history_fu:
+  description: 'Medical history at the yearly follow-up visits: neurological diseases (migraine, multiple sclerosis, epilepsy,
+    meningitis, head injury, stroke, another one). The inclusion form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr neurological_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 31% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ: migraine is yes for 11.6% of the inclusion answers of 2011 to 2017 and 4.6% of those of 2018 to 2026; the cause
+    of the step is not known. The export swaps the two migraine columns and the schema reads them the other way round.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+neurological_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: neurological diseases (migraine, multiple
+    sclerosis, epilepsy, meningitis, head injury, stroke, another one).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr neurological_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 31% of the inclusion visits, against 88% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ: migraine is yes for 11.6% of the inclusion answers of 2011 to 2017 and 4.6% of those of 2018 to 2026; the cause
+    of the step is not known. The export swaps the two migraine columns and the schema reads them the other way round.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+other_history_fu:
+  description: 'Medical history at the yearly follow-up visits: cancer and its type, HIV infection, chronic viral hepatitis
+    and its virus, major surgery, genetic disease, another somatic disease and eye diseases (SZ: cancer, HIV, viral hepatitis
+    and genetic disease only). The inclusion form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr other_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 39% of the inclusion visits, against 86% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ from 2022: the section is answered at 46% of the inclusion visits, against 82% from 2016 to 2021 (the shortcut ''no
+    for all'' stopped copying ''no''): an empty section is missing, not ''no''; do not compute a prevalence on the inclusions
+    from 2022.'
+  - 'BP: ''another somatic disease'' is a catch-all that the centres use in different ways (9% to 49% yes by centre at inclusion).'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+other_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: cancer and its type, HIV infection, chronic
+    viral hepatitis and its virus, major surgery, genetic disease, another somatic disease and eye diseases (SZ: cancer,
+    HIV, viral hepatitis and genetic disease only).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr other_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 39% of the inclusion visits, against 86% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ from 2022: the section is answered at 46% of the inclusion visits, against 82% from 2016 to 2021 (the shortcut ''no
+    for all'' stopped copying ''no''): an empty section is missing, not ''no''; do not compute a prevalence on the inclusions
+    from 2022.'
+  - 'BP: ''another somatic disease'' is a catch-all that the centres use in different ways (9% to 49% yes by centre at inclusion).'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+skin_history_fu:
+  description: 'Medical history at the yearly follow-up visits: skin diseases (psoriasis, acne, eczema, drug eruption, major
+    hair loss), with whether lithium (psoriasis, acne) or valproic acid (hair loss) triggered or worsened them. The inclusion
+    form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, sz, dr skin_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 31% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ: psoriasis is in its auto-immune section, not here, and the lithium and valproate questions have no ''triggered''
+    and ''worsened'' boxes.'
+  - 'BP: after a yes to ''triggered or worsened'', one of the two boxes is often left empty: an empty one is not a ''no''.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+skin_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: skin diseases (psoriasis, acne, eczema, drug
+    eruption, major hair loss), with whether lithium (psoriasis, acne) or valproic acid (hair loss) triggered or worsened
+    them.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr skin_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 31% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - 'SZ: psoriasis is in its auto-immune section, not here, and the lithium and valproate questions have no ''triggered''
+    and ''worsened'' boxes.'
+  - 'BP: after a yes to ''triggered or worsened'', one of the two boxes is often left empty: an empty one is not a ''no''.'
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+urinary_history_fu:
+  description: 'Medical history at the yearly follow-up visits: diseases of the urinary tract (nephropathy and its link
+    to lithium, prostate adenoma, acute urinary retention and the treatment under which it started). The inclusion form
+    asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (bp, dr urinary_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'BP and SZ: the yearly form starts with ''is there a change since the last visit?'', which is not exported, so an empty
+    yearly section may mean ''no change''. DR has no such question and asks the block at the visits of 2 and 4 years.'
+  - 'BP from 2022: the section is mostly left empty (answered at 14% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - The prostate adenoma is answered for women too, always 'no' or 'unknown'.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+urinary_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life: diseases of the urinary tract (nephropathy
+    and its link to lithium, prostate adenoma, acute urinary retention and the treatment under which it started).'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (bp, dr urinary_history_v0)
+  flags:
+  - 'BP from 2022: the section is mostly left empty (answered at 14% of the inclusion visits, against 87% until 2021), because
+    the shortcut ''no for all'' of the form is not exported. An empty section is missing, not ''no'', and the share of yes
+    among the answers from 2022 is not a prevalence.'
+  - The prostate adenoma is answered for women too, always 'no' or 'unknown'.
+  - Yes is 1 and no is 0; 'unknown' is a missing code. The details (date of onset, treated, controlled) are asked only after
+    a yes and are missing otherwise (SZ asks 'treated' only).
+  - 'BP: 1000-01-01 is the placeholder of the application for a date that was not typed (most forms saved from 2025); it
+    is delivered as missing (date_placeholder).'
+bhcg_prolactine:
+  description: Beta-hCG (a pregnancy test; BP and DR only) in UI/L and prolactin in ng/mL, from the blood sample of the
+    visit.
+  reference: not_applicable
+  respondent: laboratory
+  construct: endocrine
+  sources:
+  - schema notes (bp, sz, dr, asp bhcg_prolactine)
+  flags:
+  - 'Beta-hCG: most results are a detection limit (56% in BP, marked in the censoring column hcg_cens) or a typed 0 (half
+    of the DR results), written differently by each laboratory, and the upper tail is clipped. The delivered value tells
+    positive or not, not the level.'
+  - 'Prolactin is typed in ng/mL or in mUI/L and the unit is often not chosen: the size of the value and the other results
+    of the centre decide. 176 BP and 162 SZ results cannot be told and are missing (unit_unknown).'
+  - 'DR: results that look like mUI/L typed under the first unit option are not converted, so the upper tail of the DR prolactin
+    is not comparable with BP.'
+  - 'ASP: prolactin is asked only of the patients treated with antipsychotics.'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+bilan_hepatique:
+  description: 'Liver tests from the blood sample of the visit: alkaline phosphatase, AST, ALT, GGT (UI/L) and total bilirubin
+    (µmol/L).'
+  reference: not_applicable
+  respondent: laboratory
+  construct: liver
+  sources:
+  - schema notes (bp, dr, asp bilan_hepatique)
+  flags:
+  - 'Units are harmonised. Where the unit label is absent or says nothing, the unit is read from the size of the value:
+    a converted value carries unit_inferred or unit_doubt, and a value that fits two units is missing (unit_unknown).'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+  - 'ASP holds children, whose alkaline phosphatase is that of growing bones (median 190 UI/L against 66 for the adults):
+    compare with the age in view.'
+bilan_lipidique:
+  description: 'Blood lipids from the blood sample of the visit: HDL, LDL and total cholesterol and triglycerides in mmol/L,
+    and the ratio of total to HDL cholesterol.'
+  reference: not_applicable
+  respondent: laboratory
+  construct: metabolic
+  sources:
+  - schema notes (bp, sz, dr, asp bilan_lipidique)
+  - scale_reference_rest.md section 2
+  scores:
+    cholesterol_hdl_ratio:
+      meaning: Total cholesterol divided by HDL cholesterol, recomputed by the package from the two harmonised values.
+      higher_means: more total cholesterol for the same HDL cholesterol
+      basis: anchors
+      source: 'schema label: ''Total cholesterol divided by HDL cholesterol, from the harmonised values'''
+  variables:
+    ldl:
+      meaning: 'LDL cholesterol as reported: a calculated value, not an independent measurement (within 0.15 mmol/L of total
+        minus HDL minus triglycerides divided by 2.2 on about nine visits in ten).'
+    hdl:
+      cutoffs:
+      - value: under 40 in men, under 50 in women (the note gives no unit; the criteria beside it are in mg/dL, the delivered
+          values are in mmol/L)
+        meaning: low HDL cholesterol, one of the five criteria of the metabolic syndrome
+        source: Alberti KG et al., Circulation 2009;120:1640-1645 (harmonised metabolic syndrome definition), reported in
+          scale_reference_rest.md section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+    triglycerides:
+      cutoffs:
+      - value: 150 mg/dL or more (about 1.7 mmol/L with the factor 1.129 of the schema for g/L)
+        meaning: high triglycerides, one of the five criteria of the metabolic syndrome
+        source: Alberti KG et al., Circulation 2009;120:1640-1645 (harmonised metabolic syndrome definition), reported in
+          scale_reference_rest.md section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+  flags:
+  - 'The ratio stored by the form (BP, SZ) divides the two numbers as typed, with no unit: it mixes g/L and mmol/L, mostly
+    from 2022. The delivered ratio is the recomputed one; the visits that differ carry score_mismatch (in SZ 91 of 157 are
+    not explained). The DR extraction stores no ratio.'
+  - 'Cholesterol in g/L and in mmol/L overlap, and triglycerides in the two units are on almost the same scale: the label
+    decides where it exists. Units are harmonised. Where the unit label is absent or says nothing, the unit is read from
+    the size of the value: a converted value carries unit_inferred or unit_doubt, and a value that fits two units is missing
+    (unit_unknown).'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+  - ASP holds children, whose cholesterol is lower than the adults'.
+bilan_thyroidien:
+  description: 'Thyroid tests from the blood sample of the visit: TSH (mUI/L), free T3 and free T4 (pmol/L); ASP has the
+    TSH only.'
+  reference: not_applicable
+  respondent: laboratory
+  construct: endocrine
+  sources:
+  - schema notes (bp, dr, asp bilan_thyroidien)
+  flags:
+  - 'BP: from 2022 the TSH field of the form rejects a value above 10, so the TSH tail is capped. A mean, a share above
+    a limit or a maximum is not comparable before and after 2022.'
+  - 'Free T3 and free T4 typed in pg/mL overlap the pmol/L scale and are recognised by their label only; DR does not export
+    the unit choice. Units are harmonised. Where the unit label is absent or says nothing, the unit is read from the size
+    of the value: a converted value carries unit_inferred or unit_doubt, and a value that fits two units is missing (unit_unknown).'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+biochimie:
+  description: 'Blood chemistry from the blood sample of the visit: electrolytes, proteins, urea, creatinine and its clearance,
+    uric acid, phosphate, calcium, iron, C-reactive protein, fasting glucose and HbA1c (sixteen analytes in BP; SZ has uric
+    acid, CRP, glucose and HbA1c; DR and ASP add ferritin).'
+  reference: not_applicable
+  respondent: laboratory
+  construct: kidney
+  sources:
+  - schema notes (bp, sz, dr, asp biochimie)
+  - scale_reference_rest.md section 2
+  variables:
+    creatinine_clearance:
+      meaning: Creatinine clearance in mL/min, delivered as stored. In BP the form computes it (Cockcroft-Gault) from the
+        creatinine as typed and the weight and age that it saw; in DR it is typed by hand.
+    crp:
+      construct: inflammation
+    glucose:
+      construct: metabolic
+      cutoffs:
+      - value: 100 mg/dL or more (about 5.6 mmol/L with the factor 0.05551 of the schema)
+        meaning: high fasting glucose, one of the five criteria of the metabolic syndrome
+        source: Alberti KG et al., Circulation 2009;120:1640-1645 (harmonised metabolic syndrome definition), reported in
+          scale_reference_rest.md section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+    hba1c:
+      construct: metabolic
+    iron:
+      construct: vitamins_minerals
+    ferritin:
+      construct: vitamins_minerals
+  flags:
+  - 'CRP: a result under the detection limit of the laboratory keeps the limit as its value, marked in the censoring column
+    crp_cens; the limits differ between laboratories and change over the years, so read a median with that column. A CRP
+    of exactly 0 is delivered as missing. Some limits are typed with no mark: in a pooled analysis treat a CRP of exactly
+    5 as a limit.'
+  - 'ASP: the CRP is much lower than in the other cohorts (probably high-sensitivity assays): do not pool it without the
+    censoring column. DR: the kind of CRP assay (crp_type) is a code whose meaning is not documented.'
+  - 'BP: the stored creatinine clearance differs by 10% or more from a recomputation with the age at the visit on 43% of
+    the visits. DR: the typed clearance agrees with the formula within 10% on 44% of the visits.'
+  - 'HbA1c typed in mmol/mol is converted to % (IFCC-NGSP equation, unit_inferred). BP iron: one centre typed µg/dL for
+    some years, and its low values cannot be told from µmol/L.'
+  - 'Units are harmonised. Where the unit label is absent or says nothing, the unit is read from the size of the value:
+    a converted value carries unit_inferred or unit_doubt, and a value that fits two units is missing (unit_unknown).'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+  - 'ASP holds children, whose creatinine and phosphate are not the adults'': compare the cohorts with the age in view.'
+dosage_psychotropes:
+  description: Plasma levels of psychotropic drugs measured with the blood sample of the visit (lithium, lithium in the
+    red cells, valproate, carbamazepine, oxcarbazepine, lamotrigine and clozapine in BP; clozapine only in SZ; DR adds five
+    antidepressants), and whether the treatment was taken that morning.
+  reference: not_applicable
+  respondent: laboratory
+  construct: drug_levels
+  sources:
+  - schema notes (bp, sz, dr, asp dosage_psychotropes)
+  flags:
+  - No sampling time and no dose are recorded, so a level cannot be put against the time since the last dose. DR has the
+    hours since the last intake, heaped on 12 and 24 hours.
+  - A level of 0 is 'nothing measured' and is a missing code; a level below the limit of the laboratory is left-censored.
+  - 'Only the upper tail is winsorised, at the 99th percentile: a toxic level cannot be told from the cut value (in BP a
+    lithium above 1.31 mmol/L is delivered as 1.31).'
+  - A few results are on a molar scale and are converted by their size (unit_inferred). Lamotrigine in µmol/L overlaps its
+    high levels in mg/L, so only values of 20 and more are converted; clozapine results of 1 to 20 that may be µmol/L are
+    out of range, not converted.
+  - 'DR: the antidepressant levels are delivered in µg/L, and those typed in mg/L are converted by their size.'
+  - 'A level with no dated treatment on file is not an error: the treatment lists are incomplete.'
+  - 'ASP: the section is almost empty (one delivered lamotrigine level). BP and DR: a visit with three or more impossible
+    values over the laboratory schemas loses all its laboratory values (visit_removed).'
+nfs:
+  description: 'Full blood count from the blood sample of the visit: leukocytes and their five kinds, erythrocytes, haemoglobin,
+    haematocrit, red-cell indices and platelets (thirteen values in BP and DR, seven in SZ, ten in ASP).'
+  reference: not_applicable
+  respondent: laboratory
+  construct: blood_count
+  sources:
+  - schema notes (bp, sz, dr, asp nfs)
+  flags:
+  - 'Haemoglobin typed in g/L and white cells typed as a percentage of the leukocytes or per mm3 are converted by their
+    size (unit_inferred or unit_doubt); in ASP one haemoglobin in five has an inferred unit. Units are harmonised. Where
+    the unit label is absent or says nothing, the unit is read from the size of the value: a converted value carries unit_inferred
+    or unit_doubt, and a value that fits two units is missing (unit_unknown).'
+  - A visit whose five kinds of white cells do not add up to the leukocytes within 10% carries check_failed on leukocytes
+    (BP, DR, ASP); no value changes.
+  - Basophils are exactly 0 for a large share of the results of a few centres (a laboratory that writes one decimal).
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+ecg:
+  description: 'Electrocardiogram of the visit: whether it was done (BP), the heart rate, the QT and RR intervals in seconds,
+    the corrected QT that the EMR stores, and the corrected QT recomputed with Bazett''s formula. SZ holds the stored corrected
+    QT only.'
+  reference: not_applicable
+  respondent: measurement
+  construct: cardiovascular
+  sources:
+  - schema notes (bp, sz, dr, asp ecg)
+  - scale_reference_rest.md section 3
+  scores:
+    qtc_bazett:
+      meaning: Corrected QT interval in seconds, Bazett's formula (QT divided by the square root of RR), from the harmonised
+        QT and the heart rate of the ECG (RR = 60 / rate), or the typed RR where there is no rate (always the typed RR in
+        ASP).
+      higher_means: longer corrected QT interval (prolongation)
+      polarity: worse
+      basis: stated
+      source: 'schema notes (bp ecg): ''a corrected QT above 0.5 s is the prolongation that a study of drug safety looks
+        for'''
+      cutoffs:
+      - value: above 0.5 s
+        meaning: prolongation that a study of drug safety looks for; high risk
+        source: schema notes (bp ecg); ICH E14 (2005), reported in scale_reference_rest.md section 3
+        confidence: stated in the schema notes; the ICH E14 categories are 'to verify'
+      - value: 0.45 s or more in men, 0.46 s or more in women
+        meaning: prolonged corrected QT
+        source: Rautaharju PM et al., AHA/ACCF/HRS Part IV, Circulation 2009;119:e241-50, reported in scale_reference_rest.md
+          section 3
+        confidence: To verify (full text blocked; the values are recalled). Vandenberk 2016 used 450 ms men / 470 ms women
+      - value: 0.39 s or less
+        meaning: short corrected QT
+        source: Rautaharju PM et al. 2009, reported in scale_reference_rest.md section 3
+        confidence: To verify
+  variables:
+    qtc_stored:
+      meaning: 'Corrected QT interval as the EMR stores it: Bazett''s formula on the numbers as typed (typed by hand in
+        ASP). Kept as a check of qtc_bazett; it is the only ECG value of SZ.'
+    rr_interval:
+      meaning: RR interval in seconds as typed; by definition 60 divided by the heart rate.
+  flags:
+  - Use qtc_bazett where it exists (BP, DR, ASP). The stored value is absurd where QT and RR were not typed on the same
+    scale, and too short in two BP centres whose typed RR is the heart rate divided by 60 (the help text of the field says
+    so, the inverse of the right 60 / rate); those RR carry check_failed.
+  - 'SZ exports the stored corrected QT only: it cannot be recomputed there.'
+  - Intervals typed in milliseconds or hundredths of a second are converted to seconds (unit_inferred).
+  - Bazett's formula over-corrects at high heart rates (Vandenberk et al. 2016, confirmed in scale_reference_rest.md section
+    3).
+  - 'BP, SZ and DR: no value of the ECG is winsorised; the hard ranges remove the impossible values, and a corrected QT
+    above 0.5 s stays as measured.'
+  - 'ASP: recorded from 2024 only (48 inclusion visits).'
+parametres_physiques:
+  description: Height (cm), weight (kg) and waist circumference (cm) measured at the visit, and the body mass index recomputed
+    from the weight and the height; ASP adds the head circumference.
+  reference: not_applicable
+  respondent: measurement
+  construct: anthropometry
+  sources:
+  - schema notes (bp, sz, dr, asp parametres_physiques)
+  - scale_reference_rest.md section 2
+  scores:
+    bmi:
+      meaning: 'Body mass index in kg/m2: the harmonised weight divided by the square of the height, recomputed by the package
+        and compared with the stored one.'
+      higher_means: more weight for the same height
+      basis: anchors
+      source: 'schema notes (bp parametres_physiques): ''weight divided by the square of the height, the formula of the
+        form'''
+      cutoffs:
+      - value: 'under 18.5 underweight; 18.5 to 24.9 normal; 25.0 to 29.9 overweight; 30.0 to 34.9 obese I; 35.0 to 39.9
+          obese II; 40 or more obese III (under 17.0: thinness)'
+        meaning: WHO classes of the body mass index of adults; not for children
+        source: WHO TRS 894 (2000) and WHO NLiS page, reported in scale_reference_rest.md section 2
+        confidence: Confirmed (WHO NLiS page and WHO-derived tables; TRS 894 itself not opened)
+  variables:
+    waist:
+      cutoffs:
+      - value: above 102 cm in men, above 88 cm in women
+        meaning: abdominal obesity, NCEP ATP III
+        source: NCEP ATP III 2001 and Alberti KG et al., Circulation 2009;120:1640-1645, reported in scale_reference_rest.md
+          section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+      - value: 94 cm or more in men, 80 cm or more in women
+        meaning: abdominal obesity, IDF 2006 (Europid)
+        source: IDF consensus (PMID 16681555), reported in scale_reference_rest.md section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+  flags:
+  - 'No value is winsorised here: the hard ranges remove the impossible values, and the values beyond the 1st and 99th percentiles
+    are real measures.'
+  - 'ASP holds children (956 of the 2,318 patients are 5 to 17 years old): the adult classes of the body mass index do not
+    apply to them (their classes depend on age and sex), and no growth-chart check is made.'
+  - A height or a weight typed on another scale (a lost decimal point, metres) is rescaled and flagged unit_inferred.
+  - 'BP: the box ''pregnant woman'' of the form is not exported, so the weight, the body mass index and the waist of a pregnant
+    woman cannot be told apart.'
+pression_arterielle:
+  description: 'Systolic and diastolic blood pressure (mmHg) and heart rate, measured lying then standing at the visit (SZ:
+    the lying pressures only; ASP: one lying pressure and the pulse).'
+  reference: not_applicable
+  respondent: measurement
+  construct: cardiovascular
+  sources:
+  - schema notes (bp, sz, dr, asp pression_arterielle)
+  - scale_reference_rest.md section 2
+  variables:
+    systolic_supine:
+      cutoffs:
+      - value: 140 or more (grade 1 from 140, grade 2 from 160, grade 3 from 180)
+        meaning: hypertension of adults on the office systolic pressure; 130 to 139 is 'high normal'
+        source: Williams B et al., 2018 ESC/ESH guidelines, Eur Heart J 2018;39:3021-3104, reported in scale_reference_rest.md
+          section 2
+        confidence: Confirmed (secondary reproductions of the guideline table)
+      - value: 130 or more (with 85 or more for the diastolic pressure)
+        meaning: blood pressure criterion of the metabolic syndrome
+        source: Alberti KG et al., Circulation 2009;120:1640-1645 (harmonised metabolic syndrome definition), reported in
+          scale_reference_rest.md section 2
+        confidence: Confirmed (statement and IDF table, via search snippets)
+    diastolic_supine:
+      cutoffs:
+      - value: 90 or more (grade 1 from 90, grade 2 from 100, grade 3 from 110)
+        meaning: hypertension of adults on the office diastolic pressure; 85 to 89 is 'high normal'
+        source: Williams B et al., 2018 ESC/ESH guidelines, Eur Heart J 2018;39:3021-3104, reported in scale_reference_rest.md
+          section 2
+        confidence: Confirmed (secondary reproductions of the guideline table)
+  flags:
+  - The published classes are for the office blood pressure of adults; the delivered pressures are measured lying, and the
+    ASP cohort holds children, for whom they do not apply.
+  - 'DR asks the lying pressure as the mean of three measures after 15 minutes lying; BP asks one measure. SZ: a pressure
+    typed as two numbers is delivered by the export as their mean.'
+  - A pressure typed in cmHg (12 for 120) is multiplied by 10 and flagged unit_inferred.
+  - 'No value is winsorised here: the hard ranges remove the impossible values, and the values beyond the 1st and 99th percentiles
+    are real measures.'
+fin_de_suivi:
+  description: 'End of follow-up, one value per patient in the table patients: the reason why the patient is no longer followed,
+    a change of diagnosis and its date, and the date and cause of death (SZ: the reason, the new centre and the date of
+    death only).'
+  reference: not_applicable
+  respondent: clinician
+  construct: visit_administration
+  sources:
+  - schema notes (bp, sz fin_de_suivi)
+  flags:
+  - 'An empty reason does not mean that the patient is still followed: in BP 15% of the patients whose last visit is more
+    than three years old have a reason. To know who has left the cohort, use the date of the last visit.'
+  - '''Does not know'' is a missing code, and the placeholder dates of the application are delivered as missing.'
+identite:
+  description: 'Patient identity, one value per patient in the table patients: the patient code of the foundation (fondacode),
+    sex, the diagnosis of the cohort, the date of birth and the age at the inclusion visit.'
+  reference: not_applicable
+  construct: demographics
+  sources:
+  - schema notes (bp, sz, dr, asp identite)
+  - docs/ARCHITECTURE.md section 4 (patients)
+  scores:
+    age_at_inclusion:
+      meaning: Age at the inclusion visit in completed calendar years. The stored age in BP, SZ and ASP; in DR it is computed
+        from the date of birth and the date of the inclusion visit, because the stored age is not the age at inclusion.
+      higher_means: older at inclusion
+      polarity: neutral
+      basis: stated
+      source: 'schema label: ''Age at the inclusion visit, in years'''
+  flags:
+  - fondacode is the key to join two extractions or two cohorts. A usubjid can change from one extraction to the next for
+    a patient registered in two centres, and the same numbers are used in the other cohorts for other patients.
+  - The date of birth is exported with the day set to the 15th.
+  - 'diagnosis is the type of bipolar disorder in BP (for 509 patients the export fills it from a list of its own), the
+    type of psychotic disorder in SZ and major depressive disorder for every DR patient. In ASP it says whether the autism
+    spectrum diagnosis was confirmed at the expert centre: the patients assessed and not diagnosed are delivered too.'
+provenance:
+  description: 'How the patient came to the expert centre, one value per patient in the table patients: inside the catchment
+    area or not, who referred the patient, the date of the referral letter, the purpose of the visit and how the patient
+    heard of the centre (DR: the referrer and the purpose only).'
+  reference: not_applicable
+  respondent: clinician
+  construct: visit_administration
+  sources:
+  - schema notes (bp, sz, dr provenance)
+  flags:
+  - 'The form is filled less and less: in BP for 91% of the patients included until 2012 and 40% of those included from
+    2024; in DR the referrer is known for 111 of the 634 patients, most of them included in 2025 and 2026.'
+  - The catchment area and the purpose of the visit depend strongly on the centre.
+visit_record:
+  description: The date at which the visit record was created in the application, one value per visit.
+  reference: not_applicable
+  construct: visit_administration
+  sources:
+  - schema notes (bp, sz, dr, asp visit_record)
+  flags:
+  - 'It says when the form was created, not when the patient came: it is before the visit date for part of the visits (records
+    opened ahead) and more than a year after it for others. Use the visit date for the timing of a visit.'
+perinatal:
+  description: 'The patient''s own birth, one value per patient in the table patients: the age of each parent, the term,
+    the gestational age, the type of birth, a stay in a neonatal unit, the weight, the length, the head circumference and
+    the Apgar scores (SZ has no length, head circumference or Apgar score; ASP describes the delivery by yes/no questions).'
+  reference: not_applicable
+  respondent: clinician
+  construct: perinatal
+  period: the birth of the patient, asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr, asp perinatal)
+  - scale_reference_rest.md section 4
+  variables:
+    gestational_age:
+      meaning: Gestational age at birth, in weeks of amenorrhoea.
+      cutoffs:
+      - value: before 37 completed weeks (under 28 extremely preterm; 28 to under 32 very preterm; 32 to under 37 moderate
+          to late preterm)
+        meaning: preterm birth; term is 37 to 42 weeks
+        source: WHO preterm birth fact sheet, reported in scale_reference_rest.md section 4
+        confidence: Confirmed
+      - value: 42 weeks or more
+        meaning: post-term
+        source: ACOG Committee Opinion 579 (2013), reported in scale_reference_rest.md section 4
+        confidence: To verify
+    birth_weight:
+      cutoffs:
+      - value: under 2500 g
+        meaning: low birth weight
+        source: WHO, reported in scale_reference_rest.md section 4
+        confidence: Confirmed
+      - value: under 1500 g very low; under 1000 g extremely low
+        meaning: very low and extremely low birth weight
+        source: WHO; ICD-10, reported in scale_reference_rest.md section 4
+        confidence: To verify (standard, not read)
+    apgar_*:
+      meaning: 'Apgar score of the newborn at 1 or 5 minutes: five signs each scored 0 to 2, total 0 to 10.'
+      higher_means: better condition of the newborn
+      polarity: better
+      basis: literature
+      source: 'scale_reference_rest.md section 4 (AAP/ACOG, ACOG Committee Opinion 644, 2015): confirmed (abstract and summaries)'
+      cutoffs:
+      - value: 'at 5 minutes: 7 to 10 reassuring, 4 to 6 moderately abnormal, 0 to 3 low'
+        meaning: classes of the 5-minute score
+        source: ACOG Committee Opinion 644, Obstet Gynecol 2015;126:e52-e55, reported in scale_reference_rest.md section
+          4
+        confidence: Confirmed (abstract and summaries)
+  flags:
+  - 'BP, SZ and DR ask an adult patient: most answers are memories or come from a health booklet (in BP the type of birth
+    is known for 4,500 patients, the Apgar scores for 900).'
+  - 'The Apgar score at one minute is 10 for three quarters of the BP patients, far more than at a birth clinic: delivered
+    as written. In BP and DR a 0 in a measure is ''not recorded'' (a missing code), so no Apgar score of 0 is delivered
+    there; ASP holds real 0.'
+  - 'The term (preterm, at term, post-term) and the gestational age are two answers and often disagree: in BP a third of
+    the patients recorded as premature who give a gestational age give 37 weeks or more.'
+  - 'A birth does not change: the first answer of the patient is kept. The measures are not winsorised.'
+social:
+  description: 'Social situation: marital status, education level, work status and history, housing, household, income and
+    debts. Asked at the inclusion visit in BP and SZ; in DR the same form is filled at inclusion and at the visits of 2
+    and 4 years. SZ and DR hold part of the BP questions.'
+  reference: not_applicable
+  respondent: clinician
+  construct: social_situation
+  period: the day of the visit
+  sources:
+  - schema notes (bp, sz, dr social)
+  - scale_reference_rest.md section 12
+  variables:
+    education_level:
+      construct: education_employment
+      meaning: Education level reached, a category of the list of the form (from the first year of primary school to the
+        doctorate), not a number of years of schooling.
+    work_status:
+      construct: education_employment
+    job_*:
+      construct: education_employment
+  flags:
+  - 'BP work_status: the export loses the answer ''student'' and writes the code of ''other'' for every other answer, an
+    empty one included. That code is delivered as student_or_other (23% of the patients).'
+  - 'SZ marital_status: the answer ''married or living as a couple'' is lost by the export (empty cell), so shares computed
+    from it are wrong. SZ work_status is empty on most inclusions from the spring of 2015 to mid-2019.'
+  - 'income_source (BP): the code ''other'' also holds the pensions of the retired; the SZ form has other answers, and its
+    source of income is not delivered.'
+  - 'household_size: of the patients who live alone, some count themselves (1) and some do not (0).'
+  - 'BP first_job_age: the export keeps only the digits, so 15 holds ''<15'' and 15, and 60 holds ''>60'' and 60.'
+  - No ISCED level is delivered; an approximate mapping of the French diplomas is in scale_reference_rest.md section 12
+    (to verify). The occupational class of DR (job_class) is the first level of the INSEE classes.
+care_use:
+  description: 'Use of care for the psychiatric disorder since the last visit, asked at every follow-up visit (BP): the
+    usual follow-up and unscheduled or emergency care, each with one yes/no per kind of professional and the number of consultations,
+    and the visits to an emergency room without admission.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: since the last visit
+  sources:
+  - schema notes (bp care_use)
+  flags:
+  - 'The answers cover the time since the previous visit, which is not one window (in BP the median gap is 321 days: 192
+    at the six-monthly visits, 363 at the yearly ones). Divide by the time since the previous visit before comparing visits.'
+  - 'After a yes to a kind of professional the number of consultations is more and more often empty (psychiatrist: 6% to
+    8% of the visits until 2018, 28% from 2022): a mean over the delivered numbers leaves out more visits with care in recent
+    years.'
+  - A box left empty beside a ticked box of the same part is read as no, and its number as 0.
+  - 'care_urgent also covers admissions, which have no box: it is not ''any of the six boxes''.'
+  - The numbers are counts of events and are not winsorised (hard range 0 to 365).
+hospitalisations_fu:
+  description: 'Hospitalisations since the last visit, asked at every follow-up visit (BP): their number and their total
+    duration in months.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: since the last visit
+  sources:
+  - schema notes (bp hospitalisations_fu)
+  flags:
+  - 'The answers cover the time since the previous visit, which is not one window (in BP the median gap is 321 days: 192
+    at the six-monthly visits, 363 at the yearly ones). Divide by the time since the previous visit before comparing visits.'
+  - The form does not say for what cause the patient was hospitalised.
+  - 'The form stops at 20 hospitalisations and at 20 months: ''>20'' is delivered as 20 with a mark in the censoring column.
+    The duration is a choice in a list (a quarter of a month to 20 months).'
+  - SZ asks the past year at every visit instead (hospitalisations_12m), and DR counts the stays for depression and for
+    another reason apart (hospitalisations_since_visit).
+hospitalisations_v0:
+  description: 'Hospitalisations up to the inclusion visit: the age at the first one, their number and their total duration
+    in months over the whole life, and in BP their number and duration in weeks in the 12 months before inclusion.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: whole life (and the 12 months before inclusion in BP), asked at the inclusion visit
+  sources:
+  - schema notes (bp, sz, dr hospitalisations_v0)
+  flags:
+  - The questions differ between cohorts. BP does not say for what cause; SZ asks about psychiatric hospitalisations and
+    the first hospitalisation for a psychotic disorder; the DR form prints no period and is read as the whole life (filled
+    at about half of the inclusions).
+  - 'Censoring: ''>20'' hospitalisations is delivered as 20 with a mark; the total duration stops at 20 months in BP and
+    30 in SZ; in DR the months are typed and not capped.'
+  - ever_hospitalised_v0 (SZ, DR) is derived by the export from the number, not asked.
+  - 'BP: the 12-month number and weeks are 0 after a ''no'' to a mood episode in the past year on the DSM-IV form, which
+    showed them only after a yes.'
+  - The numbers, the durations and the age are not winsorised.
+recommendations:
+  description: 'Whether the recommendations made at the first evaluation were followed (fully, partly, not) and, if not
+    fully, why: for the drug treatment and for the other treatments; SZ adds the medico-social and the somatic recommendations.
+    Asked at every follow-up visit, never at inclusion.'
+  reference: not_applicable
+  respondent: clinician
+  construct: adherence
+  period: since the first evaluation (the question names the first evaluation, not the time since the last visit)
+  sources:
+  - schema notes (bp, sz recommendations)
+  flags:
+  - 'The answer is a judgement made at each visit: more than half of the BP patients who answer at two visits or more give
+    different answers for the drug treatment.'
+  - One BP centre answers 'partly' far more often than the others (59% against 25% for the drug treatment).
+  - The reason is shown only after 'partly' or 'not followed'; 'other' is the most frequent reason and has no text.
+sick_leave_fu:
+  description: 'Sick leave since the last visit, asked at every follow-up visit: whether there was any, how many, and their
+    total duration. BP and SZ ask about sick leave for a psychiatric disorder, in weeks; SZ adds the sick leave for a somatic
+    disorder in the past 12 months; DR asks about any cause, in days.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: since the last visit
+  sources:
+  - schema notes (bp, sz, dr sick_leave_fu)
+  flags:
+  - 'DR: the form names no cause and has no yes/no question (the yes/no is computed from the number), and the duration is
+    in days: the variables have other names (n_sick_leaves_any_cause_fu, sick_leave_days_any_cause_fu) and are not comparable
+    with the weeks of BP and SZ. Many DR durations look like the length of the interval, not days of leave.'
+  - '''Not applicable'' (the patient has no job) is a missing code, but ''no'' is also given by patients without a job:
+    to study sick leave among workers, select on the work status, not on this answer.'
+  - Do not stack with sick_leave_v0, which covers the 12 months before inclusion and names no cause.
+  - 'BP: since late 2021 the form accepts at most 52 weeks, so a 52 may stand for a longer leave; a duration above 104 weeks
+    is out of range.'
+  - 'The answers cover the time since the previous visit, which is not one window (in BP the median gap is 321 days: 192
+    at the six-monthly visits, 363 at the yearly ones). Divide by the time since the previous visit before comparing visits.'
+sick_leave_v0:
+  description: 'Sick leave before inclusion: whether the patient was on sick leave in the 12 months before the visit, how
+    many times (BP) and for how many weeks, and whether the patient is on sick leave on the day of the visit. Filled at
+    the inclusion visit (in DR also at the visits of 2 and 4 years).'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: the 12 months before the visit, and the day of the visit
+  sources:
+  - schema notes (bp, sz, dr sick_leave_v0)
+  scores:
+    sick_leave_12m:
+      meaning: Sick leave in the 12 months before inclusion (1 yes, 0 no). In BP it is the stored answer, set to yes on
+        the 8 inclusions with more than 20 sick leaves where a script of the application wrote no; in SZ and DR it is the
+        answer as recorded.
+      polarity: not_applicable
+  flags:
+  - 'These questions name no cause, while the follow-up question (sick_leave_fu, BP and SZ) is about sick leave for a psychiatric
+    disorder: they are not one question.'
+  - '''Not applicable'' (the patient has no job: about a quarter of the BP answers) is a missing code.'
+  - 'BP: on the DSM-IV inclusions (most answers) a script of the application wrote the yes/no from the number of sick leaves
+    and copied answers of the social form; the yes/no was not typed by the rater there.'
+  - 'BP n_sick_leaves_12m: where the number is empty on the diagnosis forms the export takes the weeks of the social form
+    instead, and a small value cannot be told from a number of sick leaves.'
+  - A duration above 53 weeks is out of range. The numbers and durations are not winsorised.
+drug_classes_lifetime:
+  description: 'Classes of medication ever taken, one value per patient in the table patients (BP): for antidepressants,
+    first- and second-generation antipsychotics, benzodiazepines, hypnotics and anxiolytics, lithium and anticonvulsant
+    mood stabilisers, whether the patient has taken one, the date of the first start and the cumulated months of exposure.'
+  reference: not_applicable
+  respondent: clinician
+  construct: medication
+  period: up to the inclusion (the form says 'ever', counting the treatments of the screening and inclusion visits)
+  sources:
+  - schema notes (bp drug_classes_lifetime)
+  flags:
+  - 'A form of the patient, not of a visit: it can be saved again later and its date is not exported.'
+  - 'The cumulated months stop at 240: ''>240'' is delivered as 240 with a mark in the censoring column. They are 0 where
+    the class was never taken.'
+  - 'The dates are approximate: 83% fall on the 1st or the 15th of a month, and many stand for a year alone.'
+  - At least one class is answered for 57% of the patients included until 2012 and 22% of those included from 2024.
+  - 'These answers are the clinician''s summary. They were typed separately from the medication list (table treatments)
+    and the two need not agree: neither source is complete.'
+medications:
+  description: 'Medications, one row per medication in the table treatments (list ''medications''): the name as written,
+    the molecule, its ATC code and group, the start and end dates, the units a day and the daily dose.'
+  reference: not_applicable
+  respondent: clinician
+  construct: medication
+  period: 'BP and SZ: the whole history of the patient (the same list on every visit); DR: the current treatments of the
+    visits, pooled by the export; ASP: the treatments recorded at each visit'
+  sources:
+  - schema notes (bp, sz, dr, asp medications)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  - docs/SCHEMA_SPEC.md section 15
+  scores:
+    daily_dose:
+      meaning: 'Total daily dose in mg. In BP and SZ it is computed: the strength (stored, else read from the name of the
+        product) times the units a day. In DR and ASP it is the daily dose as typed.'
+      higher_means: higher daily dose
+      polarity: neutral
+      basis: stated
+      source: 'schema label: ''Total daily dose, mg: the strength (stored, else read from the name of the product) times
+        the units a day'''
+    strength_from_name:
+      meaning: 'Where the daily dose comes from (BP, SZ): 1 the strength was read from the name of the product, 0 the stored
+        strength was used.'
+      polarity: not_applicable
+  variables:
+    units_per_day:
+      meaning: Number of units a day. Typed in BP and SZ; in DR it is derived by the export (the typed dose divided by the
+        number of the strength), which is wrong for strengths in g, µg or UI.
+  flags:
+  - 'The application has no answer for ''no treatment'': a patient without a list is unknown, not untreated. In BP a list
+    is held by 83% to 85% of the patients included until 2015 and 60% to 63% of those included from 2022.'
+  - 'The item number is the place in the exported list and changes between extractions: join two extractions on the content
+    (patient, name and dates), never on item.'
+  - Whether the patient was on a group or a molecule on the day of a visit is delivered in the visit table by the instrument
+    medications_at_visit, from the dates of these rows.
+  - 'An end date missing with the reason ''running'' is a treatment still taken. ''As needed'' in the units a day is a missing
+    code, and a long-acting injection has no units a day (SZ: interval_weeks).'
+  - A name that is not in the table of molecules keeps what was written and has no molecule and no group (unknown_code).
+  - 'DR: the lists are crossed by the export (every product of the patient next to every prescription line). A patient with
+    one product keeps every line; a patient with several products keeps one item per product, without form, dose or date
+    (flag list_crossed). DR delivers the name of the substance of the drug catalogue (substance_name), not the product as
+    typed.'
+  - 'ASP: the list is that of the visit (the table has the column visit), and it holds somatic drugs too.'
+non_drug_fu:
+  description: 'Non-drug treatments at the follow-up visits: one yes/no question, then per kind a yes/no, the number of
+    sessions and the dates. BP: electroconvulsive therapy, TMS, cognitive behavioural therapy, psychoeducation groups, IPSRT,
+    another. SZ: electroconvulsive therapy, TMS, cognitive behavioural therapy, cognitive remediation, psychodynamic approach,
+    family therapy and family psychoeducation, with no sessions or dates in the extraction. DR: electroconvulsive therapy,
+    TMS and psychotherapy.'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: since the last visit (BP, SZ); the DR question has no period
+  sources:
+  - schema notes (bp, sz, dr non_drug_fu)
+  flags:
+  - 'DR keeps the names ect_fu and tms_fu for the join, but its question has no time frame and the raters read it both ways:
+    an answer there is neither ''ever'' nor ''since the last visit''.'
+  - 'BP and SZ: a box left empty beside a ticked box of the same list is read as no (and its number of sessions as 0); where
+    every box is empty after a yes they stay missing.'
+  - 'BP: the numbers of sessions count the sessions since the previous visit (a median of 11 months before): divide by that
+    time before comparing visits.'
+  - 'Cognitive behavioural therapy, psychoeducation groups and IPSRT are specific therapies, not aggregates of every psychotherapy:
+    a patient in another therapy is under ''another treatment''.'
+  - 'SZ: ''another treatment'' left the form in 2019. BP: the share of yes differs between centres (20% to 49%).'
+non_drug_lifetime:
+  description: 'Non-drug treatments over the life, one value per patient in the table patients: one yes/no question, then
+    per kind a yes/no, the number of sessions and the dates (BP: electroconvulsive therapy, TMS, cognitive behavioural therapy,
+    psychoeducation groups, IPSRT, another; DR: electroconvulsive therapy, TMS and psychotherapy, at the inclusion visit).'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: lifetime
+  sources:
+  - schema notes (bp, dr non_drug_lifetime)
+  flags:
+  - 'BP: a form of the patient, not of a visit; it can be saved again later and its date is not exported. The first question
+    is answered for a fifth of the cohort, rarely for the patients included before 2013, and by few centres.'
+  - 'BP: the application words the first question ''since the last visit'', but the answers are about the life.'
+  - 'BP: a box left empty beside a ticked box of the six kinds is read as no, and its number of sessions as 0.'
+  - 'DR: the form prints no period and is read as the whole life at inclusion. ever_psychotherapy is a question of its own
+    and disagrees with the fourteen kinds of psychotherapies_v0.'
+autoimmune_history_fu:
+  description: 'Medical history at the yearly follow-up visits (SZ): thirteen auto-immune diseases (type 1 diabetes, rheumatoid
+    arthritis, lupus, Sjögren''s disease, psoriasis, Crohn''s disease, coeliac disease and others), each with ''treated
+    at present''. The inclusion form asked again, as an update given at that visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (sz autoimmune_history_fu)
+  flags:
+  - 'A follow-up answer is the inclusion form asked again, with no period in its wording: a disease answered yes at inclusion
+    is often answered no. Do not stack the _fu answers with the _v0 answers.'
+  - 'The yearly form starts with ''is there a change since the last visit?'', which is not exported: an empty yearly section
+    may mean ''no change'' (the section is held by one yearly visit in ten).'
+  - 'SZ only, asked from February 2015. SZ from 2022: the section is answered at 32% of the inclusion visits, against 81%
+    from 2016 to 2021 (the shortcut ''no for all'' stopped copying ''no''): an empty section is missing, not ''no''; do
+    not compute a prevalence on the inclusions from 2022.'
+  - '''Not known'' and ''does not know'' are missing codes. Five of the ''treated'' columns are empty in the extraction.'
+autoimmune_history_v0:
+  description: 'Medical history at the inclusion visit, about the whole life (SZ): thirteen auto-immune diseases (type 1
+    diabetes, rheumatoid arthritis, lupus, Sjögren''s disease, psoriasis, Crohn''s disease, coeliac disease and others),
+    each with ''treated at present''.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: whole life, asked at the inclusion visit
+  sources:
+  - schema notes (sz autoimmune_history_v0)
+  flags:
+  - 'SZ only, asked from February 2015. SZ from 2022: the section is answered at 32% of the inclusion visits, against 81%
+    from 2016 to 2021 (the shortcut ''no for all'' stopped copying ''no''): an empty section is missing, not ''no''; do
+    not compute a prevalence on the inclusions from 2022.'
+  - Psoriasis, type 1 diabetes, lupus and rheumatoid arthritis are in this section in SZ; BP and DR ask them in other sections.
+  - '''Not known'' and ''does not know'' are missing codes. Five of the ''treated'' columns are empty in the extraction.'
+toxoplasmose:
+  description: 'Toxoplasmosis serology (SZ, from 2012): whether it was done, IgM positive (recent infection), IgG positive
+    (past infection), and the IgG titre of the positive patients in UI/mL.'
+  reference: not_applicable
+  respondent: laboratory
+  construct: infection
+  sources:
+  - schema notes (sz toxoplasmose)
+  flags:
+  - 'The titre depends on the assay of each centre (centre medians from 14 to 240 UI/mL): do not compare titres between
+    centres; read it within one centre.'
+  - Where no serology was done the two results are empty, not 'no'.
+  - The upper tail of the titre is clipped at the 99th percentile; results written with '<' or '>' are censored.
+vitamine_d:
+  description: 25-hydroxyvitamin D from the blood sample of the visit (SZ from 2013, DR, ASP); SZ adds the time spent outdoors,
+    the skin phototype and a vitamin D supplement in the last twelve months.
+  reference: not_applicable
+  respondent: laboratory
+  construct: vitamins_minerals
+  sources:
+  - schema notes (sz, dr, asp vitamine_d)
+  variables:
+    vitamin_d_as_written:
+      meaning: 'SZ: 25-hydroxyvitamin D as written, with no unit (most centres look like nmol/L, one like ng/mL).'
+    vitamin_d:
+      meaning: 'DR and ASP: 25-hydroxyvitamin D harmonised in nmol/L.'
+    time_outdoors:
+      meaning: Average time spent outdoors, in four classes.
+      higher_means: more time spent outdoors
+      polarity: neutral
+      basis: anchors
+      source: 'schema label: ''1 under an hour a week, 2 several hours a week, 3 an hour a day or more, 4 over four hours
+        a day'''
+  flags:
+  - 'SZ: the unit is not recorded. vitamin_d_as_written must not be pooled across centres as one scale, nor compared with
+    the vitamin_d of DR and ASP, until the centres say in which unit they reported.'
+  - 'DR and ASP: some unit codes name a unit that the values do not fit, and are read by the size of the value (medium confidence
+    in ASP). By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes
+    the cut value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.'
+hospitalisations_12m:
+  description: 'Full-time hospitalisations (SZ): whether the patient was hospitalised, how many times, for how many weeks
+    in all and why. Asked at inclusion and at every follow-up visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: the past year at inclusion; read as since the last visit at follow-up
+  sources:
+  - schema notes (sz hospitalisations_12m)
+  flags:
+  - 'At follow-up the form says ''over the past year'', but the answers follow the time since the previous visit (median
+    gap 391 days): a follow-up answer is read as ''since the last visit'', and the names keep _12m.'
+  - BP asks the number and the weeks of the past year at inclusion only (hospitalisations_v0), under the same names.
+  - The number is 0 after a 'no', and the length stops at 52 weeks.
+care_changes:
+  description: 'Changes in the non-drug care (SZ): whether it changed and, for the cognitive behavioural approach, cognitive
+    remediation, the psychodynamic approach and the family approach, whether it started or ended. Asked at inclusion and
+    at follow-up.'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: no period of its own; it sits under the heading 'over the last 12 months' (a yearly update)
+  sources:
+  - schema notes (sz care_changes)
+  flags:
+  - Before mid-2019 the first question is answered on 30% to 58% of the visits, and an empty cell is 'no change, or not
+    shown'; from 2020 it is answered on more than 90%. Among the answers the share of yes falls from 38% to 14%.
+  - The approaches are 0 after a 'no', and an approach left unticked beside a ticked one is 0.
+medication_classes:
+  description: 'Six counts that the export computes from the medication list of the patient (SZ), one value per patient
+    in the table patients: antipsychotics, antidepressants, anxiolytics, anticholinergic correctors, mood stabilisers and
+    hypnotics.'
+  reference: not_applicable
+  respondent: computed
+  construct: medication
+  period: the whole medication list of the patient, not a visit
+  sources:
+  - schema notes (sz medication_classes)
+  variables:
+    n_listed_*:
+      meaning: Number of distinct product names of the list, as typed, that match the name patterns of the export for the
+        class.
+      higher_means: more distinct product names of the class in the list of the patient
+      polarity: neutral
+      basis: stated
+      source: 'schema label: ''Number of distinct product names matched as ... in the medication list of the patient'''
+  flags:
+  - 'It is not a count of molecules, nor of the treatments of a visit: two spellings of one product count twice, and a product
+    that no pattern names counts for nothing (the anxiolytic count is 0 for 112 of the 696 patients with a benzodiazepine
+    in the list).'
+  - The dictionary of the extraction calls them the treatments 'at the time of the visit', but each count is the same on
+    every visit of a patient. What a patient takes at a visit is in medications_at_visit.
+  - The counts are empty for the patients who have no list.
+treatment_help:
+  description: 'Who helps the patient take the treatment (SZ): autonomous, the family, the outpatient clinic or the hospital,
+    a nurse at home (several boxes can be ticked), and how often the clinic or the hospital helps. Asked at inclusion and
+    at every yearly visit.'
+  reference: not_applicable
+  respondent: clinician
+  construct: adherence
+  period: the state at the visit
+  sources:
+  - schema notes (sz treatment_help)
+  flags:
+  - '''Autonomous'' can be ticked together with another help.'
+bilan_urinaire:
+  description: 'Urine drug screen (DR): whether the test was done, then cannabis, benzodiazepines, psychostimulants and
+    opiates (1 positive, 0 negative).'
+  reference: not_applicable
+  respondent: laboratory
+  construct: toxicology
+  sources:
+  - schema notes (dr bilan_urinaire)
+  flags:
+  - The test is done in practice in a few centres (four give 93% of the yes), so the rates are not those of the cohort.
+  - 'Cells of the psychostimulant and opiate columns that hold another number (one centre) are removed. BP and DR: a visit
+    with three or more impossible values over the laboratory schemas loses all its laboratory values (visit_removed).'
+irm:
+  description: 'Structural brain MRI (DR): whether it was done, and its date.'
+  reference: not_applicable
+  respondent: clinician
+  construct: laboratory_other
+  sources:
+  - schema notes (dr irm)
+  flags:
+  - 'The share of yes depends strongly on the centre: the rates are not comparable between centres.'
+  - The date exists only for a yes and is often that of a past examination, more than 90 days from the visit.
+vitamines_cortisol:
+  description: Vitamin B12 (pmol/L), folates (nmol/L) and morning cortisol (nmol/L) from the blood sample of the visit (DR).
+  reference: not_applicable
+  respondent: laboratory
+  construct: vitamins_minerals
+  sources:
+  - schema notes (dr vitamines_cortisol)
+  variables:
+    cortisol:
+      construct: endocrine
+  flags:
+  - 'The form exports a unit code for each analyte, and some codes name a unit that the values do not fit: they are read
+    as the unit of their scale. The ''pg/L'' code of the vitamin B12 fits two scales, so 22 results have no unit (unit_unknown,
+    missing).'
+  - By default each number is clipped at its 1st and 99th percentiles (winsorising), so a clinical tail becomes the cut
+    value; only the hard range removes impossible values. Load with winsorise=False to keep the tails.
+  - 'BP and DR: a visit with three or more impossible values over the laboratory schemas loses all its laboratory values
+    (visit_removed).'
+care_use_year:
+  description: 'Use of care and help over the year (DR), by kind: full-time and day hospitalisation, specialists, emergency
+    department, help at home, general practitioner, psychologist, physiotherapist, nurse and other professionals, each with
+    a number of times. Asked at the inclusion visit and at the yearly visits.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: over the year
+  sources:
+  - schema notes (dr care_use_year)
+  flags:
+  - Not the BP care_use, which is another questionnaire (since the last visit, for the psychiatric disorder).
+  - 'Two forms of the hospitalisation question: the older form asks one question, full time or day hospital (hospitalised_or_day_year,
+    mostly 2012 to 2016); the later ones ask full time (hospitalised_year) and day hospital (day_hospital_year) apart. They
+    are not one variable.'
+  - 'The hospitalisations, the day hospitalisations and the specialists are lists of the form, and the export keeps one
+    arbitrary row per visit: their specialty, days and place, and n_specialist, are the values of one row, not totals.'
+hospitalisations_since_visit:
+  description: 'Hospitalisations since the last visit (DR, follow-up visits): their number and their total length in months,
+    counted apart for depression and for another reason.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: since the last visit
+  sources:
+  - schema notes (dr hospitalisations_since_visit)
+  - schema notes (bp hospitalisations_fu)
+  flags:
+  - Not the BP hospitalisations_fu, which gives one number and does not say the cause. The 'other reason' is not said to
+    be psychiatric.
+  - The months are typed numbers and are not censored (maximum 45); a decimal comma is lost by the form and repaired ('025'
+    is read as 0.25).
+devices:
+  description: 'Four yes/no questions asked with the non-drug treatments (DR): electronic cigarette, pacemaker, CPAP and
+    deep brain stimulation, with the target and the indication of the stimulation as free text.'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: the state at the visit
+  sources:
+  - schema notes (dr devices)
+  variables:
+    electronic_cigarette:
+      construct: tobacco
+  flags:
+  - The questions are asked at every visit only since 2016 (on 22% of the visits from June 2013 to 2015, on none before).
+  - '''Not known'' is a missing code.'
+medications_lifetime:
+  description: 'Psychotropic treatments of the past (DR), one row per treatment in the table treatments (list ''medications_lifetime''):
+    the substance, its molecule, ATC code and group, the dates, the strength and the daily dose.'
+  reference: not_applicable
+  respondent: clinician
+  construct: medication
+  period: the history of the patient (the form is shown by patient)
+  sources:
+  - schema notes (dr medications_lifetime)
+  - docs/SCHEMA_SPEC.md section 15
+  variables:
+    daily_dose:
+      meaning: Daily dose in mg, as typed.
+      higher_means: higher daily dose
+      polarity: neutral
+      basis: stated
+      source: 'schema label: ''Daily dose in mg, as typed'''
+    units_per_day:
+      meaning: 'Number of units a day, derived by the export (the typed dose divided by the number of the strength): wrong
+        for strengths in g, µg or UI.'
+  flags:
+  - 'The file holds a single past treatment for 404 of the 406 patients, which the form does not force: the export may keep
+    one arbitrary row. It is not a complete treatment history.'
+  - The lists are crossed by the export (every product of the patient next to every prescription line). A patient with one
+    product keeps every line; a patient with several products keeps one item per product, without form, dose or date (flag
+    list_crossed). Only 2 patients are affected here.
+  - The name is the substance of the drug catalogue (substance_name), not the product as typed in BP and SZ. The at-visit
+    columns do not read this list.
+medications_somatic:
+  description: 'Somatic treatments recorded as current (DR), one row per treatment in the table treatments (list ''medications_somatic''):
+    the substance and its generic name as the catalogue writes them, the dates, the strength and the daily dose.'
+  reference: not_applicable
+  respondent: clinician
+  construct: medication
+  period: the current somatic treatments of the visits, pooled by the export (not a history of the past)
+  sources:
+  - schema notes (dr medications_somatic)
+  - docs/SCHEMA_SPEC.md section 15
+  variables:
+    daily_dose:
+      meaning: Daily dose in mg, as typed.
+      higher_means: higher daily dose
+      polarity: neutral
+      basis: stated
+      source: 'schema label: ''Daily dose in mg, as typed'''
+    units_per_day:
+      meaning: 'Number of units a day, derived by the export (the typed dose divided by the number of the strength): wrong
+        for strengths in g, µg or UI.'
+  flags:
+  - The lists are crossed by the export (every product of the patient next to every prescription line). A patient with one
+    product keeps every line; a patient with several products keeps one item per product, without form, dose or date (flag
+    list_crossed). 72 of the 273 patients have several products.
+  - 'No molecule, ATC code or group is delivered: the generic name of the catalogue is given as written.'
+  - Some products have no substance row in the export, so the list may not hold every treatment.
+psychotherapies_fu:
+  description: 'Psychotherapies asked again at the follow-up visits (DR): for each of fourteen kinds of therapy, whether
+    the patient had it, the number of sessions, the dates, the expertise of the therapist and the result.'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: 'the question has no period: a yearly update, never ''since the last visit'''
+  sources:
+  - schema notes (dr psychotherapies_fu, psychotherapies_v0)
+  flags:
+  - 'The form prints no time frame and the raters read it both ways: an answer is neither ''ever'' (105 of the 245 follow-up
+    visits of patients who had had a supportive therapy at inclusion answer no) nor ''since the last visit'' (most start
+    dates are more than a year before the visit).'
+  - cbt_fu, psychodynamic_fu and other_therapy_fu share their names with BP and SZ, whose question says 'since the last
+    visit'.
+  - The question psychotherapy_fu of non_drug_fu disagrees with these kinds; no 'any psychotherapy' is derived.
+  - The result is a category from 'no improvement' to 'complete remission'; the number of sessions is 0 after a no.
+psychotherapies_v0:
+  description: 'History of psychotherapies over the whole life at the inclusion visit (DR), one value per patient in the
+    table patients: for each of fourteen kinds of therapy, whether the patient had it, the number of sessions, the dates,
+    the expertise of the therapist and the result.'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  period: lifetime
+  sources:
+  - schema notes (dr psychotherapies_v0)
+  flags:
+  - Three kinds carry the names of BP or SZ (cognitive behavioural therapy, psychodynamic therapy, another therapy); the
+    eleven others are DR only. The BP therapies (psychoeducation groups, IPSRT) are other questions.
+  - 'ever_psychotherapy (in non_drug_lifetime) disagrees with these kinds: 85 of the 211 inclusion visits that answer no
+    to it have at least one kind yes. No ''any psychotherapy'' is derived.'
+  - The result is a category from 'no improvement' to 'complete remission'; the number of sessions is 0 after a no.
+  - Two kinds of the form (dialectical behavioural therapy, family therapy) and the reason for ending each therapy are not
+    exported.
+family_neurodevelopment:
+  description: 'Neurodevelopmental disorders of the relatives (ASP), one row per patient and relative in the table treatments
+    (list ''family_neurodevelopment''): for the father, the mother, a brother, a sister, a son or a daughter, nine answers
+    (autism spectrum disorder, intellectual disability, communication disorder, ADHD, learning disorder, motor disorder,
+    another or an unspecified neurodevelopmental disorder, oppositional disorder). Inclusion visits from 2019.'
+  reference: not_applicable
+  respondent: clinician
+  construct: family_history
+  sources:
+  - schema notes (asp family_neurodevelopment)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'An answer left blank beside a yes stays missing: it is not a no (171 of the 387 relatives with a yes leave other answers
+    blank).'
+  - 'Who the relative is (relative) is missing for 191 of the 562 relatives: the field is not required in the form.'
+  - 'family_neurodevelopmental_history (instrument psychiatric_care) is not a gate of this table and is not the family history:
+    read this list. No summary per patient is delivered.'
+hospitalisations:
+  description: 'Psychiatric hospitalisations (ASP), one row per visit and hospitalisation in the table treatments (list
+    ''hospitalisations''): the reason as free text, the year and the length in days.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  period: the hospitalisations typed at each visit; the lifetime history is the union of the visits
+  sources:
+  - schema notes (asp hospitalisations)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - The year is filled almost only from 2020 and the length only from 2020; the records of the follow-up form have neither
+    (the export reads other fields).
+  - Whether the patient was ever hospitalised is the question psychiatric_hospitalisation of the instrument psychiatric_care.
+psychiatric_care:
+  description: 'Family history and psychiatric care, the questions (ASP): whether a relative has a neurodevelopmental disorder,
+    an earlier contact with psychiatry and the age at the first one, a psychiatric hospitalisation and a current treatment.
+    Inclusion and follow-up visits.'
+  reference: not_applicable
+  respondent: clinician
+  construct: care_use
+  sources:
+  - schema notes (asp psychiatric_care)
+  variables:
+    family_*:
+      construct: family_history
+  flags:
+  - 'family_neurodevelopmental_history is asked from 2017 and does not gate the table of the relatives: most visits that
+    describe a relative with a disorder leave it blank. Read the list family_neurodevelopment.'
+  - The hospitalisations and the treatments themselves are rows of the table treatments (lists hospitalisations and medications).
+  - The age at the first contact follows the age mix of the patients (children and adults).
+early_development:
+  description: 'Early development as recorded by the clinician (ASP): the ages of sitting, walking, the first words and
+    the first sentences in months, a psychomotor or language delay, a loss of language, eating and sleep problems in childhood,
+    and seizures.'
+  reference: not_applicable
+  respondent: clinician
+  construct: development
+  period: early childhood, asked at the inclusion visit
+  sources:
+  - schema notes (asp early_development)
+  flags:
+  - The ages are typed from memory in rounded months (70% to 79% of the ages of the first words and sentences are multiples
+    of 6).
+  - 'The four ages hang on no question: they are typed whatever the answers on a psychomotor or language delay.'
+  - 'The seizure block stops in 2020 (answered on 4% of the inclusion visits of 2021 and none from 2022): the application
+    now stores the question in another table, which the export does not read.'
+  - The ADI-R asks the ages of the first words and sentences to the parent; this section is the clinician's record.
+pregnancy:
+  description: 'The mother''s pregnancy with the patient, as the parents report it (ASP): earlier miscarriages and stillbirths,
+    consanguinity, assisted reproduction, folic acid, bleeding, infections, vaccination, medications and substances during
+    the pregnancy, and the diseases of the mother and of the foetus.'
+  reference: not_applicable
+  respondent: clinician
+  construct: perinatal
+  period: the pregnancy, asked once at the inclusion visit
+  sources:
+  - schema notes (asp pregnancy)
+  flags:
+  - '''Not known'' is frequent (224 to 790 inclusion visits by question) and is delivered as missing.'
+  - 'The boxes of the trimesters and of the drug classes are saved 0 when not ticked: a 0 there is ''not ticked'', also
+    under an unanswered question (flag derived_doubt where their question is empty or not known).'
+  - The infections and the substances are 0 after a 'no' to their question; one left empty beside a yes stays missing.
+  - 'folic_acid: the share of yes steps between years and centres with no known cause.'
+somatic_cancer:
+  description: 'Somatic history of the cancers (ASP), one row per visit and disease in the table treatments (list ''somatic_cancer''):
+    the disease in the list of the form, a free text, the age of onset in years and whether the disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_cancer)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_cancer_v0 or _fu in somatic_history_v0 and _fu): a gate 0 means
+    none, an empty gate or ''not known'' means not known. 2 of the 24 yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_cardiac:
+  description: 'Somatic history of the heart and vessels (ASP), one row per visit and disease in the table treatments (list
+    ''somatic_cardiac''): the disease in the list of the form, a free text, the age of onset in years and whether the disease
+    is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_cardiac)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_cardiac_v0 or _fu in somatic_history_v0 and _fu): a gate 0 means
+    none, an empty gate or ''not known'' means not known. 9.5% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_digestive:
+  description: 'Somatic history of the liver and digestive tract (ASP), one row per visit and disease in the table treatments
+    (list ''somatic_digestive''): the disease in the list of the form, a free text, the age of onset in years and whether
+    the disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_digestive)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_digestive_v0 or _fu in somatic_history_v0 and _fu): a gate 0
+    means none, an empty gate or ''not known'' means not known. 8.1% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_endocrine:
+  description: 'Somatic history of the endocrine glands (ASP), one row per visit and disease in the table treatments (list
+    ''somatic_endocrine''): the disease in the list of the form, a free text, the age of onset in years and whether the
+    disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_endocrine)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_endocrine_v0 or _fu in somatic_history_v0 and _fu): a gate 0
+    means none, an empty gate or ''not known'' means not known. 9.1% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_ent:
+  description: 'Somatic history of the ear, nose, throat and eyes (ASP), one row per visit and disease in the table treatments
+    (list ''somatic_ent''): the disease in the list of the form, a free text, the age of onset in years and whether the
+    disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_ent)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_ent_v0 or _fu in somatic_history_v0 and _fu): a gate 0 means
+    none, an empty gate or ''not known'' means not known. 6.5% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_history_fu:
+  description: 'Somatic history at the yearly follow-up visits (ASP), the questions: one yes/no question per body system
+    (eight systems, each with a list of diseases in the table treatments), then gynaecology, genetic diseases, other diseases
+    and allergy. The inclusion form asked again, with one more question, ''change since the last visit''.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: an update given at the yearly visit (neither the whole life nor strictly the time since the last visit)
+  sources:
+  - schema notes (asp somatic_history_fu)
+  flags:
+  - 'A yearly answer is an update given at that visit: 31% of the yearly answers to a question answered yes at inclusion
+    are no. Do not stack the _fu answers with the _v0 answers.'
+  - 'After a ''no change'' (somatic_history_changed_fu) most visits leave the whole section empty: an empty yearly section
+    may mean ''no change'', and it stays missing.'
+  - More than half of the yes at the yearly visits have no list of diseases.
+  - 'The five gynaecology boxes are saved 0 when not ticked: a 0 is ''not ticked'', never an explicit no. The gynaecology
+    question is answered for men too: filter on the sex of the patient.'
+  - '''Not known'' is delivered as missing.'
+somatic_history_v0:
+  description: 'Somatic history at the inclusion visit (ASP), the questions: one yes/no question per body system (eight
+    systems, each with a list of diseases in the table treatments), then gynaecology, genetic diseases, other diseases and
+    allergy.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: asked at the inclusion visit
+  sources:
+  - schema notes (asp somatic_history_v0)
+  flags:
+  - 'The shortcut ''no for all'' of the form (not exported) fills every question with 0: all twelve answers are 0 on 28%
+    to 31% of the answered inclusion visits of 2021 to 2023, and the yes per visit fall gradually from 2017. Such a section
+    cannot be told from a real ''no for all''; the share of yes is not a prevalence and is not comparable across years.'
+  - The diseases after a yes are rows of the lists somatic_ent, somatic_cardiac, somatic_pulmonary, somatic_rheumatology,
+    somatic_digestive, somatic_endocrine, somatic_neurological and somatic_cancer; 11% of the yes at inclusion have no list.
+  - 'The five gynaecology boxes are saved 0 when not ticked: a 0 is ''not ticked'', never an explicit no. The gynaecology
+    question is answered for men too: filter on the sex of the patient.'
+  - The allergy question holds only yes or nothing until 2019.
+  - The share of yes also follows the age mix (children have fewer yes) and the habits of the centres. 'Not known' is delivered
+    as missing.
+somatic_neurological:
+  description: 'Somatic history of the nervous system (ASP), one row per visit and disease in the table treatments (list
+    ''somatic_neurological''): the disease in the list of the form, a free text, the age of onset in years and whether the
+    disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_neurological)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_neurological_v0 or _fu in somatic_history_v0 and _fu): a gate
+    0 means none, an empty gate or ''not known'' means not known. 5.9% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+somatic_pulmonary:
+  description: 'Somatic history of the lungs (ASP), one row per visit and disease in the table treatments (list ''somatic_pulmonary''):
+    the disease in the list of the form, a free text, the age of onset in years and whether the disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_pulmonary)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_pulmonary_v0 or _fu in somatic_history_v0 and _fu): a gate 0
+    means none, an empty gate or ''not known'' means not known. A third of the yes at inclusion (153 of 460) have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+  - 'Until 2020 the lung history is probably contaminated by allergies: many visits have the lung question yes, no lung
+    list and the allergy question yes.'
+somatic_rheumatology:
+  description: 'Somatic history of the bones, joints and skin (ASP), one row per visit and disease in the table treatments
+    (list ''somatic_rheumatology''): the disease in the list of the form, a free text, the age of onset in years and whether
+    the disease is over.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  period: the diseases typed at each visit (inclusion and yearly visits)
+  sources:
+  - schema notes (asp somatic_rheumatology)
+  - docs/ARCHITECTURE.md section 4 (treatments)
+  flags:
+  - 'Read the list with the gate of the same visit (history_rheumatology_v0 or _fu in somatic_history_v0 and _fu): a gate
+    0 means none, an empty gate or ''not known'' means not known. 6.7% of the yes at inclusion have no list.'
+  - 'A visit''s list holds the rows typed at that visit: the lifetime history is the union of the visits.'
+vaccinations:
+  description: 'Vaccinations (ASP): seven lines of the vaccination record, each with a vaccine of the list of the form (diphtheria,
+    tetanus, poliomyelitis, pertussis, BCG, measles, rubella, smallpox) and a box done or not done. Mostly inclusion visits.'
+  reference: not_applicable
+  respondent: clinician
+  construct: somatic_history
+  sources:
+  - schema notes (asp vaccinations)
+  flags:
+  - 'A line is a position in the table, not a vaccine, and some visits repeat a vaccine on two lines: read the vaccines
+    of a visit as a set over the seven lines.'
+  - A record is held by 36% of the inclusion visits of children and 12% of those of adults.
+biobank:
+  description: 'Samples for the biobank (ASP): whether a sample was taken, and a second one, with their dates.'
+  reference: not_applicable
+  respondent: clinician
+  construct: visit_administration
+  sources:
+  - schema notes (asp biobank)
+  flags:
+  - 'The questions are administrative: the answer follows the centre, not the patient (five centres have any yes).'
+  - The date of the sample is often after the date of the visit.
+examinations:
+  description: 'Complementary examinations (ASP): brain CT scan, brain MRI, EEG, karyotype or CGH array, fragile X test,
+    audiogram, auditory evoked potentials and another examination, each with a result (normal, abnormal, result unknown,
+    not done) and a date, and an eye-tracking result.'
+  reference: not_applicable
+  respondent: clinician
+  construct: laboratory_other
+  period: past examinations, recorded at the visit
+  sources:
+  - schema notes (asp examinations)
+  flags:
+  - '''Not done'' is an answer and is delivered as such, not as a missing value.'
+  - The dates are those of past examinations, often years before the visit; the karyotype and the fragile X test are often
+    dated on or after the day of the visit, which is expected.
+puberty_and_handedness:
+  description: Handedness (right, left, both) and the four Tanner stages of puberty from 1 to 5 (genitals and pubic hair
+    for the boys, breasts and pubic hair for the girls), from the clinical examination (ASP).
+  reference: Marshall WA, Tanner JM. Arch Dis Child 1969;44:291 (girls) and 1970;45:13 (boys)
+  reference_confidence: Citations confirmed; range from memory (high confidence), text not read
+  respondent: clinician
+  construct: puberty
+  sources:
+  - schema notes (asp puberty_and_handedness)
+  - scale_reference_rest.md section 5
+  variables:
+    handedness:
+      construct: handedness
+      meaning: Handedness as one answer of the clinical examination (right, left, both), not a handedness inventory.
+    tanner_*:
+      meaning: Tanner stage of puberty, rated separately for the genitals or the breasts and for the pubic hair.
+      higher_means: more advanced puberty (1 prepubertal, 5 adult)
+      polarity: neutral
+      basis: literature
+      source: 'scale_reference_rest.md section 5 (Marshall & Tanner 1969, 1970): citations confirmed; range from memory
+        (high confidence), text not read'
+  flags:
+  - 'The form has no sex or age gate: the stages are filled for adults too, and a few boys'' stages are typed for girls
+    (kept as recorded).'
+  - The stages follow the age of the patients, and the age mix differs between centres and years.
+earlier_diagnosis:
+  description: 'Diagnoses made before the expert centre (ASP), one value per patient in the table patients, from the form
+    filled before the assessment: an earlier autism spectrum diagnosis, its date and who made it, and another earlier diagnosis
+    with its kind.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  sources:
+  - schema notes (asp earlier_diagnosis)
+  flags:
+  - Filled for 62% of the adults and 24% of the children.
+  - 'other_earlier_diagnosis_kind is a multiple choice of the form of which the export keeps one box, the lowest-numbered
+    one ticked: the other diagnoses ticked are lost.'
+  - '''Not known'' is delivered as missing.'
+expert_centre_referral:
+  description: 'Criteria for an assessment at the expert centre (ASP), one value per patient in the table patients: six
+    yes/no criteria that the patient must meet, the date of the first assessment and a remark.'
+  reference: not_applicable
+  respondent: clinician
+  construct: visit_administration
+  sources:
+  - schema notes (asp expert_centre_referral)
+  flags:
+  - 'It is not the referral of BP and SZ (who sent the patient, from where): those fields are not exported for ASP.'
+  - Each criterion is yes for 96% to 100% of the patients; the form is filled for 57% of the adults and 21% of the children.
+non_drug_care:
+  description: 'Non-drug care (ASP), one value per patient in the table patients, from the form filled before the assessment:
+    fifteen yes/no boxes (medico-psychological centres, day hospital, medico-educational institutes, home care service,
+    school inclusion, speech therapist, psychomotor therapist, psychologist, psychiatrist, occupational therapist, social
+    skills group, mobile autism team, other).'
+  reference: not_applicable
+  respondent: clinician
+  construct: non_drug_treatment
+  sources:
+  - schema notes (asp non_drug_care)
+  flags:
+  - 'The first five boxes (CMP, CMPP, day hospital, IME, IMPRO) are no longer printed by the forms from about 2021: their
+    0 from 2022 is not an answer and is delivered as missing (period_removed).'
+  - Filled for 64% of the adults and 25% of the children.
+screening_criteria_child:
+  description: 'Checklist of fourteen yes/no criteria at screening, for children (ASP), one value per patient in the table
+    patients: four criteria of social interaction, four of communication, four of restricted interests, the onset before
+    three years and the exclusion criterion.'
+  reference: Screening interview of the Adult Asperger Assessment (Baron-Cohen 2005), as the thesaurus names it, under the
+    heading 'child'; the layout is that of the DSM-IV-TR criteria of autistic disorder
+  reference_confidence: cited in schema notes
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  sources:
+  - schema notes (asp screening_criteria_child)
+  flags:
+  - Filled for about 125 patients, all but a few of them children, included from 2018 to 2025.
+  - No count of criteria is stored and none is computed.
+screening_form:
+  description: 'Conclusion of the screening form filled before the assessment (ASP), one value per patient in the table
+    patients: an autism spectrum disorder evoked, rejected or deferred, the probable diagnosis, whether an assessment at
+    the expert centre was scheduled and why not, and free texts.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  sources:
+  - schema notes (asp screening_form)
+  flags:
+  - 'It is not the diagnosis of the cohort (diagnosis in identite): 57 of the 868 patients for whom an autism spectrum disorder
+    is evoked do not have a confirmed diagnosis.'
+  - The answer 'deferred' was removed in 2021, and the two lists of probable diagnoses were last filled in 2020.
+  - Filled for 62% of the adults and 20% of the children.
+adult_support:
+  description: 'Support of the adult patient (ASP, adult form of the medico-economic module): the employment and disability
+    services used, the resources and allowances, the help with daily living, the housing support, and the children of the
+    patient and their custody.'
+  reference: not_applicable
+  construct: social_situation
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp adult_support)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - 'The adult form and the child form write one table, and the application saves a 0 in every unticked box, the boxes of
+    the form not shown included: those zeros are delivered as missing.'
+  - The minutes of help of a relative a day stop at 99 (right-censored, delivered as typed).
+care_consumption:
+  description: 'Use of care in the last year (ASP, medico-economic module): the date and the cost of the diagnosis, emergency
+    visits, hospitalisations, the number of consultations by kind of professional in private practice and in a public service,
+    the care package, travel for care and groups for the relatives.'
+  reference: not_applicable
+  construct: care_use
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp care_consumption)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - 'The adult form and the child form write one table, and the application saves a 0 in every unticked box, the boxes of
+    the form not shown included: those zeros are delivered as missing.'
+  - The form stops the counts at 50. A count is 0 after a 'no' to its question.
+  - 'The counts of day and full-time hospitalisations are stays or days: the form does not say, and the centres seem to
+    read them differently.'
+  - saw_gp and n_gp are shared with DR (care over the year), where the box accepts up to 365 consultations; the ASP question
+    includes the paediatrician.
+care_costs:
+  description: 'Costs of the care for the family (ASP, parents'' form of the medico-economic module): the top-up health
+    insurance, the distance to the farthest place of care, the estimated total cost of the child''s care, and the paid or
+    unpaid minding of the child.'
+  reference: not_applicable
+  construct: care_use
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp care_costs)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - Filled for children, in two centres only.
+  - The distance is asked in metres; some values under 100 are perhaps kilometres and are delivered as typed.
+child_living_conditions:
+  description: 'Living conditions of the child (ASP, child form of the medico-economic module): the housing (kind, garden,
+    rooms, surface, own bedroom), school (bullying, who knows about the diagnosis), leisure activities and siblings.'
+  reference: not_applicable
+  construct: social_situation
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp child_living_conditions)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - 'The adult form and the child form write one table, and the application saves a 0 in every unticked box, the boxes of
+    the form not shown included: those zeros are delivered as missing.'
+occupation:
+  description: 'Occupation and activity (ASP): the occupational class (first level of the INSEE classes, with ''student''
+    added) and the kind of current activity, at inclusion and at follow-up.'
+  reference: not_applicable
+  respondent: clinician
+  construct: education_employment
+  sources:
+  - schema notes (asp occupation)
+  - scale_reference_rest.md section 12
+  flags:
+  - job_class carries the labels of the DR job_class for its eight INSEE classes; 'student' is ASP only and 'not applicable'
+    is missing. The structure of the INSEE classes is confirmed in scale_reference_rest.md section 12; the names of the
+    groups are 'to verify' there.
+  - The occupation follows the age of the patients (the children are students).
+parents_health:
+  description: 'Health of the two parents (ASP, parents'' form of the medico-economic module): for each parent, twelve boxes
+    of somatic history, fifteen boxes of psychiatric disorders, the consultations of the last year (general practitioner,
+    psychiatrist, psychologist), a psychotropic treatment and a parents'' group.'
+  reference: not_applicable
+  construct: family_history
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp parents_health)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - Filled for children, in two centres only.
+  - The columns named dsmv are the disorders of each parent, not criteria of the patient.
+  - 'The history, disorder and place boxes are saved 0 on every save, also with an empty question: flag derived_doubt there.'
+  - The share of parents who saw a general practitioner falls from 67% in 2021 to 7% to 25% from 2023, with no known cause.
+parents_situation:
+  description: 'Situation of the two parents (ASP, parents'' form of the medico-economic module): for each parent, the marital
+    status, the level of education, the languages, the children and their custody, the employment and work arrangements,
+    absences from work for the child, and the resources and allowances.'
+  reference: not_applicable
+  construct: social_situation
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp parents_situation)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - Filled for children, in two centres only.
+  - The level of education is a category of five answers (primary school to higher education), not a number, and the level
+    of French is not an ordered scale.
+  - Full time is 1 and part time 0 on this form. The block of parent 2 prints 'parent 1' in two of its questions; the answers
+    are read as those of parent 2.
+pddqol:
+  description: 'Parents'' quality of life questionnaire (ASP): seventeen items answered from 1 to 5 by a parent of a child.
+    The items are delivered as they are; no score is computed.'
+  version: Par-DD-QoL, 17 items (form 352 of the application)
+  reference: Baghdadli A, Pry R, Michelon C, Rattaz C. Impact of autism in adolescents on parental quality of life. Qual
+    Life Res 2014;23:1859-68 (PMID 24504623)
+  reference_confidence: Abstract confirmed; full text paywalled
+  respondent: relative
+  construct: quality_of_life
+  sources:
+  - schema notes (asp pddqol)
+  - scale_reference_rest.md section 10
+  items:
+    higher_means: a worse answer
+    polarity: worse
+    basis: stated
+    source: 'schema notes (asp pddqol): ''seventeen radios from 1 to 5, a higher answer worse'''
+  flags:
+  - 'The published scale has an emotional and a daily-disturbance dimension and a global score from 0 to 100. Which items
+    make each dimension, the 0-100 transformation and its direction are not settled (''to verify''): do not rebuild the
+    published scores without the paper.'
+  - Filled for children in two centres, from 2021. The items 1 to 16 hang together (Cronbach alpha 0.93 on the data).
+schooling:
+  description: 'Schooling (ASP): ordinary schooling, repeated years, support at school and its kind, the highest class reached
+    (free text) and the time at school, at inclusion and at follow-up.'
+  reference: not_applicable
+  respondent: clinician
+  construct: education_employment
+  sources:
+  - schema notes (asp schooling)
+  flags:
+  - 'Two forms: the time at school, the full-time schooling, the time out of school and the help in class are on the inclusion
+    form of 2019 only; the zeros of the other records, where they were never asked, are delivered as missing.'
+  - 'The years of education are not delivered: their scale differs between centres.'
+  - The support at school of children falls over the years (82% in the first years, 26% from 2021), partly a change of the
+    mix of centres; the cause of the later fall is not known.
+  - '''Not known'' is delivered as missing. The weeks out of school stop at 99 (right-censored).'
+work:
+  description: 'Work and living situation (ASP, adult and child forms of the medico-economic module): the work contracts
+    of the last 12 months, their length and kind, the sick leave during them, the situation without a contract and the kind
+    of housing.'
+  reference: not_applicable
+  construct: education_employment
+  period: the last 12 months, at inclusion and at follow-up alike
+  sources:
+  - schema notes (asp work)
+  flags:
+  - 'The section belongs to the medico-economic module added in 2020 and 2021: an earlier visit is ''not asked'', not missing.'
+  - 'sick_leave_12m here is ''off work during the work contracts of the last 12 months'': not the same question as the sick_leave_12m
+    of BP, SZ and DR (sick_leave_v0).'
+  - The weeks under contract and the weeks of sick leave are 0 after a 'no'; the weeks stop at 52.
+  - A work contract in the last year follows the age mix of the patients (children have almost none).

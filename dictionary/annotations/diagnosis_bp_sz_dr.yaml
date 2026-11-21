@@ -1,0 +1,1880 @@
+# Annotations of the group diagnosis_bp_sz_dr: the medical evaluation, comorbidity and substance forms of
+# FACE BP, SZ and DR. Format and rules: the annotation brief. Every statement comes from a schema note, a
+# label, a project document or the literature notes (local/out/scale_reference*.md), named in `sources`.
+
+diva:
+  description: 'DIVA, the diagnostic interview for attention deficit and hyperactivity in adults, with the criteria of DSM-IV-TR:
+    nine criteria of attention deficit and nine of hyperactivity-impulsivity, each answered present or absent for adult
+    life and for childhood. FACE BP only, at the inclusion visit, for patients chosen by the clinician.'
+  version: 'DSM-IV-TR criteria (the items match the DIVA 2.0 form); the application''s form holds the 36 criteria and four
+    counts only. French translation of the DIVA 2.0: to verify.'
+  reference: Kooij JJS, Francken MH. DIVA 2.0. Diagnostic Interview for ADHD in adults. DIVA Foundation, The Hague, 2010
+  reference_confidence: confirmed in source (form read; Hong 2020 Neuropsychiatr Dis Treat 16)
+  respondent: clinician
+  construct: adhd_symptoms
+  period: adult life and childhood
+  sources:
+  - schema notes (bp diva)
+  - scale_reference.md section 23
+  - docs/bp/PROGRESS.md D53, D122
+  items:
+    higher_means: criterion present
+    polarity: worse
+    basis: stated
+    source: 'schema notes (bp diva): ''each answered for adult life and for childhood (1 = present, 0 = absent)'''
+  scores:
+    diva_adult_a_total:
+      meaning: Number of the nine criteria of attention deficit that are present, for adult life (0 to 9). Computed only
+        where the nine criteria are answered.
+      higher_means: more criteria of attention deficit present
+      polarity: worse
+      basis: stated
+      source: 'schema notes (bp diva): ''The number of criteria present, for each of the four blocks (0 to 9)''; criteria
+        coded 1 = present, 0 = absent'
+      cutoffs:
+      - value: 6 or more of 9
+        meaning: Published threshold of the DSM-IV-TR criteria, in attention or in hyperactivity-impulsivity, for adults
+          and for childhood alike. The package delivers the count only.
+        source: Kooij and others 2010 (BMC Psychiatry 10:67), cited in schema notes (bp diva) and scale_reference.md section
+          23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020); DIVA 2.0 summary-page adult cut-off
+          to verify
+      - value: 5 or more of 9
+        meaning: 'DSM-5 and DIVA-5 threshold for adults: another edition than the DSM-IV-TR criteria of this form.'
+        source: Hong and others 2020, cited in schema notes (bp diva) and scale_reference.md section 23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020)
+    diva_child_a_total:
+      meaning: Number of the nine criteria of attention deficit that are present, for childhood (0 to 9). Computed only
+        where the nine criteria are answered.
+      higher_means: more criteria of attention deficit present
+      polarity: worse
+      basis: stated
+      source: 'schema notes (bp diva): ''The number of criteria present, for each of the four blocks (0 to 9)''; criteria
+        coded 1 = present, 0 = absent'
+      cutoffs:
+      - value: 6 or more of 9
+        meaning: Published threshold of the DSM-IV-TR criteria, in attention or in hyperactivity-impulsivity, for adults
+          and for childhood alike. The package delivers the count only.
+        source: Kooij and others 2010 (BMC Psychiatry 10:67), cited in schema notes (bp diva) and scale_reference.md section
+          23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020); DIVA 2.0 summary-page adult cut-off
+          to verify
+    diva_adult_hi_total:
+      meaning: Number of the nine criteria of hyperactivity-impulsivity that are present, for adult life (0 to 9). Computed
+        only where the nine criteria are answered.
+      higher_means: more criteria of hyperactivity-impulsivity present
+      polarity: worse
+      basis: stated
+      source: 'schema notes (bp diva): ''The number of criteria present, for each of the four blocks (0 to 9)''; criteria
+        coded 1 = present, 0 = absent'
+      cutoffs:
+      - value: 6 or more of 9
+        meaning: Published threshold of the DSM-IV-TR criteria, in attention or in hyperactivity-impulsivity, for adults
+          and for childhood alike. The package delivers the count only.
+        source: Kooij and others 2010 (BMC Psychiatry 10:67), cited in schema notes (bp diva) and scale_reference.md section
+          23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020); DIVA 2.0 summary-page adult cut-off
+          to verify
+      - value: 5 or more of 9
+        meaning: 'DSM-5 and DIVA-5 threshold for adults: another edition than the DSM-IV-TR criteria of this form.'
+        source: Hong and others 2020, cited in schema notes (bp diva) and scale_reference.md section 23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020)
+    diva_child_hi_total:
+      meaning: Number of the nine criteria of hyperactivity-impulsivity that are present, for childhood (0 to 9). Computed
+        only where the nine criteria are answered.
+      higher_means: more criteria of hyperactivity-impulsivity present
+      polarity: worse
+      basis: stated
+      source: 'schema notes (bp diva): ''The number of criteria present, for each of the four blocks (0 to 9)''; criteria
+        coded 1 = present, 0 = absent'
+      cutoffs:
+      - value: 6 or more of 9
+        meaning: Published threshold of the DSM-IV-TR criteria, in attention or in hyperactivity-impulsivity, for adults
+          and for childhood alike. The package delivers the count only.
+        source: Kooij and others 2010 (BMC Psychiatry 10:67), cited in schema notes (bp diva) and scale_reference.md section
+          23
+        confidence: confirmed in source (Kooij 2010 BMC Psychiatry 10:67; Hong 2020); DIVA 2.0 summary-page adult cut-off
+          to verify
+  flags:
+  - 'The patients are a selection made by the clinician (50 inclusions, 2019 to 2026, never at follow-up), not a screening
+    of the inclusions: the DIVA gives no prevalence of ADHD.'
+  - The form holds the counts only. The other questions of the interview (symptoms present more than in other people, onset
+    before age 7, impairment in two or more areas) are not in the form, so a diagnosis of ADHD cannot be rebuilt from these
+    variables (request A68).
+  - The number stored by the application is typed by the clinician and is used as a check only; the delivered count is the
+    sum of the nine criteria and is missing where one criterion is not answered.
+  - 'The levels rise after 2021 (adult attention: mean 3.1 of 9 in 2019-2021, 6.1 from 2022), partly through the mix of
+    centres.'
+  - The interview is DSM-IV-TR for every patient, whatever the DSM edition of the mood sections of the same visit.
+  - 'To verify (scale_reference.md section 23): the adult cut-off printed on the summary page of the DIVA 2.0; who translated
+    the DIVA 2.0 into French, and any French validation.'
+
+dsm4_annee_ecoulee:
+  description: 'The mood episodes of the year before the inclusion visit, on the DSM-IV inclusion form of FACE BP: one yes/no
+    question (at least one episode), then the number of depressive, hypomanic, manic and mixed episodes, and for depressive,
+    manic and mixed episodes a yes/no and a number for those with psychotic features.'
+  version: DSM-IV version of the inclusion form of FACE BP (the form says DSM-IV; the text revision is not named). The DSM-5
+    version is dsm5_annee_ecoulee.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: the year before the inclusion visit
+  sources:
+  - schema notes (bp dsm4_annee_ecoulee)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D122
+  - 'respondent: the notes of the DSM-IV inclusion form name the rater (dsm4_vie_entiere, dsm4_annee_ecoulee) and the clinicians
+    (dsm4_episode_recent)'
+  variables:
+    dsm4_ly_n_*:
+      meaning: Number of episodes of that kind in the year before inclusion, 0 to 20 ('>20' is read as 20 and marked censored_right).
+        Read as 0 where the first answer is no; missing where it is unknown or empty.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes in the past year' (range 0 to 20); schema notes (bp dsm4_annee_ecoulee)
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - 'Asked at the inclusion visit only. The follow-up visits ask the same counts for the time since the last visit (dsm4_depuis_derniere_visite):
+    another period, other columns.'
+  - The yes/no per kind of episode (dsm4_ly_mde, dsm4_ly_hypomania, dsm4_ly_mania, dsm4_ly_mixed) is written by the export
+    from the number (1 where it is 1 or more) and adds nothing to it.
+  - 'Mixed episodes exist on the DSM-IV form only. A DSM-IV mixed episode is not the DSM-5 specifier ''with mixed features''
+    (scale_reference.md section 25: confirmed in source (Hergueta 2013; Tandon 2015; Cafaro 2023)).'
+  - 'Answers that contradict each other are delivered as typed: 80 of the 1,386 inclusions in a current episode that answer
+    here say no mood episode in the year, and the number in the year is above the lifetime number for 88 inclusions.'
+
+dsm4_depuis_derniere_visite:
+  description: 'The mood episodes since the last visit, asked at the follow-up visits of FACE BP on the DSM-IV version of
+    the follow-up form: one yes/no question (at least one episode), then the number of depressive, hypomanic, manic and
+    mixed episodes and their total, the numbers with psychotic features, and the type of the most recent episode.'
+  version: DSM-IV version of the follow-up form of FACE BP (the form says DSM-IV; the text revision is not named). The DSM-5
+    version is dsm5_depuis_derniere_visite.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: since the last visit
+  sources:
+  - schema notes (bp dsm4_depuis_derniere_visite)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D12, D14, D15, D53, D122
+  - 'respondent: the notes of the follow-up form name the rater (dsm4_depuis_derniere_visite: ''the typed total is the rater''s
+    own'')'
+  scores:
+    dsm4_fu_n_episodes:
+      meaning: 'Number of mood episodes since the last visit: the sum of the depressive, hypomanic, manic and mixed numbers.
+        Where one of the four is unknown or empty, the total typed by the rater is delivered instead (flag score_as_stored,
+        349 visits).'
+      higher_means: more mood episodes since the last visit
+      polarity: worse
+      basis: anchors
+      source: label 'Number of mood episodes since the last visit (depressive, hypomanic, manic and mixed, added)'; schema
+        notes (bp dsm4_depuis_derniere_visite)
+  variables:
+    dsm4_fu_n_*:
+      meaning: Number of episodes of that kind since the last visit, 0 to 20 ('>20' is read as 20 and marked censored_right).
+        Read as 0 where the first answer is no.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes since the last visit' (range 0 to 20); schema notes (bp dsm4_depuis_derniere_visite)
+    dsm4_fu_recent_type:
+      meaning: 'Type of the most recent episode since the last visit (depressive, hypomanic, manic, unspecified). The list
+        has no mixed type: a missing type after a yes often means a mixed episode.'
+      polarity: not_applicable
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'Edition of a follow-up visit: before 2022 it takes the label of the patient''s inclusion (D12); from 1 January 2022
+    it is DSM-5 in every centre, whatever the inclusion (D14), although the follow-up form changed centre by centre between
+    October 2021 and May 2022. A visit that holds a column of the old form (mixed numbers, typed total) is read as DSM-IV
+    whatever its date (flag version_overridden).'
+  - 'This schema reads 7,165 visits from 2009 to 2022. Its 33 visits of January to May 2022 all answered yes (the columns
+    that mark them exist only after a yes), so 2022 is a selection and not a profile of the year: leave 2022 out of a trend.'
+  - 'The window is the time since the previous visit, which is not one window (median gap 195 days at the six-monthly visits
+    and 357 at the yearly ones). The share of yes answers rises with the gap: do not compare counts of episodes across visits
+    without the gap.'
+  - 'Episodes since the last visit are probably undercounted: of the 1,616 follow-up visits in a current episode that answer
+    this question, 377 say that no episode occurred since the last visit.'
+  - 'Where the typed total and the sum differ, the sum is delivered (flag score_mismatch, 204 visits): the typed total is
+    the rater''s own, the application never computes it.'
+  - 'Mixed episodes exist on the DSM-IV form only. A DSM-IV mixed episode is not the DSM-5 specifier ''with mixed features''
+    (scale_reference.md section 25: confirmed in source (Hergueta 2013; Tandon 2015; Cafaro 2023)).'
+  - FACE DR delivers five of these names (dsm4_fu_n_mde, dsm4_fu_n_mde_psychotic, dsm4_fu_n_hypomania, dsm4_fu_n_mania_psychotic,
+    dsm4_fu_n_mixed) from its own follow-up form (mood_course_fu); the BP gate and total do not exist in DR.
+
+dsm4_episode_actuel:
+  description: 'The mood episode the patient is in on the day of the visit, if any, on the DSM-IV version of the forms of
+    FACE BP: a yes/no, then the type, specifier, severity, chronicity and whether it followed a birth. Filled at the inclusion
+    visit and at every follow-up visit; the start date exists at follow-up only.'
+  version: DSM-IV version of the inclusion and follow-up forms of FACE BP (the form says DSM-IV; the text revision is not
+    named). The DSM-5 version is dsm5_episode_actuel.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: the day of the visit
+  sources:
+  - schema notes (bp dsm4_episode_actuel)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D12, D14, D15, D53
+  - 'respondent: schema notes (bp dsm4_episode_actuel): ''''Chronic'' is a judgement of the rater'''
+  variables:
+    dsm4_current_type:
+      meaning: 'Type of the current episode (depressive, hypomanic, manic, mixed, unspecified). At the follow-up visits
+        the list has no mixed type today: an episode with no type is often a mixed one.'
+      polarity: not_applicable
+    dsm4_current_severity:
+      meaning: 'Severity of the current episode, asked for a depressive, manic or mixed episode: mild, moderate, severe,
+        severe with congruent or with incongruent psychotic features.'
+      polarity: not_applicable
+    dsm4_current_chronic:
+      meaning: 'Current depressive episode ticked chronic. A judgement of the rater: of the follow-up episodes ticked chronic
+        that have a start date, 45 of 307 began two years or more before the visit.'
+      polarity: not_applicable
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - 'Edition of a follow-up visit: before 2022 it takes the label of the patient''s inclusion (D12); from 1 January 2022
+    it is DSM-5 in every centre, whatever the inclusion (D14), although the follow-up form changed centre by centre between
+    October 2021 and May 2022. A visit that holds a column of the old form (mixed numbers, typed total) is read as DSM-IV
+    whatever its date (flag version_overridden).'
+  - 'The answer describes the day of the visit at every visit, so inclusion and follow-up answers are in the same columns:
+    a third of the inclusions and a quarter of the follow-up visits are in an episode.'
+  - 'At the follow-up visits the form most likely had a mixed type whose answers were emptied when the form changed (October
+    2021 to May 2022): 164 follow-up visits in an episode have no type (2010 to 2022). They are delivered with no type.'
+  - 'The follow-up specifier cannot be compared with the inclusion one: until September 2021 the answer ''none'' never appears
+    at follow-up, so an empty cell means ''none'' or not answered.'
+  - 'The 33 follow-up visits of January to May 2022 read as DSM-IV are a selection (64% in an episode against 24% to 25%
+    in 2019 to 2021): leave 2022 out of a trend.'
+  - The share of inclusions in an episode goes from 15% to 51% between centres, and the share of chronic depressive episodes
+    at inclusion from 18% to 74%.
+  - The details are asked for some types only and only after a yes. 33 visits answered no still hold details; they are delivered
+    as written.
+  - 54 of the 1,559 start dates are after the visit and are delivered as written.
+  - FACE DR delivers dsm4_current_specifier, dsm4_current_severity, dsm4_current_chronic and dsm4_current_postpartum from
+    its inclusion form (mood_history_v0); dsm4_current_catatonic is BP only.
+
+dsm4_episode_recent:
+  description: 'The most recent mood episode before the inclusion visit, on the DSM-IV inclusion form of FACE BP: its start
+    and end dates, type, specifier, chronicity, severity and whether it followed a birth. Filled once, at the inclusion
+    visit.'
+  version: DSM-IV version of the inclusion form of FACE BP (the form says DSM-IV; the text revision is not named). The DSM-5
+    version is dsm5_episode_recent.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: the most recent episode before the inclusion visit
+  sources:
+  - schema notes (bp dsm4_episode_recent)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53
+  - 'respondent: the notes of the DSM-IV inclusion form name the rater (dsm4_vie_entiere, dsm4_annee_ecoulee) and the clinicians
+    (dsm4_episode_recent)'
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - 'The most recent episode or the current one: where the patient is in an episode at inclusion, the clinicians often described
+    that episode here (902 of the 1,224 such visits with a type give the type of the current episode, and 619 have no end
+    date). Use dsm4_current_* for the episode of the day.'
+  - Each detail is asked for some types only (specifier and chronicity for a depressive episode, severity for a depressive,
+    manic or mixed one). 28 answers filled where the form hides the question are missing (flag not_shown).
+  - 'Dates: a start date on or after the visit is out of range and not delivered (100 of 3,823). End dates are not checked
+    in this way (289 of 3,176 are on or after the visit), and 49 delivered pairs have an end before the start.'
+  - The share of severe episodes without psychotic features falls from 45% of the severities until 2015 to 36% from 2016,
+    within most centres.
+  - The type of the most recent episode recorded at the follow-up visits is another column (dsm4_fu_recent_type).
+  - 'Mixed episodes exist on the DSM-IV form only. A DSM-IV mixed episode is not the DSM-5 specifier ''with mixed features''
+    (scale_reference.md section 25: confirmed in source (Hergueta 2013; Tandon 2015; Cafaro 2023)).'
+
+dsm4_premier_episode:
+  description: 'The first mood episode of the patient, on the DSM-IV inclusion form of FACE BP: its type, the age at which
+    it began, whether it came within six months of a birth and whether a cyclothymic period of more than two years came
+    before. Filled once, at the inclusion visit.'
+  version: DSM-IV version of the inclusion form of FACE BP (the form says DSM-IV; the text revision is not named). The DSM-5
+    version is dsm5_premier_episode.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: lifetime (the first mood episode)
+  sources:
+  - schema notes (bp dsm4_premier_episode)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D89
+  - facedata/common_instruments.yaml (first_mood_episode)
+  - 'respondent: the notes of the DSM-IV inclusion form name the rater (dsm4_vie_entiere, dsm4_annee_ecoulee) and the clinicians
+    (dsm4_episode_recent)'
+  variables:
+    dsm4_first_episode_age:
+      meaning: Age at the first mood episode, whatever its type (D89). '<5' is read as 5 (censored_left), '>89' as 89 (censored_right).
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first mood episode' (years); schema notes (bp dsm4_premier_episode)
+    dsm4_first_episode_type:
+      meaning: 'Type of the first mood episode. The DSM-IV form has two types more than the DSM-5 form: mixed with and without
+        psychotic features.'
+      polarity: not_applicable
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - The DSM-5 twin of dsm4_first_episode_age is the score dsm5_first_episode_age (the earliest of three ages). On the DSM-5
+    form the same raw column is the age at the first major depressive episode only (dsm5_first_mde_age, D89).
+  - 'The postpartum question is asked of every patient, men included (they answer 0): a rate is computed among women.'
+  - The cyclothymic period is yes for 13% of the patients and from 5% to 31% by centre; 'Ne sais pas' goes from 5% to 21%
+    by centre.
+  - FACE DR delivers dsm4_first_episode_type, dsm4_first_episode_age and dsm4_first_episode_postpartum from its own inclusion
+    form (mood_history_v0), read from the same raw columns. The first psychotic episode of FACE SZ (first_psychotic_episode_age)
+    is another question.
+  - 4 ages are above the age at the inclusion visit; they are delivered as written and flagged check_failed.
+
+dsm4_vie_entiere:
+  description: 'The mood disorder over the whole life, as recorded at the inclusion visit on the DSM-IV form of FACE BP:
+    the number of depressive, hypomanic, manic and mixed episodes, those with psychotic features, induced episodes, rapid
+    cycling, full remission between episodes, seasonal pattern and the age at the first psychotropic treatment.'
+  version: DSM-IV version of the inclusion form of FACE BP (the form says DSM-IV; the text revision is not named). The DSM-5
+    version is dsm5_vie_entiere.
+  reference: DSM-IV (1994), the classification whose criteria the form names. The form is a form of the application, with
+    no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: lifetime, as recorded at the inclusion visit
+  sources:
+  - schema notes (bp dsm4_vie_entiere)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D122, D176
+  - facedata/shared_names.yaml
+  - facedata/common_instruments.yaml (mood_episodes_lifetime)
+  - 'respondent: schema notes (bp dsm4_vie_entiere): ''the rater left it empty'''
+  variables:
+    dsm4_lt_n_*:
+      meaning: 'Lifetime number of episodes of that kind. The form stops at 20: ''>20'' is read as 20 with a mark in the
+        censoring column (this value or more).'
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes' (range 0 to 20); schema notes (bp dsm4_vie_entiere)
+    dsm4_lt_first_treatment_age:
+      meaning: Age at the first psychotropic treatment. '<5' is read as 5 (censored_left), '>89' as 89.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first psychotropic treatment' (years); schema notes (bp dsm4_vie_entiere)
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - 'A count of 20 is a lower bound (236 depressive, 190 hypomanic, 12 manic, 12 mixed): use the censoring column.'
+  - '''Ne sais pas'' is 15% of the numbers of depressive episodes (5% to 33% by centre), 24% of the hypomanic ones (9% to
+    40%), 13% of the mixed and 5% of the manic ones.'
+  - The number of episodes with psychotic features, and of induced episodes, is asked only after a yes and is read as 0
+    after a no; the yes/no on psychotic features is read as 0 where the number of episodes of that kind is 0 (D122).
+  - 'Mixed episodes exist on the DSM-IV form only. A DSM-IV mixed episode is not the DSM-5 specifier ''with mixed features''
+    (scale_reference.md section 25: confirmed in source (Hergueta 2013; Tandon 2015; Cafaro 2023)).'
+  - 'The criteria of a manic episode differ between the editions (scale_reference.md section 25): DSM-5 asks for increased
+    energy or activity besides the mood, DSM-IV for the mood only (confirmed in source (Grunze 2021)). DSM-IV excluded treatment-induced
+    episodes; DSM-5 counts a full syndrome that persists beyond the effect of the treatment (confirmed in source (Tandon
+    2015; Grunze 2021); DSM-5 text to verify).'
+  - 'Rapid cycling is the rater''s yes/no (''now or in the past''), not derived from the counts. Published definition: at
+    least four episodes in 12 months (scale_reference.md section 25: confirmed in source (Miola 2023, DSM-5-TR wording);
+    ''unchanged from DSM-IV'' to verify).'
+  - FACE DR delivers the same names (dsm4_lt_n_*, dsm4_lt_full_remission, dsm4_lt_seasonal, dsm4_lt_first_treatment_age)
+    from its inclusion form (mood_history_v0), with counts from 0 to 50 against 0 to 20 here (shared_names.yaml).
+  - The age at the first psychotropic treatment is not the first antipsychotic of FACE SZ (first_antipsychotic_age), although
+    both are read from the same raw column (shared_names.yaml). A first treatment more than two years before the first episode
+    (173 of 4,053 patients) is not an error.
+
+dsm5_annee_ecoulee:
+  description: 'The mood episodes of the year before the inclusion visit, on the DSM-5 inclusion form of FACE BP: one yes/no
+    question (at least one episode), then the number of depressive, hypomanic and manic episodes, and for depressive and
+    manic episodes a yes/no and a number for those with psychotic features.'
+  version: DSM-5 version of the inclusion form of FACE BP. The DSM-IV version is dsm4_annee_ecoulee.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: the year before the inclusion visit
+  sources:
+  - schema notes (bp dsm5_annee_ecoulee)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D122
+  - 'respondent: the notes of the DSM-5 inclusion form name the clinicians (dsm5_episode_recent; diva: ''typed by the clinician'')'
+  variables:
+    dsm5_ly_n_*:
+      meaning: Number of episodes of that kind in the year before inclusion, 0 to 20 ('>20' is read as 20 and marked censored_right).
+        Read as 0 where the first answer is no; missing where it is unknown or empty.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes in the past year' (range 0 to 20); schema notes (bp dsm5_annee_ecoulee)
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - '9 inclusions labelled DSM-5 (2018 to 2022) also hold a DSM-IV record, and the export takes their answers from the DSM-IV
+    record first: their answers may be those of the DSM-IV form (R70).'
+  - The DSM-5 form has no mixed episode. It asks instead about depressive and manic episodes with mixed features in the
+    year, which the extraction does not hold (R140).
+  - Psychotic features of manic episodes are asked only after 1 to 15 manic episodes in the year; the answer is read as
+    0 where the number of manic episodes is 0.
+  - The yes/no per kind of episode (dsm5_ly_mde, dsm5_ly_hypomania, dsm5_ly_mania) is written by the export from the number
+    and adds nothing to it.
+  - Two centres hold almost no answer of this section on their DSM-5 inclusions (R20, O40); elsewhere the first answer is
+    filled for 88% of the DSM-5 inclusions.
+
+dsm5_depuis_derniere_visite:
+  description: 'The mood episodes since the last visit, asked at the follow-up visits of FACE BP on the DSM-5 version of
+    the follow-up form: one yes/no question (at least one episode), then the number of depressive, hypomanic and manic episodes,
+    the numbers with psychotic features, and the type of the most recent episode.'
+  version: DSM-5 version of the follow-up form of FACE BP. The DSM-IV version is dsm4_depuis_derniere_visite.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: since the last visit
+  sources:
+  - schema notes (bp dsm5_depuis_derniere_visite)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D12, D14, D15, D53, D122
+  - 'respondent: the notes of the follow-up form name the rater (dsm4_depuis_derniere_visite: ''the typed total is the rater''s
+    own'')'
+  scores:
+    dsm5_fu_n_episodes:
+      meaning: 'Number of mood episodes since the last visit: the sum of the depressive, hypomanic and manic numbers (0
+        after a no). No total where one of the three is empty or unknown (185 visits).'
+      higher_means: more mood episodes since the last visit
+      polarity: worse
+      basis: anchors
+      source: label 'Number of mood episodes since the last visit (depressive, hypomanic and manic, added)'; schema notes
+        (bp dsm5_depuis_derniere_visite), decision D122
+  variables:
+    dsm5_fu_n_*:
+      meaning: Number of episodes of that kind since the last visit, 0 to 20. Read as 0 where the first answer is no.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes since the last visit' (range 0 to 20); schema notes (bp dsm5_depuis_derniere_visite)
+    dsm5_fu_recent_type:
+      meaning: Type of the most recent episode since the last visit (depressive, hypomanic, manic, unspecified). The list
+        has no mixed type.
+      polarity: not_applicable
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'Edition of a follow-up visit: before 2022 it takes the label of the patient''s inclusion (D12); from 1 January 2022
+    it is DSM-5 in every centre, whatever the inclusion (D14), although the follow-up form changed centre by centre between
+    October 2021 and May 2022. A visit that holds a column of the old form (mixed numbers, typed total) is read as DSM-IV
+    whatever its date (flag version_overridden).'
+  - This schema reads 2,328 visits, all but 1 from 2022; 1,029 of them are visits of patients whose inclusion was DSM-IV
+    (D14).
+  - 'The total has no mixed episodes, unlike the DSM-IV total (dsm4_fu_n_episodes): the two totals do not add the same kinds
+    of episode.'
+  - 'The window is the time since the previous visit, which is not one window (median gap 186 days at the six-monthly visits
+    and 367 at the yearly ones). The share of yes answers rises with the gap: do not compare counts of episodes across visits
+    without the gap.'
+  - 'Episodes since the last visit are probably undercounted: of the 596 follow-up visits in a current episode that answer
+    this question, 153 say that no episode occurred since the last visit.'
+  - The form shows a number with psychotic features only after 1 to 20 episodes of that kind; it is read as 0 where that
+    number is 0.
+  - 'Not in the extraction (R140): the numbers of depressive and manic episodes with mixed features since the last visit,
+    and the dates of the first depressive, manic and hypomanic episode since the last visit.'
+  - From 2022 one large centre holds an answer of the follow-up mood form on few of its follow-up visits (O40), against
+    85% in the other centres.
+
+dsm5_episode_actuel:
+  description: 'The mood episode the patient is in on the day of the visit, if any, on the DSM-5 version of the forms of
+    FACE BP: a yes/no, then the type, specifier, severity, chronicity and whether it followed a birth. Filled at the inclusion
+    visit and at every follow-up visit; the start date exists at follow-up only.'
+  version: DSM-5 version of the inclusion and follow-up forms of FACE BP. The DSM-IV version is dsm4_episode_actuel.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: the day of the visit
+  sources:
+  - schema notes (bp dsm5_episode_actuel)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D12, D14, D15, D53
+  - 'respondent: the notes of the DSM-5 inclusion form name the clinicians (dsm5_episode_recent; diva: ''typed by the clinician'')'
+  - 'respondent: the notes of the follow-up form name the rater (dsm4_depuis_derniere_visite: ''the typed total is the rater''s
+    own'')'
+  variables:
+    dsm5_current_type:
+      meaning: Type of the current episode (depressive, hypomanic, manic, unspecified). The DSM-5 forms have no mixed type.
+      polarity: not_applicable
+    dsm5_current_specifier:
+      meaning: 'Specifier of a current depressive episode: none, melancholic, atypical, catatonic or mixed (the specifier
+        ''mixed'' is DSM-5 only: 56 values).'
+      polarity: not_applicable
+    dsm5_current_severity:
+      meaning: Severity of the current episode, asked for a depressive, manic or unspecified episode (the forms keep the
+        answer rules of the DSM-IV form, where the fourth type was the mixed one).
+      polarity: not_applicable
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - 'Edition of a follow-up visit: before 2022 it takes the label of the patient''s inclusion (D12); from 1 January 2022
+    it is DSM-5 in every centre, whatever the inclusion (D14), although the follow-up form changed centre by centre between
+    October 2021 and May 2022. A visit that holds a column of the old form (mixed numbers, typed total) is read as DSM-IV
+    whatever its date (flag version_overridden).'
+  - '9 inclusions labelled DSM-5 (2018 to 2022) also hold a DSM-IV record, and the export takes their answers from the DSM-IV
+    record first: their answers may be those of the DSM-IV form (R70).'
+  - The answer describes the day of the visit at every visit, so inclusion and follow-up answers are in the same columns.
+    The follow-up visits read here are of patients labelled DSM-5 (921), labelled DSM-IV (1,045) or with no label (425).
+  - Chronicity is yes for 36% of the current depressive episodes, from 24% to 68% between centres.
+  - 'The start date exists at the follow-up visits only. The application writes the placeholder 1000-01-01 into empty dates
+    since its version of 2024-07-25: 338 cells, flagged date_placeholder. 18 dates are after the visit and are delivered
+    as written.'
+  - Two centres hold almost no DSM-5 answer at inclusion (R20, O40), and one of them answers on 27% of its follow-up visits
+    from 2022, against 67% to 96% in the other centres.
+  - 'Not in the extraction (R68): whether a manic or unspecified episode is catatonic or has mixed features.'
+
+dsm5_episode_recent:
+  description: 'The most recent mood episode before the inclusion visit, on the DSM-5 inclusion form of FACE BP: its start
+    and end dates, type, specifier, chronicity, severity and whether it followed a birth. Filled once, at the inclusion
+    visit.'
+  version: DSM-5 version of the inclusion form of FACE BP. The DSM-IV version is dsm4_episode_recent.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: the most recent episode before the inclusion visit
+  sources:
+  - schema notes (bp dsm5_episode_recent)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53
+  - 'respondent: schema notes (bp dsm5_episode_recent): ''the clinicians often described that episode here'''
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - '9 inclusions labelled DSM-5 (2018 to 2022) also hold a DSM-IV record, and the export takes their answers from the DSM-IV
+    record first: their answers may be those of the DSM-IV form (R70).'
+  - 'The most recent episode or the current one: where the patient is in an episode at inclusion, the clinicians often described
+    that episode here (272 of the 374 such visits with a type give the type of the current episode, and 187 have no end
+    date). Use dsm5_current_* for the episode of the day.'
+  - The DSM-5 form has no mixed type of episode; the specifier of a depressive episode can be 'mixed' (44 visits). Unlike
+    the DSM-IV form it asks the severity and the postpartum onset of an unspecified episode.
+  - 'Dates are delivered as written, unlike in dsm4_episode_recent: 19 of the 935 start dates are after the visit and 14
+    end dates are before the start. The placeholder 1000-01-01 is flagged date_placeholder (50 start and 93 end dates).'
+  - The share with an end date goes from 20% to 88% between centres. Two centres hold almost no answer of the DSM-5 inclusion
+    form (R20, O40).
+  - The type of the most recent episode recorded at the follow-up visits is another column (dsm5_fu_recent_type).
+
+dsm5_premier_episode:
+  description: 'The first mood episode of the patient, on the DSM-5 inclusion form of FACE BP: its type, the ages at the
+    first depressive, hypomanic and manic episode, the age at the first mood stabiliser, whether the first episode came
+    within six months of a birth and whether a cyclothymic period of more than two years came before. Filled once, at the
+    inclusion visit.'
+  version: DSM-5 version of the inclusion form of FACE BP. The DSM-IV version is dsm4_premier_episode.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: lifetime (the first mood episode)
+  sources:
+  - schema notes (bp dsm5_premier_episode)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D87, D89
+  - 'respondent: the notes of the DSM-5 inclusion form name the clinicians (dsm5_episode_recent; diva: ''typed by the clinician'')'
+  scores:
+    dsm5_first_episode_age:
+      meaning: 'Age at the first mood episode: the earliest of the ages at the first depressive, hypomanic and manic episode
+        that are known (one is enough). The DSM-5 twin of dsm4_first_episode_age.'
+      higher_means: older age at the first mood episode
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first mood episode (the earliest of the ages at the first depressive, hypomanic and manic
+        episode)'; docs/bp/PROGRESS.md D89
+  variables:
+    dsm5_first_mde_age:
+      meaning: Age at the first major depressive episode. The raw column holds the age at the first episode of any type
+        on the DSM-IV form. Asked only after 1 to 15 depressive episodes.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first major depressive episode' (years); schema notes (bp dsm5_premier_episode), D89
+    dsm5_first_hypomania_age:
+      meaning: Age at the first hypomanic episode. Asked only after 1 to 15 hypomanic episodes.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first hypomanic episode' (years); schema notes (bp dsm5_premier_episode)
+    dsm5_first_mania_age:
+      meaning: Age at the first manic episode. Asked only after 1 to 15 manic episodes.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first manic episode' (years); schema notes (bp dsm5_premier_episode)
+    dsm5_first_mood_stabiliser_age:
+      meaning: Age at the first mood stabiliser (form label 'Age du premier traitement thymorégulateur', D87). DSM-5 form
+        only.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first mood stabiliser' (years); schema notes (bp dsm5_premier_episode), D87
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - '9 inclusions labelled DSM-5 (2018 to 2022) also hold a DSM-IV record, and the export takes their answers from the DSM-IV
+    record first: their answers may be those of the DSM-IV form (R70).'
+  - 'For 143 patients the kind of episode named as the first has no age, so dsm5_first_episode_age is the age at a later
+    episode: an upper bound of the age at the first episode (median 25 against 20 for the others).'
+  - 'The form does not ask the age of a kind of episode after 16 or more episodes of that kind (an application defect):
+    75 patients for the depressive age, 56 for the hypomanic and 7 for the manic one.'
+  - The ages at the first hypomanic and manic episode and at the first mood stabiliser exist on the DSM-5 form only.
+  - Two centres hold almost no answer of this section (R20, O40). One centre records a cyclothymic period before the first
+    episode for 45% of its patients, against 16% overall.
+  - 13 ages are above the age at the inclusion visit (11 at the first mood stabiliser); delivered as written and flagged
+    check_failed.
+
+dsm5_vie_entiere:
+  description: 'The mood disorder over the whole life, as recorded at the inclusion visit on the DSM-5 form of FACE BP:
+    the number of depressive, hypomanic and manic episodes, those with psychotic features, induced episodes, rapid cycling,
+    full remission between episodes, seasonal pattern and the age at the first psychotropic treatment.'
+  version: DSM-5 version of the inclusion form of FACE BP. The DSM-IV version is dsm4_vie_entiere.
+  reference: DSM-5 (APA 2013), the classification whose criteria the form names. The form is a form of the application,
+    with no publication of its own.
+  reference_confidence: confirmed in source (Grunze et al. 2021; Osipov thesis cites APA 2013)
+  respondent: clinician
+  construct: illness_course
+  period: lifetime, as recorded at the inclusion visit
+  sources:
+  - schema notes (bp dsm5_vie_entiere)
+  - scale_reference.md section 25
+  - docs/bp/PROGRESS.md D9, D53, D122, D176
+  - 'respondent: the notes of the DSM-5 inclusion form name the clinicians (dsm5_episode_recent; diva: ''typed by the clinician'')'
+  variables:
+    dsm5_lt_n_*:
+      meaning: 'Lifetime number of episodes of that kind. The form stops at 20: ''>20'' is read as 20 with a mark in the
+        censoring column (this value or more).'
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes' (range 0 to 20); schema notes (bp dsm5_vie_entiere)
+    dsm5_lt_first_treatment_age:
+      meaning: Age at the first psychotropic treatment. '<5' is read as 5 (censored_left), '>89' as 89.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first psychotropic treatment' (years); schema notes (bp dsm5_vie_entiere)
+  flags:
+  - DSM-IV and DSM-5 are two editions, asked on two forms and exported in the same raw columns. Each has its own schema
+    and its own columns (dsm4_ and dsm5_); the two are never delivered in one column (BP decision D9).
+  - 'The application stores no edition: it is read from the label that the export writes on the inclusion row. The labelled
+    inclusions are DSM-IV until 2019 (7 exceptions), DSM-5 on 24 of 380 in 2020, 44 of 425 in 2021 and 203 of 238 in 2022,
+    and all DSM-5 from 2023. An inclusion with no label is read by the date of the patient''s first visit (DSM-IV before
+    2020, DSM-5 from 2023; flag version_inferred) and is not delivered when that date is in 2020 to 2022 (version_unknown).'
+  - '9 inclusions labelled DSM-5 (2018 to 2022) also hold a DSM-IV record, and the export takes their answers from the DSM-IV
+    record first: their answers may be those of the DSM-IV form (R70).'
+  - 'A count of 20 is a lower bound (58 depressive, 45 hypomanic, 4 manic): use the censoring column. ''Ne sais pas'' is
+    14% of the numbers of depressive episodes.'
+  - 'Psychotic features are asked only after 1 to 15 episodes of that kind (the DSM-IV form asks every patient): the answer
+    is read as 0 where the number is 0, and the 75 patients with 16 or more depressive episodes and the 7 with 16 or more
+    manic ones have no answer (an application defect).'
+  - 'The number of manic episodes with psychotic features is not delivered: the export loses it for the DSM-5 form (R68).'
+  - The DSM-5 form has no mixed episode. Its questions on episodes with mixed features and on the seasonal pattern of depression
+    and of (hypo)mania are not in the extraction (R140).
+  - 'The criteria of a manic episode differ between the editions (scale_reference.md section 25): DSM-5 asks for increased
+    energy or activity besides the mood, DSM-IV for the mood only (confirmed in source (Grunze 2021)). DSM-IV excluded treatment-induced
+    episodes; DSM-5 counts a full syndrome that persists beyond the effect of the treatment (confirmed in source (Tandon
+    2015; Grunze 2021); DSM-5 text to verify).'
+  - 'Rapid cycling is the rater''s yes/no (''now or in the past''), not derived from the counts. Published definition: at
+    least four episodes in 12 months (scale_reference.md section 25: confirmed in source (Miola 2023, DSM-5-TR wording);
+    ''unchanged from DSM-IV'' to verify).'
+  - Two centres hold almost no value of this section (R20, O40). One centre reports a seasonal pattern for 8% and rapid
+    cycling for 11% of its DSM-5 patients, against 23% to 51% and 20% to 42% in the others; delivered as written.
+
+trouble_psychotique_fu:
+  description: Whether the patient has a psychotic disorder, which one, the date of onset and whether symptoms were present
+    in the past month, asked again at the follow-up visits of FACE BP (six-monthly and yearly) on the follow-up diagnostic
+    form, one form whatever the DSM edition.
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the follow-up visit: an update given at that visit (question in the present tense); symptoms: past month'
+  sources:
+  - schema notes (bp trouble_psychotique_fu)
+  - docs/bp/PROGRESS.md D53, D84, D176
+  - 'respondent: the form asks about the patient in the third person (''Le patient a-t-il un trouble psychotique'')'
+  variables:
+    psychotic_disorder_fu:
+      meaning: Answer to 'does the patient have a psychotic disorder' at a follow-up visit (1 yes, 0 no). The form does
+        not say 'other than the mood disorder' and has no 'change since the last visit' question.
+  flags:
+  - A follow-up answer is an update given at that visit (D84); it is delivered apart from the inclusion answer (psychotic_*_v0).
+    Of the 73 follow-up answers of patients with a psychotic disorder at inclusion, 70 are 'no'.
+  - 'Rare: 34 yes in 9,389 answers (0.36%), from 30 patients, 18 of whom answered no at inclusion; of the 12 yes followed
+    by another answer, 8 are followed by a no.'
+  - 'Answered on 81% of the follow-up visits: 87% to 92% by period until 2018, 81% in 2019-2021 and 66% to 68% from 2022.
+    The missing answers are missing forms. Never asked at screening.'
+  - The placeholder date 1000-01-01 (422 cells, 396 of them on visits of 2025 and 2026) is flagged date_placeholder. 22
+    real dates of onset, 9 of them before the inclusion.
+
+trouble_psychotique_v0:
+  description: Whether the patient has a psychotic disorder, which one of nine, the date of onset and whether symptoms were
+    present in the past month, at the inclusion visit of FACE BP. The DSM-IV and the DSM-5 inclusion forms ask the same
+    four questions, so the section is not split by edition.
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the inclusion visit (question in the present tense); symptoms: past month'
+  sources:
+  - schema notes (bp trouble_psychotique_v0)
+  - docs/bp/PROGRESS.md D53, D84, D176
+  - 'respondent: the form asks about the patient in the third person (''Le patient a-t-il un trouble psychotique'')'
+  variables:
+    psychotic_disorder_v0:
+      meaning: Answer to 'does the patient have a psychotic disorder' at inclusion (1 yes, 0 no). The form does not say
+        'other than the mood disorder'.
+  flags:
+  - 'Rare in this cohort: 69 of the 5,394 inclusions answer yes (1.3%). Of these 69, 10 have no type, 15 no answer about
+    the past month and 21 no date of onset.'
+  - 'The same question is asked again at every follow-up visit and delivered apart (psychotic_*_fu): of the 73 follow-up
+    answers of patients with a psychotic disorder at inclusion, 70 are ''no''.'
+  - The details are shown only after a yes; 2 inclusions answered no keep a detail, delivered as written.
+  - 'The application writes the placeholder 1000-01-01 into empty dates since its version of 2024-07-25: 319 cells, flagged
+    date_placeholder. 49 real dates of onset.'
+
+anxiety_fu:
+  description: 'Anxiety disorders at the yearly follow-up visits: the inclusion questions asked again. FACE BP: one yes/no
+    question (does the patient have an anxiety disorder), then one box per disorder with the age at onset and whether symptoms
+    were present in the past month. FACE SZ: the first question only.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the yearly visit: an update given at that visit (question in the present tense); symptoms: past month'
+  sources:
+  - schema notes (bp anxiety_fu)
+  - schema notes (sz anxiety_fu)
+  - docs/bp/PROGRESS.md D49, D50, D84, D150, D151
+  - facedata/common_instruments.yaml (anxiety_fu)
+  - 'respondent: the form asks about the patient in the third person (''does the patient have an anxiety disorder'')'
+  scores:
+    panic_disorder_fu:
+      meaning: 'Panic disorder at a yearly visit (1 yes, 0 no), FACE BP only: the box written by the export, set to missing
+        where the agoraphobia box is ticked and no detail of the panic disorder is filled (156 yearly visits, flag score_not_recomputed),
+        because the export also ticks it for ''agoraphobia without panic disorder''.'
+      higher_means: panic disorder present
+      polarity: worse
+      basis: anchors
+      source: 'range 0 to 1; schema notes (bp anxiety_fu): ''Yes/no answers are delivered as 1 and 0''; docs/bp/PROGRESS.md
+        D150, D151'
+  variables:
+    anxiety_disorder_fu:
+      meaning: Answer to 'does the patient have an anxiety disorder' at a yearly visit (1 yes, 0 no; unknown is missing).
+        In FACE SZ it is the only anxiety answer of the yearly visits.
+    '*_onset_age_fu':
+      meaning: 'Age at onset of that disorder as given at a yearly visit, FACE BP only. A lifetime age, not an age ''since
+        the last visit'': it equals the age given at inclusion in 33% to 82% of the pairs by disorder.'
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: age at onset, at follow-up'' (range 0 to 90); schema notes (bp anxiety_fu)'
+  flags:
+  - 'A yearly answer is an update given at that visit, on the inclusion form asked again: neither a history of the whole
+    life nor strictly an answer about the time since the last visit (BP decision D84).'
+  - 'FACE BP: the yearly form opens with the question ''no change since the last visit?'', which the extraction does not
+    hold: an empty yearly section may mean ''no change''. The SZ form has no such question.'
+  - 'Not a lifetime answer: of the patients answered yes at inclusion, the first answer a year or more later is ''no'' for
+    40% in FACE BP (435 of 1,081); in FACE SZ 397 of 837 later answers (47%) are ''no''.'
+  - Asked at the yearly visits only, never at the six-monthly ones. In FACE BP the share of yearly visits that hold the
+    tab is 37% to 48% in 2010-2013, 67% to 73% in 2015-2019 and 39% to 47% from 2022. anxiety_disorder_fu is answered on
+    56% of the BP yearly visits and on 2,265 of the 2,588 SZ yearly visits.
+  - 'FACE SZ: the extraction holds the first question only; the list of disorders of the yearly form is not exported (R115).'
+  - 'FACE BP: the boxes are read as 0 after a no to the first question and stay missing where it is unknown or empty. An
+    empty age at onset under a yes mixes unknown and not answered: the export keeps whole numbers only and loses ''Ne sais
+    pas'', ''<5'' and ''>89'' (R117).'
+
+anxiety_v0:
+  description: 'Anxiety disorders at the inclusion visit: one yes/no question (does the patient have an anxiety disorder),
+    then for each disorder a yes/no and whether symptoms were present in the past month. FACE BP ticks one box per disorder
+    and asks the age at onset. FACE SZ uses another form: each disorder comes after a screening question, and there is no
+    age at onset.'
+  version: 'FACE BP: the block of the DSM-IV and DSM-5 diagnosis forms (identical apart from the panic type boxes, no split
+    by edition). FACE SZ: another form, a tree of screening questions (SZ decision D17).'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the inclusion visit (question in the present tense); symptoms: past month; ages at onset: lifetime'
+  sources:
+  - schema notes (bp anxiety_v0)
+  - schema notes (sz anxiety_v0)
+  - docs/bp/PROGRESS.md D49, D50, D84, D150, D151
+  - docs/sz/PROGRESS.md D17
+  - facedata/common_instruments.yaml (anxiety_v0)
+  - facedata/shared_names.yaml
+  - 'respondent: the form asks about the patient in the third person (''does the patient have an anxiety disorder'')'
+  scores:
+    panic_disorder_v0:
+      meaning: 'Panic disorder at inclusion (1 yes, 0 no). FACE BP: the box written by the export, set to missing where
+        the agoraphobia box is ticked and no detail of the panic disorder is filled (206 inclusion visits, flag score_not_recomputed),
+        because the export also ticks it for ''agoraphobia without panic disorder''. FACE SZ: a plain variable, the panic
+        disorder with or without agoraphobia, asked after the screening question on panic attacks.'
+      higher_means: panic disorder present
+      polarity: worse
+      basis: anchors
+      source: 'range 0 to 1; schema notes (bp anxiety_v0): ''Yes/no answers are delivered as 1 and 0''; docs/bp/PROGRESS.md
+        D150, D151'
+  variables:
+    anxiety_disorder_v0:
+      meaning: 'Answer to ''does the patient have an anxiety disorder'' at inclusion (1 yes, 0 no; unknown is missing).
+        The gate of the other questions: they are read as 0 after a no.'
+    '*_onset_age_v0':
+      meaning: Age at onset of that disorder, FACE BP only. An empty age under a ticked box mixes unknown and not answered
+        (the export loses 'Ne sais pas', '<5' and '>89').
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: age at onset, at inclusion'' (range 0 to 90); schema notes (bp anxiety_v0)'
+    gad_screening_v0:
+      meaning: 'FACE SZ only. Screening question of the generalised anxiety: nervous or anxious ''in the last ten months'',
+        where the other screening questions ask ''ever''. Not the disorder (gad_v0).'
+    obsessional_disorder_v0:
+      meaning: FACE SZ only. Obsessional disorder, asked after the obsessions; the obsessive-compulsive disorder is ocd_v0,
+        asked after the compulsions.
+    adhd_symptoms_v0:
+      meaning: 'FACE SZ only. Symptoms of an attention deficit hyperactivity disorder in childhood (before age 12). Not
+        part of the anxiety tree and not asked of every patient: 1,638 of the 2,353 inclusion visits hold it (7% of those
+        of 2012, 79% to 96% from 2016).'
+      construct: adhd_symptoms
+  flags:
+  - 'Inclusion and yearly answers are delivered apart (_v0 and _fu), because the same question asked again gives another
+    answer: in FACE BP 48% yes at inclusion and 35% at the yearly visits, and 40% of the patients answered yes at inclusion
+    have a first later answer ''no''.'
+  - The boxes are read as 0 after a no to the first question (the form did not ask) and stay missing where the first answer
+    is unknown or empty. The past-month answers and the ages stay missing after a no.
+  - 'FACE BP: the whole comorbidity tab is often left empty. Its four first questions (anxiety, substances, eating disorders,
+    somatoform disorders) are all empty on 17% of the inclusion visits (453 of the 1,127 inclusions of 2022 to 2024) and
+    on 43% of the yearly visits, and four centres stop holding the tab. An empty first answer is missing, not ''no''.'
+  - 'FACE BP: the type of the panic disorder (with or without agoraphobia) is not known: the export''s two type columns
+    hold the social phobia and are not delivered (R113).'
+  - 'FACE SZ: the tree of screening questions was introduced centre by centre from 2012 to 2016: 4% of the yes visits hold
+    a question of the tree in 2012, 66% in 2015 and 96% to 100% from 2016. The screening variables (panic_attacks_v0, agoraphobic_fear_v0,
+    social_fear_v0, specific_fear_v0, obsessions_v0, compulsions_v0, gad_screening_v0) are symptoms, not disorders.'
+  - 'FACE SZ has no yes/no question for the anxiety due to a medical condition: anxiety_medical_condition_v0 and anxiety_medical_last_month_v0
+    are asked under the generalised anxiety, so nothing says which patients have one. The SZ schema has no variable for
+    a substance-induced anxiety.'
+  - Stack BP and SZ with care (common_instruments.yaml). The shared names anxiety_disorder_v0, agoraphobia_v0, social_phobia_v0,
+    specific_phobia_v0, ocd_v0, ptsd_v0 and gad_v0 hold the same notions; the SZ export wires other form fields into some
+    raw columns, so the SZ variables are named for what they hold (R114).
+  - The yes share of the first question differs by centre (33% to 69% in BP, 16% to 69% in SZ) and, in BP, with the form
+    of the inclusion (47% on the DSM-IV visits, 54% on the DSM-5 ones; cause not known).
+
+eating_disorder_fu:
+  description: 'Eating disorders at the yearly follow-up visits of FACE BP: the inclusion questions asked again (whether
+    the patient has an eating disorder, which one, symptoms in the past month, age at onset).'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the yearly visit: an update given at that visit (question in the present tense); symptoms: past month'
+  sources:
+  - schema notes (bp eating_disorder_fu)
+  - docs/bp/PROGRESS.md D49, D50, D84, D152
+  - 'respondent: the form asks about the patient in the third person (''does the patient have an eating disorder'')'
+  variables:
+    eating_disorder_onset_age_fu:
+      meaning: Age at onset of the eating disorder, as given at a yearly visit. Filled on 57% to 83% of the yes visits from
+        2013 to 2021 and on 38% to 53% from 2022.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'label ''Eating disorder: age at onset, at follow-up'' (range 0 to 90); schema notes (bp eating_disorder_fu)'
+  flags:
+  - 'A yearly answer is an update given at that visit, on the inclusion form asked again: neither a history of the whole
+    life nor strictly an answer about the time since the last visit (BP decision D84).'
+  - 'FACE BP: the yearly form opens with the question ''no change since the last visit?'', which the extraction does not
+    hold: an empty yearly section may mean ''no change''.'
+  - 'Not a lifetime answer: 20% of the patients have an eating disorder at inclusion and 14% at the yearly visits; of the
+    patients answered yes at inclusion, the first answer a year or more later is ''no'' for 49% (232 of 469).'
+  - Asked at the yearly visits only, never at the six-monthly ones. In FACE BP the share of yearly visits that hold the
+    tab is 37% to 48% in 2010-2013, 67% to 73% in 2015-2019 and 39% to 47% from 2022. eating_disorder_fu is answered on
+    56% of the yearly visits.
+  - 'An empty age at onset under a yes mixes unknown and not answered: the export keeps whole numbers only and loses ''Ne
+    sais pas'', ''<5'' and ''>89'' (R117).'
+
+eating_disorder_v0:
+  description: 'Eating disorders at the inclusion visit (FACE BP and FACE SZ): whether the patient has an eating disorder,
+    which one, whether symptoms were present in the past month and the age at onset.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the inclusion visit (question in the present tense); symptoms: past month; age at onset: lifetime'
+  sources:
+  - schema notes (bp eating_disorder_v0)
+  - schema notes (sz eating_disorder_v0)
+  - docs/bp/PROGRESS.md D49, D50, D84, D152
+  - facedata/common_instruments.yaml (eating_disorder_v0)
+  - 'respondent: the form asks about the patient in the third person (''does the patient have an eating disorder'')'
+  variables:
+    eating_disorder_onset_age_v0:
+      meaning: Age at onset of the eating disorder. Not asked on the DSM-5 inclusion form of FACE BP, nor in FACE SZ since
+        2020.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'label ''Eating disorder: age at onset, at inclusion'' (range 0 to 90); schema notes (bp and sz eating_disorder_v0)'
+    eating_disorder_type_v0:
+      meaning: Which eating disorder. 'Night eating syndrome' exists in the DSM-5 form of FACE BP only (3 inclusion visits);
+        the SZ form has five types.
+      polarity: not_applicable
+  flags:
+  - 'The age at onset is missing from the DSM-5 forms. FACE BP: among the inclusions with an eating disorder it is filled
+    on 84% of the DSM-IV visits and on 2 of the 232 DSM-5 visits (none after the first quarter of 2022), so an empty age
+    on a DSM-5 inclusion is ''not asked'', not ''unknown''. FACE SZ: asked until 2019 and not since 2020.'
+  - 'FACE BP asks the same questions again at the yearly visits and delivers them apart (eating_disorder_fu): 20% yes at
+    inclusion, 14% at the yearly visits. FACE SZ has the inclusion answers only (R115).'
+  - The type, the past month and the age stay missing after a no. In FACE SZ, under a yes the past month is empty on 28%
+    of the visits and the age at onset on 41%.
+  - 'FACE BP: the whole comorbidity tab is often left empty. Its four first questions (anxiety, substances, eating disorders,
+    somatoform disorders) are all empty on 17% of the inclusion visits (453 of the 1,127 inclusions of 2022 to 2024) and
+    on 43% of the yearly visits, and four centres stop holding the tab. An empty first answer is missing, not ''no''.'
+  - 'FACE SZ: the yes share of the first question is 7% of the visits to 2013, 17% in 2014-16, 11% in 2017-19 and 7% to
+    8% since 2020, and 4% to 29% by centre; no known cause.'
+  - 'An empty age at onset under a yes mixes unknown and not answered: the export keeps whole numbers only and loses ''Ne
+    sais pas'', ''<5'' and ''>89'' (R117).'
+
+somatoform_fu:
+  description: 'Somatoform disorders at the yearly follow-up visits of FACE BP: the inclusion questions asked again (a current
+    somatoform disorder, which one, age at onset, symptoms in the past month).'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the yearly visit: an update given at that visit (a ''current'' somatoform disorder); symptoms: past month'
+  sources:
+  - schema notes (bp somatoform_fu)
+  - docs/bp/PROGRESS.md D49, D50, D84
+  - 'respondent: the form asks about the patient in the third person (''does the patient have a current somatoform disorder'')'
+  flags:
+  - 'A yearly answer is an update given at that visit, on the inclusion form asked again: neither a history of the whole
+    life nor strictly an answer about the time since the last visit (BP decision D84).'
+  - 'FACE BP: the yearly form opens with the question ''no change since the last visit?'', which the extraction does not
+    hold: an empty yearly section may mean ''no change''.'
+  - 'Rare: 1.7% yes at the yearly visits (3.6% at inclusion); of the patients answered yes at inclusion, the first answer
+    a year or more later is ''no'' for 74% (59 of 80).'
+  - Asked at the yearly visits only, never at the six-monthly ones. In FACE BP the share of yearly visits that hold the
+    tab is 37% to 48% in 2010-2013, 67% to 73% in 2015-2019 and 39% to 47% from 2022. somatoform_disorder_fu is answered
+    on 56% of the yearly visits.
+  - 'An empty age at onset under a yes mixes unknown and not answered: the export keeps whole numbers only and loses ''Ne
+    sais pas'', ''<5'' and ''>89'' (R117).'
+
+somatoform_v0:
+  description: 'Somatoform disorders at the inclusion visit of FACE BP: whether the patient has a current somatoform disorder,
+    which one of five, the age at onset and whether symptoms were present in the past month.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: 'at the inclusion visit (a ''current'' somatoform disorder); symptoms: past month; age at onset: lifetime'
+  sources:
+  - schema notes (bp somatoform_v0)
+  - docs/bp/PROGRESS.md D49, D50, D84
+  - 'respondent: the form asks about the patient in the third person (''does the patient have a current somatoform disorder'')'
+  flags:
+  - 'Rare: 3.6% of the patients have a somatoform disorder at inclusion.'
+  - 'The same questions are asked again at the yearly visits and delivered apart (somatoform_fu): 1.7% yes there, and 74%
+    of the patients answered yes at inclusion have a first later answer ''no'' (59 of 80).'
+  - 'FACE BP: the whole comorbidity tab is often left empty. Its four first questions (anxiety, substances, eating disorders,
+    somatoform disorders) are all empty on 17% of the inclusion visits (453 of the 1,127 inclusions of 2022 to 2024) and
+    on 43% of the yearly visits, and four centres stop holding the tab. An empty first answer is missing, not ''no''.'
+  - 'An empty age at onset under a yes mixes unknown and not answered: the export keeps whole numbers only and loses ''Ne
+    sais pas'', ''<5'' and ''>89'' (R117).'
+
+substance_fu:
+  description: 'Substance use disorders at the yearly follow-up visits: the inclusion questions asked again. FACE BP: one
+    question (does the patient have, or have they had, a substance use disorder), then for each of eight substances a box,
+    the type (abuse or dependence), symptoms in the past month, the age at onset and the cumulated duration in months. FACE
+    SZ: for each of eight substances a box (a symptom of a use disorder over the whole life), whether the disorder is present
+    at the time of the visit and the age at onset.'
+  version: 'FACE BP: the yearly comorbidity form, with the DSM-IV names abuse and dependence. FACE SZ: the clinician''s
+    list of the comorbidity form, to which a yes of the addiction form is added from 2015.'
+  reference: Abuse and dependence are the DSM-IV names (FACE BP); the FACE SZ boxes rest on the DSM-5 criteria of a substance
+    use disorder (Hasin DS, O'Brien CP, Auriacombe M, et al. Am J Psychiatry 2013;170:834-851). The forms are forms of the
+    application, with no publication of their own.
+  reference_confidence: 'Confirmed (abstract: Hasin 2013, PMID 23903334)'
+  respondent: clinician
+  construct: substance_use
+  period: 'at the yearly visit: an update given at that visit of a question worded over the whole life; symptoms: past month
+    (BP), at the time of the visit (SZ)'
+  sources:
+  - schema notes (bp substance_fu)
+  - schema notes (sz substance_fu)
+  - docs/bp/PROGRESS.md D49, D50, D74, D84
+  - docs/sz/PROGRESS.md D17
+  - facedata/common_instruments.yaml (substance_fu)
+  - scale_reference_aq_general.md section 3
+  - 'respondent: schema notes (sz substance_fu): ''the clinician''s answer of the comorbidity form''; BP form ''does the
+    patient have, or have they had, a substance use disorder'''
+  variables:
+    substance_disorder_fu:
+      meaning: 'First question, at a yearly visit (1 yes, 0 no). FACE BP: the clinician''s answer to ''does the patient
+        have, or have they had, a substance use disorder''. FACE SZ: the clinician''s answer of the comorbidity form, which
+        the export turns into yes when any box is yes.'
+    '*_disorder_fu':
+      meaning: 'Box of one substance, at a yearly visit (1 yes, 0 no). FACE BP: abuse or dependence on that substance. FACE
+        SZ: a symptom of a use disorder over the whole life (at least one DSM-5 criterion, or the clinician''s tick).'
+    '*_last_month_fu':
+      meaning: 'FACE BP: symptoms in the past month. FACE SZ: the use disorder is present at the time of the visit (asked
+        from two DSM-5 criteria).'
+    '*_type_fu':
+      meaning: Abuse or dependence, FACE BP only (SZ has no type of disorder).
+      polarity: not_applicable
+    '*_onset_age_fu':
+      meaning: 'Age at onset of the disorder of that substance (FACE SZ: of the use disorder), as given at a yearly visit:
+        still a lifetime age. The export loses ''Ne sais pas'', ''<5'' and ''>89''.'
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: age at onset'' (range 0 to 90); schema notes (bp and sz substance_fu)'
+    '*_months_fu':
+      meaning: Cumulated duration of the disorder over the whole life, in months, typed freely. FACE BP only. Winsorised
+        like every number; above 840 months is out of range.
+      higher_means: longer cumulated duration of the disorder
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: cumulated duration of the disorder over the life'' (months, range 0 to 840); schema notes (bp
+        substance_fu)'
+  flags:
+  - 'A yearly answer is an update given at that visit, on the inclusion form asked again: neither a history of the whole
+    life nor strictly an answer about the time since the last visit (BP decision D84).'
+  - 'The question is about the whole life (''has or has had''), so a yes should not become a no; it does. FACE BP: the first
+    question is yes for 37% of the answers at inclusion and 23% at the yearly visits, and 41% of the yearly answers given
+    more than nine months after a yes at inclusion are ''no''. FACE SZ: of the patients with an alcohol box at 1 at inclusion,
+    147 of the 319 later answers are ''no''.'
+  - 'Same names, different content in the two cohorts. FACE BP: the box is the clinician''s tick of abuse or dependence,
+    and ''_last_month'' is ''symptoms in the past month''. FACE SZ: the box is ''a symptom of a use disorder over the whole
+    life (at least one DSM-5 criterion)'' and ''_last_month'' is ''use disorder present at the time of the visit''. Stack
+    with care (common_instruments.yaml).'
+  - 'FACE SZ: the box has two sources, the clinician''s list and, from 2015, a yes of the addiction form: the yes share
+    of the cannabis box rises from 10% to 19% of the answers in 2012-14 to 22% to 29% from 2015. The stimulants and the
+    other substances have a box at follow-up only.'
+  - 'FACE SZ: the end of each section (disorder present at the time of the visit, age at onset) is shown only with two or
+    more DSM-5 criteria, a count that is in another tab: an empty cell means ''not asked'', not ''no''. Two or more of 11
+    criteria within 12 months is the published DSM-5 threshold (scale_reference_aq_general.md section 3: Confirmed (direct:
+    Miller 2023)).'
+  - 'FACE BP: the yearly form opens with the question ''no change since the last visit?'', which the extraction does not
+    hold: an empty yearly section may mean ''no change''. In FACE BP the first question is empty on 37% of the yearly visits
+    up to 2021 and on 58% from 2022 (five centres make the step).'
+  - Asked at the yearly visits only, never at the six-monthly ones. In FACE BP the share of yearly visits that hold the
+    tab is 37% to 48% in 2010-2013, 67% to 73% in 2015-2019 and 39% to 47% from 2022.
+  - 'The ages at onset and the durations still describe the whole life at the yearly visits, but are retyped: in FACE BP
+    the age equals the one of the inclusion visit in 66% of the pairs and the duration in 38%.'
+  - 'FACE BP uses abuse and dependence, the DSM-IV names, in every year, also for the patients evaluated with DSM-5 criteria.
+    DSM-5 merges the two into one disorder (scale_reference_aq_general.md section 3: Confirmed (abstract: Hasin 2013)).'
+
+substance_v0:
+  description: 'Substance use disorders at the inclusion visit. FACE BP: one question (does the patient have, or have they
+    had, a substance use disorder), then for each of eight substances a box, the type (abuse or dependence), whether symptoms
+    were present in the past month, the age at onset and the cumulated duration in months. FACE SZ: for each of six substances
+    a box (a symptom of a use disorder over the whole life), whether the disorder is present at the time of the visit and
+    the age at onset.'
+  version: 'FACE BP: the block of the DSM-IV and DSM-5 diagnosis forms, with the DSM-IV names abuse and dependence. FACE
+    SZ: built by the export from the addiction form (at least one DSM-5 criterion), used from 2015.'
+  reference: Abuse and dependence are the DSM-IV names (FACE BP); the FACE SZ boxes rest on the DSM-5 criteria of a substance
+    use disorder (Hasin DS, O'Brien CP, Auriacombe M, et al. Am J Psychiatry 2013;170:834-851). The forms are forms of the
+    application, with no publication of their own.
+  reference_confidence: 'Confirmed (abstract: Hasin 2013, PMID 23903334)'
+  respondent: clinician
+  construct: substance_use
+  period: 'lifetime (''has or has had'', under the title ''over the whole life''); symptoms: past month (BP), at the time
+    of the visit (SZ)'
+  sources:
+  - schema notes (bp substance_v0)
+  - schema notes (sz substance_v0)
+  - docs/bp/PROGRESS.md D49, D50, D74, D84
+  - docs/sz/PROGRESS.md D17
+  - facedata/common_instruments.yaml (substance_v0)
+  - scale_reference_aq_general.md section 3
+  - 'respondent: BP form ''does the patient have, or have they had, a substance use disorder''; the SZ boxes come from the
+    addiction form, whose respondent the notes do not state'
+  variables:
+    substance_disorder_v0:
+      meaning: 'First question, at inclusion (1 yes, 0 no). FACE BP: the clinician''s answer to ''does the patient have,
+        or have they had, a substance use disorder'' (abuse or dependence). FACE SZ: not asked but derived by the export
+        from the boxes; 97% yes among the valid answers, it does not measure the disorder.'
+    '*_disorder_v0':
+      meaning: 'Box of one substance, at inclusion (1 yes, 0 no). FACE BP: abuse or dependence on that substance. FACE SZ:
+        a symptom of a use disorder over the whole life (at least one DSM-5 criterion).'
+    '*_last_month_v0':
+      meaning: 'FACE BP: symptoms in the past month. FACE SZ: the use disorder is present at the time of the visit (asked
+        from two DSM-5 criteria).'
+    '*_type_v0':
+      meaning: Abuse or dependence, FACE BP only (SZ has no type of disorder).
+      polarity: not_applicable
+    '*_onset_age_v0':
+      meaning: 'Age at onset of the disorder of that substance (FACE SZ: of the use disorder). The export loses ''Ne sais
+        pas'', ''<5'' and ''>89''.'
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: age at onset'' (range 0 to 90); schema notes (bp and sz substance_v0)'
+    '*_months_v0':
+      meaning: Cumulated duration of the disorder over the whole life, in months, typed freely. FACE BP only. Winsorised
+        like every number; above 840 months is out of range.
+      higher_means: longer cumulated duration of the disorder
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: cumulated duration of the disorder over the life'' (months, range 0 to 840); schema notes (bp
+        substance_v0)'
+  flags:
+  - 'Same names, different content in the two cohorts. FACE BP: the box is the clinician''s tick of abuse or dependence,
+    and ''_last_month'' is ''symptoms in the past month''. FACE SZ: the box is ''a symptom of a use disorder over the whole
+    life (at least one DSM-5 criterion)'' and ''_last_month'' is ''use disorder present at the time of the visit''. Stack
+    with care (common_instruments.yaml).'
+  - 'FACE SZ: substance_disorder_v0 cannot be used: the export derives it from the boxes and writes ''Ne sais pas'' (read
+    as missing) on 975 of the 1,583 answered inclusion visits (R116).'
+  - 'FACE SZ: the module is used from 2015, not from 2012 (its opening alcohol question is answered on 9% of the inclusion
+    visits of 2012, 48% of 2015 and 83% to 93% from 2016). The sedative, opiate, cocaine and hallucinogen boxes are read
+    as 0 after a no to the opening drug question (illicit_drugs_over_ten_times, instrument drug_use).'
+  - 'FACE SZ: the end of each section (disorder present at the time of the visit, age at onset) is shown only with two or
+    more DSM-5 criteria, a count that is in another tab: an empty cell means ''not asked'', not ''no''. Two or more of 11
+    criteria within 12 months is the published DSM-5 threshold (scale_reference_aq_general.md section 3: Confirmed (direct:
+    Miller 2023)).'
+  - 'FACE SZ: six substances at inclusion (no stimulants, no other substances); the hallucinogen box at inclusion is the
+    question on other products, and hallucinogen_onset_age_v0 has no cell.'
+  - 'Inclusion and yearly answers are delivered apart (_v0 and _fu): a later answer often says ''no'' after a yes although
+    the question is about the whole life (BP: 41% of the yearly answers given more than nine months after a yes at inclusion).'
+  - 'FACE BP uses abuse and dependence, the DSM-IV names, in every year, also for the patients evaluated with DSM-5 criteria.
+    DSM-5 merges the two into one disorder (scale_reference_aq_general.md section 3: Confirmed (abstract: Hasin 2013)).'
+  - 'FACE BP: a ticked box often has empty details, and an empty detail is not ''not asked'': at inclusion the type is empty
+    for 22% of the ticked boxes and the duration for 42%; all four details are empty on 5% to 9% of the boxes of 2011 to
+    2016 and on 32% to 40% of those of 2018 to 2021.'
+  - 'FACE BP: the first question is empty on 14% of the inclusion visits up to 2021 and on 35% from 2022 (three centres
+    make the step); an empty answer is missing, not ''no''. The boxes are 0 after a no and missing where the first answer
+    is unknown or empty.'
+  - 'By year in FACE SZ: the cannabis box is yes on 34% to 35% of the answers of 2014 to 2022 and 22% from 2023; the sedative
+    box falls after 2016 in one centre; no known cause.'
+
+tobacco:
+  description: 'The tobacco status at the visit (non-smoker, current smoker, ex-smoker), with the pack-years and the ages
+    at which the patient started and stopped smoking. In the four cohorts. FACE SZ adds five questions: cigarettes per day
+    in the last 12 months, age at the first cigarette, longest abstinence, a first-degree relative with a tobacco use disorder
+    and a craving score from 0 to 10.'
+  reference: not_applicable
+  construct: tobacco
+  period: 'status: the day of the visit; pack-years and ages: cumulative over the life; SZ: cigarettes per day in the last
+    12 months, craving in the last week'
+  sources:
+  - schema notes (bp, sz, dr and asp tobacco)
+  - scale_reference_rest.md section 11
+  - docs/bp/PROGRESS.md D49
+  - docs/dr/PROGRESS.md D42
+  - facedata/common_instruments.yaml (tobacco)
+  variables:
+    tobacco_status:
+      meaning: 'Status on the day of the visit: non-smoker, current smoker or ex-smoker. ''Non-smoker'' is not ''never smoked''.'
+      polarity: not_applicable
+    pack_years:
+      meaning: 'Pack-years: packs a day times years smoked (1 pack = 20 cigarettes), typed by hand and retyped at each visit.
+        Filled for smokers and ex-smokers only; winsorised; above 200 is out of range.'
+      higher_means: more tobacco smoked over the life
+      polarity: worse
+      basis: literature
+      source: 'scale_reference_rest.md section 11: pack-years = packs per day x years, Confirmed (search snippets of the
+        NCI entries); schema notes (bp tobacco): ''the formula of the form (packs a day times years)'''
+    cigarettes_per_day_12m:
+      meaning: FACE SZ only. Cigarettes smoked per day on average in the last 12 months; asked of current and ex-smokers
+        (0 for 74% of the ex-smokers' answers). Winsorised.
+      higher_means: more cigarettes per day
+      polarity: worse
+      basis: anchors
+      source: label 'Cigarettes smoked per day on average in the last 12 months'; schema notes (sz tobacco)
+    tobacco_craving_score:
+      meaning: FACE SZ only. Maximum craving for tobacco in the last week, from 0 (never) to 10 (all the time).
+      higher_means: more craving
+      polarity: worse
+      basis: anchors
+      source: label 'Maximum craving for tobacco in the last week (0 never to 10 all the time)' (sz tobacco)
+    tobacco_first_age:
+      meaning: 'FACE SZ only. Age at the first cigarette: another question than smoking_start_age.'
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: 'label ''Age at the first cigarette''; schema notes (asp tobacco): ''the three names stay apart'''
+  flags:
+  - '''Non-smoker'' is not ''never smoked'': a patient is a non-smoker at one visit and a smoker or ex-smoker at another
+    (12% of the non-smoker visits of FACE BP are dated after a visit as a smoker or ex-smoker). The details of a non-smoker
+    are empty, never 0: never derive 0 pack-years from ''non-smoker''.'
+  - 'The pack-years and the ages are retyped at each visit and are not constant: in FACE BP the pack-years fall between
+    two visits in 22% of the pairs and the start age takes more than one value for 44% of the patients who give it twice
+    or more (SZ 25% and 52%, DR 31% and 51%).'
+  - 'The delivered pack-years are not the typed ones: they are winsorised at the 1st and 99th percentiles (FACE BP: 61 values
+    from 73 to 200 become 72).'
+  - 'FACE ASP records tobacco from 2020 and its pack-years are doubtful (values that are not possible for patients this
+    young, from one centre; the unit is not known, open question O10): compare the pack-years of BP, SZ and DR only (common_instruments.yaml).'
+  - 'FACE SZ: the five added questions are asked of current and ex-smokers only and are used from 2015 (filled on 3% to
+    13% of the smoker visits in 2012 to 2014, 65% to 89% since 2016).'
+  - 'Steps with no known cause. FACE DR: non-smokers are 50% of the visits until 2020 and 64% since, while the details are
+    given less often. FACE SZ: current smokers go from 53% of the visits of 2014-16 to 36% from 2023. FACE BP: the status
+    is filled on 67% to 84% of the follow-up visits of 2009-2013 and 76% in 2020, against 86% to 94% in the other years.'
+  - Who records the answers is stated for FACE DR only (the nurse's record, form 112). In FACE DR the form shows the pack-year
+    formula and computes nothing; in FACE BP the formula is commented out of the script.
+  - 'Not in the extraction: the nicotine substitute (BP, R120); the age of the strongest dependence and a drug treatment
+    of the tobacco use disorder (SZ, R120). The Fagerström test is another instrument (fagerstrom).'
+
+lifetime_symptoms:
+  description: 'Twenty-two psychotic symptoms (ten delusions, ideas of reference, four kinds of hallucination, catatonia,
+    three signs of disorganisation and three negative symptoms), each answered twice at the inclusion visit of FACE SZ:
+    ever, and present in the last month.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychotic_symptoms
+  period: lifetime (ever) and the last month, as recorded at the inclusion visit
+  sources:
+  - schema notes (sz lifetime_symptoms)
+  - docs/sz/PROGRESS.md D80
+  - 'respondent: the questions are on the diagnostic form (table psy_diag_psychiatrique_sz), the form that asks ''does the
+    patient have an anxiety disorder'' (schema notes, sz anxiety_v0)'
+  items:
+    higher_means: symptom present
+    polarity: worse
+    basis: stated
+    source: 'schema notes (sz lifetime_symptoms): ''1 is yes, 0 is no'''
+  variables:
+    symptom_*_ever:
+      meaning: The symptom was present at some time of the life (1 yes, 0 no; 'Ne sais pas' is a missing code).
+    symptom_*_last_month:
+      meaning: 'The symptom was present in the last month. Shown only after a yes to ''ever'': read as 0 after a no, missing
+        after ''Ne sais pas''.'
+  flags:
+  - 'Inclusion visits only: 2,185 visits answer at least one symptom and 1,148 answer the 22.'
+  - 'After a yes to ''ever'' the last-month answer is blank on 1,560 of 17,456 cells, and on 87 of the 2,170 visits with
+    a yes every last-month answer is blank: a blank there is missing, not ''no''.'
+  - '''Ne sais pas'' is a missing code: 66 to 224 answers per symptom for ''ever'', 6 to 61 for the last month.'
+
+psychosis_course:
+  description: 'The course of the psychotic disorder in FACE SZ. At the inclusion visit: the age at the first psychotic
+    episode and at the first antipsychotic treatment, the duration of untreated psychosis in months, the number of psychotic
+    episodes and the course of the symptoms. At every visit: a psychotic episode in the past year, a suicide attempt in
+    the past year and the number of attempts.'
+  reference: not_applicable
+  construct: illness_course
+  period: lifetime (inclusion visit); the past year (every visit)
+  sources:
+  - schema notes (sz psychosis_course)
+  - docs/sz/PROGRESS.md D80
+  - facedata/shared_names.yaml
+  - facedata/common_instruments.yaml (first_mood_episode)
+  variables:
+    first_psychotic_episode_age:
+      meaning: Age at the first psychotic episode. Another question than the age at the first mood episode of BP and DR
+        (dsm4_first_episode_age); not joined with it.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first psychotic episode' (years); schema notes (sz psychosis_course)
+    first_antipsychotic_age:
+      meaning: 'Age at the first antipsychotic treatment. BP and DR read the first psychotropic treatment from the same
+        raw column: another question (shared_names.yaml).'
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first antipsychotic treatment' (years); facedata/shared_names.yaml (agetrt)
+    untreated_psychosis_months:
+      meaning: 'Duration of untreated psychosis, in months, typed in a numeric field: not the difference of the two ages.
+        Winsorised (15 cells of 192 to 360 months become 184); above 600 is out of range.'
+      higher_means: longer untreated psychosis
+      polarity: neutral
+      basis: anchors
+      source: label 'Duration of untreated psychosis' (months, range 0 to 600); schema notes (sz psychosis_course)
+    n_psychotic_episodes:
+      meaning: 'Number of psychotic episodes, asked at the inclusion visit: 0 to 20 (''Aucun'' is read as 0, ''more than
+        20'' is censored_right on 21 visits).'
+      higher_means: more psychotic episodes
+      polarity: worse
+      basis: anchors
+      source: label 'Number of psychotic episodes' (range 0 to 20); schema notes (sz psychosis_course)
+    symptom_course:
+      meaning: 'Course of the symptoms: single episode, episodic or continuous, with the state between or after the episodes
+        (nine answers).'
+      polarity: not_applicable
+    suicide_attempt_12m:
+      meaning: A suicide attempt in the past year (1 yes, 0 no), asked at every visit.
+      construct: suicidal_behaviour
+    n_suicide_attempts_12m:
+      meaning: Number of suicide attempts in the past year, 0 to 20. Shown after a yes to the attempt question and read
+        as 0 after a no. Not winsorised.
+      construct: suicidal_behaviour
+      higher_means: more suicide attempts in the past year
+      polarity: worse
+      basis: anchors
+      source: label 'Number of suicide attempts in the past year' (range 0 to 20); schema notes (sz psychosis_course)
+  flags:
+  - 'Two periods in one instrument: the ages, the duration, the number of episodes and the course are asked at the inclusion
+    visit (2,244 visits); the three past-year questions at every visit (4,549 visits).'
+  - The follow-up form has its own course question and 12-month questions on violence and substances; the export does not
+    read them (R141).
+  - 'Delivered as written: the first treatment is before the first episode on 65 of 2,093 visits (50 by 2 years or more);
+    the course says a single episode with 2 or more episodes on 33 of 168 visits, and episodic with 1 episode on 172 of
+    1,183.'
+  - An age above the age at the visit is flagged check_failed (8 first-episode ages, 17 first-treatment ages). 14 durations
+    of untreated psychosis are longer than the time since the first episode plus 12 months.
+  - '''Ne sais pas'' is a missing code, and so is 999 in the duration. ''<5'' is read as 5 (censored_left) on 4 cells.'
+  - Who fills the form is not stated in the notes.
+
+violent_behaviours:
+  description: 'Violent behaviours of the patient over the whole life, at the inclusion visit of FACE SZ: four kinds (verbal,
+    physical, sexual, breaking of objects) and, for each, inside or outside the family, an intervention of the police, a
+    conviction and its sentence; for the physical violence also blows and wounds, with or without a weapon, whether the
+    other person needed care, and homicide; for the sexual violence its kind.'
+  reference: not_applicable
+  respondent: clinician
+  construct: aggression_hostility
+  period: lifetime
+  sources:
+  - schema notes (sz violent_behaviours)
+  - docs/sz/PROGRESS.md D80
+  - 'respondent: the form puts the question in the third person (''has the subject presented, over the whole life'')'
+  items:
+    higher_means: yes (1 is yes, 0 is no)
+    basis: stated
+    source: 'schema notes (sz violent_behaviours): ''1 is yes, 0 is no'''
+  variables:
+    violence_verbal:
+      meaning: Verbal violence by the patient over the whole life (1 yes, 0 no). The gate of its details.
+      higher_means: behaviour present
+      polarity: worse
+      basis: stated
+      source: 'labels ''... by the patient, whole life''; schema notes (sz violent_behaviours): ''1 is yes, 0 is no'''
+    violence_physical:
+      meaning: Physical violence by the patient over the whole life (1 yes, 0 no). The gate of its details.
+      higher_means: behaviour present
+      polarity: worse
+      basis: stated
+      source: 'labels ''... by the patient, whole life''; schema notes (sz violent_behaviours): ''1 is yes, 0 is no'''
+    violence_sexual:
+      meaning: Sexual violence by the patient over the whole life (1 yes, 0 no). The gate of its details.
+      higher_means: behaviour present
+      polarity: worse
+      basis: stated
+      source: 'labels ''... by the patient, whole life''; schema notes (sz violent_behaviours): ''1 is yes, 0 is no'''
+    violence_objects:
+      meaning: Breaking of objects by the patient over the whole life (1 yes, 0 no). The gate of its details.
+      higher_means: behaviour present
+      polarity: worse
+      basis: stated
+      source: 'labels ''... by the patient, whole life''; schema notes (sz violent_behaviours): ''1 is yes, 0 is no'''
+    violence_physical_homicide:
+      meaning: 'Homicide committed by the patient over the whole life, asked under the physical violence: 603 answers (8
+        yes) after a yes to the physical violence, 0 after a no (decision D80).'
+  flags:
+  - 'Roll-out: the block is answered on 6%, 10% and 15% of the inclusion visits of 2010, 2011 and 2012, 33% in 2013, 50%
+    in 2014 and 81% to 99% from 2015. Inclusion visits only (1,816 visits).'
+  - The ten yes/no questions that hang on a gate (police and conviction of the four kinds, blows and wounds, care needed)
+    are read as 0 after a no on their gate.
+  - 'The sets (inside or outside the family, weapon, sentence) are one yes/no per box and are left as they are: an empty
+    cell of a set is not a ''no''.'
+
+alcohol_use:
+  description: 'Alcohol use in FACE SZ, at inclusion and at the yearly visits: whether the patient has drunk alcohol more
+    than ten times in their life, the amounts and frequencies in the periods of heaviest use over the whole life and in
+    the last 12 months, the frequency of heavy drinking (more than 6 glasses on one occasion), the age at the first drink,
+    the longest abstinence, the family history and a craving score from 0 to 10.'
+  reference: not_applicable
+  construct: alcohol
+  period: 'lifetime (periods of heaviest use) and the last 12 months; craving: the last week'
+  sources:
+  - schema notes (sz alcohol_use)
+  - docs/sz/PROGRESS.md D17
+  - scale_reference_aq_general.md section 3
+  variables:
+    alcohol_over_ten_times:
+      meaning: 'Has drunk alcohol more than ten times in their life (1 yes, 0 no): not ''ever''. The gate of the details.'
+    alcohol_never_once:
+      meaning: Not one use in the whole life (primary abstinence). Asked after a no to 'more than ten times'; delivered
+        as 0 after a yes.
+      higher_means: never drank alcohol (1 = primary abstinence)
+      basis: anchors
+      source: 'label ''Alcohol: not one use in the whole life (primary abstinence; asked after a no to more than ten times)''
+        (sz alcohol_use)'
+    alcohol_dose_*:
+      meaning: Glasses (10 g of alcohol) per day of use, in the periods of heaviest use over the whole life or in the last
+        12 months. Above 40 glasses is out of range and delivered as missing.
+      higher_means: more alcohol per day of use
+      polarity: worse
+      basis: anchors
+      source: 'labels ''Alcohol: amount per day of use ...'' (glasses per day, range 0 to 40); schema notes (sz alcohol_use)'
+    alcohol_frequency_12m:
+      meaning: 'Frequency in the last 12 months: weekly (1 to 7 times a week) or less than weekly. ''Less than weekly''
+        holds the non-users: 559 of the 1,266 answers of that frequency have an amount of 0.'
+      polarity: not_applicable
+    alcohol_craving_score:
+      meaning: Maximum craving for alcohol in the last week, from 0 (never) to 10 (all the time).
+      higher_means: more craving
+      polarity: worse
+      basis: anchors
+      source: 'labels ''...: maximum craving in the last week (0 never to 10 all the time)'' (sz alcohol_use)'
+    alcohol_max_abstinence:
+      meaning: 'Longest abstinence, in months: a question over the whole life. Shown only with two or more DSM-5 criteria.'
+      higher_means: longer abstinence
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: longest abstinence'' (months, range 0 to 720); schema notes (sz alcohol_use)'
+  flags:
+  - 'Asked at inclusion and at the yearly visits, and used from 2015, not from 2012: the first question is answered on 9%
+    of the inclusion visits of 2012, 18% of 2014, 48% of 2015 and 83% to 93% from 2016.'
+  - 'Not asked, not ''no'': the questions at the end of the section (age at the first use, longest abstinence, family history,
+    craving) are shown only with two or more DSM-5 criteria, a count that is in another tab (the instrument dsm5_alcohol).
+    An empty cell there means ''not asked''; it is not encoded. Two or more of 11 criteria within 12 months is the published
+    DSM-5 threshold (scale_reference_aq_general.md section 3: Confirmed (direct: Miller 2023)).'
+  - 'One column per question for inclusion and follow-up. The questions about the whole life keep that meaning at follow-up
+    on average only: 169 of the 1,154 later answers (15%) of the patients who said yes at inclusion are ''no''.'
+  - The number of times per week is filled after '1 to 7 times a week' only; it is empty, not 0, after 'less than weekly'.
+  - 999 and 9999 mean 'does not know' in an amount or a duration, 99 in an age; they are missing codes.
+  - By year, 'never once' is yes on 8% of the answers until 2022 and 15% from 2023; the longest abstinence has a median
+    of 4 months in 2014-19, 11 in 2020-22 and 6 from 2023; no known cause.
+  - 'Not in the extraction (R120): a drug treatment of the alcohol use disorder and a hospitalisation for withdrawal.'
+  - 'Who answers is not stated in the notes: the form words its questions to the patient (''more than ten times in your
+    life'').'
+
+cannabis_use:
+  description: 'Cannabis use in FACE SZ, at inclusion and at the yearly visits: whether the patient has used cannabis more
+    than ten times in their life, the amounts (joints per day of use) and frequencies in the periods of heaviest use over
+    the whole life and in the last 12 months, the age at the first use, the longest abstinence, the family history and a
+    craving score from 0 to 10.'
+  reference: not_applicable
+  construct: cannabis
+  period: 'lifetime (periods of heaviest use) and the last 12 months; craving: the last week'
+  sources:
+  - schema notes (sz cannabis_use)
+  - schema notes (dr cannabis)
+  - docs/sz/PROGRESS.md D17
+  - scale_reference_aq_general.md section 3
+  variables:
+    cannabis_over_ten_times:
+      meaning: 'Has used cannabis more than ten times in their life (1 yes, 0 no): not ''ever''. About 70% of the inclusion
+        answers have used cannabis at least once, 50% more than ten times.'
+    cannabis_never_once:
+      meaning: Not one use in the whole life (primary abstinence). Asked after a no to 'more than ten times'; delivered
+        as 0 after a yes.
+      higher_means: never used cannabis (1 = primary abstinence)
+      basis: anchors
+      source: 'label ''Cannabis: not one use in the whole life (primary abstinence; asked after a no to more than ten times)''
+        (sz cannabis_use)'
+    cannabis_dose_*:
+      meaning: Joints per day of use, in the periods of heaviest use over the whole life or in the last 12 months.
+      higher_means: more joints per day of use
+      polarity: worse
+      basis: anchors
+      source: 'labels ''Cannabis: amount per day of use ...'' (joints per day, range 0 to 50); schema notes (sz cannabis_use)'
+    cannabis_frequency_12m:
+      meaning: 'Frequency in the last 12 months: weekly (1 to 7 times a week) or less than weekly. ''Less than weekly''
+        holds the non-users (763 of the 887 answers of that frequency have an amount of 0): use the amount, not the frequency,
+        to tell a user from a non-user.'
+      polarity: not_applicable
+    cannabis_craving_score:
+      meaning: Maximum craving for cannabis in the last week, from 0 (never) to 10 (all the time).
+      higher_means: more craving
+      polarity: worse
+      basis: anchors
+      source: 'labels ''...: maximum craving in the last week (0 never to 10 all the time)'' (sz cannabis_use)'
+    cannabis_max_abstinence:
+      meaning: 'Longest abstinence, in months: a question over the whole life. Shown only with two or more DSM-5 criteria.'
+      higher_means: longer abstinence
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: longest abstinence'' (months, range 0 to 720); schema notes (sz cannabis_use)'
+  flags:
+  - 'Asked at inclusion and at the yearly visits, and used from 2015, not from 2012: the first question is answered on 6%
+    of the inclusion and yearly visits of 2012, 16% of 2014, 52% of 2015 and 83% of 2016.'
+  - 'Not asked, not ''no'': the questions at the end of the section (age at the first use, longest abstinence, family history,
+    craving) are shown only with two or more DSM-5 criteria, a count that is in another tab (the instrument dsm5_cannabis).
+    An empty cell there means ''not asked''; it is not encoded. Two or more of 11 criteria within 12 months is the published
+    DSM-5 threshold (scale_reference_aq_general.md section 3: Confirmed (direct: Miller 2023)).'
+  - 'One column per question for inclusion and follow-up. The questions about the whole life keep that meaning at follow-up
+    on average only: 80 of the 725 later answers (11%) of the patients who said yes at inclusion are ''no''.'
+  - 'Not joinable with the cannabis question of FACE DR (cannabis_current: current use) nor with the cannabis use disorder
+    of BP and ASP (schema notes, dr cannabis).'
+  - 999 and 9999 mean 'does not know' in an amount or a duration, 99 in an age; they are missing codes.
+  - By year, 'never once' is yes on 24% to 32% of the answers until 2022 and 37% from 2023; the frequency of the last 12
+    months is 'weekly' on 32% of the answers of 2014-16 and 22% since 2020; no known cause.
+  - 'Not in the extraction (R120): a drug treatment of the cannabis use disorder and a hospitalisation for withdrawal.'
+  - 'Who answers is not stated in the notes: the form words its questions to the patient (''more than ten times in your
+    life'').'
+
+depressive_episodes:
+  description: 'Major depressive episodes outside the psychotic episodes, asked at the inclusion visit of FACE SZ: has the
+    patient had major depressive episodes (including post-psychotic depression), the age at the first one and their number
+    over the whole life.'
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: lifetime, as recorded at the inclusion visit
+  sources:
+  - schema notes (sz depressive_episodes)
+  - docs/sz/PROGRESS.md D17
+  - 'respondent: the form asks about the patient in the third person (''has the patient had major depressive episodes'')'
+  variables:
+    mde_count:
+      meaning: 'Number of major depressive episodes over the whole life; 0 after a no to the first question. Capped: the
+        export removes the sign of ''>20'', so a 20 is a lower bound (12 cells).'
+      higher_means: more major depressive episodes
+      polarity: worse
+      basis: anchors
+      source: label 'Number of major depressive episodes over the whole life'; schema notes (sz depressive_episodes)
+    mde_first_age:
+      meaning: Age at the first major depressive episode. The options run from '<5' to '>89', read as 5 and 89 ('<5' cannot
+        be told from 5). Missing after a no.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first major depressive episode'; schema notes (sz depressive_episodes)
+  flags:
+  - 'Inclusion visits only (2,149 of the 2,353 visits answered: 1,016 yes, 966 no); the follow-up visits do not hold the
+    question.'
+  - 999 is 'does not know' (215 numbers, 58 ages) and 'U' is a missing code (167 first answers). Under a yes the age is
+    empty on 7% of the visits and the number on 10%.
+  - 'The yes share of the first question differs by centre, from 34% to 74%, and moves inside a centre over the years: the
+    pooled share follows the mix and the practice of the centres; no known cause.'
+
+drug_use:
+  description: 'Use of sedatives, heroin, crack or cocaine, opiates and other products in FACE SZ, at inclusion and at the
+    yearly visits. One opening question (illicit drugs, or medicines taken without a prescription, more than ten times in
+    your life), then for each product: more than ten times, the ways of use, the amounts and frequencies in the periods
+    of heaviest use over the whole life and in the last 12 months, the age at the first use, the longest abstinence, the
+    family history and a craving score.'
+  reference: not_applicable
+  construct: substance_use
+  period: 'lifetime (periods of heaviest use) and the last 12 months; craving: the last week'
+  sources:
+  - schema notes (sz drug_use)
+  - docs/sz/PROGRESS.md D17
+  - scale_reference_aq_general.md section 3
+  variables:
+    illicit_drugs_over_ten_times:
+      meaning: 'Opening question: illicit drugs, or medicines taken without a prescription, more than ten times in your
+        life (1 yes, 0 no). The five sections are filled only after a yes; after a no the five ''more than ten times'' are
+        delivered as 0.'
+    '*_dose_*':
+      meaning: 'Amount per day of use, in the periods of heaviest use over the whole life or in the last 12 months. The
+        unit depends on the product: tablets or capsules (sedatives), grams (heroin, cocaine), standard units (other products).
+        The opiates have no amount.'
+      higher_means: more of the product per day of use
+      polarity: worse
+      basis: anchors
+      source: 'labels ''...: amount per day of use ...'' with their units; schema notes (sz drug_use)'
+    '*_frequency_12m':
+      meaning: 'Frequency in the last 12 months: weekly (1 to 7 times a week) or less than weekly. ''Less than weekly''
+        mostly means no use: the amount is 0 on 32 of 33 sedative answers, 27 of 33 heroin, 98 of 138 cocaine and 55 of
+        67 other products.'
+      polarity: not_applicable
+    '*_route_*':
+      meaning: One way of use (smoked, sniffed, injected, oral, sublingual), one yes/no per way; several can be ticked.
+        The list has no 'sniffed' for the sedatives.
+    '*_craving_score':
+      meaning: Maximum craving for the product in the last week, from 0 (never) to 10 (all the time).
+      higher_means: more craving
+      polarity: worse
+      basis: anchors
+      source: 'labels ''...: maximum craving in the last week (0 never to 10 all the time)'' (sz drug_use)'
+    '*_max_abstinence':
+      meaning: 'Longest abstinence, in months: a question over the whole life. Shown only with two or more DSM-5 criteria.'
+      higher_means: longer abstinence
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: longest abstinence'' (months, range 0 to 720); schema notes (sz drug_use)'
+  flags:
+  - 'Asked at inclusion and at the yearly visits, and used from 2015, not from 2012: the first question is answered on 9%
+    of the inclusion visits of 2012, 18% of 2014, 47% of 2015 and 84% to 93% from 2016.'
+  - 'The sections are small: 126 patient-visits with sedatives, 55 with heroin, 254 with cocaine, 73 with opiates and 186
+    with another product.'
+  - 'Not asked, not ''no'': the questions at the end of each section (age at the first use, longest abstinence, family history,
+    craving) are shown only with two or more DSM-5 criteria, a count that is in another tab (the dsm5_ schemas of the auto_questionnaire
+    tab). An empty cell there means ''not asked''; it is not encoded.'
+  - 'One column per question for inclusion and follow-up. The questions about the whole life keep that meaning at follow-up
+    on average only: 77 of the 212 later answers (36%) of the patients who said yes at inclusion are ''no'' (sedatives 53
+    of 84).'
+  - The opening question also hides the boxes of use disorder of four substances in substance_v0 and substance_fu.
+  - 999 and 9999 mean 'does not know' in an amount or a duration, 99 in an age; they are missing codes.
+  - 'Steps with no known cause: sedatives ''more than ten times'' is yes on 12% to 13% of the answers of 2014 and 2015 and
+    2% to 4% from 2017 (one centre before 2017); cocaine smoked (crack) is ticked on 20% of the cocaine sections of 2014-19
+    and 40% from 2023.'
+  - 'Not in the extraction: the question that shows the details of the other product (R116: the amount is filled on 71 of
+    186 visits); a drug treatment of the use disorder and a hospitalisation for withdrawal (R120).'
+  - 'Who answers is not stated in the notes: the form words its questions to the patient (''more than ten times in your
+    life'').'
+
+tea_coffee:
+  description: 'Tea and coffee in FACE SZ, at inclusion and at the yearly visits: cups per day and frequency, in the periods
+    of heaviest use over the whole life and in the last 12 months.'
+  reference: not_applicable
+  construct: caffeine
+  period: lifetime (periods of heaviest use) and the last 12 months
+  sources:
+  - schema notes (sz tea_coffee)
+  - docs/sz/PROGRESS.md D17
+  variables:
+    '*_cups_*':
+      meaning: 'Cups per day of use, in the periods of heaviest use over the whole life or in the last 12 months. There
+        is no gate: a patient who does not drink tea or coffee answers 0 cups.'
+      higher_means: more cups per day of use
+      polarity: neutral
+      basis: anchors
+      source: 'labels ''...: cups per day of use ...'' (cups per day); schema notes (sz tea_coffee)'
+    '*_times_per_week_12m':
+      meaning: 'Times per week in the last 12 months, 1 to 7: the number only. The frequency category of the form (weekly,
+        less than weekly) is not exported (R118).'
+    '*_frequency_lifetime':
+      meaning: 'Frequency in the periods of heaviest use: weekly or less than weekly. ''Less than weekly'' includes the
+        non-consumers (813 of the 1,246 tea answers of that frequency have 0 cups): use the number of cups to tell a consumer
+        from a non-consumer.'
+      polarity: not_applicable
+  flags:
+  - 'Asked at inclusion and at the yearly visits, from 2015 and not from 2012: the tea questions are answered on 7% of the
+    inclusion visits of 2012, 16% of 2014, 42% of 2015 and 71% to 79% of 2016 to 2018.'
+  - '999 means ''does not know''. A few amounts are out of range (365 cups of coffee a day on 3 visits: a number per year).'
+  - 'The cups differ by centre (median of tea over the whole life 1 cup in five centres and 0 in five others) and are stable
+    by year: centre habit or practice, no known cause.'
+  - Who answers is not stated in the notes.
+
+episode_described:
+  description: 'One episode described at the inclusion visit of FACE DR (the table ''Episodes'' of form 116): its number,
+    its length, and whether it was treated, resistant, hospitalised, with psychotic or mixed features, seasonal, followed
+    by a full remission, with a recurrence under treatment or a switch under an antidepressant, and the time since the previous
+    episode. Not in BP or SZ.'
+  reference: not_applicable
+  respondent: clinician
+  construct: illness_course
+  sources:
+  - schema notes (dr episode_described)
+  - docs/dr/PROGRESS.md D12, D66
+  - 'respondent: schema notes (dr episode_described): ''not left out by the raters'''
+  variables:
+    episode_number:
+      meaning: 'Number typed on the row that the export kept (1 to 20). It is 1 on only 102 of 220 rows: the episode described
+        is not the first episode.'
+    episode_resistant:
+      meaning: The episode is ticked resistant (1 yes, 0 no).
+      construct: treatment_resistance
+    episode_months:
+      meaning: Length of the episode, in months.
+      higher_means: longer episode
+      polarity: neutral
+      basis: anchors
+      source: label 'Length of the episode' (months, range 0 to 600)
+  flags:
+  - 'Which episode a row describes is not stated: the table is headed ''Episodes'', not ''depressive'', and its questions
+    are those of a depressive episode (low confidence; the name stays). No period is given.'
+  - The form is a table with one row per episode. The export keeps one arbitrary row per visit, so the other episodes of
+    the form are lost to this extraction (R142).
+  - '221 inclusion visits: 45% of the inclusion visits of 2012 to 2017 and 27% of those of 2018 to 2026.'
+  - 2 is 'DM', missing data (29 cells).
+  - The number of the episode described is above the total of episodes counted in mood_history_v0 on 8 of 213 visits; delivered
+    as written.
+
+mood_course_fu:
+  description: 'The mood episodes since the last visit, at the follow-up visits of FACE DR (the patient-state form, form
+    183): the numbers of major depressive episodes, of those with psychotic features, of depressive episodes resistant to
+    two treatments or more, of hypomanic episodes, of manic episodes with psychotic features, of mixed and of induced episodes,
+    and the number of suicide attempts.'
+  version: Follow-up form 183 of FACE DR. The counts that the DSM-IV follow-up form of FACE BP also asks carry BP's names
+    (dsm4_fu_n_*).
+  reference: not_applicable
+  construct: illness_course
+  period: since the last visit
+  sources:
+  - schema notes (dr mood_course_fu)
+  - docs/dr/PROGRESS.md D12, D49, D66
+  - facedata/common_instruments.yaml (mood_episodes_since_visit)
+  variables:
+    dsm4_fu_n_*:
+      meaning: Number of episodes of that kind since the last visit, 0 to 20. The same question as in the DSM-IV follow-up
+        form of FACE BP, read from other raw columns.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes since the last visit' (range 0 to 20); schema notes (dr mood_course_fu)
+    n_resistant_episodes_since_visit:
+      meaning: Number of depressive episodes resistant to two treatments or more since the last visit. FACE DR only.
+      construct: treatment_resistance
+      higher_means: more resistant depressive episodes
+      polarity: worse
+      basis: anchors
+      source: label 'Number of depressive episodes resistant to two treatments or more since the last visit'
+    n_induced_since_visit:
+      meaning: Number of induced episodes since the last visit. Shown only after a yes to induced_episode_since_visit and
+        read as 0 after a no.
+      higher_means: more induced episodes
+      polarity: worse
+      basis: anchors
+      source: label 'Number of induced episodes since the last visit'; schema notes (dr mood_course_fu)
+    manic_psychotic_since_visit:
+      meaning: 'A manic episode with psychotic features since the last visit (yes/no). Not a gate and almost never filled
+        (17 cells): the form shows it only when the hypomanic count is above 0, a defect. Use the count dsm4_fu_n_mania_psychotic;
+        a blank here is not ''no''.'
+    n_suicide_attempts_since_visit:
+      meaning: Number of suicide attempts since the last visit (the ETAT_SUI_NB field of form 183). Not the attempt question
+        of FACE BP (D49).
+      construct: suicidal_behaviour
+      higher_means: more suicide attempts since the last visit
+      polarity: worse
+      basis: anchors
+      source: label 'Number of suicide attempts since the last visit' (range 0 to 99); schema notes (dr mood_course_fu)
+  flags:
+  - 'The window is not the same for every visit: the median gap to the previous visit is 190 days, and 744 days at the 4-year
+    visit. The BP window is six months or a year: do not compare counts across windows (common_instruments.yaml).'
+  - 'Two forms in the same raw columns: the inclusion visit asks the same counts over the whole life (mood_history_v0).
+    The two are never delivered in one column.'
+  - Unlike the BP follow-up form, the DR form has no question 'at least one episode since the last visit', no total number
+    of episodes and no count of manic episodes.
+  - A resistant count above the depressive count on 13 of 795 visits is delivered as typed and flagged check_failed.
+  - 'Not in the extraction (R142): the mixed episodes with psychotic features, the complete and the incomplete remission
+    between the episodes and the seasonal pattern since the last visit.'
+  - Who fills the form is not stated in the notes.
+
+mood_history_v0:
+  description: 'The mood disorder over the whole life and the current episode, at the inclusion visit of FACE DR (forms
+    117 and 116): the kind of disorder and its course (single episode or recurrent), the first episode (type, age, postpartum
+    onset), the lifetime numbers of episodes of each kind and of resistant episodes, remission between the episodes, seasonal
+    pattern, the age at the first psychotropic treatment, and for the current episode its specifier, severity, chronicity,
+    postpartum onset and the weeks before a treatment was started.'
+  version: 'Forms 117 and 116 of FACE DR: one form, with no DSM-5 version and no column for the version. The questions shared
+    with the DSM-IV form of FACE BP carry BP''s dsm4_ names.'
+  reference: 'DSM-IV (1994): two labels of form 116 say ''selon critère DSM IV'' (the mixed episodes and the severity of
+    the current episode). The form is a form of the application, with no publication of its own.'
+  reference_confidence: confirmed in source (Grunze et al. 2021)
+  respondent: clinician
+  construct: illness_course
+  period: lifetime; the current episode at the inclusion visit
+  sources:
+  - schema notes (dr mood_history_v0)
+  - docs/dr/PROGRESS.md D12, D66
+  - facedata/shared_names.yaml
+  - facedata/common_instruments.yaml (first_mood_episode, mood_episodes_lifetime, current_mood_episode)
+  - scale_reference.md section 25
+  - 'respondent: form 116 is filled by raters (schema notes, dr episode_described: ''not left out by the raters'')'
+  variables:
+    dsm4_lt_n_*:
+      meaning: Lifetime number of episodes of that kind, 0 to 50 (0 to 20 in FACE BP). The counts include the current episode.
+      higher_means: more episodes of that kind
+      polarity: worse
+      basis: anchors
+      source: labels 'Number of ... episodes over the whole life' (range 0 to 50); schema notes (dr mood_history_v0)
+    n_resistant_episodes_lifetime:
+      meaning: Number of depressive episodes resistant to two treatments or more over the whole life (median 1). FACE DR
+        only.
+      construct: treatment_resistance
+      higher_means: more resistant depressive episodes
+      polarity: worse
+      basis: anchors
+      source: label 'Number of depressive episodes resistant to two treatments or more over the whole life'
+    dsm4_first_episode_age:
+      meaning: Age at the first mood episode, as declared (not corrected). Same raw column and same name as in the DSM-IV
+        form of FACE BP.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first mood episode (the age declared)' (years); common_instruments.yaml (first_mood_episode)
+    first_treated_episode_age:
+      meaning: Age at the first episode treated or diagnosed. FACE DR only.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first episode treated or diagnosed' (years)
+    dsm4_lt_first_treatment_age:
+      meaning: Age at the first psychotropic treatment.
+      higher_means: older age
+      polarity: neutral
+      basis: anchors
+      source: label 'Age at the first psychotropic treatment' (years)
+    treatment_delay_weeks:
+      meaning: A delay in weeks, 0 to 52. The form says only 'Délai' (hint 'Max 52') and never says a delay of what; it
+        equals the weeks before a treatment of the current episode on 52 of 130 rows.
+    current_episode_untreated_weeks:
+      meaning: Length of the current episode before a treatment was started, in weeks.
+      higher_means: longer time before a treatment was started
+      polarity: neutral
+      basis: anchors
+      source: label 'Length of the current episode before a treatment was started' (weeks, range 0 to 1040)
+    dsm4_first_episode_type:
+      meaning: Type of the first mood episode (seven types, as in the DSM-IV form of FACE BP). The values 8 and 9 of the
+        extraction (resistant, not resistant; 21 visits of 2013 to 2017) are not types and are missing here.
+      polarity: not_applicable
+    dsm4_current_chronic:
+      meaning: 'Current episode longer than two years (1 yes, 0 no): yes on 238 of 343 inclusion visits.'
+  flags:
+  - 'The page of form 116 is saved on only 360 of the 635 rows: an empty page means the page was not saved, not ''no episode''.'
+  - 'Two forms in the same raw columns: the follow-up visits use them for the time since the last visit (mood_course_fu).
+    The two are never delivered in one column.'
+  - The lifetime counts go from 0 to 50 here and from 0 to 20 in FACE BP, whose form stops at 20 (shared_names.yaml).
+  - 'The three numbers with psychotic features have no yes/no question here (BP asks one): they are read as 0 where the
+    number of episodes of that kind is 0, and stay missing where it is above 0 and the cell is empty.'
+  - The type of disorder of form 117 is major depressive disorder on every row. The course says recurrent for 509 and single
+    episode for 123 of the 632 visits that answer it.
+  - The current episode is severe on 234 of 342 inclusion visits.
+  - 'The first psychotropic treatment comes before the declared first episode on 14 of 340 visits: a psychotropic can precede
+    the first mood episode, so this is not an error by itself.'
+  - The resistance of the first episode is in the application but not in the export (R142).
+
+cannabis:
+  description: 'One question of the nurse''s record of FACE DR (form 112): ''Consommez-vous du cannabis ?'' (do you use
+    cannabis?), current use, 1 yes and 0 no. It opens the four DETC-CAGE items.'
+  reference: not_applicable
+  construct: cannabis
+  period: current (question in the present tense)
+  sources:
+  - schema notes (dr cannabis)
+  - docs/dr/PROGRESS.md D42, D43
+  variables:
+    cannabis_current:
+      meaning: 'Uses cannabis now (1 yes, 0 no): current use, not use at any time of the life.'
+      higher_means: current cannabis use
+      polarity: worse
+      basis: stated
+      source: 'schema notes (dr cannabis): ''do you use cannabis?, 1 yes, 0 no: CURRENT use, in the present tense'''
+  flags:
+  - 'Current use, not lifetime: a 0 does not mean ''never used'' (yes on 24 of 582 answers).'
+  - 'Not joinable with the other cohorts: SZ asks ''more than ten times in your life'' (cannabis_over_ten_times); BP and
+    ASP deliver a cannabis use disorder (abuse or dependence). Do not stack them with this variable.'
+  - Asked at inclusion, at 2 years and at 4 years; never at 6, 12, 18 or 30 months.
+  - Answered on 43% to 45% of the inclusions of 2013 to 2015 and on 67% to 89% a year from 2016. An empty cell is 'not answered';
+    one centre answers on 10% of its inclusions since 2016.
+  - Recorded in the nurse's record; the notes do not say more on who answers.

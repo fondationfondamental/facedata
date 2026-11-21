@@ -1,0 +1,892 @@
+# Annotations of the scales rated by the clinician (FACE BP, SZ, DR) and of the DR inclusion form.
+# Every field repeats a schema note, a schema label or local/out/scale_reference.md.
+# A field left out means "no document states it", not "no".
+
+alda:
+  description: "Rating of the response to lithium, for the patients treated with lithium at the visit. Criterion A rates the response from 0 to 10; five B criteria (0 to 2 each) rate how sure it is that the response is due to lithium."
+  reference: "Grof P, Duffy A, Cavazzoni P, et al. Is response to prophylactic lithium a familial trait? J Clin Psychiatry 2002;63:942-947; Manchia M, et al. PLoS One 2013;8:e65636 (ConLiGen)"
+  reference_confidence: "confirmed in source (bibliographic records; ConLiGen full text read)"
+  respondent: clinician
+  construct: treatment_response
+  sources: ["schema notes and labels (bp alda)", "scale_reference.md section 6"]
+  scores:
+    alda_b:
+      meaning: "Sum of the five B criteria (0 to 10). It is subtracted from criterion A in the total."
+      cutoffs:
+        - {value: "4 or less", meaning: "ConLiGen 'valid cases': criterion A is analysed only where B is 4 or less (not applied in the package)", source: "Manchia 2013, in scale_reference.md section 6; schema notes (bp alda)", confidence: "confirmed in source (extracted)"}
+    alda_total:
+      meaning: "Criterion A minus the B score, set to 0 when negative (0 to 10)."
+      higher_means: better response to lithium
+      polarity: better
+      basis: literature
+      source: "scale_reference.md section 6: good response is a total of 7 or more (Manchia 2013), confirmed in source (extracted full texts)"
+      cutoffs:
+        - {value: "7 or more", meaning: "good (full) response, the cut-off with the best agreement between raters (ConLiGen)", source: "Manchia 2013, in scale_reference.md section 6", confidence: "confirmed in source (extracted)"}
+        - {value: "5 or more / 4 or less", meaning: "good or moderate response / poor response (Lee 2020)", source: "scale_reference.md section 6", confidence: "confirmed in source (extracted)"}
+        - {value: "about 3 and 6.4 (or 2 and 7)", meaning: "boundaries between three groups of response in mixture models (Manchia 2013)", source: "scale_reference.md section 6", confidence: "confirmed in source (extracted)"}
+  variables:
+    alda_a:
+      meaning: "Criterion A, the response to lithium, rated from 0 to 10."
+      higher_means: better response to lithium (10 is a complete response)
+      polarity: better
+      basis: stated
+      source: "scale_reference.md section 6, form of the application: 'the first option = 10 = complete response'; the published anchors of 0 and 10 are 'to verify'"
+  flags:
+    - "The criteria are shown only when the patient is treated with lithium at the visit: the scores describe the patients still treated, not everyone who ever took lithium."
+    - "In use mostly from 2022."
+    - "No document says in words which way the B criteria run. B is subtracted from A, so a higher B lowers the total."
+    - "The floor at 0 comes from the script of the application and from later uses of the scale; it is not in the ConLiGen report and the original 2002 text is 'to verify'."
+    - "The total is 0 on 20.7% of the visits that have the six items."
+
+cgi_egf:
+  description: "Global ratings by the clinician. The CGI severity of illness (1 to 7) and the Global Assessment of Functioning (GAF, EGF in French, one number from 1 to 100) are in the four cohorts. The CGI improvement, therapeutic effect, side effects and efficacy index are in BP and SZ, at the follow-up visits only."
+  version: "CGI of Guy's ECDEU manual (1976); GAF of the DSM-IV-TR (French EGF)"
+  reference: "Guy W. ECDEU Assessment Manual for Psychopharmacology, revised 1976, DHEW Publication (ADM) 76-338, pp. 217-221 (CGI). GAF: DSM-IV-TR Axis V, derived from the Global Assessment Scale, Endicott J, Spitzer RL, Fleiss JL, Cohen J. Arch Gen Psychiatry 1976;33:766-771"
+  reference_confidence: "CGI: confirmed in source (OCR text of the manual read through the fetch tool, two agreeing extractions). GAF: confirmed in source (abstracts; HAS 2009 annex reproduces the French text)"
+  respondent: clinician
+  construct: illness_severity
+  sources: ["schema notes and labels (bp, sz, dr, asp cgi_egf)", "common_instruments.yaml (cgi_egf)", "scale_reference.md sections 3 and 4"]
+  scores:
+    cgi_efficacy_index:
+      meaning: "Cell number (1 to 16) of Guy's grid of the therapeutic effect by the side effects: 4 x (therapeutic effect - 1) + side effects. BP and SZ, follow-up visits."
+      polarity: not_applicable
+      basis: stated
+      source: "schema notes (bp cgi_egf): 'They are position labels, not an ordered score'"
+  variables:
+    cgi_severity:
+      meaning: "CGI severity of illness, from 1 (normal) to 7 (among the most ill)."
+      higher_means: more severely ill
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'from 1 (normal) to 7 (among the most ill)'; scale_reference.md section 3, confirmed in source"
+    cgi_improvement:
+      meaning: "CGI global improvement, from 1 (very much improved) to 7 (very much worse). BP and SZ, follow-up visits."
+      higher_means: less improvement (4 is no change, 5 to 7 worse)
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'from 1 (very much improved) to 7 (very much worse)'; scale_reference.md section 3: 4 no change"
+    cgi_therapeutic_effect:
+      meaning: "CGI therapeutic effect, from 1 (marked) to 4 (unchanged or worse). BP and SZ, follow-up visits."
+      higher_means: weaker therapeutic effect
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'from 1 (marked) to 4 (unchanged or worse)'"
+    cgi_side_effects:
+      meaning: "CGI side effects, from 1 (none) to 4 (outweigh the therapeutic effect). BP and SZ, follow-up visits."
+      higher_means: more side effects
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'from 1 (none) to 4 (outweigh the therapeutic effect)'"
+    gaf:
+      meaning: "Global Assessment of Functioning (EGF), one number from 1 to 100 in ten bands of ten points."
+      construct: global_functioning
+      higher_means: better functioning (91-100 is the healthiest band, 1-10 the most ill)
+      polarity: better
+      basis: literature
+      source: "scale_reference.md section 4: '91-100 healthiest, 1-10 most ill' (Aas 2010), confirmed in source (extracted)"
+    cgi_changed:
+      meaning: "Box 'CGI changed since the last visit' of the follow-up form (ASP only)."
+      polarity: not_applicable
+    gaf_changed:
+      meaning: "Box 'GAF changed since the last visit' of the follow-up form (ASP only)."
+      polarity: not_applicable
+  flags:
+    - "The code 0 means 'not assessed' and is read as missing."
+    - "The efficacy index is a cell label of a grid, not an ordered score: the cell number does not rise with the ratio of effect to side effects (0.25 to 4.00) that Guy's manual gives."
+    - "The CGI improvement, therapeutic effect, side effects and efficacy index are delivered at the follow-up visits only; the values typed at inclusion are not delivered. DR and ASP have the severity and the GAF only."
+    - "The published GAF records the worse of the symptom level and the functioning level (Aas 2010, confirmed in source), so it is not a pure measure of functioning. No standard threshold: the bands are the interpretation."
+    - "In BP a band typed in place of a number ('60-51') is read as the middle of the band (55.5) and flagged band_middle. The GAF is typed in round numbers (81% of the BP values are multiples of 5)."
+    - "Rating period: the CGI severity covers about the last 7 days in a secondary source (wording not verified); the period of the GAF is not stated in the reproductions read ('to verify')."
+    - "ASP holds children and adults. cgi_changed and gaf_changed say nothing at the inclusion visit."
+    - "The GAF was removed from the DSM-5."
+
+etat_depressif:
+  description: "Checklist of the nine DSM-IV criterion A symptoms of a major depressive episode. The clinician ticks the symptoms present at the visit, whatever the mood state: it is not an episode and not a diagnosis. Five symptoms have a detail that says which way the change goes."
+  version: "Section 'Episode dépressif majeur actuel' of the form 'État du patient' of the application"
+  reference: not_applicable
+  respondent: clinician
+  construct: depression
+  period: at the visit (the duration of the symptoms is not asked)
+  sources: ["schema notes (bp and dr etat_depressif)", "common_instruments.yaml (etat_depressif)", "scale_reference.md section 25"]
+  items:
+    higher_means: symptom present (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp etat_depressif): 'Y and N are delivered as 1 and 0, so that the symptoms can be counted'"
+  scores:
+    etatd_total:
+      meaning: "Number of the nine symptoms answered yes (0 to 9), when the nine are answered yes or no."
+      higher_means: more depressive symptoms present
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'Number of depressive symptoms present (0 to 9)'"
+      cutoffs:
+        - {value: "5 or more", meaning: "published count of criterion A: five or more of the nine symptoms in the same two weeks, one of them depressed mood or loss of interest. The form does not store this rule and does not ask the duration, so a count of 5 is not an episode", source: "schema notes (bp etat_depressif); scale_reference.md section 25", confidence: "confirmed in source (DSM-5 criterion reproduced in Osipov 2016; Grunze 2021; Tandon 2015); DSM-IV-TR text to verify"}
+  flags:
+    - "A count needs the nine answers: one 'does not know' or one blank gives no count."
+    - "The ninth symptom of the DR form adds 'or a specific plan' to the BP wording: its yes rates are not comparable between BP and DR."
+    - "The details of a symptom (loss or gain, insomnia or hypersomnia, agitation or retardation) are not recorded the same way in BP and DR: stack the nine symptoms and the count only."
+    - "In BP the form is filled less and less over the years."
+
+etat_maniaque:
+  description: "Checklist of the nine symptoms of a DSM-IV manic episode (two mood items and seven symptoms). The clinician ticks the symptoms present at the visit, whatever the mood state: it is not an episode and not a diagnosis."
+  version: "Section 'Episode maniaque actuel' of the form 'État du patient' of the application"
+  reference: not_applicable
+  respondent: clinician
+  construct: mania
+  period: at the visit (the duration of the symptoms is not asked)
+  sources: ["schema notes (bp and dr etat_maniaque)", "common_instruments.yaml (etat_maniaque)", "scale_reference.md section 25"]
+  items:
+    higher_means: symptom present (1 yes, 0 no)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp etat_maniaque): 'Y and N are delivered as 1 and 0, so that the symptoms can be counted'"
+  scores:
+    etatm_total:
+      meaning: "Number of the nine symptoms answered yes (0 to 9), when the nine are answered yes or no."
+      higher_means: more manic symptoms present
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'Number of manic symptoms present (0 to 9)'"
+  flags:
+    - "The schema notes say: the count is the number of symptoms ticked, not a measure of mania."
+    - "The published rule is not a threshold on the count: a mood item and 3 of the 7 other symptoms, 4 if the mood is only irritable (DSM-5 counts as reproduced by Osipov 2016, confirmed in source; the list of seven and the DSM-IV-TR counts are 'to verify'). The duration is not asked."
+    - "A count needs the nine answers: one 'does not know' or one blank gives no count."
+    - "Manic symptoms are rare in DR, irritable mood apart."
+
+fast:
+  description: "Functioning Assessment Short Test: 24 items rated by the clinician from 0 (no difficulty) to 3 (severe difficulty), in six domains (autonomy, occupational functioning, cognitive functioning, financial issues, interpersonal relationships, leisure time), with six domain scores and a total."
+  version: 24 items, six domains
+  reference: "Rosa AR, Sanchez-Moreno J, Martinez-Aran A, et al. Validity and reliability of the Functioning Assessment Short Test (FAST) in bipolar disorder. Clin Pract Epidemiol Ment Health 2007;3:5"
+  reference_confidence: "confirmed in source (abstract + extracted full text)"
+  respondent: clinician
+  construct: psychosocial_functioning
+  period: "previous 15 days (published scale, Rosa 2007; the form of the paper gives no time frame)"
+  sources: ["schema notes (bp and dr fast)", "common_instruments.yaml (fast)", "scale_reference.md section 5"]
+  items:
+    higher_means: more difficulty
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp fast): '24 items scored from 0 (no difficulty) to 3 (severe difficulty)'"
+  scores:
+    fast_total:
+      meaning: "Sum of the 24 items (0 to 72)."
+      higher_means: more difficulty in functioning
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr fast): '0 to 72, higher is worse'; common_instruments.yaml (fast): 'Higher is worse'"
+      cutoffs:
+        - {value: "above 11", meaning: "impairment, the cut-off of the original paper (Rosa 2007)", source: "scale_reference.md section 5", confidence: "confirmed in source (extracted)"}
+        - {value: "0 to 11", meaning: "no impairment (Bonnin 2018)", source: "scale_reference.md section 5", confidence: "confirmed in source (abstract)"}
+        - {value: "12 to 20", meaning: "mild impairment (Bonnin 2018)", source: "scale_reference.md section 5", confidence: "confirmed in source (abstract)"}
+        - {value: "21 to 40", meaning: "moderate impairment (Bonnin 2018)", source: "scale_reference.md section 5", confidence: "confirmed in source (abstract)"}
+        - {value: "above 40", meaning: "severe impairment (Bonnin 2018)", source: "scale_reference.md section 5", confidence: "confirmed in source (abstract)"}
+        - {value: "7 or less", meaning: "functional remission (Roux 2020, FACE-BD cohort)", source: "scale_reference.md section 5", confidence: "confirmed in source (abstract)"}
+    fast_autonomy:
+      meaning: "Autonomy, sum of items 1 to 4 (0 to 12)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+    fast_occupational:
+      meaning: "Occupational functioning, sum of items 5 to 9 (0 to 15)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+    fast_cognitive:
+      meaning: "Cognitive functioning, sum of items 10 to 14 (0 to 15)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+    fast_financial:
+      meaning: "Financial issues, sum of items 15 and 16 (0 to 6)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+    fast_interpersonal:
+      meaning: "Interpersonal relationships, sum of items 17 to 22 (0 to 18)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+    fast_leisure:
+      meaning: "Leisure time, sum of items 23 and 24 (0 to 6)."
+      higher_means: more difficulty
+      polarity: worse
+      basis: anchors
+      source: "sum of items scored 0 (no difficulty) to 3 (severe difficulty), schema notes (bp fast); common_instruments.yaml (fast): 'Higher is worse'"
+  flags:
+    - "A score needs all its items and nothing is pro-rated. A domain with all its items has its score even when the total is missing."
+    - "The thresholds are published for the total only. Which of 12, 20 and 40 is the remission line and which the recovery line in Bonnin 2018 is 'to verify'."
+    - "In DR the scale is not asked on the simplified visits of 2018 onward: an empty FAST there is 'not asked'."
+    - "The original paper gives no rule for items that do not apply (work items of a retired patient)."
+
+madrs:
+  description: "Montgomery-Asberg Depression Rating Scale: ten items rated by the clinician, each from 0 to 6, and their sum (0 to 60)."
+  version: 10 items
+  reference: "Montgomery SA, Asberg M. A new depression scale designed to be sensitive to change. Br J Psychiatry 1979;134:382-389"
+  reference_confidence: "confirmed in source (abstract, Europe PMC)"
+  respondent: clinician
+  construct: depression
+  sources: ["schema notes (bp and dr madrs)", "schema notes (dr inclusion_criteria)", "common_instruments.yaml (madrs)", "scale_reference.md section 1"]
+  items:
+    higher_means: more severe symptom
+    polarity: worse
+    basis: literature
+    source: "scale_reference.md section 1: the total is the plain sum of the ten items, no reversed item in any source read, and the severity bands rise with the total (confirmed in source, secondary). The wording of the item anchors is not in the documents"
+  scores:
+    madrs_total:
+      meaning: "Sum of the ten items (0 to 60)."
+      higher_means: more severe depression
+      polarity: worse
+      basis: literature
+      source: "scale_reference.md section 1: severity bands from 0-6 absent to 35-60 severe (Snaith 1986), confirmed in source (secondary / abstracts)"
+      cutoffs:
+        - {value: "0 to 6", meaning: "absent (Snaith 1986)", source: "scale_reference.md section 1", confidence: "confirmed in source (secondary); primary not read"}
+        - {value: "7 to 19", meaning: "mild depression (Snaith 1986)", source: "scale_reference.md section 1", confidence: "confirmed in source (secondary); primary not read"}
+        - {value: "20 to 34", meaning: "moderate depression (Snaith 1986)", source: "scale_reference.md section 1", confidence: "confirmed in source (secondary); primary not read"}
+        - {value: "35 to 60", meaning: "severe depression (Snaith 1986)", source: "scale_reference.md section 1", confidence: "confirmed in source (secondary); primary not read"}
+        - {value: "35 or more (Muller 2000) or 31 or more (Muller 2003)", meaning: "boundary between moderate and severe depression", source: "scale_reference.md section 1", confidence: "confirmed in source (abstract)"}
+        - {value: "4 or less, 7 or less, 9 or less or 10 or less", meaning: "remission, depending on the gold standard (Zimmerman 2004, Riedel 2010, Hawley 2002, trial plans); no single value", source: "scale_reference.md section 1", confidence: "confirmed in source (abstracts); convention, keep out of code"}
+        - {value: "above 20", meaning: "inclusion criterion of the DR cohort: the application writes the box 'MADRS above 20' as 1 for a total of 21 to 60", source: "schema notes (dr inclusion_criteria)", confidence: cited in schema notes}
+  flags:
+    - "The odd values 1, 3 and 5 are valid intermediate ratings (13% of the BP ratings)."
+    - "A total needs the ten items."
+    - "Remission cut-offs differ between publications (4 to 10)."
+    - "In DR the scale is rated at the screening visit and again at the inclusion visit, on separate rows: an analysis that wants one baseline must choose."
+    - "No document read states the period that the ratings cover."
+    - "The BP columns ending in _n1 (the mood at the neuropsychological assessment) are not loaded."
+
+ymrs:
+  description: "Young Mania Rating Scale: eleven items rated by the clinician. Items 5, 6, 8 and 9 count double (0, 2, 4, 6 or 8), the others are scored 0 to 4; the total is their sum (0 to 60)."
+  version: 11 items
+  reference: "Young RC, Biggs JT, Ziegler VE, Meyer DA. A rating scale for mania: reliability, validity and sensitivity. Br J Psychiatry 1978;133:429-435"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: clinician
+  construct: mania
+  period: "previous 48 hours and the interview (published guide, confirmed in source (direct))"
+  sources: ["schema notes (bp, sz and dr ymrs)", "common_instruments.yaml (ymrs)", "scale_reference.md section 2"]
+  items:
+    higher_means: more severe anomaly (0 is normal)
+    polarity: worse
+    basis: stated
+    source: "schema notes (sz ymrs): the dictionary says '0 normal to 4 severe anomaly' for the items (items 5, 6, 8 and 9 go to 8)"
+  scores:
+    ymrs_total:
+      meaning: "Sum of the eleven items (0 to 60)."
+      higher_means: more severe manic symptoms
+      polarity: worse
+      basis: literature
+      source: "scale_reference.md section 2: total mapped to the CGI severity, from 6 borderline to 52 extreme (Samara 2023), confirmed in source (abstracts)"
+      cutoffs:
+        - {value: "12 or less (Masand 2008), below 12 (Sachs 2004) or 7 or less (Chengappa 2003)", meaning: "remission, by convention; no single value", source: "scale_reference.md section 2", confidence: "confirmed in source (abstracts); first proposer of 12 to verify"}
+        - {value: "12 or more", meaning: "'current manic episode' in the SZ dictionary of the application", source: "schema notes (sz ymrs)", confidence: cited in schema notes}
+        - {value: "25", meaning: "very ill: best threshold against 'markedly ill' or worse on the CGI-BP mania (Lukasiewicz 2013)", source: "scale_reference.md section 2", confidence: "confirmed in source (abstract)"}
+        - {value: "6 / 12 / 20 / 30 / 40 / 52", meaning: "borderline / mildly / moderately / markedly / severely / among the most extremely ill on the CGI severity (Samara 2023)", source: "scale_reference.md section 2", confidence: "confirmed in source (abstract)"}
+  flags:
+    - "SZ: the export stores items 5, 8 and 9 as levels 0 to 4. The package reads them back to 0, 2, 4, 6, 8, so the three cohorts are on one scale and the total is the published one. The stored SZ total (not delivered) is lower on 776 of 4,538 visits. When the export is corrected these codes must be taken out, or the values would be doubled."
+    - "DR: the scale is not asked on the simplified visits of 2018 onward. An empty YMRS there is 'not asked', not 'no mania'."
+    - "A total needs all its items."
+    - "The published guide allows half points, which the form cannot record."
+
+aims:
+  description: "Abnormal Involuntary Movement Scale, rated by the clinician at every visit (SZ): seven items on the movements by body area, then the overall severity, the incapacitation and the patient's awareness, each from 0 to 4, and two yes/no items on the teeth."
+  version: 12 items
+  reference: "Guy W. ECDEU Assessment Manual for Psychopharmacology, revised 1976, as cited in Menzies V, Farrell SP. Schizophrenia, tardive dyskinesia, and the AIMS. J Am Psychiatr Nurses Assoc 2002;8:51-56"
+  reference_confidence: "confirmed in source (secondary); 1976 edition itself not read"
+  respondent: clinician
+  construct: movement_side_effects
+  sources: ["schema notes and labels (sz aims)", "scale_reference.md section 9"]
+  items:
+    higher_means: more severe abnormal movements (items 1 to 10; 0 none, 4 severe)
+    polarity: worse
+    basis: anchors
+    source: "scale_reference.md section 9: items 1 to 10 coded none, minimal (may be normal), mild, moderate, severe (0 to 4); schema label of item 10: '0 none, 4 severe distress'"
+  scores:
+    aims_movements:
+      meaning: "Sum of the seven movement items, 1 to 7 (0 to 28). It is the package's sub-total, not the published total."
+      higher_means: more severe abnormal movements
+      polarity: worse
+      basis: anchors
+      source: "sum of items coded 0 (none) to 4 (severe): scale_reference.md section 9; schema notes (sz aims)"
+  flags:
+    - "aims_movements is not the published total: in the one source read the total is the ten components, items 1 to 10 (0 to 40). The application computes no AIMS score."
+    - "The published rule for probable tardive dyskinesia is on the items, not on the sum: at least moderate (3 or more) in one body area or at least mild (2 or more) in two areas, after at least 3 months of antipsychotic exposure and no other cause (confirmed in source: Gharabawi 2005 abstract, Menzies and Farrell; the wording of Schooler and Kane 1982 is 'to verify'). It is not delivered."
+    - "The two dental items are yes/no. The dictionary swaps their numbers; the schema follows the form: aims_dental_problems is item 11 and aims_dentures item 12."
+
+barnes:
+  description: "Barnes Akathisia Rating Scale, rated by the clinician at every visit (SZ): three items from 0 to 3 (objective restlessness, awareness of restlessness, distress related to restlessness) and a global clinical assessment of akathisia from 0 (absent) to 5 (severe)."
+  version: 3 items and a global assessment
+  reference: "Barnes TR. A rating scale for drug-induced akathisia. Br J Psychiatry 1989;154:672-676"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: clinician
+  construct: movement_side_effects
+  sources: ["schema notes and labels (sz barnes)", "scale_reference.md section 10"]
+  scores:
+    barnes_sum:
+      meaning: "Sum of the three items: objective restlessness, awareness of restlessness and distress (0 to 9)."
+  variables:
+    barnes_global:
+      meaning: "Global clinical assessment of akathisia: 0 absent, 1 doubtful, 2 mild, 3 moderate, 4 marked, 5 severe."
+      higher_means: more severe akathisia
+      polarity: worse
+      basis: anchors
+      source: "schema label: '0 absent to 5 severe'; schema notes (sz barnes): six options from absent to severe"
+      cutoffs:
+        - {value: "2 or more", meaning: "akathisia (2 is the first level called akathisia, mild). The natural reading, but no source read states it as a cut-off", source: "schema notes (sz barnes); scale_reference.md section 10", confidence: "to verify (no explicit rule read)"}
+  flags:
+    - "The documents give the range of the three items (0 to 3) but not the wording of their levels, so no direction is written for them or for barnes_sum."
+    - "The dictionary says the global assessment goes from 0 to 4; the form and the published scale go from 0 to 5."
+    - "The Barnes columns share the dictionary prefix BARS with the Brief Adherence Rating Scale (instrument bars), which is another instrument."
+
+bars:
+  description: "Brief Adherence Rating Scale: adherence to the treatment over the 30 days before the visit, rated by the clinician at every visit (SZ). Three counts (doses prescribed per day, days without the treatment, days with less than the prescribed dose) and the clinician's estimate of the percentage of doses taken, which is the score."
+  version: 3 questions and a percentage
+  reference: "Byerly MJ, Nakonezny PA, Rush AJ. The Brief Adherence Rating Scale (BARS) validated against electronic monitoring in assessing the antipsychotic medication adherence of outpatients with schizophrenia and schizoaffective disorder. Schizophr Res 2008;100:60-69"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: clinician
+  construct: adherence
+  period: the 30 days before the visit
+  sources: ["schema notes and labels (sz bars)", "scale_reference.md section 11"]
+  variables:
+    bars_adherence:
+      meaning: "Percentage of the doses taken over the last month, as estimated by the clinician (0 to 100). It is the score of the scale."
+      higher_means: better adherence
+      polarity: better
+      basis: anchors
+      source: "schema label: 'Adherence over the last month, in percent, as estimated by the clinician'; schema notes (sz bars): 'the clinician's own estimate of the percentage of doses taken is the score'"
+      cutoffs:
+        - {value: "66% or less", meaning: "low adherence (Nakonezny 2020)", source: "scale_reference.md section 11", confidence: "confirmed in source (abstracts)"}
+    bars_days_missed:
+      meaning: "Number of days of the last month without the prescribed treatment (0 to 31)."
+      higher_means: more days without the treatment
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'Days of the last month without the prescribed treatment' (a count of days)"
+    bars_days_reduced:
+      meaning: "Number of days of the last month with less than the prescribed dose (0 to 31)."
+      higher_means: more days with a reduced dose
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'Days of the last month with less than the prescribed dose' (a count of days)"
+    bars_doses_per_day:
+      meaning: "Number of prescribed doses per day, as the patient knows it."
+      higher_means: more prescribed doses per day
+      polarity: neutral
+      basis: anchors
+      source: "schema label: 'Number of prescribed doses per day, as the patient knows it' (a count)"
+  flags:
+    - "It is not the Barnes akathisia scale (instrument barnes), which shares the dictionary prefix BARS."
+    - "The percentage is the clinician's own estimate, not a formula of the days: it differs from the share of days with the treatment taken on 1,949 of 4,283 visits. 73% of the values are multiples of ten."
+    - "Whether the published score combines the three counts is 'to verify' (the 2008 paper could not be read)."
+    - "Doses per day: the form has no upper limit and a percentage was sometimes typed in this field; values above 20 end out_of_range, and 271 visits hold 0 doses."
+
+calgary:
+  description: "Calgary Depression Scale for Schizophrenia, rated by the clinician at every visit (SZ) in a structured interview: nine items from 0 (absent) to 3 (severe) over the last two weeks. The extraction holds items 1 to 8 only: item 9 (observed depression) is exported nowhere, so the delivered score is the sum of eight items, not the CDSS total."
+  version: "9 items in the form (French translation Bernard, Lancon, Auquier et al. 1998, credited on the form); 8 items in the extraction"
+  reference: "Addington D, Addington J, Schissel B. Schizophr Res 1990;3:247-251; Addington D, Addington J, Maticka-Tyndale E, Joyce J. Schizophr Res 1992;6:201-208; Addington D, Addington J, Maticka-Tyndale E. Br J Psychiatry Suppl 1993;(22):39-44"
+  reference_confidence: "confirmed in source (abstracts)"
+  respondent: clinician
+  construct: depression
+  period: last two weeks
+  sources: ["schema notes and labels (sz calgary)", "scale_reference.md section 8"]
+  items:
+    higher_means: more severe symptom
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz calgary): 'nine items from 0 (absent) to 3 (severe)'"
+  scores:
+    calgary_sum8:
+      meaning: "Sum of CDSS items 1 to 8 (0 to 24). Item 9, observed depression, is missing: it is not the CDSS total."
+      higher_means: more severe depressive symptoms
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 0 (absent) to 3 (severe): schema notes and label (sz calgary)"
+  flags:
+    - "The published cut-off (a total above 6, that is 7 or more, of the nine items: 85% sensitivity, 82% specificity) does not apply to calgary_sum8. The dictionary's '6 or more' is not the published rule."
+    - "calgary08 is item 8, suicide, read from the column named calgar09. It was delivered before as calgary09, 'observed depression'."
+    - "No CDSS total is delivered while item 9 is missing; calgary_total (0 to 27) comes back when the export is corrected."
+
+extrapyramidal:
+  description: "Extrapyramidal side effects (parkinsonism), rated by the clinician at every visit (SZ): the ten items of the Simpson-Angus Scale, from 0 (normal) to 4 (severe), and their mean."
+  version: "Simpson-Angus Scale, 10 items. The dictionary names the columns ESRSA, but the form is not the ESRS of Chouinard"
+  reference: "Simpson GM, Angus JW. A rating scale for extrapyramidal side effects. Acta Psychiatr Scand Suppl 1970;212:11-19"
+  reference_confidence: "structure confirmed in source (secondary: Janno 2005, BMC Neurol 5:5, abstract; item names from a trial-protocol summary); 1970 text unread"
+  respondent: clinician
+  construct: movement_side_effects
+  sources: ["schema notes and labels (sz extrapyramidal)", "scale_reference.md section 12"]
+  items:
+    higher_means: more severe sign
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz extrapyramidal): 'ten items from 0 (normal) to 4 (severe)'"
+  scores:
+    esrsa_mean:
+      meaning: "Mean of the ten items of the Simpson-Angus Scale (0 to 4)."
+      higher_means: more severe extrapyramidal signs (parkinsonism)
+      polarity: worse
+      basis: anchors
+      source: "mean of items rated 0 (normal) to 4 (severe): schema notes (sz extrapyramidal)"
+      cutoffs:
+        - {value: "above 0.3", meaning: "parkinsonism, the cut-off in wide use, which Janno 2005 find too low", source: "schema notes (sz extrapyramidal); scale_reference.md section 12", confidence: "confirmed in source (abstract); origin of 0.3 to verify"}
+        - {value: "0.65", meaning: "parkinsonism, the optimum that Janno 2005 propose", source: "schema notes (sz extrapyramidal); scale_reference.md section 12", confidence: "confirmed in source (abstract)"}
+  flags:
+    - "The dictionary rule 'parkinsonism if 1 or more' has no published basis. No cut-off is delivered."
+    - "A mean needs its ten items."
+    - "Item 8 (glabella tap) counts blinks in five classes: 0 is 0 to 5 blinks, 4 is 21 or more."
+
+panss:
+  description: "Positive and Negative Syndrome Scale, rated by the clinician at every visit (SZ): 30 items from 1 (absent) to 7 (extreme): seven positive (P1 to P7), seven negative (N1 to N7) and sixteen of general psychopathology (G1 to G16). Delivered: the three scales, the total, the composite and fifteen factor scores of three five-factor models."
+  version: "30 items; French translation credited on the form: Lépine 1989"
+  reference: "Kay SR, Fiszbein A, Opler LA. The Positive and Negative Syndrome Scale (PANSS) for schizophrenia. Schizophr Bull 1987;13:261-276"
+  reference_confidence: "confirmed in source (pp. 261-266 read)"
+  respondent: clinician
+  construct: psychotic_symptoms
+  sources: ["schema notes and labels (sz panss)", "scale_reference.md section 7"]
+  items:
+    higher_means: more severe symptom
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz panss): '30 items from 1 (absent) to 7 (extreme)'"
+  scores:
+    panss_positive:
+      meaning: "Positive scale, sum of P1 to P7 (7 to 49)."
+      construct: positive_symptoms
+      higher_means: more severe positive symptoms
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 1 (absent) to 7 (extreme): schema notes (sz panss)"
+    panss_negative:
+      meaning: "Negative scale, sum of N1 to N7 (7 to 49)."
+      construct: negative_symptoms
+      higher_means: more severe negative symptoms
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 1 (absent) to 7 (extreme): schema notes (sz panss)"
+    panss_general:
+      meaning: "General psychopathology scale, sum of G1 to G16 (16 to 112)."
+      construct: general_psychopathology
+      higher_means: more severe general psychopathology
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 1 (absent) to 7 (extreme): schema notes (sz panss)"
+    panss_total:
+      meaning: "Sum of the 30 items (30 to 210)."
+      higher_means: more severe symptoms
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 1 (absent) to 7 (extreme): schema notes (sz panss)"
+      cutoffs:
+        - {value: "about 58", meaning: "'mildly ill' on the CGI (Leucht 2005)", source: "scale_reference.md section 7", confidence: "confirmed in source (abstract)"}
+        - {value: "about 75", meaning: "'moderately ill' on the CGI (Leucht 2005)", source: "scale_reference.md section 7", confidence: "confirmed in source (abstract)"}
+        - {value: "about 95", meaning: "'markedly ill' on the CGI (Leucht 2005)", source: "scale_reference.md section 7", confidence: "confirmed in source (abstract)"}
+        - {value: "about 116", meaning: "'severely ill' on the CGI (Leucht 2005)", source: "scale_reference.md section 7", confidence: "confirmed in source (abstract)"}
+    panss_composite:
+      meaning: "Composite: the positive scale minus the negative scale (-42 to 42). Not stored and not computed by the application."
+      higher_means: positive symptoms outweigh negative symptoms (below 0, the negative ones outweigh)
+      polarity: neutral
+      basis: literature
+      source: "scale_reference.md section 7: 'the Composite scale is Positive minus Negative, a bipolar index' (Kay 1987, p. 264), confirmed in source"
+    panss_wallwork_positive:
+      meaning: "Positive factor of Wallwork 2012, as published: sum of P1, P3, P5, G9."
+      construct: positive_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_wallwork_negative:
+      meaning: "Negative factor of Wallwork 2012, as published: sum of N1, N2, N3, N4, N6, G7."
+      construct: negative_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_wallwork_disorganised:
+      meaning: "Disorganised (concrete) factor of Wallwork 2012: sum of P2, N5, G11."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_wallwork_excited:
+      meaning: "Excited factor of Wallwork 2012: sum of P4, P7, G8, G14."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_wallwork_depressed:
+      meaning: "Depressed factor of Wallwork 2012: sum of G2, G3, G6."
+      construct: depression
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_lancon_positive:
+      meaning: "Positive factor of Lançon 1998: sum of P1, P3, P5, P6, G9."
+      construct: positive_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_lancon_negative:
+      meaning: "Negative factor of Lançon 1998, corrected as in the application (G7 for N7): sum of N1, N2, N3, N4, N6, G7, G16."
+      construct: negative_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_lancon_disorganised:
+      meaning: "Disorganised (cognitive) factor of Lançon 1998: sum of P2, N5, G10."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_lancon_excited:
+      meaning: "Excited factor of Lançon 1998: sum of P4, P7, G4, G8, G14."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_lancon_depressed:
+      meaning: "Depressed factor of Lançon 1998: sum of G1, G2, G3, G6."
+      construct: depression
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_vandergaag_positive:
+      meaning: "Positive factor labelled van der Gaag 2006, the application's list: sum of P1, P3, P5, P6, G9."
+      construct: positive_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_vandergaag_negative:
+      meaning: "Negative factor labelled van der Gaag 2006, the application's list: sum of N1, N2, N3, N4, N6, G7, G8, G16."
+      construct: negative_symptoms
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_vandergaag_disorganised:
+      meaning: "Disorganised factor labelled van der Gaag 2006, the application's list: sum of P2, N5, N7, G5, G10, G11, G12, G13."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_vandergaag_excited:
+      meaning: "Excited factor labelled van der Gaag 2006, the application's list: sum of P4, P7, G8, G14."
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+    panss_vandergaag_depressed:
+      meaning: "Emotional distress factor labelled van der Gaag 2006, the application's list: sum of G2, G3, G4, G6."
+      construct: depression
+      higher_means: more severe symptoms of the factor
+      polarity: worse
+      basis: anchors
+      source: "plain sum of items rated 1 (absent) to 7 (extreme): schema notes and label (sz panss)"
+  flags:
+    - "The factor scores are sums, for the three models alike; the Wallwork paper reports each factor as the mean of its items. A sum needs all its items."
+    - "Three stored factor scores of the export sum a wrong item (Wallwork positive and negative, Lançon negative). The delivered scores follow the application and the publication, so they differ from the stored columns."
+    - "Wallwork: the item lists equal the published table as reproduced in a secondary paper (Pinna 2014); the primary table is 'to verify'."
+    - "Lançon: which item belongs to which factor could not be read in the paper ('to verify'). The negative factor uses G7 where the stored formula has N7, as the application does; the doubt stays until the table of the paper is read."
+    - "van der Gaag: the scores are the application's own lists (28 items, G8 in two factors, G1 and G15 absent), not the published model, in which items load on several factors and all 30 items are used. They are not the published factor scores."
+    - "Two pairs are the same sum: the positive factors of Lançon and van der Gaag, and the excited factors of Wallwork and van der Gaag."
+    - "The composite is a bipolar index (positive minus negative), so its polarity is written neutral."
+    - "The remission criteria of Andreasen 2005 are on eight items (P1, P2, P3, N1, N4, N6, G5, G9, each 3 or less for six months; confirmed in source, secondary) and are not delivered."
+    - "No document read states the period that the ratings cover."
+
+psp:
+  description: "Personal and Social Performance scale, rated by the clinician at every visit (SZ), from 2012 on. Four domains are rated from 0 (absent) to 5 (very severe); the clinician then chooses a band of ten points and a score from 1 to 100 inside it. Nothing is computed."
+  version: 4 domains, a band and a score
+  reference: "Morosini PL, Magliano L, Brambilla L, Ugolini S, Pioli R. Development, reliability and acceptability of a new version of the DSM-IV SOFAS to assess routine social functioning. Acta Psychiatr Scand 2000;101:323-329"
+  reference_confidence: "confirmed in source (abstracts)"
+  respondent: clinician
+  construct: psychosocial_functioning
+  period: "the last month (text of the form, in scale_reference.md section 14)"
+  sources: ["schema notes and labels (sz psp)", "scale_reference.md section 14"]
+  variables:
+    psp_total:
+      meaning: "PSP score, from 1 to 100, typed by the clinician inside the chosen band."
+      higher_means: better personal and social functioning
+      polarity: better
+      basis: stated
+      source: "schema label: 'PSP score, from 1 to 100 (higher is better)'"
+      cutoffs:
+        - {value: "71 to 100", meaning: "mild difficulty", source: "scale_reference.md section 14", confidence: "to verify (search summary only)"}
+        - {value: "31 to 70", meaning: "varying degrees of disability", source: "scale_reference.md section 14", confidence: "to verify (search summary only)"}
+        - {value: "30 or less", meaning: "needs intensive support", source: "scale_reference.md section 14", confidence: "to verify (search summary only)"}
+    psp_band:
+      meaning: "Band of ten points chosen by the clinician, coded 1 (100 to 91) to 10 (10 to 1)."
+      higher_means: lower band of the score, so worse functioning
+      polarity: worse
+      basis: anchors
+      source: "schema label: 'from 1 (100 to 91) to 10 (10 to 1)'; scale_reference.md section 14: 'the code runs opposite to the score'"
+    psp_activities:
+      meaning: "Domain a: difficulty in socially useful activities, work and study included (0 absent to 5 very severe)."
+      higher_means: more severe difficulty
+      polarity: worse
+      basis: anchors
+      source: "schema label: '0 absent to 5 very severe'"
+    psp_relationships:
+      meaning: "Domain b: difficulty in personal and social relationships (0 absent to 5 very severe)."
+      higher_means: more severe difficulty
+      polarity: worse
+      basis: anchors
+      source: "schema label: '0 absent to 5 very severe'"
+    psp_self_care:
+      meaning: "Domain c: difficulty in self-care (0 absent to 5 very severe)."
+      higher_means: more severe difficulty
+      polarity: worse
+      basis: anchors
+      source: "schema label: '0 absent to 5 very severe'"
+    psp_aggression:
+      meaning: "Domain d: disturbing and aggressive behaviours (0 absent to 5 very severe)."
+      construct: aggression_hostility
+      higher_means: more severe disturbing and aggressive behaviours
+      polarity: worse
+      basis: anchors
+      source: "schema label: '0 absent to 5 very severe'"
+  flags:
+    - "psp_total and psp_band run in opposite directions: a higher score is better, a higher band code is worse."
+    - "The band is typed independently of the score and differs from the band of the score on 215 of 3,262 visits (check_failed); both values are kept."
+    - "The score is the rater's judgement, not a sum of the four domains."
+    - "The form came into use slowly: it is on 8% of the inclusion visits of 2012 and on 80% to 94% from 2017."
+    - "The dictionary numbers the domain levels 0 to 5; the publication numbers them 1 to 6."
+    - "A change of about 7 points may be clinically meaningful (Nasrallah 2008, confirmed in source, abstract)."
+
+sumd:
+  description: "Scale to assess Unawareness of Mental Disorder, abbreviated, rated by the clinician at every visit (SZ). Three general items (awareness of having a mental disorder, of its consequences, of the effects of the medication), then six symptoms each rated twice: awareness of the symptom and attribution of the symptom to the disorder. 1 is aware or correct, 2 partial, 3 unaware or incorrect."
+  version: "Abbreviated form with a 3-point coding: nine awareness items and six attribution items"
+  reference: "Amador XF, Strauss DH, Yale SA, Flaum MM, Endicott J, Gorman JM. Assessment of insight in psychosis. Am J Psychiatry 1993;150:873-879 (abbreviated form: Michel P, et al. BMC Psychiatry 2013;13:229)"
+  reference_confidence: "confirmed in source (abstract); abbreviated form: confirmed in source (secondary: Michel 2013, full text)"
+  respondent: clinician
+  construct: insight
+  sources: ["schema notes and labels (sz sumd)", "scale_reference.md section 13"]
+  items:
+    higher_means: less awareness, or a less correct attribution (1 aware or correct, 3 unaware or incorrect)
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz sumd): '1 is aware or correct, 2 partial, 3 unaware or incorrect'; schema labels: '1 aware, 3 unaware'"
+  flags:
+    - "A higher value is less insight."
+    - "No total: the application has none and none is built. The published dimension scores of the abbreviated form (mean of items 1 to 3, 4 to 6 and 7 to 9, rescaled 0 to 100, higher is less insight) are not delivered, and the attribution items are outside that form."
+    - "The code 0, 'cannot be rated', is read as missing: 34% to 59% of the visits for a symptom, where it mostly means that the patient does not have the symptom."
+    - "The dictionary does not name the six symptoms and they stay numbered in the schema. The form read for scale_reference.md lists items 4 to 9 as hallucinations, delusions, thought disorder, blunted affect, anhedonia, asociality."
+    - "530 attributions are rated although the awareness of the same symptom is 0 or 3 (a script error of the form); they are kept as recorded."
+
+amiel_lebigre_fu:
+  description: "Life-events questionnaire of Amiel-Lebigre asked again at follow-up (DR, visits of 24 and 48 months): 53 events answered yes or no, and for a yes 'when' (six months or one year)."
+  version: "Follow-up form (form 210 of the application), 53 events"
+  reference: "Amiel-Lebigre F, Pelc I, Lagorce A. Evenements existentiels et depression. Ann Med Psychol 1984;142:937-958 (a 53-item schedule; no published definition matches this form)"
+  reference_confidence: "confirmed in source (records and abstracts); the '2005' source of the dictionary: to verify"
+  construct: life_events
+  period: "the last year at most (the options of 'when' are six months and one year)"
+  sources: ["schema notes and labels (dr amiel_lebigre_fu, dr amiel_lebigre_v0)", "scale_reference.md section 20"]
+  items:
+    higher_means: event reported (1 yes, 0 no)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (dr amiel_lebigre_fu): 'each answered 1 (yes) or 0 (no)'"
+  scores:
+    amiel_events_fu:
+      meaning: "Number of the 53 events answered yes at follow-up (0 to 53), when the 53 are answered."
+      higher_means: more life events reported
+      polarity: neutral
+      basis: anchors
+      source: "schema label: 'Number of life events answered yes (0 to 53), asked again at follow-up' (a count of events)"
+  flags:
+    - "The count is the package's own, not a published score: no published total or weights were found."
+    - "It cannot be compared with the inclusion count (amiel_events), which covers up to the whole life."
+    - "The answers read as the last year at most, not as the whole interval since the previous visit (median gap 748 days)."
+    - "An empty form means not done."
+    - "The notes do not say who answers; the form sits in the HETERO-QUESTIONNAIRES tab."
+    - "The variables ending in _when are categories (six_months, one_year)."
+
+amiel_lebigre_v0:
+  description: "Life-events questionnaire of Amiel-Lebigre at the inclusion visit (DR): 53 events answered yes or no, and for a yes 'when', in a list of four (six months, one year, two years, whole life)."
+  version: "Inclusion form (form 209 of the application), 53 events"
+  reference: "Amiel-Lebigre F, Pelc I, Lagorce A. Evenements existentiels et depression. Ann Med Psychol 1984;142:937-958 (a 53-item schedule; no published definition matches this form)"
+  reference_confidence: "confirmed in source (records and abstracts); the '2005' source of the dictionary: to verify"
+  construct: life_events
+  period: "up to the whole life (the options of 'when' are six months, one year, two years, whole life)"
+  sources: ["schema notes and labels (dr amiel_lebigre_v0)", "scale_reference.md section 20"]
+  items:
+    higher_means: event reported (1 yes, 0 no)
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (dr amiel_lebigre_v0): 'each answered 1 (yes) or 0 (no)'"
+  scores:
+    amiel_events:
+      meaning: "Number of the 53 events answered yes at inclusion (0 to 53), when the 53 are answered."
+      higher_means: more life events reported
+      polarity: neutral
+      basis: anchors
+      source: "schema label: 'Number of life events answered yes (0 to 53)' (a count of events)"
+  flags:
+    - "The count is the package's own, not a published score: the published schedule rates the impact of each event from 0 to 100 and no published total or weights were found."
+    - "A step in time with no known cause: a median of 4 or 5 events a visit in 2015-2018 and 11 to 16 from 2019."
+    - "The form does not say whether 'one year' means within the last year or between six and twelve months ago."
+    - "The notes do not say who answers; the form sits in the HETERO-QUESTIONNAIRES tab."
+    - "The variables ending in _when are categories (six_months, one_year, two_years, whole_life), not dates."
+
+athf:
+  description: "Antidepressant Treatment History Form (DR): one rating by the clinician per antidepressant, biological therapy, augmentation agent and psychotherapy received for the current episode, 42 in all. 0 means no prescription. No score is stored and none is computed."
+  version: "Form 154 of the application; the dictionary heading reads 'ATHF Criteria for Rating Medication Trials for Antidepressant Failure (2009)', a revision that the literature check did not find"
+  reference: "Sackeim HA, Aaronson ST, Bunker MT, et al. The assessment of resistance to antidepressant treatment: rationale for the ATHF Short Form (ATHF-SF). J Psychiatr Res 2019;113:125-136 (its Table 2 gives the original ATHF criteria); Sackeim HA. J Clin Psychiatry 2001;62 Suppl 16:10-17"
+  reference_confidence: "confirmed in source (full text / abstracts)"
+  respondent: clinician
+  construct: treatment_resistance
+  period: the current episode
+  sources: ["schema notes and labels (dr athf)", "scale_reference.md section 18"]
+  items:
+    higher_means: a more adequate trial of the treatment (0 no prescription; 1 and 2 too short or under the adequate dose; 3 and more adequate)
+    polarity: neutral
+    basis: stated
+    source: "schema notes (dr athf): 'A rating of 0 means no prescription. For an antidepressant, 1 and 2 are trials that were too short or under the adequate dose, and 3 and more an adequate trial'"
+    cutoffs:
+      - {value: "3 or more", meaning: "adequate trial of an antidepressant; counted as a failed adequate trial in the published form, whose rule also needs adherence and an insufficient benefit. It applies to the lines whose levels reach 3", source: "schema notes (dr athf); Sackeim 2019 Table 2, in scale_reference.md section 18", confidence: "confirmed in source (2019 full text)"}
+  flags:
+    - "An empty ATHF is 'not offered', never 'no trial': at the follow-up visits the form is offered only when the MADRS saved on the same visit is above 10 (rule dated 3 November 2015)."
+    - "No total: the published form has none either (number of trials, number of failed adequate trials, most potent rating, total potency). A count of failed adequate trials is not delivered; the choice of the lines that enter it is the user's."
+    - "The lines do not share one range: 0 to 1, 0 to 2, 0 to 3, 0 to 4 or 0 to 5, by line. Lithium as an augmentation agent takes 0, 4 or 5 only, and bilateral ECT never 3."
+    - "Recodes: bilateral ECT keys 3 and 4 are delivered as 4 and 5; lithium alone and carbamazepine are delivered 1 to 3, and whether the rating rests on the plasma level or on the dose is lost."
+    - "athf_vortioxetine is the column that the dictionary calls bupropion a second time. The vortioxetine and phenelzine lines look added to the form around 2018."
+    - "The follow-up form can copy the previous visit: 19% of the follow-up forms with an earlier one are identical in all 42 cells."
+    - "The meaning of 0 beyond 'no treatment' and the level of thyroid augmentation are 'to verify'."
+
+bas:
+  description: "Tyrer's Brief Scale for Anxiety (called BAS in the application): ten items rated 0 to 6 by the clinician (DR), eight on symptoms reported by the patient and two on observed symptoms; the total is their sum (0 to 60)."
+  version: 10 items
+  reference: "Tyrer P, Owen RT, Cicchetti DV. The brief scale for anxiety: a subdivision of the Comprehensive Psychopathological Rating Scale. J Neurol Neurosurg Psychiatry 1984;47:970-975"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: clinician
+  construct: anxiety
+  period: "the current episode, usually the last seven days (reference period on the form, in scale_reference.md section 15)"
+  sources: ["schema notes and labels (dr bas)", "scale_reference.md section 15"]
+  scores:
+    bas_total:
+      meaning: "Sum of the ten items (0 to 60)."
+      higher_means: more anxiety
+      polarity: worse
+      basis: literature
+      source: "scale_reference.md section 15: Kazmi 2022, 'a total 0-60, higher = more anxiety' (secondary only; original to verify)"
+      cutoffs:
+        - {value: "11", meaning: "95th percentile of a general-population reference group (Schulte-van Maaren 2013): a population percentile, not a severity band", source: "scale_reference.md section 15", confidence: "confirmed in source (abstract)"}
+  flags:
+    - "The documents give the range of the items (0 to 6, anchors written at 0, 2, 4 and 6) but not the wording of the anchors, so no direction is written for the items; the direction of the total rests on one secondary source."
+    - "The items are named for the field of the form, not for the screen position: bas06 is pain, bas07 the observed autonomic signs, bas08 the muscular tension, bas09 the reduced sleep and bas10 the reported autonomic symptoms. The dictionary reads them otherwise."
+    - "Which ten items form the published scale, their order and which are observed are 'to verify'. No severity band was found in the original."
+    - "The scale is not asked on the simplified visits: it is on 90% of the inclusion visits until 2017 and on 53% since 2018."
+    - "DR only."
+
+erd:
+  description: "Depressive Retardation Scale of Widlöcher (ERD), rated by the clinician (DR): fourteen items from 0 (normal) to 4 (very severe) and a fifteenth, the general appreciation of the retardation, on the same scale. The score is the sum of items 1 to 14."
+  version: "14 items and a general appreciation (form 228 of the application)"
+  reference: "Hardy P, Jouvent R, Widlocher D. J Affect Disord 1984;6:123-127 ('Retardation Rating Scale for Depression (ERD)'); Dantchev N, Widlocher DJ. J Clin Psychiatry 1998;59 Suppl 14:19-25 (Salpetriere Retardation Rating Scale)"
+  reference_confidence: "confirmed in source (records)"
+  respondent: clinician
+  construct: psychomotor_retardation
+  sources: ["schema notes and labels (dr erd)", "scale_reference.md section 16"]
+  items:
+    higher_means: more severe retardation
+    polarity: worse
+    basis: anchors
+    source: "schema notes (dr erd): 'Fourteen items rated 0 (normal) to 4 (very severe) and a fifteenth ... on the same scale'"
+  scores:
+    erd_total:
+      meaning: "Sum of items 1 to 14 (0 to 56). The general appreciation (item 15) is not part of it."
+      higher_means: more severe retardation
+      polarity: worse
+      basis: anchors
+      source: "sum of items rated 0 (normal) to 4 (very severe): schema notes and label (dr erd)"
+  flags:
+    - "Secondary sources describe fifteen items, a total of 0 to 60 and a retardation cut-off of 20 on that total (confirmed in source, secondary; primary 'to verify'). A threshold from the literature must not be applied to the 0 to 56 sum without adding item 15 (erd_general)."
+    - "Whether the original instruction counts the general item in the total is 'to verify'."
+    - "A step in time with no known cause: the total has a median of 7 and 9 in 2020 and 2021 against 13 in the other years."
+    - "In use from 2016, and not asked on the simplified visits."
+    - "DR only."
+
+sachs:
+  description: "Bipolarity Index of Sachs (form 'Bipolarité de Sachs', DR), rated by the clinician at the inclusion visit from 2014: five dimensions (episode characteristics, age of onset, course of illness and associated features, response to treatment, family history), each worth 0 to 20 points, and their sum (0 to 100)."
+  version: 5 dimensions
+  reference: "Aiken CB, Weisler RH, Sachs GS. The Bipolarity Index: a clinician-rated measure of diagnostic confidence. J Affect Disord 2015;177:59-64"
+  reference_confidence: "confirmed in source (Sachs-authored scoring sheet reprinted in The Carlat Psychiatry Report 2018; abstract); first formal publication before 2015: to verify"
+  respondent: clinician
+  construct: bipolarity
+  sources: ["schema notes and labels (dr sachs)", "scale_reference.md section 17"]
+  items:
+    higher_means: more points on the dimension (0 is none of the descriptors)
+    polarity: neutral
+    basis: literature
+    source: "scale_reference.md section 17: each dimension takes one level from 20, 15, 10, 5, 2, 0, the highest true statement counting, '0 = none of the descriptors' (scoring sheet), confirmed in source"
+  scores:
+    sachs_total:
+      meaning: "Sum of the five ratings, in points (0 to 100)."
+      higher_means: bipolar disorder more likely (not a greater severity)
+      polarity: neutral
+      basis: literature
+      source: "scale_reference.md section 17: '50 or more = high probability of bipolar disorder ... higher scores do not mean greater severity' (scoring sheet), confirmed in source"
+      cutoffs:
+        - {value: "50 or more", meaning: "bipolar disorder likely (sensitivity 0.91, specificity 0.90, Aiken 2015); to read as a published threshold only", source: "schema notes (dr sachs); scale_reference.md section 17", confidence: "confirmed in source (abstracts, scoring sheet)"}
+        - {value: "40 to 50", meaning: "at risk of conversion, worth careful monitoring (scoring sheet)", source: "scale_reference.md section 17", confidence: "confirmed in source (abstracts, scoring sheet)"}
+        - {value: "42", meaning: "major depression versus bipolar disorder in a Chinese sample (Ma 2016)", source: "scale_reference.md section 17", confidence: "confirmed in source (abstracts, scoring sheet)"}
+        - {value: "57", meaning: "bipolar II versus bipolar I in a Chinese sample (Ma 2016)", source: "scale_reference.md section 17", confidence: "confirmed in source (abstracts, scoring sheet)"}
+  flags:
+    - "The index measures diagnostic confidence: the scoring sheet says that higher scores do not mean greater severity. The polarity is written neutral for that reason."
+    - "The ratings are delivered in points (0, 2, 5, 10, 15, 20; the age of onset has no 2). The stored option key is not always the points and is brought back to them."
+    - "The published threshold of 50 assumes that the five dimensions were rated. The stored total reaches 50 on 3 visits (median 21)."
+    - "The age of onset is 0 ('no mood disorder') on 11 visits although the cohort requires a depressive episode: delivered as written."
+    - "Not asked on the simplified visits: on 46% of the inclusion visits from 2015."
+    - "DR only."
+
+thase_rush:
+  description: "One rating by the clinician at the screening visit (DR): the stage of treatment resistance of Thase and Rush, from 1 (failure of one adequate antidepressant trial) to 5 (failure of bilateral electroconvulsive therapy as well). Each stage includes the one before."
+  version: stages 1 to 5
+  reference: "Thase ME, Rush AJ. Treatment-resistant depression. In: Bloom FE, Kupfer DJ, eds. Psychopharmacology: the fourth generation of progress. Raven 1995:1081-1098; Thase ME, Rush AJ. J Clin Psychiatry 1997;58 Suppl 13:23-29"
+  reference_confidence: "existence confirmed in source (cited in Sackeim 2019; Europe PMC record); text unread"
+  respondent: clinician
+  construct: treatment_resistance
+  sources: ["schema notes and label (dr thase_rush)", "schema notes (dr inclusion_criteria)", "scale_reference.md section 19"]
+  variables:
+    thase_rush_stage:
+      meaning: "Stage of treatment resistance: 1 failure of one adequate antidepressant trial; 2 also of another class; 3 also of a tricyclic; 4 also of an MAOI; 5 also of bilateral ECT."
+      higher_means: more resistant to treatment (more kinds of treatment have failed)
+      polarity: worse
+      basis: stated
+      source: "schema notes (dr thase_rush): 'from 1 (failure of one adequate antidepressant trial) to 5 (failure of bilateral electroconvulsive therapy as well; each stage includes the one before)'; scale_reference.md section 19, confirmed in source (secondary), primary wording to verify"
+      cutoffs:
+        - {value: "2 or more", meaning: "inclusion criterion of the DR cohort (box 'stage 2 or more', written by the application from the stage)", source: "schema notes (dr thase_rush, dr inclusion_criteria)", confidence: cited in schema notes}
+  flags:
+    - "The stage is declared by the clinician, not derived from the ATHF."
+    - "Filled for 517 of the 634 patients, less often since 2021. Most are at stage 2 or 3."
+    - "DR only."
+
+inclusion_criteria:
+  description: "Seven yes/no boxes filled at the screening visit (DR): three inclusion criteria (MADRS above 20, major depressive episode, stage 2 or more of treatment resistance), three exclusion criteria (obsessive-compulsive disorder, eating disorder, bipolar disorder) and the conclusion 'eligible', which is recomputed by the package."
+  reference: not_applicable
+  respondent: clinician
+  construct: eligibility
+  sources: ["schema notes and labels (dr inclusion_criteria)", "schema notes (dr thase_rush, dr madrs)"]
+  items:
+    higher_means: criterion ticked (1 yes, 0 no)
+    polarity: not_applicable
+    basis: anchors
+    source: "schema notes (dr inclusion_criteria): 'Yes is 1 and no is 0'"
+  scores:
+    eligible:
+      meaning: "1 when the three inclusion criteria are yes and the three exclusion criteria no, else 0; recomputed from the six boxes."
+      higher_means: eligible (1) rather than not eligible (0)
+      polarity: not_applicable
+      basis: stated
+      source: "schema label: 'Patient eligible (all three inclusion criteria and none of the exclusion criteria)'"
+  flags:
+    - "These variables hardly vary: almost every patient has the three inclusion criteria and none of the exclusion criteria."
+    - "Two boxes are written by the application and can be changed by the clinician: 'MADRS above 20' (1 for a total of 21 to 60 when a MADRS form is saved) and 'stage 2 or more' (1 for the stages 2 to 5). They are delivered as stored."
+    - "'MADRS above 20' is stored 1 with a screening total of 8 to 20 for 10 patients, and 'stage 2 or more' is ticked with no stage rated for 115 patients."
+    - "For an exclusion criterion, 1 (yes) is the answer that makes the patient not eligible."
+    - "DR only."

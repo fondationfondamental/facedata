@@ -32,6 +32,7 @@ lists the decisions taken and the questions still open
 | [depression-tutorial.ipynb](depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
 | [autism-tutorial.ipynb](autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
 | [common-instruments.ipynb](common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
+| [dictionary/README.md](dictionary/README.md) | The data dictionary: one page and one JSON file that describe every delivered variable (meaning, direction, derivation, cohorts and visits, missing values, distribution), built from the schemas, the hand-written annotations and the data |
 
 ## Install
 

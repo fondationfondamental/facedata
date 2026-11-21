@@ -1,0 +1,1965 @@
+# Annotations of the neuropsychology group (51 instruments) for the data dictionary.
+# Written from the schema notes, the project documents and the literature notes only.
+# A field that no document states is left out: a blank is a correct answer.
+
+cobra:
+  description: "Sixteen questions on cognitive difficulties in daily life, rated by the patient from 0 (never) to 3 (always). In the BP extraction from 2018."
+  version: 16 items
+  respondent: patient
+  construct: cognitive_complaint
+  sources: ["schema notes (bp cobra)", "item labels of the schema"]
+  items:
+    higher_means: the difficulty happens more often
+    polarity: worse
+    basis: anchors
+    source: "schema notes (bp cobra): 'Sixteen items, each 0 (never) to 3 (always)'; every item label asks about a difficulty"
+  scores:
+    cobra_total:
+      meaning: "Sum of the sixteen items (0 to 48)."
+      higher_means: more cognitive complaints
+      polarity: worse
+      basis: anchors
+      source: "schema notes (bp cobra): the total is the sum of sixteen items scored 0 (never) to 3 (always)"
+  flags:
+    - "The total needs the 16 items: a visit with 14 or 15 items has no total."
+    - "No reference and no cut-off is given in the project documents."
+
+cpt2:
+  description: "A sustained-attention test on a computer. The psychologist copies the results of the software report into the form: twelve measures, each with a value, a T-score, a percentile and the guideline printed by the report."
+  version: CPT-II
+  respondent: test
+  construct: attention
+  sources: ["schema notes (bp cpt2)"]
+  variables:
+    "cpt2_*_t":
+      meaning: "T-score of the measure, as printed by the test software and delivered as stored."
+      higher_means: more atypical performance
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cpt2): 'A higher T-score or percentile is a more atypical performance (the T-score falls where the detectability rises)'"
+    "cpt2_*_percentile":
+      meaning: "Percentile of the measure, as printed by the test software and delivered as stored."
+      higher_means: more atypical performance
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cpt2): 'A higher T-score or percentile is a more atypical performance (the T-score falls where the detectability rises)'"
+    cpt2_omissions:
+      meaning: "Number of omissions (targets missed)."
+      higher_means: more targets missed
+      polarity: worse
+      basis: anchors
+      source: "label 'Omissions'; schema notes (bp cpt2): 'few healthy people miss a target'"
+    cpt2_omissions_percent:
+      meaning: "Omissions as a percentage."
+      higher_means: more targets missed
+      polarity: worse
+      basis: anchors
+      source: "label 'Omissions (percent)'; schema notes (bp cpt2): 'few healthy people miss a target'"
+    cpt2_detectability:
+      meaning: "Detectability (d'), the value of the report."
+      higher_means: less atypical performance (its T-score falls)
+      polarity: better
+      basis: stated
+      source: "schema notes (bp cpt2): 'the T-score falls where the detectability rises'"
+    cpt2_hit_rt:
+      meaning: "Hit reaction time in milliseconds."
+      higher_means: slower reactions
+      basis: anchors
+      source: "label 'Hit reaction time (ms)'"
+  flags:
+    - "T-scores, percentiles and guidelines come from the test software and are delivered as stored: nothing can be recomputed."
+    - "For the detectability the value and its T-score go in opposite directions (the T-score falls where the detectability rises)."
+    - "The notes do not say what a higher value means for the commissions, the perseverations, the variability, the response style and the change measures; only their T-scores and percentiles have a stated direction."
+    - "The values (counts, times, d-prime) are winsorised at the 1st and 99th percentiles of the cohort; the T-scores, the percentages and the percentiles are not."
+    - "An omission T-score above 100 is common and the limits are wide on purpose; cells with a lost decimal point end out_of_range."
+    - "The CPT-3 replaced this test in 2022 and is another instrument (cpt3): no variable name is shared, and hit_rt_se (a standard error) is not hrt_sd (a standard deviation)."
+
+cpt3:
+  description: "The third edition of the Conners continuous performance test, a sustained-attention test on a computer. Nine measures, each with a T-score and the level printed by the report. In the BP extraction, mostly from 2022."
+  version: CPT-3
+  respondent: test
+  construct: attention
+  sources: ["schema notes (bp cpt3)"]
+  variables:
+    "cpt3_*_t":
+      meaning: "T-score of the measure, as printed by the test software and delivered as stored (20 to 90; 90 means at least 90)."
+      higher_means: more atypical performance
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp cpt3): 'A higher T-score is a more atypical performance, as in the CPT-II (the T-score falls where the detectability rises)'"
+    "cpt3_*_level":
+      meaning: "Level printed by the report for the measure; a function of the T-score, filled on part of the visits only."
+      polarity: not_applicable
+  flags:
+    - "The T-score is capped at 90 by the software: 90 means at least 90."
+    - "The T-scores and levels come from the test software: nothing can be recomputed."
+    - "On 36 visits the raw values of the report were typed in the T columns: those outside 20 to 90 end out_of_range, and the 12 that fall inside 20 to 90 keep their value with check_failed."
+    - "Another instrument than the CPT-II (cpt2), with its own columns: no variable name is shared between the two, nor with the CPT-IP of SZ, where a higher d-prime is a better performance."
+
+cvlt:
+  description: "A list of 16 words learned over five trials, a second list (list B), then recalls of the first list after a short and a long delay, free and cued, and a recognition task. Raw scores, z-scores and percentile bands."
+  version: "16-word list ('Monday list') and list B ('Tuesday list')"
+  respondent: test
+  construct: verbal_memory
+  sources: ["schema notes (bp cvlt, sz cvlt)", "docs/bp/PROGRESS.md D38, D44, D45, D108, D109", "docs/SCHEMA_SPEC.md sections 6 and 8"]
+  scores:
+    cvlt_total_1_5:
+      meaning: "Number of words recalled over trials 1 to 5 (the sum of five trials of 0 to 16 words)."
+      higher_means: more words recalled
+      polarity: better
+      basis: anchors
+      source: "label 'Trials 1 to 5 - words recalled'; schema notes (bp cvlt): 'Recalls are numbers of words, 0 to 16'"
+    cvlt_discriminability:
+      meaning: "Recognition discriminability in percent, recomputed: 100 x (correct recognitions + 28 - false recognitions) / 44."
+      higher_means: more correct recognitions and fewer false recognitions
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp cvlt): '100 x (hits + 28 - false alarms) / 44, from the correct and false recognitions (16 targets, 28 distractors)'"
+    "cvlt_trial*_*": &cvlt_recall_norm
+      meaning: "The recall against the norms. The z-score is (words recalled - score expected for the age, the years of education and the sex) / SD, computed again by the package. The band is the lower limit of the percentile band (0, 1, 5, 25, 50, 75, 95 or 99), read in the percentile table of the norms where they have one for the age, else the band of the z-score under the normal law."
+      higher_means: better recall than the norm group
+      polarity: better
+      basis: stated
+      source: "schema notes (bp cvlt): 'For the recalls a higher band is a better performance'; docs/bp/PROGRESS.md D108: a z-score is (raw score - expected score) / standard deviation"
+    "cvlt_total_1_5_*": *cvlt_recall_norm
+    "cvlt_list_b_*": *cvlt_recall_norm
+    "cvlt_short_*_*": *cvlt_recall_norm
+    "cvlt_long_*_*": *cvlt_recall_norm
+    "cvlt_primacy_*": &cvlt_value_norm
+      meaning: "The measure against the norms: the z-score, (raw value - expected value) / SD, and the percentile band of that z-score under the normal law."
+      higher_means: a higher value of the measure
+      polarity: neutral
+      basis: stated
+      source: "schema notes (bp cvlt): 'For primacy, recency and bias a higher band only means a higher value'"
+    "cvlt_recency_*": *cvlt_value_norm
+    "cvlt_bias_*": *cvlt_value_norm
+    "cvlt_semantic_*":
+      meaning: "Semantic clustering against the norms: a z-score, and a percentile band read in the table from 40 to 69 years and taken from the z-score at the other ages."
+    cvlt_discriminability_band:
+      meaning: "Percentile band of the recomputed discriminability, read in the table of the norms (the lower limit of the band)."
+  variables:
+    cvlt_trial1: &cvlt_recall_raw
+      meaning: "Number of words recalled (0 to 16)."
+      higher_means: more words recalled
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp cvlt): 'Recalls are numbers of words, 0 to 16'"
+    cvlt_trial2: *cvlt_recall_raw
+    cvlt_trial3: *cvlt_recall_raw
+    cvlt_trial4: *cvlt_recall_raw
+    cvlt_trial5: *cvlt_recall_raw
+    cvlt_list_b: *cvlt_recall_raw
+    cvlt_short_free: *cvlt_recall_raw
+    cvlt_short_cued: *cvlt_recall_raw
+    cvlt_long_free: *cvlt_recall_raw
+    cvlt_long_cued: *cvlt_recall_raw
+    cvlt_hits:
+      meaning: "Correct recognitions (16 targets)."
+      higher_means: more targets recognised
+      polarity: better
+      basis: anchors
+      source: "label 'Correct recognitions'; schema notes (bp cvlt): 16 targets, 28 distractors"
+    cvlt_false_alarms:
+      meaning: "False recognitions (28 distractors)."
+      higher_means: more distractors taken for a word of the list
+      polarity: worse
+      basis: anchors
+      source: "label 'False recognitions'; schema notes (bp cvlt): 16 targets, 28 distractors"
+    cvlt_delay:
+      meaning: "Minutes between the first recalls and the delayed recalls."
+      higher_means: a longer delay
+      polarity: neutral
+      basis: anchors
+      source: "label 'Minutes between the first recalls and the delayed recalls'"
+    cvlt_semantic:
+      meaning: "Semantic clustering index, typed by the clinician and delivered as stored; it cannot be rebuilt from the extraction."
+    cvlt_serial:
+      meaning: "Serial clustering index, typed by the clinician and delivered as stored; it cannot be rebuilt from the extraction."
+    cvlt_primacy:
+      meaning: "Primacy in percent, delivered as stored."
+    cvlt_recency:
+      meaning: "Recency in percent, delivered as stored."
+    cvlt_bias:
+      meaning: "Response bias (-1 to 1), delivered as stored. It follows (false alarms - missed targets) / (false alarms + missed targets) only approximately."
+    cvlt_serial_band: &cvlt_table_band
+      meaning: "Percentile band read in the table of the norms from the raw score and the age at the visit; the value is the lower limit of the band (0, 1, 5, 25, 50, 75, 95 or 99)."
+    cvlt_perseverations_band: *cvlt_table_band
+    cvlt_intrusions_band: *cvlt_table_band
+    cvlt_hits_band: *cvlt_table_band
+    cvlt_false_alarms_band: *cvlt_table_band
+  flags:
+    - "The z-scores are computed again with the regressions of the norms (raw score, age at the visit, years of education, sex). The z-scores that the application stored followed several rules over the years and are only checks."
+    - "The notes give a direction for the recalls only. For primacy, recency and bias a higher band only means a higher value. For the semantic and serial clustering, the perseverations, the intrusions, the recognitions and the discriminability, no document says whether a higher band is better."
+    - "A band taken from a z-score (flag band_from_z) assumes a normal law in the norm group, which the note of the application says is not validated clinically."
+    - "A band with <variable>_cens = +1 means this band or a higher one (several limits of the norms fall on the raw score, as for a perfect recall of 16 words)."
+    - "Recency z-score: two lines of the norm are corrected by a decision of the project lead (D109), to confirm with the manual (open question O50)."
+    - "Semantic clustering index: in some periods another quantity, probably a number of clusters, was typed in the field. Values of 8 or more are out_of_range; a few counts remain between 4 and 8 (open question O49)."
+    - "A z-score needs the years of education; without the norm files the z-scores and bands are missing (norm_missing)."
+    - "Centre steps are left as measured: use a centre term in a pooled analysis."
+    - "The edition of the test and its reference are not named in the project documents."
+
+errands_test:
+  description: "A planning test: the patient orders a list of errands under constraints of time and place. Raw scores: the time taken, the useless detours, the trips that miss an opening hour, the logical errors and the total of the three kinds of errors, each with a z-score and a percentile band."
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (bp errands_test, sz errands_test)", "facedata/common_instruments.yaml (errands_test)", "docs/bp/PROGRESS.md D126, D135"]
+  scores:
+    errands_errors:
+      meaning: "Total of the errors: useless detours, trips that miss an opening hour and logical errors."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'Total errors (detours, late trips and logical errors)'"
+    "errands_*_z":
+      meaning: "z-score of the measure, computed again from the raw count: (mean - count) / SD in the cell of the education and of the age (20 to 40 years, 41 to 60)."
+      higher_means: better performance (less time or fewer errors)
+      polarity: better
+      basis: stated
+      source: "schema notes (bp errands_test): 'The z-score is (mean - count) / SD in the cell of the education and of the age (20 to 40 years, 41 to 60), so that a higher z-score is a better performance'"
+    "errands_*_band":
+      meaning: "Percentile band of the measure, computed again from the raw count in the table of the education of the patient (under 12 years, 12 years and more); the value is the lower limit of the band."
+  variables:
+    errands_minutes:
+      meaning: "Time taken, in minutes."
+      higher_means: more time taken
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp errands_test): the z-score of the time is (mean - count) / SD 'so that a higher z-score is a better performance'"
+    errands_detours: &errands_count
+      meaning: "A count of errors of one kind."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'Useless detours', 'Trips that miss an opening hour', 'Logical errors'; schema notes (bp errands_test): 'the three kinds of errors'"
+    errands_late_trips: *errands_count
+    errands_logic_errors: *errands_count
+    errands_education:
+      meaning: "Level of education ticked in the form; no longer used for the norms, which read the years of education."
+      polarity: not_applicable
+  flags:
+    - "The delivered z-scores and bands are computed again from the raw counts with the tables of the application. The z-scores typed in BP mixed two sign conventions (decision D126) and are only checks."
+    - "No document says whether a higher percentile band is a better performance; a band with <variable>_cens = +1 is this band or a higher one."
+    - "No z-score under 20 or over 60 years: the application computes nothing there. The bands do not depend on the age."
+    - "A time written as a duration (minutes and seconds) is unparsed and missing."
+    - "ASP has the counts only, with the time in seconds and no norm (instrument executive_functions)."
+
+learning_disorders:
+  description: "Ten yes/no questions on learning and developmental disorders asked at the neuropsychological assessment: dyslexia, dysorthographia, dyscalculia, dysphasia, dyspraxia, delayed speech, stuttering, delayed walking, febrile seizures in early childhood and giftedness. DR adds ADHD in childhood, ADHD at present, seizures and a free text on cognitive complaints."
+  reference: not_applicable
+  construct: development
+  sources: ["schema notes (bp, dr, asp learning_disorders)"]
+  items:
+    higher_means: "yes (1) against no (0)"
+    polarity: not_applicable
+    basis: stated
+    source: "schema notes (bp learning_disorders): 'They are delivered as 1 (yes) and 0 (no)'"
+  variables:
+    cognitive_complaints:
+      meaning: "Free text on the cognitive complaints of the patient (DR only)."
+      polarity: not_applicable
+  flags:
+    - "'Does not know' is a missing code in the three cohorts."
+    - "The same ten questions, names and delivered codes in BP, DR and ASP. The three more questions and the free text of DR stay out of a pooled table."
+    - "DR fills the questions on a few dozen visits only, most of them where a learning disorder is suspected."
+
+neuropsy_conditions:
+  description: "The first lines of the neuropsychology form: the age at the testing, the handedness, the years of education and yes/no criteria that say whether the tests can be given. Filled once per assessment."
+  reference: not_applicable
+  respondent: clinician
+  construct: test_conditions
+  period: day of the testing
+  sources: ["schema notes (bp, sz, dr neuropsy_conditions)", "facedata/common_instruments.yaml (neuropsy_conditions)"]
+  scores:
+    neuropsy_age_used:
+      meaning: "Age the norms of the tab are read with: the age typed in the form where it is within 1 year of the age at the visit, else the age at the visit."
+      higher_means: older
+      polarity: neutral
+      basis: anchors
+      source: "label: an age in years"
+  variables:
+    neuropsy_age:
+      meaning: "Age at the testing, in years, as the psychologist entered it."
+      higher_means: older
+      polarity: neutral
+      basis: anchors
+      source: "label 'Age at the testing, as entered (years)'"
+    education_years:
+      meaning: "Years of education, counted from the first year of primary school, as entered at this assessment."
+      higher_means: more years of education
+      polarity: neutral
+      basis: stated
+      source: "schema notes (bp neuropsy_conditions): 'Education is counted in years from the first year of primary school'"
+    handedness:
+      meaning: "Handedness: right, left or both (BP and DR; SZ has none)."
+      construct: handedness
+      polarity: not_applicable
+    neuropsy_mood_rating_delay:
+      meaning: "Time since the last rating of the mood state: under a week or over a week."
+      polarity: not_applicable
+  flags:
+    - "The yes/no criteria are delivered as 1 (yes) and 0 (no). In BP each is worded so that yes is the condition wanted for the testing. SZ and DR also ask whether the patient takes a psychotropic treatment and whether a learning disorder is suspected, where yes is not a wanted condition."
+    - "Not the same question in every cohort: the clinical state (euthymic in BP, state compatible with the tests in SZ and DR), the electroconvulsive therapy (past year in BP and DR, last six months in SZ) and French (sufficient command in BP and SZ, mother tongue in DR)."
+    - "The typed age is more than 1 year from the age at the visit on a few percent of the visits; neuropsy_age_used says which age the norms were read with."
+    - "The years of education are entered again at each assessment and can differ between two visits of a patient."
+    - "The raw code of the handedness differs between applications (1 is right in DR, left in ASP); the delivered categories are named."
+    - "Not every centre fills the form at inclusion any more (open question O40 of BP, O22 of DR)."
+
+scip:
+  description: "A short battery of five subtests (verbal learning, working memory, verbal fluency, delayed verbal recall, visuomotor tracking), each with a raw score and a z-score. In the BP extraction from 2018."
+  version: "three parallel forms (scip_form says which one was given)"
+  respondent: test
+  construct: global_cognition
+  sources: ["schema notes (bp scip)"]
+  scores:
+    scip_verbal_learning_z:
+      meaning: "z-score of the verbal learning raw score: (raw score - mean) / SD, with one mean and one SD for the subtest."
+      construct: verbal_memory
+      higher_means: a higher raw score
+      basis: stated
+      source: &scip_source "schema notes (bp scip): 'z = (raw score - mean) / SD with one mean and one SD per subtest'"
+    scip_working_memory_z:
+      meaning: "z-score of the working memory raw score: (raw score - mean) / SD."
+      construct: working_memory
+      higher_means: a higher raw score
+      basis: stated
+      source: *scip_source
+    scip_verbal_fluency_z:
+      meaning: "z-score of the verbal fluency raw score: (raw score - mean) / SD."
+      construct: verbal_fluency
+      higher_means: a higher raw score
+      basis: stated
+      source: *scip_source
+    scip_delayed_recall_z:
+      meaning: "z-score of the delayed verbal recall raw score: (raw score - mean) / SD."
+      construct: verbal_memory
+      higher_means: a higher raw score
+      basis: stated
+      source: *scip_source
+    scip_visuomotor_z:
+      meaning: "z-score of the visuomotor tracking raw score: (raw score - mean) / SD."
+      higher_means: a higher raw score
+      basis: stated
+      source: *scip_source
+  variables:
+    scip_form:
+      meaning: "Which of the three parallel forms was given (1 to 3)."
+      polarity: not_applicable
+  flags:
+    - "The notes do not say what the raw scores count, nor in words that a higher score is a better performance: the polarity is left out."
+    - "The z-scores use fixed constants of the application's script, with no age or education term and the same for the three forms; where the constants come from is not checked against the manual (open question DM-4)."
+    - "The maxima of the raw scores are 30 (verbal learning), 24 (working memory), 10 (delayed recall) and 30 (visuomotor)."
+    - "No reference is given in the project documents."
+
+spatial_span:
+  description: "The psychologist taps blocks in a sequence that the patient repeats, in the same order (forward) and then in reverse (backward). Eight items of two trials for each order; the test stops after two failures on an item."
+  version: Wechsler Memory Scale III
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (bp spatial_span)", "docs/bp/PROGRESS.md D135"]
+  items:
+    higher_means: the trial is passed (an item score is the number of its trials passed)
+    polarity: better
+    basis: stated
+    source: "schema notes (bp spatial_span): 'An item score is the number of its trials passed (0 to 2)'; schema comment: 'two trials per item (1 = correct)'"
+  scores:
+    spatial_forward: &spatial_raw
+      meaning: "Raw score: the sum of the item scores up to the first item scored 0 (0 to 16 for one order, 0 to 32 for the total of the two orders)."
+      higher_means: more trials passed
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp spatial_span): 'An item score is the number of its trials passed (0 to 2)'; the raw score is the sum of the item scores"
+    spatial_backward: *spatial_raw
+    spatial_total: *spatial_raw
+    "spatial_*_scaled":
+      meaning: "Age-scaled score (1 to 19, mean 10 and SD 3), read in the table of the manual from the raw score and the age."
+      higher_means: a higher raw score for the age group
+      polarity: better
+      basis: stated
+      source: "docs/bp/PROGRESS.md D135, rules found in the scripts: 'a scaled score is the first cell of the table not below the raw score'"
+    "spatial_*_z":
+      meaning: "The scaled score brought to mean 0 and SD 1: (scaled score - 10) / 3."
+      higher_means: a higher scaled score
+      polarity: better
+      basis: stated
+      source: "schema notes (bp spatial_span): 'The z-score is the scaled score brought to mean 0 and SD 1, (scaled - 10) / 3'"
+  flags:
+    - "Scaled scores and z-scores are computed again from the raw score; the stored ones are only checks (about 1% of the visits differ)."
+    - "The table is read with the typed age where it is within one year of the age at the visit, else with the age at the visit."
+    - "Only BP has this test."
+
+stroop:
+  description: "Three plates of 45 seconds each: reading colour words, naming colours, and naming the ink of colour words, then an interference score. For each plate the number of items, the score corrected for age, two counts of errors, a T-score and a z-score."
+  version: "Stroop Colour and Word Test (Golden), three plates of 45 seconds"
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (bp stroop)", "facedata/custom.py (stroop_interference)"]
+  scores:
+    stroop_word_corrected: &stroop_corrected
+      meaning: "Number of items of the plate in 45 seconds plus a fixed number of items for the age class."
+      higher_means: more items in 45 seconds
+      polarity: better
+      basis: anchors
+      source: "labels 'items in 45 seconds'; schema notes (bp stroop): 'The corrected score is the number of items plus a fixed number of items for each of three age classes'"
+    stroop_colour_corrected: *stroop_corrected
+    stroop_colour_word_corrected: *stroop_corrected
+    stroop_interference:
+      meaning: "The colour-word score minus the score predicted from the two other plates, word x colour / (word + colour), all three corrected for age."
+      higher_means: more colour-word items than the two other plates predict
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp stroop): 'The colour-word score minus the score predicted from the two other plates, A x B / (A + B), all three corrected for age'"
+    "stroop_*_t":
+      meaning: "T-score read in the table of the manual from the corrected score or from the interference (20 to 80, in steps of two points; the same table at every age)."
+    "stroop_*_z":
+      meaning: "The T-score brought to mean 0 and SD 1: (T - 50) / 10."
+      higher_means: a higher T-score
+      basis: stated
+      source: "schema notes (bp stroop): 'The z-score is the T-score brought to mean 0 and SD 1, (T - 50) / 10'"
+  variables:
+    stroop_word: &stroop_items
+      meaning: "Number of items of the plate read or named in 45 seconds."
+      higher_means: more items in 45 seconds
+      polarity: better
+      basis: anchors
+      source: "label: 'items in 45 seconds'"
+    stroop_colour: *stroop_items
+    stroop_colour_word: *stroop_items
+    "stroop_*_errors_*":
+      meaning: "Count of errors on the plate, corrected by the patient or left uncorrected."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'corrected errors' and 'uncorrected errors'"
+  flags:
+    - "No document says in words whether a higher T-score is a better performance: the direction of the T-scores is left out, and the z-scores are only said to rise with the T-score."
+    - "Corrected scores, T-scores and z-scores are computed again as the application computes them; the stored ones are only checks (about 1% of the visits differ)."
+    - "The age correction is read with the typed age where it is within one year of the age at the visit, else with the age at the visit."
+    - "Only BP has the Stroop."
+    - "A year step in 2010 on the corrected errors of the three plates is unexplained and left as measured."
+
+tmt:
+  description: "Trail Making Test: the time and the errors of part A and of part B, and the difference B minus A, each with a z-score and a percentile band."
+  version: parts A and B
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (bp tmt, sz tmt, dr tmt)", "facedata/common_instruments.yaml (tmt)", "docs/bp/PROGRESS.md D13, D23, D42, D43, D135", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    tmt_a_errors:
+      meaning: "Errors of part A, corrected plus uncorrected (in DR the total as stored)."
+      construct: processing_speed
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'Part A - errors, corrected and uncorrected'"
+    tmt_b_errors:
+      meaning: "Errors of part B, corrected plus uncorrected (in DR the total as stored)."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'Part B - errors, corrected and uncorrected'"
+    "tmt_*_errors_*corrected":
+      meaning: "Errors of the part that the patient corrected, or left uncorrected."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'corrected errors' and 'uncorrected errors'"
+    tmt_b_errors_perseverative:
+      meaning: "Perseverative errors of part B; they are part of the errors of part B."
+      higher_means: more perseverative errors
+      polarity: worse
+      basis: anchors
+      source: "label 'Part B - perseverative errors'; schema notes (bp tmt): 'Perseverative errors are part of the errors of part B'"
+    "tmt_a_*_z":
+      meaning: "z-score of the time or of the errors of part A, computed again: (mean - raw) / SD in the cell of the age group and of the level of education."
+      construct: processing_speed
+      higher_means: better performance (a shorter time or fewer errors)
+      polarity: better
+      basis: stated
+      source: &tmt_z_source "schema notes (bp tmt): 'A higher z-score is a better performance, in every cohort'; the z-score is 'z = (mean - raw) / SD'"
+    "tmt_b_*_z":
+      meaning: "z-score of the time or of the errors of part B, computed again: (mean - raw) / SD in the cell of the age group and of the level of education."
+      higher_means: better performance (a shorter time or fewer errors)
+      polarity: better
+      basis: stated
+      source: *tmt_z_source
+    "tmt_ba_*_z":
+      meaning: "z-score of the difference B minus A (time or errors), computed again from part B minus part A: (mean - raw) / SD."
+      higher_means: better performance (a smaller difference between part B and part A)
+      polarity: better
+      basis: stated
+      source: *tmt_z_source
+    tmt_a_time_band:
+      meaning: "Percentile band of the time of part A, read again in the table of the application; the value is the lower limit of the band: 0 (under the 5th percentile), 5, 10, 25, 50, 75, 90 or 95."
+      construct: processing_speed
+      higher_means: better performance (a shorter time)
+      polarity: better
+      basis: stated
+      source: &tmt_band_source "schema notes (bp tmt), percentile bands of the times: 'A higher band is a better performance'"
+    "tmt_b*_time_band":
+      meaning: "Percentile band of the time of part B, or of B minus A, read again in the table of the application; the value is the lower limit of the band: 0 (under the 5th percentile), 5, 10, 25, 50, 75, 90 or 95."
+      higher_means: better performance (a shorter time, or a smaller difference B minus A)
+      polarity: better
+      basis: stated
+      source: *tmt_band_source
+    tmt_a_errors_band:
+      meaning: "Percentile band of the errors of part A, read again in the norm tables from the number of errors, the age and the years of education; the lower limit of the band."
+      construct: processing_speed
+      higher_means: fewer errors
+      polarity: better
+      basis: stated
+      source: &tmt_error_band_source "schema notes (bp tmt): 'The lowest band, a number of errors above every limit, is exact and never marked open'; 'With no error a patient gets a low band with that mark' (this band or a higher one)"
+    "tmt_b*_errors_band":
+      meaning: "Percentile band of the errors of part B, or of B minus A, read again in the norm tables from the number of errors, the age and the years of education; the lower limit of the band."
+      higher_means: fewer errors (for B minus A, a smaller difference)
+      polarity: better
+      basis: stated
+      source: *tmt_error_band_source
+    tmt_b_perseverative_band:
+      meaning: "Percentile band of the perseverative errors of part B, read again in the norm tables; the lower limit of the band."
+      higher_means: fewer errors
+      polarity: better
+      basis: stated
+      source: *tmt_error_band_source
+  variables:
+    tmt_a_time:
+      meaning: "Time of part A, in seconds."
+      construct: processing_speed
+      higher_means: slower
+      polarity: worse
+      basis: stated
+      source: &tmt_time_source "schema notes (bp tmt): 'Times are in seconds'; z = (mean - raw) / SD and 'A higher z-score is a better performance'"
+    tmt_b_time:
+      meaning: "Time of part B, in seconds."
+      higher_means: slower
+      polarity: worse
+      basis: stated
+      source: *tmt_time_source
+    tmt_ba_time:
+      meaning: "Time of part B minus time of part A, in seconds, as stored."
+      higher_means: part B slower than part A by more seconds
+      polarity: worse
+      basis: stated
+      source: *tmt_time_source
+    tmt_ba_errors:
+      meaning: "Errors of part B minus errors of part A, as stored."
+      higher_means: more errors in part B than in part A
+      polarity: worse
+      basis: stated
+      source: "schema notes (bp tmt): the z-score of the B minus A errors is (mean - raw) / SD and 'A higher z-score is a better performance'"
+  flags:
+    - "The delivered z-scores are computed again from the raw scores and have one sign in BP, SZ and DR: higher is better. The z-scores that the application stored had the opposite sign on about 13% of the BP visits (nearly all in 2015 or before), in one SZ centre in 2011-2012 and, in DR, for the errors of parts A and B and the B minus A time on 95% to 97% of the visits. The stored values are not delivered; the flag sign_flipped marks them."
+    - "The error z-scores are extreme by construction: most patients make no error, the SD of the norms is very small and a single error gives a z-score of -2 to -8. They are not winsorised."
+    - "Most error bands carry <variable>_cens = +1 (this band or a higher one): a patient with no error gets a low band with that mark. The bands say little."
+    - "A visit without years of education has no z-score and no band (norm_missing)."
+    - "The tables are read with the typed age where it is within one year of the age at the visit, else with the age at the visit."
+    - "DR keeps the kinds of errors apart (inattention, impulsivity, perseverative; corrected or not) and its totals of errors are delivered as stored. One rule of education classes is used for the three cohorts (the BP and SZ one)."
+    - "In part B, 'impossible' and 'arrêt' mean that the patient could not finish: they are missing codes."
+    - "Unexplained centre steps on the perseverative errors of part B are left as measured: use a centre term in a pooled analysis."
+
+verbal_fluency:
+  description: "Two tasks of two minutes: words that begin with the letter P, and names of animals. For each task the number of correct words, its z-score and its percentile band; BP and SZ also have the errors, and BP the clusters and switches."
+  version: "letter P and animals (form 1 of the DR application)"
+  respondent: test
+  construct: verbal_fluency
+  sources: ["schema notes (bp, sz, dr verbal_fluency)", "facedata/common_instruments.yaml (verbal_fluency)", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    "fluency_*_rule_breaks":
+      meaning: "Rule breaks of the task: derived words, intrusions and proper names added up."
+      higher_means: more rule breaks
+      polarity: worse
+      basis: anchors
+      source: "labels 'rule breaks'; schema notes (bp verbal_fluency): 'the sum of the derived words, the intrusions and the proper names'"
+    "fluency_*_z":
+      meaning: "z-score of the number of correct words, computed again: (words - mean) / SD of the cell of the age class and of the level of education."
+      higher_means: more words
+      polarity: better
+      basis: stated
+      source: "score label '(higher is more words)'; schema notes (dr verbal_fluency): 'A higher z-score and a higher band are more words'; docs/dr/PROGRESS.md: 'A higher z-score or band is a better performance everywhere'"
+    "fluency_*_band":
+      meaning: "Percentile band of the number of correct words, computed again; the value is the lower limit of the band: 0, 5, 10, 25, 50, 75, 90 or 95."
+      higher_means: more words
+      polarity: better
+      basis: stated
+      source: "schema notes (dr verbal_fluency): 'A higher z-score and a higher band are more words'; docs/dr/PROGRESS.md: 'A higher z-score or band is a better performance everywhere'"
+  variables:
+    "fluency_*_words":
+      meaning: "Number of correct words in two minutes."
+      higher_means: more correct words
+      polarity: better
+      basis: anchors
+      source: "labels 'correct words'; schema notes (dr verbal_fluency): 'A higher z-score and a higher band are more words'"
+    "fluency_*_cluster_size":
+      meaning: "Mean size of a cluster, a count that the rater makes on the transcript of the words; delivered as stored (BP only)."
+  flags:
+    - "z-scores and bands are computed again with one rule for BP, SZ and DR: the tables of the BP and SZ script, the typed age where it is within one year of the age at the visit, and the years of education. A missing education gives no score."
+    - "Under 6 years of education the lowest class is read; the DR application reads the middle class there, so those DR visits are flagged score_mismatch."
+    - "Perseverations, intrusions, derived words, proper names, clusters and switches are counts of the rater that cannot be recomputed; several show unexplained centre steps (use a centre term in a pooled analysis)."
+    - "DR has a second form of the test (fruits and letter R), which is another instrument (verbal_fluency_form2) with no norm."
+    - "No reference is given in the project documents."
+
+wais3_code_symboles_ivt:
+  description: "WAIS-III coding and symbol search with the processing speed index: boxes filled and errors, raw scores, age-scaled scores and z-scores, the sum of the two scaled scores, the index, its percentile rank and its confidence interval. SZ has the coding subtest only."
+  version: WAIS-III
+  respondent: test
+  construct: processing_speed
+  sources: ["schema notes (bp, sz wais3_code_symboles_ivt)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_code_scaled: &wechsler_scaled
+      meaning: "Age-scaled score (1 to 19, mean 10 and SD 3), read in the norm table of the application from the raw score and the age."
+      higher_means: a higher raw score for the age group
+      polarity: better
+      basis: stated
+      source: "docs/bp/PROGRESS.md D135, rules found in the scripts: 'a scaled score is the first cell of the table not below the raw score'"
+    wais3_code_z: &wechsler_z
+      meaning: "The scaled score as a z-score: (scaled score - 10) / 3."
+      higher_means: a higher scaled score
+      polarity: better
+      basis: stated
+      source: "score label: 'scaled score as a z-score, (scaled score - 10) / 3'"
+    wais3_symbol_scaled: *wechsler_scaled
+    wais3_symbol_z: *wechsler_z
+    wais3_ivt_sum_scaled:
+      meaning: "Sum of the two scaled scores (coding and symbol search)."
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: "label 'Sum of the two scaled scores'"
+    wais3_ivt_index:
+      meaning: "Processing speed index, read in an age-free table of the application from the sum of the two scaled scores."
+    wais3_ivt_percentile:
+      meaning: "Percentile rank of the index, read in the table of the application from the same sum; 0.1 is a censored value."
+      higher_means: a higher index
+      basis: anchors
+      source: "label 'Percentile rank of the index'"
+  variables:
+    wais3_code_raw:
+      meaning: "Coding raw score: the boxes filled minus the boxes filled incorrectly."
+      higher_means: more boxes filled correctly
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_code_symboles_ivt): 'it is the boxes filled minus the boxes filled incorrectly (coding) or the correct answers minus the incorrect ones (symbol search)'"
+    wais3_symbol_raw:
+      meaning: "Symbol search raw score: the correct answers minus the incorrect ones."
+      higher_means: more correct answers
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_code_symboles_ivt): 'it is the boxes filled minus the boxes filled incorrectly (coding) or the correct answers minus the incorrect ones (symbol search)'"
+    "wais3_*_errors":
+      meaning: "Boxes filled incorrectly (coding) or incorrect answers (symbol search)."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'boxes filled incorrectly' and 'incorrect answers'"
+    wais3_ivt_interval:
+      meaning: "95% confidence interval of the index, a text such as '90-105', delivered as stored."
+      polarity: not_applicable
+  flags:
+    - &wechsler_flag_editions "WAIS-III and WAIS-IV are two instruments stored in the same raw columns; each schema reads only the visits of its edition. Do not pool the two editions."
+    - &wechsler_flag_recomputed "Scaled scores and z-scores are computed again from the raw scores with the norm tables of the application; the stored ones are only checks. The tables are not checked against the manuals (open question DM-4)."
+    - &wechsler_flag_age "The norm tables are read with the age typed in the form where it is within 1 year of the age at the visit, else with the age at the visit."
+    - "No document states the direction of the WAIS-III processing speed index in words: it is left out."
+    - "The processing speed index is the only WAIS index of BP. SZ has no symbol search and no index for the WAIS-III."
+    - "The confidence interval comes with the stored index; it gets derived_doubt where the stored index differs from the recomputed one."
+
+wais3_matrices:
+  description: "WAIS-III matrix reasoning: 26 items scored 0 or 1, the raw total, the age-scaled score and its z-score. BP and SZ, on the visits tested with the third edition."
+  version: WAIS-III
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (bp, sz wais3_matrices)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_mat_total:
+      meaning: "Raw total: the sum of the 26 items, each scored 0 or 1."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_matrices): 'Both tests have 26 items scored 0 or 1'; the total is the sum of the items"
+    wais3_mat_scaled: *wechsler_scaled
+    wais3_mat_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+
+wais3_memoire_chiffres:
+  description: "WAIS-III digit span: series of digits repeated forward (8 items of 2 trials) and backward (7 items of 2 trials). Raw scores, raw total, longest spans, age-scaled score and z-scores. BP has the trials; SZ has the summary scores only."
+  version: WAIS-III
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (bp, sz wais3_memoire_chiffres)", "scale_reference_rest.md section 8", "docs/bp/PROGRESS.md D10, D135"]
+  items:
+    higher_means: the trial is passed
+    polarity: better
+    basis: stated
+    source: "schema notes (bp wais3_memoire_chiffres): 'Each item has two trials (1 = correct) and an item score, the number of trials passed (0 to 2)'"
+  scores:
+    wais3_ds_scaled: *wechsler_scaled
+    wais3_ds_z: *wechsler_z
+    "wais3_ds_*_span_z":
+      meaning: "z-score of the longest span, computed with a mean and a standard deviation per age group and per class of years of education."
+  variables:
+    "wais3_ds_*_raw": &ds_raw
+      meaning: "Raw score of the task: the sum of the item scores, each the number of trials passed (0 to 2)."
+      higher_means: more trials passed
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_memoire_chiffres): 'Each item has two trials (1 = correct) and an item score, the number of trials passed (0 to 2)'"
+    wais3_ds_total:
+      meaning: "Raw total: forward plus backward (0 to 30)."
+      higher_means: more trials passed
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_memoire_chiffres): 'the raw total equals forward + backward'; scale_reference_rest.md section 8: total 0-30 (confirmed, protocol)"
+    "wais3_ds_*_span": &ds_span
+      meaning: "Longest span of the task: the longest series of digits repeated."
+      higher_means: a longer span
+      polarity: better
+      basis: anchors
+      source: "labels 'Longest forward span', 'Longest backward span'"
+    wais3_ds_span_difference: &ds_span_difference
+      meaning: "Forward span minus backward span."
+      higher_means: the forward span is longer than the backward span by more digits
+      polarity: neutral
+      basis: anchors
+      source: "label 'Forward span minus backward span'"
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - "The z-scores of the longest spans need the years of education (norm_missing without them). No document states their direction in words for the WAIS-III: it is left out."
+    - "The WAIS-III total (0 to 30) is not comparable with the WAIS-IV total (0 to 48)."
+
+wais3_vocabulaire:
+  description: "WAIS-III vocabulary: 33 items scored 0 to 2, the raw total, the age-scaled score and its z-score. BP only, 2009 to 2016."
+  version: WAIS-III
+  reference: "Wechsler, 1997"
+  reference_confidence: cited in schema notes
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (bp wais3_vocabulaire)", "docs/bp/PROGRESS.md D10, D19, D135"]
+  scores:
+    wais3_vocab_total:
+      meaning: "Raw total: the sum of the 33 items, each scored 0 to 2 (0 to 66), recomputed from the items."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais3_vocabulaire): 'Every WAIS-III item is scored 0 to 2, so the raw total goes up to 66'"
+    wais3_vocab_scaled: *wechsler_scaled
+    wais3_vocab_z: *wechsler_z
+  flags:
+    - "The total stored in the extraction is 3 points too low on nearly every visit; the delivered total is recomputed from the items."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+
+wais4_code_symboles_ivt:
+  description: "WAIS-IV coding and symbol search with the processing speed index: boxes filled and errors, raw scores, age-scaled scores and z-scores, the sum of the two scaled scores, the index and its percentile rank. BP, SZ (coding only), DR and ASP."
+  version: WAIS-IV
+  reference: &wais4_reference "Wechsler 2008 (WAIS-IV); French edition ECPA 2011"
+  reference_confidence: &wais4_confidence "confirmed in source (Canivez 2010 review; ECPA brochure)"
+  respondent: test
+  construct: processing_speed
+  sources: ["schema notes (bp, sz, dr, asp wais4_code_symboles_ivt)", "scale_reference.md section 22", "facedata/common_instruments.yaml (wais4_code_symboles_ivt)", "docs/bp/PROGRESS.md D135, D136"]
+  scores:
+    wais4_code_raw:
+      meaning: "Coding raw score: the boxes filled minus the boxes filled incorrectly (0 to 135)."
+      higher_means: more boxes filled correctly
+      polarity: better
+      basis: anchors
+      source: "score label: 'the boxes filled minus the boxes filled incorrectly (the boxes filled correctly)'"
+    wais4_code_scaled: *wechsler_scaled
+    wais4_code_z: *wechsler_z
+    wais4_symbol_scaled: *wechsler_scaled
+    wais4_symbol_z: *wechsler_z
+    "wais4_ivt_sum_scaled*":
+      meaning: "Sum of the scaled scores of the index: coding plus symbol search (BP, DR, ASP); twice the coding scaled score in SZ and in the second set of ASP (_a)."
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: "labels 'Sum of the two scaled scores' and 'twice the coding one'"
+    "wais4_ivt_index*":
+      meaning: "Processing speed index, read in the table of the manual from the sum of the scaled scores."
+      higher_means: a higher sum of scaled scores
+      polarity: better
+      basis: literature
+      source: &wais4_index_source "scale_reference.md section 22: the indices have 'mean 100, SD 15, generated by summing subtest scaled scores and normalising with smoothing' (confirmed in source, Canivez 2010)"
+    "wais4_ivt_percentile*":
+      meaning: "Percentile rank of the index, read in the table of the manual; 0.1 and 99.9 are censored values."
+      higher_means: a higher index
+      polarity: better
+      basis: anchors
+      source: "label 'Percentile rank of the index'"
+  variables:
+    wais4_symbol_raw:
+      meaning: "Symbol search raw score: the correct answers minus the incorrect ones (60 items)."
+      higher_means: more correct answers
+      polarity: better
+      basis: anchors
+      source: "schema notes (dr wais4_code_symboles_ivt): 'The stored raw score is the correct answers minus the incorrect ones'"
+    "wais4_*_errors":
+      meaning: "Boxes filled incorrectly (coding) or incorrect answers (symbol search)."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'boxes filled incorrectly' and 'incorrect answers'"
+    wais4_ivt_interval:
+      meaning: "95% confidence interval of the index, a text such as '90-105', delivered as stored (BP and DR)."
+      polarity: not_applicable
+  flags:
+    - "In SZ the extraction has no symbol search: its index is an estimate from the coding alone (the sum is twice the coding scaled score). It has the name wais4_ivt_index but is not the same measure as in BP, DR and ASP."
+    - "ASP has a second set of the index whose names end in _a (the abbreviated form): twice the coding scaled score."
+    - "The coding raw score is computed as the boxes filled minus the errors in the four cohorts (decision D136). The applications came to store the boxes filled alone (BP from 2021, DR from 2019, ASP always), which gives credit for the errors; the rule rests on an inference from the data against the wording of the form."
+    - "A percentile of 0.1 or 99.9 is a censored value (wais4_ivt_percentile_cens)."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - &wechsler_flag_age_asp "In ASP the form has no typed age: the tables are read with the age at the date of the assessment form (visits from 2015, form date within 366 days of the visit), else with the age at the visit. A visit under 16 years has no scaled score (norm_missing)."
+    - "In ASP the clinician also copies the index into the medical evaluation (wais4_ivt_index_clinician, another schema); the two agree on about 90% of the visits that hold both."
+
+wais4_matrices:
+  description: "WAIS-IV matrix reasoning: 26 items scored 0 or 1, the raw total, the age-scaled score and its z-score. BP, SZ and ASP."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (bp, sz, asp wais4_matrices)", "scale_reference.md section 22", "facedata/common_instruments.yaml (wais4_matrices)", "docs/bp/PROGRESS.md D135"]
+  scores:
+    wais4_mat_total:
+      meaning: "Raw total of the 26 items, each scored 0 or 1: recomputed from the items in BP, the total as stored in SZ and ASP."
+      higher_means: more items passed
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais4_matrices): '26 items scored 0 or 1'; an item is 'failed' or 'passed'"
+    wais4_mat_scaled: *wechsler_scaled
+    wais4_mat_z: *wechsler_z
+  flags:
+    - "In SZ items 25 and 26 are lost by the export (the two columns are copies of item 24): items 1 to 24 are delivered, and the total is the stored one, which is the true total."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+
+wais4_memoire_chiffres:
+  description: "WAIS-IV digit span: series of digits repeated forward, backward and in sequencing order (8 items of 2 trials each). Raw scores, raw total, longest spans, age-scaled score and z-scores. BP and ASP have the trials; SZ the summary scores; DR the total and the scaled score only."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (bp, sz, dr, asp wais4_memoire_chiffres)", "scale_reference_rest.md section 8", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135"]
+  items:
+    higher_means: the trial is passed
+    polarity: better
+    basis: stated
+    source: "schema notes (bp wais4_memoire_chiffres): 'Each item has two trials (1 = correct) and an item score, the number of trials passed (0 to 2)'"
+  scores:
+    wais4_ds_total:
+      meaning: "Raw total: forward plus backward plus sequencing (0 to 48)."
+      higher_means: more trials passed
+      polarity: better
+      basis: anchors
+      source: "label 'Raw total (forward + backward + sequencing)'; schema notes (bp wais4_memoire_chiffres): an item score is 'the number of trials passed (0 to 2)'"
+    wais4_ds_scaled: *wechsler_scaled
+    wais4_ds_z: *wechsler_z
+    "wais4_ds_*_span_z":
+      meaning: "z-score of the longest span, computed with the mean and the standard deviation of the age group."
+      higher_means: a longer span
+      polarity: better
+      basis: stated
+      source: "schema notes (bp wais4_memoire_chiffres): the span z-score columns have 'rank correlations of 0.955 to 0.969 with the matching span'"
+  variables:
+    "wais4_ds_*_raw": *ds_raw
+    "wais4_ds_*_span": *ds_span
+    wais4_ds_span_difference: *ds_span_difference
+  flags:
+    - "In BP four summary columns of the extraction are shifted by one against their dictionary labels; the schema reads each column for what it holds."
+    - "On 21 BP visits the export mixed a WAIS-III and a WAIS-IV form: 13 get the sum of the three raw scores as total and 8 have no total."
+    - "The WAIS-IV total (0 to 48) is not comparable with the WAIS-III total (0 to 30)."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+
+wais4_similitudes:
+  description: "WAIS-IV similarities: 18 items scored 0 to 2, the raw total, the age-scaled score and its z-score. BP (from 2018), SZ, DR (totals only) and ASP."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (bp, sz, dr, asp wais4_similitudes)", "scale_reference.md section 22", "facedata/common_instruments.yaml (wais4_similitudes)", "docs/bp/PROGRESS.md D135, D139"]
+  scores:
+    wais4_simil_total:
+      meaning: "Raw total of the 18 items, each scored 0 to 2 (0 to 36): the sum of the items in BP and ASP, the total as stored in SZ and DR."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais4_similitudes): 'Every item is scored 0 to 2, so the raw total goes up to 36'"
+    wais4_simil_scaled: *wechsler_scaled
+    wais4_simil_z: *wechsler_z
+  variables:
+    wais4_simil_not_done:
+      meaning: "Box 'test not done' (BP only)."
+      polarity: not_applicable
+  flags:
+    - "The scaled score that the application stored is wrong on many visits (its script read an empty age as the youngest age group): about a third of the BP visits and 7% of the SZ visits. The recomputed score is delivered."
+    - "The table has no row below 16 years or from 80 years: such a visit gets norm_missing."
+    - "In SZ one of items 10 and 11 is lost by the export: neither is delivered, and the total is the stored one."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+
+wais4_vocabulaire:
+  description: "WAIS-IV vocabulary: 30 items (three picture items scored 0 or 1, the others 0 to 2), the raw total, the age-scaled score and its z-score. BP (2011 to 2021) and ASP."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (bp, asp wais4_vocabulaire)", "scale_reference.md section 22", "facedata/common_instruments.yaml (wais4_vocabulaire)", "docs/bp/PROGRESS.md D135, D139"]
+  scores:
+    wais4_vocab_total:
+      meaning: "Raw total of the 30 items (0 to 57)."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (bp wais4_vocabulaire): 'Items 1 to 3 are picture items scored 0 or 1; items 4 to 30 are scored 0 to 2, so the raw total goes up to 57'"
+    wais4_vocab_scaled: *wechsler_scaled
+    wais4_vocab_z: *wechsler_z
+  flags:
+    - "At 25 to 29 years the row of the BP script was not monotone and is replaced by the row of the ASP application (decision of the project lead): the stored BP scaled score differs from the delivered one on about half of the visits of that age group."
+    - "In BP the subtest was given from 2011 to 2021, then replaced by the similarities."
+    - "An unexplained centre step in BP (one centre with much higher scores) is left as measured: use a centre term in a pooled analysis."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+
+barona:
+  description: "The IQ that the occupation, the diploma, the age and the sex of the patient let expect, and its difference with the IQ estimated from the WAIS. SZ: a full-scale, a verbal and a performance IQ; ASP: the full-scale IQ only."
+  reference: "Barona A, Reynolds CR, Chastain R. A demographically based index of premorbid intelligence for the WAIS-R. J Consult Clin Psychol 1984;52:885-887"
+  reference_confidence: "Paywalled; not read"
+  respondent: computed
+  construct: premorbid_iq
+  sources: ["schema notes (sz barona, asp barona)", "scale_reference_rest.md section 6", "facedata/common_instruments.yaml (barona)", "docs/SCHEMA_SPEC.md section 8 (An expected value)"]
+  scores:
+    "barona_expected_*":
+      meaning: "Expected IQ, computed again with the formula of the application's script: a constant, the sex, the rank of the diploma (1 to 7), the rank of the occupation (1 to 7) and the class of age."
+      higher_means: a higher IQ expected from the demographic variables
+      basis: anchors
+      source: "labels 'Expected full-scale IQ', 'Expected verbal IQ', 'Expected performance IQ'"
+  variables:
+    "barona_*_difference*":
+      meaning: "The expected IQ minus the IQ estimated from the WAIS, as the application stored it."
+      higher_means: the expected IQ is further above the IQ estimated from the WAIS
+      basis: stated
+      source: "schema notes (sz barona): 'The differences are the expected IQ minus the IQ estimated from the WAIS, as the application stored them'"
+    barona_occupation:
+      meaning: "Occupation category of the form (seven categories in SZ)."
+      polarity: not_applicable
+    barona_education:
+      meaning: "Highest diploma, or level of education, of the form."
+      polarity: not_applicable
+  flags:
+    - "In SZ the occupation is not reliable: on 72% of the visits it holds the same place in its list as the diploma, a copy on most of them. The expected IQs and the differences keep their value there and get check_failed: read the flags before comparing."
+    - "The published equations use age, sex, race, education, occupation, region and residence of the United States; no French adaptation was found (to verify). The application's formula uses the sex, the diploma, the occupation and the class of age."
+    - "Published limit of the equations: they underestimate an IQ under 80 and overestimate an IQ above 119 (Paolo 1996, confirmed in the abstract)."
+    - "The differences are delivered as stored; where the stored expected IQ is not the recomputed one they get derived_doubt."
+    - "In SZ the full-scale difference steps down from 2019, when the estimated IQ became the two-subtest one: the step is the change of the estimated IQ, not of the expected one."
+    - "In ASP the occupation codes 0 and 8 are outside the seven ranks of the formula and are used as numbers, as the script does; a visit under 16 years gets no value."
+    - "A visit with only one of the two answers gets no value (norm_missing)."
+
+cpt_ip:
+  description: "Sustained attention: numbers of 2, 3 and 4 digits flash on the screen and the patient answers when the same number comes twice in a row. Each of the three parts has 30 targets, 30 near-targets and 90 other numbers; hits, false alarms and d-prime of each part, typed from the test software. SZ, 2010 to 2018."
+  version: "CPT-IP (Identical Pairs), parts of 2, 3 and 4 digits"
+  respondent: test
+  construct: attention
+  sources: ["schema notes (sz cpt_ip)", "schema notes (bp cpt2, bp cpt3)"]
+  scores:
+    cptip_dprime_mean:
+      meaning: "Mean of the d-prime of the three parts."
+      higher_means: better performance (targets better told from near-targets)
+      polarity: better
+      basis: stated
+      source: &cptip_source "schema notes (bp cpt3): 'in the CPT-IP of SZ a higher d-prime is a better performance'; schema notes (sz cpt_ip): the d-prime is 'the ability to tell a target from a near-target'"
+  variables:
+    "cptip_*_dprime":
+      meaning: "d-prime of the part, as typed: the normal deviate of the hit rate minus that of the false-alarm rate."
+      higher_means: better performance (targets better told from near-targets)
+      polarity: better
+      basis: stated
+      source: *cptip_source
+    "cptip_*_hits":
+      meaning: "Hits of the part: answers to the 30 targets."
+      higher_means: more targets detected
+      polarity: better
+      basis: anchors
+      source: "labels 'hits (0 to 30)'; schema notes (sz cpt_ip): the d-prime is 'the normal deviate of the hit rate minus that of the false-alarm rate'"
+    "cptip_*_false_alarms":
+      meaning: "False alarms of the part: answers to the 30 near-targets."
+      higher_means: more false alarms
+      polarity: worse
+      basis: anchors
+      source: "schema notes (sz cpt_ip): '30 near-targets (an answer there is a false alarm)'"
+    "cptip_*_random":
+      meaning: "Answers to the 90 other numbers of the part."
+    cptip_percentile:
+      meaning: "Percentile of the mean d-prime, typed by hand from 2013 to 2017 against norms that the dictionary does not name; a band is read as its middle (flag band_middle)."
+  flags:
+    - "The d-prime of each part is delivered as typed; on 6% to 10% of the visits it is not the value that the hits and the false alarms give (score_mismatch), and nothing tells which number was mistyped."
+    - "The percentile was typed by hand against norms that are not named: its direction is left out."
+    - "Not the Conners tests of BP (cpt2, cpt3), where a higher T-score is a more atypical performance: no CPT name is shared across cohorts."
+
+doors_test:
+  description: "Recognition of photographs of doors: part A (12 easy sets) and part B (12 hard sets), one point per door recognised, with the total and percentile bands. SZ, 2010 to 2018."
+  version: "parts A and B, 12 sets each"
+  respondent: test
+  construct: visual_memory
+  sources: ["schema notes (sz doors_test)"]
+  scores:
+    doors_total:
+      meaning: "Total of the two parts (0 to 24)."
+      higher_means: more doors recognised
+      polarity: better
+      basis: anchors
+      source: &doors_source "schema notes (sz doors_test): 'one point per door recognised'"
+    "doors_*_band":
+      meaning: "Percentile band of the score, read again in the norm tables of the application from the score and the age; the value is the lower limit of the band."
+  variables:
+    doors_a: &doors_part
+      meaning: "Score of the part (0 to 12)."
+      higher_means: more doors recognised
+      polarity: better
+      basis: anchors
+      source: *doors_source
+    doors_b: *doors_part
+  flags:
+    - "No document says in words whether a higher percentile band is a better performance: the direction of the bands is left out. A band with <variable>_cens = +1 is this band or a higher one."
+    - "Where part B is empty the application wrote '<1' as its percentile: nothing is delivered for the band of part B and of the total on those visits."
+    - "The total needs the two parts."
+
+fnart:
+  description: "Reading aloud of 40 irregular French words, each scored correct or incorrect: an estimate of the premorbid IQ. The total and three estimated IQs (full scale, verbal, performance). SZ; the words are recorded from 2010 to 2016, the total alone on later visits."
+  version: 40 words
+  respondent: test
+  construct: premorbid_iq
+  sources: ["schema notes (sz fnart)", "docs/SCHEMA_SPEC.md section 8 (An expected value)"]
+  items:
+    higher_means: the word is read correctly
+    polarity: better
+    basis: anchors
+    source: "item labels 'fNART word N read correctly'"
+  scores:
+    fnart_total:
+      meaning: "Number of words read correctly (0 to 40)."
+      higher_means: more words read correctly
+      polarity: better
+      basis: anchors
+      source: "label 'Number of words read correctly (0 to 40)'"
+    "fnart_qi*":
+      meaning: "IQ estimated from the fNART: an exact straight line of the total, with one intercept and one slope for all ages, computed again with the coefficients of the application's script."
+  flags:
+    - "The notes say that each estimated IQ is a straight line of the total but not the sign of its slope: the direction of the three IQs is left out."
+    - "Where no word is recorded and a total is stored, the total is delivered as stored (flag score_as_stored) and the IQs are the line of that total."
+    - "The coefficients are read in the script of the application; the dictionary does not give the equations and no reference is given in the project documents."
+
+laterality:
+  description: "Edinburgh handedness inventory: for each of ten activities, and for the foot and the eye, the hand used, as the number of crosses in the left and in the right column (0, 1 or 2). SZ; the items are recorded from 2010 to 2016."
+  version: "ten activities, plus the foot and the eye, which are not counted in the quotient"
+  reference: "Oldfield RC, Neuropsychologia 1971;9:97-113 (PMID 5146491)"
+  reference_confidence: "Confirmed for formula and range (secondary sources); the class cut-offs depend on the paper"
+  construct: handedness
+  sources: ["schema notes (sz laterality)", "scale_reference_rest.md section 5"]
+  scores:
+    laterality_quotient:
+      meaning: "Laterality quotient over the ten activities: 100 x (right - left) / (right + left)."
+      higher_means: more right-handed
+      polarity: neutral
+      basis: stated
+      source: "schema notes (sz laterality): 'from -100 (left-handed) to +100 (right-handed), over the ten activities of the inventory'; scale_reference_rest.md section 5 (confirmed for formula and range)"
+  flags:
+    - "No fixed classes: Oldfield reported deciles; a limit of 40 on either side is a common later convention and other papers use 60 (scale_reference_rest.md section 5)."
+    - "The quotient is delivered only where the 24 item columns exist. The quotients stored without items (the later form, mostly from 2015 on) are not delivered: the export does not hold their items."
+    - "One centre stored the quotient of the 12 lines; the ten-activity quotient is delivered for every centre."
+
+lis:
+  description: "Lecture Intentionnelle en Situation: six short film clips, and for each a question on the intention of a character with five proposed answers. The patient rates each answer from 1 (very unlikely) to 4 (very likely): 30 ratings. SZ, from 2013."
+  version: "LIS (V-SIR), 6 film clips and 30 ratings"
+  reference: "Bazin N, Brunet-Gouet E, Bourdet C, et al. Quantitative assessment of attribution of intentions to others in schizophrenia using an ecological video-based task. Psychiatry Res 2009;167:28-35"
+  reference_confidence: "Confirmed (full text of Urbach et al. 2013, which describes the task; Bazin 2009 is paywalled)"
+  respondent: test
+  construct: social_cognition
+  sources: ["schema notes (sz lis)", "scale_reference_rest.md section 7", "facedata/common_instruments.yaml (lis)"]
+  items:
+    higher_means: the proposed answer is rated more likely
+    polarity: neutral
+    basis: stated
+    source: "schema notes (sz lis): 'The patient rates each answer from 1 (very unlikely) to 4 (very likely)'"
+  scores:
+    lis_total:
+      meaning: "Distance to a reference group: the sum, over the 30 answers, of the gap between the rating and the mean rating of the reference group. Recomputed from the ratings."
+      higher_means: further from the ratings of the reference group (more impaired attribution of intentions)
+      polarity: worse
+      basis: stated
+      source: "schema notes (sz lis): 'the higher, the further from the usual reading'; scale_reference_rest.md section 7: 'Higher = more impaired' (Confirmed, full text)"
+  flags:
+    - "The score needs the 30 ratings. Range 0 to at most 90 in theory; it is not a whole number because the reference means are not."
+    - "ASP has a LIS score too (instrument social_cognition), typed by hand with no ratings: do not pool the two."
+    - "The scores of 2014 and 2015 are higher in two centres, with no cause in the scoring; the step is left as measured."
+    - "No cut-off is given in the project documents."
+
+six_elements:
+  description: "Planning and self-organisation: six tasks (two routes, two series of pictures to name, two series of sums) to share out in a limited time, without doing two tasks of the same kind in a row. Task scores, rule breaks, errors, a total error score and five z-scores. SZ, 2010 to 2018."
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (sz six_elements)", "schema comments (sz six_elements)"]
+  scores:
+    six_elements_points:
+      meaning: "Points score: the sum of the six task scores (0 to 1110)."
+      higher_means: more points on the six tasks (a better result)
+      polarity: better
+      basis: stated
+      source: "schema notes (sz six_elements): 'z = (score - mean) / SD for the points and (mean - score) / SD for the inefficiency, the rule breaks, the errors of execution and the total error score, so that a higher z-score is a better result'"
+    six_elements_breaks:
+      meaning: "Total of the rule breaks: time plus alternation."
+      higher_means: more rule breaks
+      polarity: worse
+      basis: stated
+      source: &six_low_source "schema comment (sz six_elements): '(mean - score) / SD for the measures where a low score is better'; schema notes: 'so that a higher z-score is a better result'"
+    six_elements_error_score:
+      meaning: "Total error score: inefficiency plus rule breaks plus errors of interpretation plus errors of execution."
+      higher_means: more errors
+      polarity: worse
+      basis: stated
+      source: *six_low_source
+    "six_elements_*_z":
+      meaning: "z-score of the measure, computed again with one mean and one SD per measure, the same at every age: (score - mean) / SD for the points, (mean - score) / SD for the four other measures."
+      higher_means: better result
+      polarity: better
+      basis: stated
+      source: "schema notes (sz six_elements): 'z = (score - mean) / SD for the points and (mean - score) / SD for the inefficiency, the rule breaks, the errors of execution and the total error score, so that a higher z-score is a better result'"
+  variables:
+    six_elements_inefficiency:
+      meaning: "Inefficiency score."
+      higher_means: more inefficiency
+      polarity: worse
+      basis: stated
+      source: *six_low_source
+    six_elements_errors_execution:
+      meaning: "Errors of execution."
+      higher_means: more errors
+      polarity: worse
+      basis: stated
+      source: *six_low_source
+    six_elements_errors_interpretation:
+      meaning: "Errors of interpretation; a part of the total error score."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'Errors of interpretation'"
+    six_elements_breaks_time: &six_breaks_part
+      meaning: "Rule breaks of one kind (time or alternation); a part of the total of rule breaks."
+      higher_means: more rule breaks
+      polarity: worse
+      basis: anchors
+      source: "labels 'Rule breaks - time', 'Rule breaks - alternation'"
+    six_elements_breaks_alternation: *six_breaks_part
+    six_elements_time:
+      meaning: "Total time, in minutes."
+      higher_means: more time used
+      basis: anchors
+      source: "label 'Total time (minutes)'"
+  flags:
+    - "The five z-scores are computed again and all go the same way (higher is better), although the points score is better when high and the four other scores are better when low."
+    - "A time written in minutes and seconds is unparsed and missing."
+    - "One centre applies the time limit differently (longer times, more rule breaks for time): a centre habit, with no step in time."
+    - "No reference is given in the project documents."
+
+sstics:
+  description: "Self-rated cognitive complaints: 21 items from 0 (never) to 4 (very often), six factor scores, a total and a z-score. SZ, from 2013."
+  version: 21 items
+  reference: "Stip 2003"
+  reference_confidence: cited in schema notes
+  respondent: patient
+  construct: cognitive_complaint
+  sources: ["schema notes (sz sstics)"]
+  items:
+    higher_means: the complaint happens more often
+    polarity: worse
+    basis: anchors
+    source: "schema notes (sz sstics): 'Self-rated cognitive complaints: 21 items from 0 (never) to 4 (very often)'"
+  scores:
+    sstics_working_memory: &sstics_sum
+      meaning: "Sum of the items of a factor (working memory, explicit memory, attention, executive functions, language, praxia), or of the 21 items for the total (0 to 84)."
+      higher_means: more cognitive complaints
+      polarity: worse
+      basis: anchors
+      source: "schema notes (sz sstics): sums of items scored 0 (never) to 4 (very often); 'a negative z-score is more complaints than the reference group' with z = (13.1 - total) / 6.2"
+    sstics_explicit_memory: *sstics_sum
+    sstics_attention: *sstics_sum
+    sstics_executive: *sstics_sum
+    sstics_language: *sstics_sum
+    sstics_praxia: *sstics_sum
+    sstics_total: *sstics_sum
+    sstics_z:
+      meaning: "The total as a z-score: (13.1 - total) / 6.2, a decreasing line of the total."
+      higher_means: fewer cognitive complaints
+      polarity: better
+      basis: stated
+      source: "schema notes (sz sstics): '(13.1 - total) / 6.2, a decreasing straight line of the total; a negative z-score is more complaints than the reference group'"
+  flags:
+    - "The z-score goes against the total: a higher total is more complaints, a higher z-score is fewer complaints."
+    - "The reference group of the constants 13.1 and 6.2 is not sourced: neither the dictionary nor the script names it."
+    - "A score needs all its items."
+    - "The z-score is delivered with all its decimals; the application stored it cut to four characters."
+
+wais3_arithmetique:
+  description: "WAIS-III arithmetic: 20 items (the last two scored 0 to 2, a point for speed), the raw total, the age-scaled score and its z-score. SZ only, 2010 to 2015."
+  version: WAIS-III
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (sz wais3_arithmetique)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_arith_total:
+      meaning: "Raw total: the sum of the 20 items."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais3_arithmetique): '20 items, the last two scored 0 to 2 (a point for speed)'"
+    wais3_arith_scaled: *wechsler_scaled
+    wais3_arith_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - &wechsler_flag_all_items "A total needs every item: the application writes none when an item is empty."
+
+wais3_complement_images:
+  description: "WAIS-III picture completion: 25 items scored 0 or 1, the raw total, the age-scaled score and its z-score. SZ only, 2010 to 2015."
+  version: WAIS-III
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (sz wais3_complement_images)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_pc_total:
+      meaning: "Raw total: the sum of the 25 items, each scored 0 or 1."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais3_complement_images): '25 items scored 0 or 1'; the total is the sum of the items"
+    wais3_pc_scaled: *wechsler_scaled
+    wais3_pc_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_all_items
+
+wais3_efficience:
+  description: "The IQs and the working memory index that the application estimated from the seven WAIS-III subtests of the battery: four sums of scaled scores, the verbal, performance and full-scale IQs, the working memory index, their percentile ranks and their confidence intervals. SZ only, 2010 to 2015."
+  version: "WAIS-III, seven-subtest short form"
+  respondent: test
+  construct: intellectual_ability
+  sources: ["schema notes (sz wais3_efficience)", "docs/bp/PROGRESS.md D135, D137, D139"]
+  scores:
+    wais3_qiv_sum_scaled:
+      meaning: "Verbal sum of scaled scores: 2 x similarities + 2 x information + arithmetic + digit span."
+      construct: verbal_ability
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: &wais3_sum_source "schema notes (sz wais3_efficience): 'verbal sum = 2 x similarities + 2 x information + arithmetic + digit span', 'performance sum = 2 x picture completion + 2 x matrices + coding', 'working memory sum = digit span + arithmetic + letter-number sequencing'"
+    wais3_qip_sum_scaled:
+      meaning: "Performance sum of scaled scores: 2 x picture completion + 2 x matrices + coding."
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: *wais3_sum_source
+    wais3_qit_sum_scaled:
+      meaning: "Total sum of scaled scores: the verbal sum plus the performance sum."
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: *wais3_sum_source
+    wais3_imt_sum_scaled:
+      meaning: "Working memory sum of scaled scores: digit span + arithmetic + letter-number sequencing."
+      construct: working_memory
+      higher_means: higher scaled scores
+      polarity: better
+      basis: anchors
+      source: *wais3_sum_source
+    wais3_qiv:
+      meaning: "Estimated verbal IQ, read in an age-free table of the application from the verbal sum."
+      construct: verbal_ability
+    wais3_qip:
+      meaning: "Estimated performance IQ, read in an age-free table of the application from the performance sum."
+    wais3_qit:
+      meaning: "Estimated full-scale IQ, read in an age-free table of the application from the total sum; the stored one is not in the extraction."
+    wais3_imt_index:
+      meaning: "Working memory index, read in an age-free table of the application from the working memory sum."
+      construct: working_memory
+    wais3_qiv_percentile:
+      meaning: "Percentile rank of the verbal IQ, read in the table of the application."
+      construct: verbal_ability
+      higher_means: a higher IQ
+      basis: stated
+      source: &wais3_percentile_source "schema notes (sz wais3_efficience): 'each percentile rank is the one of the normal curve (mean 100, SD 15) for its IQ'"
+    wais3_qip_percentile:
+      meaning: "Percentile rank of the performance IQ, read in the table of the application."
+      higher_means: a higher IQ
+      basis: stated
+      source: *wais3_percentile_source
+    wais3_qit_percentile:
+      meaning: "Percentile rank of the full-scale IQ, read in the table of the application."
+      higher_means: a higher IQ
+      basis: stated
+      source: *wais3_percentile_source
+    wais3_imt_percentile:
+      meaning: "Percentile rank of the working memory index, read in the table of the application."
+      construct: working_memory
+      higher_means: a higher index
+      basis: stated
+      source: *wais3_percentile_source
+  variables:
+    "wais3_*_interval":
+      meaning: "95% confidence interval of the IQ, a text such as '85-95', delivered as stored."
+      polarity: not_applicable
+  flags:
+    - "No document states in words how the WAIS-III IQs and the working memory index move with their sum of scaled scores: their direction is left out. The sums and the percentile ranks have one."
+    - "The IQs are estimates from a seven-subtest short form whose sums were found in the data: the dictionary gives no formula."
+    - "The estimated full-scale IQ is not in the extraction (open question O14); it is delivered as read in the table from the total sum."
+    - "A percentile written '<0.1' is read as 0.1 and flagged censored_left."
+    - "The sums are computed again from the scaled scores that the subtest schemas deliver; the stored sums, IQs and percentile ranks are only checks."
+    - "The confidence intervals of the verbal and performance IQs get derived_doubt where the stored IQ differs from the recomputed one."
+    - *wechsler_flag_editions
+
+wais3_information:
+  description: "WAIS-III information: 28 items scored 0 or 1, the raw total, the age-scaled score and its z-score. SZ only, 2010 to 2015."
+  version: WAIS-III
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (sz wais3_information)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_info_total:
+      meaning: "Raw total: the sum of the 28 items, each scored 0 or 1."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais3_information): '28 items scored 0 or 1'; the total is the sum of the items"
+    wais3_info_scaled: *wechsler_scaled
+    wais3_info_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_all_items
+
+wais3_sequences_lettres_chiffres:
+  description: "WAIS-III letter-number sequencing: seven items of three trials each, the raw total, the age-scaled score and its z-score. SZ only, 2010 to 2015."
+  version: WAIS-III
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (sz wais3_sequences_lettres_chiffres)", "docs/bp/PROGRESS.md D135"]
+  items:
+    higher_means: the trial is passed (an item is the number of its trials passed)
+    polarity: better
+    basis: stated
+    source: "schema notes (sz wais3_sequences_lettres_chiffres): 'A trial is 0 or 1 and an item is the number of its trials passed, 0 to 3'"
+  scores:
+    wais3_lns_total:
+      meaning: "Raw total: the sum of the seven items up to the first item scored 0."
+      higher_means: more trials passed
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais3_sequences_lettres_chiffres): 'A trial is 0 or 1 and an item is the number of its trials passed, 0 to 3'"
+    wais3_lns_scaled: *wechsler_scaled
+    wais3_lns_z: *wechsler_z
+  flags:
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - "No WAIS-IV visit holds this subtest."
+
+wais3_similitudes:
+  description: "WAIS-III similarities: 19 items scored 0 to 2, the raw total, the age-scaled score and its z-score. SZ only, 2010 to 2015."
+  version: WAIS-III
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (sz wais3_similitudes)", "docs/bp/PROGRESS.md D10, D135"]
+  scores:
+    wais3_simil_total:
+      meaning: "Raw total: the sum of the 19 items, each scored 0 to 2."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais3_similitudes): '19 items scored 0 to 2'; the total is the sum of the items"
+    wais3_simil_scaled: *wechsler_scaled
+    wais3_simil_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_all_items
+    - "One small centre scores five of the items higher than the others (about 1 SD on the scaled score): a scoring habit, left as measured."
+
+wais4_arithmetique:
+  description: "WAIS-IV arithmetic: 22 items scored 0 or 1, the raw total, the age-scaled score and its z-score. SZ and ASP have the items; DR has the totals only."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (sz, dr, asp wais4_arithmetique)", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135, D139"]
+  scores:
+    wais4_arith_total:
+      meaning: "Raw total of the 22 items, each scored 0 or 1 (the total as stored in DR)."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais4_arithmetique): '22 items scored 0 or 1'; the first items are 1 because 'the test starts further on and credits them'"
+    wais4_arith_scaled: *wechsler_scaled
+    wais4_arith_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+    - *wechsler_flag_all_items
+    - "In ASP the row of the script for 25 to 29 years was changed about 2017-18: the scaled scores stored from 2014 to 2017 at that age differ from the delivered ones."
+    - "The tables have no row from 80 years: such a visit has no scaled score (norm_missing)."
+
+wais4_complement_images:
+  description: "WAIS-IV picture completion: 24 items scored 0 or 1, the raw total, the age-scaled score and its z-score. SZ; in ASP on a handful of visits only."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (sz, asp wais4_complement_images)", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135"]
+  scores:
+    wais4_pc_total:
+      meaning: "Raw total: the sum of the 24 items, each scored 0 or 1."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais4_complement_images): '24 items scored 0 or 1'; the total is the sum of the items"
+    wais4_pc_scaled: *wechsler_scaled
+    wais4_pc_z: *wechsler_z
+  flags:
+    - "Picture completion is a supplemental subtest of the WAIS-IV, not one of the ten core subtests (scale_reference.md section 22, confirmed in source)."
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+    - *wechsler_flag_all_items
+
+wais4_efficience:
+  description: "The WAIS-IV indices that the neuropsychology form computes from the subtests of the battery: sums of scaled scores, the verbal comprehension, perceptual reasoning and working memory indices, the full-scale IQ and their percentile ranks. SZ and ASP; DR has the working memory index only. The processing speed index is in wais4_code_symboles_ivt."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: intellectual_ability
+  sources: ["schema notes (sz, dr, asp wais4_efficience)", "scale_reference.md section 22", "facedata/common_instruments.yaml (wais4_efficience)", "docs/bp/PROGRESS.md D135, D137"]
+  scores:
+    "wais4_icv_*":
+      meaning: "Verbal comprehension: the sum of the scaled scores of its subtests, the index read in the table of the manual from that sum, and the percentile rank of the index. Names ending in _a are the second set of ASP (the abbreviated form)."
+      construct: verbal_ability
+      higher_means: higher scaled scores on the subtests of the index
+      polarity: better
+      basis: literature
+      source: *wais4_index_source
+    "wais4_irp_*":
+      meaning: "Perceptual reasoning: the sum of the scaled scores of its subtests, the index read in the table of the manual from that sum, and the percentile rank of the index. Names ending in _a are the second set of ASP (the abbreviated form)."
+      construct: visuospatial
+      higher_means: higher scaled scores on the subtests of the index
+      polarity: better
+      basis: literature
+      source: *wais4_index_source
+    "wais4_imt_*":
+      meaning: "Working memory: the sum of the scaled scores of digit span and arithmetic, the index read in the table of the manual from that sum, and the percentile rank of the index."
+      construct: working_memory
+      higher_means: higher scaled scores on the subtests of the index
+      polarity: better
+      basis: literature
+      source: *wais4_index_source
+    "wais4_qit*":
+      meaning: "Full scale: the sum of the scaled scores, the full-scale IQ read in the table of the manual from that sum, and the percentile rank of the IQ. Names ending in _a are the second set of ASP (the abbreviated form)."
+      higher_means: higher scaled scores on the subtests
+      polarity: better
+      basis: literature
+      source: *wais4_index_source
+  variables:
+    wais4_qi_two_subtests:
+      meaning: "IQ estimated from similarities and matrices, which the dictionary calls 'Denney 2015'; delivered as stored (SZ)."
+      higher_means: higher scaled scores of similarities and matrices
+      polarity: better
+      basis: stated
+      source: "schema notes (sz wais4_efficience): 'The two-subtest IQ follows the sum of the scaled scores of similarities and matrices (about 47.6 + 2.38 x the sum, rounded)'"
+  flags:
+    - "The sums are not the same in every cohort. SZ uses short forms: verbal comprehension = 1.5 x (similarities + information), perceptual reasoning = 1.5 x (matrices + picture completion), full scale = 10/7 x the seven subtests. ASP uses the three subtests of each index (similarities, vocabulary, information; block design, matrices, visual puzzles) and the ten core subtests for the full scale; its second set (_a) follows the SZ formulas. The working memory sum is digit span + arithmetic everywhere. DR delivers the working memory index only."
+    - "In SZ the application stored the working memory index 0.7 and the full-scale IQ 2.9 below the value of the table; the table value is delivered."
+    - "The sums are computed again from the scaled scores that the subtest schemas deliver and the indices are read in the tables from them; the stored sums, indices and percentile ranks are only checks. The tables are not checked against the manuals (open question DM-4)."
+    - "A percentile of 0.1 or 99.9 is a censored value (wais4_*_percentile_cens)."
+    - "The two-subtest IQ of SZ has no known formula here; it is stored for a part of the visits only (open question O28) and a few values follow another rule."
+    - "In ASP the full-scale IQ of the second set is read in the table of the ten-subtest sum from a sum of seven subtests, so it is lower than the first set's."
+    - "In ASP the clinician also copies the indices into the medical evaluation (names ending in _clinician, another schema); the two sources agree on 76% to 92% of the visits and neither is corrected from the other."
+    - "Published ranges: the full-scale IQ goes from 40 to 160 (confirmed in source); the ranges of the other indices are to verify (scale_reference.md section 22)."
+
+wais4_information:
+  description: "WAIS-IV information: 26 items scored 0 or 1, the raw total, the age-scaled score and its z-score. SZ and ASP."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: verbal_ability
+  sources: ["schema notes (sz, asp wais4_information)", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135"]
+  scores:
+    wais4_info_total:
+      meaning: "Raw total: the sum of the 26 items, each scored 0 or 1."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (sz wais4_information): '26 items scored 0 or 1'; the first items are 1 because 'the test starts further on and credits them'"
+    wais4_info_scaled: *wechsler_scaled
+    wais4_info_z: *wechsler_z
+  flags:
+    - *wechsler_flag_editions
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age
+    - *wechsler_flag_age_asp
+    - *wechsler_flag_all_items
+
+auditory_span:
+  description: "Auditory verbal span, forward and backward, with a z-score for each and their difference. DR only."
+  respondent: test
+  construct: working_memory
+  sources: ["schema notes (dr auditory_span)", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    "auditory_span_*_z":
+      meaning: "z-score of the span, computed again: (span - mean) / SD in the cell of the age class and of the class of education."
+      higher_means: a longer span
+      polarity: better
+      basis: stated
+      source: &auditory_source "schema notes (dr auditory_span): 'z = (span - mean) / SD, to two decimals; a higher z-score is a better span'"
+  variables:
+    auditory_span_forward: &auditory_raw
+      meaning: "Span of the order (0 to 10)."
+      higher_means: a longer span
+      polarity: better
+      basis: stated
+      source: *auditory_source
+    auditory_span_backward: *auditory_raw
+    auditory_span_difference:
+      meaning: "Forward span minus backward span."
+      higher_means: the forward span is longer than the backward span by more
+      polarity: neutral
+      basis: anchors
+      source: "label 'Forward span minus backward span'"
+  flags:
+    - "The table of the application has no norm for 15 to 20 years of education: the z-score is missing there (norm_missing), on about a third of the visits that have a span."
+    - "No norm under 20 years or from 80 years."
+    - "The test is on fewer and fewer inclusion visits since 2018 (open question O22)."
+    - "The dictionary names these variables as if they belonged to the d2 test; their labels are those of the span."
+    - "No reference is given in the project documents."
+
+baddeley_dual_task:
+  description: "Baddeley dual task: the score mu (the performance kept when two tasks are done together, in percent of the single tasks), its z-score and its percentile band. DR only, and nearly unused since 2021."
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (dr baddeley_dual_task)", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    dual_task_mu_z:
+      meaning: "z-score of mu, computed again: (mu - mean) / SD in the cell of the age class and of the level of education."
+      higher_means: more of the performance kept in the dual task
+      polarity: better
+      basis: stated
+      source: &dual_source "schema notes (dr baddeley_dual_task): 'z = (mu - mean) / SD in the cell of the age class' and 'A higher z-score is a better performance'"
+    dual_task_mu_band:
+      meaning: "Percentile band of mu, computed again from the limits of the cell of the age class and of the level of education; the lower limit of the band."
+      higher_means: better performance
+      polarity: better
+      basis: stated
+      source: "docs/dr/PROGRESS.md, checks of the tab (TMT times, RL/RI-16, auditory span, dual task, fluency, d2): 'A higher z-score or band is a better performance everywhere'"
+  variables:
+    dual_task_mu:
+      meaning: "Mu: the performance kept in the dual task, in percent of the single tasks."
+      higher_means: more of the performance kept in the dual task
+      polarity: better
+      basis: stated
+      source: *dual_source
+  flags:
+    - "A value of mu below 0 or above 200 is out_of_range and has no z-score and no band."
+    - "Exactly 1 year of education belongs to no level of the table and gives no score."
+    - "The test fades after 2017 (open question O22)."
+    - "No reference is given in the project documents."
+
+d2:
+  description: "d2 test of attention. Five measures: GZ (signs processed), F (errors) with F% (errors over signs processed), GZ - F (overall performance), KL (concentration performance) and SB (the largest line minus the smallest), with percentile ranks or bands. DR only."
+  respondent: test
+  construct: attention
+  sources: ["schema notes (dr d2)", "score labels of the schema", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    d2_gzf:
+      meaning: "GZ - F, overall performance: the signs processed minus the errors, computed as GZ minus F."
+      higher_means: more signs processed once the errors are taken off
+      polarity: better
+      basis: anchors
+      source: "label 'GZ - F, overall performance'; schema notes (dr d2): 'The delivered GZ - F is GZ minus F'"
+    "d2_*_percentile":
+      meaning: "Percentile rank of the raw score (GZ, GZ - F or KL), computed again from the raw score and the age class (0.1 to 99.9)."
+      higher_means: a higher raw score
+      polarity: better
+      basis: stated
+      source: &d2_source "schema notes (dr d2): 'Each percentile rises with its raw score'; docs/dr/PROGRESS.md, checks of the tab: 'A higher z-score or band is a better performance everywhere'"
+    d2_f_band:
+      meaning: "Percentile band of F%, computed again (limits 10, 25, 50, 75 and 90); the lower limit of the band."
+      higher_means: fewer errors
+      polarity: better
+      basis: stated
+      source: "score label 'F% as a percentile band (a higher band is fewer errors)'"
+    d2_sb_band:
+      meaning: "Percentile band of SB, computed again (limits 10, 25, 50, 75 and 90); the lower limit of the band."
+      higher_means: a steadier pace
+      polarity: better
+      basis: stated
+      source: "score label 'SB as a percentile band (a higher band is a steadier pace)'"
+  variables:
+    d2_gz:
+      meaning: "GZ, speed: the number of signs processed."
+      higher_means: more signs processed
+      polarity: better
+      basis: stated
+      source: *d2_source
+    d2_kl:
+      meaning: "KL, concentration performance."
+      higher_means: better concentration performance
+      polarity: better
+      basis: stated
+      source: *d2_source
+    d2_f:
+      meaning: "F, accuracy: the number of errors."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'F, accuracy: number of errors'"
+    d2_f_percent:
+      meaning: "F%: the errors as a percentage of the signs processed."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'F%: errors as a percentage of the signs processed'; score label of its band: 'a higher band is fewer errors'"
+    d2_sb:
+      meaning: "SB, fluctuation: the largest line minus the smallest line."
+      higher_means: a less steady pace
+      polarity: worse
+      basis: anchors
+      source: "label 'SB, fluctuation: largest minus smallest line'; score label of its band: 'a higher band is a steadier pace'"
+  flags:
+    - "Percentile ranks and bands are computed again from the raw score and the age class (four classes; the level of education is not used)."
+    - "GZ - F is delivered as GZ minus F: the value typed in the form was not that difference on a few percent of the visits."
+    - "The raw errors and the fluctuation are worse when high, but their bands are better when high."
+    - "No reference is given in the project documents."
+
+memory_designs:
+  description: "A memory test for designs in two parts, each with a raw score, an age-scaled score (1 to 19) and its z-score. DR only, used until 2020."
+  version: "Designs subtest of the WMS-IV ('MEM IV : Dessin' in the form of the application), parts 1 and 2, read as the immediate and the delayed recall"
+  respondent: test
+  construct: visual_memory
+  sources: ["schema notes (dr memory_designs)"]
+  scores:
+    "designs*_scaled":
+      meaning: "Age-scaled score of the part (1 to 19, mean 10 and SD 3), computed again from the raw score and the age class."
+      higher_means: a higher raw score for the age class
+      basis: stated
+      source: "schema notes (dr memory_designs): 'The scaled score is the number of the first of 19 upper bounds that the raw score does not exceed, in the age class'"
+    "designs*_z":
+      meaning: "The scaled score as a z-score: the scaled score minus 10, over 3."
+      higher_means: a higher scaled score
+      basis: stated
+      source: "schema notes (dr memory_designs): 'The z-score is read in a table of the 19 scaled scores: the scaled score minus 10, over 3, to two decimals'"
+  variables:
+    "designs*_raw":
+      meaning: "Raw score of the part (0 to 120)."
+  flags:
+    - "The notes do not say what the raw score counts, nor in words that a higher score is a better performance: the polarity is left out."
+    - "The dictionary does not name the test; the name comes from the form of the application."
+    - "No norm under 18 years or from 70 years."
+    - "No reference is given in the project documents."
+
+neuropsy_substances:
+  description: "Coffee, tea and tobacco before the appointment and during the break of the testing: yes/no questions, numbers of cups and of cigarettes, and how long before. DR only."
+  reference: not_applicable
+  construct: test_conditions
+  period: before the appointment and during the break of the testing
+  sources: ["schema notes (dr neuropsy_substances)"]
+  variables:
+    "*_cups":
+      meaning: "Number of cups of coffee or tea; 0 where the answer to the yes/no question is no."
+      higher_means: more cups
+      polarity: neutral
+      basis: anchors
+      source: "labels 'how many cups'"
+    smoked_break_cigarettes:
+      meaning: "Number of cigarettes smoked during the break; 0 for a non-smoker and where the answer is no."
+      higher_means: more cigarettes
+      polarity: neutral
+      basis: anchors
+      source: "label 'Smoked during the break: how many cigarettes'"
+    "*_delay":
+      meaning: "How long before the appointment: 5 to 30 minutes, under 1 hour or over 1 hour."
+      polarity: not_applicable
+  flags:
+    - "The two questions on tobacco are asked of smokers only; they are 0 for a non-smoker."
+    - "A yes with an empty count stays missing."
+    - "The dictionary gives no code for 'how long before'; the codes are those of the form of the application."
+
+rlri16:
+  description: "Free and cued recall of sixteen words: an immediate cued recall, three trials of free then cued recall, a recognition and a delayed recall, with z-scores of the free recalls and percentile bands of the cued recalls. DR only (BP and SZ use the CVLT)."
+  version: "RL/RI-16 ('RL-RI 16 items' in the form of the application)"
+  respondent: test
+  construct: verbal_memory
+  sources: ["schema notes (dr rlri16)", "docs/dr/PROGRESS.md (checks of the neuropsychology tab)"]
+  scores:
+    rlri16_free_sum: &rlri16_sum
+      meaning: "Sum of the three trials (0 to 48): of the free recalls, or of the total recalls (free and cued)."
+      higher_means: more words recalled
+      polarity: better
+      basis: anchors
+      source: "labels 'Sum of the three free recalls (0 to 48)', 'Sum of the three total recalls (0 to 48)'; schema notes (dr rlri16): 'a higher z-score is a better recall, on every trial'"
+    rlri16_total_sum: *rlri16_sum
+    "rlri16_*_z":
+      meaning: "z-score of the free recall, computed again: (free recall - mean) / SD, with the mean of the cell of the age class, the sex and the class of education."
+      higher_means: more words recalled
+      polarity: better
+      basis: stated
+      source: "schema notes (dr rlri16): 'z = (free recall - mean) / SD, to two decimals; a higher z-score is a better recall, on every trial'"
+  variables:
+    rlri16_immediate: &rlri16_raw
+      meaning: "Number of words recalled or recognised (0 to 16)."
+      higher_means: more words recalled or recognised
+      polarity: better
+      basis: stated
+      source: "schema notes (dr rlri16): 'a higher z-score is a better recall, on every trial' with z = (free recall - mean) / SD; for the cued recalls '16 words gives 99, 15 gives 25'"
+    rlri16_free1: *rlri16_raw
+    rlri16_free2: *rlri16_raw
+    rlri16_free3: *rlri16_raw
+    rlri16_total1: *rlri16_raw
+    rlri16_total2: *rlri16_raw
+    rlri16_total3: *rlri16_raw
+    rlri16_delayed_free: *rlri16_raw
+    rlri16_delayed_total: *rlri16_raw
+    rlri16_recognition: *rlri16_raw
+    rlri16_false_semantic: &rlri16_false
+      meaning: "Recognition: distractors taken for a word of the list."
+      higher_means: more false recognitions
+      polarity: worse
+      basis: anchors
+      source: "labels 'distractors taken for a word of the list'"
+    rlri16_false_neutral: *rlri16_false
+    rlri16_immediate_band: &rlri16_band
+      meaning: "Percentile band of the cued or total recall, as stored: a function of the raw score alone, read with the limits 1, 5, 25, 50 and 99."
+      higher_means: more words recalled
+      polarity: better
+      basis: stated
+      source: "schema notes (dr rlri16): 'for the immediate recall: 16 words gives 99, 15 gives 25'; docs/dr/PROGRESS.md, checks of the tab: 'A higher z-score or band is a better performance everywhere'"
+    "rlri16_total*_band": *rlri16_band
+    rlri16_delayed_total_band: *rlri16_band
+    rlri16_recognition_band:
+      meaning: "A flag with two values, not a percentile band: 99 where all 16 words are recognised, 5 otherwise."
+      higher_means: all 16 words recognised
+      polarity: better
+      basis: stated
+      source: "variable label: '99 for all 16 words recognised, 5 otherwise (a flag, not a percentile band)'"
+  flags:
+    - "The z-scores of the free recalls are computed again; the bands of the cued recalls are left as stored."
+    - "A missing education gives no z-score (norm_missing)."
+    - "A few cells of the norm table of the script break the pattern of the table (they look like typos, and no manual is available to say); the stored and the recomputed z-scores both follow the script."
+    - "The dictionary does not name the test; the name comes from the form of the application."
+    - "No reference is given in the project documents."
+
+verbal_fluency_form2:
+  description: "The second form of the verbal fluency, used at the retest: names of fruits, and words that begin with the letter R. The number of correct words of each task, with a z-score and a percentile band typed by hand. DR only."
+  version: "second form (fruits and letter R)"
+  respondent: test
+  construct: verbal_fluency
+  sources: ["schema notes (dr verbal_fluency_form2)"]
+  variables:
+    "fluency2_*_words":
+      meaning: "Number of correct words of the task."
+      higher_means: more correct words
+      polarity: better
+      basis: anchors
+      source: "labels 'correct words'"
+    "fluency2_*_z":
+      meaning: "z-score typed by hand: the application applies no norm to this form, and the typed values follow no known rule."
+    "fluency2_*_band":
+      meaning: "Percentile band typed by hand, nearly never filled; the application applies no norm to this form."
+  flags:
+    - "No norm: the z-scores and the bands are typed by hand and nothing is recomputed. Their direction is left out; do not use them as standard scores."
+    - "The two forms are two tests: this form is not pooled with the letter P and animals (verbal_fluency). Fewer words are produced on this form."
+    - "No reference is given in the project documents."
+
+assessment_conditions:
+  description: "What the ASP form asks before the neuropsychological tests: seven yes/no conditions of the assessment, the handedness, an earlier Wechsler assessment and an earlier neuropsychological assessment (where, when, at what age, with which results), the date of the assessment and a comment. Inclusion visits of ASP."
+  reference: not_applicable
+  construct: test_conditions
+  sources: ["schema notes (asp assessment_conditions)", "facedata/common_instruments.yaml (neuropsy_conditions)"]
+  variables:
+    handedness_np:
+      meaning: "Handedness of the neuropsychology form: left, right or both."
+      construct: handedness
+      polarity: not_applicable
+    "earlier_*_age_years":
+      meaning: "Age at the earlier assessment, in years."
+      higher_means: older
+      polarity: neutral
+      basis: anchors
+      source: "labels 'age, years'"
+    "earlier_*_age_months":
+      meaning: "Months above the years of the age at the earlier assessment (0 to 11)."
+      polarity: neutral
+    assessment_date:
+      meaning: "Date of the neuropsychological assessment; filled on a part of the visits only."
+      polarity: not_applicable
+  flags:
+    - "The yes/no conditions are delivered as 1 (yes) and 0 (no) and carry the names that BP, SZ and DR give to the same questions. 'Does not know' is read as missing for the suspected learning disorder and the psychotropic treatment."
+    - "The raw code of the handedness is 1 left, 2 right, 3 both (in DR 1 is right); the delivered categories are named."
+    - "The form is not only for adults: about one visit in eight is of a patient under 18."
+    - "The text variables are free text of patient records."
+
+executive_functions:
+  description: "A block of ASP added in 2018 that holds one test, the revised errands test: a box 'done', the time to do the task in seconds, the numbers of useless detours, of trips that miss an opening hour and of logic errors, their total, the date and the age in months."
+  version: "revised errands test ('test des commissions révisé')"
+  respondent: test
+  construct: executive_function
+  sources: ["schema notes (asp executive_functions)", "facedata/common_instruments.yaml (errands_test)"]
+  scores:
+    errands_errors:
+      meaning: "Total number of errors: detours, late trips and logic errors."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "label 'total number of errors (detours, late trips and logic errors)'"
+  variables:
+    errands_time:
+      meaning: "Time to do the task, in seconds."
+      higher_means: more time taken
+      basis: anchors
+      source: "label 'time to do the task, seconds'"
+    errands_detours: &asp_errands_count
+      meaning: "A count of errors of one kind."
+      higher_means: more errors
+      polarity: worse
+      basis: anchors
+      source: "labels 'number of useless detours', 'number of trips that miss an opening hour', 'number of logic errors'"
+    errands_late_trips: *asp_errands_count
+    errands_logic_errors: *asp_errands_count
+    executive_age_months:
+      meaning: "Age at the tests, in months."
+      higher_means: older
+      polarity: neutral
+      basis: anchors
+      source: "label 'Age at the executive function tests, in months'"
+  flags:
+    - "No z-score and no band is delivered, unlike BP and SZ: the application has no rule for this block, and the version of the test ('revised') is not confirmed as the one of the BP and SZ tables."
+    - "The time is in seconds here and in minutes in BP and SZ; a few values of 60 or less look like minutes and are kept."
+    - "The age in months is typed in years on some visits and is not corrected."
+    - "The other tests of the form (TMT, Stroop, London tower) are not in the extraction."
+
+social_cognition:
+  description: "Social cognition tests of ASP, added in 2018: a facial emotion recognition test (TREF: percentage of right answers in all and for six emotions), a faux pas test (one score from 0 to 100) and the six films of the LIS (one score), with boxes 'done', the date and the age in months. Adults and children."
+  version: "TREF, faux pas test and LIS"
+  reference: "TREF: Gaudelus B, Virgile J, Peyroux E, et al. L'Encéphale 2015;41:251-259. Faux pas: Stone VE, Baron-Cohen S, Knight RT, J Cogn Neurosci 1998;10:640-656 (adult); Baron-Cohen S et al., J Autism Dev Disord 1999;29:407-418 (child). LIS: Bazin N, Brunet-Gouet E, Bourdet C, et al. Psychiatry Res 2009;167:28-35"
+  reference_confidence: "TREF: Confirmed (abstract). Faux pas: Confirmed (official adult scoring guide). LIS: Confirmed (full text of Urbach et al. 2013)"
+  respondent: test
+  construct: social_cognition
+  sources: ["schema notes (asp social_cognition)", "scale_reference_rest.md sections 7 and 9", "facedata/common_instruments.yaml (lis)"]
+  variables:
+    face_emotion_total:
+      meaning: "TREF: percentage of right answers, every emotion together."
+      higher_means: more emotions recognised
+      polarity: better
+      basis: stated
+      source: &tref_source "variable labels 'percentage of right answers'; scale_reference_rest.md section 9: global % correct and % correct per emotion, range 0-100% (Confirmed, abstract)"
+      cutoffs:
+        - {value: "below 61.57", meaning: "deficit (2 SD below the mean of healthy controls)", source: "Gaudelus et al. 2015, reported in scale_reference_rest.md section 9", confidence: "Confirmed (abstract)"}
+    "face_emotion_*":
+      meaning: "TREF: percentage of right answers for one emotion (nine photos each, so steps of about 11 points)."
+      higher_means: more emotions recognised
+      polarity: better
+      basis: stated
+      source: *tref_source
+    face_emotion_done:
+      meaning: "The facial emotion test was done (yes or no)."
+      polarity: not_applicable
+    faux_pas_score:
+      meaning: "Faux pas test: one score from 0 to 100, read as the percentage of right answers."
+      higher_means: more right answers
+      polarity: better
+      basis: stated
+      source: "variable label 'Faux pas test: percentage of right answers'"
+    lis_total:
+      meaning: "LIS score: the distance to the reference ratings, typed in the form."
+      higher_means: further from the reference ratings
+      polarity: worse
+      basis: stated
+      source: "variable label '(distance to the reference ratings; lower is better)'; scale_reference_rest.md section 7: 'Higher = more impaired' (Confirmed, full text)"
+    social_cognition_age_months:
+      meaning: "Age at the social cognition tests, in months."
+      higher_means: older
+      polarity: neutral
+      basis: anchors
+      source: "label 'Age at the social cognition tests, in months'"
+  flags:
+    - "The LIS score is typed by hand: the ASP forms have no field for the thirty ratings and no script computes it, so it cannot be recomputed as in SZ. Do not pool it with the SZ score."
+    - "The published faux pas test has several scoring conventions (ratios up to 1.0, or a total of 0 to 60); which one the percentage of the database follows is not documented."
+    - "A few scores above 100 (a lost decimal point or a typing error) are out_of_range and are not repaired."
+    - "At one centre the scores of four emotions are one photo of nine lower than at the others, with no known cause; the step is left as measured."
+    - "The age in months is typed in years on some visits and is not corrected."
+    - "About a quarter of the visits are of children."
+
+wais4_cubes:
+  description: "WAIS-IV block design: 14 items scored 0, 2 or 4, and up to 7 with the time bonus of the last items, the raw total, the age-scaled score and its z-score. ASP only."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (asp wais4_cubes)", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135, D139"]
+  scores:
+    wais4_bd_total:
+      meaning: "Raw total: the sum of the 14 items (0 to 66)."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (asp wais4_cubes): 'An item of the block design is scored 0, 2 or 4, and up to 7 with the time bonus of the last items'"
+    wais4_bd_scaled: *wechsler_scaled
+    wais4_bd_z: *wechsler_z
+  flags:
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age_asp
+    - "No z-score is stored for this subtest: the delivered one is computed and has no stored value to be compared with."
+
+wais4_puzzles:
+  description: "WAIS-IV visual puzzles: 26 items scored 0 or 1, the raw total, the age-scaled score and its z-score. ASP only."
+  version: WAIS-IV
+  reference: *wais4_reference
+  reference_confidence: *wais4_confidence
+  respondent: test
+  construct: visuospatial
+  sources: ["schema notes (asp wais4_puzzles)", "scale_reference.md section 22", "docs/bp/PROGRESS.md D135"]
+  scores:
+    wais4_vp_scaled: *wechsler_scaled
+    wais4_vp_z: *wechsler_z
+  variables:
+    wais4_vp_total:
+      meaning: "Raw total of the 26 items, each scored 0 or 1, as stored (it equals the sum of the items on every visit that holds them all)."
+      higher_means: more points on the items
+      polarity: better
+      basis: anchors
+      source: "schema notes (asp wais4_puzzles): '26 items scored from 0 to 1, their total'"
+  flags:
+    - *wechsler_flag_recomputed
+    - *wechsler_flag_age_asp

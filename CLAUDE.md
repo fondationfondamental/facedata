@@ -38,6 +38,28 @@ instrument. Specs live in `docs/` and are the source of truth:
 - Read schemas with `yaml.BaseLoader` (every value a string). The default
   loader turns `No` into False and crashes on `0000-00-00`.
 
+## Data dictionary
+
+`dictionary/face_dictionary.json` describes every delivered variable of the
+four cohorts: meaning, construct, direction, derivation, raw column, range and
+codes, cohorts and visits, missing values, distribution, what differs between
+cohorts. Use it to choose variables and before using one in an analysis. The
+page for people is `dictionary/FACE-data-dictionary.html`. Fields and rebuild:
+`dictionary/README.md`.
+
+- A variable id is the column name that `load()` delivers. The file has one
+  line per variable: read one record with
+  `grep -m1 '^"madrs_total":' dictionary/face_dictionary.json`, or load the
+  file with `json` and filter. Do not print the whole file (19 MB).
+- Check `direction` before putting variables on one scale, `harmonisation`
+  before stacking cohorts, `missing` and `timepoints` before a longitudinal
+  model, and `incomplete` for what no source documents.
+- An empty field means "not documented". Never fill it from memory: add it to
+  `dictionary/annotations/` with its source, then rebuild.
+- The JSON, the page, `incomplete.csv` and `dictionary/stats/` are generated
+  and git-ignored (figures computed from the data). Never edit them by hand,
+  and rebuild them when a schema, an annotation or an extraction changes.
+
 ## Working method
 
 - One instrument at a time. An instrument is done when it meets the

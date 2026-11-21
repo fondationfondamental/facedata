@@ -1,0 +1,49 @@
+# Where the data dictionary reads its inputs. Paths are relative to the repository.
+# Change a path here when a new extraction or a new dictionary workbook arrives, then rebuild
+# (dictionary/README.md, "Rebuild").
+
+extractions:
+  bp: data/bp/BPALL_20261113_2.tsv
+  sz: data/sz/SZALL_20261117.tsv
+  dr: data/dr/DRALL_20261030.tsv
+  asp: data/asp/ASPALL_20261030.tsv
+
+# The Excel dictionaries: their sheets give the tabs of the page, and their labels and codings are shown beside ours.
+thesauri:
+  bp: thesauri/FACEBP_thesaurus_V4.34.xlsx
+  sz: thesauri/FACESZ_thesaurus_V4.20.xlsx
+  dr: thesauri/FACEDR_thesaurus_V4.16.xlsx
+  asp: thesauri/FACETSASDI_thesaurus_V2.13.xlsx
+
+norms: norms
+
+cohorts:
+  bp: FACE BP (bipolar disorder)
+  sz: FACE SZ (schizophrenia)
+  dr: FACE DR (resistant depression)
+  asp: FACE ASP (autism spectrum)
+
+# Counts from 1 to this number minus 1 are never written: they are given as -1 ("fewer than 5").
+smallest_count: 5
+# A variable with fewer values than this gets no histogram.
+smallest_histogram: 20
+
+# The tabs of the view "all cohorts": name -> the sheets of each workbook that it gathers.
+# An instrument is shown in the tab of the first cohort that has it (bp, sz, dr, asp).
+tabs:
+  PATIENT: {bp: PATIENT, sz: PATIENT, dr: [PATIENT, INCLUSION], asp: Identification}
+  AUTO-QUESTIONNAIRES: {bp: AUTO-QUESTIONNAIRES, sz: AUTO-QUESTIONNAIRE, dr: AUTO-QUESTIONNAIRES}
+  HETERO-QUESTIONNAIRES: {bp: HETERO-QUESTIONNAIRES, sz: HETERO-QUESTIONNAIRE, dr: HETERO-QUESTIONNAIRES}
+  QUESTIONNAIRES (ASP): {asp: Questionnaires}
+  NEUROPSYCHOLOGIE: {bp: NEUROPSYCHOLOGIE, sz: [NEUROPSYCHOLOGIE, TAP], dr: NEUROPSYCHOLOGIE, asp: Neuropsy}
+  EVALUATION MEDICALE: {bp: EVALUATION MEDICALE, sz: EVALUATION MEDICALE, dr: EVALUATION MEDICALE, asp: Evaluation médicale}
+  MINI: {dr: MINI}
+  SUICIDE: {bp: SUICIDE, sz: SUICIDE, dr: SUICIDE}
+  SUBSTANCES ET COMORBIDITE: {bp: SUBSTANCES ET COMORBIDITE, sz: SUBSTANCES ET COMORBIDITE, dr: SUBSTANCES}
+  CONSTANTES et ECG: {bp: CONSTANTES et ECG, sz: CONSTANTES et ECG, dr: VITAL SIGN et ECG, asp: Examen clinique}
+  BILAN BIOLOGIQUE: {bp: BILAN BIOLOGIQUE, sz: BILAN BIOLOGIQUE, dr: BILAN BIOLOGIQUE, asp: Biologie & ExamComplmtR}
+  TRAITEMENTS: {bp: TRAITEMENTS, sz: TRAITEMENTS, dr: TRAITEMENTS}
+  SOIN SUIVI HOSP ARRET TRAVAIL: {bp: SOIN SUIVI HOSP ARRET TRAVAIL, sz: SOIN SUIVI HOSP ARRET TRAVAIL, dr: SOIN SUIVI HOSP ARRET TRAVAIL}
+  ANTECEDENTS: {bp: ANTECEDENTS, sz: ANTECEDENTS, dr: ANTECEDENTS, asp: [Antécédents médicaux, AntecFam & Antec TrbPsy]}
+  PERINATALITE: {bp: PERINATALITE, sz: PERINATALITE, dr: PERINATALITE}
+  SOCIAL: {bp: SOCIAL, sz: SOCIAL - PERINATALITE, dr: MODULE SOCIAL ET PERINATALITE, asp: SocioDémo & MedicoEco}
