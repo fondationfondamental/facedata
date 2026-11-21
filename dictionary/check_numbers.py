@@ -148,7 +148,7 @@ def main(arguments):
         config = yaml.safe_load(file)
     cohorts = [name for name in arguments if name in MODULES] or list(MODULES)
     how_many = next((int(text) for text in arguments if text.isdigit()), 30)
-    variables = json.loads((FOLDER / "face_dictionary.json").read_text(encoding="utf-8"))["variables"]
+    variables = json.loads((ROOT / "facedata" / "dictionary" / "face_dictionary.json").read_text(encoding="utf-8"))["variables"]
     generator = random.Random(20261121)              # the same draw at each run
     problems = 0
     for cohort in cohorts:

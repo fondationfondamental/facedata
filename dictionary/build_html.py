@@ -1,7 +1,7 @@
 """The data dictionary as one HTML page that opens from the disk, with no network.
 
-Step 3 of 3 (dictionary/README.md). Puts dictionary/face_dictionary.json
-inside dictionary/template.html and writes dictionary/FACE-data-dictionary.html.
+Step 3 of 3 (dictionary/README.md). Puts facedata/dictionary/face_dictionary.json
+inside dictionary/template.html and writes facedata/dictionary/FACE-data-dictionary.html.
 The page reads nothing else: styles, script and data are in the one file.
 
     .venv/bin/python dictionary/build_html.py
@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
+PACKAGE = FOLDER.parent / "facedata" / "dictionary"  # inside the package: every install has the dictionary
 PLACE = "__FACE_DICTIONARY_JSON__"
 
 
@@ -26,13 +27,13 @@ def for_a_script_tag(text):
 
 def build(json_path=None, template_path=None, target=None):
     """Write the page and return its path."""
-    json_path = Path(json_path or FOLDER / "face_dictionary.json")
+    json_path = Path(json_path or PACKAGE / "face_dictionary.json")
     template = Path(template_path or FOLDER / "template.html").read_text(encoding="utf-8")
     dictionary = json.loads(json_path.read_text(encoding="utf-8"))             # read it: a broken file must not be published
     data = json.dumps(dictionary, ensure_ascii=False, separators=(",", ":"))
     if template.count(PLACE) != 1:
         raise ValueError("template.html must hold %s exactly once" % PLACE)
-    target = Path(target or FOLDER / "FACE-data-dictionary.html")
+    target = Path(target or PACKAGE / "FACE-data-dictionary.html")
     target.write_text(template.replace(PLACE, for_a_script_tag(data)), encoding="utf-8")
     return target
 

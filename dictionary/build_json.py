@@ -15,7 +15,7 @@ variable of the four cohorts:
 Nothing is guessed: a field that no source gives is left empty and its name
 goes into `incomplete`.
 
-    .venv/bin/python dictionary/build_json.py       # writes dictionary/face_dictionary.json
+    .venv/bin/python dictionary/build_json.py       # writes facedata/dictionary/face_dictionary.json
 """
 
 import datetime
@@ -42,6 +42,7 @@ from facedata.schema import load_schemas, raw_columns  # noqa: E402
 from facedata.thesaurus import expand_range  # noqa: E402
 
 FOLDER = Path(__file__).resolve().parent
+PACKAGE = ROOT / "facedata" / "dictionary"           # inside the package: every install has the dictionary
 MODULES = {"bp": facedata.bp, "sz": facedata.sz, "dr": facedata.dr, "asp": facedata.asp}
 COHORTS = list(MODULES)
 TABLE_OF_LEVEL = {"visit": "data", "patient": "patients", "list": "treatments", "relatives": "relatives"}
@@ -452,7 +453,7 @@ def variable_block(cohort, name, spec, schema, is_score, context):
     if editions:
         block["edition"] = {"column": schema.get("version", {}).get("name"), "values": list(editions)}
     workbook = context["workbook"]
-    if workbook and not is_score:
+    if workbook and context.get("excel_labels") and not is_score:      # the workbooks are not part of the repository
         for column in block["source"]["columns"]:
             line = workbook["names"].get(column.lower())
             if line:
@@ -636,6 +637,13 @@ def direction_of(name, block, annotation, cohort_blocks_of, annotations):
         if any(raw in YES_WORDS and value in ("1", "1.0") for raw, value in codes.items()) or labels.get("1") in YES_WORDS:
             return {"higher_means": "1 is yes, 0 is no", "polarity": "not_applicable", "basis": "coding",
                     "source": "codes of the schema" if codes else "coding of the Excel dictionary"}
+        if "separator" in (block.get("reading") or {}):                 # one box of a list written in one cell
+            return {"higher_means": "1 when one of its boxes is ticked, 0 when none is", "polarity": "not_applicable", "basis": "coding",
+                    "source": "docs/SCHEMA_SPEC.md, section 4: several boxes in one cell"}
+        label = block.get("label") or ""
+        if re.search(r"\b1\b", label) and re.search(r"\b0\b", label):      # the label gives its own coding: "(0 not done, 1 done)"
+            return {"higher_means": "1 against 0, as the label says", "polarity": "not_applicable", "basis": "coding",
+                    "source": "label of the schema"}
         if not codes and not labels:                 # a box read as written: the schemas keep 0 and 1 for no and yes
             return {"higher_means": "1 is yes, 0 is no", "polarity": "not_applicable", "basis": "coding",
                     "source": "docs/SCHEMA_SPEC.md, section 4: an item with the range 0 to 1 is a yes/no answer"}
@@ -852,14 +860,14 @@ FIELD_NOTES = {
     "variables.<id>.parents / children / computed_from / companion_of": "The hierarchy: the scores that count this value, the values a score counts, the raw score a standard score is read from, the variable a companion column goes with.",
     "variables.<id>.harmonisation": "stack (yes, with care, no: can the cohorts be put under one another), recommended (named among the variables to use across cohorts), note, exception and raw_column_note (facedata/shared_names.yaml), differences (fields that the schemas of two cohorts do not give alike).",
     "variables.<id>.incomplete": "Names of the fields that no source gives: meaning, construct, direction, range, answer_labels.",
-    "variables.<id>.cohorts.<cohort>": "What one cohort says. label, level, kind, type, unit, instrument and tab are written here only when they differ from the record: an absent field has the value of the record. table (data, patients, treatments or relatives: where the value is delivered, under the column name <id>), source.columns (raw columns of the extraction file named in cohorts.<cohort>.extraction; source.stored_score: the raw column of the score as stored), range, categories (delivered labels), raw_codes (raw text to delivered value), answer_labels (code to label, read in the Excel dictionary, not verified), missing_codes, edition (column and values: the visits on which it is read), derivation (method, formula in words, items, reverse, points, scale, min_items, norm_table, function, stored_in), reading (fields of the schema), rules (the same as sentences), excel (label and coding of the Excel dictionary when they say something else).",
+    "variables.<id>.cohorts.<cohort>": "What one cohort says. label, level, kind, type, unit, instrument and tab are written here only when they differ from the record: an absent field has the value of the record. table (data, patients, treatments or relatives: where the value is delivered, under the column name <id>), source.columns (raw columns of the extraction file named in cohorts.<cohort>.extraction; source.stored_score: the raw column of the score as stored), range, categories (delivered labels), raw_codes (raw text to delivered value), answer_labels and excel (labels and codings of the Excel dictionary, not verified: only in a build with excel_labels: true, never in the committed files), missing_codes, edition (column and values: the visits on which it is read), derivation (method, formula in words, items, reverse, points, scale, min_items, norm_table, function, stored_in), reading (fields of the schema), rules (the same as sentences).",
     "variables.<id>.cohorts.<cohort>.n": "rows (rows of the table), valid (rows with a value), patients (patients with a value), patients_2plus (patients with a value at two visits or more), baseline (patients with a value in the baseline row).",
     "variables.<id>.cohorts.<cohort>.missing": "Percentages. all: rows of the table without a value. baseline: patients without a value in the baseline row (inclusion visit, completed by the screening visit, facedata.common.baseline). in_instrument: visits without a value among the visits that hold at least one value of the instrument.",
     "variables.<id>.cohorts.<cohort>.timepoints": "Number of values at each visit label, in visit order.",
     "variables.<id>.cohorts.<cohort>.stats": "all (every row) and baseline (one row per patient): n, mean, sd, min, max, p01, p05, p25, median, p75, p95, p99, n_distinct, at_minimum_pct and at_maximum_pct (share at each end of the range); for a date first_year and last_year; for a text n and n_distinct only. Values are not winsorised.",
     "variables.<id>.cohorts.<cohort>.dist": "all and baseline. kind bins: x holds the edges (one more than n) between the 1st and 99th percentile, the end bins hold the tails. kind levels: one count per answer or label. kind years: one count per year.",
     "variables.<id>.cohorts.<cohort>.flags": "Number of cells per flag code (see flags). censored: left and right. years: first and last year with a value. n_sites: number of centres with a value.",
-    "counts": "A count from 1 to 4 is never written: it is given as -1 and means 'fewer than 5'. A variable with fewer than 5 values has no statistics, one with fewer than 20 no distribution.",
+    "counts": "A count from 1 to 4 is never written: it is given as -1 and means 'fewer than 5', and a percentage that would give it away is left out. A variable with fewer than 5 values has no statistics, one with fewer than 20 no distribution.",
 }
 
 
@@ -912,7 +920,7 @@ def build():
         workbook = read_workbook(ROOT / config["thesauri"][cohort])
         differences_path = MODULES[cohort].FOLDER / "differences.yaml"
         context = {"schemas": schemas, "stats_file": stats_file, "stats": stats_file["variables"], "visits": stats_file["visits"],
-                   "workbook": workbook, "extraction": config["extractions"][cohort], "tab_of": tabs_of_cohort(schemas, workbook),
+                   "workbook": workbook, "excel_labels": bool(config.get("excel_labels")), "extraction": config["extractions"][cohort], "tab_of": tabs_of_cohort(schemas, workbook),
                    "differences": read_yaml(differences_path, as_text=True) if differences_path.exists() else {}}
         context["blocks"] = add_statistics(cohort_blocks(cohort, context), context)
         contexts[cohort] = context
@@ -932,7 +940,8 @@ def build():
 
 def main():
     dictionary = build()
-    target = FOLDER / "face_dictionary.json"
+    PACKAGE.mkdir(exist_ok=True)
+    target = PACKAGE / "face_dictionary.json"
     write_json(dictionary, target)
     incomplete = sum(bool(record["incomplete"]) for record in dictionary["variables"].values())
     write_incomplete(dictionary, FOLDER / "incomplete.csv")

@@ -22,6 +22,8 @@ import build_stats  # noqa: E402
 from facedata.pipeline import run_cohort  # noqa: E402
 from facedata.schema import load_schemas  # noqa: E402
 
+COMMITTED = ROOT / "facedata" / "dictionary"          # the dictionary that every install has
+
 SCHEMA = """
 instrument: demo
 title: Demo scale
@@ -211,3 +213,52 @@ def test_annotations_name_instruments_scores_and_constructs_that_exist():
             if entry.get("higher_means") and not (entry.get("basis") and entry.get("source")):
                 problems.append("%s: a direction without its basis and source" % instrument)
     assert problems == []
+
+
+def small_counts(block):
+    """The counts of a cohort block that would show 1 to 4 patients or cells."""
+    counts = [count for key, count in (block.get("n") or {}).items() if key != "rows"]
+    counts += [count for key, count in (block.get("qc") or {}).items() if key != "n_rows"]
+    for field in ["timepoints", "flags", "censored"]:
+        counts += list((block.get(field) or {}).values())
+    for scope in (block.get("dist") or {}).values():
+        counts += scope["n"]
+    return [count for count in counts if 0 < count < 5]
+
+
+def test_the_committed_files_follow_the_data_rules():
+    """What is committed holds aggregates only: no small count, no value of a text column, no label of an Excel dictionary."""
+    dictionary = json.loads((COMMITTED / "face_dictionary.json").read_text(encoding="utf-8"))
+    problems = []
+    for name, record in dictionary["variables"].items():
+        for cohort, block in record["cohorts"].items():
+            if small_counts(block):
+                problems.append("%s in %s: a count from 1 to 4" % (name, cohort))
+            if block.get("kind", record["kind"]) == "text" and block.get("dist"):
+                problems.append("%s in %s: the values of a text column" % (name, cohort))
+            if "excel" in block or "answer_labels" in block:
+                problems.append("%s in %s: a label of an Excel dictionary (built with excel_labels: true)" % (name, cohort))
+            if block.get("n", {}).get("valid") == -1 and (block.get("missing") or {}).get("all") is not None:
+                problems.append("%s in %s: a percentage that gives a masked count away" % (name, cohort))
+    for path in sorted((ROOT / "dictionary" / "stats").glob("*.json")):
+        for name, block in json.loads(path.read_text(encoding="utf-8"))["variables"].items():
+            if small_counts(block):
+                problems.append("%s in %s: a count from 1 to 4" % (name, path.name))
+    assert problems == []
+
+
+def test_the_committed_dictionary_describes_the_schemas_of_today():
+    """A schema changed without a rebuild: run dictionary/build_json.py and dictionary/build_html.py (README of dictionary/)."""
+    dictionary = json.loads((COMMITTED / "face_dictionary.json").read_text(encoding="utf-8"))
+    for cohort, module in build_json.MODULES.items():
+        delivered = set()
+        for schema in load_schemas(module.SCHEMAS).values():
+            specs = {**schema["variables"], **schema.get("scores", {})}
+            delivered |= {name for name, spec in specs.items() if spec.get("keep", True)}
+        written = {name for name, record in dictionary["variables"].items()
+                   if cohort in record["cohorts"] and record["cohorts"][cohort].get("level", record["level"]) not in ("key", "companion")}
+        assert written == delivered, cohort
+    page = (COMMITTED / "FACE-data-dictionary.html").read_text(encoding="utf-8")
+    mark = '<script id="face-dictionary" type="application/json">'
+    start = page.index(mark) + len(mark)
+    assert json.loads(page[start:page.index("</script>", start)]) == dictionary          # the page and the JSON say the same

@@ -30,6 +30,11 @@ instrument. Specs live in `docs/` and are the source of truth:
   commits or chat. Report aggregates only. Do not name individual sites in
   committed files.
 - Tests use small hand-written tables. No real data in the repository.
+- One exception, generated and checked by a test: the data dictionary
+  (`facedata/dictionary/`, `dictionary/stats/`) holds figures computed from
+  the extractions. Aggregates only, a count from 1 to 4 written -1, no value
+  of a text column, no centre, no label of the Excel dictionaries. Never
+  commit a build made with `excel_labels: true`.
 - A notebook is saved without its results: what appears under a cell is
   patient data. `tests/test_notebook.py` checks it.
 - Read an extraction as text, never let pandas guess types:
@@ -40,25 +45,28 @@ instrument. Specs live in `docs/` and are the source of truth:
 
 ## Data dictionary
 
-`dictionary/face_dictionary.json` describes every delivered variable of the
-four cohorts: meaning, construct, direction, derivation, raw column, range and
-codes, cohorts and visits, missing values, distribution, what differs between
-cohorts. Use it to choose variables and before using one in an analysis. The
-page for people is `dictionary/FACE-data-dictionary.html`. Fields and rebuild:
-`dictionary/README.md`.
+`facedata/dictionary/face_dictionary.json` describes every delivered variable
+of the four cohorts: meaning, construct, direction, derivation, raw column,
+range and codes, cohorts and visits, missing values, distribution, what
+differs between cohorts. Use it to choose variables and before using one in
+an analysis. The page for people is
+`facedata/dictionary/FACE-data-dictionary.html`. How to use both: `README.md`.
+Fields and rebuild: `dictionary/README.md`.
 
 - A variable id is the column name that `load()` delivers. The file has one
   line per variable: read one record with
-  `grep -m1 '^"madrs_total":' dictionary/face_dictionary.json`, or load the
-  file with `json` and filter. Do not print the whole file (19 MB).
+  `grep -m1 '^"madrs_total":' facedata/dictionary/face_dictionary.json`, or
+  load the file with `json` and filter. Do not print the whole file (18 MB).
 - Check `direction` before putting variables on one scale, `harmonisation`
   before stacking cohorts, `missing` and `timepoints` before a longitudinal
   model, and `incomplete` for what no source documents.
 - An empty field means "not documented". Never fill it from memory: add it to
   `dictionary/annotations/` with its source, then rebuild.
-- The JSON, the page, `incomplete.csv` and `dictionary/stats/` are generated
-  and git-ignored (figures computed from the data). Never edit them by hand,
-  and rebuild them when a schema, an annotation or an extraction changes.
+- The JSON, the page, `dictionary/incomplete.csv` and `dictionary/stats/` are
+  generated and committed. Never edit them by hand. Rebuild them when a
+  schema, an annotation or an extraction changes, and commit them with that
+  change: a test fails when the dictionary and the schemas do not list the
+  same variables.
 
 ## Working method
 

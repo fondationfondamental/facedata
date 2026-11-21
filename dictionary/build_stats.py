@@ -4,7 +4,8 @@ Step 1 of 3 (dictionary/README.md). Loads each cohort with facedata, without
 winsorising, and writes dictionary/stats/<cohort>.json: how many values each
 variable has, at which visits, how much is missing, and how the values are
 spread. Aggregates only: no row of a patient, no value of a text column, no
-centre, and no count from 1 to 4 (written -1, "fewer than 5").
+centre, and no count from 1 to 4 (written -1, "fewer than 5"; a percentage
+that would give such a count away is left out). These files are committed.
 
     .venv/bin/python dictionary/build_stats.py            # the four cohorts, a few minutes
     .venv/bin/python dictionary/build_stats.py dr sz      # some cohorts
@@ -96,15 +97,19 @@ def as_numbers(values):
     return pd.to_numeric(values, errors="coerce").astype(float).dropna()
 
 
-def summary(numbers, limits):
-    """Mean, spread and percentiles of a numeric column, and the share at each end of its range."""
+def summary(numbers, limits, smallest):
+    """Mean, spread and percentiles of a numeric column, and the share at each end of its range.
+
+    A share that stands for 1 to smallest - 1 values is not written.
+    """
     figures = {"n": int(len(numbers)), "mean": rounded(numbers.mean()), "sd": rounded(numbers.std()),
                "min": rounded(numbers.min()), "max": rounded(numbers.max()), "n_distinct": int(numbers.nunique())}
     for name, share in QUANTILES:
         figures[name] = rounded(numbers.quantile(share))
     if limits is not None:                           # floor and ceiling of a bounded scale
-        figures["at_minimum_pct"] = percent((numbers == limits[0]).sum(), len(numbers))
-        figures["at_maximum_pct"] = percent((numbers == limits[1]).sum(), len(numbers))
+        for name, limit in [("at_minimum_pct", limits[0]), ("at_maximum_pct", limits[1])]:
+            count = int((numbers == limit).sum())
+            figures[name] = percent(count, len(numbers)) if masked(count, smallest) != -1 else None
     return figures
 
 
@@ -161,7 +166,7 @@ def describe(values, kind, order, limits, config):
     numbers = as_numbers(values)
     if len(numbers) < smallest:
         return {"stats": {"n": masked(len(numbers), smallest)}, "dist": None}
-    figures = summary(numbers, limits)
+    figures = summary(numbers, limits, smallest)
     if len(numbers) < config["smallest_histogram"]:
         return {"stats": figures, "dist": None}
     few = numbers.nunique() <= 25 and (numbers % 1 == 0).all()
@@ -254,18 +259,19 @@ def cohort_stats(cohort, result, schemas, config):
         table = getattr(result, line["table"])
         values = table[name]
         valid = int(values.notna().sum())
+        few = masked(valid, smallest) == -1          # 1 to 4 values: no figure may give the count away
         block = {"table": line["table"], "role": line["role"], "instruments": line["instruments"],
                  "n": {"rows": int(len(table)), "valid": masked(valid, smallest),
                        "patients": masked(table.loc[values.notna(), "usubjid"].nunique(), smallest)},
-                 "missing": {"all": percent(len(table) - valid, len(table))}}
+                 "missing": {"all": None if few else percent(len(table) - valid, len(table))}}
         described = {"all": describe(values, line["type"], line["order"], line["range"], config)}
         if line["table"] == "data":
             block["n"]["patients_2plus"] = masked((per_patient[name] >= 2).sum(), smallest)
             block["n"]["baseline"] = masked(at_baseline[name], smallest)
-            block["missing"]["baseline"] = percent(len(first) - at_baseline[name], len(first))
+            block["missing"]["baseline"] = None if masked(at_baseline[name], smallest) == -1 else percent(len(first) - at_baseline[name], len(first))
             block["timepoints"] = {visit: masked(count, smallest) for visit, count in by_visit[name].items() if count > 0 and visit != ""}
             instrument = line["instruments"][0] if line["instruments"] else None
-            if line["role"] == "variable" and instrument in present:
+            if line["role"] == "variable" and instrument in present and not few:
                 with_form = present[instrument]
                 block["missing"]["in_instrument"] = percent((with_form & values.isna()).sum(), with_form.sum())
             described["baseline"] = describe(first[name], line["type"], line["order"], line["range"], config)
@@ -273,12 +279,13 @@ def cohort_stats(cohort, result, schemas, config):
         block["dist"] = {scope: one["dist"] for scope, one in described.items() if one["dist"] is not None}
         if name in qc.index:
             row = qc.loc[name]
-            block["qc"] = {"n_rows": int(row["n_rows"]), "n_filled": int(row["n_filled"]), "n_valid": int(row["n_valid"])}
-            block["flags"] = {flag: int(row[flag]) for flag in flag_names if row[flag] > 0}
-            block["censored"] = {"left": int(row["n_cens_left"]), "right": int(row["n_cens_right"])}
-            if not pd.isna(row["first_year"]):
+            block["qc"] = {"n_rows": int(row["n_rows"]), "n_filled": masked(row["n_filled"], smallest), "n_valid": masked(row["n_valid"], smallest)}
+            block["flags"] = {flag: masked(row[flag], smallest) for flag in flag_names if row[flag] > 0}
+            block["censored"] = {"left": masked(row["n_cens_left"], smallest), "right": masked(row["n_cens_right"], smallest)}
+            if not pd.isna(row["first_year"]) and not few:
                 block["years"] = [int(row["first_year"]), int(row["last_year"])]
-            block["n_sites"] = int(row["n_sites"])
+            if not few:
+                block["n_sites"] = int(row["n_sites"])
         variables[name] = block
 
     git = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()

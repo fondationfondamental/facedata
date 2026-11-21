@@ -5,41 +5,61 @@ delivers for the four cohorts (BP, SZ, DR, ASP): what it measures, what a
 higher value means, how it is derived, where it lives in the data, which
 cohorts and visits have it, how much is missing and how the values are spread.
 
-| File | What it is | In git |
-|---|---|---|
-| `FACE-data-dictionary.html` | The page for people. Opens from the disk, with no network | no |
-| `face_dictionary.json` | The same content for programs. One line per variable | no |
-| `incomplete.csv` | The instruments and variables with a field that no source gives | no |
-| `stats/<cohort>.json` | The figures of each cohort, written by step 1 | no |
-| `annotations/*.yaml` | Written by hand: description, version, reference, construct, direction, cut-offs | yes |
-| `constructs.yaml` | The list of constructs that an annotation may name | yes |
-| `config.yaml` | The paths of the extractions and of the Excel dictionaries, the tabs of the view "all cohorts" | yes |
-| `build_stats.py`, `build_json.py`, `build_html.py`, `template.html` | The three steps | yes |
-| `check_numbers.py` | Checks the figures against the data by another road | yes |
+| File | What it is |
+|---|---|
+| `facedata/dictionary/FACE-data-dictionary.html` | The page for people. Opens from the disk, with no network. Inside the package: every install has it |
+| `facedata/dictionary/face_dictionary.json` | The same content for programs. One line per variable. Inside the package too |
+| `dictionary/incomplete.csv` | The instruments and variables with a field that no source gives |
+| `dictionary/stats/<cohort>.json` | The figures of each cohort, written by step 1 |
+| `dictionary/annotations/*.yaml` | Written by hand: description, version, reference, construct, direction, cut-offs |
+| `dictionary/constructs.yaml` | The list of constructs that an annotation may name |
+| `dictionary/config.yaml` | The paths of the extractions and of the Excel dictionaries, the tabs of the view "all cohorts" |
+| `build_stats.py`, `build_json.py`, `build_html.py`, `template.html` | The three steps |
+| `check_numbers.py` | Checks the figures against the data by another road |
 
-The four generated files hold figures computed from patient data, so they
-stay out of git, like `reports/`. They hold aggregates only: no row of a
-patient, no value of a text column, no centre, and no count from 1 to 4.
+How to use the page and the JSON is in the [README](../README.md) of the
+repository. This file says how they are built.
+
+**The four generated files are committed**, so that whoever installs the
+package knows what it delivers. They hold figures computed from patient data,
+under these rules, which `tests/test_dictionary.py` checks on the committed
+files:
+
+- aggregates only: no row of a patient, and no centre (only how many centres
+  have a value);
+- a count from 1 to 4 is written `-1` ("fewer than 5"), and a percentage that
+  would give such a count away is left out. This is the masking of the
+  database reviews: one masked count beside a total can sometimes be worked
+  out from the others;
+- the values of a text column are never written, only how many there are;
+- no label and no coding of the Excel dictionaries (`excel_labels: false` in
+  `config.yaml`): the workbooks are not part of the repository, and their
+  answer labels can hold the wording of a published questionnaire. Set it to
+  `true` for a build that stays on your computer, and never commit that build;
+- no value of a norm table: a score read in a table names the file only.
 
 ## Rebuild
 
 ```bash
 .venv/bin/python dictionary/build_stats.py     # 1. loads the four cohorts and counts (a few minutes)
-.venv/bin/python dictionary/build_json.py      # 2. schemas + annotations + figures -> face_dictionary.json
-.venv/bin/python dictionary/build_html.py      # 3. JSON + template -> FACE-data-dictionary.html
+.venv/bin/python dictionary/build_json.py      # 2. schemas + annotations + figures -> facedata/dictionary/face_dictionary.json
+.venv/bin/python dictionary/build_html.py      # 3. JSON + template -> facedata/dictionary/FACE-data-dictionary.html
 .venv/bin/python dictionary/check_numbers.py   # the figures against the extractions
 ```
 
 - A new extraction: change its path in `config.yaml`, then run the four lines.
-- A schema or an annotation changed, same data: steps 2 and 3 are enough when
-  no delivered value changes; run step 1 again when one does.
+- A schema changed: run the four lines. A test fails as long as the committed
+  dictionary does not list exactly the variables that the schemas deliver.
+- Only an annotation changed: steps 2 and 3 are enough.
+- Commit the regenerated files with the change that caused them, so that the
+  dictionary of a version of the package describes that version.
 - `build_stats.py dr sz` computes some cohorts only. `--cached` keeps the
   loads in `local/cache/` and reuses them at the next run: use it while you
   work on the scripts, never after a schema or an extraction changed.
 
-`tests/test_dictionary.py` runs the three steps on a made-up cohort, and checks
+`tests/test_dictionary.py` runs the three steps on a made-up cohort, checks
 that every annotation still names an instrument, a score and a construct that
-exist.
+exist, and checks the committed files against the rules above.
 
 ## Where each piece of information comes from
 
@@ -49,7 +69,8 @@ exist.
 | Description, version, reference, respondent, construct, period, direction, cut-offs, caveats | `annotations/*.yaml`, written from the notes of the schemas and from the literature notes, each with its source |
 | Counts, missing values, visits, distributions, flags | The tables that `load(winsorise=False)` returns (`build_stats.py`) |
 | Can the cohorts be stacked, what differs | `facedata/common_instruments.yaml`, `facedata/shared_names.yaml`, `facedata/<cohort>/differences.yaml`, and a comparison of the schemas |
-| Tabs, French label, coding of the answers | The Excel dictionaries of `thesauri/`, when they are on the computer. Marked "not verified": the schemas are the reference |
+| Tabs | The sheets of the Excel dictionaries of `thesauri/`, when they are on the computer (without them, the tab named in the schema) |
+| French label, coding of the answers | The same workbooks, only in a build with `excel_labels: true`, which is never committed. Marked "not verified": the schemas are the reference |
 | Meaning of the flag codes | `docs/ARCHITECTURE.md`, section 6 |
 
 **Nothing is guessed.** A field that no source gives stays empty, and its
@@ -78,15 +99,15 @@ exceptions are in `harmonisation`. The raw column of the extraction is in
 `cohorts.<cohort>.source.columns`.
 
 The file has one line per instrument and per variable, each starting with its
-id, so a search finds a whole record without reading the 19 MB:
+id, so a search finds a whole record without reading the 18 MB:
 
 ```bash
-grep -m1 '^"madrs_total":' dictionary/face_dictionary.json
+grep -m1 '^"madrs_total":' facedata/dictionary/face_dictionary.json
 ```
 
 ```python
 import json
-dictionary = json.load(open("dictionary/face_dictionary.json", encoding="utf-8"))
+dictionary = json.load(open("facedata/dictionary/face_dictionary.json", encoding="utf-8"))
 record = dictionary["variables"]["madrs_total"]
 record["direction"]                     # higher_means, polarity, basis, source
 record["cohorts"]["bp"]["missing"]      # all, baseline, in_instrument (percentages)
@@ -132,7 +153,8 @@ the cohort block only when they differ from the record.
 **Baseline** is one row per patient: the inclusion visit, completed by the
 screening visit when the inclusion visit holds nothing of the instrument
 (`facedata.common.baseline`). **The figures are not winsorised.** A count from
-1 to 4 is written `-1`. A variable with fewer than 5 values has no figures,
+1 to 4 is written `-1`, and a percentage that would give it away is left
+out. A variable with fewer than 5 values has no figures,
 and one with fewer than 20 no distribution.
 
 ## Annotations
