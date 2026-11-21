@@ -1,0 +1,944 @@
+# Annotations of the group diagnosis_asp: the medical evaluation tab of FACE ASP (22 instruments).
+# Written from the schema notes, docs/asp/PROGRESS.md (D48 to D60) and local/out/scale_reference.md
+# (sections 21, 22 and 24). A field is left out when no document states it.
+
+anxiety_disorders_fu:
+  description: >-
+    The anxiety part of the clinician's list of psychiatric comorbidities, asked again at the yearly
+    follow-up visits (form 348): a first question on any anxiety disorder, then panic disorder with and
+    without agoraphobia, agoraphobia, social phobia, specific phobia (five types), separation anxiety,
+    obsessive-compulsive disorder, obsessive-compulsive symptoms, generalised anxiety and post-traumatic
+    stress, each yes or no with an age at onset and, for most, a remission box.
+  version: yearly follow-up form (form 348); the twin of anxiety_disorders_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp anxiety_disorders_fu)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  scores:
+    panic_disorder_fu:
+      meaning: Panic disorder, with or without agoraphobia; the highest of the two yes/no boxes, scored only where both are answered.
+      higher_means: panic disorder present (1 yes, 0 no)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (asp anxiety_disorders_fu): 'panic_disorder_<edition> is their highest where both are answered'; range 0 to 1"
+  variables:
+    "*_onset_age_fu":
+      meaning: Age at onset of the disorder, in years, as given at the follow-up visit (hard limit 0 to 70).
+      higher_means: later onset
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at onset' (for the obsessive-compulsive symptoms, the age when the compulsions or the obsessions began), unit years"
+    "*_remission_fu":
+      meaning: The disorder is in remission now (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission now
+      polarity: better
+      basis: stated
+      source: "schema notes (asp anxiety_disorders_fu): 'a 0 on a remission would read disorder present, not in remission'; 'the ASP question is the state now'"
+  flags:
+    - "Small: 71 follow-up visits answer at least one question (separation anxiety and post-traumatic stress on 11)."
+    - "An empty section at a yearly visit means 'no change' (the change question axis1_summary_changed_fu is in mood_disorders_fu) and stays missing; it is never 'no disorder'."
+    - "Within patients the follow-up answers do not repeat the inclusion ones (over the comorbidity forms a yes at inclusion is a no at the last later answer for 21% of the pairs). Do not read a follow-up answer as lifetime, and do not join it with the 'since the last visit' variables of BP and SZ."
+    - "panic_disorder_fu is not scored when one of the two boxes is empty or 'not known', even if the other is yes (16 visits over the two forms)."
+    - "After a no to the first question the eight older disorder questions are 0; separation anxiety and post-traumatic stress (added late) are not, and the ages, remissions and detail boxes stay missing."
+
+anxiety_disorders_v0:
+  description: >-
+    The anxiety part of the clinician's list of psychiatric comorbidities at the screening and inclusion
+    visits (form 202): a first question on any anxiety disorder, then panic disorder with and without
+    agoraphobia, agoraphobia, social phobia, specific phobia (five types), separation anxiety,
+    obsessive-compulsive disorder, obsessive-compulsive symptoms, generalised anxiety and post-traumatic
+    stress, each yes or no with an age at onset and, for most, a remission box.
+  version: inclusion form (form 202), read on the screening and inclusion visits; the twin of anxiety_disorders_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "the life of the patient up to inclusion (schema title; the form prints no period); the remission boxes are the state now"
+  sources: ["schema notes (asp anxiety_disorders_v0)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  scores:
+    panic_disorder_v0:
+      meaning: Panic disorder, with or without agoraphobia; the highest of the two yes/no boxes, scored only where both are answered.
+      higher_means: panic disorder present (1 yes, 0 no)
+      polarity: worse
+      basis: anchors
+      source: "schema notes (asp anxiety_disorders_v0): 'panic_disorder_<edition> is their highest where both are answered'; range 0 to 1"
+  variables:
+    "*_onset_age_v0":
+      meaning: Age at onset of the disorder, in years (hard limit 0 to 70).
+      higher_means: later onset
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at onset' (for the obsessive-compulsive symptoms, the age when the compulsions or the obsessions began), unit years"
+    "*_remission_v0":
+      meaning: The disorder is in remission now (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission now
+      polarity: better
+      basis: stated
+      source: "schema notes (asp anxiety_disorders_v0): 'a 0 on a remission would read disorder present, not in remission'; 'the ASP question is the state now'"
+  flags:
+    - "Separation anxiety and post-traumatic stress were added late (a few answers to 2020, routine from 2021). Unlike the eight older disorders they are not set to 0 after a no to the first question: they are answered only after a yes."
+    - "After a no to the first question the eight older disorder questions are 0; the ages, the remissions, the five types of specific phobia and the SSRI boxes stay missing."
+    - "panic_disorder_v0 is not scored when one of the two boxes is empty or 'not known', even if the other is yes (16 visits over the two forms)."
+    - "The list is answered on 83% to 85% of the inclusions to 2015 and on 44% to 57% of those of 2023 and 2024, and on 14% to 91% of the inclusions by centre."
+    - "Yes rates follow the age and the centre: any anxiety disorder is yes for 45% of the children and 74% of the adults, and for 42% to 84% of the adults by centre (habit of the centre); no step by year."
+    - "A first answer yes with no disorder yes on 60 of 899 inclusion visits: delivered as recorded."
+    - "Generalised anxiety and the remissions are not the questions of BP (BP asks about the current episode and about the last month): not joined."
+
+asdi:
+  description: >-
+    The twenty items of the Asperger Syndrome (and high-functioning autism) Diagnostic Interview, each
+    answered no, a little or yes, with a box 'ASDI done' before them and a typed conclusion box
+    (diagnostic criteria of Asperger syndrome met). Form 198 of the medical evaluation; 423 visits,
+    almost all at inclusion.
+  version: 20 items in six domains as printed on form 198; answers no, a little, yes
+  reference: "Gillberg C, Gillberg IC, Rastam M, Wentz E. The Asperger Syndrome (and high-functioning autism) Diagnostic Interview (ASDI): a preliminary study of a new structured clinical interview. Autism 2001;5:57-66"
+  reference_confidence: "confirmed in source (Lund portal abstract); volume/pages from listings only"
+  respondent: clinician
+  construct: autism_symptoms
+  sources: ["schema notes (asp asdi)", "scale_reference.md section 24", "docs/asp/PROGRESS.md D52 and O28"]
+  items:
+    meaning: "Each item is delivered as a word (no, a_little, yes), not as a number: the stored codes are not in order (1 yes, 2 a little, 0 no; 9 'Non connu' is a missing code)."
+    polarity: not_applicable
+  variables:
+    asdi_criteria_met:
+      meaning: "Typed conclusion: diagnostic criteria of Asperger syndrome met according to the ASDI (1 yes, 0 no). Not computed, and no rule on the items reproduces it."
+      polarity: not_applicable
+    asdi_done:
+      meaning: "Box 'ASDI done' (1 yes, 0 no), on the form from December 2017. Items are filled on many visits with no answer to it and on 7 visits where it says no."
+      polarity: not_applicable
+  flags:
+    - "No total exists and none is computed. The form groups the items in six domains with a required number of symptoms (items 1 to 4 at least 2; 5 to 7 at least 1; 8 and 9 at least 2; 10 to 14 at least 3; 15 to 19 at least 1; item 20) and requires all six."
+    - "The stored conclusion follows no rule that reproduces it: recomputed with the thresholds of the form it agrees on 199 of 290 inclusion visits when 'a little' counts as a symptom and on 161 when only 'yes' counts."
+    - "To verify: the published rule for the routines domain is 'at least one of the two' in secondary sources (the form requires both); the published answer options, how 'a little' counts and the split of the items by domain were not found. The 2001 paper was not read."
+    - "The shortcut 'no for all criteria' ticks no on the twenty items and on the conclusion (13 visits have all twenty at no): such a no cannot be told from a typed one."
+    - "The ASDI is published as an interview of informants who knew the person as a child (parents, siblings). Who was interviewed in the cohort is not documented; 78% of the inclusion visits with items are adults."
+    - "Answered on 79% of the inclusions to 2014 and 9% of those from 2021. Not split into _v0 and _fu (15 follow-up visits)."
+    - "The boxes 'ASDI done' and 'criteria met' differ by year and by centre (habit of the centre); the items show no step."
+
+developmental_disorders_fu:
+  description: >-
+    The developmental part of the clinician's list of psychiatric comorbidities, asked again at the yearly
+    follow-up visits (form 348): ADHD, oppositional defiant disorder, conduct disorder, elimination
+    disorder (encopresis, enuresis), eating disorder (anorexia, bulimia), chronic tics (motor tics, vocal
+    tics, Tourette syndrome), developmental coordination disorder and four communication disorders
+    (language, speech sound, stuttering, social communication), each yes or no with an age at onset,
+    detail boxes and a remission box.
+  version: yearly follow-up form (form 348); the twin of developmental_disorders_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp developmental_disorders_fu)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    "*_onset_age_fu":
+      meaning: Age at onset or at the first symptoms of the disorder, in years, as given at the follow-up visit (hard limit 0 to 70).
+      higher_means: later onset
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at onset' or 'age at the first symptoms', unit years"
+    "*_remission_fu":
+      meaning: The disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: stated
+      source: "schema notes (asp developmental_disorders_fu): 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "Small: 70 follow-up visits answer at least one question; the coordination and communication disorders on about 30."
+    - "An empty section at a yearly visit means 'no change' (the change question axis1_summary_changed_fu is in mood_disorders_fu) and stays missing; it is never 'no disorder'."
+    - "Within patients the follow-up answers do not repeat the inclusion ones. Do not read a follow-up answer as lifetime, and do not join it with the 'since the last visit' variables of BP and SZ."
+    - "The three ADHD presentation boxes (combined, inattentive, hyperactive) are those of the old form and stop in 2021; the presentation is missing after that."
+    - "Encopresis and enuresis, anorexia and bulimia, and the three tic questions are 0 after a no to their parent question; ages, remissions, types and treatment boxes stay missing."
+
+developmental_disorders_v0:
+  description: >-
+    The developmental part of the clinician's list of psychiatric comorbidities at the screening and
+    inclusion visits (form 202): ADHD, oppositional defiant disorder, conduct disorder, elimination
+    disorder (encopresis, enuresis), eating disorder (anorexia, bulimia), chronic tics (motor tics, vocal
+    tics, Tourette syndrome), developmental coordination disorder and four communication disorders
+    (language, speech sound, stuttering, social communication), each yes or no with an age at onset,
+    detail boxes and a remission box.
+  version: inclusion form (form 202), read on the screening and inclusion visits; the twin of developmental_disorders_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "the form prints no period; answered at the screening and inclusion visits"
+  sources: ["schema notes (asp developmental_disorders_v0)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    "*_onset_age_v0":
+      meaning: Age at onset or at the first symptoms of the disorder, in years (hard limit 0 to 70).
+      higher_means: later onset
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at onset' or 'age at the first symptoms', unit years"
+    "*_remission_v0":
+      meaning: The disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: stated
+      source: "schema notes (asp developmental_disorders_v0): 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "The three ADHD presentation boxes (combined, inattentive, hyperactive) are those of the old form and stop in 2021: from 2021 the presentation is missing for almost every visit (the new field is not in the export)."
+    - "The coordination disorder and the four communication disorders were added late: a few answers to 2020, routine from 2021 (answered on 41% to 69% of the inclusions of each year since)."
+    - "A step with no known cause: ADHD yes among adults rises from 8% to 14% in 2016 to 2020 to 22% to 24% in 2021 to 2023 and 33% to 49% in 2024 to 2026. The mix of centres explains part of it only."
+    - "Yes rates follow the age and the centre: ADHD is yes for 44% of the children and 21% of the adults, the social communication disorder for 41% and 9%; among adults ADHD runs from 13% to 80% by centre."
+    - "Encopresis and enuresis, anorexia and bulimia, and the three tic questions are 0 after a no to their parent question; ages, remissions, types, treatment boxes and the five blocks added late stay missing."
+    - "An eating disorder yes with neither anorexia nor bulimia yes on 40 of 141 inclusion visits: delivered as recorded."
+    - "Stuttering here and the stuttering question of the neuropsychology form (learning_disorders) agree on 186 of 196 visits; they are two questions."
+
+dsm_criteria:
+  description: >-
+    The DSM-5 criteria of autism spectrum disorder ticked by the clinician (form 198): nine yes/no
+    criteria (A1 to A3 social communication, B1 to B4 restricted and repetitive behaviours, C early
+    onset, D impairment), a typed conclusion that equals the diagnosis of the cohort, five DSM-5
+    specifiers and, for each of the two domains, three boxes for the level of support required.
+  version: "DSM-5 criteria (form 198, 'Critères DSM 5 autisme'); the DSM-IV criteria of the old form are not exported"
+  reference: American Psychiatric Association 2013 (DSM-5)
+  reference_confidence: cited in schema notes
+  respondent: clinician
+  construct: psychiatric_diagnosis
+  sources: ["schema notes (asp dsm_criteria)", "scale_reference.md section 24 (application part)", "docs/asp/PROGRESS.md D48, D52 and O27"]
+  variables:
+    "dsm_criterion_*":
+      meaning: "One DSM-5 criterion of autism spectrum disorder (1 yes, 0 no; 9 'Inconnu' is a missing code)."
+      higher_means: criterion present
+      polarity: worse
+      basis: anchors
+      source: "labels of the schema (deficits, restricted behaviours, symptoms that impair functioning) and range 0 to 1"
+    dsm_asd_conclusion:
+      meaning: "Typed conclusion of the criteria (1 yes, 0 no). It equals the diagnosis of the cohort for every patient and is not computed from the criteria."
+      polarity: not_applicable
+    "specifier_*":
+      meaning: "A DSM-5 specifier ticked by the clinician (1 yes, 0 no): intellectual impairment, language impairment, known medical or genetic condition, other disorder, catatonia. On the form from 2017, routine from 2021."
+    "severity_*":
+      meaning: "One of three separate yes/no boxes per domain (social communication; restricted, repetitive behaviours) for the level of support required: support, substantial support, very substantial support. The name of the variable gives the level; 1 means that this level is ticked."
+      polarity: not_applicable
+  flags:
+    - "The conclusion is typed, not computed. On the 1,831 inclusion visits with all nine criteria it differs on 138 from the published DSM-5 rule (all three A criteria, at least two of the four B criteria, C and D). The instruction at the top of the form is the DSM-IV count and may steer the raters."
+    - "To verify: the DSM-5 rule is recalled; the DSM-5 text was not read."
+    - "A shortcut box 'no for all criteria' (not exported) ticks no on the nine criteria and on the conclusion: 90 inclusion visits have all nine at 0 and a conclusion of 0, and a no ticked by the shortcut cannot be told from a typed one."
+    - "The severity of a domain is three yes/no boxes, not one ordered variable: usually exactly one is yes (1,042 of 1,081 visits for social communication, 965 of 1,071 for the restricted behaviours), sometimes two or none."
+    - "The form and the thesaurus number the support levels backwards (their 'level 1' is very substantial support): rely on the names of the variables, not on the level numbers."
+    - "The specifiers and the severity boxes are answered on 1,230 inclusions, almost all from 2021."
+    - "Criterion B1, the specifier 'other disorder' and the severity boxes differ by age and by centre (age mix and habit of the centre); no step by year."
+    - "Not split into _v0 and _fu: 19 follow-up visits hold the boxes too."
+
+iq_assessment:
+  description: >-
+    The summary of the intellectual assessment that the clinician copies into the medical evaluation
+    (form 119, typed numbers): a box 'an IQ was already done', the date of the assessment, the age at the
+    assessment in years and months, and the general ability index (IAG). The indices themselves are in
+    wisc4_indices, wisc5_indices and wais4_indices.
+  reference: not_applicable
+  respondent: clinician
+  construct: intellectual_ability
+  period: "the date of the assessment (iq_assessment_date), which is not the date of the visit"
+  sources: ["schema notes (asp iq_assessment)", "scale_reference.md section 22", "docs/asp/PROGRESS.md D55, D58, O32 and O35"]
+  variables:
+    gai_index:
+      meaning: "General ability index (IAG) of a Wechsler scale, typed in one field for the three editions (WISC-IV, WISC-V, WAIS-IV), so it cannot be tied to an edition. Delivered between 40 and 160."
+    iq_assessment_done:
+      meaning: "Box 'an IQ was already done' of the old form (1 yes, 0 no; 9 is read as not known). It left the form around 2021 and does not tell whether an assessment exists."
+      polarity: not_applicable
+    iq_assessment_age_years:
+      meaning: Age at the intellectual assessment, in whole years.
+      higher_means: older at the assessment
+      polarity: neutral
+      basis: anchors
+      source: "label: 'Age at the intellectual assessment, years'"
+    iq_assessment_age_months:
+      meaning: Months above the whole years of the age at the assessment (0 to 11); to be added to iq_assessment_age_years.
+    iq_assessment_date:
+      meaning: Date of the assessment; the indices of wisc4_indices, wisc5_indices and wais4_indices belong to this date.
+      polarity: not_applicable
+  flags:
+    - "gai_index is one field for the three editions of the Wechsler scales. The GAI of the WAIS-IV is made of three verbal and three perceptual subtests (Canivez 2010); the composition of the French IAG of the WISC-IV and of the WISC-V was not settled (to verify)."
+    - "A step with no known cause: in one centre gai_index holds another number (median 66 against 110 to 116 in the others, and 46 points below the WISC-V full-scale IQ typed at the same visits; almost all from 2023). The values between 40 and 160 are delivered as typed."
+    - "gai_index is on 675 visits, all at inclusion and almost all from 2018; the 9 values outside 40 to 160 are removed."
+    - "The date is empty (0000-00-00 in the export) on 262 visits, 184 of which hold an index."
+    - "iq_assessment_done says no on 268 visits, 205 of which hold an index of one of the three editions: do not use it as a filter."
+    - "The edition boxes agree with the age at the assessment only in part (a WISC box ticked for some adults, 10 WAIS-IV assessments dated under 16 years)."
+
+learning_difficulties_fu:
+  description: >-
+    Four questions of the clinician asked again at the yearly follow-up visits (form 120): a specific
+    learning disorder with impairment in reading, in written expression or in mathematics, and
+    dysgraphia, each yes or no. After a yes, two boxes: it interfered with school or daily life, and it
+    was assessed or re-educated by a professional.
+  version: form 120 on the yearly follow-up visits; the twin of learning_difficulties_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: development
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp learning_difficulties_fu)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  flags:
+    - "Small: 77 follow-up visits answer at least one question."
+    - "The form has no change question: an empty yearly answer means that nothing was typed."
+    - "Within patients the follow-up answers do not repeat the inclusion ones (a reading disorder yes at inclusion is a no at the last later answer for 4 of 4 patients). Do not read a follow-up answer as lifetime."
+    - "The two boxes after a disorder stay missing after a no."
+    - "Not the questions of learning_disorders in the neuropsychology tab (dyslexia, dysorthographia, dyscalculia): close, but not joined."
+
+learning_difficulties_v0:
+  description: >-
+    Four questions of the clinician at the screening and inclusion visits (form 120): a specific
+    learning disorder with impairment in reading, in written expression or in mathematics, and
+    dysgraphia, each yes or no. After a yes, two boxes: it interfered with school or daily life, and it
+    was assessed or re-educated by a professional.
+  version: form 120 on the screening and inclusion visits; the twin of learning_difficulties_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: development
+  period: "the form prints no period; answered at the screening and inclusion visits"
+  sources: ["schema notes (asp learning_difficulties_v0)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  flags:
+    - "The current label of the form is the DSM-5 specific learning disorder, with no age window; an older, narrower wording (difficulties between given ages) sits in the other language slot of the form."
+    - "Not the questions of learning_disorders in the neuropsychology tab (dyslexia, dysorthographia, dyscalculia): reading and dyslexia agree on 598 of the 630 visits with both, but the names are not shared."
+    - "The two boxes after a disorder stay missing after a no."
+    - "Answered on 47% to 49% of the inclusions of 2017 to 2019 and on 78% to 83% of those of 2022 to 2025; 49% to 92% by centre."
+    - "The re-education boxes differ by age and by centre (age mix, small groups)."
+
+mood_disorders_fu:
+  description: >-
+    The mood part of the clinician's list of psychiatric comorbidities, asked again at the yearly
+    follow-up visits (form 348, the axis I summary 'Résumé diagnostic DSM-5'): eight yes/no questions
+    (major depressive, manic, hypomanic and mixed episode; single-episode and recurrent depressive
+    disorder, dysthymic disorder, bipolar disorder with type I and type II boxes). After a yes: the
+    number of episodes, the age at the first episode, the age at the first treatment and remission now.
+    Also the interview used for the summary and the change question of the whole summary form.
+  version: yearly follow-up form (form 348); the twin of mood_disorders_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp mood_disorders_fu)", "docs/asp/PROGRESS.md D48 to D53 and O29"]
+  items:
+    higher_means: "yes: the episode, the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    axis1_summary_changed_fu:
+      meaning: "Change since the last visit for the whole axis I summary form (not the mood part alone); mandatory at the yearly visits."
+      higher_means: a change since the last visit is declared (1 yes, 0 no)
+      polarity: not_applicable
+      basis: anchors
+      source: "label: 'change since the last visit (0 no, 1 yes)'"
+    axis1_interview_fu:
+      meaning: "Interview used for the axis I summary: DIGS, Kiddie-SADS or MINI."
+      polarity: not_applicable
+    "*_n_episodes_fu":
+      meaning: Number of episodes, the current one included, as given at the follow-up visit; 0 after a no.
+      higher_means: more episodes
+      polarity: worse
+      basis: anchors
+      source: "labels: 'number of episodes, including the current episode'; range 0 to 99"
+    "*_first_age_fu":
+      meaning: Age at the first episode, in years (hard limit 0 to 70).
+      higher_means: later first episode
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', unit years"
+    "*_first_treatment_age_fu":
+      meaning: Age at the first treatment of the disorder, in years (hard limit 0 to 70).
+      higher_means: later first treatment
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first treatment', unit years"
+    "*_remission_fu":
+      meaning: The patient is in remission now (1 yes, 0 no); missing when the episode or disorder is absent.
+      higher_means: in remission now
+      polarity: better
+      basis: stated
+      source: "schema notes (asp mood_disorders_fu): 'whether the patient is in remission now'; 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "Small: 70 follow-up visits answer a mood question; the change question is answered on 212 and the interview on 112."
+    - "An empty yearly section means 'no change' and stays missing; it is never 'no disorder'. A no to the change question does not stop the questions: 26 of the 162 visits with a no still hold an answer of the list."
+    - "A follow-up answer is an update given at that visit, and within patients it does not repeat the inclusion answer. Do not read it as lifetime, and do not join it with the 'since the last visit' variables of BP and SZ."
+    - "The counts include the current episode; they are not known to be the same measure as the lifetime counts of BP (not joined)."
+    - "The ages, the remission and the two type boxes of the bipolar disorder stay missing after a no."
+
+mood_disorders_v0:
+  description: >-
+    The mood part of the clinician's list of psychiatric comorbidities at the screening and inclusion
+    visits (form 202, the axis I summary 'Résumé diagnostic DSM-5'): eight yes/no questions (major
+    depressive, manic, hypomanic and mixed episode; single-episode and recurrent depressive disorder,
+    dysthymic disorder, bipolar disorder with type I and type II boxes). After a yes: the number of
+    episodes, the age at the first episode, the age at the first treatment and remission now. Also the
+    interview used for the summary (DIGS, Kiddie-SADS or MINI).
+  version: inclusion form (form 202), read on the screening and inclusion visits; the twin of mood_disorders_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: psychiatric_comorbidity
+  period: "the life of the patient up to inclusion (schema title; the form prints no period); the remission boxes are the state now"
+  sources: ["schema notes (asp mood_disorders_v0)", "docs/asp/PROGRESS.md D48 to D53 and O36"]
+  items:
+    higher_means: "yes: the episode, the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    axis1_interview_v0:
+      meaning: "Interview used for the axis I summary: DIGS, Kiddie-SADS or MINI."
+      polarity: not_applicable
+    "*_n_episodes_v0":
+      meaning: Number of episodes, the current one included; 0 after a no.
+      higher_means: more episodes
+      polarity: worse
+      basis: anchors
+      source: "labels: 'number of episodes, including the current episode'; range 0 to 99"
+    "*_first_age_v0":
+      meaning: Age at the first episode, in years (hard limit 0 to 70).
+      higher_means: later first episode
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', unit years"
+    "*_first_treatment_age_v0":
+      meaning: Age at the first treatment of the disorder, in years (hard limit 0 to 70); it can be before the first diagnosed episode.
+      higher_means: later first treatment
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first treatment', unit years"
+    "*_remission_v0":
+      meaning: The patient is in remission now (1 yes, 0 no); missing when the episode or disorder is absent.
+      higher_means: in remission now
+      polarity: better
+      basis: stated
+      source: "schema notes (asp mood_disorders_v0): 'whether the patient is in remission now'; 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "The list is answered on 83% to 85% of the inclusions to 2015 and on 44% to 57% of those of 2023 and 2024. Among the larger centres the share runs from 16% to 88%, with shifts by period that are not explained."
+    - "A step with no known cause: among adults a major depressive episode is yes for 44% to 67% from 2014 to 2022 and for 30% to 40% in 2023 to 2025."
+    - "Yes rates follow the age and the centre: a major depressive episode is yes for 10% of the children and 49% of the adults, and for 25% to 87% of the adults by centre (habit of the centre)."
+    - "The number of episodes is missing under a yes for 26% of the major depressive episodes and for more of the disorders; a single-episode disorder has a count above 1 on 31 of 124 answered counts. Delivered as recorded."
+    - "The counts include the current episode; they are not known to be the same measure as the lifetime counts of BP (not joined). The age at the first treatment is that of the disorder, not BP's age at the first psychotropic."
+    - "The interview is filled on 95% to 97% of the inclusions of 2013 and 2014 and on 34% to 67% from 2018."
+    - "The ages, the remission and the two type boxes of the bipolar disorder stay missing after a no."
+
+psychotic_symptoms_fu:
+  description: >-
+    The psychotic part of the clinician's list of psychiatric comorbidities, asked again at the yearly
+    follow-up visits (form 348): a first question on psychotic symptoms, then delusions (four
+    mechanisms), hallucinations (five senses), disorganisation (three mechanisms) and deficit symptoms
+    (three kinds), the onset and the course of the symptoms; and a schizophrenia spectrum disorder with
+    five type boxes, ages, a number of episodes and a remission box.
+  version: yearly follow-up form (form 348); the twin of psychotic_symptoms_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: psychotic_symptoms
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp psychotic_symptoms_fu)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the symptom, the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    psychotic_onset_fu:
+      meaning: "Onset of the psychotic symptoms: acute or progressive."
+      polarity: not_applicable
+    psychotic_course_fu:
+      meaning: "Course of the psychotic symptoms: chronic, intermittent or episodic."
+      polarity: not_applicable
+    schizophrenia_n_episodes_fu:
+      meaning: Number of episodes of the schizophrenia spectrum disorder.
+      higher_means: more episodes
+      polarity: worse
+      basis: anchors
+      source: "label: 'number of episodes'; range 0 to 99"
+    "schizophrenia_first_*_age_fu":
+      meaning: Age at the first episode or at the first treatment of the schizophrenia spectrum disorder, in years.
+      higher_means: later first episode or first treatment
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', 'age at the first treatment', unit years"
+    schizophrenia_remission_fu:
+      meaning: The schizophrenia spectrum disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: anchors
+      source: "label: 'in remission'; range 0 to 1"
+  flags:
+    - "Very small: 68 follow-up visits answer at least one question; psychotic symptoms are yes on 3 and a schizophrenia spectrum disorder on none."
+    - "An empty section at a yearly visit means 'no change' (the change question axis1_summary_changed_fu is in mood_disorders_fu) and stays missing; it is never 'no symptom'."
+    - "A follow-up answer is an update given at that visit: do not read it as lifetime, and do not join it with the 'since the last visit' variables of BP and SZ."
+    - "The four group questions are 0 after a no to the first question; the mechanisms, senses, type boxes and remission stay missing."
+
+psychotic_symptoms_v0:
+  description: >-
+    The psychotic part of the clinician's list of psychiatric comorbidities at the screening and
+    inclusion visits (form 202): a first question on psychotic symptoms, then delusions (four
+    mechanisms), hallucinations (five senses), disorganisation (three mechanisms) and deficit symptoms
+    (blunted affect, poverty of speech, athymhormia), the onset (acute, progressive) and the course
+    (chronic, intermittent, episodic) of the symptoms; and a schizophrenia spectrum disorder with five
+    type boxes, ages, a number of episodes and a remission box.
+  version: inclusion form (form 202), read on the screening and inclusion visits; the twin of psychotic_symptoms_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: psychotic_symptoms
+  period: "the life of the patient up to inclusion (schema title; the form prints no period)"
+  sources: ["schema notes (asp psychotic_symptoms_v0)", "docs/asp/PROGRESS.md D49 to D53"]
+  items:
+    higher_means: "yes: the symptom, the disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    psychotic_onset_v0:
+      meaning: "Onset of the psychotic symptoms: acute or progressive."
+      polarity: not_applicable
+    psychotic_course_v0:
+      meaning: "Course of the psychotic symptoms: chronic, intermittent or episodic."
+      polarity: not_applicable
+    schizophrenia_n_episodes_v0:
+      meaning: Number of episodes of the schizophrenia spectrum disorder.
+      higher_means: more episodes
+      polarity: worse
+      basis: anchors
+      source: "label: 'number of episodes'; range 0 to 99"
+    "schizophrenia_first_*_age_v0":
+      meaning: Age at the first episode or at the first treatment of the schizophrenia spectrum disorder, in years.
+      higher_means: later first episode or first treatment
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', 'age at the first treatment', unit years"
+    schizophrenia_remission_v0:
+      meaning: The schizophrenia spectrum disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: anchors
+      source: "label: 'in remission'; range 0 to 1"
+  flags:
+    - "Rare: psychotic symptoms are yes on 76 of 1,514 inclusion answers (5%) and a schizophrenia spectrum disorder on 6 of 1,507; its ages, number of episodes and remission are filled for fewer than five patients."
+    - "The four group questions (delusions, hallucinations, disorganisation, deficit symptoms) are 0 after a no to the first question; the mechanisms, senses, type boxes and remission stay missing."
+    - "'Disorganisation' is the French 'dissociation' (thought blocking, diffluence, morbid rationalism)."
+    - "Not joined with the SZ list of lifetime symptoms: other questions, other wording and another window."
+    - "The list is answered on 83% to 85% of the inclusions to 2015 and on 44% to 57% of those of 2023 and 2024."
+
+sleep_disorders_fu:
+  description: >-
+    Two questions of the clinician asked again at the yearly follow-up visits (form 203, 'Autres
+    troubles associés'): insomnia (difficulty falling asleep, difficulty staying asleep, non-restorative
+    sleep) and hypersomnia (prolonged night sleep, prolonged daytime sleep), each with the age at the
+    first episode and a remission box; and the change question of the whole form.
+  version: form 203 on the yearly follow-up visits; the twin of sleep_disorders_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: sleep_quality
+  period: "an update given at the visit: the form prints no period; neither the whole life nor strictly the time since the last visit"
+  sources: ["schema notes (asp sleep_disorders_fu)", "docs/asp/PROGRESS.md D48 to D53 and O29"]
+  items:
+    higher_means: "yes: the sleep disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    sleep_self_harm_changed_fu:
+      meaning: "Change since the last visit for the whole of form 203: the sleep part and the self-injury part (suicide_and_self_harm_fu). Mandatory at the yearly visits."
+      higher_means: a change since the last visit is declared (1 yes, 0 no)
+      polarity: not_applicable
+      basis: anchors
+      source: "label: 'change since the last visit (0 no, 1 yes)'"
+    "*_onset_age_fu":
+      meaning: Age at the first episode of insomnia or hypersomnia, in years (hard limit 0 to 70).
+      higher_means: later first episode
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', unit years"
+    "*_remission_fu":
+      meaning: The sleep disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: stated
+      source: "schema notes (asp sleep_disorders_fu): 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "Small: 60 follow-up visits answer a sleep question; 184 hold the change question."
+    - "An empty yearly sleep section means 'no change' and stays missing; it is never 'no sleep disorder'. A no to the change question does not stop the questions (26 of 150 visits with a no still hold the section)."
+    - "A sleep complaint is a state: a yes at inclusion and a no later is not a contradiction (insomnia: 9 of 20 pairs)."
+    - "The detail boxes and the remission stay missing after a no."
+
+sleep_disorders_v0:
+  description: >-
+    Two questions of the clinician at the screening and inclusion visits (form 203, 'Autres troubles
+    associés'): insomnia (difficulty falling asleep, difficulty staying asleep, non-restorative sleep)
+    and hypersomnia (prolonged night sleep, prolonged daytime sleep), each with the age at the first
+    episode and a remission box.
+  version: form 203 on the screening and inclusion visits; the twin of sleep_disorders_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: sleep_quality
+  period: "the life of the patient up to inclusion (schema title; the form prints no period)"
+  sources: ["schema notes (asp sleep_disorders_v0)", "docs/asp/PROGRESS.md D48 to D53"]
+  items:
+    higher_means: "yes: the sleep disorder or the detail asked is present (1 yes, 0 no)"
+    basis: anchors
+    source: "schema: yes/no items with range 0 to 1; 9 'Non connu' is a missing code"
+  variables:
+    "*_onset_age_v0":
+      meaning: Age at the first episode of insomnia or hypersomnia, in years (hard limit 0 to 70).
+      higher_means: later first episode
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at the first episode', unit years"
+    "*_remission_v0":
+      meaning: The sleep disorder is in remission (1 yes, 0 no); missing when the disorder is absent.
+      higher_means: in remission
+      polarity: better
+      basis: stated
+      source: "schema notes (asp sleep_disorders_v0): 'a 0 on a remission would read disorder present, not in remission'"
+  flags:
+    - "A step with no known cause: insomnia is yes for 43% to 66% of the answers by year from 2013 to 2017 and for 17% to 35% from 2018 to 2025. Part is the entry of new centres; part is a fall inside the centre that answered alone to 2017."
+    - "Among adults insomnia is yes for 21% to 59% by centre (habit of the centre)."
+    - "A sleep complaint is a state: a yes at inclusion and a no later is not a contradiction."
+    - "The detail boxes and the remission stay missing after a no."
+    - "Answered on 81% of the inclusions to 2015 and on 83% to 84% in 2023 to 2025."
+
+substance_use:
+  description: >-
+    The substance part of the clinician's list of psychiatric comorbidities at inclusion (form 202): a
+    first question on any substance use disorder, then nine substances (tobacco, alcohol,
+    benzodiazepines, cannabis, psychostimulants, cocaine, hallucinogens, androgenic steroids, solvents),
+    each with a level (no, abuse, dependence), an age at onset and a status (past or current).
+  version: inclusion form (form 202), delivered on the inclusion visits only; the follow-up form is read and not delivered
+  reference: not_applicable
+  respondent: clinician
+  construct: substance_use
+  period: "at inclusion; each substance has a status, past or current"
+  sources: ["schema notes (asp substance_use)", "docs/asp/PROGRESS.md D57"]
+  items:
+    higher_means: "yes: an abuse or a dependence is recorded (1 yes, 0 no)"
+    polarity: worse
+    basis: stated
+    source: "schema notes (asp substance_use): '<substance>_disorder_v0 ... codes 0 no, 1 and 2 yes, so that abuse and dependence are one yes'"
+  variables:
+    "*_use_disorder_v0":
+      meaning: "Level recorded for the substance, in three words: no, abuse or dependence (not known is missing). Missing after a no to the first question; use <substance>_disorder_v0 for a yes/no that is 0 there."
+      polarity: not_applicable
+    "*_use_status_v0":
+      meaning: "The abuse or dependence is past or current. Not the 'in the past month' question of BP."
+      polarity: not_applicable
+    "*_onset_age_v0":
+      meaning: Age at onset of the abuse or dependence, in years (hard limit 0 to 90).
+      higher_means: later onset
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'age at onset of the abuse or dependence', unit years"
+    smoking_start_age_clinician:
+      meaning: Age at the start of smoking as the clinician records it on this form, in years; the same question as smoking_start_age of the tobacco examination.
+      higher_means: later start of smoking
+      polarity: neutral
+      basis: anchors
+      source: "label: 'age at the start of smoking, as the clinician records it', unit years"
+  flags:
+    - "Almost all the answers are those of adults: the first question is yes for 1% of the children and 18% of the adults, and for 0% to 39% by centre."
+    - "After a no to the first question the nine yes/no substance variables are 0 (the form hides the substances); a 'not known' stays missing, and the levels, ages and statuses stay missing after a no."
+    - "No follow-up variables: the follow-up form holds 70 answers with one yes and is not delivered."
+    - "Benzodiazepines are narrower than BP's sedatives, hypnotics and anxiolytics, and solvents are one of BP's 'other substances'; ASP has no question on opiates. Alcohol, cannabis, cocaine, stimulants and hallucinogens ask the same question as BP's abuse or dependence."
+    - "smoking_start_age_clinician is not SZ's age at the first cigarette. Steroids have no age and no status."
+    - "Few values: 68 tobacco ages, 42 alcohol, 40 cannabis and fewer than 10 for each other substance; 89 of the 263 abuse or dependence answers have no age."
+    - "The list is answered on 91% of the inclusions of 2013, 64% to 80% in 2018 to 2022 and 43% to 63% in 2023 to 2026."
+
+suicide_and_self_harm_fu:
+  description: >-
+    The two questions of suicide_and_self_harm_v0 asked again by the clinician at the follow-up visits
+    (form 203): a suicide attempt, with the age at the first and at the most recent attempt, their number
+    and whether one was serious; and self-injurious behaviour, with the age at the first one and its kind.
+    124 answers, 4 yes for an attempt and 21 for self-injurious behaviour.
+  version: form 203 on the follow-up visits; the twin of suicide_and_self_harm_v0
+  reference: not_applicable
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: "not settled: the section is titled LIFETIME at every visit and the questions print no period, but the answers do not repeat the inclusion ones (raters read it as since the last visit or as now)"
+  sources: ["schema notes (asp suicide_and_self_harm_fu)", "docs/asp/PROGRESS.md D56 and O9"]
+  variables:
+    isf05_lifetime_fu:
+      meaning: "Attempted suicide, asked again at a follow-up visit (1 yes, 0 no; the form says: in the life)."
+      higher_means: a suicide attempt is reported
+      polarity: worse
+      basis: anchors
+      source: "label and range 0 to 1"
+    n_attempts_fu:
+      meaning: Number of suicide attempts, asked again at a follow-up visit; 0 after a no.
+      higher_means: more suicide attempts
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of suicide attempts'; range 0 to 50"
+    "*_attempt_age_fu":
+      meaning: Age at the first or at the most recent suicide attempt, in years.
+      higher_means: older at the attempt
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'Age at the first suicide attempt', 'Age at the most recent suicide attempt', unit years"
+    serious_suicide_attempt_fu:
+      meaning: "A serious suicide attempt in the clinician's judgement (the form gives no definition); 0 after a no to the attempt question."
+      higher_means: a serious attempt is reported (1 yes, 0 no)
+      polarity: worse
+      basis: anchors
+      source: "label and range 0 to 1"
+    self_harm_fu:
+      meaning: "Self-injurious behaviour, asked again at a follow-up visit (1 yes, 0 no; the form says: in the life)."
+      higher_means: self-injurious behaviour is reported
+      polarity: worse
+      basis: anchors
+      source: "label and range 0 to 1"
+    self_harm_first_age_fu:
+      meaning: Age at the first self-injurious behaviour, in years.
+      higher_means: older at the first one
+      polarity: neutral
+      basis: anchors
+      source: "label: 'age at the first one', unit years"
+    "self_harm_*_kind_fu":
+      meaning: "Kind of the self-injurious behaviour at the first episode and now (biting, hitting oneself, scratching, burning, cutting, amputation)."
+      polarity: not_applicable
+  flags:
+    - "What the raters meant is open. Of the 7 follow-up answers of patients with an attempt at inclusion, 2 say yes and 5 no; of the 45 of patients with self-injurious behaviour at inclusion, 20 say yes and 25 no. Do not read the answers as lifetime, and do not join them with the 'since the last visit' variables of BP and SZ."
+    - "An empty follow-up answer means that nothing was asked or typed; a no is an answer. The change question of the form (sleep_self_harm_changed_fu, in sleep_disorders_fu) does not stop the questions."
+    - "Very few details: three answers for each age and for the number of attempts."
+    - "The ages and the kinds stay missing after a no."
+
+suicide_and_self_harm_v0:
+  description: >-
+    Two questions of the clinician at the inclusion visit (form 203, section 'Conduites auto-agressives
+    (LIFETIME)'): a suicide attempt, with the age at the first and at the most recent attempt, their
+    number and whether one was serious; and self-injurious behaviour, with the age at the first one and
+    its kind at the first episode and now.
+  version: form 203 on the inclusion visits; the twin of suicide_and_self_harm_fu
+  reference: not_applicable
+  respondent: clinician
+  construct: suicidal_behaviour
+  period: lifetime
+  sources: ["schema notes (asp suicide_and_self_harm_v0)", "docs/asp/PROGRESS.md D56 and O30"]
+  variables:
+    isf05_lifetime:
+      meaning: "Attempted suicide, ever (1 yes, 0 no; 9 is read as not known). The form words the question 'suicidal behaviour' and its details 'suicide attempt'."
+      higher_means: a suicide attempt in the life
+      polarity: worse
+      basis: anchors
+      source: "label: 'Attempted suicide - ever'; range 0 to 1"
+    n_attempts:
+      meaning: Number of suicide attempts in the life; 0 after a no.
+      higher_means: more suicide attempts
+      polarity: worse
+      basis: anchors
+      source: "label: 'Number of suicide attempts'; range 0 to 50"
+    "*_attempt_age":
+      meaning: Age at the first or at the most recent suicide attempt, in years.
+      higher_means: older at the attempt
+      polarity: neutral
+      basis: anchors
+      source: "labels: 'Age at the first suicide attempt', 'Age at the most recent suicide attempt', unit years"
+    serious_suicide_attempt:
+      meaning: "A serious suicide attempt in the clinician's judgement (the form gives no definition of 'grave'); 0 after a no to the attempt question."
+      higher_means: a serious attempt is reported (1 yes, 0 no)
+      polarity: worse
+      basis: anchors
+      source: "label and range 0 to 1"
+    self_harm_lifetime:
+      meaning: Self-injurious behaviour in the life (1 yes, 0 no).
+      higher_means: self-injurious behaviour in the life
+      polarity: worse
+      basis: anchors
+      source: "label and range 0 to 1"
+    self_harm_first_age_lifetime:
+      meaning: Age at the first self-injurious behaviour, in years.
+      higher_means: older at the first one
+      polarity: neutral
+      basis: anchors
+      source: "label: 'age at the first one', unit years"
+    "self_harm_*_kind_lifetime":
+      meaning: "Kind of the self-injurious behaviour at the first episode and now (biting, hitting oneself, scratching, burning, cutting, amputation)."
+      polarity: not_applicable
+  flags:
+    - "The form words the first question 'conduites suicidaires' (suicidal behaviour) and its details 'TS' (suicide attempt): whether it is answered as an attempt only is not known. It is yes on 11.5% of the answers (15.0% in adults, 5.1% in children), against 38% of the BP inclusions."
+    - "isf05_lifetime and n_attempts carry the names of BP, SZ and DR. serious_suicide_attempt is not BP's attempt with intensive care, and self_harm has no equivalent in the other cohorts (it is not the C-SSRS item)."
+    - "The ages and the kinds stay missing after a no."
+    - "The screening visits hold no answer."
+    - "The ages differ by age group (first attempt at 13 years in children and 17 in adults): age mix."
+
+vineland:
+  description: >-
+    The scores of the Vineland Adaptive Behavior Scales as typed into the medical evaluation (form 119):
+    a box 'done', the date and the age in months, a raw score and an age equivalent in months for each
+    of eleven sub-domains, the standard score of the four domains (communication, daily living skills,
+    socialisation, motor skills), their sum and the adaptive behaviour composite. Nothing is computed by
+    the application.
+  version: Vineland-II (second edition), identified from the largest raw score of each sub-domain
+  reference: "Sparrow SS, Cicchetti DV, Balla DA. Vineland Adaptive Behavior Scales, Second Edition. Pearson/AGS 2005; French: Echelles de comportement adaptatif de Vineland-II (ECPA/Pearson)"
+  reference_confidence: "confirmed in source (publisher pages, trial plan); manual unread; French edition year (2015?) to verify"
+  construct: adaptive_behaviour
+  period: "the date of the Vineland (vineland_date)"
+  sources: ["schema notes (asp vineland)", "scale_reference.md section 21", "docs/asp/PROGRESS.md D54 and O31"]
+  variables:
+    "vineland_*_standard":
+      meaning: "Standard score of the domain, typed by the clinician. Published scale: mean 100, standard deviation 15, range 20 to 160."
+      higher_means: higher adaptive level
+      polarity: better
+      basis: literature
+      source: "scale_reference.md section 21: 'Five adaptive levels (low to high) exist for both v-scale and standard-score metrics' and range 20 to 160, confirmed in source (trial plan, GW SAP Table 6); manual unread"
+    vineland_sum_standard:
+      meaning: "Sum of the standard scores of the domains, as typed and not recomputed: communication, daily living skills and socialisation, plus the motor skills for a few young children. The composite is read from this sum."
+      higher_means: higher domain standard scores (higher adaptive level)
+      polarity: better
+      basis: literature
+      source: "scale_reference.md section 21: the composite comes from the sum of the domain standard scores, and adaptive levels run low to high on the standard-score metric; confirmed in source (trial plan); manual rule to verify"
+    vineland_composite:
+      meaning: "Adaptive behaviour composite, typed by the clinician. Published scale: mean 100, standard deviation 15, range 20 to 160; read from the sum of the domain standard scores (the motor domain is in it below 7 years only)."
+      higher_means: higher overall adaptive level
+      polarity: better
+      basis: literature
+      source: "scale_reference.md section 21: 'Five adaptive levels (low to high) exist for both v-scale and standard-score metrics' and range 20 to 160, confirmed in source (trial plan, GW SAP Table 6); manual unread"
+    "vineland_*_raw":
+      meaning: "Raw score of the sub-domain: the points of its items, up to the maximum of the sub-domain in the Vineland-II (the range of the variable). Published, it is converted with the age into a v-scale score, which the form does not hold."
+    "vineland_*_age":
+      meaning: "Age equivalent of the sub-domain, in months, as typed. Published, age equivalents cannot be added, subtracted or averaged."
+    vineland_age_months:
+      meaning: "Age at the Vineland, typed in months. 8 values below 40 are an age in years, and 22 differ from the age at the date of the Vineland by more than 2 years."
+      higher_means: older at the assessment
+      polarity: neutral
+      basis: anchors
+      source: "label: 'Age at the Vineland, in months'"
+    vineland_done:
+      meaning: "A Vineland was done (1 yes, 0 no; 9 is read as not known)."
+      polarity: not_applicable
+  flags:
+    - "Nothing is computed: the domain standard scores, their sum and the composite are typed, and the norm tables of the test are not available to check them."
+    - "A step with no known cause: in children the raw scores do not move over the years, but the typed standard scores fall in 2018 to 2021 and return in part from 2022 (median socialisation 76 to 2017, 45 in 2018 to 2021, 63 from 2022; composite 74, 57 and 69). Case-mix does not fit; a change of the table or of the rule that converts the raw score is possible."
+    - "The standard score 20, the lowest of the scale, is typed for 15% of the socialisation scores (none among the children to 2017)."
+    - "The sum holds three domains, or four with the motor domain in young children: the two are not comparable. On 23 visits the stored sum differs from the sum of the domain scores, and on a few visits the sum and the composite were typed in each other's field (6 such composites lie inside 20 to 160 and are delivered)."
+    - "The age equivalents are on 463 visits only and the motor domain on 10."
+    - "'Done' is yes for 96% of the children and 27% of the adults, and three centres hold almost all the scores: differences by centre are mostly the age mix."
+    - "Not documented: which form of the Vineland-II was used (interview or questionnaire of the parent or caregiver), which French norms, and so who answered; the respondent is left blank."
+    - "To verify: whether the French composite counts the motor domain for adults over 50."
+
+wais4_indices:
+  description: >-
+    The four indices (verbal comprehension, perceptual reasoning, working memory, processing speed) and
+    the full-scale IQ of the Wechsler Adult Intelligence Scale, fourth edition, as the clinician copied
+    them into the medical evaluation (form 119), with a box saying that this edition was used. Typed
+    numbers; nothing is computed.
+  version: WAIS-IV (the French edition is normed from 16 years)
+  reference: "Wechsler 2008 (WAIS-IV); French edition ECPA/Pearson 2011, ages 16:0 to 79:11"
+  reference_confidence: "composition, mean/SD and FSIQ range confirmed in source (Canivez 2010 review; ECPA brochure); index ranges to verify"
+  respondent: test
+  construct: intellectual_ability
+  period: "the date of the assessment (iq_assessment_date in iq_assessment), not the date of the visit"
+  sources: ["schema notes (asp wais4_indices)", "scale_reference.md section 22", "docs/asp/PROGRESS.md D55"]
+  variables:
+    wais4_done:
+      meaning: The WAIS-IV was used (1 yes, 0 no); the indices are filled only after a yes.
+      polarity: not_applicable
+    wais4_icv_index_clinician:
+      meaning: "Verbal comprehension index of the WAIS-IV, the clinician's copy. Published composites: mean 100, standard deviation 15. Delivered between 45 and 155."
+      construct: verbal_ability
+    wais4_irp_index_clinician:
+      meaning: "Perceptual reasoning index of the WAIS-IV, the clinician's copy. Published composites: mean 100, standard deviation 15. Delivered between 45 and 155."
+      construct: visuospatial
+    wais4_imt_index_clinician:
+      meaning: "Working memory index of the WAIS-IV, the clinician's copy. Published composites: mean 100, standard deviation 15. Delivered between 50 and 150."
+      construct: working_memory
+    wais4_ivt_index_clinician:
+      meaning: "Processing speed index of the WAIS-IV, the clinician's copy. Published composites: mean 100, standard deviation 15. Delivered between 50 and 150."
+      construct: processing_speed
+    wais4_qit_clinician:
+      meaning: "Full-scale IQ of the WAIS-IV, the clinician's copy. Published: mean 100, standard deviation 15, range 40 to 160."
+  flags:
+    - "The clinician's copy. The same indices recomputed from the neuropsychology form are wais4_icv_index, wais4_irp_index, wais4_imt_index, wais4_ivt_index and wais4_qit (wais4_efficience, wais4_code_symboles_ivt). Where both exist they agree on most visits (verbal comprehension 162 of 187, full-scale IQ 120 of 159; 28 of the 39 full-scale IQ differences are 2 points or less). The copy covers about 800 more visits per index; both are kept."
+    - "One schema per edition: never pool these indices with those of the WISC-IV or the WISC-V (other subtests and norms)."
+    - "The indices belong to the date of the assessment (iq_assessment_date), not to the visit: 10 assessments are dated under the age of 16. Five visits tick two editions."
+    - "The full-scale IQ is missing on 20% of the visits that hold the four indices; the spread of the indices is about the same with and without it."
+    - "To verify: the hard limits of the four indices (45 to 155, 50 to 150) were not found for the WAIS-IV in any source read; the full-scale IQ range 40 to 160 is confirmed (Canivez 2010)."
+    - "Used for adults almost always: the box is yes for 89% of the adults and 11% of the children."
+
+wisc4_indices:
+  description: >-
+    The four indices (verbal comprehension, perceptual reasoning, working memory, processing speed) and
+    the full-scale IQ of the Wechsler Intelligence Scale for Children, fourth edition, as the clinician
+    copied them into the medical evaluation (form 119), with a box saying that this edition was used.
+    Typed numbers; nothing is computed.
+  version: WISC-IV
+  reference: "Wechsler 2003 (WISC-IV); French edition ECPA/Pearson 2005, ages 6:0 to 16:11"
+  reference_confidence: "composition confirmed in source (Pearson technical reports; Belgian test list); index range 45-155, FSIQ 40-160 and scaled range: to verify"
+  respondent: test
+  construct: intellectual_ability
+  period: "the date of the assessment (iq_assessment_date in iq_assessment), not the date of the visit"
+  sources: ["schema notes (asp wisc4_indices)", "scale_reference.md section 22", "docs/asp/PROGRESS.md D55, O33 and O34"]
+  variables:
+    wisc4_done:
+      meaning: The WISC-IV was used (1 yes, 0 no); the indices are filled only after a yes.
+      polarity: not_applicable
+    wisc4_icv_index:
+      meaning: Verbal comprehension index of the WISC-IV, as typed. Delivered between 45 and 155.
+      construct: verbal_ability
+    wisc4_irp_index:
+      meaning: Perceptual reasoning index of the WISC-IV, as typed. Delivered between 45 and 155.
+      construct: visuospatial
+    wisc4_imt_index:
+      meaning: Working memory index of the WISC-IV, as typed. Delivered between 45 and 155.
+      construct: working_memory
+    wisc4_ivt_index:
+      meaning: Processing speed index of the WISC-IV, as typed. Delivered between 45 and 155.
+      construct: processing_speed
+    wisc4_qit:
+      meaning: Full-scale IQ of the WISC-IV, as typed. Delivered between 40 and 160.
+  flags:
+    - "The full-scale IQ is missing on 60% of the visits that hold the four indices, and the spread of the indices is larger where it is missing (median 37 points against 24): raters may leave it out of a heterogeneous profile, so the visits with a full-scale IQ are a selected group."
+    - "One schema per edition: never pool these indices with those of the WISC-V or the WAIS-IV (other subtests and norms)."
+    - "The indices belong to the date of the assessment (iq_assessment_date), not to the visit: the box is ticked on 37 visits of patients aged 18 or more at the visit, 5 of them aged 18 or more at the assessment."
+    - "To verify: the hard limits (45 to 155, 40 to 160) are those published for the WISC-V; no source read states the ranges, the mean or the standard deviation for the WISC-IV."
+    - "Used mostly to 2017 (138 visits, 67 since 2018); 59 follow-up visits hold an index. The indices differ by year and by centre (age mix and small groups)."
+
+wisc5_indices:
+  description: >-
+    The five indices (verbal comprehension, visual spatial, fluid reasoning, working memory, processing
+    speed) and the full-scale IQ of the Wechsler Intelligence Scale for Children, fifth edition, as the
+    clinician copied them into the medical evaluation (form 119), with a box saying that this edition
+    was used. Typed numbers; nothing is computed.
+  version: WISC-V
+  reference: "Wechsler 2014 (WISC-V); French edition ECPA 2016"
+  reference_confidence: "confirmed in source (Pearson interpretive report; Canivez & Watkins 2016)"
+  respondent: test
+  construct: intellectual_ability
+  period: "the date of the assessment (iq_assessment_date in iq_assessment), not the date of the visit"
+  sources: ["schema notes (asp wisc5_indices)", "scale_reference.md section 22", "docs/asp/PROGRESS.md D55"]
+  variables:
+    wisc5_done:
+      meaning: The WISC-V was used (1 yes, 0 no); the indices are filled only after a yes.
+      polarity: not_applicable
+    wisc5_icv_index:
+      meaning: "Verbal comprehension index of the WISC-V, as typed. Published primary indices: mean 100, standard deviation 15, range 45 to 155."
+      construct: verbal_ability
+    wisc5_ivs_index:
+      meaning: "Visual spatial index of the WISC-V, as typed. Published primary indices: mean 100, standard deviation 15, range 45 to 155."
+      construct: visuospatial
+    wisc5_irf_index:
+      meaning: "Fluid reasoning index of the WISC-V, as typed. Published primary indices: mean 100, standard deviation 15, range 45 to 155."
+    wisc5_imt_index:
+      meaning: "Working memory index of the WISC-V, as typed. Published primary indices: mean 100, standard deviation 15, range 45 to 155."
+      construct: working_memory
+    wisc5_ivt_index:
+      meaning: "Processing speed index of the WISC-V, as typed. Published primary indices: mean 100, standard deviation 15, range 45 to 155."
+      construct: processing_speed
+    wisc5_qit:
+      meaning: "Full-scale IQ of the WISC-V, as typed. Published: mean 100, standard deviation 15, range 40 to 160; it rests on seven subtests."
+  flags:
+    - "One schema per edition: never pool these indices with those of the WISC-IV or the WAIS-IV. The WISC-V splits perceptual reasoning into a visual spatial and a fluid reasoning index, and its full-scale IQ rests on seven subtests."
+    - "The indices belong to the date of the assessment (iq_assessment_date), not to the visit."
+    - "The full-scale IQ is missing on 15% of the visits that hold the five indices; no clear sign that it is left out when the indices differ."
+    - "All at inclusion visits, from 2017; the box is yes for 88% of the children and 4% of the adults."
+    - "The general ability index of iq_assessment is one field for the three editions and cannot be tied to this one."

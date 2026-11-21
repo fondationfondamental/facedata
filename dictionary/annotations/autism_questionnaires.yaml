@@ -1,0 +1,2181 @@
+# Annotations of the group autism_questionnaires (FACE ASP: the three auto-questionnaire folders, 48 instruments).
+# Written from the schema notes, the schema labels and the literature notes only.
+# A field that is missing means that no document states it: a blank is not an oversight.
+
+adhd_rs_adult:
+  description: "The ADHD Rating Scale in the adult form of the application (form 220): eighteen items answered from 0 to 3 in which the adult recalls the behaviours of his or her childhood, two sub-scores and a total, then one question on the behaviours before the age of 7."
+  version: "Adult form (form 220), 18 items; items 1 to 9 inattention, items 10 to 18 hyperactivity-impulsivity"
+  reference: "DuPaul GJ, Power TJ, Anastopoulos AD, Reid R. ADHD Rating Scale-IV: checklists, norms, and clinical interpretation. Guilford, 1998"
+  reference_confidence: "to verify (listing seen as a search snippet only)"
+  respondent: patient
+  construct: adhd_symptoms
+  period: "childhood, as recalled by the adult"
+  sources: ["schema notes (asp adhd_rs_adult)", "scale_reference_aq_autism.md section 28", "docs/asp/PROGRESS.md D63"]
+  scores:
+    adhdrsa_inattention:
+      meaning: "Inattention: sum of the items 1 to 9, each answered from 0 to 3 (0 to 27)."
+    adhdrsa_hyperactivity:
+      meaning: "Hyperactivity-impulsivity: sum of the items 10 to 18 (0 to 27)."
+    adhdrsa_total:
+      meaning: "Total: sum of the eighteen items (0 to 54)."
+  variables:
+    adhdrsa19:
+      meaning: "Nineteenth question: were some of these behaviours present before the age of 7 (yes or no; the answer 'NA' of the form is read as missing)."
+      polarity: not_applicable
+  flags:
+    - "No document gives the wording of the answers 0 to 3 or says what a higher score means: no direction is written here."
+    - "Identified as the ADHD Rating Scale (DuPaul and others) from its name and its eighteen items, 'likely'. The published form is said to alternate the two dimensions (odd items inattention; to verify); in this form the first nine items are inattention and the last nine hyperactivity-impulsivity, as the item correlations and the stored sub-scores show."
+    - "Two forms share the raw columns (this one and the child form filled by a parent) and no column says which was filled: the age at the visit tells it (18 and over here). A visit with answers and no age has no form."
+    - "The published scale is a child scale (to verify); this form asks adults to recall their childhood. The adults also fill the ASRS."
+    - "A score typed without its items is kept as stored (7 or 8 visits)."
+
+adhd_rs_child:
+  description: "The ADHD Rating Scale in the child form of the application (form 221): a parent answers eighteen items from 0 to 3 about the behaviours of the child now, with two sub-scores and a total, then one question on the behaviours before the age of 7. Visits of patients under 18."
+  version: "Child form filled by a parent (form 221), 18 items; items 1 to 9 inattention, items 10 to 18 hyperactivity-impulsivity"
+  reference: "DuPaul GJ, Power TJ, Anastopoulos AD, Reid R. ADHD Rating Scale-IV: checklists, norms, and clinical interpretation. Guilford, 1998"
+  reference_confidence: "to verify (listing seen as a search snippet only)"
+  respondent: relative
+  construct: adhd_symptoms
+  period: "the behaviours of the child now"
+  sources: ["schema notes (asp adhd_rs_child)", "scale_reference_aq_autism.md section 28", "docs/asp/PROGRESS.md D63"]
+  scores:
+    adhdrsc_inattention:
+      meaning: "Inattention: sum of the items 1 to 9, each answered from 0 to 3 (0 to 27)."
+    adhdrsc_hyperactivity:
+      meaning: "Hyperactivity-impulsivity: sum of the items 10 to 18 (0 to 27)."
+    adhdrsc_total:
+      meaning: "Total: sum of the eighteen items (0 to 54)."
+  variables:
+    adhdrsc19:
+      meaning: "Nineteenth question: were some of these behaviours present before the age of 7 (yes or no; the answer 'NA' of the form is read as missing)."
+      polarity: not_applicable
+  flags:
+    - "No document gives the wording of the answers 0 to 3 or says what a higher score means: no direction is written here."
+    - "Identified as the ADHD Rating Scale (DuPaul and others), 'likely'. The published form is said to alternate the two dimensions (to verify); in this form the first nine items are inattention and the last nine hyperactivity-impulsivity."
+    - "Two forms share the raw columns (this one and the adult form) and no column says which was filled: the age at the visit tells it (under 18 here)."
+    - "From 2019 the scores are often typed without the items (210 visits); they are kept as stored. On 17 visits, 16 of them dated 2013, the stored total differs from the sum of the items; the delivered total is the sum."
+    - "The median total is lower in 2013 to 2015 (16.5 to 22.5) than from 2018 (23 to 28); the early years come from one centre and the cause is not known."
+    - "A French version was only partially validated (Mercier 2016, confirmed in source, abstract)."
+
+adi_r:
+  description: "The parent interview for the diagnosis of autism, done at the inclusion visit for children and adults. A clinician interviews a parent or another caregiver and codes 93 items; the published algorithm gives twelve sub-scores and the domain scores A (social interaction), B (communication), C (restricted and repetitive behaviours) and D (onset before 36 months)."
+  version: "ADI-R, 93 items; the edition of 2003 on 99% of the visits that name the edition (adi_version)"
+  reference: "Lord C, Rutter M, Le Couteur A. Autism Diagnostic Interview-Revised. J Autism Dev Disord 1994;24:659-685 (PMID 7814313)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: relative
+  construct: autism_symptoms
+  period: "lifetime: the algorithm reads the 'past' codes (ever, or the most abnormal between four and five years); the 'current' codes describe the behaviour now"
+  sources: ["schema notes (asp adi_r)", "scale_reference_aq_autism.md section 2", "docs/asp/PROGRESS.md D8 and D64"]
+  scores:
+    adi_a1:
+      meaning: "A1, non-verbal behaviours that regulate social interaction: sum of three items (a code 3 counts 2; 7, 8 and 9 count 0), 0 to 6."
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 (2 = definite abnormal behaviour) summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_a2:
+      meaning: "A2, peer relationships: sum of four items, one of them chosen by age (item 64 under ten years, item 65 from ten), 0 to 8."
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_a3:
+      meaning: "A3, shared enjoyment: sum of three items, 0 to 6."
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_a4:
+      meaning: "A4, socio-emotional reciprocity: sum of five items, 0 to 10."
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_b1:
+      meaning: "B1, gestures: sum of four items, 0 to 8."
+      construct: communication_language
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_b2:
+      meaning: "B2, conversation (verbal subjects): sum of two items, 0 to 4."
+      construct: communication_language
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_b3:
+      meaning: "B3, stereotyped and idiosyncratic speech (verbal subjects): sum of four items, 0 to 8."
+      construct: communication_language
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_b4:
+      meaning: "B4, make-believe and imitative play: sum of three items, 0 to 6."
+      construct: communication_language
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_c1:
+      meaning: "C1, preoccupations and circumscribed interests: sum of two items, 0 to 4."
+      construct: repetitive_behaviours
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_c2:
+      meaning: "C2, routines and rituals: sum of two items, 0 to 4."
+      construct: repetitive_behaviours
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_c3:
+      meaning: "C3, motor mannerisms: the higher of two items, 0 to 2."
+      construct: repetitive_behaviours
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_c4:
+      meaning: "C4, parts of objects and sensory interests: the higher of two items, 0 to 2."
+      construct: repetitive_behaviours
+      higher_means: more abnormality in this area
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: algorithm scores 0 to 2 summed into domains that have cut-offs for autism (confirmed in source, direct)"
+    adi_social_total:
+      meaning: "Domain A, reciprocal social interaction: sum of A1 to A4, 0 to 30."
+      higher_means: more abnormality of reciprocal social interaction
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2 (confirmed in source, direct); schema label 'cut-off 10'"
+      cutoffs:
+        - {value: "10", meaning: "cut-off of the diagnostic algorithm for this domain (autism when every domain reaches its cut-off)", source: "schema notes (asp adi_r); scale_reference_aq_autism.md section 2", confidence: "confirmed in source (direct)"}
+    adi_communication_verbal_total:
+      meaning: "Domain B, communication of verbal subjects: sum of B1 to B4, 0 to 26."
+      construct: communication_language
+      higher_means: more abnormality of communication
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2 (confirmed in source, direct); schema label 'cut-off 8'"
+      cutoffs:
+        - {value: "8", meaning: "cut-off of the diagnostic algorithm for verbal subjects", source: "schema notes (asp adi_r); scale_reference_aq_autism.md section 2", confidence: "confirmed in source (direct)"}
+    adi_repetitive_total:
+      meaning: "Domain C, restricted and repetitive behaviours: sum of C1 to C4, 0 to 12."
+      construct: repetitive_behaviours
+      higher_means: more restricted and repetitive behaviours
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2 (confirmed in source, direct); schema label 'cut-off 3'"
+      cutoffs:
+        - {value: "3", meaning: "cut-off of the diagnostic algorithm for this domain", source: "schema notes (asp adi_r); scale_reference_aq_autism.md section 2", confidence: "confirmed in source (direct)"}
+  variables:
+    adi_communication_nonverbal_total:
+      meaning: "Domain B total of non-verbal subjects, as stored (0 to 14); not recomputed."
+      construct: communication_language
+      higher_means: more abnormality of communication
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2 (confirmed in source, direct)"
+      cutoffs:
+        - {value: "7", meaning: "cut-off of the diagnostic algorithm for non-verbal subjects", source: "scale_reference_aq_autism.md section 2", confidence: "confirmed in source (direct)"}
+    adi_onset_total:
+      meaning: "Domain D, abnormality of development evident before 36 months, as stored (0 to 5): a count of five signs of early abnormality."
+      construct: development
+      higher_means: more signs that development was abnormal before 36 months
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp adi_r): the published rule counts five signs (first noticed before 36 months, first words after 24, first phrases after 33, item 86 coded 3 or 4, the interviewer's judgement before 36 months)"
+      cutoffs:
+        - {value: "1", meaning: "cut-off of the diagnostic algorithm for this domain", source: "schema notes (asp adi_r); scale_reference_aq_autism.md section 2", confidence: "confirmed in source (direct)"}
+    adi_positive:
+      meaning: "Conclusion recorded in the form: the ADI-R is above the diagnostic thresholds (yes or no)."
+      polarity: not_applicable
+    "adi*_past":
+      meaning: "Code of the item for the past behaviour (ever, or the most abnormal between four and five years), the one the algorithm reads. Codes 0 to 3, then 7 (abnormality of another kind), 8 (not applicable) and 9 (not known), which are not levels."
+      higher_means: "more abnormal behaviour, for the codes 0 to 3 only"
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: 0 no definite behaviour, 1 probably present, 2 definite abnormal behaviour, 3 extreme severity (confirmed in source, direct)"
+    "adi*_current":
+      meaning: "Code of the item for the current behaviour. Codes 0 to 3, then 7 (abnormality of another kind), 8 (not applicable) and 9 (not known), which are not levels."
+      higher_means: "more abnormal behaviour, for the codes 0 to 3 only"
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 2: 0 no definite behaviour, 1 probably present, 2 definite abnormal behaviour, 3 extreme severity (confirmed in source, direct)"
+    adi30_current:
+      meaning: "Item 30, overall level of language: the item that says whether the verbal or the non-verbal communication cut-off applies. A code, not a severity level."
+      polarity: not_applicable
+  flags:
+    - "The item codes 7, 8 and 9 are not levels: do not average the items."
+    - "The stored domain totals A and C are not the published ones (the export counts both peer items in A and both items of C3 and of C4 in C; up to 2 and 4 points too high). The delivered totals A and C are the sums of the sub-scores; the stored ones are not delivered."
+    - "The stored B3 leaves out the item 38 between 2016 and 2020; the delivered B3 is the four-item sum where the items are recorded."
+    - "On 423 visits the sub-scores were typed without the items: they are kept as stored and the domain totals are their sums."
+    - "adi_onset_total: 432 of the 1,184 stored values are partial sums (the export counts a missing item as 0): read them as lower bounds."
+    - "On 12 visits coded non-verbal, B2, B3 and the verbal total B are delivered where the application leaves them empty. The cut-off of non-verbal subjects is 7, not 8."
+    - "The item rules of the algorithm (the age rule of A2, the higher of two items in C3 and C4, the four items of B3) are the schema's findings, checked on the data; on the published side they are 'to verify' (the manual was not read)."
+    - "The domain totals fall over the years (median social total 21 in 2011 to 2013, 10 to 12 from 2018) in children and adults alike, with no known cause."
+    - "adi_positive is the conclusion as recorded; it agrees with the four published cut-offs applied to the stored totals on 1,008 of 1,053 visits."
+
+ados:
+  description: "The record of the ADOS session, whatever the module: whether it was done, its date, the age, the module entered and the conclusion. The items and the algorithm scores are in the instruments of the modules (ados_module1 to ados_module4)."
+  version: "First edition of the ADOS and ADOS-2 in the same columns"
+  reference: "Lord C, Risi S, Lambrecht L, et al. The Autism Diagnostic Observation Schedule-Generic. J Autism Dev Disord 2000;30:205-223 (PMID 11055457)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: clinician
+  construct: autism_symptoms
+  period: "the observation session"
+  sources: ["schema notes (asp ados)", "scale_reference_aq_autism.md section 1", "docs/asp/PROGRESS.md D8 and D64"]
+  variables:
+    ados_positive:
+      meaning: "Above the spectrum cut-off (yes or no), as the export computes it from the raw item codes (a code 3 counted 3). Delivered as recorded."
+      polarity: not_applicable
+    ados_module:
+      meaning: "Module entered. Module 3 is for children and adolescents with fluent speech, module 4 for adolescents and adults; modules 1 and 2 are rare here."
+      polarity: not_applicable
+  flags:
+    - "Use the total of the module (ados3_total, ados4_total), which is recomputed with the published rule. The total of the summary line is not delivered: it holds two algorithms in one column and the error of the stored totals of the first edition."
+    - "The stored scores of the ADOS are those of the export, which sums the raw codes (a 3 counted 3); the form itself counts a 3 as 2, as the publication does."
+    - "ados_positive comes from those raw sums: 6 of its 'yes' are visits whose published sums say no."
+    - "The first edition and the ADOS-2 share the columns. The edition is told by the item that the ADOS-2 added (B8 in the module 3, B10 in the module 4), which is empty on a visit of the first edition."
+    - "12 visits hold the items of another module than the one entered."
+
+ados_module1:
+  description: "The scores of the module 1 of the ADOS-2 (children with no phrase speech), as stored. Fewer than five visits and no item recorded."
+  version: "ADOS-2, module 1"
+  reference: "Lord C, Rutter M, DiLavore PC, Risi S, Gotham K, Bishop SL. ADOS-2 manual. Western Psychological Services, 2012"
+  reference_confidence: "year of manual confirmed in source (secondary, direct); manual itself not read"
+  respondent: clinician
+  construct: autism_symptoms
+  period: "the observation session"
+  sources: ["schema notes (asp ados_module1)", "scale_reference_aq_autism.md section 1"]
+  variables:
+    ados1_social_affect:
+      meaning: "Social affect score of the module 1, as stored (0 to 20); not verified."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: social affect total + restricted and repetitive behaviour total = overall total, which gives the classification with two cut-offs (confirmed in source, direct)"
+    ados1_restricted_repetitive:
+      meaning: "Restricted and repetitive behaviour score of the module 1, as stored (0 to 8); not verified."
+      construct: repetitive_behaviours
+      higher_means: more restricted and repetitive behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: social affect total + restricted and repetitive behaviour total = overall total, which gives the classification with two cut-offs (confirmed in source, direct)"
+    ados1_total:
+      meaning: "Total of the module 1, as stored (0 to 28); not verified."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: the overall total gives the classification with two cut-offs, autism and autism spectrum (confirmed in source, direct)"
+    ados1_comparison_score:
+      meaning: "Comparison score of the module 1 (1 to 10), as stored."
+      higher_means: more severe on the 10-point severity metric
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: comparison score, a 10-point severity metric calibrated on percentiles of raw totals (confirmed in source, direct and abstracts)"
+    ados1_classification:
+      meaning: "Classification of the module as stored: autism, autism spectrum or non-spectrum."
+      polarity: not_applicable
+  flags:
+    - "Too few visits to verify: the scores are delivered as stored and no rule is checked. The stored scores are the export's, like those of the other modules (a code 3 may be counted 3)."
+    - "The cut-offs of the module 1 depend on the number of words (literature notes) and were not read."
+
+ados_module2:
+  description: "The items and the scores of the module 2 of the ADOS-2 (children who speak in phrases), as stored. 14 visits."
+  version: "ADOS-2, module 2"
+  reference: "Lord C, Rutter M, DiLavore PC, Risi S, Gotham K, Bishop SL. ADOS-2 manual. Western Psychological Services, 2012"
+  reference_confidence: "year of manual confirmed in source (secondary, direct); manual itself not read"
+  respondent: clinician
+  construct: autism_symptoms
+  period: "the observation session"
+  sources: ["schema notes (asp ados_module2)", "scale_reference_aq_autism.md section 1"]
+  items:
+    meaning: "Codes of the examiner as recorded. The codes 7 and 8 are not levels."
+  variables:
+    ados2_social_affect:
+      meaning: "Social affect score of the module 2, as stored (0 to 20); not verified."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: social affect total + restricted and repetitive behaviour total = overall total, which gives the classification with two cut-offs (confirmed in source, direct)"
+    ados2_restricted_repetitive:
+      meaning: "Restricted and repetitive behaviour score of the module 2, as stored (0 to 8); not verified."
+      construct: repetitive_behaviours
+      higher_means: more restricted and repetitive behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: social affect total + restricted and repetitive behaviour total = overall total, which gives the classification with two cut-offs (confirmed in source, direct)"
+    ados2_total:
+      meaning: "Total of the module 2, as stored (0 to 28); not verified."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: the overall total gives the classification with two cut-offs, autism and autism spectrum (confirmed in source, direct)"
+    ados2_comparison_score:
+      meaning: "Comparison score of the module 2 (1 to 10), as stored."
+      higher_means: more severe on the 10-point severity metric
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: comparison score, a 10-point severity metric calibrated on percentiles of raw totals (confirmed in source, direct and abstracts)"
+    ados2_classification:
+      meaning: "Classification of the module as stored: autism, autism spectrum or non-spectrum."
+      polarity: not_applicable
+  flags:
+    - "Too few visits to verify: the columns are read with their types and ranges, the scores are delivered as stored and no rule is checked. The names of the scores follow those of the module 3."
+    - "Two points are to check before the module can be verified: a column of the first edition is mapped to the items B9a and B9b (probably a slip of the export), and the cut-off arrays of the module 2 in the script of the form look transposed (to verify)."
+    - "Do not average the items: the codes 7 and 8 are not levels."
+
+ados_module3:
+  description: "The twenty-nine items of the module 3 of the ADOS (children and adolescents with fluent speech), coded by the examiner during the session, with the algorithm scores, the classification and the comparison score."
+  version: "Module 3, first edition and ADOS-2 in the same columns; revised algorithm (Gotham and others, 2007)"
+  reference: "Gotham K, Risi S, Pickles A, Lord C. The ADOS: revised algorithms for improved diagnostic validity. J Autism Dev Disord 2007;37:613-627 (PMID 17180459)"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: clinician
+  construct: autism_symptoms
+  period: "the observation session"
+  sources: ["schema notes (asp ados_module3)", "scale_reference_aq_autism.md section 1", "docs/asp/PROGRESS.md D8 and D64"]
+  items:
+    meaning: "Codes of the examiner, 0 to 3; the codes 7 and 8 are not levels. The algorithm counts a 3 as 2 and the codes 7 and 8 as 0."
+    higher_means: "more autism-related behaviour, for the codes 0 to 3 of the algorithm items"
+    polarity: worse
+    basis: stated
+    source: "schema notes (asp ados_module3): the algorithm sums the codes of fourteen items and the total classifies autism from 9; nothing is stated for the items outside the algorithm"
+  scores:
+    ados3_social_affect:
+      meaning: "Social affect: sum of ten algorithm items (a code 3 counts 2, the codes 7 and 8 count 0), 0 to 20."
+      higher_means: more autism-related behaviour observed in social affect
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module3): the total is social affect plus restricted and repetitive behaviour, autism from 9, autism spectrum 7 and 8, non-spectrum below"
+    ados3_restricted_repetitive:
+      meaning: "Restricted and repetitive behaviour: sum of four algorithm items, 0 to 8."
+      construct: repetitive_behaviours
+      higher_means: more restricted and repetitive behaviour observed
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module3): the total is social affect plus restricted and repetitive behaviour, autism from 9, autism spectrum 7 and 8, non-spectrum below"
+    ados3_total:
+      meaning: "Total of the module 3: social affect plus restricted and repetitive behaviour, 0 to 28."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module3): autism from 9, autism spectrum 7 and 8, non-spectrum below"
+      cutoffs:
+        - {value: "9 or more", meaning: "autism (classification of the module)", source: "schema notes (asp ados_module3)", confidence: "to verify (only the schema notes)"}
+        - {value: "7 and 8", meaning: "autism spectrum (classification of the module)", source: "schema notes (asp ados_module3)", confidence: "to verify (only the schema notes)"}
+  variables:
+    ados3_comparison_score:
+      meaning: "Comparison score (1 to 10), read by the form in a table of the manual from the total and the age; as stored, filled from 2017 (ADOS-2 only)."
+      higher_means: more severe on the 10-point severity metric
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: comparison score, a 10-point severity metric calibrated on percentiles of raw totals (confirmed in source, direct and abstracts)"
+    ados3_classification:
+      meaning: "Classification as stored: autism (total 9 or more), autism spectrum (7 and 8) or non-spectrum."
+      polarity: not_applicable
+    ados3_b08:
+      meaning: "Item B8, the item that the ADOS-2 added to the module: empty on a visit of the first edition, which tells the two editions apart."
+  flags:
+    - "Two editions in the same columns: the first edition on 96 visits (most until 2017) and the ADOS-2 on 702. The same revised algorithm is delivered for both."
+    - "The stored scores of the first edition count a code 3 as 3 (up to 5 points too high); the delivered scores follow the publication on every visit."
+    - "The classification is delivered as stored: on fewer than five visits of the first edition the corrected total gives another class, and a defect of the script of the form leaves a stale or empty class on 2 visits."
+    - "The item lists of the two domains and the cut-offs 9 and 7 are those of the schema and are 'to verify' on the published side (the papers were read as abstracts)."
+    - "Do not average the items: the codes 7 and 8 are not levels."
+    - "The median total steps by year inside one centre (10 in 2016, 16 in 2017, 8 in 2018, 13 in 2019), with no known cause."
+
+ados_module4:
+  description: "The thirty-two items of the module 4 of the ADOS (adolescents and adults), coded by the examiner during the session, with the algorithm scores and the classification."
+  version: "Module 4, first edition and ADOS-2 in the same columns; original algorithm (Lord and others, 2000), not the revised one of 2014"
+  reference: "Lord C, Risi S, Lambrecht L, et al. The Autism Diagnostic Observation Schedule-Generic. J Autism Dev Disord 2000;30:205-223 (PMID 11055457)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: clinician
+  construct: autism_symptoms
+  period: "the observation session"
+  sources: ["schema notes (asp ados_module4)", "scale_reference_aq_autism.md section 1", "docs/asp/PROGRESS.md D8 and D64"]
+  items:
+    meaning: "Codes of the examiner, 0 to 3; the codes 7 and 8 are not levels. The algorithm counts a 3 as 2 and the codes 7 and 8 as 0."
+    higher_means: "more autism-related behaviour, for the codes 0 to 3 of the algorithm items"
+    polarity: worse
+    basis: stated
+    source: "schema notes (asp ados_module4): the algorithm sums the item codes and the classification has cut-offs for autism and autism spectrum; nothing is stated for the items outside the algorithm"
+  scores:
+    ados4_communication:
+      meaning: "Communication: sum of four algorithm items (a code 3 counts 2, the codes 7 and 8 count 0), 0 to 8."
+      construct: communication_language
+      higher_means: more autism-related behaviour observed in communication
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module4): classification cut-offs, autism 3 and autism spectrum 2 on this score"
+      cutoffs:
+        - {value: "3", meaning: "autism (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4)", confidence: "to verify"}
+        - {value: "2", meaning: "autism spectrum (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4); scale_reference_aq_autism.md section 1", confidence: "confirmed in source (extracted, Nakamura 2024)"}
+    ados4_social_interaction:
+      meaning: "Reciprocal social interaction: sum of seven algorithm items, 0 to 14."
+      higher_means: more autism-related behaviour observed in social interaction
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module4): classification cut-offs, autism 6 and autism spectrum 4 on this score"
+      cutoffs:
+        - {value: "6", meaning: "autism (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4)", confidence: "to verify"}
+        - {value: "4", meaning: "autism spectrum (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4); scale_reference_aq_autism.md section 1", confidence: "confirmed in source (extracted, Nakamura 2024)"}
+    ados4_total:
+      meaning: "Total of the original algorithm: communication plus reciprocal social interaction, 0 to 22."
+      higher_means: more autism-related behaviour observed
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp ados_module4): autism from 10, autism spectrum from 7"
+      cutoffs:
+        - {value: "10", meaning: "autism (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4)", confidence: "to verify"}
+        - {value: "7", meaning: "autism spectrum (one of the three cut-offs of the classification)", source: "schema notes (asp ados_module4); scale_reference_aq_autism.md section 1", confidence: "confirmed in source (extracted, Nakamura 2024)"}
+    ados4_stereotyped_restricted:
+      meaning: "Stereotyped behaviours and restricted interests: sum of four items (D1, D2, D4, D5) with the same recoding, 0 to 8. Outside the total; no cut-off."
+      construct: repetitive_behaviours
+      higher_means: more stereotyped behaviours and restricted interests observed
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 1: the revised algorithm of the module 4 counts the items D1, D2 and D4 in a total with cut-offs (confirmed in source, direct, Hanawa 2025); schema notes (asp ados_module3): D1, D2 and D4 are in the total of the module 3. Nothing is stated for the item D5."
+  variables:
+    ados4_classification:
+      meaning: "Classification as stored: autism (communication 3, social interaction 6 and total 10), autism spectrum (2, 4 and 7) or non-spectrum."
+      polarity: not_applicable
+    ados4_b10:
+      meaning: "Item B10, the item that the ADOS-2 added to the module: empty on a visit of the first edition, which tells the two editions apart."
+  flags:
+    - "Original algorithm of the module 4, not the revised one (Hus and Lord, 2014), which uses other items, has no separate communication domain and has the cut-offs 8 and 10: do not compare with cohorts scored with the revised algorithm. No comparison score for this module."
+    - "ados4_stereotyped_restricted enters no classification of the original algorithm. Its direction is read from the other algorithms, which count three of its four items (D1, D2, D4) towards their totals; nothing is stated for the item D5. 80 stored values, 77 of them before 2019, also counted the item C1 under an earlier rule of the form; the delivered score is the four-item sum."
+    - "The two stored sub-scores count a code 3 as 3 on every visit (the export's error) and are not delivered; the delivered ones follow the published rule."
+    - "The stored total counts a code 3 as 3 on part of the first edition (41 of 80 visits until 2017 with such a code); the delivered total follows the publication on every visit."
+    - "Two editions in the same columns: ados4_b10 is empty on a visit of the first edition (254 visits, most until 2019)."
+    - "A stored total of 0 with no item (175 values written by the export) is not a total and is not delivered."
+    - "The classification is delivered as stored; a defect of the script of the form leaves a stale or empty class on 28 visits."
+    - "Do not average the items: the codes 7 and 8 are not levels."
+
+alexithymia_children:
+  description: "The Alexithymia Questionnaire for Children, the children's form of the TAS-20: twenty items answered from 0 to 2 by the child, three factor scores and a total. The adults fill the BVAQ."
+  version: "20 items answered from 0 to 2 (French form 'qae')"
+  reference: "Rieffe C, Oosterveld P, Terwogt MM. An alexithymia questionnaire for children. Pers Individ Dif 2006;40:123-133"
+  reference_confidence: "confirmed in source (secondary, direct: Loas 2017 cites it and describes it); reference tool unchecked (HTTP 429)"
+  respondent: patient
+  construct: alexithymia
+  sources: ["schema notes (asp alexithymia_children)", "scale_reference_aq_autism.md sections 17 and 18"]
+  scores:
+    aqc_identifying:
+      meaning: "Difficulty identifying feelings: sum of seven items (1, 3, 6, 7, 9, 13, 14), 0 to 14."
+    aqc_describing:
+      meaning: "Difficulty describing feelings: sum of five items (2, 4, 11, 12, 17; item 4 reversed), 0 to 10."
+    aqc_externally_oriented:
+      meaning: "Externally oriented thinking: sum of eight items (5, 8, 10, 15, 16, 18, 19, 20; items 5, 10, 18 and 19 reversed), 0 to 16."
+    aqc_total:
+      meaning: "Total: sum of the three factors, 0 to 40. Not stored, computed by the package."
+  flags:
+    - "No document states what a higher score means or gives the wording of the answers 0 to 2, so no direction is written. The key is that of the TAS-20 (same three factors, same reversed items 4, 5, 10, 18 and 19), where 61 or more is read as alexithymia (literature notes, section 18); the reversed items and the 0 to 2 coding of the children's form are 'to verify'."
+    - "Externally oriented thinking had low internal consistency in children (alpha .29 in a school sample: Loas 2017, confirmed in source, direct). Here its reversed items 5 and 18 barely correlate with the rest of the factor (+0.09 and +0.07)."
+    - "Scores typed without their items (208 visits) are kept as stored; the typed totals are 1.6 points above the computed ones on average."
+    - "No cut-off is established (to verify)."
+
+bdi2:
+  description: "The Beck Depression Inventory, second edition: twenty-one items answered by the adult about the past two weeks, today included, and a total. Filled by adults only; the children fill the CDI."
+  version: "BDI-II, 21 items"
+  reference: "Beck AT, Steer RA, Brown GK. BDI-II manual, 1996; Beck AT, Steer RA, Ball R, Ranieri W. Comparison of BDI-IA and BDI-II. J Pers Assess 1996;67:588-597 (PMID 8991972)"
+  reference_confidence: "comparison confirmed in source (abstract); manual year to verify"
+  respondent: patient
+  construct: depression
+  period: "past two weeks, today included"
+  sources: ["schema notes (asp bdi2)", "scale_reference_aq_autism.md section 27"]
+  items:
+    meaning: "Each item is delivered on the levels 0 to 3 (the items 16 and 18, which have seven options, are brought to these four levels)."
+    higher_means: more severe symptom
+    polarity: worse
+    basis: literature
+    source: "scale_reference_aq_autism.md section 27: 21 items with answers 0-3, higher scores more severe (confirmed in source, direct, Loas 2017)"
+  scores:
+    bdi_total:
+      meaning: "Total: sum of the twenty-one items, 0 to 63."
+      higher_means: more severe depression
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 27: answers 0-3, higher scores more severe (confirmed in source, direct, Loas 2017)"
+      cutoffs:
+        - {value: "0 to 13, 14 to 19, 20 to 28, 29 to 63", meaning: "the four usual severity categories, in increasing order", source: "scale_reference_aq_autism.md section 27", confidence: "four categories confirmed in source (abstract, Dolle 2012); band limits to verify"}
+        - {value: "23 or more", meaning: "screening cut-off in adolescent patients (sensitivity .88, specificity .92)", source: "Dolle 2012, reported in scale_reference_aq_autism.md section 27", confidence: "confirmed in source (abstract, Dolle 2012)"}
+  flags:
+    - "The items 16 (sleep) and 18 (appetite) have seven options, stored 0 to 6 and brought to the levels 0 to 3; whether the change is an increase or a decrease is not delivered."
+    - "The total is not delivered where some items are missing (78 visits), since a stored total may then be a partial sum. A total typed without any item (82 visits) is kept as stored."
+    - "No French validation was found in the literature check (to verify)."
+
+brief_adult:
+  description: "The Behavior Rating Inventory of Executive Function, adult version (BRIEF-A): 75 items answered from 1 to 3 about executive functioning in everyday life, nine scale scores, two indexes, a composite and three validity scores. Visits of adults."
+  version: "BRIEF-A, 75 items; an informant form (form 264) and the self-report form (form 344) in the same columns"
+  reference: "Roth RM, Isquith PK, Gioia GA. BRIEF-A professional manual, PAR, 2005"
+  reference_confidence: "to verify (manual not read; the schema cites 2005)"
+  respondent: patient
+  construct: executive_function
+  sources: ["schema notes (asp brief_adult)", "scale_reference_aq_autism.md section 21", "docs/asp/PROGRESS.md D8"]
+  scores:
+    briefa_inhibit:
+      meaning: "Inhibit: raw sum of 8 items answered from 1 to 3 (8 to 24)."
+    briefa_shift:
+      meaning: "Shift: raw sum of 6 items (6 to 18)."
+    briefa_emotional_control:
+      meaning: "Emotional control: raw sum of 10 items (10 to 30)."
+    briefa_self_monitor:
+      meaning: "Self-monitor: raw sum of 6 items (6 to 18)."
+    briefa_initiate:
+      meaning: "Initiate: raw sum of 8 items (8 to 24)."
+    briefa_working_memory:
+      meaning: "Working memory: raw sum of 8 items (8 to 24)."
+    briefa_plan_organize:
+      meaning: "Plan and organize: raw sum of 10 items (10 to 30)."
+    briefa_task_monitor:
+      meaning: "Task monitor: raw sum of 6 items (6 to 18)."
+    briefa_organization_materials:
+      meaning: "Organization of materials: raw sum of 8 items (8 to 24)."
+    briefa_bri:
+      meaning: "Behavioral Regulation Index: raw sum of the scales inhibit, shift, emotional control and self-monitor (30 to 90)."
+    briefa_mi:
+      meaning: "Metacognition Index: raw sum of the scales initiate, working memory, plan and organize, task monitor and organization of materials (40 to 120)."
+    briefa_gec:
+      meaning: "Global Executive Composite: raw sum of the nine scales (70 to 210)."
+  variables:
+    briefa_negativity:
+      meaning: "Negativity validity score, as stored (at most 10); the published rule was not found."
+    briefa_infrequency:
+      meaning: "Infrequency validity score, as stored: a count of 5 items, so at most 5; the published rule was not found."
+    briefa_inconsistency:
+      meaning: "Inconsistency validity score, as stored (at most 20); the published rule was not found."
+    briefa_rater:
+      meaning: "Relation of the rater to the patient. Filled on the informant form only, so a value here marks a visit of the informant form."
+      polarity: not_applicable
+    briefa_known_for:
+      meaning: "For how long the rater has known the patient, in years (informant form only)."
+      polarity: neutral
+  flags:
+    - "No document gives the wording of the answers 1 to 3 or says what a higher raw score means: no direction is written here. The scores are raw sums and no T-score is stored; the convention 'T 65 or more is clinically elevated' is 'to verify'."
+    - "Respondent: two forms share every item and score column, an informant form (108 visits, 2009 to 2020) and the self-report form (678 visits, mostly from 2019). The export does not say which was filled; only the rater fields, filled on the informant form, tell them apart."
+    - "Scale scores typed without the items (about 204 visits) are kept as stored; the typed composites read higher (median 151.5 against 141 for the computed ones)."
+    - "7 visits have T-scores typed in the raw column (flagged out of range)."
+    - "The composite rises over the years (median 122.5 to 129.5 until 2017, 132 to 149 from 2019), partly the change of form and of centres; no other cause is known."
+    - "The scale names and items are those of the published profile and of the scripts of the forms; on the published side the structure is confirmed at abstract level only."
+
+brief_parent:
+  description: "The Behavior Rating Inventory of Executive Function filled by a parent for a child: 86 items answered from 1 to 3, eight scale scores, two indexes, a composite, two validity scores and the rater."
+  version: "BRIEF, parent form, 86 items"
+  reference: "Gioia GA, Isquith PK, Guy SC, Kenworthy L. BRIEF professional manual, PAR, 2000"
+  reference_confidence: "to verify (manual not read; no page states the authors and year)"
+  respondent: relative
+  construct: executive_function
+  sources: ["schema notes (asp brief_parent)", "scale_reference_aq_autism.md section 20", "docs/asp/PROGRESS.md D8"]
+  scores:
+    briefp_inhibit:
+      meaning: "Inhibit: raw sum of 10 items answered from 1 to 3 (10 to 30)."
+    briefp_shift:
+      meaning: "Shift: raw sum of 8 items (8 to 24)."
+    briefp_emotional_control:
+      meaning: "Emotional control: raw sum of 10 items (10 to 30)."
+    briefp_initiate:
+      meaning: "Initiate: raw sum of 8 items (8 to 24)."
+    briefp_working_memory:
+      meaning: "Working memory: raw sum of 10 items (10 to 30)."
+    briefp_plan_organize:
+      meaning: "Plan and organize: raw sum of 12 items (12 to 36)."
+    briefp_monitor:
+      meaning: "Monitor: raw sum of 8 items (8 to 24)."
+    briefp_organization_materials:
+      meaning: "Organization of materials: raw sum of 6 items (6 to 18)."
+    briefp_bri:
+      meaning: "Behavioral Regulation Index: raw sum of the scales inhibit, shift and emotional control (28 to 84)."
+    briefp_mi:
+      meaning: "Metacognition Index: raw sum of the scales initiate, working memory, plan and organize, monitor and organization of materials (44 to 132)."
+    briefp_gec:
+      meaning: "Global Executive Composite: raw sum of the eight scales (72 to 216)."
+  variables:
+    briefp_negativity:
+      meaning: "Negativity validity score, as stored and as the script of the form computes it (9 items counted; at most 10); the published rule was not found."
+    briefp_inconsistency:
+      meaning: "Inconsistency validity score, as stored and as the script of the form computes it (the item 44 is used twice; at most 20); the published rule was not found."
+    briefp_rater:
+      meaning: "Relation of the rater to the child."
+      polarity: not_applicable
+    briefp_known_for:
+      meaning: "For how long the rater has known the child, in years."
+      polarity: neutral
+  flags:
+    - "No document gives the wording of the answers 1 to 3 or says what a higher raw score means: no direction is written here. The scores are raw sums and no T-score is stored; the convention 'T 65 as the usual clinical elevation' is 'to verify'."
+    - "Scale scores typed without the items (265 visits) are kept as stored. 23 typed values of the organization of materials are above its maximum of 18 (flagged out of range), and the typed Behavioral Regulation Index differs from the sum of the typed scales on 20 visits."
+    - "The children's form and the adult form share the item columns; a visit is read as the adult form when it holds a score that only that form has. 9 visits with the first 75 items only are read as the children's form."
+    - "The composite is lower in 2013 to 2015 (median 130 to 144.5, one centre) than from 2019 (150 to 163), with no known cause."
+    - "A French version of the parent and teacher forms was studied in healthy children aged 5 to 18 (Fournet 2015, confirmed in source, abstract)."
+
+bvaq:
+  description: "A twenty-item form of the Bermond-Vorst Alexithymia Questionnaire, filled by adults at the inclusion visit: items answered from 1 to 5, five factor scores of four items each, two components (affective and cognitive) and a total."
+  version: "20-item form (five dimensions of four items each); the published questionnaire has 40 items"
+  reference: "Vorst HCM, Bermond B. Validity and reliability of the Bermond-Vorst Alexithymia Questionnaire. Pers Individ Dif 2001;30:413-434"
+  reference_confidence: "cited by de Vroege 2018 (read); reference tool unchecked (HTTP 429)"
+  respondent: patient
+  construct: alexithymia
+  sources: ["schema notes and labels (asp bvaq)", "scale_reference_aq_autism.md section 19", "docs/asp/PROGRESS.md D62"]
+  scores:
+    bvaq_verbalising:
+      meaning: "Verbalising (difficulty putting emotions into words): sum of the items 1, 6, 11 and 16, with 6 and 11 reversed; 4 to 20."
+      higher_means: more alexithymic
+      polarity: worse
+      basis: stated
+      source: "schema label (asp bvaq): 'BVAQ verbalising (4 to 20, higher = more alexithymic)'"
+    bvaq_fantasising:
+      meaning: "Fantasising (reduced fantasy life): sum of the items 2, 7, 12 and 17, with 7 and 17 reversed; 4 to 20."
+      higher_means: more reduced fantasy life (more alexithymic)
+      polarity: worse
+      basis: stated
+      source: "schema labels (asp bvaq): the stored column is labelled 'factor 2: reduced fantasy life'; the factor is built like verbalising, labelled 'higher = more alexithymic'"
+    bvaq_identifying:
+      meaning: "Identifying (difficulty identifying emotions): sum of the items 3, 8, 13 and 18, with 8 and 18 reversed; 4 to 20."
+      higher_means: more difficulty identifying emotions (more alexithymic)
+      polarity: worse
+      basis: stated
+      source: "schema labels (asp bvaq): the stored column is labelled 'factor 3: difficulty identifying emotions'; the factor is built like verbalising, labelled 'higher = more alexithymic'"
+    bvaq_emotionalising:
+      meaning: "Emotionalising (low emotional reactivity): sum of the items 4, 9, 14 and 19, with 9 and 19 reversed; 4 to 20."
+      higher_means: lower emotional reactivity (more alexithymic)
+      polarity: worse
+      basis: stated
+      source: "schema labels (asp bvaq): the stored column is labelled 'factor 4: low emotional reactivity'; the factor is built like verbalising, labelled 'higher = more alexithymic'"
+    bvaq_analysing:
+      meaning: "Analysing (externally oriented thinking): sum of the items 5, 10, 15 and 20, with 10 and 20 reversed; 4 to 20."
+      higher_means: more externally oriented thinking (more alexithymic)
+      polarity: worse
+      basis: stated
+      source: "schema labels (asp bvaq): the stored column is labelled 'factor 5: externally oriented thinking'; the factor is built like verbalising, labelled 'higher = more alexithymic'"
+    bvaq_affective:
+      meaning: "Affective component: fantasising plus emotionalising, 8 to 40."
+      higher_means: more alexithymic on the affective component
+      polarity: worse
+      basis: stated
+      source: "schema notes and labels (asp bvaq): sum of two factors, each counting a deficit"
+    bvaq_cognitive:
+      meaning: "Cognitive component: verbalising plus identifying plus analysing, 12 to 60."
+      higher_means: more alexithymic on the cognitive component
+      polarity: worse
+      basis: stated
+      source: "schema notes and labels (asp bvaq): sum of three factors, verbalising among them ('higher = more alexithymic')"
+    bvaq_total:
+      meaning: "Total: affective plus cognitive component, 20 to 100."
+      higher_means: more alexithymic
+      polarity: worse
+      basis: stated
+      source: "schema notes and labels (asp bvaq): sum of the five factors, verbalising among them ('higher = more alexithymic')"
+  flags:
+    - "Identified as a twenty-item form of the BVAQ, 'likely'. The key delivered is that of the script of the form; whether a twenty-item form is published, and its key, were not settled, so the key is 'to verify'."
+    - "Only the verbalising label states the direction in words. For the other factors it is read from the labels of the stored columns (reduced fantasy life, difficulty identifying emotions, low emotional reactivity, externally oriented thinking), not from a publication."
+    - "Before 2025 the form stored the factor scores inverted (24 minus the right sum) on 289 of the 441 visits with the twenty items. The delivered scores are recomputed from the items on every visit, so they differ from the stored values on 262 to 272 visits per factor."
+    - "Scores typed without items (172 visits) are kept as stored; on 71 of them the stored affective and cognitive components are exchanged and are not corrected."
+    - "No cut-off and no French version were found in the literature check (to verify)."
+
+cdi:
+  description: "The Children's Depression Inventory: twenty-seven items answered from 0 to 2 by the child about the past two weeks, and a total. The adults fill the BDI-II."
+  version: "27 items"
+  reference: "Kovacs M. The Children's Depression Inventory (CDI). Psychopharmacol Bull 1985;21:995-998 (PMID 4089116)"
+  reference_confidence: "reference confirmed (Europe PMC record, no abstract); reference tool unchecked (HTTP 429)"
+  respondent: patient
+  construct: depression
+  period: "past two weeks"
+  sources: ["schema notes (asp cdi)", "scale_reference_aq_autism.md section 25"]
+  items:
+    meaning: "Items as answered, 0 to 2. Thirteen items (2, 5, 7, 8, 10, 11, 13, 15, 16, 18, 21, 24 and 25) are reversed in the total."
+    higher_means: "more severe symptom, for the items that the total does not reverse"
+    polarity: worse
+    basis: literature
+    source: "scale_reference_aq_autism.md section 25: three statements graded 0-2 in order of increasing severity (confirmed in source, extracted: Bang 2015)"
+  scores:
+    cdi_total:
+      meaning: "Total: sum of the twenty-seven items with thirteen reversed, 0 to 54."
+      higher_means: more severe depressive symptoms
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 25: items graded 0-2 in order of increasing severity, total 0-54 (confirmed in source, extracted: Bang 2015)"
+      cutoffs:
+        - {value: "13", meaning: "cut-off of Kovacs for clinic-referred children", source: "Bang 2015, reported in scale_reference_aq_autism.md section 25", confidence: "confirmed in source (extracted, secondary: Bang 2015)"}
+        - {value: "19 or 20", meaning: "cut-off of Kovacs for non-clinical samples (20 favoured for general screening)", source: "Bang 2015, reported in scale_reference_aq_autism.md section 25", confidence: "confirmed in source (extracted, secondary: Bang 2015)"}
+  flags:
+    - "The list of thirteen reversed items is the schema's key, fitted on the data (it gives the stored total on 316 of 341 complete visits); the published key was not read (to verify)."
+    - "Totals typed without any item (114 visits) are kept as stored. They read higher than the computed ones (median 15.5 against 11); the rule applied by hand is not known."
+    - "On 25 visits of 2021 to 2023 the stored total is not the published sum (one point off on 20 of them); the delivered total is the sum."
+    - "Other cut-offs are published (Korean adolescents: 20 for screening, 15, 20 and 25 for mild, moderate and severe). No French version was found in the literature check."
+
+gsq:
+  description: "The Glasgow Sensory Questionnaire, filled by adults at the inclusion visit: forty-two items answered from 0 to 4 on how often sensory experiences happen, a hyper-sensitivity and a hypo-sensitivity score for each of seven senses, seven scores that add the two, and a total."
+  version: "42 items"
+  reference: "Robertson AE, Simmons DR. The relationship between sensory sensitivity and autistic traits in the general population. J Autism Dev Disord 2013;43:775-784 (PMID 22832890)"
+  reference_confidence: "confirmed in source (abstract); the abstract does not name the GSQ"
+  respondent: patient
+  construct: sensory_processing
+  sources: ["schema notes (asp gsq)", "scale_reference_aq_autism.md section 16", "docs/asp/PROGRESS.md D14 and D64"]
+  items:
+    higher_means: more frequent sensory experience of the kind the item describes
+    polarity: worse
+    basis: literature
+    source: "scale_reference_aq_autism.md section 16: five answers (never, rarely, sometimes, often, always) scored 0-4, higher means greater sensitivity, no reversed items mentioned (confirmed in source, extracted, secondary: Jakob 2025)"
+  scores:
+    gsq_total:
+      meaning: "Total: sum of the forty-two items, 0 to 168."
+      higher_means: more frequent sensory hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16: total 0-168, higher means greater sensitivity (confirmed in source, extracted, secondary: Jakob 2025)"
+    "gsq_hyper_*":
+      meaning: "Hyper-sensitivity in one sense (tactile, visual, auditory, olfactory, gustatory, proprioceptive or vestibular): sum of three items, 0 to 12."
+      higher_means: more frequent hyper-sensitivity in that sense
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16: 14 sub-scales of three items scored 0-4, higher means greater sensitivity (confirmed in source, extracted, secondary: Jakob 2025)"
+    "gsq_hypo_*":
+      meaning: "Hypo-sensitivity in one sense (tactile, visual, auditory, olfactory, gustatory, proprioceptive or vestibular): sum of three items, 0 to 12."
+      higher_means: more frequent hypo-sensitivity in that sense
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16: 14 sub-scales of three items scored 0-4, higher means greater sensitivity (confirmed in source, extracted, secondary: Jakob 2025)"
+    gsq_tactile:
+      meaning: "Tactile: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent tactile hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_visual:
+      meaning: "Visual: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent visual hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_auditory:
+      meaning: "Auditory: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent auditory hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_olfactory:
+      meaning: "Olfactory: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent olfactory hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_gustatory:
+      meaning: "Gustatory: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent gustatory hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_proprioceptive:
+      meaning: "Proprioceptive: hyper- plus hypo-sensitivity, sum of its two parts (items 3, 5, 29, 37, 38 and 41), 0 to 24. Corrected: the stored score counts the item 40 for the item 41."
+      higher_means: more frequent proprioceptive hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+    gsq_vestibular:
+      meaning: "Vestibular: hyper- plus hypo-sensitivity, sum of six items, 0 to 24."
+      higher_means: more frequent vestibular hyper- and hypo-sensitivity
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 16 (confirmed in source, extracted); the six-item scores are the sums of the two three-item parts"
+  flags:
+    - "gsq_proprioceptive is corrected: the script of the form puts the item 40 (a gustatory item) in the place of the item 41. The delivered score differs from the stored one on 381 of the 440 complete visits. Where it was typed without items (155 visits) it is kept as stored."
+    - "Identified as the GSQ, 'likely'. The item numbers of each sub-score are those of the script of the form; on the published side they are 'to verify', and the published use of the six-item scores is 'to verify'."
+    - "Scores typed without their items (about 156 visits) are kept as stored; their median total equals that of the computed ones."
+    - "No cut-off in the sources read (to verify)."
+    - "A French version is published (Sapey-Triomphe and others, 2018, confirmed in source, abstract); the schema does not say which French text the form uses."
+    - "One centre reads lower (median total 63 against 74 to 81 elsewhere), with no known cause."
+
+raads_r:
+  description: "The Ritvo Autism Asperger Diagnostic Scale-Revised, filled by adults at the screening visit: eighty items answered from 0 to 3, four sub-scale scores and a total. It replaces the Autism-Spectrum Quotient of the old set of forms."
+  version: "80 items; French form of unknown origin (no French validation found)"
+  reference: "Ritvo RA, Ritvo ER, Guthrie D, et al. The RAADS-R. J Autism Dev Disord 2011;41:1076-1089 (PMC3134766)"
+  reference_confidence: "confirmed in source (direct)"
+  respondent: patient
+  construct: autism_symptoms
+  sources: ["schema notes (asp raads_r)", "scale_reference_aq_autism.md section 4"]
+  scores:
+    raads_social:
+      meaning: "Social relatedness: sum of 39 items answered from 0 to 3, fourteen of them reversed."
+      higher_means: more autism-related traits in social relatedness
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 4: domain threshold 31, total 44 to 227 in the ASD group and 0 to 65 in the comparison group (confirmed in source, direct)"
+      cutoffs:
+        - {value: "31", meaning: "domain threshold of the original study", source: "Ritvo 2011, in scale_reference_aq_autism.md section 4", confidence: "confirmed in source (direct)"}
+    raads_interests:
+      meaning: "Circumscribed interests: sum of 14 items."
+      construct: repetitive_behaviours
+      higher_means: more circumscribed interests
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 4: domain threshold 15 (confirmed in source, direct)"
+      cutoffs:
+        - {value: "15", meaning: "domain threshold of the original study", source: "Ritvo 2011, in scale_reference_aq_autism.md section 4", confidence: "confirmed in source (direct)"}
+    raads_language:
+      meaning: "Language: sum of 7 items, one of them reversed."
+      construct: communication_language
+      higher_means: more autism-related traits in language
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 4: domain threshold 4 (confirmed in source, direct)"
+      cutoffs:
+        - {value: "4", meaning: "domain threshold of the original study", source: "Ritvo 2011, in scale_reference_aq_autism.md section 4", confidence: "confirmed in source (direct)"}
+    raads_sensory_motor:
+      meaning: "Sensory motor: sum of 20 items, two of them reversed."
+      construct: sensory_processing
+      higher_means: more sensory and motor traits
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 4: domain threshold 16 (confirmed in source, direct)"
+      cutoffs:
+        - {value: "16", meaning: "domain threshold of the original study", source: "Ritvo 2011, in scale_reference_aq_autism.md section 4", confidence: "confirmed in source (direct)"}
+    raads_total:
+      meaning: "Total: sum of the four sub-scales, which share the eighty items; 0 to 240. Computed by the package (the stored total is almost never filled)."
+      higher_means: more autism-related traits
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 4: best threshold 65; totals 44 to 227 in the ASD group and 0 to 65 in the comparison group (confirmed in source, direct)"
+      cutoffs:
+        - {value: "65", meaning: "best threshold between adults with ASD and comparisons in the original study (sensitivity 97%, specificity 100%)", source: "Ritvo 2011, in scale_reference_aq_autism.md section 4", confidence: "confirmed in source (direct)"}
+  flags:
+    - "The reversed items (seventeen), the item counts per sub-scale and the 0 to 3 coding are those of the key that reproduces the stored scores (319 of 320 visits); they could not be compared with a page read (to verify), and the wording of the answers is not in the schema."
+    - "Other samples report other total thresholds (Swedish: 72; Italian: 92 and 104)."
+    - "Sub-scales typed without the items (159 visits) are kept as stored; the total is then their sum. The typed totals read slightly lower (median 146 against 153.5)."
+    - "Filled at the screening visit only."
+
+short_sensory_profile:
+  description: "The Short Sensory Profile of Dunn: thirty-eight items answered from 1 to 5 by a parent or another caregiver on how often the child shows sensory behaviours, seven section scores and a total. Filled for children, and for adults on 239 visits."
+  version: "Short Sensory Profile of 1999, 38 items answered from 1 to 5"
+  reference: "McIntosh DN, Miller LJ, Shyu V, Dunn W. Short Sensory Profile (1999; in Dunn W, Sensory Profile manual)"
+  reference_confidence: "confirmed in source (extracted, Williams 2018); the 1999 chapters themselves not read"
+  respondent: relative
+  construct: sensory_processing
+  sources: ["schema notes and labels (asp short_sensory_profile)", "scale_reference_aq_autism.md section 15"]
+  items:
+    higher_means: the behaviour is less frequent
+    polarity: better
+    basis: stated
+    source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'; scale_reference_aq_autism.md section 15: 1 = always, 5 = never (confirmed in source, extracted, Williams 2018)"
+  scores:
+    ssp_tactile:
+      meaning: "Tactile sensitivity: sum of the items 1 to 7 (7 to 35)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_taste_smell:
+      meaning: "Taste and smell sensitivity: sum of the items 8 to 11 (4 to 20)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_movement:
+      meaning: "Movement sensitivity: sum of the items 12 to 14 (3 to 15)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_seeks_sensation:
+      meaning: "Underresponsive, seeks sensation: sum of the items 15 to 21 (7 to 35)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_auditory_filtering:
+      meaning: "Auditory filtering: sum of the items 22 to 27 (6 to 30)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_low_energy:
+      meaning: "Low energy, weak: sum of the items 28 to 33 (6 to 30)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_visual_auditory:
+      meaning: "Visual and auditory sensitivity: sum of the items 34 to 38 (5 to 25)."
+      higher_means: fewer or less frequent atypical behaviours in this section
+      polarity: better
+      basis: stated
+      source: "schema notes (asp short_sensory_profile): 'A low score is a frequent behaviour'"
+    ssp_total:
+      meaning: "Total: sum of the seven sections, 38 to 190. Not stored, computed by the package."
+      higher_means: more typical sensory processing
+      polarity: better
+      basis: stated
+      source: "schema label (asp short_sensory_profile): 'Short Sensory Profile total (38 to 190, lower is more atypical)'"
+      cutoffs:
+        - {value: "155 to 190", meaning: "typical performance", source: "Keshavarz 2025, in scale_reference_aq_autism.md section 15", confidence: "confirmed in source (extracted, secondary: Keshavarz 2025, which labels the instrument SSP-2; the manual's table was not read)"}
+        - {value: "142 to 154", meaning: "probable difference", source: "Keshavarz 2025, in scale_reference_aq_autism.md section 15", confidence: "confirmed in source (extracted, secondary: Keshavarz 2025, which labels the instrument SSP-2; the manual's table was not read)"}
+        - {value: "38 to 141", meaning: "definite difference", source: "Keshavarz 2025, in scale_reference_aq_autism.md section 15", confidence: "confirmed in source (extracted, secondary: Keshavarz 2025, which labels the instrument SSP-2; the manual's table was not read)"}
+  variables:
+    ssp_completed_by:
+      meaning: "Who filled the questionnaires of the child block: father, mother or another person."
+      polarity: not_applicable
+  flags:
+    - "Higher is better here, the opposite of most scales of this group: a low score is a frequent behaviour."
+    - "No cut-off of the profile is applied by the package. The bands above come from a secondary source and from child norms (3 to 17 years); the section cut-offs were not read."
+    - "239 visits are visits of patients aged 18 or more (2011 to 2023): outside the published child norms; they are delivered as recorded."
+    - "In youth with autism the seven-factor structure did not fit, and the authors advise against the total and most section scores in that population (Williams 2018, confirmed in source, extracted)."
+    - "On 22 visits, all dated 2013, the stored auditory filtering score differs from the sum of its items; the delivered score is the sum."
+    - "The total dips in 2018 to 2020 in children and in adults, with no known cause."
+
+srs_adult:
+  description: "The adult self-report form of the Social Responsiveness Scale, filled by adults at the screening visit: sixty-five items answered from 1 to 4 and a total raw score."
+  version: "Adult self-report form (form 345), 65 items"
+  reference: "Constantino JN, Davis SA, Todd RD, et al. Validation of a brief quantitative measure of autistic traits. J Autism Dev Disord 2003;33:427-433 (PMID 12959421); manuals: Constantino JN, Gruber CP. SRS manual (2005) and SRS-2 manual (2012), Western Psychological Services"
+  reference_confidence: "original confirmed in source (abstract), reference tool verified; manuals to verify (years recalled, manuals not read)"
+  respondent: patient
+  construct: autism_symptoms
+  sources: ["schema notes (asp srs_adult)", "scale_reference_aq_autism.md section 3"]
+  scores:
+    srsa_total:
+      meaning: "Total raw score: each answer counted from 0 to 3, fifteen items reversed; 0 to 195."
+      higher_means: more difficulty in social responsiveness (more autistic traits)
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_adult): the items that are not reversed are worded as problems; scale_reference_aq_autism.md section 3: the SRS is a measure of autistic traits that correlates about 0.7 with ADI-R algorithm scores (confirmed in source, abstract)"
+  flags:
+    - "Identified as the adult self-report form, 'likely'. The key has fifteen reversed items, not the seventeen of the forms filled by a relative: this form words the items 52 and 55 as problems, and the answers agree. No page read gives the reversed items of the adult forms (to verify)."
+    - "The wording of the answers 1 to 4 is given in the schema notes for the forms filled by a relative only."
+    - "No T-score is delivered and no cut-off is written: the severity bands are read from the T-score of the manual, which was not read."
+    - "Filled at the screening visit. The forms filled by a relative are srs_relative_child and srs_relative_adult."
+
+srs_relative_adult:
+  description: "The adult form of the Social Responsiveness Scale filled by a relative about a patient of 18 or over: sixty-five items answered from 1 (not true) to 4 (almost always true), five sub-scale scores, a social communication and interaction score and a total raw score."
+  version: "Adult form filled by a relative, 65 items"
+  reference: "Constantino JN, Davis SA, Todd RD, et al. Validation of a brief quantitative measure of autistic traits. J Autism Dev Disord 2003;33:427-433 (PMID 12959421); manuals: Constantino JN, Gruber CP. SRS manual (2005) and SRS-2 manual (2012), Western Psychological Services"
+  reference_confidence: "original confirmed in source (abstract), reference tool verified; manuals to verify (years recalled, manuals not read)"
+  respondent: relative
+  construct: autism_symptoms
+  sources: ["schema notes (asp srs_relative_adult)", "scale_reference_aq_autism.md section 3", "docs/asp/PROGRESS.md D14 and D64"]
+  items:
+    meaning: "Answers as recorded: 1 not true, 2 sometimes true, 3 often true, 4 almost always true (9, does not apply, is read as missing). Seventeen items are worded the other way and are reversed in the scores."
+    higher_means: the statement is more often true
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (asp srs_relative_adult): answers of the thesaurus, 1 not true to 4 almost always true"
+  scores:
+    srsr_awareness:
+      meaning: "Social awareness: 8 items, each counted from 0 to 3 after reversal; 0 to 24."
+      higher_means: more difficulty in social awareness
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_cognition:
+      meaning: "Social cognition: 12 items, each counted from 0 to 3 after reversal; 0 to 36."
+      higher_means: more difficulty in social cognition
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_communication:
+      meaning: "Social communication: 22 items, each counted from 0 to 3 after reversal; 0 to 66."
+      construct: communication_language
+      higher_means: more difficulty in social communication
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_motivation:
+      meaning: "Social motivation: 11 items, each counted from 0 to 3 after reversal; 0 to 33."
+      higher_means: more difficulty in social motivation
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_restricted_repetitive:
+      meaning: "Restricted interests and repetitive behaviour: 12 items, none reversed, each counted from 0 to 3; 0 to 36."
+      construct: repetitive_behaviours
+      higher_means: more restricted interests and repetitive behaviour
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_sci:
+      meaning: "Social communication and interaction: the 53 items of the four social sub-scales; 0 to 159."
+      higher_means: more difficulty in social communication and interaction
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsr_total:
+      meaning: "Total raw score: the 65 items, each counted from 0 to 3, seventeen reversed; 0 to 195."
+      higher_means: more difficulty in social responsiveness (more autistic traits)
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_adult): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3: the SRS correlates about 0.7 with ADI-R algorithm scores (confirmed in source, abstract)"
+  variables:
+    srsr_filled_by:
+      meaning: "Who filled the form: father, mother or another person."
+      polarity: not_applicable
+  flags:
+    - "A higher sub-scale score is more difficulty: a high social awareness, cognition, communication or motivation score is not more of the ability."
+    - "The stored raw scores are wrong on every visit (the export sums the answers 1 to 4 and reverses no item; 20 to 114 points too high). The delivered scores are recomputed with the published key and differ from the stored ones."
+    - "The stored T-scores are not delivered (they were read from the wrong raw scores). No cut-off is written: a T-score can be read in the manual from the delivered raw score, the sex and the form."
+    - "Two forms share the columns and no column says which was filled: the age at the visit tells it (18 and over here; under 18 is srs_relative_child). The norms of the two forms differ. The application uses the age at the date of the form: the two rules differ on 7 follow-up visits."
+    - "The list of seventeen reversed items is attested for the school-age form only (a forum thread, extracted); for the adult form it is 'to verify', though the answers of this form single out the same seventeen items."
+    - "A German research version for adults reported a raw total of 67 as a cut-off for ASD (Bolte 2012, confirmed in source, direct); it is not established for this form."
+    - "No French adult form was found in the literature check."
+
+srs_relative_child:
+  description: "The school-age form of the Social Responsiveness Scale filled by a parent or another relative about a patient under 18: sixty-five items answered from 1 (not true) to 4 (almost always true), five sub-scale scores, a social communication and interaction score and a total raw score."
+  version: "School-age form filled by a parent, 65 items"
+  reference: "Constantino JN, Davis SA, Todd RD, et al. Validation of a brief quantitative measure of autistic traits. J Autism Dev Disord 2003;33:427-433 (PMID 12959421); manuals: Constantino JN, Gruber CP. SRS manual (2005) and SRS-2 manual (2012), Western Psychological Services"
+  reference_confidence: "original confirmed in source (abstract), reference tool verified; manuals to verify (years recalled, manuals not read)"
+  respondent: relative
+  construct: autism_symptoms
+  sources: ["schema notes (asp srs_relative_child)", "scale_reference_aq_autism.md section 3", "docs/asp/PROGRESS.md D14 and D64"]
+  items:
+    meaning: "Answers as recorded: 1 not true, 2 sometimes true, 3 often true, 4 almost always true (9, does not apply, is read as missing). Seventeen items are worded the other way and are reversed in the scores."
+    higher_means: the statement is more often true
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (asp srs_relative_child): answers of the thesaurus, 1 not true to 4 almost always true"
+  scores:
+    srsc_awareness:
+      meaning: "Social awareness: 8 items, each counted from 0 to 3 after reversal; 0 to 24."
+      higher_means: more difficulty in social awareness
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_cognition:
+      meaning: "Social cognition: 12 items, each counted from 0 to 3 after reversal; 0 to 36."
+      higher_means: more difficulty in social cognition
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_communication:
+      meaning: "Social communication: 22 items, each counted from 0 to 3 after reversal; 0 to 66."
+      construct: communication_language
+      higher_means: more difficulty in social communication
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_motivation:
+      meaning: "Social motivation: 11 items, each counted from 0 to 3 after reversal; 0 to 33."
+      higher_means: more difficulty in social motivation
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_restricted_repetitive:
+      meaning: "Restricted interests and repetitive behaviour: 12 items, none reversed, each counted from 0 to 3; 0 to 36."
+      construct: repetitive_behaviours
+      higher_means: more restricted interests and repetitive behaviour
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_sci:
+      meaning: "Social communication and interaction: the 53 items of the four social sub-scales; 0 to 159."
+      higher_means: more difficulty in social communication and interaction
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3 (measure of autistic traits, confirmed in source, abstract)"
+    srsc_total:
+      meaning: "Total raw score: the 65 items, each counted from 0 to 3, seventeen reversed; 0 to 195."
+      higher_means: more difficulty in social responsiveness (more autistic traits)
+      polarity: worse
+      basis: stated
+      source: "schema notes (asp srs_relative_child): published key, answers 0 to 3 with the positively worded items reversed; scale_reference_aq_autism.md section 3: the SRS correlates about 0.7 with ADI-R algorithm scores (confirmed in source, abstract)"
+  variables:
+    srsc_filled_by:
+      meaning: "Who filled the form: father, mother or another person."
+      polarity: not_applicable
+  flags:
+    - "A higher sub-scale score is more difficulty: a high social awareness, cognition, communication or motivation score is not more of the ability."
+    - "The stored raw scores are wrong on every visit (the export sums the answers 1 to 4 and reverses no item; 22 to 110 points too high). The delivered scores are recomputed with the published key and differ from the stored ones."
+    - "The stored T-scores are not delivered (they were read from the wrong raw scores). No cut-off is written: a T-score can be read in the manual from the delivered raw score, the sex and the form."
+    - "Two forms share the columns and no column says which was filled: the age at the visit tells it (under 18 here; 18 and over is srs_relative_adult). The norms of the two forms differ. The application uses the age at the date of the form: the two rules differ on 7 follow-up visits."
+    - "The list of seventeen reversed items is attested for school-age scoring by a forum thread (confirmed in source, extracted; not the manual); the 0 to 3 coding and the total range 0 to 195 are 'to verify' on the published side."
+    - "The median total drifts down in the last years (93 in 2022, 77 in 2026, against 95.5 to 106 before), with no known cause."
+
+staic:
+  description: "The State-Trait Anxiety Inventory for Children, filled by children: two blocks of twenty items answered from 1 to 3, one on how the child feels right now (state) and one on how the child feels in general (trait), with a total for each. The adults fill the STAI."
+  version: "Two blocks of 20 items (state: items 1 to 20; trait: items 21 to 40)"
+  reference: "Spielberger CD, Edwards CD, Lushene RE, Montuori J, Platzek D. State-Trait Anxiety Inventory for Children manual, Consulting Psychologists Press, 1973"
+  reference_confidence: "to verify (recalled; manual not read)"
+  respondent: patient
+  construct: anxiety
+  period: "state: right now; trait: in general"
+  sources: ["schema notes (asp staic)", "scale_reference_aq_autism.md section 26", "docs/asp/PROGRESS.md D62"]
+  scores:
+    staic_trait:
+      meaning: "Trait anxiety: sum of the items 21 to 40, none reversed; 20 to 60."
+    staic_state:
+      meaning: "State anxiety: sum of the items 1 to 20 with the ten negative adjectives (items 2, 4, 5, 7, 9, 11, 15, 16, 18 and 19) reversed; 20 to 60. Computed from the items; the stored total follows a wrong rule of the form."
+  flags:
+    - "No document gives the wording of the answers 1 to 3 or says what a higher total means, and nothing of the published STAIC was read (to verify): no direction is written here."
+    - "The state items are almost never recorded: 18 visits hold them, against 253 for the trait items. On 150 visits the state total, like the trait total, was typed without any item and is kept as stored; the rule applied by hand is not known."
+    - "The form computes the state total wrongly (it reverses the ten positive adjectives instead of the ten negative ones). The delivered state total reverses the negative items, following the wording of the form; which items the published STAIC reverses was not found."
+    - "The trait totals typed without items read higher than the computed ones (median 41 against 36), which raises the median of the recent years as the typed share grows."
+    - "One stored trait total is above 60 and is flagged out of range."
+
+abc:
+  description: "The Aberrant Behavior Checklist of the old set of forms: fifty-eight items answered from 0 to 3 and five sub-scale scores. Filled for children and adults, almost all between 2013 and 2018."
+  version: "58 items, five sub-scales"
+  reference: "Aman MG, Singh NN, Stewart AW, Field CJ. The aberrant behavior checklist: a behavior rating scale for the assessment of treatment effects. Am J Ment Defic 1985;89:485-491"
+  reference_confidence: "references confirmed in a Europe PMC record (no abstract); reference tool unchecked (HTTP 429)"
+  construct: behaviour_problems
+  sources: ["schema notes (asp abc)", "scale_reference_aq_autism.md section 8", "docs/asp/PROGRESS.md D3 and D9"]
+  scores:
+    abc_irritability:
+      meaning: "Irritability: sum of 15 items answered from 0 to 3 (0 to 45)."
+    abc_lethargy:
+      meaning: "Lethargy and social withdrawal: sum of 16 items (0 to 48)."
+    abc_stereotypy:
+      meaning: "Stereotypy: sum of 7 items (0 to 21)."
+      construct: repetitive_behaviours
+    abc_hyperactivity:
+      meaning: "Hyperactivity: sum of 16 items (0 to 48)."
+      construct: adhd_symptoms
+    abc_inappropriate_speech:
+      meaning: "Inappropriate speech: sum of 4 items (0 to 12)."
+  flags:
+    - "No document read states what a higher score means. The literature notes give the answers as 0 'not a problem' to 3 'problem severe in degree', tagged 'to verify' (the manual was not read): no direction is written here."
+    - "Who answers is not written in the schema; the literature notes say a caregiver or a teacher, about recent weeks (to verify)."
+    - "The form stopped being asked (old set of forms): a blank on a recent visit is a form not asked, not a missing answer."
+    - "A sub-score is delivered only where all its items are answered. On 36 visits an item is blank and the scores are stored (the form counted a blank as 0): they are not delivered."
+    - "No total is stored or delivered. The item counts per sub-scale and the 0 to 3 coding were not confirmed by the literature check."
+    - "The centres differ by the age of their patients, which explains the differences between centres."
+
+aim:
+  description: "The 40-item Affect Intensity Measure of the old forms: items answered from 1 (never) to 6 (always) and a mean score. A pilot: 4 inclusion visits of 2013."
+  version: "AIM-40"
+  reference: "Larsen RJ. Theory and measurement of affect intensity as an individual difference characteristic. Dissertation Abstracts International 1984;85:2297B; Larsen RJ, Diener E. J Res Pers 1987;21:1-39"
+  reference_confidence: "to verify (from memory)"
+  respondent: patient
+  construct: emotional_reactivity
+  sources: ["schema notes and labels (asp aim)", "scale_reference_aq_general.md section 19"]
+  items:
+    meaning: "Items as asked, from 1 (never) to 6 (always). Eleven items are reversed in the score."
+    higher_means: the item is true more often
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp aim): 'AIM-40 item N (1 never to 6 always)'"
+  scores:
+    aim40_score:
+      meaning: "Affect intensity: mean of the 40 items (1 to 6), eleven of them reversed."
+      higher_means: greater affect intensity
+      polarity: neutral
+      basis: literature
+      source: "scale_reference_aq_general.md section 19: 1 never to 6 always, higher = greater affect intensity (Confirmed, direct: Yang 2026)"
+    aim40_score20:
+      meaning: "Mean of the 20 items that the AIM-20 also has, six of them reversed: a bridge to the 20-item form of the other cohorts."
+      higher_means: greater affect intensity
+      polarity: neutral
+      basis: literature
+      source: "scale_reference_aq_general.md section 19: 1 never to 6 always, higher = greater affect intensity (Confirmed, direct: Yang 2026)"
+  flags:
+    - "A pilot of 4 visits (2013): too few to study the form."
+    - "The reversed items come from the key of the export; the published list of reversed items is 'to verify'. The script of the application reverses the item 36 where the key has the item 37; the stored score follows the key."
+    - "aim40_score20 has no stored value to be checked against (the cohort has no AIM-20 visit). The published 20-item form is 'to verify'."
+
+als:
+  description: "The 54-item Affective Lability Scale of the old forms: items answered from 0 (not at all characteristic) to 3 (very characteristic), six sub-scores and a total, all means. A pilot: 4 inclusion visits of 2013."
+  version: "ALS-54"
+  reference: "Harvey PD, Greenberg BR, Serper MR. The affective lability scales. J Clin Psychol 1989;45:786-793"
+  reference_confidence: "to verify (from memory)"
+  respondent: patient
+  construct: affective_lability
+  sources: ["schema notes and labels (asp als)", "scale_reference_aq_general.md section 20"]
+  items:
+    meaning: "Items as asked, from 0 (not at all characteristic) to 3 (very characteristic). No item is reversed."
+    higher_means: the statement is more characteristic of the person
+    polarity: worse
+    basis: anchors
+    source: "schema labels (asp als): 'ALS-54 item N (0 not at all characteristic to 3 very characteristic)'"
+  scores:
+    als54_depression:
+      meaning: "Depression sub-score: mean of 11 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_elation:
+      meaning: "Elation sub-score: mean of 12 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_anxiety_depression:
+      meaning: "Anxiety-depression sub-score: mean of 8 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_anxiety:
+      meaning: "Anxiety sub-score: mean of 7 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_anger:
+      meaning: "Anger sub-score: mean of 7 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_bipolar:
+      meaning: "Bipolar sub-score: mean of 9 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_total:
+      meaning: "Total: mean of the 54 items (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_anxiety_depression18:
+      meaning: "Anxiety-depression score of the ALS-18: mean of the 5 items that both forms have (0 to 3). A bridge to the 18-item form of the other cohorts."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_depression_elation18:
+      meaning: "Depression-elation score of the ALS-18: mean of the 8 items that both forms have (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_anger18:
+      meaning: "Anger score of the ALS-18: mean of the 5 items that both forms have (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+    als54_total18:
+      meaning: "Mean of the 18 items that the ALS-18 also has (0 to 3)."
+      higher_means: more affective lability (statements rated more characteristic)
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp als): items 0 not at all characteristic to 3 very characteristic, no item reversed"
+  flags:
+    - "A pilot of 4 visits (2013): too few to study the form."
+    - "The direction is read from the answer labels of the schema; no source read states it for the published scale, whose answer labels and sub-scale names are 'to verify'."
+    - "The delivered depression sub-score is the application's, with 11 items; the stored one of the export averages 10 items (the item 1 is left out), a known error of the export."
+    - "The four ALS-18 scores have no stored value to be checked against (the cohort has no ALS-18 visit); the item numbers of the ALS-18 factors are 'to verify' on the published side."
+
+anhedonia:
+  description: "A social anhedonia scale of the old forms: forty items answered false (0) or true (1) and a stored score. A pilot: 4 inclusion visits of 2013."
+  version: "40 true or false items (named from the thesaurus: social anhedonia scale, score 'SAS')"
+  construct: anhedonia
+  sources: ["schema notes and labels (asp anhedonia)"]
+  items:
+    higher_means: "the answer is 'true' (0 false, 1 true)"
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp anhedonia): 'Social anhedonia scale, item N (0 false, 1 true)'"
+  variables:
+    anh_score:
+      meaning: "Score of the scale as stored (0 to 40). It is not the plain sum of the items: the scale is scored with a key by item that the schema does not hold."
+  flags:
+    - "Too few visits to verify: the columns are read with their types and ranges and the score is delivered as stored."
+    - "No document states what a higher score means, who answers or which publication the scale is (the literature check did not cover it): no direction and no reference are written."
+
+aq:
+  description: "The Autism-Spectrum Quotient of the old set of forms, filled by adults at the screening visit: fifty items answered from 1 (definitely agree) to 4 (definitely disagree) and a score from 0 to 50. The RAADS-R replaces it in the new set."
+  version: "50 items"
+  reference: "Baron-Cohen S, Wheelwright S, Skinner R, Martin J, Clubley E. The AQ. J Autism Dev Disord 2001;31:5-17 (PMID 11439754)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: patient
+  construct: autism_symptoms
+  sources: ["schema notes and labels (asp aq)", "scale_reference_aq_autism.md section 5", "docs/asp/PROGRESS.md D9"]
+  items:
+    meaning: "Answers as stored, 1 definitely agree to 4 definitely disagree. The side that scores depends on the item: agreement on 24 items, disagreement on 26."
+    higher_means: more disagreement with the statement
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp aq): 'item N (1 definitely agree to 4 definitely disagree)'"
+  scores:
+    aq_total:
+      meaning: "AQ score: one point for each item answered on the scored side, definitely or slightly; 0 to 50."
+      higher_means: more autistic traits
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 5: endorsing the autistic trait, mildly or strongly, scores 1 (confirmed in source, direct, Ruzich 2015)"
+      cutoffs:
+        - {value: "32 or more", meaning: "80% of adults with Asperger syndrome or high-functioning autism scored 32 or more, against 2% of controls", source: "Baron-Cohen 2001, in scale_reference_aq_autism.md section 5", confidence: "confirmed in source (abstract)"}
+        - {value: "26", meaning: "cut-off in a clinical sample (sensitivity .95, specificity .52)", source: "Ruzich 2015, in scale_reference_aq_autism.md section 5", confidence: "confirmed in source (direct, secondary: Ruzich 2015); the underlying study to verify"}
+  flags:
+    - "The key was fitted on the data (it gives the stored score on 223 of 224 visits). The scoring principle is the published one; which items score on agreement was not read, so the key is not confirmed item by item."
+    - "Not the AQ-12 of the bipolar cohort, a 12-item aggression questionnaire: the variable aq12 here is the item 12 of the Autism-Spectrum Quotient."
+    - "On 21 visits an item is blank and a score is stored: it is not delivered. On 4 visits the score was typed without the items and is kept as stored."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+    - "French studies concern adolescents and students; an adult clinical French validation was not found."
+
+asq:
+  description: "An Attachment Style Questionnaire of the old forms: forty items answered from 1 (totally disagree) to 6 (totally agree). A pilot: 3 inclusion visits of 2013. No score."
+  version: "40 items answered from 1 to 6"
+  construct: attachment
+  sources: ["schema notes and labels (asp asq)", "scale_reference_aq_autism.md section 6"]
+  items:
+    higher_means: more agreement with the statement
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp asq): 'item N (1 totally disagree to 6 totally agree)'"
+  flags:
+    - "Too few visits to verify: the columns are read with their types and ranges and no rule is checked. No score is stored or built."
+    - "Not an autism questionnaire. Which Attachment Style Questionnaire it is was not settled: forty items on a six-point scale fit the one of Feeney, Noller and Hanrahan (1994), as recalled, not read (to verify); another questionnaire of the same name has four dimensions. No reference is written."
+    - "Who answers, the scales and the reversed items are not documented."
+
+atac:
+  description: "The A-TAC inventory (autism, tics, ADHD and other comorbidities) of the old forms: 96 items answered 0 (no), 1 (to some degree) or 2 (yes) about the patient, modules by letter with further items, and module scores as stored. The person interviewed is a parent or another relative. A pilot: 5 inclusion visits of 2013."
+  version: "96 items and modules A to S (named from the column names and the thesaurus)"
+  reference: "Hansson SL, Svanstrom Rojvall A, Rastam M, Gillberg C, Gillberg C, Anckarsater H. Br J Psychiatry 2005;187:262-267 (PMID 16135864)"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: relative
+  construct: neurodevelopmental_screening
+  sources: ["schema notes and labels (asp atac)", "scale_reference_aq_autism.md section 7"]
+  items:
+    meaning: "Answers 0 no, 1 to some degree, 2 yes (schema labels). What a yes means for each item is not documented."
+  variables:
+    "atac_score_*":
+      meaning: "Score of one module as stored: the 'symptom' score when the name ends in 1, the 'problem load' score when it ends in 2. No rule is checked."
+    atacper:
+      meaning: "Person interviewed: mother, father, guardian, relative or other."
+      polarity: not_applicable
+  flags:
+    - "Too few visits to verify: the scores are delivered as stored and no rule is checked. No document states how the 'symptom' and 'problem load' scores are computed or what a higher value means."
+    - "The published coding of the answers (0, 0.5, 1) is 'to verify' and differs from the 0 to 2 of the form; the published cut-offs were not read."
+    - "In each module one item holds a number in the extraction, not a 0 to 2 answer (for example ataca7): its meaning is not documented."
+    - "63 questions hang on a gate of the form that is not written in the schema: a blank cannot be told from a question not asked."
+
+bis_old_form:
+  description: "The 34-item Barratt Impulsiveness Scale (BIS-10) of the old forms: items answered from 1 (rarely or never) to 4 (almost always), three sub-scores and a total. A pilot: 4 inclusion visits of 2013."
+  version: "BIS-10, 34 items"
+  reference: "Baylé FJ, Bourdel MC, Caci H, Gorwood P, Chignon JM, Adès J, Lôo H. Factor analysis of the French translation of the BIS-10. Can J Psychiatry 2000;45:156-165 (PMID 10742875)"
+  reference_confidence: "Confirmed (abstract; paywalled); the original BIS-10 (Barratt 1985) is to verify"
+  respondent: patient
+  construct: impulsivity
+  sources: ["schema notes and labels (asp bis_old_form)", "scale_reference_aq_general.md section 1"]
+  items:
+    meaning: "Items as asked, from 1 (rarely or never) to 4 (almost always). Eleven items (1, 7, 8, 9, 10, 12, 13, 15, 21, 33 and 34) are reversed in the scores."
+    higher_means: the behaviour is more frequent
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp bis_old_form): 'BIS-10 item N (1 rarely or never to 4 almost always)'"
+  scores:
+    bis10_motor:
+      meaning: "Motor impulsivity: sum of 11 items, one reversed (11 to 44)."
+      higher_means: more motor impulsivity
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp bis_old_form): items 1 rarely or never to 4 almost always, the items worded the other way reversed (5 - value)"
+    bis10_attention:
+      meaning: "Attentional impulsivity: sum of 8 items, two reversed (8 to 32)."
+      higher_means: more attentional impulsivity
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp bis_old_form): items 1 rarely or never to 4 almost always, the items worded the other way reversed (5 - value)"
+    bis10_planning:
+      meaning: "Planning difficulty: sum of 11 items, eight reversed (11 to 44)."
+      higher_means: more planning difficulty
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp bis_old_form): items 1 rarely or never to 4 almost always, the items worded the other way reversed (5 - value)"
+    bis10_total:
+      meaning: "Total: motor plus attention plus planning, 30 of the 34 items (30 to 120)."
+      higher_means: more impulsivity
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp bis_old_form): items 1 rarely or never to 4 almost always, the items worded the other way reversed (5 - value)"
+    bis10_sum12:
+      meaning: "Sum of the 12 items that the BIS-12 form also has, five of them reversed: a bridge to the form of the other cohorts."
+      higher_means: more impulsivity
+      polarity: worse
+      basis: anchors
+      source: "schema labels and notes (asp bis_old_form): items 1 rarely or never to 4 almost always, the items worded the other way reversed (5 - value)"
+  flags:
+    - "A pilot of 4 visits (2013): too few to study the form."
+    - "The direction is read from the answer labels and from the reversal that the application applies. On the published side 'higher = more impulsive' is confirmed for the BIS-11 only; the item keys, the reversed items and the coding of the BIS-10 are 'to verify'."
+    - "The reversed items are scored 5 minus the answer. The export also stores sums made with 6 minus the answer, higher by one point per reversed item; they are not delivered."
+    - "The column that the thesaurus calls the score of the scale is another quantity (a mean of two scores of the export) and is not delivered. The items 19, 26, 27 and 29 belong to no sub-score."
+    - "'BIS-12' is not a published version name (literature notes)."
+
+cca:
+  description: "The Communication Checklist - Adult of the old set of forms: seventy items answered from 0 to 3 on how often a behaviour happens, and three composites (language structure, pragmatic skills, social engagement). Visits of adults, 2009 to 2020."
+  version: "CC-A, 70 items"
+  reference: "Whitehouse AJO, Bishop DVM. Communication Checklist - Adult (CC-A), Psychological Corporation, 2009"
+  reference_confidence: "to verify (manual not read; year recalled)"
+  construct: communication_language
+  sources: ["schema notes (asp cca)", "scale_reference_aq_autism.md section 10", "docs/asp/PROGRESS.md D9 and D68"]
+  items:
+    meaning: "How often the behaviour happens: 0 less than once a week or never, 1 about once a week, 2 once or twice a day, 3 several times a day or continually. Some of the last twenty items are reversed in the composites."
+    higher_means: the behaviour is more frequent
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (asp cca): answers 0 less than once a week or never to 3 several times a day or continually"
+  scores:
+    cca_language_structure:
+      meaning: "Language structure composite: sum of 21 items, 3 of them reversed (0 to 63)."
+    cca_pragmatic_skills:
+      meaning: "Pragmatic skills composite: sum of 22 items, none reversed (0 to 66)."
+    cca_social_engagement:
+      meaning: "Social engagement composite: sum of 27 items, 17 of them reversed (0 to 81)."
+  flags:
+    - "No document states what a higher composite means (whether it counts difficulties or abilities): no direction is written. The manual was not read."
+    - "Who answers was not settled: the items of the form are worded in the first person, which reads as a self-report, while an earlier note and the literature notes say a relative or an informant (to verify)."
+    - "Two forms share the seventy item columns (this checklist and the CCC-2 of children). The form of a visit is read from what only one form has; 2 visits whose form cannot be told are not delivered."
+    - "A composite stored with a missing item is not recomputed and not delivered."
+    - "The pragmatic skills composite differs between two centres among adults (median 20 against 13): a habit of the centre."
+
+ccc2:
+  description: "The Children's Communication Checklist, second edition, of the old set of forms: seventy items answered from 0 to 3 by a parent on how often the child shows a behaviour, ten scale scores (raw, scaled and percentile) and two composites."
+  version: "CCC-2, 70 items, ten scales of seven items"
+  reference: "Bishop DVM. CCC-2 manual, Psychological Corporation, 2003"
+  reference_confidence: "revision confirmed in source (abstract, Norbury 2004); manual not read"
+  respondent: relative
+  construct: communication_language
+  sources: ["schema notes (asp ccc2)", "scale_reference_aq_autism.md section 9", "docs/asp/PROGRESS.md D9 and D68"]
+  items:
+    meaning: "How often the child shows the behaviour: 0 less than once a week or never, 1 about once a week, 2 once or twice a day, 3 several times a day or continually. In each scale two of the last twenty items are reversed."
+    higher_means: the behaviour is more frequent
+    polarity: neutral
+    basis: anchors
+    source: "schema notes (asp ccc2): answers 0 less than once a week or never to 3 several times a day or continually"
+  scores:
+    ccc_speech:
+      meaning: "Speech, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_syntax:
+      meaning: "Syntax, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_semantics:
+      meaning: "Semantics, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_coherence:
+      meaning: "Coherence, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_inappropriate_initiation:
+      meaning: "Inappropriate initiation, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_stereotyped_language:
+      meaning: "Stereotyped language, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_use_of_context:
+      meaning: "Use of context, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_nonverbal_communication:
+      meaning: "Nonverbal communication, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_social_relations:
+      meaning: "Social relations, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_interests:
+      meaning: "Interests, raw score: sum of 7 items, two of them reversed (0 to 21)."
+    ccc_sidc:
+      meaning: "Social Interaction Deviance Composite, computed from the stored scaled scores: those of inappropriate initiation, nonverbal communication, social relations and interests minus those of speech, syntax, semantics and coherence. A negative value means that the first four scales add up to lower scaled scores than the other four."
+  variables:
+    "ccc_*_scaled":
+      meaning: "Scaled score of the scale, as stored: computed by the application from the raw score and the age in months with a formula, not read in a norm table."
+    "ccc_*_percentile":
+      meaning: "Percentile, as stored: computed by the application from the raw score and the age in months with a formula."
+    ccc_gcc:
+      meaning: "General Communication Composite, as stored: the sum of the first eight scaled scores (0 to 160)."
+  flags:
+    - "No document states what a higher raw score, scaled score or percentile means (whether it counts difficulties or abilities): no direction is written. The manual was not read."
+    - "ccc_sidc: the published formula, its sign and its cut-off were not settled (secondary summaries disagree on the direction of the subtraction). It is computed here because the application could not store a negative value: 63 of the 106 values are negative."
+    - "A cut-off of 55 on the General Communication Composite is used in some studies, seen in a search snippet only (to verify)."
+    - "The scores are stored on 106 visits, all of children, from 2013 to 2016. 17 more visits (patients aged 17 to 24 given the children's form) hold items and no stored score: their raw scores are computed here, with no scaled score."
+    - "Two forms share the seventy item columns (this checklist and the CC-A of adults). The form of a visit is read from what only one form has; 2 visits whose form cannot be told are not delivered."
+    - "Almost all the visits come from one centre."
+
+communication_context:
+  description: "Twelve questions asked before the communication checklists of the old forms. The adult form (CC-A) asks the age at the end of the studies, the work, the language at home and whether a speech therapist was seen; the children's form (CCC-2) asks about hearing, speaking in sentences, the language at home, the relation of the respondent to the child and the time in contact. No score."
+  reference: not_applicable
+  construct: communication_language
+  sources: ["schema notes and labels (asp communication_context)", "scale_reference_aq_autism.md section 10"]
+  variables:
+    arretud:
+      meaning: "CC-A: age at the end of the studies, in years."
+      polarity: neutral
+    temps:
+      meaning: "CCC-2: time the respondent has been in contact with the child, in months (the form wants at least 3 months)."
+      polarity: neutral
+  flags:
+    - "Not a scale: these are context questions and carry no score."
+    - "Each question is asked by one form only, except the language at home (lang, autlang), asked in both. The questions asked by one form give the form of a visit that has checklist items and no score."
+    - "Six of the twelve variables are free text."
+
+cshq:
+  description: "The Children's Sleep Habits Questionnaire of the old set of forms: a parent answers forty-eight items from 1 to 3 about the sleep of the child in the last week, says for 44 of them whether it is a problem, and gives four usual times and quantities of sleep. Eight sub-scale scores and a total of 33 items."
+  version: "48 items in the form, 33 of them scored"
+  reference: "Owens JA, Spirito A, McGuinn M. The CSHQ. Sleep 2000;23:1043-1051 (PMID 11145319)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: relative
+  construct: sleep_quality
+  period: "last week, or a more typical week when the last one was unusual"
+  sources: ["schema notes and labels (asp cshq)", "scale_reference_aq_autism.md section 30"]
+  items:
+    meaning: "Items 1 to 44: 1 rarely (0 or 1 time a week), 2 sometimes (2 to 4 times), 3 usually (5 to 7 times). Items 45 to 48: 1 not asleep, 2 very tired, 3 asleep. Items are delivered as asked; six are reversed in the scores (1, 2, 3, 15, 16 and 34)."
+    higher_means: the behaviour is more frequent
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp cshq): '1 rarely to 3 usually, last week'"
+  scores:
+    cshq_bedtime_resistance:
+      meaning: "Bedtime resistance: sum of 6 items, two reversed (6 to 18)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_sleep_onset_delay:
+      meaning: "Sleep onset delay: one item, reversed (1 to 3)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_sleep_duration:
+      meaning: "Sleep duration: sum of 3 items, two reversed (3 to 9)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_sleep_anxiety:
+      meaning: "Sleep anxiety: sum of 4 items (4 to 12)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_night_wakings:
+      meaning: "Night wakings: sum of 3 items (3 to 9)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_parasomnias:
+      meaning: "Parasomnias: sum of 7 items (7 to 21)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_disordered_breathing:
+      meaning: "Sleep disordered breathing: sum of 3 items (3 to 9)."
+      higher_means: more sleep disturbance of this kind
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_daytime_sleepiness:
+      meaning: "Daytime sleepiness: sum of 8 items, one reversed (8 to 24)."
+      construct: sleepiness
+      higher_means: more daytime sleepiness
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance, reverse scoring where needed (confirmed in source, extracted)"
+    cshq_total:
+      meaning: "Total: sum of the 33 scored items, each counted once, six reversed (33 to 99)."
+      higher_means: more sleep disturbance
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 30: higher scores mean more sleep disturbance (confirmed in source, extracted)"
+      cutoffs:
+        - {value: "above 41", meaning: "screening cut-off (not diagnostic of a specific sleep disorder)", source: "Taskin 2026, in scale_reference_aq_autism.md section 30", confidence: "confirmed in source (extracted, Taskin 2026)"}
+  variables:
+    "cshq_problem*":
+      meaning: "Whether the parent says the item is a problem: 0 no, 1 yes (9, not applicable, is read as missing)."
+      higher_means: the parent sees the behaviour as a problem
+      polarity: worse
+      basis: anchors
+      source: "schema labels (asp cshq): 'is item N a problem (0 no, 1 yes; 9 not applicable is missing)'"
+    cshq_sleep_hours:
+      meaning: "Usual hours of sleep of the child, night and naps."
+      polarity: neutral
+    cshq_minutes_awake:
+      meaning: "Minutes that a usual waking in the night lasts."
+      higher_means: longer wakings in the night
+      polarity: worse
+      basis: anchors
+      source: "schema label (asp cshq): 'minutes that a usual waking in the night lasts'"
+    cshq_bedtime:
+      meaning: "Usual bedtime of the child. A value of 00:00:00 may be a box left untouched (13 visits): it cannot be told from midnight and is kept."
+      polarity: not_applicable
+    cshq_waking_time:
+      meaning: "Usual waking time in the morning. A value of 00:00:00 is a box left untouched and is read as not recorded."
+      polarity: not_applicable
+  flags:
+    - "The sub-scales and the total are those the script of the form computes; the reversed items by number (1, 2, 3, 15, 16 and 34) are 'to verify' on the published side."
+    - "The items 7 and 12 belong to two sub-scales (bedtime resistance and sleep anxiety): the total counts them once, so it is not the sum of the eight sub-scores. Fifteen items of the form are in no score."
+    - "The visits come from one centre, children, 2013 to 2016 (one visit each of 2017 and 2021)."
+    - "No French version was found in the literature check (to verify)."
+
+empathy_quotient:
+  description: "The Empathy Quotient of the old set of forms, filled by adults: sixty items answered from 1 (definitely agree) to 4 (definitely disagree), of which forty are scored, and a score from 0 to 80."
+  version: "60 items (40 scored, 20 fillers)"
+  reference: "Baron-Cohen S, Wheelwright S. The empathy quotient. J Autism Dev Disord 2004;34:163-175 (PMID 15162935)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: patient
+  construct: empathy
+  sources: ["schema notes and labels (asp empathy_quotient)", "scale_reference_aq_autism.md section 11", "docs/asp/PROGRESS.md D9"]
+  items:
+    meaning: "Answers as stored, 1 definitely agree to 4 definitely disagree. Agreement scores on 21 items, disagreement on 19, and 20 items are not scored."
+    higher_means: more disagreement with the statement
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp empathy_quotient): 'item N (1 definitely agree to 4 definitely disagree)'"
+  scores:
+    empathy_quotient_total:
+      meaning: "EQ score: on each of the 40 scored items, 2 points for a definite answer on the scored side and 1 for a slight one; 0 to 80."
+      higher_means: more empathy
+      polarity: better
+      basis: literature
+      source: "scale_reference_aq_autism.md section 11: an empathic response scores 1 or 2 by its strength, other responses 0 (confirmed in source, extracted, Robinson 2025); total 0-80 (confirmed in source, abstract)"
+      cutoffs:
+        - {value: "30 or below", meaning: "81% of adults with Asperger syndrome or high-functioning autism scored 30 or fewer, against 12% of controls", source: "Baron-Cohen and Wheelwright 2004, in scale_reference_aq_autism.md section 11", confidence: "confirmed in source (abstract)"}
+  flags:
+    - "Higher is better here (more empathy): a low score is the autism-related side."
+    - "The key was fitted on the data (it gives the stored score on 345 of 347 visits). The structure is the published one; which items score on agreement and which are fillers was not read, so the key is not confirmed item by item."
+    - "Item 57: the French form words it as the opposite of empathy and the form scores agreement as empathic; its points correlate negatively with the rest of the score (a translation effect). The key is kept."
+    - "The score was typed without the items on 91 visits, where it is kept as stored. On 31 visits an item is blank and a score is stored: it is not delivered."
+    - "Two centres differ on the score (median 22 against 28): a habit of the centre."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+
+repetitive_behaviours:
+  description: "The section 'cognition and repetitive acts' of the old forms: for each kind of sensation that comes before repetitive behaviours (several 'just right' feelings, inner tension, a feeling of incompleteness, unpleasant physical sensations, physical anxiety, a plain need to do the behaviour) it records whether it is present, its frequency and its severity, then the main repetitive behaviour with its frequency, severity and age of onset. No score."
+  construct: repetitive_behaviours
+  sources: ["schema notes and labels (asp repetitive_behaviours)", "scale_reference_aq_autism.md section 13"]
+  items:
+    meaning: "Presence 0 no, 1 yes; frequency 0 never to 4 always; severity 0 none to 4 extreme. A frequency or a severity is filled only where the sensation is present."
+    higher_means: the sensation is present, more frequent or more severe
+    polarity: worse
+    basis: anchors
+    source: "schema labels (asp repetitive_behaviours): 'present (0 no, 1 yes)', 'frequency (0 never to 4)', 'severity (0 none to 4 extreme)'"
+  variables:
+    rep3symn:
+      meaning: "Physical anxiety: number of symptoms."
+      higher_means: more symptoms of physical anxiety
+      polarity: worse
+      basis: anchors
+      source: "schema label (asp repetitive_behaviours): 'physical anxiety, number of symptoms'"
+    rep3syma:
+      meaning: "Physical anxiety: most severe symptom at present, a number typed in a text box (0 to 13); the form does not say whether it numbers the 13 boxes."
+      polarity: not_applicable
+    compage:
+      meaning: "Main repetitive behaviour: age of onset, in years."
+      polarity: neutral
+  flags:
+    - "Not a repetitive behaviour scale (the RBS-R is rbs_r) and not tied to a published instrument: the structure resembles a sensory phenomena scale used in research on obsessive-compulsive disorder (resemblance only, no page read). No reference is written and no total should be built."
+    - "Who answers is not documented."
+    - "Five of the ten yes or no boxes hold only 'no' from the end of 2018, where they were 'yes' on 17% to 51% of the visits of 2013 to 2016: a step with no known cause (the visits from 2019 come almost all from one centre)."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+
+adhd_history:
+  description: "The section on attention deficit hyperactivity disorder ('THADA') of the old forms: twenty-one questions answered 1 never, 2 in the past, 3 in the last week, then the achievement at primary school, the age of the first signs, and whether help, a diagnosis and a medication were given. No score."
+  construct: adhd_symptoms
+  period: "lifetime and the last week (answers 1 never, 2 in the past, 3 in the last week)"
+  sources: ["schema notes and labels (asp adhd_history)", "scale_reference_aq_autism.md section 29"]
+  items:
+    meaning: "The twenty-one questions thad1 to thad21: 1 never, 2 in the past, 3 in the last week. The other questions carry their own answers in their labels."
+    higher_means: "the behaviour is present, and more recently (questions thad1 to thad21)"
+    polarity: worse
+    basis: anchors
+    source: "schema labels (asp adhd_history): 'item N (1 never, 2 in the past, 3 in the last week)'"
+  variables:
+    ecprim:
+      meaning: "Achievement at primary school: 1 poor, 2 reasonable, 3 average, 4 good."
+      higher_means: better achievement at primary school
+      polarity: better
+      basis: anchors
+      source: "schema label (asp adhd_history): '1 poor, 2 reasonable, 3 average, 4 good'"
+    ageprec:
+      meaning: "Age of the first signs, in years."
+      polarity: neutral
+    attaide:
+      meaning: "Sought help for attention problems (0 no, 1 yes)."
+      polarity: not_applicable
+    attdiag:
+      meaning: "A diagnosis of attention disorder was raised (0 no, 1 yes)."
+      polarity: not_applicable
+    attdiaga:
+      meaning: "Age at the diagnosis of an attention disorder, in years."
+      polarity: neutral
+    attmed:
+      meaning: "Took medication for attention problems (0 no, 1 yes)."
+      polarity: not_applicable
+  flags:
+    - "Not tied to a published instrument (literature notes: unidentified); no reference is written. No score is stored: do not build a total or an ADHD classification from the twenty-one questions."
+    - "The answers 1 to 3 order recency (never, past, last week), not severity."
+    - "Who answers is not documented. Filled for children and adults; the centres differ by the age of their patients."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+
+dcdq:
+  description: "The Developmental Coordination Disorder Questionnaire of the old set of forms: fifteen items answered from 1 (not at all like the other children) to 5 (extremely like the other children) and a total. Mostly filled by a parent about the child."
+  version: "15 items; a child form filled by a parent (form 224) and an adult retrospective form (form 223) in the same columns"
+  reference: "Wilson BN, Crawford SG, Green D, et al. Psychometric properties of the revised DCDQ. Phys Occup Ther Pediatr 2009;29:182-202 (PMID 19401931)"
+  reference_confidence: "confirmed in source (abstract)"
+  respondent: relative
+  construct: motor_coordination
+  sources: ["schema notes (asp dcdq)", "scale_reference_aq_autism.md section 22", "docs/asp/PROGRESS.md D74"]
+  items:
+    meaning: "Answers from 1 (not at all like the other children) to 5 (extremely like the other children)."
+    higher_means: better coordination
+    polarity: better
+    basis: stated
+    source: "schema notes (asp dcdq): 'the higher, the better the coordination'"
+  scores:
+    dcdq_total:
+      meaning: "Total: sum of the fifteen items, 15 to 75."
+      higher_means: better coordination
+      polarity: better
+      basis: stated
+      source: "schema notes (asp dcdq): answers 1 (not at all like the other children) to 5 (extremely like the other children), 'the higher, the better the coordination'"
+  variables:
+    dcdq_filled_by:
+      meaning: "Respondent of the child form (father, mother, grandparents or guardian). Empty on the adult retrospective form."
+      polarity: not_applicable
+  flags:
+    - "Higher is better here (better coordination)."
+    - "Identified as the DCDQ (Wilson and others, 2007), 'likely'. The published cut-offs are given by age group and their values were not read: none is written."
+    - "Two forms share the columns: the child form (a parent reports on the child, 50 visits) and an adult retrospective form (the patient reports on the years before 10, 6 visits). The export carries no form number; an empty dcdq_filled_by means the adult form."
+    - "The published questionnaire is meant for children from 5 to 15 years; 15 of the 56 visits are of patients aged 16 or more."
+    - "The median total is 36 in 2013 and 56.5 in 2014, in the same centre, at the same age and with the same respondents: a step with no known cause."
+    - "The three published sub-scales are not delivered (their item lists were not found)."
+
+hama:
+  description: "The Hamilton Anxiety Rating Scale of the old set of forms: fourteen items rated from 0 to 4 and a total. Filled for children and adults."
+  version: "14 items"
+  reference: "Hamilton M. The assessment of anxiety states by rating. Br J Med Psychol 1959;32:50-55 (PMID 13638508)"
+  reference_confidence: "reference confirmed (Europe PMC record; reference tool verified); abstract not read"
+  respondent: clinician
+  construct: anxiety
+  sources: ["schema notes (asp hama)", "scale_reference_aq_autism.md section 31"]
+  scores:
+    hama_total:
+      meaning: "Total: sum of the fourteen items, 0 to 56."
+  flags:
+    - "No page read states what a higher total means: no direction is written. The literature notes give severity bands 'as commonly cited' (mild below 17, 18 to 24 mild to moderate, 25 to 30 moderate to severe), tagged 'to verify'."
+    - "Respondent: the schema says the items are 'rated' and does not say by whom; the literature notes say a clinician (to verify)."
+    - "The form has no age limit: 119 of the 359 visits are of patients under 18. The median total is 1.5 among children and 10.5 among adults."
+    - "Among adults the median total swings by year inside one centre (5 in 2019, 20 in 2020), with no known cause."
+
+hamd:
+  description: "The Hamilton Depression Rating Scale, 17 items, of the old set of forms: items rated from 0 to 2 or from 0 to 4 and a total. Filled for children and adults."
+  version: "17 items (HAM-D17)"
+  reference: "Hamilton M. A rating scale for depression. J Neurol Neurosurg Psychiatry 1960;23:56-62 (PMID 14399272)"
+  reference_confidence: "reference confirmed (Europe PMC record; reference tool verified); full text not read"
+  respondent: clinician
+  construct: depression
+  sources: ["schema notes (asp hamd)", "scale_reference_aq_autism.md section 32"]
+  items:
+    meaning: "Three answers (0 to 2) for the items 4, 5, 6, 12, 13, 14, 16 and 17 and five (0 to 4) for the others. The item 16 (weight loss) has two columns, by history and measured: one of the two is filled."
+    higher_means: more severe symptom
+    polarity: worse
+    basis: literature
+    source: "scale_reference_aq_autism.md section 32: the total is the plain sum of the items and its bands run from no depression to severe (confirmed in source, abstract, Zimmerman 2013)"
+  scores:
+    hamd_total:
+      meaning: "Total of the 17 items, 0 to 52; the item 16 counts the column that is filled."
+      higher_means: more severe depression
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 32: severity bands (confirmed in source, abstract, Zimmerman 2013)"
+      cutoffs:
+        - {value: "0 to 7", meaning: "no depression", source: "Zimmerman 2013, in scale_reference_aq_autism.md section 32", confidence: "confirmed in source (abstract, Zimmerman 2013)"}
+        - {value: "8 to 16", meaning: "mild depression", source: "Zimmerman 2013, in scale_reference_aq_autism.md section 32", confidence: "confirmed in source (abstract, Zimmerman 2013)"}
+        - {value: "17 to 23", meaning: "moderate depression", source: "Zimmerman 2013, in scale_reference_aq_autism.md section 32", confidence: "confirmed in source (abstract, Zimmerman 2013)"}
+        - {value: "24 or more", meaning: "severe depression", source: "Zimmerman 2013, in scale_reference_aq_autism.md section 32", confidence: "confirmed in source (abstract, Zimmerman 2013)"}
+  flags:
+    - "Respondent: the schema does not say who rates; it speaks of 'the rater'. Clinician is written from that and from the name of the scale."
+    - "The bands come from adult outpatients. The form has no age limit: 117 of the 351 visits are of patients under 18 (median total 1 among children, 7 among adults)."
+    - "The item maxima (0 to 2 or 0 to 4) are those of the form; on the published side they are 'to verify'."
+    - "The items 18 to 21 of the form are not part of the total and are not in the extraction."
+    - "On 5 visits an item is blank and a total is stored: it is not delivered."
+    - "Among adults the median total swings by year inside one centre (3.5 in 2019, 12 in 2020), like the HAM-A, with no known cause."
+
+lsas:
+  description: "The Liebowitz Social Anxiety Scale of the old set of forms: twenty-four situations, each rated from 0 to 3 for anxiety and for avoidance, with six sub-scores and a total. Filled for children and adults."
+  version: "24 situations; the sub-scores follow the form: twelve situations of performance and twelve of social interaction, as in the French validation (Yao and others, 1999)"
+  reference: "Liebowitz MR. Social phobia. Mod Probl Pharmacopsychiatry 1987;22:141-173"
+  reference_confidence: "to verify (not looked up); French version, Yao 1999: confirmed in source (abstract)"
+  construct: social_anxiety
+  sources: ["schema notes (asp lsas)", "scale_reference_aq_autism.md section 33"]
+  items:
+    meaning: "Each situation has two ratings from 0 to 3: anxiety and avoidance."
+    higher_means: more anxiety in the situation, or more avoidance of it
+    polarity: worse
+    basis: literature
+    source: "scale_reference_aq_autism.md section 33: the total is the plain sum of the ratings, with cut-offs 30 and 60 for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+  scores:
+    lsas_anxiety_total:
+      meaning: "Anxiety over the 24 situations (0 to 72)."
+      higher_means: more social anxiety
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_avoidance_total:
+      meaning: "Avoidance over the 24 situations (0 to 72)."
+      higher_means: more avoidance of social situations
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_social_anxiety:
+      meaning: "Anxiety in the 12 situations of social interaction (0 to 36)."
+      higher_means: more anxiety in social interaction
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_social_avoidance:
+      meaning: "Avoidance of the 12 situations of social interaction (0 to 36)."
+      higher_means: more avoidance of social interaction
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_performance_anxiety:
+      meaning: "Anxiety in the 12 situations of performance (0 to 36)."
+      higher_means: more anxiety in performance situations
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_performance_avoidance:
+      meaning: "Avoidance of the 12 situations of performance (0 to 36)."
+      higher_means: more avoidance of performance situations
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: plain sum of the ratings; cut-offs of the total for social anxiety disorder (confirmed in source, abstract, Rytwinski 2009)"
+    lsas_total:
+      meaning: "Total: anxiety plus avoidance over the 24 situations, 0 to 144. Not stored, computed by the package."
+      higher_means: more social anxiety and avoidance
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 33: cut-offs 30 and 60 (confirmed in source, abstract, Rytwinski 2009)"
+      cutoffs:
+        - {value: "30", meaning: "social anxiety disorder (self-report version, ROC)", source: "Rytwinski 2009, in scale_reference_aq_autism.md section 33", confidence: "confirmed in source (abstract, Rytwinski 2009)"}
+        - {value: "60", meaning: "generalized subtype of social anxiety disorder (self-report version, ROC)", source: "Rytwinski 2009, in scale_reference_aq_autism.md section 33", confidence: "confirmed in source (abstract, Rytwinski 2009)"}
+  flags:
+    - "Who rates is not written in the schema. The published scale is clinician-administered and a self-report version exists; the cut-offs above come from the self-report version."
+    - "Sub-scores: twelve situations of performance and twelve of social interaction, as the form prints them. Some literature counts thirteen and eleven (the situation 21 in performance); no source read states that split."
+    - "The form has no age limit: 112 of the 263 visits are of patients under 18. The centres differ by the age of their patients (median total 51 where most are children, 78 and 81 elsewhere)."
+    - "The answer range 0 to 3 and the total range are 'to verify' on the published side (no page read states them)."
+
+mcdd:
+  description: "The criteria of Multiple Complex Developmental Disorder of the old set of forms: a box 'no to all the criteria' and fifteen criteria answered yes or no in three groups (regulation of affect and anxiety, social behaviour, thought disorder). No score."
+  version: "15 criteria of the form 199"
+  reference: "Buitelaar JK, van der Gaag RJ. Diagnostic rules for children with PDD-NOS and multiple complex developmental disorder. J Child Psychol Psychiatry 1998;39:911-919 (PMID 9758199)"
+  reference_confidence: "concept confirmed in source (abstract); the fifteen criteria of the form were not matched to a published set"
+  construct: psychiatric_diagnosis
+  sources: ["schema notes and labels (asp mcdd)", "scale_reference_aq_autism.md section 23", "docs/asp/PROGRESS.md D74"]
+  variables:
+    "mcdd*":
+      meaning: "One criterion: 0 no, 1 yes (9, unknown, is read as missing). An empty criterion under a ticked box 'no to all the criteria' is read as 0."
+      higher_means: the criterion is met
+      polarity: worse
+      basis: anchors
+      source: "schema labels (asp mcdd): 'MCDD criterion ... (0 no, 1 yes)'"
+    mcddn_1:
+      meaning: "Box 'no to all the criteria': 0 not ticked, 1 ticked. Written on every saved form; ticking it sets the fifteen criteria to no."
+      polarity: not_applicable
+  flags:
+    - "No score is stored or built. The published rule found (three items out of six items of anxieties and thought disturbance) could not be matched to the fifteen criteria of the form."
+    - "The use of the box 'no to all the criteria' rises with the years (ticked on 11% of the visits of 2013, 86% of 2018, 98% of 2019), so the number of criteria met falls: a step in the habit of the box, with no known cause, not in the criteria."
+    - "On 14 visits a criterion is yes under a ticked box: kept as written (contradictory)."
+    - "Who fills the criteria is not documented."
+
+ocd:
+  description: "The section on obsessions and compulsions of the old forms: a checklist of 80 symptoms answered 1 never, 2 in the past, 3 in the last week, three ratings of the worst period of the life, the ages of onset and of the worst period, descriptions in free text, and the diagnosis and treatment of an obsessive-compulsive disorder. No score."
+  construct: ocd_symptoms
+  period: "lifetime and the last week (checklist); worst lifetime period (ratings)"
+  sources: ["schema notes and labels (asp ocd)", "scale_reference_aq_autism.md section 34"]
+  items:
+    meaning: "Checklist items ocd_toc1 to ocd_toc80: 1 never, 2 in the past, 3 in the last week. The other questions carry their own answers in their labels."
+    higher_means: "the symptom is present, and more recently (checklist items)"
+    polarity: worse
+    basis: anchors
+    source: "schema labels (asp ocd): 'checklist, item N (1 never, 2 in the past, 3 in the last week)'"
+  variables:
+    ocd_tocgr1:
+      meaning: "Time the obsessions and compulsions took in the worst lifetime period, from 0 (none) to 4 (over 8 hours a day)."
+      higher_means: more time taken by obsessions and compulsions
+      polarity: worse
+      basis: anchors
+      source: "schema label (asp ocd): 'time they took in the worst lifetime period (0 none to 4 over 8 hours a day)'"
+    ocd_tocgr2:
+      meaning: "Interference with activities in the worst lifetime period, from 0 (none) to 4 (extreme)."
+      higher_means: more interference
+      polarity: worse
+      basis: anchors
+      source: "schema label (asp ocd): 'interference with activities in the worst lifetime period (0 none to 4 extreme)'"
+    ocd_tocgr3:
+      meaning: "Distress in the worst lifetime period, from 0 (none) to 4 (extreme)."
+      higher_means: more distress
+      polarity: worse
+      basis: anchors
+      source: "schema label (asp ocd): 'distress in the worst lifetime period (0 none to 4 extreme)'"
+    ocd_tocdiag:
+      meaning: "A diagnosis of obsessive-compulsive disorder was raised (0 no, 1 yes)."
+      polarity: not_applicable
+    ocd_toctt:
+      meaning: "Ever received medication for obsessive-compulsive disorder (0 no, 1 yes)."
+      polarity: not_applicable
+    ocd_obsage:
+      meaning: "Age at the first obsessive thoughts, in years."
+      polarity: neutral
+    ocd_obsgrav:
+      meaning: "Age when the obsessive thoughts were worst, in years."
+      polarity: neutral
+    ocd_compage__face_asp_2_autoquestionnaires_old_part2:
+      meaning: "Age of onset of the compulsions, in years. The export added the name of the table to the column name."
+      polarity: neutral
+    ocd_compgrav:
+      meaning: "Age when the compulsions were worst, in years."
+      polarity: neutral
+    ocd_tocage:
+      meaning: "Age when the diagnosis was raised, in years."
+      polarity: neutral
+  flags:
+    - "Not tied to a published instrument: the checklist has the form of the symptom checklist of the Yale-Brown scale, but whether it derives from the adult or a child version was not settled. No reference is written. No severity score of the Yale-Brown scale is stored, and none should be built from these items."
+    - "The answers 1 to 3 of the checklist order recency (never, past, last week), not severity."
+    - "Who answers is not documented. The form has no age limit: 49 of the 187 visits are of patients under 18."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+
+rbs_r:
+  description: "The Repetitive Behavior Scale-Revised of the old set of forms: forty-three items rated from 0 to 3, six sub-scale scores and a total. Filled for children and adults."
+  version: "43 items, six sub-scales (the original structure, not the five factors of Lam and Aman 2007)"
+  reference: "Bodfish JW, Symons FJ, Parker DE, Lewis MH. Varieties of repetitive behavior in autism. J Autism Dev Disord 2000;30:237-243 (PMID 11055459)"
+  reference_confidence: "study confirmed in source (abstract); the authorship of the RBS-R itself is to verify"
+  construct: repetitive_behaviours
+  sources: ["schema notes (asp rbs_r)", "scale_reference_aq_autism.md section 14"]
+  scores:
+    rbsr_stereotyped:
+      meaning: "Stereotyped behaviour: sum of the items 1 to 6, each rated from 0 to 3 (0 to 18)."
+    rbsr_self_injurious:
+      meaning: "Self-injurious behaviour: sum of the items 7 to 14 (0 to 24)."
+    rbsr_compulsive:
+      meaning: "Compulsive behaviour: sum of the items 15 to 22 (0 to 24)."
+    rbsr_ritualistic:
+      meaning: "Ritualistic behaviour: sum of the items 23 to 28 (0 to 18)."
+    rbsr_sameness:
+      meaning: "Sameness behaviour: sum of the items 29 to 39 (0 to 33)."
+    rbsr_restricted:
+      meaning: "Restricted behaviour: sum of the items 40 to 43 (0 to 12)."
+    rbsr_total:
+      meaning: "Total: sum of the forty-three items (0 to 129)."
+  flags:
+    - "No page read states what a higher score means. The literature notes give the answers as 0 'behaviour not present' to 3 'severe problem', tagged 'to verify': no direction is written here."
+    - "Who answers is not written in the schema; the published validation used caregivers (Lam and Aman 2007, confirmed in source, abstract)."
+    - "The six sub-scales and their item counts are 'to verify' on the published side. The form also computes the five-factor scores of Lam and Aman; the extraction does not hold them."
+    - "In one centre the median total rises from 16 (to 2016) to 32 (2019 to 2021) at the same age, with every item filled: a step with no known cause (the rater, who answers or the patients referred)."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing). No French version was found."
+
+spq:
+  description: "The Schizotypal Personality Questionnaire of the old set of forms: seventy-four items answered 0 or 1, nine sub-scale scores and a total. Filled for children and adults."
+  version: "74 items, nine sub-scales"
+  reference: "Raine A. The SPQ. Schizophr Bull 1991;17:555-564 (PMID 1805349)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: patient
+  construct: schizotypy
+  sources: ["schema notes (asp spq)", "scale_reference_aq_autism.md section 35"]
+  scores:
+    spq_ideas_of_reference:
+      meaning: "Ideas of reference: sum of 9 items answered 0 or 1 (0 to 9)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_social_anxiety:
+      meaning: "Excessive social anxiety: sum of 8 items (0 to 8)."
+      construct: social_anxiety
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_odd_beliefs:
+      meaning: "Odd beliefs or magical thinking: sum of 7 items (0 to 7)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_unusual_perceptions:
+      meaning: "Unusual perceptual experiences: sum of 9 items (0 to 9)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_odd_behaviour:
+      meaning: "Odd or eccentric behaviour: sum of 7 items (0 to 7)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_no_close_friends:
+      meaning: "No close friends: sum of 9 items (0 to 9)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_odd_speech:
+      meaning: "Odd speech: sum of 9 items (0 to 9)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_constricted_affect:
+      meaning: "Constricted affect: sum of 8 items (0 to 8)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_suspiciousness:
+      meaning: "Suspiciousness: sum of 8 items (0 to 8)."
+      higher_means: more of this schizotypal trait
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: subscales for the nine traits; 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract). The scores are plain sums of the items."
+    spq_total:
+      meaning: "Total: sum of the seventy-four items (0 to 74)."
+      higher_means: more schizotypal traits
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 35: 55% of those in the top 10% of scores had a clinical diagnosis (confirmed in source, abstract, Raine 1991)"
+  flags:
+    - "The direction comes from the abstract of the original paper (high scorers had a diagnosis) and from the scores being plain sums; the yes or no coding of the items, the items of each sub-scale and the 0 to 74 range are 'to verify' on the published side."
+    - "Respondent: the published scale is a self-report (confirmed in source, abstract); the schema does not say who answers in the application."
+    - "A cut-off of about 41 for a high-score group is recalled, not read (to verify): none is written."
+    - "On 2 visits an item is blank and scores are stored: they are not delivered."
+    - "The centres differ by the age of their patients (median total 23 where most are children, 33.5 elsewhere)."
+
+systemizing_quotient:
+  description: "The Systemizing Quotient of the old set of forms, filled by adults: sixty items answered from 1 (definitely agree) to 4 (definitely disagree), of which forty are scored, and a score from 0 to 80."
+  version: "60-item SQ of 2003 (40 scored items, 20 not scored), not the 75-item SQ-R"
+  reference: "Baron-Cohen S, Richler J, Bisarya D, Gurunathan N, Wheelwright S. The systemizing quotient. Philos Trans R Soc Lond B 2003;358:361-374 (PMID 12639333)"
+  reference_confidence: "confirmed in source (abstract); reference tool verified"
+  respondent: patient
+  construct: empathy
+  sources: ["schema notes and labels (asp systemizing_quotient)", "scale_reference_aq_autism.md section 12", "docs/asp/PROGRESS.md D9"]
+  items:
+    meaning: "Answers as stored, 1 definitely agree to 4 definitely disagree. Agreement scores on 20 items, disagreement on 20, and 20 items are not scored."
+    higher_means: more disagreement with the statement
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp systemizing_quotient): 'item N (1 definitely agree to 4 definitely disagree)'"
+  scores:
+    systemizing_quotient_total:
+      meaning: "SQ score: on each of the 40 scored items, 2 points for a definite answer on the scored side and 1 for a slight one; 0 to 80."
+      higher_means: more systemizing
+      polarity: neutral
+      basis: literature
+      source: "scale_reference_aq_autism.md section 12: 40 systemizing items and 20 control items, each systemizing item scores 2, 1 or 0, maximum 80 (confirmed in source, abstract)"
+  flags:
+    - "The key was fitted on the data (it gives the stored score on 152 of 158 visits; the 6 that differ are dated 2013). The published list of reverse-keyed items and any cut-off were not read (to verify)."
+    - "This is the 60-item SQ, not the SQ-R: a comparison with SQ-R norms would be wrong."
+    - "One score typed without items is above the maximum of 80 and is not delivered."
+    - "Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
+
+tas20:
+  description: "The Toronto Alexithymia Scale of the old set of forms: twenty items answered from 1 to 5, three factor scores and a total. A few visits, mostly of children, from 2013 to 2018. The children's alexithymia questionnaire and the BVAQ replace it in the new set."
+  version: "TAS-20"
+  reference: "Bagby RM, Parker JDA, Taylor GJ. The twenty-item Toronto Alexithymia Scale-I. J Psychosom Res 1994;38:23-32 (PMID 8126686)"
+  reference_confidence: "confirmed in source (abstract)"
+  construct: alexithymia
+  sources: ["schema notes (asp tas20)", "scale_reference_aq_autism.md section 18"]
+  items:
+    meaning: "Answers from 1 to 5, strongly disagree to strongly agree. The items 4, 5, 10, 18 and 19 are worded the other way and are reversed in the scores."
+    higher_means: more agreement with the statement
+    polarity: neutral
+    basis: literature
+    source: "scale_reference_aq_autism.md section 18: five-point Likert, strongly disagree to strongly agree; items 4, 5, 10, 18, 19 reverse-scored (confirmed in source, extracted)"
+  scores:
+    tas_describing:
+      meaning: "Difficulty describing feelings: sum of the items 2, 4, 11, 12 and 17, with 4 reversed (5 to 25)."
+      higher_means: more difficulty describing feelings
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 18: factor of five items; total 61 or more is alexithymia (confirmed in source, extracted)"
+    tas_identifying:
+      meaning: "Difficulty identifying feelings: sum of the items 1, 3, 6, 7, 9, 13 and 14 (7 to 35)."
+      higher_means: more difficulty identifying feelings
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 18: factor of seven items; total 61 or more is alexithymia (confirmed in source, extracted)"
+    tas_externally_oriented:
+      meaning: "Externally oriented thinking: sum of the items 5, 8, 10, 15, 16, 18, 19 and 20, with 5, 10, 18 and 19 reversed (8 to 40)."
+      higher_means: more externally oriented thinking
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 18: factor of eight items; total 61 or more is alexithymia (confirmed in source, extracted)"
+    tas_total:
+      meaning: "Total: sum of the twenty items with five reversed, 20 to 100."
+      higher_means: more alexithymia
+      polarity: worse
+      basis: literature
+      source: "scale_reference_aq_autism.md section 18: 61 or more alexithymia, 51 or less non-alexithymia (confirmed in source, extracted)"
+      cutoffs:
+        - {value: "61 or more", meaning: "alexithymia", source: "scale_reference_aq_autism.md section 18", confidence: "confirmed in source (extracted)"}
+        - {value: "51 or less", meaning: "no alexithymia (52 to 60 is intermediate)", source: "scale_reference_aq_autism.md section 18", confidence: "confirmed in source (extracted)"}
+  flags:
+    - "The two stored factors 'describing' and 'identifying' swap the items 7 and 11 (an error of the script of the form). The delivered factors follow the publication and differ from the stored ones; the total and the third factor are unaffected."
+    - "Who answers is not written in the schema. 27 of the 33 inclusion visits are of children; the cut-offs above were not established for children in the sources read."
+    - "41 visits in all, most from one centre in 2013 and 2014."
+
+tci:
+  description: "The Temperament and Character Inventory in a form of 125 items answered false (0) or true (1), with seven scale scores and a total stored as percents. 5 visits."
+  version: "125 true or false items (named from the column names)"
+  reference: "Cloninger CR, Svrakic DM, Przybeck TR. A psychobiological model of temperament and character. Arch Gen Psychiatry 1993;50:975-990 (PMID 8250684)"
+  reference_confidence: "model confirmed in source (Europe PMC record; reference tool verified), abstract not read; the short form of 125 items is to verify"
+  construct: personality_temperament
+  sources: ["schema notes and labels (asp tci)", "scale_reference_aq_autism.md section 36"]
+  items:
+    higher_means: "the answer is 'true' (0 false, 1 true)"
+    polarity: neutral
+    basis: anchors
+    source: "schema labels (asp tci): 'TCI, item N (0 false, 1 true)'"
+  variables:
+    "tci_score*":
+      meaning: "Score of one dimension as stored, a percent from 0 to 100 and not a raw sum: 1 novelty seeking, 2 reward dependence, 3 persistence, 4 harm avoidance, 5 self-directedness, 6 cooperativeness, 7 self-transcendence; tci_scoretot is the total. No rule is checked."
+  flags:
+    - "Too few visits to verify: the scores are delivered as stored and no rule is checked. No document states how the percents are computed or what a higher value means."
+    - "Who answers is not documented."
+
+tics:
+  description: "The section on chronic motor and vocal tics of the old forms: a checklist of 37 tics (24 motor, 13 vocal) answered 1 never, 2 in the past, 3 in the last week, ratings of the tics in the last week and in the worst period of the life, the ages of onset and of the worst period, and the diagnosis of Tourette syndrome. No score."
+  construct: tics
+  period: "lifetime and the last week (checklist); last week and worst lifetime period (ratings)"
+  sources: ["schema notes and labels (asp tics)", "scale_reference_aq_autism.md section 24"]
+  items:
+    meaning: "Checklist items tic1 to tic37: 1 never, 2 in the past, 3 in the last week. The other questions carry their own answers in their labels."
+    higher_means: "the tic is present, and more recently (checklist items)"
+    polarity: worse
+    basis: anchors
+    source: "schema labels (asp tics): 'Tics checklist ... (1 never, 2 in the past, 3 in the last week)'"
+  variables:
+    "ticsem*":
+      meaning: "Ratings of the last week. ticsem1 and ticsem2: longest period without motor or vocal tics, 0 always tic-free to 5 never tic-free. ticsem3 and ticsem4: intensity, 0 absent to 5 severe. ticsem5_m and ticsem5_v: interference, 1 never to 5 frequently disrupts."
+      higher_means: more severe tics in the last week
+      polarity: worse
+      basis: anchors
+      source: "schema labels (asp tics): '0 always tic-free to 5 never tic-free', '0 absent to 5 severe', '1 never to 5 frequently disrupts'"
+    "ticvie*":
+      meaning: "Ratings of the worst period of the life. ticvie1 and ticvie2: longest period without motor or vocal tics, 0 always tic-free to 5 never tic-free. ticvie5_m and ticvie5_v: interference, 1 never to 5 frequently disrupts."
+      higher_means: more severe tics in the worst lifetime period
+      polarity: worse
+      basis: anchors
+      source: "schema labels (asp tics): '0 always tic-free to 5 never tic-free', '1 never to 5 frequently disrupts'"
+    ticvie3:
+      meaning: "Intensity of motor tics in the worst lifetime period. The form offers the answers of the tic-free-period question (0 always tic-free to 5 never tic-free) instead of intensity answers; delivered as written."
+    ticvie4:
+      meaning: "Intensity of vocal tics in the worst lifetime period. The form offers the answers of the tic-free-period question (0 always tic-free to 5 never tic-free) instead of intensity answers; delivered as written."
+    ticmul:
+      meaning: "Several distinct tics at the same time in the last week (0 no, 1 yes)."
+      polarity: not_applicable
+    ticcons:
+      meaning: "A series of tics occurring together in the last week (0 no, 1 yes)."
+      polarity: not_applicable
+    tourdiag:
+      meaning: "A diagnosis of Tourette syndrome was raised (0 no, 1 yes)."
+      polarity: not_applicable
+    tourtt:
+      meaning: "Ever received medication for tics or Tourette syndrome (0 no, 1 yes); it has one answer in all."
+      polarity: not_applicable
+    ticmage:
+      meaning: "Age at the first motor tics, in years."
+      polarity: neutral
+    ticmgrav:
+      meaning: "Age when the motor tics were worst, in years."
+      polarity: neutral
+    ticvage:
+      meaning: "Age at the first vocal tics, in years."
+      polarity: neutral
+    ticvgrav:
+      meaning: "Age when the vocal tics were worst, in years."
+      polarity: neutral
+    tourage:
+      meaning: "Age when the diagnosis of Tourette syndrome was raised, in years."
+      polarity: neutral
+  flags:
+    - "Not tied to a published instrument (literature notes: unidentified); no reference is written and no score is stored or built."
+    - "The answers 1 to 3 of the checklist order recency (never, past, last week), not severity."
+    - "ticvie3 and ticvie4 (intensity in the worst period) were answered on the list of the tic-free-period question: their meaning is uncertain and no direction is written for them."
+    - "Among adults the share of 'never' rises with the years (63% to 71% in 2013 to 2016, 93% in 2019), with no change of the form: a step with no known cause."
+    - "The ages are whole years: a decimal or a word typed in an age is lost by the export."
+    - "Who answers is not documented. Old set of forms: a visit after the change of set did not ask it (not asked, not missing)."
