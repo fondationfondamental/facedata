@@ -42,7 +42,8 @@ notes: >
   A major depressive episode since the last visit on 327 of 809 visits, a
   resistant one on 252 of 796, a suicide attempt on 44 of 796. A resistant
   count above the depressive count on 13 of 795 visits, a count of
-  episodes with psychotic features above the depressive count on 1.
+  episodes with psychotic features above the depressive count on 1: both
+  are delivered as typed and flagged check_failed (not_above).
 
   Gates. The induced episode is a yes/no (mhoccur_eind) and a count after a
   yes: the form shows the count only after a yes and leaves it blank after
@@ -90,8 +91,8 @@ defaults: {type: item, versions: [follow_up]}
 
 variables:
   dsm4_fu_n_mde: {column: evnum_edm, type: number, range: [0, 20], winsor: false, label: Number of major depressive episodes since the last visit}
-  dsm4_fu_n_mde_psychotic: {column: evnum_edm_psy, type: number, range: [0, 20], winsor: false, label: Number of major depressive episodes with psychotic features since the last visit}
-  n_resistant_episodes_since_visit: {column: evnum_edr, type: number, range: [0, 20], winsor: false, label: Number of depressive episodes resistant to two treatments or more since the last visit}
+  dsm4_fu_n_mde_psychotic: {column: evnum_edm_psy, type: number, range: [0, 20], winsor: false, label: Number of major depressive episodes with psychotic features since the last visit, not_above: dsm4_fu_n_mde}
+  n_resistant_episodes_since_visit: {column: evnum_edr, type: number, range: [0, 20], winsor: false, label: Number of depressive episodes resistant to two treatments or more since the last visit, not_above: dsm4_fu_n_mde}
   dsm4_fu_n_hypomania: {column: evnum_ehman, type: number, range: [0, 20], winsor: false, label: Number of hypomanic episodes since the last visit}
   manic_psychotic_since_visit: {column: mhoccur_eman_psy, range: [0, 1], missing: {"2": unknown}, label: A manic episode with psychotic features since the last visit}
   dsm4_fu_n_mania_psychotic: {column: evnum_eman_psy, type: number, range: [0, 20], winsor: false, label: Number of manic episodes with psychotic features since the last visit}

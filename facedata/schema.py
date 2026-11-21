@@ -18,7 +18,7 @@ REQUIRED_FIELDS = ["instrument", "title", "tab", "section", "status", "variables
 VARIABLE_FIELDS = {"column", "label", "type", "range", "codes", "missing", "unit", "unit_column",
                    "units", "ignore_units", "unit_rule", "censor_units", "censored", "bands", "limits",
                    "shared", "z_range", "lookup", "from", "versions", "winsor", "keep", "derived_from",
-                   "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day"}
+                   "doubt", "asked_if", "box_list", "shown_if", "before_visit", "separator", "parse", "note", "day", "not_above"}
 SCORE_FIELDS = {"sum", "mean", "max", "min", "lookup", "profile", "distance", "from", "by", "regression", "with", "band_of", "limits", "custom", "minus", "floor", "scale", "reverse", "min_items",
                 "points", "otherwise", "versions", "compare", "compare_offset", "compare_tolerance", "winsor", "label",
                 "range", "keep", "age", "stop_at_zero", "compare_turned", "age_date", "age_date_since"}
@@ -283,6 +283,9 @@ def check_variable(name, variable, schema, columns):
             problems.append(f"{name}: shown_if names one variable listed before, with the answers that show the question")
     if "before_visit" in variable and kind != "date":
         problems.append(f"{name}: before_visit goes on a date")
+    if "not_above" in variable and (kind not in ("number", "item") or variable["not_above"] not in
+                                    list(schema["variables"]) + list(schema.get("scores", {})) + KEY_COLUMNS):
+        problems.append(f"{name}: not_above goes on a number or an item and names a variable, a score or a key column")
     if "separator" in variable and (kind != "item" or "codes" not in variable):
         problems.append(f"{name}: separator goes on an item that has codes")
     if "doubt" in variable:
@@ -441,27 +444,20 @@ def check_sign(schema):
     sign = schema.get("sign")
     if sign is None:
         return problems
-    if set(sign) == {"before", "turn"}:
-        if not isinstance(sign["before"], pd.Timestamp):
-            problems.append("sign: before is a date written YYYY-MM-DD")
-        for name in sign["turn"]:
-            if name not in schema["variables"]:
-                problems.append(f"sign: '{name}' is not a variable")
+    data_fields = {"against", "relation", "by"}
+    has_data = data_fields <= set(sign)
+    if "turn" not in sign or not set(sign) <= data_fields | {"turn", "before"} or not (has_data or set(sign) == {"turn", "before"}):
+        problems.append("sign: needs turn, with before, or with against, relation and by, or with all four")
         return problems
-    if set(sign) != {"relation", "by", "pairs"}:
-        problems.append("sign: needs relation, by and pairs, or before and turn, and nothing else")
-        return problems
-    if sign["relation"] not in ("negative", "positive"):
+    if "before" in sign and not isinstance(sign["before"], pd.Timestamp):
+        problems.append("sign: before is a date written YYYY-MM-DD")
+    for name in sign["turn"] + sign.get("against", []):
+        if name not in schema["variables"]:
+            problems.append(f"sign: '{name}' is not a variable")
+    if has_data and sign["relation"] not in ("negative", "positive"):
         problems.append("sign: relation is negative or positive")
-    if sign["by"] not in KEY_COLUMNS:
+    if has_data and sign["by"] not in KEY_COLUMNS:
         problems.append("sign: by must be a key column")
-    for score, raw_names in sign["pairs"].items():
-        if schema["variables"].get(score, {}).get("type") != "number":
-            problems.append(f"sign: '{score}' must be a variable of type number")
-        raw_names = [raw_names] if isinstance(raw_names, str) else raw_names
-        for name in raw_names:
-            if name not in schema["variables"]:
-                problems.append(f"sign: '{name}' is not a variable")
     return problems
 
 

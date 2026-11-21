@@ -34,41 +34,44 @@ notes: >
   application, the key holds in every year.
 
   What is delivered. Every item is delivered as written on the form of
-  today. (1) A visit dated before 2021-09-01 used the old form: its eight
-  items are turned (10 - value, flag sign_flipped) and the key then gives
-  the right scores. (2) From 2021-09-01 to 2022-12-31 the centres changed
-  one after the other and the two directions are mixed, also among the
-  visits of the new form: the eight items of these visits are not delivered
-  (period_removed), nor the total and the four sub-scores that use them.
-  Their twelve other items and the interpersonal sub-score are delivered.
-  (3) From 2023 the items are delivered as stored.
+  today. (1) A visit dated before 2021-09-01 is expected to use the old
+  form: its eight items are turned (10 - value, flag sign_flipped) and the
+  key then gives the right scores. (2) From 2021-09-01 to 2022-12-31 the
+  centres changed one after the other and the two directions are mixed,
+  also among the visits of the new form: the eight items of these visits
+  are not delivered (period_removed), nor the total and the four sub-scores
+  that use them. Their twelve other items and the interpersonal sub-score
+  are delivered. (3) From 2023 the items are expected as stored. (4) In
+  each centre and year the data decide where they are clear (the sign
+  block, SCHEMA_SPEC section 9; decision of 2026-11-21 in PROGRESS.md): on
+  the form of today the sum of the eight scales goes against the sum of the
+  twelve others, on the old form with it. A centre-year with 10 visits or
+  more that hold the twenty scales, whose rank correlation is two standard
+  errors or more away from 0, is turned or left as the correlation says,
+  whatever the date. The 84 visits of one centre in 2024 and 2025 (r =
+  +0.43 and +0.44 as stored) are turned this way. No centre-year before
+  September 2021 clearly follows the form of today. Elsewhere the date
+  decides, and a centre-year whose data lean the other way gets sign_doubt
+  on its eight items: 1,134 visits of 17 centre-years.
 
-  Limits. Two centres (215 visits, 7% of the visits from 2023) still enter
-  the old direction on the new form; in them alpha with the key is 0.54 and
-  0.73 against 0.86 elsewhere (item 17 goes with activation there in every
-  year), and a third centre (64 visits) is mixed: their scores from 2023 are
-  wrong, and the schema, which names no centre, cannot tell them apart. In
-  the report, the larger of the two centres is the one step of the site panel
-  (277 visits in all, a median total of 89.5 against 100 overall); there is
-  no step by year.
-  Before September 2021, visits typed or saved again with the new form are
-  turned by mistake: at least 80 are known (D91), and the number could be
-  far larger, up to about 1,240 visits. The correlation between the sum of
-  the eight scales as stored and the sum of the twelve others is +0.38 over
-  the visits of that period (it is negative on the new form), and it is
-  under +0.15 in 12 of the 82 centre-years that have 40 complete visits or
-  more; those 12 hold 1,240 of the 10,182 complete visits. A low
-  correlation can also be noise, so 1,240 is a ceiling, not a count. The
-  schema cannot separate these visits either: a doubt period over the whole
-  cohort would flag every visit of the period. Both limits are asked in
-  QUESTIONS.md (DM-12).
+  Limits. Most centre-years are too small, or their correlation too weak,
+  for the data to decide: before September 2021, 2,278 visits follow the
+  date for that reason. The visits with sign_doubt are the ones to watch:
+  1,010 before September 2021 (12 centre-years, 699 of them in one centre
+  in 2013 and 2016 to 2019, where the correlation as stored is -0.15 to
+  0.00), which are turned and may have been typed or saved again with
+  the new form; and 124 from 2023 (the same centre as above in 2023 and
+  2026, r = +0.28 and +0.34, and a second centre in 2023 to 2025, 51
+  visits), which are delivered as stored and may be in the old direction.
+  A third centre (64 visits from 2023) is mixed and has no flag. After the
+  rule, no centre-year of 10 complete visits or more goes the wrong way by
+  two standard errors (2 did before: the 84 visits above); 17 of 167 have
+  a correlation above 0, of at most +0.43. The questions stay in
+  QUESTIONS.md (DM-12): which visits were typed on which form.
 
-  Status. Reviewed on 2026-11-20 with these two limits stated (decision D190 in
-  PROGRESS.md): the delivery follows the rule that D91 chose, every number
-  of this note was measured again, and what the schema cannot do (name the
-  visits that were entered in the old direction on the new form, or turned
-  by mistake on the old one) is written here and in the question, not hidden.
-  An analysis of the MAThyS scores from 2023 should allow for the centre.
+  Status. Reviewed on 2026-11-20 with these limits stated (decision D190 in
+  PROGRESS.md); the data-driven rule of (4) was added on 2026-11-21. An
+  analysis of the MAThyS scores from 2023 should allow for the centre.
 
   Stored scores. The total (mathys_) and the five sub-scores (mathys29 to
   mathys33) of the extraction are not read. Until October 2026 the
@@ -77,10 +80,14 @@ notes: >
   the values as stored, in every year, which is wrong for the old form
   (decisions D34, D65 and D75, replaced by D91). They are in ignored.yaml.
 
-# The old form stored the eight reversed scales turned; a visit dated before this day used it.
+# The old form stored the eight reversed scales turned; a visit dated before this day used it. In each centre and
+# year, the data decide where they are clear: the eight scales go against the twelve others on the form of today.
 sign:
-  before: 2021-09-01
   turn: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
+  against: [mathys01, mathys02, mathys03, mathys04, mathys11, mathys12, mathys13, mathys14, mathys15, mathys16, mathys19, mathys20]
+  relation: negative
+  by: siteid
+  before: 2021-09-01
 
 # A value above 10 has lost its decimal point: 55 is 5.5.
 defaults:

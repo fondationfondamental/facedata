@@ -49,7 +49,7 @@ Quote a value only if it contains `: `, ` #`, or starts with one of
 | `version` | no | How to recognise the visits of this edition or form, when several share the same raw columns (section 7) |
 | `variables` | yes | Output name → variable fields (section 4) |
 | `scores` | no | Output name → score fields (section 8) |
-| `sign` | no | Values whose sign or direction changed during the study, and how to recognise it or when it happened (section 9) |
+| `sign` | no | Variables stored in the other direction on some visits, and how to recognise those visits: by a known day, by the data, or both (section 9) |
 | `checks` | no | Names of functions in `facedata/custom.py` (section 10) |
 | `names` | no | With `level: list`: the table in which the names of one list are looked up (section 15) |
 | `at_visit` | no | With `level: list`: the yes/no columns of the visit table computed from the items and their dates (section 15) |
@@ -95,6 +95,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `separator` | item | The cell holds several boxes ticked in one list, written one after the other (`Alcool,Cannabis`). Each is read through `codes` and the largest number is kept (section 4) |
 | `shown_if` | all | `{variable: [answers]}`: the form shows the question only when that variable, listed before, holds one of the answers. Elsewhere a filled cell is a value the form wrote by itself: it becomes missing and gets `not_shown` (section 4) |
 | `before_visit` | date | `true`: the date is of an event before the visit (a first attempt asked at inclusion). A date on the day of the visit or later becomes missing and gets `out_of_range` |
+| `not_above` | number, item | Name of a variable or a score of the schema, or of a key column (`age`). A value above the value of that name on the same row is kept and gets `check_failed`, with "above" and the name in `detail`: a number of episodes with psychotic features above the number of episodes of that kind, an age at the first episode above the age at the visit. A row where either is empty is not checked |
 | `day` | date | The day of the month that the export writes in place of the real one (15 for a date of birth). A cell that holds another day is delivered with this day and flagged `date_partial` |
 | `doubt` | all | `{period: [first day, last day], values: [...], note: ..., remove: true}`: the cells of the visits dated in the period keep their value and get `period_doubt`; with `remove: true` they are delivered as missing and get `period_removed` (section 10) |
 | `parse` | all | Name of a function in `facedata/custom.py` that parses this column (escape hatch) |
@@ -744,7 +745,7 @@ scores:
 | `stop_at_zero` | With `sum`: the items are added in the order listed, and the items after the first one scored 0 are not counted (a span: the test stops at the first failure) |
 | `compare_turned` | With `compare`: a stored value equal to the score with the opposite sign is not a mismatch; it gets `sign_flipped`. For a z-score that a centre wrote with the opposite sign in some years |
 | `compare_tolerance` | Largest difference accepted between the stored and the recomputed score. Default 0.01. Use it when the stored score is rounded: 0.051 for one decimal |
-| `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a body mass index) |
+| `winsor` | `[q_low, q_high]`: winsorise this score like a number. Only for a continuous score (a ratio of two lab results) |
 | `label`, `range`, `keep` | As for variables. `keep: false` makes a score a pure consistency check |
 
 A score is not winsorised unless it sets `winsor`.
@@ -1043,71 +1044,69 @@ variables:
   doors_b_band: {column: portebpc_, type: band, limits: [1, 5, 10, 25, 50, 75, 90, 95], derived_from: doors_b}
 ```
 
-## 9. Sign conventions
+## 9. Directions that changed
 
-A z-score can be written with either sign. A slow Trail Making time is `+1.5`
-in one convention (above the mean time) and `-1.5` in the other (worse than
-the mean). Some centres changed convention during the study, so one column
-holds both, and nothing in the cell says which.
+Some variables were stored in the other direction on some visits: a scale
+of 0 to 10 that an old form stored already turned towards the score, a
+z-score written with the other sign. Nothing in the cell says which. The
+`sign` block names the variables and how the visits in the other direction
+are recognised: by a known day, by the data, or both.
 
 ```yaml
 sign:
-  relation: negative       # when the raw value goes up, the standard score must go down
-  by: siteid               # each centre changed once, at its own date
-  pairs:                   # standard score: the raw variable it was computed from
-    tmt_a_time_z: tmt_a_time
-    tmt_a_errors_z: [tmt_a_errors_corrected, tmt_a_errors_uncorrected]
+  turn: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
+  against: [mathys01, mathys02, mathys03, mathys04, mathys11, mathys12, mathys13, mathys14, mathys15, mathys16, mathys19, mathys20]
+  relation: negative       # in the output, the sum of turn goes down when the sum of against goes up
+  by: siteid               # the data decide in each centre and year
+  before: 2021-09-01       # a visit dated before this day is expected in the other direction
 ```
 
 | Field | Meaning |
 |---|---|
-| `relation` | `negative` or `positive`: how the standard score must move when the raw value goes up. This is the convention of the output |
-| `by` | Key column inside which the convention changed at most once, from the opposite convention to the wanted one. Normally `siteid` |
-| `pairs` | Each standard score with its raw variable. A list of raw variables is added up first |
+| `turn` | Required. The variables that may be stored in the other direction. They are turned together: the direction belongs to the form, not to one variable |
+| `before` | The first day of the direction of the output, written `YYYY-MM-DD`. A visit dated before it is expected in the other direction. Without it, every visit is expected in the direction of the output |
+| `against` | The reference: variables stored in the direction of the output on every visit (the items scored as written, the raw value of a standard score). Goes with `relation` and `by` |
+| `relation` | `negative` or `positive`: how the sum of `turn` moves, in the output, when the sum of `against` goes up |
+| `by` | Key column inside which the data decide, year by year. Normally `siteid` |
 
-How the switch date is found is in ARCHITECTURE.md, step 8. In short: in each
-centre the pipeline looks for the month before which the standard scores move
-the wrong way. The values before that month are multiplied by −1 and flagged
-`sign_flipped`. The values within 90 days of it are also flagged `sign_doubt`.
+A variable of `turn` that has a `range` is turned around the middle of its
+range (`min + max − value`, as a reversed item is); one without a range is
+multiplied by −1. A turned value gets `sign_flipped`. Values dated within
+90 days of `before`, before or after, and those of a visit with no date,
+get `sign_doubt`.
+
+**A known day** (`turn` and `before`): the visits dated before the day are
+turned.
+
+**The data** (`turn`, `against`, `relation` and `by`, with `before` when a
+day is known). The visits are grouped by the key column and the year of the
+visit. In a group with 10 visits or more where every variable of `turn` and
+`against` is filled, the pipeline computes the rank correlation between the
+sum of `turn` and the sum of `against`, gives it the sign of `relation`
+(−1 for `negative`) and multiplies it by the square root of the number of
+those visits minus one: the number of standard errors by which the
+correlation is away from 0.
+
+- 2 or more: the group is in the direction of the output; nothing is turned.
+- −2 or less: the group is in the other direction; every visit of the group
+  is turned, whatever its date.
+- In between, or a group with fewer than 10 such visits: the data cannot
+  tell, and each visit keeps the direction expected from `before`. In a
+  group of 10 visits or more whose data lean the other way than expected,
+  the values get `sign_doubt`.
 
 Rules:
 
-- All the pairs of an instrument share one switch date per centre, because
-  the convention belongs to the form, not to one score.
-- List only standard scores that changed. One that has the wanted sign in
-  every year would be flipped by mistake (look at the instrument figure of
-  the report first).
-- The standard scores listed are of type `number`. Their `range` is checked
-  after the flip, so write it in the convention of the output.
-
-### A change at a known date
-
-Sometimes the date is known and nothing has to be searched. Until 2021 the
-MAThyS form stored eight of its scales already turned towards the score;
-the form that replaced it stores them as written. The schema gives the day
-the new direction starts and the variables concerned:
-
-```yaml
-sign:
-  before: 2021-09-01       # a visit dated before this day is in the other direction
-  turn: [mathys05, mathys06, mathys07, mathys08, mathys09, mathys10, mathys17, mathys18]
-```
-
-| Field | Meaning |
-|---|---|
-| `before` | The first day of the direction of the output, written `YYYY-MM-DD` |
-| `turn` | The variables turned on the visits dated before it |
-
-A variable that has a `range` is turned around the middle of its range
-(`min + max − value`, as a reversed item is); one without a range is
-multiplied by −1. The turned values get `sign_flipped`. Those dated within
-90 days of the day, before or after, and those of a visit with no date, get
-`sign_doubt`. A block has either `relation`, `by` and `pairs`, or `before`
-and `turn`.
-
-Use it only when the data show the day for the whole cohort. Where the
-centres changed over some months, the direction of a visit of those months
-is not known: name them in a `doubt` block with `remove: true` (section 10).
+- Use the data only when the instrument has a reference that never changes
+  direction. List in `turn` only variables that changed: one that has the
+  direction of the output in every year would be turned by mistake.
+- Keep `before` when it is known: most groups are too small for the data to
+  tell, and they follow it.
+- Where the centres changed over some months, the direction of a visit of
+  those months is not known: name them in a `doubt` block with
+  `remove: true` (section 10). The data decide outside that period.
+- The range of a variable of `turn` is checked after the turn: write it in
+  the direction of the output.
 
 ## 10. Checks and custom functions
 
@@ -1135,7 +1134,8 @@ checks:
 ```
 
 Use them rarely. A second instrument needing the same rule is a sign that the
-spec should gain a field instead.
+spec should gain a field instead. A value that must not be above another of
+the same row needs no function: `not_above` (section 4).
 
 ### A period in which a column is not reliable
 
@@ -1233,10 +1233,12 @@ the list is not empty.
   versions listed in `codes` and their dates are written `YYYY-MM-DD`.
   `since` names versions of the block, each with one date written
   `YYYY-MM-DD`.
-- A `sign` block has `relation`, `by` and `pairs`; `by` is a key column; every
-  name in `pairs` is a variable of the schema, and the standard scores are of
-  type `number`. Or it has `before`, a date written `YYYY-MM-DD`, and `turn`,
-  a list of variables of the schema.
+- A `sign` block has `turn`, a list of variables of the schema, with
+  `before`, a date written `YYYY-MM-DD`, or with `against`, `relation` and
+  `by`, or with all four; `against` lists variables of the schema,
+  `relation` is `negative` or `positive` and `by` is a key column.
+- `not_above` is on a number or an item and names a variable or a score of
+  the schema, or a key column.
 - Every raw column named exists in the extraction.
 - Output names are unique within the cohort. The list instruments of a cohort may share names: they fill one table (section 15).
 
@@ -1259,7 +1261,8 @@ mechanism. Read them as examples.
 | `auto_questionnaires/bis10.yaml`, `auto_questionnaires/bis12.yaml` | Two instruments stored in the same columns and split by form, the form found from which items are filled, a form with a first day (`since`), a documented offset of the stored scores |
 | `auto_questionnaires/als54.yaml`, `auto_questionnaires/als18.yaml`, `auto_questionnaires/wurs61.yaml`, `auto_questionnaires/wurs25.yaml`, `auto_questionnaires/aim40.yaml`, `auto_questionnaires/aim20.yaml` | A long questionnaire and the reduced one that replaced it, stored in the same columns; the form found from what only the long questionnaires of the same visit have, a bridge score from the common items; a reduced form that no visit can have before the year it came into use (`since`) |
 | `neuropsychologie/wais3_*.yaml`, `neuropsychologie/wais4_*.yaml` | Two editions stored in the same columns and split by a version column: digit span, vocabulary, matrices, coding and symbol search (two schemas each), and similarities (WAIS-IV only). Scaled scores marked `derived_from` their raw total |
-| `neuropsychologie/tmt.yaml` | Z-scores whose sign convention changed centre by centre (`sign`), missing codes of one variable |
+| `neuropsychologie/tmt.yaml` | Z-scores computed again from norm tables, a stored one with the other sign kept as a check (`compare_turned`), missing codes of one variable |
+| `auto_questionnaires/mathys.yaml` | Scales stored in the other direction before a known day and, in some centres and years, after it (`sign` with `before` and the data), a period removed (`doubt`) |
 | `evaluation_medicale/dsm4_depuis_derniere_visite.yaml`, `evaluation_medicale/dsm5_depuis_derniere_visite.yaml` | Two editions split by a version recorded once per patient (`level: patient`), yes/no codes, counts with a cap (`>20`) |
 | `traitements/medications.yaml` | Cells that hold lists (`level: list`), names looked up in a table, yes/no columns of a visit computed from dates |
 | `antecedents/family_structure.yaml`, `antecedents/family_history.yaml` | A count asked only after another count (`asked_if`), the same questions for each relative (`level: relatives`), boxes ticked in one cell (`separator`), yes/no columns per patient computed from the relatives |

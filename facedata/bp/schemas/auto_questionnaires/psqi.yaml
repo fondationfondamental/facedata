@@ -11,9 +11,16 @@ notes: >
   total (0 to 21, higher is worse).
 
   Times. Bedtime, rising time and hours of sleep are written HH:MM and
-  delivered in hours (23:30 is 23.5), as written: 635 bedtimes are between
-  6:00 and 17:00 (a 12-hour clock, or patients who sleep by day), and 13
-  visits give more than 16 hours of sleep. Three nights of more than 24
+  delivered in hours (23:30 is 23.5). 635 bedtimes are typed between 6:00
+  and 17:00. On 554 of them the night would last more than 16 hours: the
+  bedtime was typed on a 12-hour clock (11:00 for 23:00), and the delivered
+  bedtime (psqi_bedtime, a score of custom.py) gets 12 hours; the 81 others
+  (shorter nights: patients who sleep by day) stay as typed. The bedtime as
+  typed is read as psqi_bedtime_typed and not delivered; the efficiency
+  applies the same test to it (psqi_clock_of_12) and does not change
+  (decision of the user, 2026-11-21, which reverses the "as typed" part of
+  D132). No bedtime of this export is 24:xx (it writes 0:xx). 13 visits give
+  more than 16 hours of sleep. Three nights of more than 24
   hours are out_of_range, and one visit holds a time written with one digit
   of minutes in two fields (the rising time and the hours of sleep: 2 cells,
   unparsed): it is not guessed.
@@ -82,7 +89,7 @@ notes: >
 defaults: {type: item, range: [0, 3]}
 
 variables:
-  psqi_bedtime: {column: psqi01, type: time, label: Usual bedtime (hours), range: [0, 24]}
+  psqi_bedtime_typed: {column: psqi01, type: time, label: Usual bedtime as typed (hours), range: [0, 24], keep: false}
   psqi_latency:
     column: psqi02
     type: number
@@ -121,6 +128,9 @@ variables:
   psqi_stored: {column: psqi_, label: PSQI total as stored, range: [0, 21], keep: false}
 
 scores:
+  psqi_bedtime:
+    label: Usual bedtime (hours, 0 to 24; a bedtime typed on a 12-hour clock gets 12 hours)
+    custom: psqi_bedtime
   psqi_disturbances:
     label: Component 5 - sleep disturbances
     custom: psqi_disturbances

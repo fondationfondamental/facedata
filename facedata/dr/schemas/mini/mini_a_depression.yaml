@@ -55,23 +55,47 @@ notes: >
   and the seven of A3) in each period; they need the nine answers.
 
   Criteria and boxes. The MINI 6.0.0 rule is five symptoms or more, A1 or
-  A2 among them, and A4 (local/out/scale_reference_rest.md).
-  mini_mde_criteria (a05a) is the interviewer's answer for the period
-  explored, current or past: it agrees with the items (the current or the
-  past episode meets the rule) on 480 of 526 visits. The boxes current,
-  past and recurrent are written by the form and are ticked only where
-  a05a is yes; they do not follow the 6.0 rule: 402 visits meet it for the
-  last two weeks, the box current is ticked on 244 of them and on 64 that
-  do not; 413 meet it for the past episode, the box past is ticked on 105
-  of them and on 9 that do not. The box recurrent is set from A5
-  (formulaires.js 1017-1019): ticked on 350 of the 380 visits with A5 yes
-  and on 3 others; 175 visits have it alone. The boxes are delivered as
-  stored: to know whether a patient is in an episode, use the symptoms and
-  A4 (open question O24). The box current is derived_from a05a (read on
-  every visit by a hidden variable), the box past from a05a, the box
-  recurrent from A5: derived_doubt where that answer is empty (the box
-  current on 104 visits; the boxes past and recurrent on 66 and 48 at
-  inclusion, 38 and 33 at follow-up).
+  A2 among them, and A4 (local/out/scale_reference_rest.md); form 142 asks
+  it in these words: "Y a-t-il au moins 5 oui entre A1 et A3 et A4 est-elle
+  cotée oui pour cette période ?" (a05a). mini_mde_criteria (a05a) is the
+  interviewer's answer for the period explored, current or past: it
+  agrees with the items (the current or the past episode meets the rule)
+  on 480 of 526 visits; delivered as stored. The boxes current and past
+  (aedm1, aedm2) are shown only after a05a yes and ticked by hand; no
+  script fills them (formulaires.js 2553-2576, commented out). They do not
+  follow the rule: the box current is ticked on 244 of the 402 visits
+  whose items meet it for the last two weeks, on 44 of the 125 that do
+  not and on 20 where the items do not tell; the box past (inclusion) on
+  93 of 357, 5 of 98 and 1. Decision D85: mini_mde_current, mini_mde_past and
+  mini_mde_past_fu are recomputed from the items of their period
+  (functions mini_mde_current, mini_mde_past, mini_mde_past_fu of
+  custom.py): 1 where the rule is met; 0 where it is not, or where A1 and
+  A2 of the period are both no (the form then hides the period); missing
+  where the empty answers could change the result. The stored boxes
+  (mini_mde_current_stored, mini_mde_past_stored, mini_mde_past_fu_stored,
+  not delivered) are their checks. Agreement of the stored box with the
+  rule where both exist: current 325 of 527 visits (158 boxes 0 that the
+  items give 1, 137 of them with a05a yes; 44 boxes 1 that they give 0: 23
+  with A1b and A2b no, 15 with A4 no, 6 with fewer than five symptoms),
+  past 186 of 455 (264 and 5), past at follow-up 43 of 89 (44 and 2):
+  score_mismatch. The box is ticked on fewer visits that meet the rule
+  over the years (current 75%, 64%, 49% in 2013 to 2015, 2016 to 2018 and
+  since 2019; past 50%, 16%, 14%). The rule cannot be computed on 103,
+  60 and 26 visits that hold a box: the module is not answered (64, 41,
+  23; the box is the 0 written when the form is opened, R169), or A1 or A2
+  is yes and the symptoms or A4 are empty (39, 19, 3). Where the box is
+  ticked there (20, 1 and 1 visits) the ticked box is delivered and
+  flagged score_as_stored: the value is the interviewer's box, not the
+  rule (each score adds up its hidden rule, mini_mde_*_rule, and names
+  the hidden ticked box, mini_mde_*_ticked, in otherwise; functions
+  mini_mde_current_ticked and mini_mde_past_ticked). The other 83, 59 and
+  25 stay missing: score_not_recomputed.
+
+  The box recurrent is set
+  from A5 (formulaires.js 1017-1019): ticked on 350 of the 380 visits with
+  A5 yes and on 3 others; 175 visits have it alone. It is delivered as
+  stored, derived_from A5: derived_doubt where A5 is empty (48 visits at
+  inclusion, 33 at follow-up).
 
   Years and centres (2026-11-20). The box current is ticked on 75% of the
   visits with five symptoms or more in the last two weeks in 2013 to 2015,
@@ -149,10 +173,9 @@ variables:
   mini_a05_pe_fu: {column: a05_pe, versions: [follow_up], label: "A5) Entre 2 épisodes de dépression ou de perte d’intérêt pour la plupart des choses, vous êtes-vous senti(e) bien pendant au moins deux mois, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_mde_criteria: {column: a05a, versions: [inclusion], label: "Criteria met for the period explored (current or past): 5 or more of A1 to A3, with A1 or A2, and A4"}
   mini_mde_criteria_fu: {column: a05a, versions: [follow_up], label: "Criteria met for the period explored (current or past): 5 or more of A1 to A3, with A1 or A2, and A4, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
-  mini_mde_criteria_every_visit: {column: a05a, keep: false, label: "a05a read on every visit: the box current is derived from it"}
-  mini_mde_current: {column: aedm1, derived_from: mini_mde_criteria_every_visit, label: "Box: the episode is current (a box: 0 is not ticked)"}
-  mini_mde_past: {column: aedm2, versions: [inclusion], derived_from: mini_mde_criteria, label: "Box: the episode is past (a box: 0 is not ticked)"}
-  mini_mde_past_fu: {column: aedm2, versions: [follow_up], derived_from: mini_mde_criteria_fu, label: "Box: the episode is past (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mde_current_stored: {column: aedm1, keep: false, label: "Box: the episode is current, as stored (a box: 0 is not ticked; shown after a05a yes)"}
+  mini_mde_past_stored: {column: aedm2, versions: [inclusion], keep: false, label: "Box: the episode is past, as stored (a box: 0 is not ticked; shown after a05a yes)"}
+  mini_mde_past_fu_stored: {column: aedm2, versions: [follow_up], keep: false, label: "Box: the episode is past, as stored at a follow-up visit (a box: 0 is not ticked; shown after a05a yes)"}
   mini_mde_recurrent: {column: aedm3, versions: [inclusion], derived_from: mini_a05_pe, label: "Box: the episode is recurrent (a box: 0 is not ticked)"}
   mini_mde_recurrent_fu: {column: aedm3, versions: [follow_up], derived_from: mini_a05_pe_fu, label: "Box: the episode is recurrent (a box: 0 is not ticked), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_mde_episodes: {column: a06a, versions: [inclusion], type: number, range: [0, 60], winsor: false, missing: {"99": unknown}, label: "Number of depressive episodes in the life"}
@@ -170,3 +193,26 @@ scores:
     label: "Number of the nine symptoms present in the past episode, at a follow-up visit"
     sum: [mini_a01a_fu, mini_a02a_fu, mini_a03a_pe_fu, mini_a03b_pe_fu, mini_a03c_pe_fu, mini_a03d_pe_fu, mini_a03e_pe_fu, mini_a03f_pe_fu, mini_a03g_pe_fu]
     versions: [follow_up]
+  mini_mde_current_rule: {custom: mini_mde_current, keep: false, label: "The MINI 6.0.0 rule on the items of the last two weeks (function mini_mde_current)"}
+  mini_mde_current_ticked: {custom: mini_mde_current_ticked, keep: false, label: "The box current where it is ticked (a box at 0 is not ticked: missing)"}
+  mini_mde_current:
+    label: "Major depressive episode current (the last two weeks): 5 or more of A1b, A2b and the seven A3, A1b or A2b among them, and A4 (MINI 6.0.0 rule); the ticked box where the items do not tell"
+    sum: [mini_mde_current_rule]
+    otherwise: mini_mde_current_ticked
+    compare: mini_mde_current_stored
+  mini_mde_past_rule: {custom: mini_mde_past, versions: [inclusion], keep: false, label: "The MINI 6.0.0 rule on the items of the past episode (function mini_mde_past)"}
+  mini_mde_past_ticked: {custom: mini_mde_past_ticked, versions: [inclusion], keep: false, label: "The box past where it is ticked (a box at 0 is not ticked: missing)"}
+  mini_mde_past:
+    label: "Major depressive episode past: 5 or more of A1a, A2a and the seven past A3, A1a or A2a among them, and the past A4 (MINI 6.0.0 rule); the ticked box where the items do not tell"
+    sum: [mini_mde_past_rule]
+    otherwise: mini_mde_past_ticked
+    versions: [inclusion]
+    compare: mini_mde_past_stored
+  mini_mde_past_fu_rule: {custom: mini_mde_past_fu, versions: [follow_up], keep: false, label: "The MINI 6.0.0 rule on the _fu items of the past episode (function mini_mde_past_fu)"}
+  mini_mde_past_fu_ticked: {custom: mini_mde_past_ticked, versions: [follow_up], keep: false, label: "The box past at a follow-up visit where it is ticked (a box at 0 is not ticked: missing)"}
+  mini_mde_past_fu:
+    label: "Major depressive episode past, at a follow-up visit (the _fu twins; lifetime wording, answered as since the last visit: see notes)"
+    sum: [mini_mde_past_fu_rule]
+    otherwise: mini_mde_past_fu_ticked
+    versions: [follow_up]
+    compare: mini_mde_past_fu_stored

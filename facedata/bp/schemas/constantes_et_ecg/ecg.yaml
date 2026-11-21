@@ -58,6 +58,15 @@ notes: >
   The form also asks whether the ECG was sent to a cardiologist and whether
   an opinion was requested; the extraction does not hold these two answers.
 
+  No value is winsorised (winsor: false on the heart rate, the QT, the RR and
+  the stored QTc, and no winsor on the score qtc_bazett), the user's decision
+  of 2026-11-21 for BP, SZ and DR: the hard ranges remove the impossible
+  values, and the values beyond the 1st and 99th percentiles are real
+  measures; a corrected QT above 0.5 s is the prolongation that a study of
+  drug safety looks for, and the default limit (about 0.50 s) brought it back.
+  Cells no longer clipped: heart rate 190, QT 141, RR 158, stored QTc 167,
+  computed QTc 180 (winsorised 836 -> 0).
+
 defaults: {type: number, unit: s, missing: {0: not_recorded}}
 
 variables:
@@ -66,7 +75,7 @@ variables:
     label: Electrocardiogram done
     type: category
     codes: {Oui: yes, Non: no}
-  ecg_heart_rate: {column: eghrmn, label: Heart rate on the ECG (beats per minute), unit: bpm, range: [30, 220]}
+  ecg_heart_rate: {column: eghrmn, label: Heart rate on the ECG (beats per minute), unit: bpm, range: [30, 220], winsor: false}
   qt_interval:
     column: qt
     label: QT interval
@@ -75,6 +84,7 @@ variables:
       cs: {factor: 0.01, expect: [20, 70]}
       ms: {factor: 0.001, expect: [200, 700]}
     range: [0.2, 0.7]
+    winsor: false
   rr_interval:
     column: rr
     label: RR interval
@@ -82,6 +92,7 @@ variables:
       s: {factor: 1, expect: [0.3, 2.0]}
       ms: {factor: 0.001, expect: [300, 2000]}
     range: [0.3, 2.0]
+    winsor: false
   qtc_stored:
     column: qtc
     label: Corrected QT interval as stored by the EMR
@@ -90,6 +101,7 @@ variables:
       cs: {factor: 0.01, expect: [20, 70]}
       ms: {factor: 0.001, expect: [200, 700]}
     range: [0.2, 0.7]
+    winsor: false
 
 scores:
   qtc_bazett:
@@ -98,7 +110,6 @@ scores:
     compare: qtc_stored
     compare_tolerance: 0.03
     range: [0.2, 0.7]
-    winsor: [0.01, 0.99]
 
 checks:
   rr_interval: rr_differs_from_rate

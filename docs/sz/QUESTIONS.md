@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6) and on 2026-11-21 (the decisions on the held items: PI-1, DEV-19, PI-6, PI-7), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -450,6 +450,10 @@ stored scores keep 29 terms of 28 items of the 45 terms of the published
 formula, and neither of its two subtractions. Which version is wanted?
 *Today:* Wallwork (two factors) and Lançon (one factor) corrected; van der
 Gaag as stored, labelled with its items. (O5, D10)
+*Labels decided by the user on 2026-11-21 (D99):* van der Gaag is labelled
+"van der Gaag 2006, the application's list", the Lançon negative factor
+"corrected as in the application (G7 for N7)". The check of the papers stays
+open.
 
 **PI-2. Four corrections that the package makes.** Each rests on the data
 and is written in the notes of its schema; each needs your agreement.
@@ -666,7 +670,7 @@ hold a stored total and only the answer "unsure" (O41): can the raw answers be g
 macro (`unescape_apostrophe`) be checked on the answers D'accord and Pas d'accord (R151)? (3) PSQI: the score step
 of the export is a strict sum of the items 5b to 5j, so the component 5 is empty on the 45 visits where only
 5j is blank; is that intended? The BP export writes a bedtime of 24:xx as 0:xx and the SZ export does not
-(20 visits deliver 24.0); the SZ form has no "H24" warning (A75). (4) The smoking-status question `rad_tabac`,
+(20 visits stored 24.0; the package delivers 0:xx since D101); the SZ form has no "H24" warning (A75). (4) The smoking-status question `rad_tabac`,
 which hides the Fagerström test in the form, is not exported. (5) CTQ: the script of the form counts a blank
 denial item as 0 (the stored denial score exists on 20 visits where an item is blank; A73). (6) EQ-5D: the script
 of the form tests a missing visual scale on a node list that is never empty (defect A18; no effect on the
@@ -687,6 +691,8 @@ crosswalk from the 5L profile to the 3L value set (3,125 profiles). A French val
 (to verify) and its table is not in the sources.
 *Question:* does the project want the crosswalk, or the 5L value set (and who can provide the table)?
 *Today:* the crosswalk, as the applications compute it. (O43, D86)
+*Decided by the user on 2026-11-21 (D103):* the crosswalk stays the delivered index; the 5L value set will be
+added as a second score under its own name once its table is supplied.
 
 **DEV-19. SOGS, EPHP, S-QoL: what the export and the scripts do wrongly (for the EMR developers and whoever
 writes the export).** (1) SOGS: the export reads item 6 as "no" and "yes, some months ago but not now" only
@@ -700,6 +706,8 @@ computed again: 225 totals and 313 sub-scores hold a 7 counted as 7, 16 totals a
 *Question:* can they be corrected, and the stored scores of the EPHP computed again?
 *Today:* the SOGS total is delivered as stored, the EPHP scores are missing where an item is 7, and the S-QoL
 items 17 and 18 are not delivered. (D87, D88, D89)
+*Since 2026-11-21 (D98):* the EPHP scores count a 7 as 0, as the script since 2026-10-28; the stored scores typed
+before that day are the checks (229 totals differ). The request to compute them again stands.
 
 **S-QoL, EPHP, DSM-5 forms: who answers and what is asked (DM-13, for the data managers).** (1) The EPHP is filled
 by someone close to the patient: the dictionary says at V0, V1, V3 and V5, and the extraction holds it at every
@@ -719,3 +727,8 @@ answer "yes" of item 6 back? (3) EPHP, the code 7: count it as 0 (the script sin
 scores) or as missing (here)? (4) DSM-5 forms: should the blocks that were never asked (the use question
 answered "no" or empty) be 0 (`asked_if` on the use question, 102,468 cells) or stay missing?
 *Today:* Option A; the SOGS total as stored; the EPHP score missing; the DSM-5 blocks missing. (O8, O44, O45, O46)
+*Decided by the user on 2026-11-21:* (1) Option A stays until the export is put right (R150); the user asks the
+data engineers (D103). (2) The SOGS total stays as stored until the export gives the lost answers back (R151,
+D103). (3) The code 7 counts 0 in the EPHP scores and stays a missing code in the items (D98). (4) The blocks
+never asked are 0: after a no to the use question of the substance, and for the five illicit drugs after a no
+to the illicit-drugs question (456,972 cells, D97). Points (1) and (2) come back when the export is corrected.

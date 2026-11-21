@@ -263,21 +263,6 @@ def test_norm_age_can_be_the_age_at_the_date_of_the_assessment():
     assert list(since.round(3)) == [30.0, 30.0, 30.0, 30.0]                  # the visit is before the first day: the visit age
 
 
-def test_fix_sign_flips_the_scores_written_before_a_centre_changed():
-    months = pd.date_range("2012-01-01", periods=30, freq="MS")
-    time = np.array([20 + (7 * i) % 23 for i in range(30)], dtype=float)
-    good = -(time - 30) / 10                       # a slow time gives a low z-score
-    old = months < "2013-03-01"                    # centre A used the opposite sign until March 2013
-    values = pd.DataFrame({"time": np.tile(time, 2), "z": np.concatenate([np.where(old, -good, good), good])})
-    keys = make_keys(["P"] * 60, [0] * 60, list(months) * 2, ["A"] * 30 + ["B"] * 30)
-    schema = {"sign": {"relation": "negative", "by": "siteid", "pairs": {"z": "time"}}}
-    values, flags, switch = fix_sign(values, keys, schema)
-    assert switch == {"A": pd.Timestamp("2013-03-01")}
-    assert list(values["z"]) == pytest.approx(list(good) * 2)
-    assert flagged(flags, "sign_flipped") == list(range(14))
-    assert flagged(flags, "sign_doubt") == [11, 12, 13, 14, 15, 16]   # within 90 days of the switch
-
-
 def test_fix_sign_turns_the_items_of_the_visits_before_a_known_date():
     # An old form stored a scale of 0 to 10 already turned; the new form stores it as written.
     dates = pd.to_datetime(["2020-05-01", "2021-07-15", "2021-09-01", "2023-02-01", None])
@@ -285,28 +270,13 @@ def test_fix_sign_turns_the_items_of_the_visits_before_a_known_date():
     keys = make_keys(["P"] * 5, [0] * 5, list(dates), ["A"] * 5)
     schema = {"variables": {"item": {"range": [0.0, 10.0]}, "z": {}, "other": {}},
               "sign": {"before": pd.Timestamp("2021-09-01"), "turn": ["item", "z"]}}
-    values, flags, switch = fix_sign(values, keys, schema)
+    values, flags = fix_sign(values, keys, schema)
     assert list(values["item"]) == [8.0, 0.5, 4.0, 7.0, 3.0]          # 10 - value before the day, as written from it
     assert list(values["z"][[0, 2, 3]]) == [-1.5, -1.0, 0.5]           # no range: the sign changes
-    assert list(values["other"]) == [1.0] * 5 and switch == {}
+    assert list(values["other"]) == [1.0] * 5
     item_flags = flags[flags["variable"] == "item"]
     assert flagged(item_flags, "sign_flipped") == [0, 1]
     assert flagged(item_flags, "sign_doubt") == [1, 2, 4]              # within 90 days of the day, or no date
-
-
-def test_fix_sign_does_not_flip_a_centre_whose_early_scores_mix_the_two_conventions():
-    months = pd.date_range("2012-01-01", periods=30, freq="MS")
-    time = np.array([20 + (7 * i) % 23 for i in range(30)], dtype=float)
-    good = -(time - 30) / 10
-    mixed = (months < "2013-03-01") & (np.arange(30) % 2 > 0)    # one early score in two has the opposite sign
-    values = pd.DataFrame({"time": time, "z": np.where(mixed, -good, good)})
-    keys = make_keys(["P"] * 30, [0] * 30, list(months), ["A"] * 30)
-    schema = {"sign": {"relation": "negative", "by": "siteid", "pairs": {"z": "time"}}}
-    as_written = values["z"].copy()
-    values, flags, switch = fix_sign(values, keys, schema)
-    assert switch == {} and flagged(flags, "sign_flipped") == []
-    assert list(values["z"]) == list(as_written)                 # too weak to tell: nothing is changed
-    assert flagged(flags, "sign_doubt") == list(range(14))       # the scores before March 2013 are doubted
 
 
 def test_collapse_patient_level_keeps_the_first_value_and_flags_changes():
@@ -573,7 +543,7 @@ def test_stai_shift_is_missing_when_a_centre_used_two_codings_in_a_year():
 
 
 def test_psqi_components_follow_the_published_classes():
-    values = pd.DataFrame({"psqi_bedtime": [23.0, 1.0, 22.0, np.nan], "psqi_rising_time": [7.0, 9.0, 8.0, 7.0], "psqi_sleep_hours": [7.0, 5.0, 6.0, 7.0],
+    values = pd.DataFrame({"psqi_bedtime_typed": [23.0, 1.0, 22.0, np.nan], "psqi_rising_time": [7.0, 9.0, 8.0, 7.0], "psqi_sleep_hours": [7.0, 5.0, 6.0, 7.0],
                            "psqi05b": [0.0, 1.0, 3.0, 1.0], "psqi05c": [0.0, 1.0, 3.0, 1.0], "psqi05d": [0.0, 0.0, 3.0, 1.0], "psqi05e": [0.0, 0.0, 3.0, 1.0],
                            "psqi05f": [0.0, 0.0, 3.0, 1.0], "psqi05g": [0.0, 0.0, 3.0, 1.0], "psqi05h": [0.0, 0.0, 3.0, np.nan], "psqi05i": [0.0, 0.0, 0.0, 1.0],
                            "psqi05j": [np.nan, 0.0, 3.0, 1.0], "psqi08": [0.0, 1.0, 3.0, 2.0], "psqi09": [0.0, 1.0, 2.0, np.nan]})
@@ -586,11 +556,11 @@ def test_psqi_components_follow_the_published_classes():
 
 def test_psqi_efficiency_corrects_a_bedtime_typed_on_a_12_hour_clock():
     """11:00 to 7:00 is 20 hours in bed, which is impossible: the bedtime was 23:00 (BP D132). A day sleeper is left alone."""
-    values = pd.DataFrame({"psqi_bedtime": [23.0, 11.0, 8.0, 10.0], "psqi_rising_time": [7.0, 7.0, 18.0, 6.0],
+    values = pd.DataFrame({"psqi_bedtime_typed": [23.0, 11.0, 8.0, 10.0], "psqi_rising_time": [7.0, 7.0, 18.0, 6.0],
                            "psqi_sleep_hours": [7.0, 7.0, 7.0, 7.0]})
     efficiency = custom.psqi_efficiency(values)
     assert list(efficiency) == [0.0, 0.0, 2.0, 0.0]        # 7 of 8 hours twice; 7 of 10 hours by day is 70%; 10:00 to 6:00 is 8 hours too
-    on_75 = pd.DataFrame({"psqi_bedtime": [23.0], "psqi_rising_time": [7.0 + 1 / 3], "psqi_sleep_hours": [7.0]})
+    on_75 = pd.DataFrame({"psqi_bedtime_typed": [23.0], "psqi_rising_time": [7.0 + 1 / 3], "psqi_sleep_hours": [7.0]})
     assert custom.psqi_efficiency(on_75)[0] == 1.0         # 7 of 8.333 hours is 84%: a float error must not move 75% either way
 
 
@@ -684,9 +654,10 @@ def test_psp_band_of_the_score():
 def test_a_custom_score_can_use_the_key_columns():
     """custom: name(values, keys). The age at the inclusion visit is the same on every row of a patient."""
     keys = pd.DataFrame({"usubjid": ["a", "a", "a", "b"], "visit": ["screening", "V0", "V1_an", "screening"],
-                         "age": [40.9, 41.2, 42.3, 30.0]})
+                         "visit_date": pd.to_datetime(["2021-05-01", "2021-07-01", "2022-07-01", "2020-01-01"])})
+    birth = pd.DataFrame({"birth_date_stored": pd.to_datetime(["1980-06-15"] * 3 + ["1990-01-01"])})
     schema = {"variables": {}, "scores": {"age_at_inclusion": {"custom": "age_at_inclusion", "keep": True}}}
-    values, flags = compute_scores(pd.DataFrame(index=keys.index), schema, keys=keys)
+    values, flags = compute_scores(birth, schema, keys=keys)
     assert list(values["age_at_inclusion"][:3]) == [41, 41, 41]          # the age at V0, also on the other rows
     assert pd.isna(values["age_at_inclusion"][3])                         # no inclusion visit
 

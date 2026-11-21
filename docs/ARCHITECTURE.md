@@ -285,7 +285,7 @@ All steps are generic. They run once per instrument, in this order.
 | 5 | `split_missing(column, variable)` | Turns missing codes into missing values |
 | 6 | `parse_<type>(column, variable)` | Turns strings into numbers, categories, dates; separates censoring marks |
 | 7 | `convert_units(values, labels, variable)` | Brings numbers to the schema's unit |
-| 8 | `fix_sign(data, schema)` | Brings standard scores to one sign convention |
+| 8 | `fix_sign(data, schema)` | Turns the variables stored in the other direction |
 | 9 | `check_range(values, variable)` | Removes impossible values |
 | 10 | `compute_scores(data, schema)` | Recomputes scores from items, compares with stored scores |
 | 11 | `collapse_patient_level(data, schema)` | One value per patient for patient-level variables |
@@ -440,43 +440,45 @@ variables that depend on the edition are missing. The same holds for a visit
 dated before the day its edition came into use, when the schema gives that
 day (`since`).
 
-### Step 8: sign conventions
+### Step 8: directions that changed
 
-Only for instruments whose schema has a `sign` block. Some z-scores were
-written with one sign in the early years and the opposite sign later, and
-each centre changed at its own date. `fix_sign` finds that date in each
-centre and brings every value to the convention the schema asks for.
+Only for instruments whose schema has a `sign` block (SCHEMA_SPEC, section
+9). Some variables were stored in the other direction on some visits: a
+scale that an old form stored already turned towards the score, a z-score
+written with the other sign. Nothing in the cell says which. `fix_sign`
+brings the variables listed in `turn` to the direction of the output. They
+are turned together, because the direction belongs to the form.
 
-For one centre:
+A variable with a `range` is turned around the middle of it (`min + max −
+value`, as a reversed item is); one without a range is multiplied by −1.
+A turned value gets `sign_flipped`.
 
-1. Take the visits that have a date. For each pair of the schema (a standard
-   score and its raw value), compute the rank correlation between the two,
-   and average over the pairs.
-2. Try each month as the switch date: multiply the standard scores dated
-   before it by −1 and compute the same average. Keep the month that brings
-   the average closest to the wanted relation.
-3. Accept the switch only if at least 10 visits lie before it and, before
-   it, the scores as written clearly move the wrong way: a mean rank
-   correlation of 0.5 or more in the wrong direction. Where they move the
-   wrong way less clearly, the early scores of the centre are a mixture of
-   the two conventions: nothing is flipped, and they get `sign_doubt`.
-   Otherwise nothing is changed in that centre.
-4. Standard scores dated before the switch are multiplied by −1 and get
-   `sign_flipped`. Those dated within 90 days of it, before or after, also
-   get `sign_doubt`, because a centre does not change on a single day. A
-   standard score on a visit without a date is kept as written and gets
-   `sign_doubt`.
+The visits in the other direction are recognised in one of three ways.
 
-The switch dates are found again at each load, from the data. They are listed
-on the instrument's report page. An extraction with few visits per centre
-gives no switch date, and nothing is flipped.
+1. **A known day** (`turn` and `before`): the visits dated before the day
+   are turned.
+2. **The data** (`turn`, `against`, `relation` and `by`): `against` is a
+   reference that never changes direction (the items scored as written, the
+   raw value of a standard score). The visits are grouped by the key column
+   `by` (the centre) and the year. In a group with 10 visits or more where
+   every variable of `turn` and `against` is filled, the rank correlation
+   between the sum of `turn` and the sum of `against` is given the sign of
+   `relation` and multiplied by the square root of the number of those
+   visits minus one (the number of standard errors by which it is away from
+   0). At 2 or more the group is in the direction of the output and nothing
+   is turned; at −2 or less every visit of the group is turned, whatever its
+   date. In between, or in a smaller group, the data cannot tell.
+3. **Both**: the data decide where they can; elsewhere each visit keeps the
+   direction expected from `before`.
 
-A schema can also give the date itself (`before`) with the variables to turn
-(`turn`), when a form changed the direction in which it stores some answers.
-Nothing is searched then: the values of the visits dated before that day are
-turned around the middle of their range (or multiplied by −1 when they have
-no range) and get `sign_flipped`; those within 90 days of the day, and those
-of a visit without a date, get `sign_doubt`.
+`sign_doubt` goes to the values dated within 90 days of `before`, before or
+after (a centre does not change on a single day), to those of a visit
+without a date, and to those of a group of 10 visits or more whose data lean
+to the other direction than expected, not clearly enough to decide. The
+decisions are made again at each load, from the data. A period in which the
+centres changed form over some months is not decided by the data: the schema
+names it in a `doubt` block with `remove: true` (step 9 and SCHEMA_SPEC,
+section 10).
 
 ### Step 9: range
 
@@ -543,13 +545,16 @@ first visit.
 ### Step 12: winsorising
 
 - Only variables of type `number`, and the continuous scores that ask for it
-  (a body mass index). Never items, bounded scores, categories, dates or
+  (a ratio of two lab results). Never items, bounded scores, categories, dates or
   times.
 - Runs last, so scores are computed from unclipped inputs.
 - Default limits: the 1st and 99th percentile of the valid values, pooled over
   sites and visits. Each limit is a value that was really observed (the
   nearest one to the percentile). A schema can give other percentiles, fixed
   limits, or switch it off.
+- Physical measures (height, weight, waist, body mass index, blood pressures,
+  pulse) and the ECG intervals (QT, QTc, RR, heart rate of the ECG) are not
+  winsorised in any cohort (BP D202, SZ D100, DR D84, ASP D80 and D90).
 - Each clipped cell gets `winsorised`; `raw` keeps the original.
 - `load(..., winsorise=False)` skips the step: the values are delivered as
   harmonised, with their true tails. Use it when the tails are the subject
@@ -579,14 +584,14 @@ first visit.
 | `band_from_z` | info | The band is the one a z-score has under the normal law: the z-score of the cell, or one computed with the regression of the norms |
 | `unit_converted` | info | Converted from a labelled unit |
 | `unit_inferred` | info | Unit taken from the magnitude; the label was missing, unknown or impossible |
-| `sign_flipped` | info | A standard score written in the old sign convention was multiplied by −1 |
+| `sign_flipped` | info | A value stored in the other direction was turned (around the middle of its range, or multiplied by −1) |
 | `version_inferred` | info | No version was recorded for the patient; it was taken from the inclusion date |
 | `version_overridden` | info | The form labels the visit with one edition, a column that only another edition has is filled: the visit has the other edition |
 | `visit_removed` | discrepancy | The visit has several impossible values in the instrument (`implausible_visits`): its block is shifted, so its other values are not delivered |
 | `duplicate_row` | info | A duplicated visit record was dropped |
 | `winsorised` | info | The value was clipped |
 | `unit_doubt` | discrepancy | The value was possible under its label but fits another unit better |
-| `sign_doubt` | discrepancy | The standard score is dated within 90 days of the centre's change of sign convention, or has no date; or the early scores of the centre mix the two conventions and were not flipped |
+| `sign_doubt` | discrepancy | The value is dated within 90 days of the day the direction changed, or has no date; or the visits of its centre and year lean to the other direction, not clearly enough to decide |
 | `band_middle` | discrepancy | The cell held a band of values (`60-51`); the value is the middle of the band |
 | `column_conflict` | discrepancy | Two raw columns of one variable hold different values; the first one listed is kept |
 | `score_mismatch` | discrepancy | Stored and recomputed scores differ |
@@ -595,7 +600,7 @@ first visit.
 | `patient_value_varies` | discrepancy | A patient-level variable, or an answer about a relative, changes between visits |
 | `list_crossed` | discrepancy | An item of a list that the export crossed: the patient has several products, and the file does not say which dose or date belongs to which (SCHEMA_SPEC, section 15) |
 | `visit_order` | discrepancy | Visit dates are not in visit order |
-| `check_failed` | discrepancy | A custom check named in the schema failed |
+| `check_failed` | discrepancy | A custom check named in the schema failed, or a value is above the value it may not exceed on the same row (`not_above`) |
 | `period_doubt` | discrepancy | The visit is dated in a period in which the schema says the column is not reliable |
 | `period_removed` | danger | The visit is dated in a period in which the schema says the column is not reliable and asks for the value not to be delivered; `raw` holds what was written |
 | `unparsed` | danger | The cell could not be read as its type |
@@ -658,8 +663,9 @@ needs nothing but the result of `load()`.
 
 One figure per instrument: the share of visits with a value, per variable and
 year; the visits per year, by version when there is one; and, for an
-instrument with a `sign` block, the rank correlation between raw value and
-standard score per year, as written and harmonised.
+instrument with a `sign` block that names a reference (`against`), the rank
+correlation per year of each turned variable against the sum of the
+reference, as written and harmonised.
 
 ### Report
 

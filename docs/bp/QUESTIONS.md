@@ -46,7 +46,7 @@ its limits stated (D190, DM-12).
 |---|---|---|
 | 1. To read in the application | 0 | The project, in the source code and on the development instance |
 | 2. To check on the data or the publication | 2 | The project |
-| 3. Choices of method | 6 | The project lead and the principal investigator |
+| 3. Choices of method | 4 | The project lead and the principal investigator |
 | 4. For the data managers, the centres and the developers | 19 | The data managers; still to send. The requests to the export are in [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md) |
 
 ## Answered and removed
@@ -122,6 +122,8 @@ with the project lead.
 | AUTO-QUESTIONNAIRES re-audit, BP, first group of 13 schemas (2026-11-20, D183 to D189) | The CTQ, PSQI, Epworth, STOP-BANG, circadian, QIDS-SR16, STAI-YA, Altman, MDQ, ASRS, WURS-25, WURS-61 and EQ-5D schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export's score definitions, the graph of their dependencies and the data. The CTQ denial and the ASRS screen are computed from the items and the stored ones are the checks (the application counts a blank CTQ item as 0, and its ASRS script tests the wrong variable for an unanswered item): 108 and 100 cells change, the cells that cannot be recomputed are flagged `score_not_recomputed` (42 and 6). PSQI components 5 and 7 are computed with a blank 5j read as 0 (the script and the export both need 5j): 108 more components and 87 more totals; the latency is no longer winsorised (294 cells); the text of the other reason is shown only after a 5j of 1 to 3 (2 cells). The QIDS total is YAML (same values), the MDQ has a check of its screening result (17 visits to which R88 applies), the EQ-5D index is named for what it is (the France crosswalk of the 5L profile to the 3L value set); titles and labels say the time frame. The 13 schemas stay reviewed | D183 to D189 |
 | AUTO-QUESTIONNAIRES re-audit, BP, second group of 14 schemas (2026-11-20, D190 to D197) | The AIM-20, AIM-40, ALS-18, ALS-54, short aggression questionnaire (AQ-12), BDHI, BIS-10, BIS-12, CSM, Fagerström, MARS, MAThyS, MAThyS emotions and PRISE-M schemas were re-read under the rules of the other cohorts, against the forms, the scripts of the application, the export's score definitions, the graph of their dependencies and the data. The BDHI items are delivered as asked, 1 true and 0 false (the 15 statements for which false is the hostile answer are read back: 67,999 cells flip, no score moves); the PRISE-M total needs the 31 items that the application asks for (239 partial sums are lost, 328 stored totals flagged `score_not_recomputed`); the MARS and BIS titles and notes carry the time frame, the numbers that the BIS-12 form prints and the corrected counts; the AQ-12 is titled by its content and not joined with item 12 of the ASP autism quotient. The MAThyS is `reviewed` with its limits stated (two or three centres in the old direction from 2023, at least 80 and up to about 1,240 visits turned by mistake before September 2021: DM-12). The tab is 27 of 27 reviewed, and the cohort 135 of 135. New questions: DM-19, PI-19, DM-20 | D190 to D197 |
 | ECG, what two centres type in the RR field (D114) | The heart rate divided by 60, on 89% of their visits (2% to 14% elsewhere): the help text of the field says to divide the rate by 60, the inverse of 60 / rate (defect A84). The package already computes the QTc from the heart rate | D198 |
+| PI-17, CGI improvement, therapeutic effect and efficacy index at inclusion (2026-11-21) | They stay out (the user's decision): the form asks them at the follow-up visits only and says to tick "not assessed" at the initial evaluation; the package reads them at the follow-up visits only, as D113 decided, and the 1,068 inclusion ratings are not delivered | D203 (D113, D170) |
+| PI-18, EQ-5D index: the crosswalk or the French five-level value set (2026-11-21) | The crosswalk stays the delivered `eq5d_index` (the user's decision); the five-level value set will be a second score under its own name once its table is supplied (as a norm table, outside the repository) | D203 (D188) |
 | PI-14 and O53, dates of the most recent episode after the inclusion visit (2026-11-18) | Kept as written (the project lead's choice): 114 starts and 212 ends later than the visit are full typed dates that the data cannot tell from an expected end | D131 |
 
 ## 1. To read in the application
@@ -155,7 +157,7 @@ Nothing open today. The norms of the other tests (PI-10, DM-4) wait on their tab
     version, the 'Inventaire du type circadien' (11 items).
   - EQ-5D-5L: the crosswalk reference (van Hout and colleagues, 2012) and the
     French EQ-5D-5L value set (Andrade and colleagues, 2020), whose range we
-    know and whose table is not in the sources (see PI-18).
+    know and whose table is not in the sources (PI-18 is answered: the crosswalk stays, the five-level value set will be a second score, D203).
   - Today: a blank 5j counts 0; the notes name the authors as above and carry
     'to verify'.
 
@@ -214,33 +216,6 @@ still to do.
   does for the family history (D103)? The default is no such column: the
   note of `tobacco` forbids deriving 0 pack-years from "Non fumeur".
   - Today: one value per visit, as recorded.
-
-- [ ] **PI-17. CGI improvement, therapeutic effect and efficacy index at
-  inclusion: deliver them?** (D170, D113; new on 2026-11-20) The form asks
-  them at the follow-up visits and says to tick "not assessed" at the initial
-  evaluation, and the package reads them at follow-up visits only. They hold a
-  rating all the same at 1,068 inclusion visits (19% of those that have a
-  severity; 1% to 3% in four centres and 37% to 60% in three). The ratings do
-  not look like a blank form: at inclusion the improvement correlates with the
-  severity as it does at follow-up (Spearman 0.46 on 1,057 pairs, against
-  0.44 on 8,841). What the raters compared with at inclusion is not known.
-  Should the inclusion values be delivered under names of their own, or stay
-  out? The default is out.
-  - Today: the three items and the index are read at the follow-up visits only;
-    the inclusion values carry no flag.
-
-- [ ] **PI-18. EQ-5D index: the crosswalk or the French five-level value
-  set?** (D188; new on 2026-11-20) The index of the application and of the
-  export is the 'France' column of the EuroQol crosswalk from the five-level
-  profile to the three-level value set. A French value set built on the
-  five-level questionnaire exists (Andrade and colleagues, 2020: to verify
-  against the paper); its table is not in the sources, and the package would
-  need it as a norm table (outside the repository). Two choices: keep the
-  crosswalk, which is the index that every stored value follows and which the
-  four cohorts share, or add the five-level value set as a second index under
-  its own name once the table is obtained. The default is the crosswalk.
-  - Today: `eq5d_index` is the crosswalk value; the stored index (BP, SZ and
-    ASP) equals it on every visit that has the five answers.
 
 - [ ] **PI-19. PRISE-M: the 35 visits that answered both sex items.**
   (D192; new on 2026-11-20) The application scores a visit only when the 30
@@ -359,6 +334,17 @@ source, in the export or in the application. Still to send.
     delivered, with the total and four sub-scores, from 2021-09-01 to
     2022-12-31 (1,435 visits). The schema is `reviewed` with these limits
     stated in its notes (D190).
+  - Since 2026-11-21 (D200) the data decide the direction in each centre and
+    year where they can (a group of 10 complete visits or more whose two sums
+    clearly move one way): from 2023 they turn 84 visits of one centre (2024
+    and 2025), and 124 visits of two centres (2023 to 2026) lean to the old
+    direction, not clearly enough, and get `sign_doubt`; before September
+    2021, 1,010 visits in 12 centre-years lean to the new direction, not
+    clearly enough, and get `sign_doubt` (they stay turned; one centre has
+    699 of them, in 2013 and 2016 to 2019). 2,278 of the 11,378 visits before
+    the day are in groups the data cannot decide and follow the day. The
+    period of 2021-09-01 to 2022-12-31 stays removed. Requests (1) to (3)
+    stand: the form of each record would settle the visits the data cannot.
   - It changes: with the form of each record, the 1,435 visits come back
     and the two or three centres, and the visits turned by mistake before
     2021, can be corrected.
@@ -480,7 +466,7 @@ source, in the export or in the application. Still to send.
   | Prolactin of 0 where nothing was measured (a missing code, D130) | 19 |
   | HbA1c typed in mmol/mol under the label % (converted, D127) | 8 |
   | PSQI hours of sleep above 24 or an impossible time of day (removed, D130) | 3 + 2 |
-  | PSQI bedtime typed on a 12-hour clock, 11:00 for 23:00 (efficiency corrected, D132) | 554 |
+  | PSQI bedtime typed on a 12-hour clock, 11:00 for 23:00 (efficiency corrected, D132; the delivered bedtime too, D201) | 554 |
   | Numbers of consultations typed as words (the follow-up sick-leave number and duration lose their words in the export, which runs the digits together: 880,410 weeks is the export's, D123, R128) | 193 cells |
   | Birth weights typed as a gestational age, or months instead of weeks | 12 and 14 |
   | CPT-II values of 1,000 or more, counts above the number of targets | 57 cells |
@@ -823,7 +809,7 @@ source, in the export or in the application. Still to send.
   | Read in the code: CVLT z-score of trials 1 to 5 computed with the coefficients of the age and of the sex exchanged: the patients of 70 and over until the correction of 2024-08-02, and visits of 2013 and 2014. The values stay wrong in the database; the package computes them again (D98, D108) | 232 values |
   | CVLT z-scores computed with no sex, most in 2012 and 2015 (D108) | 105 values of trials 1 to 5, about 50 for five other measures |
   | Read in the code: the ALS-18 form prints "19" for its last question; a WURS form of 28 questions exists beside the one of 25 (D97) | |
-  | Two centres still enter the MAThyS in the direction of the old form (DM-12; 215 visits from 2023, measured again on 2026-11-18), a third is mixed (64 visits), and before September 2021 at least 80 visits, perhaps up to about 1,240, are turned by mistake (D190) | 215, 64 and 80 to 1,240 visits |
+  | Two centres still enter the MAThyS in the direction of the old form (DM-12; 215 visits from 2023, measured again on 2026-11-18), a third is mixed (64 visits), and before September 2021 at least 80 visits, perhaps up to about 1,240, are turned by mistake (D190); since D200 the data turn 84 visits of one centre (2024, 2025) and flag 124 visits from 2023 and 1,010 before September 2021 with `sign_doubt` | 215, 64 and 80 to 1,240 visits; 84 turned, 1,134 `sign_doubt` |
 
   Asked of the export on 2026-11-18 ([EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md)): the names (R57, R62, R97, R98), the WAIS-IV digit span and vocabulary columns (R59 to R61), the WAIS-III vocabulary total (R60), the PSQI minutes (R49), one row per visit and form (R18, R21, R100). The requests and defects of the review of AUTO-QUESTIONNAIRES that concern BP are numbered in the batch 7 of [EXPORT_REQUESTS.md](../EXPORT_REQUESTS.md): the CTQ denial script (A73), the ASRS script (A78), the untouched time fields and the 12-hour bedtimes of the PSQI (A75; A74 for the PSQI scripts of the other applications), the MAThyS direction of the centres (M77, which extends M47); the PRISE-M rule stays R87, the MDQ screen R88, the BIS scores R84 and the MAThyS rule R85. The batch asks nothing about the blank PSQI item 5j or the EQ-5D scale test of BP, and nothing about the field below (DM-20). The damaged characters come from the transfer of a patient between centres (A2). The `_n1` MADRS and YMRS are, by the forms, the mood rated at the neuropsychological testing when the last rating is more than a week old: kept in the export (R58, M37); D27 is to be read again with the tab NEUROPSYCHOLOGIE.
 

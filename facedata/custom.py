@@ -165,14 +165,20 @@ def prolactin_unit(values, keys):
 
 
 def age_at_inclusion(values, keys):
-    """Age in whole years at the inclusion visit (V0), from the date of birth.
+    """Age in completed years at the inclusion visit (V0), from the date of birth.
 
+    The year of the visit minus the year of birth, one less when the birthday
+    has not come yet in that year: the age that the other exports store. The
+    date of birth is birth_date_stored, as exported (not set to the 15th).
     The same value on every row of a patient; missing for a patient with no
     V0 or no date of birth. For an extraction whose stored age is not the age
     at inclusion.
     """
-    at_inclusion = keys.loc[keys["visit"] == "V0"].drop_duplicates("usubjid").set_index("usubjid")["age"]
-    return np.floor(keys["usubjid"].map(at_inclusion))
+    birth, visit = values["birth_date_stored"], keys["visit_date"]
+    before_birthday = visit.dt.month * 100 + visit.dt.day < birth.dt.month * 100 + birth.dt.day     # 3 May is 503
+    age = visit.dt.year - birth.dt.year - before_birthday.astype(int)
+    at_inclusion = age[keys["visit"] == "V0"].groupby(keys["usubjid"]).first()
+    return keys["usubjid"].map(at_inclusion)
 
 
 def stai_shift(values, keys):
@@ -223,17 +229,36 @@ def psqi_latency(values, keys=None):
     return ((points >= 1).astype(float) + (points >= 3) + (points >= 5)).where(points.notna())
 
 
+def psqi_clock_of_12(bedtime, rising_time):
+    """PSQI: True for a bedtime typed on a 12-hour clock (11:00 for 23:00).
+
+    A bedtime from 6:00 to 17:00 with more than 16 hours in bed, from the
+    bedtime to the rising time across midnight (554 BP visits, 3.3%).
+    """
+    in_bed = (rising_time - bedtime) % 24
+    return bedtime.between(6, 17, inclusive="left") & (in_bed > 16)
+
+
+def psqi_bedtime(values, keys=None):
+    """PSQI: the bedtime corrected, in hours from 0 to 24.
+
+    A bedtime typed on a 12-hour clock gets 12 hours, and 24:00 becomes 0:00
+    as in the BP export: "% 24" turns 24:30 into 0:30 and 13:00 + 12 into 1:00.
+    """
+    typed = values["psqi_bedtime_typed"]
+    return (typed + 12 * psqi_clock_of_12(typed, values["psqi_rising_time"])) % 24
+
+
 def psqi_efficiency(values, keys=None):
     """PSQI component 4, habitual sleep efficiency (0 to 3).
 
-    The hours asleep over the hours in bed, from the bedtime to the rising
-    time across midnight: 85% or more counts 0, 75% to 84% counts 1, 65% to
-    74% counts 2, less counts 3. A bedtime from 6:00 to 17:00 with more than
-    16 hours in bed is a bedtime typed on a 12-hour clock (11:00 for 23:00):
-    12 hours are added to it (554 BP visits, 3.3%).
+    The hours asleep over the hours in bed, from the bedtime typed to the
+    rising time across midnight: 85% or more counts 0, 75% to 84% counts 1,
+    65% to 74% counts 2, less counts 3. A bedtime typed on a 12-hour clock
+    (psqi_clock_of_12) has 12 hours less in bed.
     """
-    in_bed = (values["psqi_rising_time"] - values["psqi_bedtime"]) % 24
-    clock_of_12 = values["psqi_bedtime"].between(6, 17, inclusive="left") & (in_bed > 16)
+    in_bed = (values["psqi_rising_time"] - values["psqi_bedtime_typed"]) % 24
+    clock_of_12 = psqi_clock_of_12(values["psqi_bedtime_typed"], values["psqi_rising_time"])
     in_bed = in_bed.where(~clock_of_12, in_bed - 12)
     efficiency = (100 * values["psqi_sleep_hours"] / in_bed.where(in_bed > 0)).round(6)       # 75.0 and not 74.99999999999999
     points = (efficiency < 85).astype(float) + (efficiency < 75) + (efficiency < 65)
@@ -352,3 +377,49 @@ def cpt3_typed_raw(values):
     them, so that a raw value that looks like a T-score (20 to 90) is flagged.
     """
     return values["cpt3_hrt_t_typed"] > 100
+
+
+def mini_risk_level(values, keys=None):
+    """MINI suicide risk level, bands of MINI 7.0.2: 1 low (1 to 8), 2 moderate (9 to 16), 3 high (17 or more); none at 0."""
+    score = values["mini_suicide_risk_score"]
+    return (1 + (score >= 9) + (score >= 17)).where(score >= 1)
+
+
+def mde_rule(values, core, end):
+    """MINI module A, one period: 1 where 5 or more of A1 to A3 are yes, A1 or A2 among them, and A4 is yes; 0 where not.
+
+    The form asks "au moins 5 oui entre A1 et A3 et A4 cotée oui pour cette période ?". core: A1 and A2 of the period;
+    end: the ending of its A3 and A4 columns. 0 where A1 and A2 are no; missing where empty answers could change the result.
+    """
+    answers = values[core + ["mini_a03" + letter + end for letter in "abcdefg"]]
+    yes = answers.eq(1).sum(axis=1)
+    impairment = values["mini_a04" + end]
+    met = values[core].eq(1).any(axis=1) & (yes >= 5) & impairment.eq(1)
+    not_met = values[core].eq(0).all(axis=1) | (yes + answers.isna().sum(axis=1) < 5) | impairment.eq(0)
+    return met.astype(float).where(met | not_met)
+
+
+def mini_mde_current(values, keys=None):
+    """MINI module A: a major depressive episode in the last two weeks."""
+    return mde_rule(values, ["mini_a01b", "mini_a02b"], "_p2w")
+
+
+def mini_mde_past(values, keys=None):
+    """MINI module A: a past major depressive episode, at inclusion."""
+    return mde_rule(values, ["mini_a01a", "mini_a02a"], "_pe")
+
+
+def mini_mde_past_fu(values, keys=None):
+    """MINI module A: a past major depressive episode, asked again at a follow-up visit (the _fu twins)."""
+    return mde_rule(values, ["mini_a01a_fu", "mini_a02a_fu"], "_pe_fu")
+
+
+def mini_mde_current_ticked(values, keys=None):
+    """MINI module A: the box current where the rater ticked it; a box at 0 is not ticked, missing."""
+    return values["mini_mde_current_stored"].where(values["mini_mde_current_stored"] == 1)
+
+
+def mini_mde_past_ticked(values, keys=None):
+    """The box past where ticked, at inclusion or at a follow-up visit (the score's versions keep its own visits)."""
+    box = values["mini_mde_past_stored"].fillna(values["mini_mde_past_fu_stored"])
+    return box.where(box == 1)

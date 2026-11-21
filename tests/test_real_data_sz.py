@@ -185,7 +185,8 @@ def test_auto_questionnaires(result, qc):
     assert [qc.loc["sqol_" + name, "n_valid"] for name in dimensions] == [4195, 4331, 4304, 4247, 4321, 4324, 4277]
     assert [qc.loc["sqol_" + name, "score_not_recomputed"] for name in dimensions] == [0] * 7
     assert (qc.loc["stori_stage1", "n_valid"], qc.loc["stori_stage1", "score_mismatch"]) == (3089, 2)
-    assert (qc.loc["ephp_total", "n_valid"], qc.loc["ephp_total", "score_mismatch"], tab.loc[tab["instrument"] == "ephp", "missing_code"].sum()) == (1557, 4, 377)
+    # EPHP: code 7 ("cannot be assessed") stays missing in the items and counts 0 in the scores, as the application since 2026-10-28 (D98).
+    assert (qc.loc["ephp_total", "n_valid"], qc.loc["ephp_total", "score_mismatch"], tab.loc[tab["instrument"] == "ephp", "missing_code"].sum()) == (1785, 229, 377)
     assert (qc.loc["ybocs_total", "n_valid"], qc.loc["ybocs_total", "score_mismatch"], qc.loc["sogs_total", "n_valid"]) == (281, 28, 122)
     # SOGS: the 11 yes/no items 16a to 16k are 0 after a "no" to question 16 (asked_if, D88): 132 visits, 1,430 cells gained, 143 answered in all.
     sogs16 = ["sogs16" + letter for letter in "abcdefghijk"]
@@ -194,16 +195,18 @@ def test_auto_questionnaires(result, qc):
     assert (tab.loc[tab["instrument"] == "presenteeism", "out_of_range"].sum(), tab.loc[tab["instrument"] == "physical_activity", "out_of_range"].sum()) == (13, 4)
     # Physical activity: hours and minutes of a duration are hidden by the number of days (D85): 7 cells typed under 0 days or an empty number.
     assert tab.loc[tab["instrument"] == "physical_activity", "not_shown"].sum() == 7
-    # Seven substances, the same twelve criteria; "do not know" is a missing code.
-    assert (qc.loc["alcohol_larger_amounts", "n_valid"], qc.loc["alcohol_larger_amounts", "missing_code"], qc.loc["heroin_tolerance", "n_valid"]) == (2035, 9, 38)
+    # Seven substances, the same twelve criteria; "do not know" is a missing code. The criteria are 0 where the patient used the substance
+    # ten times or fewer, and for the five illicit drugs where no illicit drug was used (asked_if, D97): 456,972 cells become 0.
+    assert (qc.loc["alcohol_larger_amounts", "n_valid"], qc.loc["alcohol_larger_amounts", "missing_code"], qc.loc["heroin_tolerance", "n_valid"]) == (2931, 9, 3394)
     # The stems of three forms are sedative_, opiate_ and other_substance_ (D90, as on the SUBSTANCES tab); no value changes.
-    assert [qc.loc[name, "n_valid"] for name in ["sedative_larger_amounts", "opiate_larger_amounts", "other_substance_larger_amounts"]] == [100, 52, 82]
+    assert [qc.loc[name, "n_valid"] for name in ["sedative_larger_amounts", "opiate_larger_amounts", "other_substance_larger_amounts"]] == [3380, 3390, 3306]
     assert not [name for name in result.data.columns if name.startswith(("sedatives_", "opiates_", "other_larger"))]
-    # The 14 criteria counts (D90): the number of yes among the eleven criteria a to k (all eleven needed), ever and in the last 12 months.
+    # The 14 criteria counts (D90): the number of yes among the eleven criteria a to k (all eleven needed), ever and in the last 12 months;
+    # 0 where the use question gates the criteria (D97).
     substances = ["alcohol", "cannabis", "cocaine", "heroin", "opiate", "sedative", "other_substance"]
     criteria = qc.loc[[f"{name}_criteria_count{suffix}" for name in substances for suffix in ["", "_12m"]]]
-    assert criteria["n_valid"].tolist() == [1960, 1945, 1129, 1113, 175, 173, 37, 37, 52, 52, 94, 94, 78, 78]
-    assert (int(criteria["n_valid"].sum()), criteria["min"].min(), criteria["max"].max(), criteria["out_of_range"].sum()) == (7017, 0, 11, 0)
+    assert criteria["n_valid"].tolist() == [2856, 2841, 2916, 2898, 3334, 3332, 3393, 3393, 3390, 3390, 3375, 3375, 3302, 3302]
+    assert (int(criteria["n_valid"].sum()), criteria["min"].min(), criteria["max"].max(), criteria["out_of_range"].sum()) == (45097, 0, 11, 0)
     assert criteria[["score_mismatch", "score_not_recomputed"]].sum().sum() == 0
 
 

@@ -22,9 +22,12 @@ notes: >
   evnum_* here (BP's DSM-IV form reads evnum_*_lt) and take BP's
   dsm4_lt_n_ names. What BP does not have keeps its name (the age at the
   first episode treated or diagnosed, the resistant episodes, the partial
-  remission, the delay, the weeks before a treatment, the features of the
-  current depressive episode: BP's dsm4_current_specifier has the same four
-  answers, read from another raw column). The hard
+  remission, the delay, the weeks before a treatment). The specifier of the
+  current depressive episode (none, melancholic, atypical, catatonic) takes
+  BP's name dsm4_current_specifier: the same question and the same four
+  answers, which BP reads from another raw column
+  (cedecodtrouble_humeur_actuel_type; BP reads cedecodtrouble_humeur_actuel
+  as the catatonic box, dsm4_current_catatonic). The hard
   limit of the counts is 50 here (the form takes two digits; the largest
   count of depressive episodes typed is 50, on one visit, then 23, 20 and
   20; the other counts are 10 or less); BP's limit is 20.
@@ -68,7 +71,7 @@ notes: >
   cells missing become 0. Where the number of episodes of the kind is
   above 0 and the psychotic one is empty it stays missing (49 depressive
   visits). One manic psychotic number is typed under a manic count of 0 and
-  stays as typed.
+  stays as typed (flagged check_failed, not_above).
 
   Codes are those of the form (forms 116 and 117 give the lists). The type
   of the first episode has 0 to 6 and 7, "Ne sais pas", a missing code. The
@@ -98,7 +101,9 @@ notes: >
   the first episode treated or diagnosed on 21 of 338 (18 by two years or
   more); the treated or diagnosed age is below the declared age on 1 of
   348. A psychotropic can precede the first mood episode: not an error by
-  itself. The resistant count is above the depressive count on 2 visits.
+  itself. The resistant count is above the depressive count on 2 visits
+  (flagged check_failed, not_above; the three ages are checked against the
+  age at the visit in the same way).
   The first episode is a major depressive one with a depressive count of 0
   on 4 visits, and of the 18 first episodes with psychotic features 4 have a
   psychotic depressive count of 0. A current postpartum episode is ticked
@@ -135,28 +140,28 @@ variables:
     label: Type of the first mood episode (DSM-IV)
     codes: {"0": mde, "1": mde_psychotic, "2": hypomania, "3": mania, "4": mania_psychotic, "5": mixed, "6": mixed_psychotic}
     missing: {"7": unknown, "8": not_recorded, "9": not_recorded}
-  dsm4_first_episode_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first mood episode (the age declared)}
-  first_treated_episode_age: {column: agediagpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first episode treated or diagnosed}
+  dsm4_first_episode_age: {column: agedebutpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first mood episode (the age declared), not_above: age}
+  first_treated_episode_age: {column: agediagpremier_episode, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first episode treated or diagnosed, not_above: age}
   dsm4_first_episode_postpartum: {column: ppartpremier_episode, range: [0, 1], codes: {"1": 1, "2": 0}, missing: {"3": unknown}, label: First episode in the six months after a birth}
   dsm4_lt_n_mde: {column: evnum_edm, type: number, range: [0, 50], winsor: false, label: Number of major depressive episodes over the whole life}
-  dsm4_lt_n_mde_psychotic: {column: evnum_edm_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mde, label: Number of major depressive episodes with psychotic features over the whole life}
-  n_resistant_episodes_lifetime: {column: evnum_edr, type: number, range: [0, 50], winsor: false, label: Number of depressive episodes resistant to two treatments or more over the whole life}
+  dsm4_lt_n_mde_psychotic: {column: evnum_edm_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mde, label: Number of major depressive episodes with psychotic features over the whole life, not_above: dsm4_lt_n_mde}
+  n_resistant_episodes_lifetime: {column: evnum_edr, type: number, range: [0, 50], winsor: false, label: Number of depressive episodes resistant to two treatments or more over the whole life, not_above: dsm4_lt_n_mde}
   dsm4_lt_n_hypomania: {column: evnum_ehman, type: number, range: [0, 50], winsor: false, label: Number of hypomanic episodes over the whole life}
   dsm4_lt_n_mania: {column: evnum_eman, type: number, range: [0, 50], winsor: false, label: Number of manic episodes over the whole life}
-  dsm4_lt_n_mania_psychotic: {column: evnum_eman_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mania, label: Number of manic episodes with psychotic features over the whole life}
+  dsm4_lt_n_mania_psychotic: {column: evnum_eman_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mania, label: Number of manic episodes with psychotic features over the whole life, not_above: dsm4_lt_n_mania}
   dsm4_lt_n_mixed: {column: evnum_emixt, type: number, range: [0, 50], winsor: false, label: Number of mixed episodes over the whole life}
-  dsm4_lt_n_mixed_psychotic: {column: evnum_emixt_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mixed, label: Number of mixed episodes with psychotic features over the whole life}
+  dsm4_lt_n_mixed_psychotic: {column: evnum_emixt_psy, type: number, range: [0, 50], winsor: false, asked_if: dsm4_lt_n_mixed, label: Number of mixed episodes with psychotic features over the whole life, not_above: dsm4_lt_n_mixed}
   dsm4_lt_n_induced: {column: evnum_eind, type: number, range: [0, 50], winsor: false, label: Number of induced episodes over the whole life}
   dsm4_lt_full_remission: {column: remisc, range: [0, 1], missing: {"2": unknown}, label: Full remission between the episodes}
   partial_remission_between_episodes: {column: remisinc, range: [0, 1], missing: {"2": unknown}, label: Partial remission between the episodes}
   dsm4_lt_seasonal: {column: saison, range: [0, 1], missing: {"2": unknown}, label: Seasonal pattern}
-  dsm4_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotropic treatment}
+  dsm4_lt_first_treatment_age: {column: agetrt, type: number, unit: years, range: [0, 90], winsor: false, label: Age at the first psychotropic treatment, not_above: age}
   treatment_delay_weeks: {column: delai, type: number, unit: weeks, range: [0, 52], winsor: false, label: "Delay, in weeks (the form says only 'Delai', maximum 52: of what is not stated)"}
   current_episode_untreated_weeks: {column: dureetrouble_humeur_actuel, type: number, unit: weeks, range: [0, 1040], winsor: false, label: Length of the current episode before a treatment was started}
-  current_episode_features:
+  dsm4_current_specifier:
     column: cedecodtrouble_humeur_actuel
     type: category
-    label: Features of the current major depressive episode
+    label: "Current episode, if depressive: specifier"
     codes: {"0": none, "1": melancholic, "2": atypical, "3": catatonic}
   dsm4_current_severity:
     column: cesevtrouble_humeur_actuel

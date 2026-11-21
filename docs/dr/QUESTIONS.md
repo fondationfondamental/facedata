@@ -1,6 +1,6 @@
 # FACE DR — questions for the EMR developers, the data managers and the principal investigator
 
-Written on 2026-11-14, from the extraction `DRALL_20261030.tsv` (2,193 rows:
+Written on 2026-11-14 (updated on 2026-11-21 by the decisions D81 to D88: DEV-5, DEV-16, DM-13, the new DM-14), from the extraction `DRALL_20261030.tsv` (2,193 rows:
 1,559 visits and 634 screening rows of 634 patients) and the dictionary
 `FACEDR_thesaurus_V4.16.xlsx`.
 
@@ -182,6 +182,11 @@ counts of symptoms are delivered next to the MINI conclusions.
 opened form stores 0; the box "recurrent" is set from A5 by the script
 (`formulaires.js`, lines 1017 to 1019). Request R169 asks the export to
 leave the boxes of an unanswered module empty. (O24, O20, O29)
+*Decided by the user (2026-11-21, D85):* the boxes "current" and "past" of
+the depressive episode are now computed from the symptoms (the rule of the
+form, `a05a`), with the stored boxes as checks; a ticked box is delivered
+where the rule cannot be computed. What the raters meant by the boxes is
+asked in DM-14.
 
 **DEV-6. STAI: three codings of the answers.** The twenty answers are
 stored from 0 to 3 (655 visits), from 1 to 4 (184) or from 2 to 5 (100, one
@@ -315,8 +320,8 @@ of form 182. (D56, D64)
   which is wrong across midnight (16 hours in bed from 23:00 to 07:00); the
   extraction is right only because the export computes the efficiency again
   (A74). The Time widget saves its default 00:00:00 untouched (the rising time
-  of 39 visits). A bedtime typed 24:xx is exported as it is (7 visits), where
-  the BP export converts it to 0, and the warning for the 24-hour clock that
+  of 39 visits). A bedtime typed 24:xx is exported as it is (7 visits; the package delivers
+  0:xx since D83), where the BP export converts it to 0, and the warning for the 24-hour clock that
   BP shows is missing (A75).
 - CTQ: the script counts an unanswered denial item as 0 (`eval_deni`), and the
   stored denial score is empty on 93 visits that have the three items (A73).
@@ -386,6 +391,12 @@ right?
 OCD and alcohol conclusions are recomputed (rule R27) with the stored ones
 as checks; the other conclusions are delivered as stored with checks where
 the form writes them from one item. (D78, D79)
+*Since 2026-11-21 (D85):* the level is recomputed from the score with the
+bands of MINI 7.0.2 (1 to 8 low, 9 to 16 moderate, 17 or more high), so the
+scores 1, 9 and 17 get a level; the depressive episode (current, past) and
+the three conclusions of module E are recomputed with the rules of the form;
+the stored values are the checks. The version and the bands of the French
+form stay open (M87, PI-3).
 
 ## 2. For the data managers
 
@@ -561,6 +572,26 @@ since 10 November 2026?
 *Today:* the key is applied to every visit: the total and the sub-scores of
 the visits in the wrong direction are wrong; the note of `mathys` states the
 limit. (O36, O14, D72)
+*Since 2026-11-21 (D87):* the data decide the direction in each centre and
+year (a group of 10 complete visits or more whose two sums clearly move the
+old way is turned): 25 visits of the first centre in 2014 are turned, and
+77 visits of four centre-years that lean the old way, not clearly enough,
+get `sign_doubt`. About 90 of the 115 visits stay as typed (too few visits
+in their centre and year for the data to decide): the question stands.
+
+**DM-14. MINI: what did the raters mean by the boxes "current" and "past" of
+the depressive episode?** Of the 402 visits whose symptoms meet the rule of a
+current episode (`a05a`: five or more of A1 to A3 including A1 or A2, and
+A4), the box "current" is ticked on 244; of the 357 that meet it for a past
+episode, the box "past" is ticked on 93; both boxes are ticked on 94 visits.
+The share of ticked boxes among the visits that meet the rule falls after
+2015 (current 75%, 64% and 49% in 2013-15, 2016-18 and 2019 on; past 50%,
+16% and 14%).
+*Question:* was "past" ticked only when there was no current episode? Did
+the raters stop ticking the boxes at some date, or did the instructions
+change?
+*Today:* the two boxes are recomputed from the symptoms, with the stored
+boxes as checks (D85; O24, M87).
 
 ## 3. For the principal investigator
 

@@ -70,9 +70,10 @@ def test_patient_and_inclusion_tabs(result, qc):
     patients = result.patients
     assert patients["sex"].value_counts().to_dict() == {"female": 370, "male": 264}
     assert patients["diagnosis"].value_counts().to_dict() == {"major_depressive_disorder": 634}
-    # The stored age was computed at a later date for the patients who came back: the age at inclusion is recomputed.
+    # The stored age was computed at a later date for the patients who came back: the age at inclusion is recomputed,
+    # in completed calendar years as the BP, SZ and ASP exports (D82).
     assert (patients["age_at_inclusion"].notna().sum(), patients["age_at_inclusion"].median()) == (634, 51)
-    assert (qc.loc["age_at_inclusion", "score_mismatch"], qc.loc["birth_date", "date_partial"]) == (71, 88)
+    assert (qc.loc["age_at_inclusion", "score_mismatch"], qc.loc["birth_date", "date_partial"]) == (70, 88)
     assert (qc.loc["referred_by", "n_valid"], qc.loc["visit_purpose", "n_valid"]) == (111, 593)
     assert patients["visit_purpose"].value_counts().to_dict() == {"diagnosis_and_treatment": 307, "treatment": 250, "diagnosis": 36}
     assert qc.loc[qc["tab"].isin(["PATIENT", "INCLUSION"]), ["unknown_code", "unparsed", "out_of_range", "patient_value_varies"]].sum().sum() == 0
@@ -168,11 +169,13 @@ def test_auto_questionnaires(result, qc):
     data = result.data
     tab = result.qc[result.qc["tab"] == "AUTO-QUESTIONNAIRES"]
     assert (len(tab), tab["instrument"].nunique()) == (765, 26)
-    assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["version_unknown"].sum()) == (0, 1, 0)
+    assert (tab["unknown_code"].sum(), tab["unparsed"].sum(), tab["version_unknown"].sum()) == (0, 0, 0)
     # Stored totals that follow their items on every visit.
-    for score, visits in [("altman_total", 1067), ("csm_total", 718), ("prisem_total", 1019), ("mathys_total", 937), ("epworth_total", 719),
+    for score, visits in [("altman_total", 1067), ("csm_total", 718), ("prisem_total", 1019), ("epworth_total", 719),
                           ("staya_total", 1065), ("rosenberg_total", 946), ("spin_total", 147), ("ptsd_total", 127), ("leaps_total", 168)]:
         assert (qc.loc[score, "n_valid"], qc.loc[score, "score_mismatch"]) == (visits, 0), score
+    # MAThyS: 21 stored totals of the 25 visits turned back to the direction of the form (centre D, 2014, D87) follow the old direction.
+    assert (qc.loc["mathys_total", "n_valid"], qc.loc["mathys_total", "score_mismatch"]) == (937, 21)
     # PRISE-M: the application needs 31 answers (the 30 common items and one sex item); 22 sums of 28 to 30 items left, 31 stored totals are not recomputed.
     assert qc.loc["prisem_total", "score_not_recomputed"] == 31
     # QIDS: one answer of each appetite and weight pair is enough; the EMR stores a total on 1,643 visits only.
@@ -204,9 +207,9 @@ def test_auto_questionnaires(result, qc):
     items = data[[f"staya{number:02d}" for number in range(1, 21)]]
     assert (items.min().min(), items.max().max(), items.notna().any(axis=1).sum()) == (1, 4, 1072)
     # Stored scores that are wrong and are flagged: Fagerstrom (the code of item 3 added as points), the MAThyS
-    # sub-scores of 68 visits (no item reversed), two BFI means swapped on 16 visits.
+    # sub-scores of 68 visits (no item reversed) and of the 25 visits turned back (D87), two BFI means swapped on 16 visits.
     assert (qc.loc["fagerstrom_total", "n_valid"], qc.loc["fagerstrom_total", "score_mismatch"]) == (392, 129)
-    assert [qc.loc[name, "score_mismatch"] for name in ["mathys_emotion", "mathys_motivation", "mathys_perception", "mathys_interaction", "mathys_cognition"]] == [64, 63, 59, 0, 58]
+    assert [qc.loc[name, "score_mismatch"] for name in ["mathys_emotion", "mathys_motivation", "mathys_perception", "mathys_interaction", "mathys_cognition"]] == [84, 79, 70, 0, 73]
     assert [qc.loc[name, "score_mismatch"] for name in ["bfi_extraversion", "bfi_agreeableness", "bfi_conscientiousness", "bfi_neuroticism", "bfi_openness"]] == [0, 0, 16, 16, 0]
     # The BFI form stores 17 statements already reversed and the Rosenberg form five: both are read back to the direction of the question
     # (7,835 BFI and 4,732 Rosenberg item cells), and the key is in the score. As asked, such an item falls when its scale rises.
@@ -318,20 +321,22 @@ def test_mini(result, qc):
     assert (answered.sum(), data.loc[answered, "usubjid"].nunique()) == (583, 493)
     # Boxes that the form sets to 0 when it is opened: flagged where the module has no answer.
     assert tab.groupby("instrument")["derived_doubt"].sum().loc[lambda s: s > 0].to_dict() == {
-        "mini_a_depression": 289, "mini_b_suicidality": 166, "mini_c_mania": 408, "mini_j_substances": 2769, "mini_q_conclusion": 1170}
-    assert (qc.loc["mini_mdd_current", "n_valid"], (data["mini_mdd_current"] == 1).sum(), (data["mini_mde_current"] == 1).sum()) == (630, 361, 308)
+        "mini_a_depression": 81, "mini_b_suicidality": 166, "mini_c_mania": 408, "mini_j_substances": 2769, "mini_q_conclusion": 1170}
+    # The episode conclusions are recomputed from the items (D85); the stored box is the check and is delivered where the rule cannot be computed.
+    assert (qc.loc["mini_mdd_current", "n_valid"], (data["mini_mdd_current"] == 1).sum(), (data["mini_mde_current"] == 1).sum()) == (630, 361, 422)
     # The suicidality score is the weighted sum of the MINI; 0 where no question is answered yes.
     assert (qc.loc["mini_suicide_risk_score", "n_valid"], data["mini_suicide_risk_score"].median(), (data["mini_suicide_risk_score"] == 0).sum()) == (559, 4, 108)
     points = {"mini_b02": 1, "mini_b03": 1, "mini_b04": 2, "mini_b05": 6, "mini_b06": 8, "mini_b07": 8, "mini_b08": 9, "mini_b09": 4, "mini_b10": 9, "mini_b11": 4, "mini_b11_fu": 4}
     weighted = sum(data[name].fillna(0) * weight for name, weight in points.items())
     stored = data["mini_suicide_risk_score"] > 0
     assert (weighted[stored] == data.loc[stored, "mini_suicide_risk_score"]).all() and stored.sum() == 451
-    assert data["mini_suicide_risk_level"].value_counts().sort_index().to_dict() == {1.0: 279, 2.0: 90, 3.0: 73}
+    # The level is recomputed from the score with the bands of MINI 7.0.2: 1 to 8 low, 9 to 16 moderate, 17 or more high (D85).
+    assert data["mini_suicide_risk_level"].value_counts().sort_index().to_dict() == {1.0: 279, 2.0: 96, 3.0: 76}
     # Symptom counts and conclusions.
     assert (qc.loc["mini_mde_symptoms_2_weeks", "n_valid"], data["mini_mde_symptoms_2_weeks"].median(), qc.loc["mini_mde_episodes", "missing_code"]) == (421, 7, 5)
     yes = {name: int((data[name] == 1).sum()) for name in ["mini_panic_lifetime", "mini_gad_current", "mini_social_phobia_current", "mini_agoraphobia_without_panic_current", "mini_ptsd_current",
                                                            "mini_alcohol_dependence_current", "mini_substance_dependence_current", "mini_antisocial_lifetime"]}
-    assert list(yes.values()) == [115, 175, 136, 104, 24, 29, 19, 4]      # inclusion only for the lifetime ones (R32); alcohol recomputed on three of seven criteria (R27)
+    assert list(yes.values()) == [115, 175, 136, 97, 24, 29, 19, 4]      # inclusion only for the lifetime ones (R32); alcohol recomputed on three of seven criteria (R27)
     assert data["mini_social_phobia_type"].value_counts().to_dict() == {"generalised": 97, "non_generalised": 43}
     assert data["mini_o02"].value_counts().to_dict() == {"yes": 381, "no": 135, "uncertain": 26}
 

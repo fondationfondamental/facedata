@@ -23,6 +23,13 @@ notes: >
   70 against 71 to 80. Rounding to 10 alone would not lower the values; no
   cause is known, the step is documented here.
 
+  No value is winsorised (winsor: false on every pressure), the user's
+  decision of 2026-11-21 for BP, SZ and DR, as in ASP (D80, rule R34): the
+  hard ranges remove the impossible values, and the values beyond the 1st and
+  99th percentiles are real measures (obesity, hypertension, a slow or fast
+  pulse) that the default would bring back to the percentile. Cells no longer
+  clipped: systolic 73, diastolic 77 cells (winsorised 150 -> 0).
+
 defaults: {type: number, unit: mmHg}
 
 variables:
@@ -33,6 +40,7 @@ variables:
       mmHg: {factor: 1, expect: [50, 260]}
       cmHg: {factor: 10, expect: [5, 26]}
     range: [50, 260]
+    winsor: false
   diastolic_supine:
     column: diabpsupine
     label: Diastolic blood pressure, lying
@@ -40,3 +48,4 @@ variables:
       mmHg: {factor: 1, expect: [30, 180]}
       cmHg: {factor: 10, expect: [3, 18]}
     range: [30, 180]
+    winsor: false
