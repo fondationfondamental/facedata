@@ -33,11 +33,63 @@ lists the decisions taken and the questions still open
 | [autism-tutorial.ipynb](autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
 | [common-instruments.ipynb](common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
 
-## Use
+## Install
+
+The repository is private: you need access to it on GitHub. The data, the
+norms and the dictionaries are not part of the package (see [Data](#data)).
+
+**In another project, with uv:**
+
+```bash
+uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+```
+
+**In another project, with pip:**
+
+```bash
+pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+```
+
+`@v0.1.0` pins a released version, so an analysis keeps giving the same
+results when the package changes. Leave it out to take the latest `main`.
+
+`coverage()` reads the thesaurus workbooks and needs the extra `thesaurus`
+(openpyxl). With uv:
+
+```bash
+uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+```
+
+The same with pip:
+
+```bash
+pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.1.0"
+```
+
+**From a local copy that you are changing:** an editable install sees your
+edits at once. With uv, run this from the other project:
+
+```bash
+uv add --editable /path/to/facedata
+```
+
+With pip:
+
+```bash
+pip install -e /path/to/facedata
+```
+
+**To work on this repository itself** (tests, notebooks):
 
 ```bash
 uv sync
 ```
+
+Outside this folder, give the full path of the extraction and of the norm
+tables: `bp.load("/path/to/BPALL_20261113_2.tsv", norms="/path/to/norms")`.
+By default `norms` is the folder `norms` of the current directory.
+
+## Use
 
 ```python
 from facedata import bp

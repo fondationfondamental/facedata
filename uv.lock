@@ -708,6 +708,11 @@ dependencies = [
     { name = "pyyaml" },
 ]
 
+[package.optional-dependencies]
+thesaurus = [
+    { name = "openpyxl" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "jupyterlab" },
@@ -718,9 +723,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "matplotlib", specifier = ">=3.8" },
+    { name = "openpyxl", marker = "extra == 'thesaurus'", specifier = ">=3.1" },
     { name = "pandas", specifier = ">=3.0" },
     { name = "pyyaml", specifier = ">=6.0" },
 ]
+provides-extras = ["thesaurus"]
 
 [package.metadata.requires-dev]
 dev = [
