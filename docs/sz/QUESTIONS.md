@@ -1,7 +1,7 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
@@ -90,8 +90,19 @@ no source of income.
 *Question:* does the export lose these three answers? Their labels hold a
 slash ("Marié/concubin/Pacsé") or an apostrophe ("Pension d'invalidité"); the
 apostrophe was the cause of the losses corrected on 13 November.
-*Today:* delivered as extracted; an empty cell is often a lost answer. (O22,
-D18)
+**Causes found on 2026-11-20 in the export model (D94).** Marital status: the
+form stores code 2 under "Marié (ou situation marital depuis au moins 6 mois)/
+Concubin / Pacsé" and `eschizo_social.sql` (line 15) looks for "Marié /
+Concubin / Pacsé", which it never finds (request R47). Source of income: the
+form asks eight boxes, several of which can be ticked, and the export keeps one
+code, the first that its own list finds (lines 85 to 95); it looks for
+"Salarié" where the form writes "Salaire" (line 87) and never finds "Pension
+d'invalidité" (line 90) (request R46: export the eight boxes).
+*Question left:* can the export be corrected as R46 and R47 say?
+*Today:* the marital status is delivered as extracted (an empty cell is often a
+married patient: 253 of the 1,981 inclusions with a social form, 167 of them
+living in their own family home); the source of income is no longer delivered
+(ignored: neither the main source nor the list). (O22, D18, D94)
 
 **DEV-4. Barona estimate: the occupation follows the diploma.** The form
 lists seven occupations and seven diplomas. On 1,111 of the 1,546 visits
@@ -102,6 +113,15 @@ a cohort whose median age is about 30. Every year, every centre. The expected
 IQs are computed with this occupation.
 *Question:* does the form fill the occupation from the diploma, or does the
 export read the wrong field? Which equation computes the expected IQs?
+**Equation answered on 2026-11-20 (D95):** the scripts of the application
+(`psy_neuropsychologie_barona.js`, `psy_neuropsychologie_barona_sz_wais4.js`).
+The recomputed expected full-scale IQ equals the stored one on 1,458 of 1,507
+visits; 47 of the 49 others are script errors: a label the script does not
+know gets no coefficient and counts as 0 (29 visits, centres F, A and C, 2011
+to 2015; defect A93), and the expected IQ is not recomputed after the age is
+typed or corrected (17). Which labels the forms of centre F (2011 to 2014) and
+centre A (2015) held is question M86.
+*Question left:* the occupation that follows the diploma.
 *Today:* the values are kept and flagged on these visits (the occupation,
 three expected IQs, three differences). (O17, D13)
 
@@ -339,7 +359,15 @@ task is read as WAIS-IV whatever its label (`version.override`, flag
 while the housing and the income level are filled all along.
 *Question:* was another form in use, and are the answers in the source
 database?
-*Today:* missing in that period. (O23)
+**Cause found on 2026-11-20 in the application (D94).** In that period the
+work status was asked in the socio-demographic form (table `socio_demog`, with
+the types of income and other social questions): a comment of 27 May 2016 in
+`visite.php` (lines 542 to 545) says that the variable was removed from the
+social form and is to be read in `socio_demog`, which the export does not
+read. The empty share starts in the second quarter of 2015 (17 of 44
+inclusions) and ends in 2019, when the social form asks it again.
+*Question left:* can `socio_demog` be exported (request R48)?
+*Today:* missing in that period. (O23, D94)
 
 ### Priority B
 
@@ -369,7 +397,13 @@ ratings do not give, and 137 visits with the 30 ratings have no score.
 *Question:* which reference ratings does the EMR use? With them the score
 could be computed for every visit.
 *Today:* recomputed from the 30 ratings with the reference ratings found in the
-script of the application (D48): 28 visits differ from the stored score. (O18)
+script of the application (D48): 28 visits differ from the stored score.
+**The 28 explained on 2026-11-20 (D95):** they were typed: the button of the
+form writes the unrounded sum into a field that cannot be edited, and the 28
+carry two decimals at most (centre E 15 of them; no score of that centre in
+2022 and 2023 carries more). The recomputed score is delivered.
+*Question left:* how could a score be typed in a read-only field (M85)? And the
+137 visits with ratings and no stored score. (O18)
 
 **DM-7. AIMS, items 11 and 12.** *Answered on 2026-11-20 by the field table of
 the application and the export model (D78).* Item 11 is "current problems with

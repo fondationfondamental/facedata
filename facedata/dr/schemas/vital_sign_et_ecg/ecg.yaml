@@ -2,17 +2,24 @@ instrument: ecg
 title: Electrocardiogram
 tab: VITAL SIGN et ECG
 section: ECG
-status: draft
+status: reviewed
 notes: >
   Heart rate, QT and RR intervals and the corrected QT that the EMR stores,
-  at the inclusion and follow-up visits (about 1,050 visits). The TRD
-  extraction has no "ECG done" question.
+  at the inclusion and follow-up visits (about 1,050 visits). The form asks
+  whether an ECG was done (js/formulaires.js, lines 2833 to 2840) and the
+  clean model of the export reads it, but the TRD extraction does not carry
+  it, nor the boxes "sent to" and "read by the cardiologist" (request R158).
 
   The form asks for seconds. The QT was typed in milliseconds or centiseconds
   on 87 visits and the RR in milliseconds on 61, most of them from 2012 to
   2016 and two thirds in one centre: they are converted (unit_inferred).
   Impossible values are removed (out_of_range): 24 heart rates, 12 QT, 38 RR
-  and 15 stored QTc, among them heart rates of 1 and RR intervals of 0.
+  and 15 stored QTc, among them heart rates of 1 and RR intervals of 0;
+  one recomputed QTc is out of range too. The
+  help text of the RR field says to divide the heart rate by 60, the inverse
+  of the right 60 / rate (A84): the typed RR equals the heart rate divided
+  by 60 on 51 of the 1,013 visits with both, 0% to 7% of the visits of each
+  centre with 20 visits or more but 38% in one centre (10 of 26).
 
   The corrected QT is recomputed with Bazett's formula on the harmonised QT
   and the heart rate of the ECG (RR = 60 / rate), and on the typed RR only
@@ -21,9 +28,22 @@ notes: >
   within 10% on 90% of the visits and differ by more than 30% on 28, which
   get check_failed on the RR. The QTc is computed on 1,009 visits and
   differs from the stored one by more than 0.03 s on 70 (score_mismatch).
-  With the typed RR, the stored one equalled Bazett within 0.006 s on 96%
-  of the visits from 2017 and on 76% of those until 2016; the formulas of
-  Fridericia and Framingham fit worse in both periods.
+  The stored QTc is Bazett's formula on the typed QT and RR: on the numbers
+  as typed it agrees within 1.5% on 520 of the 522 visits from 2017 (within
+  0.006 s on 502 once the units are harmonised), against 295 of the 435
+  visits until 2016 (329 within 0.006 s). The 106 visits of 2012 to 2016
+  that do not fit are a median 3% below Bazett; no formula fits them
+  (Fridericia and Framingham fit worse in both periods; question M82).
+
+  Centres (2026-11-20). One centre has a faster heart rate on 89 ECGs
+  (median 82 against 72 in the cohort) and a shorter RR (0.73 s against
+  0.84), and also lying and standing (pression_arterielle: 84 and 95
+  against 75 and 82): the three measures agree with each other, so this is
+  not a unit or a typing step; its cause (patients, treatments, the time of
+  the recording) is not known. The centre medians of the heart rate go
+  from 64 to 82, of the QT from 0.36 to 0.41 s and of the stored QTc from
+  0.40 to 0.44 s (at most 0.6 of an interquartile range); the years show
+  no step above 0.3 of an interquartile range.
 
   Same instrument as in FACE BP, without the question "ECG done".
 

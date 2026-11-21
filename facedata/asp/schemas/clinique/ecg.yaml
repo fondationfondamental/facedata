@@ -2,7 +2,7 @@ instrument: ecg
 title: "Electrocardiogram"
 tab: clinique
 section: clinical examination
-status: draft
+status: reviewed
 notes: >
   QT, RR and corrected QT intervals, recorded from 2024 only: 48 inclusion
   visits. Same instrument as in FACE BP and DR, without the heart rate of the
@@ -10,12 +10,33 @@ notes: >
   to a cardiologist).
 
   The intervals are typed in seconds or in milliseconds: the size of the value
-  tells which, and a value in milliseconds is converted (unit_inferred). The
-  corrected QT is recomputed with Bazett's formula on the typed RR, since
-  this extraction has no heart rate of the ECG (BP and DR use the heart
-  rate, BP decision D114), and compared with the stored one.
+  tells which, and a value in milliseconds is converted (unit_inferred). A 0
+  would be read as not recorded, as in BP and DR (none is in this
+  extraction); the box ecgcard keeps its 0 (no).
 
-defaults: {type: number, unit: s}
+  The corrected QT is typed by hand: form 194 (lines 30-34) prints the
+  formula QTc = QT / square root of RR, with QT and RR in seconds, and
+  computes nothing. It is recomputed here with Bazett's formula on the typed
+  QT and RR, since this extraction has no heart rate of the ECG (BP and DR
+  use the heart rate, BP decision D114), and the stored value is the check
+  (and stays delivered as qtc_stored, the name SZ shares): it is within
+  0.005 s of the formula on 33 of the 36 visits that have both and within
+  the tolerance of 0.03 s on 36; 8 visits have QT and RR and no stored QTc.
+  The help text of the form says that RR may be computed by dividing the
+  heart rate by 60, the inverse of the right 60 / rate (A84); here the typed
+  RR is close to 60 / pulse on 17 of the 41 visits with a pulse and close to
+  pulse / 60 on 1, so the error of the BP centres is not seen.
+
+  The box 'ECG done' (egyn), which gates QT, RR, QTc and the cardiologist
+  boxes in the form (eASPERGER.js lines 9600-9615), and the second
+  cardiologist box (cardyn) are in the clean model of the export and not in
+  the extraction (request R158).
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): 48 visits from 2024, no group of 20 by year with a
+  shift; no step.
+
+defaults: {type: number, unit: s, missing: {0: not_recorded}}
 
 variables:
   qt_interval:
@@ -41,11 +62,11 @@ variables:
       cs: {factor: 0.01, expect: [20, 70]}
       ms: {factor: 0.001, expect: [200, 700]}
     range: [0.2, 0.7]
-  ecg_sent_to_cardiologist: {column: ecgcard, type: item, unit: "", range: [0, 1], label: "The ECG was sent to a cardiologist"}
+  ecg_sent_to_cardiologist: {column: ecgcard, type: item, unit: "", range: [0, 1], missing: {}, label: "The ECG was sent to a cardiologist"}
 
 scores:
   qtc_bazett:
-    label: "Corrected QT interval (Bazett), from the QT and the heart rate of the ECG, or the RR where there is no rate"
+    label: "Corrected QT interval (Bazett), from the typed QT and RR"
     custom: corrected_qt
     compare: qtc_stored
     compare_tolerance: 0.03

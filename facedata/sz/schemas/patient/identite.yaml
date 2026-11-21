@@ -2,21 +2,32 @@ instrument: identite
 title: Patient identity
 tab: PATIENT
 section: IDENTIFICATION PATIENT
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. The extraction repeats these columns on every visit
   row, and they never change between the visits of a patient.
 
   The date of birth is exported with the day set to the 15th for every
-  patient. The stored age is the age at the inclusion visit (V0): it equals
-  the age computed from the date of birth and the V0 date for 2,350 of 2,353
-  patients, and is one year more for the other 3.
+  patient. The stored age is the age at the inclusion visit (V0) in completed
+  years, computed by the export from the date of birth and the date of the
+  V0 visit (face_sz_1_patients.sql, lines 20 to 24): it equals the calendar
+  age from the exported date of birth and the V0 date for all 2,353
+  patients. The age at the visit that the package computes (days divided by
+  365.25, used for the norms) is one year less at V0 for 3 of them, whose
+  V0 falls on the day of their exported birthday; the delivered age is the
+  stored one.
 
   The type of disorder holds three values: schizophrenia (1,797 patients),
   schizoaffective disorder (513) and schizophreniform disorder (43). The
   dictionary lists other diagnoses (schizoid and schizotypal personality,
   brief psychotic disorder and others) that the extraction does not hold.
+
+  The share of women is 26% of the patients included up to 2021 and 33% of
+  those included from 2022. Centre D has 42% schizoaffective disorders
+  (44% of its inclusions before 2016, 41% from 2016), against 14% to 25%
+  in the other large centres.
+  No cause of these steps is known; they are documented here.
 
   Same instrument as in FACE BP, with the diagnoses of this cohort.
 

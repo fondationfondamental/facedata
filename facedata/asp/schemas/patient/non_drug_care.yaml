@@ -2,30 +2,53 @@ instrument: non_drug_care
 title: "Non-drug treatments (fifteen boxes)"
 tab: patient
 section: screening form
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient. Fifteen yes/no boxes named trt_non_parmaco_1 to _15
-  ("traitement non pharmacologique"), filled for 1,116 patients (boxes 1 to 5)
-  and 1,145 (boxes 6 to 15): 64% of the adults and 25% of the children. The
-  most frequent are the boxes 11 (320 patients), 10 (235) and 12 (96); the
-  boxes 4 and 5 are 0 for every patient.
+  ("traitement non pharmacologique"), filled for 1,116 patients (boxes 1 to
+  5; 695 delivered, see below) and 1,145 (boxes 6 to 15): 64% of the adults
+  and 25% of the children. The most frequent are the boxes 11 (320
+  patients), 10 (235) and 12 (96); the boxes 4 and 5 are 0 for every
+  patient.
 
   The thesaurus names the kinds 6 to 15 (SESSAD, school inclusion, speech
   therapist, psychomotor therapist, psychologist, psychiatrist, other,
-  occupational therapist, social skills group, mobile autism team); the kinds 1
-  to 5 are named with no label (O16).
+  occupational therapist, social skills group, mobile autism team). The
+  kinds 1 to 5, named with no label by the thesaurus, are those of the
+  forms 241 line 118 and 261 line 137: a medico-psychological centre (CMP),
+  a medico-psycho-pedagogical centre (CMPP), a day hospital, a
+  medico-educational institute (IME) and a medico-professional institute
+  (IMPRO) (O16 closed for them, decision D79).
+
+  The forms no longer print the kinds 1 to 5 (commented out of the list in
+  both forms), and the application saves 0 for a box that is not shown
+  (D33). The date of the change is not known: it is inferred from the last
+  ticks, 62 patients have one of the five boxes at 1 and the last of them in
+  each centre was first seen in 2018 to 2020. From 2022 the five boxes are 0
+  for every patient: such a 0 is not an answer (R29) and is delivered as
+  missing with period_removed (doubt on the period 2022-01-01 to
+  2030-12-31, value 0): 2,105 cells of 421 patients, each of whom has the
+  five boxes at 0. The 0 of 2020 and 2021, when some centres may already
+  have used the new list, stay; 19 patients whose first visit is dated
+  before 2022 keep its 0 and carry the flag of their later visit.
 
   An instrument of the ASP cohort only.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the step of 2022 is the form (above, D79). Among the
+  kinds still asked, the psychiatrist is ticked for 3% (E, 2016 to 2020) to
+  45% (C, from 2021) of the patients by centre and period, 11% (2015) to 43%
+  (2024) by year: a habit of the centres with no known cause, documented here.
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  non_drug_care_01: {column: trt_non_parmaco_1, label: "Non-drug care: kind 1, not documented by the thesaurus (box)"}
-  non_drug_care_02: {column: trt_non_parmaco_2, label: "Non-drug care: kind 2, not documented by the thesaurus (box)"}
-  non_drug_care_03: {column: trt_non_parmaco_3, label: "Non-drug care: kind 3, not documented by the thesaurus (box)"}
-  non_drug_care_04: {column: trt_non_parmaco_4, label: "Non-drug care: kind 4, not documented by the thesaurus (box)"}
-  non_drug_care_05: {column: trt_non_parmaco_5, label: "Non-drug care: kind 5, not documented by the thesaurus (box)"}
+  non_drug_care_cmp: {column: trt_non_parmaco_1, label: "Non-drug care: medico-psychological centre (CMP) (box; no longer printed by the forms from about 2021)", doubt: {period: [2022-01-01, 2030-12-31], values: [0], remove: true, note: "box no longer printed by forms 241 and 261: a 0 is not an answer"}}
+  non_drug_care_cmpp: {column: trt_non_parmaco_2, label: "Non-drug care: medico-psycho-pedagogical centre (CMPP) (box; no longer printed by the forms from about 2021)", doubt: {period: [2022-01-01, 2030-12-31], values: [0], remove: true, note: "box no longer printed by forms 241 and 261: a 0 is not an answer"}}
+  non_drug_care_day_hospital: {column: trt_non_parmaco_3, label: "Non-drug care: day hospital (box; no longer printed by the forms from about 2021)", doubt: {period: [2022-01-01, 2030-12-31], values: [0], remove: true, note: "box no longer printed by forms 241 and 261: a 0 is not an answer"}}
+  non_drug_care_ime: {column: trt_non_parmaco_4, label: "Non-drug care: medico-educational institute (IME) (box; no longer printed by the forms from about 2021)", doubt: {period: [2022-01-01, 2030-12-31], values: [0], remove: true, note: "box no longer printed by forms 241 and 261: a 0 is not an answer"}}
+  non_drug_care_impro: {column: trt_non_parmaco_5, label: "Non-drug care: medico-professional institute (IMPRO) (box; no longer printed by the forms from about 2021)", doubt: {period: [2022-01-01, 2030-12-31], values: [0], remove: true, note: "box no longer printed by forms 241 and 261: a 0 is not an answer"}}
   non_drug_care_sessad: {column: trt_non_parmaco_6, label: "Non-drug care: home care service for children (SESSAD) (box)"}
   non_drug_care_school_inclusion: {column: trt_non_parmaco_7, label: "Non-drug care: inclusion in an ordinary school (box)"}
   non_drug_care_speech_therapist: {column: trt_non_parmaco_8, label: "Non-drug care: speech therapist (box)"}

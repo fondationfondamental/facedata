@@ -2,14 +2,16 @@ instrument: mini_l_anorexia
 title: "MINI, module L: anorexia nervosa"
 tab: MINI
 section: MINI L
-status: draft
+status: reviewed
 notes: >
   Module L: anorexia nervosa over the last three months.
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -24,8 +26,16 @@ notes: >
   derived_doubt where that question is empty.
 
   Height and lowest weight are asked first; two weights are out of range.
-  The module stops there for nearly every patient (the weight is under the
-  threshold on 7 visits), and the conclusion is yes on 1 visit.
+  The export keeps the whole number only of the height and of the weight
+  (edepression_mini.sql:828-834; request R169). The module stops there for
+  nearly every patient (the weight is under the threshold on 7 visits):
+  L2, L3 and L4a to L4c are asked only after a yes to L1c, and are 0 after
+  a no (asked_if, rule R24); L6 (women only) stays missing where it is
+  empty. The script of the form concludes from two of the three L4 answers
+  and, for a woman, L6 (formulaires.js:2178-2209); the conclusion is yes on
+  1 visit, delivered as stored. The eating-disorder exclusion box of the inclusion form is 0 for every
+  patient, although 1 interview concludes to an anorexia and 5 to a
+  bulimia.
 
 defaults: {type: item, range: [0, 1]}
 
@@ -33,10 +43,10 @@ variables:
   mini_l01c: {column: l01c, label: "c) le poids du patient est-il inferieur au seuil critique indique pour sa taille ?"}
   mini_l01a: {column: l01a, type: number, unit: cm, range: [100, 220], winsor: false, label: "L1 a) Combien mesurez-vous ?"}
   mini_l01b: {column: l01b, type: number, unit: kg, range: [25, 300], winsor: false, label: "b) Au cours des 3 derniers mois, quel a été votre poids le plus faible ?"}
-  mini_l02: {column: l02, label: "L2) Avez-vous essayé de ne pas prendre de poids malgré le fait que vous pesiez peu ?"}
-  mini_l03: {column: l03, label: "L3) Aviez-vous peur de prendre du poids ou redoutiez-vous de devenir trop gro(s) bien que votre poids soit inférieur à la moyenne ?"}
-  mini_l04a: {column: l04a, label: "L4 a) Vous trouviez-vous encore trop gro(s), ou pensiez-vous qu’une partie de votre corps était trop grosse ?"}
-  mini_l04b: {column: l04b, label: "b) L’opinion ou l’estime que vous aviez de vous-même étaient-elles largement influencés par votre poids ou vos formes corporelles ?"}
-  mini_l04c: {column: l04c, label: "c) Pensiez-vous que ce poids était normal, voire excessif ?"}
+  mini_l02: {column: l02, asked_if: mini_l01c, label: "L2) Avez-vous essayé de ne pas prendre de poids malgré le fait que vous pesiez peu ?"}
+  mini_l03: {column: l03, asked_if: mini_l01c, label: "L3) Aviez-vous peur de prendre du poids ou redoutiez-vous de devenir trop gro(s) bien que votre poids soit inférieur à la moyenne ?"}
+  mini_l04a: {column: l04a, asked_if: mini_l01c, label: "L4 a) Vous trouviez-vous encore trop gro(s), ou pensiez-vous qu’une partie de votre corps était trop grosse ?"}
+  mini_l04b: {column: l04b, asked_if: mini_l01c, label: "b) L’opinion ou l’estime que vous aviez de vous-même étaient-elles largement influencés par votre poids ou vos formes corporelles ?"}
+  mini_l04c: {column: l04c, asked_if: mini_l01c, label: "c) Pensiez-vous que ce poids était normal, voire excessif ?"}
   mini_l06: {column: l06, label: "POUR LES FEMMES SEULEMENT : Ces trois derniers mois, avez-vous eu un arrêt de vos règles alors que vous auriez dû les avoir (en l’absence d’"}
   mini_anorexia_current: {column: l, label: "Anorexia current: ANOREXIE MENTALE ACTUELLE"}

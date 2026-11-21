@@ -20,11 +20,24 @@ notes: >
   PROGRESS.md, by the project lead). The two say the same thing: RR is 60
   divided by the heart rate. They agree within 10% on 81% of the 7,861
   visits that have both, and differ by more than 30% on 739. Two centres
-  hold most of these: their RR fits the heart rate on 22% of their visits
-  (80% to 97% elsewhere), with a median RR of 1.1 s for a rate of 70, while
-  their QT is the one of the other centres. What they type in the RR field
-  is not known. The custom check rr_differs_from_rate flags these RR
-  (check_failed); the value is kept.
+  hold most of these: their RR fits the heart rate on 23% of their visits
+  (73% to 97% in the other centres with more than 100 visits), with a
+  median RR of 1.1 s for a rate of 70, while their QT is the one of the
+  other centres. There the typed RR equals the heart rate divided by 60 on
+  89% of the visits (58% in a third, small centre, 2% to 14% elsewhere):
+  the help text of the field says to divide the heart rate by 60, the
+  inverse of the right 60 / rate (defect A84 in docs/EXPORT_REQUESTS.md).
+  The custom check rr_differs_from_rate flags these RR (check_failed); the
+  value is kept.
+
+  The question "ECG done" opens the four measures: none is filled after a
+  no (2,538 visits). After a yes, 3,045 of 13,077 visits (23%) have no
+  measure (26% to 31% in each period from 2019). 675 stored QTc have no RR
+  (634 of them in 2013-2015, 659 in three centres); 611 of the 656 that
+  have a QT and a
+  heart rate are within 0.03 s of Bazett's formula on the heart rate, so
+  these QTc were not computed by the form from a typed RR. The gate is
+  delivered as it is: no change of encoding.
 
   QTc. The form computes it with Bazett's formula, QT divided by the square
   root of RR, on the numbers as typed. Two defects follow. When QT and RR

@@ -2,19 +2,39 @@ instrument: inclusion_criteria
 title: Inclusion and non-inclusion criteria
 tab: INCLUSION
 section: inclusion
-status: draft
+status: reviewed
 notes: >
   Seven yes/no boxes filled at the screening visit, for 633 of the 634
   patients: three inclusion criteria, three exclusion criteria and the
-  conclusion "eligible". They are what the clinician ticked, with one
-  exception: the box "stage 2 or more" (incl03) is written by the
-  application when the form of the Thase and Rush stage (122) is saved, 1 for
-  the stages 2 to 5 and 0 for stage 1 (js/DRONE.js, case 122), and it can be
-  ticked by hand in the inclusion form 193 where no stage was rated (see
-  thase_rush). Almost every patient has the three inclusion criteria and
-  none of the exclusion criteria, and fewer than five patients have another
-  answer to any box. The MADRS score and the Thase and Rush stage that two
-  of the criteria refer to are in the instruments madrs and thase_rush.
+  conclusion "eligible". Almost every patient has the three inclusion
+  criteria and none of the exclusion criteria, and fewer than five patients
+  have another answer to any box. The MADRS score and the Thase and Rush
+  stage that two of the criteria refer to are in the instruments madrs and
+  thase_rush.
+
+  Three boxes are written by the application (rule R33 of the review).
+  (1) "MADRS above 20" (incl01) is written when a MADRS form (100 or 123) is
+  saved: 0 for a total of 0 to 20, 1 for 21 to 60 (js/DRONE.js, lines 1849
+  to 1862). The clinician can change it afterwards, so it is delivered as
+  stored, with a hidden check from the MADRS total of the screening visit
+  (criterion_madrs_check): it agrees on 550 of the 560 patients with both;
+  the 10 others are stored 1 with a total of 8 to 20 (score_mismatch); 73
+  have no screening total. (2) "Stage 2 or more" (incl03) is written when
+  the form of the Thase and Rush stage (122) is saved: 1 for the stages 2 to
+  5, 0 for stage 1 (js/DRONE.js, lines 1871 to 1882). Delivered as stored,
+  with a hidden check from the stage (criterion_resistance_stage_2_check): it
+  agrees on 516 of the 517 patients with a stage (one score_mismatch). The
+  115 others are ticked yes with no stage rated, a share that rises from 9%
+  of the screenings in 2013-15 to 35% and 36% from 2022: ticked by hand in
+  the inclusion form (193). (3) "Eligible" (excl04) is fully derived: the
+  form sets it to 1 only when the six criteria are filled and all pass, else
+  to 0 (is_eligible, js/formulaires.js, lines 884 to 916), and a batch script
+  set it to 1 where the six stored criteria pass (script/script_inclu.php,
+  lines 20 to 27). It is recomputed here (1 when the three inclusion criteria
+  are yes and the three exclusion criteria no) and the stored value is the
+  check (eligible_stored, not delivered): 3 patients change, 2 stored
+  eligible with a criterion that fails and one stored not eligible whose six
+  criteria pass (score_mismatch).
 
   A section of the TRD dictionary only. Yes is 1 and no is 0.
 
@@ -27,4 +47,27 @@ variables:
   exclusion_ocd: {column: excl01, label: "Exclusion criterion: obsessive-compulsive disorder"}
   exclusion_eating_disorder: {column: excl02, label: "Exclusion criterion: eating disorder"}
   exclusion_bipolar: {column: excl03, label: "Exclusion criterion: bipolar disorder"}
-  eligible: {column: excl04, label: "Patient eligible"}
+  eligible_stored: {column: excl04, label: "Patient eligible, as stored", keep: false}
+
+uses: [thase_rush_stage, madrs_total]
+
+scores:
+  eligible:
+    label: Patient eligible (all three inclusion criteria and none of the exclusion criteria)
+    min: [criterion_madrs_above_20, criterion_depressive_episode, criterion_resistance_stage_2, exclusion_ocd, exclusion_eating_disorder, exclusion_bipolar]
+    reverse: [exclusion_ocd, exclusion_eating_disorder, exclusion_bipolar]
+    min_items: 1
+    range: [0, 1]
+    compare: eligible_stored
+  criterion_resistance_stage_2_check:
+    label: Stage 2 or more as the application writes it from the Thase and Rush stage (check)
+    max: [thase_rush_stage]
+    points: {"1": 0, "2": 1, "3": 1, "4": 1, "5": 1}
+    compare: criterion_resistance_stage_2
+    keep: false
+  criterion_madrs_check:
+    label: MADRS above 20 as the application writes it from the screening MADRS (check)
+    max: [madrs_total]
+    points: {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0, "16": 0, "17": 0, "18": 0, "19": 0, "20": 0, "21": 1, "22": 1, "23": 1, "24": 1, "25": 1, "26": 1, "27": 1, "28": 1, "29": 1, "30": 1, "31": 1, "32": 1, "33": 1, "34": 1, "35": 1, "36": 1, "37": 1, "38": 1, "39": 1, "40": 1, "41": 1, "42": 1, "43": 1, "44": 1, "45": 1, "46": 1, "47": 1, "48": 1, "49": 1, "50": 1, "51": 1, "52": 1, "53": 1, "54": 1, "55": 1, "56": 1, "57": 1, "58": 1, "59": 1, "60": 1}
+    compare: criterion_madrs_above_20
+    keep: false

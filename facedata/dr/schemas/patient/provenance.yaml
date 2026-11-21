@@ -2,7 +2,7 @@ instrument: provenance
 title: How the patient came to the expert centre
 tab: PATIENT
 section: Provenance
-status: draft
+status: reviewed
 level: patient
 notes: >
   One value per patient; no value changes between the visits of a patient.
@@ -12,12 +12,23 @@ notes: >
   2025 and 2026: the field came into use late, or the export loses it for the
   earlier years (open question O4 in PROGRESS.md). Its texts are not those of
   BP and two of them end with a stray quotation mark; they are read as the
-  same answers.
+  same answers. The export writes the texts of the two hospital
+  psychiatrists swapped: the form (form/1.php) stores 2 for the psychiatrist
+  of the centre's catchment area and 3 for one outside it, and the clean
+  model of the export writes "hors secteur" for 2 and "du secteur centre"
+  for 3 (edepression_patient.sql, lines 22 and 23; request R161). They are
+  read as the form says (38 patients: 21 inside, 17 outside); this rests on
+  the current form, which may have had another order in the early years.
 
-  The purpose of the visit is exported as a code, 1, 2 or 3, where BP and SZ
-  hold the words. The dictionary gives no coding, so the three codes are
-  delivered as code_1, code_2 and code_3 and not as the BP labels (open
-  question O4). Filled for 593 patients, at about 90% in every year.
+  The purpose of the visit is exported as a code, 1, 2 or 3; the form
+  (form/1.php, OBJET_VISITE) asks the BP and SZ question with 1 diagnostic
+  advice, 2 therapeutic advice, 3 both, delivered with the BP words: 36, 250
+  and 307 patients. Filled for 593 patients, at 84% to 100% of the
+  inclusions of every year. By centre (2026-11-20): empty for 24 of the 52
+  patients of one centre (0% to 10% elsewhere), and "diagnostic advice"
+  for 33% of the patients of another (0% to 13% elsewhere): habits of the
+  centres, no known cause. The referrer is filled mostly from 2024, in
+  three centres (open question O4).
 
   Not loaded: adresseur_precis, the free text of the referrer, which is empty
   in the extraction (ignored.yaml).
@@ -29,12 +40,12 @@ variables:
     type: category
     codes:
       Psychiatre libéral: private_psychiatrist
-      Psychiatre hospitalier du secteur centre: hospital_psychiatrist_inside
-      'Psychiatre hospitalier hors secteur"': hospital_psychiatrist_outside
+      'Psychiatre hospitalier hors secteur"': hospital_psychiatrist_inside
+      Psychiatre hospitalier du secteur centre: hospital_psychiatrist_outside
       Generaliste: general_practitioner
       'Patient lui-même"': self
-  visit_purpose_code:
+  visit_purpose:
     column: objet_visite
-    label: Purpose of the visit, as a code whose meaning is not documented
+    label: Purpose of the visit
     type: category
-    codes: {"1": code_1, "2": code_2, "3": code_3}
+    codes: {"1": diagnosis, "2": treatment, "3": diagnosis_and_treatment}

@@ -2,70 +2,102 @@ instrument: parents_situation
 title: "Situation of the two parents"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
   For each of the two parents (columns ending in 1 and in 2): the marital
   status, the level of education, the languages, the children and their
   custody, the employment, the work arrangements, the job, absences from
-  work, and the resources and allowances. 371 inclusion visits (369 of children, 2 of adults) and 53 follow-up visits, from 2021 to 2026.
-  Asked for children.
+  work, and the resources and allowances. 371 inclusion visits (369 of
+  children, 2 of adults) and 53 follow-up visits, from 2021 to 2026. Asked for
+  children (form 353, filled in centres A and B only).
 
-  The section belongs to the form added in 2020 and 2021 (its first
+  The section belongs to the module 'Médico-éco' added in 2020 and 2021 (its first
   questions are on 48% of the inclusion visits of 2021 and 79% of those of 2024):
-  an earlier visit is "not asked", not missing.
+  an earlier visit is "not asked", not missing. The module has no visit-type or
+  date condition (the application chooses the form by age alone), so the form
+  can be filled on any visit, an earlier one included: 4 visits before 2020 hold it.
+  The questions are on the last 12 months at inclusion and at follow-up alike: no
+  _v0/_fu split.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. The boxes of resources and allowances hold a 0 or a 1
-  on every visit that has the form.
+  The labels and the lists of answers are those of the forms (350 adult, 351 child,
+  352 Par-DD-QoL, 353 parents) and of the thesaurus V2.13 (PROGRESS.md D14). The
+  output names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`. The boxes of resources and allowances hold a 0 or a 1 on every visit
+  that has the form.
+
+  The level of education is a radio of five answers coded 21 to 25 (primary
+  school, lower secondary, CAP/BEP, baccalauréat, higher education; 353.php
+  lines 97 and 113): a category, not a number (714 cells relabelled). The
+  level of French has six answers that are not an ordered scale: a category.
+  Full time is 1 and part time 0 on this form (lines 141 and 166); the
+  thesaurus writes 1 and 2, as on the adult and child forms (R171). The block
+  of parent 2 prints 'parent 1' in its questions on a new relationship and on
+  the dependent children (lines 119 and 120, A95): the answers are read as
+  those of parent 2.
+
+  The weeks worked are asked after a yes to 'a work contract or self-employed
+  work in the last 12 months': the form hides and clears them after a no
+  (eASPERGER.js lines 10391 to 10410 and 10485 to 10505), so they are 0 after a
+  no (`asked_if`, 128 cells). The days of absence for the child are 0 after a
+  no (`asked_if`, 243 cells), with the range [0, 365] of a year (the form
+  blocks above 350). Ranges are the limits of the form: a blocking check stops the counts above 50
+  (eASPERGER.js lines 3560 to 3925), the other numbers at the length of their box. The weeks worked stop at 52, the share of a full
+  time at 100, the dependent children at 12, the year of the reduction of the
+  working time between 1980 and 2030.
 
   A section of the ASP cohort only.
 
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): two centres (A and B), within a few points of each
+  other. The weeks worked in the last year have a median of 0 in 2021 (21
+  visits) and 45 to 52 from 2022; the share of a full time is 100% in A and
+  80% in B; the new partner moves between 33% and 64% on 21 and 22 visits.
+  Small groups or habits, no known cause, documented here.
+
 variables:
-  marist: {column: marist, type: category, label: "Situation of the two parents: status of the parental couple", codes: {"2": cohabiting_civil_union_or_married, "3": separated, "4": divorced, "5": widowed}}
-  marista1: {column: marista1, type: item, label: "Parent 1: in a new relationship, when the parents are separated or divorced (0 no, 1 yes)", range: [0, 1]}
-  sd_edulevel1: {column: edulevel1, type: number, label: "Parent 1: highest level of education reached (21 primary school to 25 higher education after the baccalauréat)", range: [0, 200], winsor: false}
+  parents_couple_status: {column: marist, type: category, label: "Situation of the two parents: status of the parental couple", codes: {"2": cohabiting_civil_union_or_married, "3": separated, "4": divorced, "5": widowed}}
+  parent1_new_partner: {column: marista1, type: item, label: "Parent 1: in a new relationship, when the parents are separated or divorced (0 no, 1 yes)", range: [0, 1]}
+  parent1_education_level: {column: edulevel1, type: category, label: "Parent 1: highest level of education reached (21 primary school to 25 higher education after the baccalauréat)", codes: {"21": primary_school, "22": lower_secondary, "23": cap_bep, "24": baccalaureate, "25": higher_education}}
   bacplus1: {column: bacplus1, type: text, label: "Parent 1: studies after the baccalauréat (BAC+), detail, free text"}
-  sd_lang1: {column: lang1, type: category, label: "Parent 1: mother tongue", codes: {"1": french, "2": bilingual_french, "3": other}}
+  parent1_mother_tongue: {column: lang1, type: category, label: "Parent 1: mother tongue", codes: {"1": french, "2": bilingual_french, "3": other}}
   sd_langa1: {column: langa1, type: text, label: "Parent 1: other mother tongue, which, free text"}
-  levlang1: {column: levlang1, type: item, label: "Parent 1: level of French (0 no French, needs an interpreter, to 5 good or very good comprehension and expression)", range: [0, 5]}
-  biochin1: {column: biochin1, type: number, label: "Parent 1: number of dependent children", range: [0, 200], winsor: false}
-  garde1: {column: garde1, type: category, label: "Parent 1: custody arrangement for the child concerned", codes: {"1": full_custody, "2": alternate_weeks_half_holidays, "3": alternate_weekends_main_custody}}
-  marista2: {column: marista2, type: item, label: "Parent 2: in a new relationship, when the parents are separated or divorced (0 no, 1 yes)", range: [0, 1]}
-  sd_edulevel2: {column: edulevel2, type: number, label: "Parent 2: highest level of education reached (21 primary school to 25 higher education after the baccalauréat)", range: [0, 200], winsor: false}
+  parent1_french_level: {column: levlang1, type: category, label: "Parent 1: level of French (the six answers of the form are not an ordered scale)", codes: {"5": good_comprehension_and_expression, "4": oral_expression_difficulties_only, "3": oral_comprehension_difficulties_only, "2": oral_expression_and_comprehension_difficulties, "1": reading_and_writing_difficulties, "0": no_french_needs_interpreter}}
+  parent1_n_dependent_children: {column: biochin1, type: number, label: "Parent 1: number of dependent children", range: [0, 12], winsor: false}
+  parent1_custody: {column: garde1, type: category, label: "Parent 1: custody arrangement for the child concerned", codes: {"1": full_custody, "2": alternate_weeks_half_holidays, "3": alternate_weekends_main_custody}}
+  parent2_new_partner: {column: marista2, type: item, label: "Parent 2: in a new relationship, when the parents are separated or divorced (0 no, 1 yes)", range: [0, 1]}
+  parent2_education_level: {column: edulevel2, type: category, label: "Parent 2: highest level of education reached (21 primary school to 25 higher education after the baccalauréat)", codes: {"21": primary_school, "22": lower_secondary, "23": cap_bep, "24": baccalaureate, "25": higher_education}}
   bacplus2: {column: bacplus2, type: text, label: "Parent 2: studies after the baccalauréat (BAC+), detail, free text"}
-  sd_lang2: {column: lang2, type: category, label: "Parent 2: mother tongue", codes: {"1": french, "2": bilingual_french, "3": other}}
+  parent2_mother_tongue: {column: lang2, type: category, label: "Parent 2: mother tongue", codes: {"1": french, "2": bilingual_french, "3": other}}
   sd_langa2: {column: langa2, type: text, label: "Parent 2: other mother tongue, which, free text"}
-  levlang2: {column: levlang2, type: item, label: "Parent 2: level of French (0 no French, needs an interpreter, to 5 good or very good comprehension and expression)", range: [0, 5]}
-  biochin2: {column: biochin2, type: number, label: "Parent 2: number of dependent children", range: [0, 200], winsor: false}
-  garde2: {column: garde2, type: category, label: "Parent 2: custody arrangement for the child concerned", codes: {"1": full_custody, "2": alternate_weeks_half_holidays, "3": alternate_weekends_main_custody}}
-  empjob1: {column: empjob1, type: category, label: "Parent 1: socio-professional category", codes: {"1": senior_managers, "2": intellectual_scientific_professions, "3": intermediate_salaried_professions, "4": small_entrepreneurs_self_employed, "5": skilled_clerical_employees, "6": skilled_manual_employees, "7": low_skilled_employees, "8": retired_or_out_of_work_65_or_over, "9": other_not_employed_under_65}}
-  modalw1: {column: modalw1, type: item, label: "Parent 1: working arrangements changed because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
-  modalwa1: {column: modalwa1, type: category, label: "Parent 1: kind of change in the working arrangements", codes: {"1": became_self_employed, "2": stopped_work, "3": reduced_working_time}}
-  modalwb1: {column: modalwb1, type: item, label: "Parent 1: weekly working time reduced because of the child (1 not significant, 2 under 7 hours, to 6 29 to 35 hours)", range: [1, 6]}
-  modalwc1: {column: modalwc1, type: number, label: "Parent 1: reduction of working time, calendar year it dates from", range: [0, 4050], winsor: false}
-  stpro1_p: {column: stpro1_p, type: item, label: "Parent 1: had a work contract or worked self-employed in the last 12 months (0 no, 1 yes)", range: [0, 1]}
-  partic1: {column: partic1, type: item, label: "Parent 1: no work in the last 12 months because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
-  jobdur1: {column: jobdur1, type: number, label: "Parent 1: total time worked in the last 12 months, sick leave included, weeks", range: [0, 200], winsor: false}
-  jobclas1: {column: jobclas1, type: item, label: "Parent 1: full-time or part-time work (the extraction holds 0 and 1; the thesaurus writes 1 full time, 2 part time)", range: [0, 1]}
-  jobcl1: {column: jobcl1, type: number, label: "Parent 1: working time, per cent of a full-time job", range: [0, 200], winsor: false}
-  contra1: {column: contra1, type: category, label: "Parent 1: kind of work contract", codes: {"1": fixed_term_contract, "2": permanent_contract, "3": liberal_profession, "4": sole_trader}}
-  abse1: {column: abse1, type: item, label: "Parent 1: was absent from work in the last 12 months to look after the child (0 no, 1 yes)", range: [0, 1]}
-  durabse1: {column: durabse1, type: number, label: "Parent 1: absence from work to look after the child, days in the last 12 months", range: [0, 270], winsor: false}
-  empjob2: {column: empjob2, type: category, label: "Parent 2: socio-professional category", codes: {"1": senior_managers, "2": intellectual_scientific_professions, "3": intermediate_salaried_professions, "4": small_entrepreneurs_self_employed, "5": skilled_clerical_employees, "6": skilled_manual_employees, "7": low_skilled_employees, "8": retired_or_out_of_work_65_or_over, "9": other_not_employed_under_65}}
-  modalw2: {column: modalw2, type: item, label: "Parent 2: working arrangements changed because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
-  modalwa2: {column: modalwa2, type: category, label: "Parent 2: kind of change in the working arrangements", codes: {"1": became_self_employed, "2": stopped_work, "3": reduced_working_time}}
-  modalwb2: {column: modalwb2, type: item, label: "Parent 2: weekly working time reduced because of the child (1 not significant, 2 under 7 hours, to 6 29 to 35 hours)", range: [1, 6]}
-  modalwc2: {column: modalwc2, type: number, label: "Parent 2: reduction of working time, calendar year it dates from", range: [0, 4050], winsor: false}
-  stpro2_p: {column: stpro2_p, type: item, label: "Parent 2: had a work contract or worked self-employed in the last 12 months (0 no, 1 yes)", range: [0, 1]}
-  partic2: {column: partic2, type: item, label: "Parent 2: no work in the last 12 months because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
-  jobdur2: {column: jobdur2, type: number, label: "Parent 2: total time worked in the last 12 months, sick leave included, weeks", range: [0, 200], winsor: false}
-  jobclas2: {column: jobclas2, type: item, label: "Parent 2: full-time or part-time work (the extraction holds 0 and 1; the thesaurus writes 1 full time, 2 part time)", range: [0, 1]}
-  jobcl2: {column: jobcl2, type: number, label: "Parent 2: working time, per cent of a full-time job", range: [0, 200], winsor: false}
-  contra2: {column: contra2, type: category, label: "Parent 2: kind of work contract", codes: {"1": fixed_term_contract, "2": permanent_contract, "3": liberal_profession, "4": sole_trader}}
-  abse2: {column: abse2, type: item, label: "Parent 2: was absent from work in the last 12 months to look after the child (0 no, 1 yes)", range: [0, 1]}
-  durabse2: {column: durabse2, type: number, label: "Parent 2: absence from work to look after the child, days in the last 12 months", range: [0, 200], winsor: false}
+  parent2_french_level: {column: levlang2, type: category, label: "Parent 2: level of French (the six answers of the form are not an ordered scale)", codes: {"5": good_comprehension_and_expression, "4": oral_expression_difficulties_only, "3": oral_comprehension_difficulties_only, "2": oral_expression_and_comprehension_difficulties, "1": reading_and_writing_difficulties, "0": no_french_needs_interpreter}}
+  parent2_n_dependent_children: {column: biochin2, type: number, label: "Parent 2: number of dependent children", range: [0, 12], winsor: false}
+  parent2_custody: {column: garde2, type: category, label: "Parent 2: custody arrangement for the child concerned", codes: {"1": full_custody, "2": alternate_weeks_half_holidays, "3": alternate_weekends_main_custody}}
+  parent1_job_class: {column: empjob1, type: category, label: "Parent 1: socio-professional category", codes: {"1": senior_managers, "2": intellectual_scientific_professions, "3": intermediate_salaried_professions, "4": small_entrepreneurs_self_employed, "5": skilled_clerical_employees, "6": skilled_manual_employees, "7": low_skilled_employees, "8": retired_or_out_of_work_65_or_over, "9": other_not_employed_under_65}}
+  parent1_work_changed_for_child: {column: modalw1, type: item, label: "Parent 1: working arrangements changed because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
+  parent1_work_change_kind: {column: modalwa1, type: category, label: "Parent 1: kind of change in the working arrangements", codes: {"1": became_self_employed, "2": stopped_work, "3": reduced_working_time}}
+  parent1_hours_reduced_class: {column: modalwb1, type: item, label: "Parent 1: weekly working time reduced because of the child (1 not significant, 2 under 7 hours, to 6 29 to 35 hours)", range: [1, 6]}
+  parent1_hours_reduced_since_year: {column: modalwc1, type: number, label: "Parent 1: reduction of working time, calendar year it dates from", range: [1980, 2030], winsor: false}
+  parent1_work_12m: {column: stpro1_p, type: item, label: "Parent 1: had a work contract or worked self-employed in the last 12 months (0 no, 1 yes)", range: [0, 1]}
+  parent1_no_work_because_of_child: {column: partic1, type: item, label: "Parent 1: no work in the last 12 months because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
+  parent1_work_weeks_12m: {column: jobdur1, type: number, label: "Parent 1: total time worked in the last 12 months, sick leave included, weeks", range: [0, 52], winsor: false, asked_if: parent1_work_12m}
+  parent1_job_full_time: {column: jobclas1, type: item, label: "Parent 1: works full time (1) or part time (0) (form 353; the thesaurus writes 1 full time, 2 part time)", range: [0, 1]}
+  parent1_work_percent: {column: jobcl1, type: number, label: "Parent 1: working time, per cent of a full-time job", range: [0, 100], winsor: false}
+  parent1_contract: {column: contra1, type: category, label: "Parent 1: kind of work contract", codes: {"1": fixed_term_contract, "2": permanent_contract, "3": liberal_profession, "4": sole_trader}}
+  parent1_absent_for_child_12m: {column: abse1, type: item, label: "Parent 1: was absent from work in the last 12 months to look after the child (0 no, 1 yes)", range: [0, 1]}
+  parent1_absent_days_12m: {column: durabse1, type: number, label: "Parent 1: absence from work to look after the child, days in the last 12 months", range: [0, 365], winsor: false, asked_if: parent1_absent_for_child_12m}
+  parent2_job_class: {column: empjob2, type: category, label: "Parent 2: socio-professional category", codes: {"1": senior_managers, "2": intellectual_scientific_professions, "3": intermediate_salaried_professions, "4": small_entrepreneurs_self_employed, "5": skilled_clerical_employees, "6": skilled_manual_employees, "7": low_skilled_employees, "8": retired_or_out_of_work_65_or_over, "9": other_not_employed_under_65}}
+  parent2_work_changed_for_child: {column: modalw2, type: item, label: "Parent 2: working arrangements changed because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
+  parent2_work_change_kind: {column: modalwa2, type: category, label: "Parent 2: kind of change in the working arrangements", codes: {"1": became_self_employed, "2": stopped_work, "3": reduced_working_time}}
+  parent2_hours_reduced_class: {column: modalwb2, type: item, label: "Parent 2: weekly working time reduced because of the child (1 not significant, 2 under 7 hours, to 6 29 to 35 hours)", range: [1, 6]}
+  parent2_hours_reduced_since_year: {column: modalwc2, type: number, label: "Parent 2: reduction of working time, calendar year it dates from", range: [1980, 2030], winsor: false}
+  parent2_work_12m: {column: stpro2_p, type: item, label: "Parent 2: had a work contract or worked self-employed in the last 12 months (0 no, 1 yes)", range: [0, 1]}
+  parent2_no_work_because_of_child: {column: partic2, type: item, label: "Parent 2: no work in the last 12 months because of the child's developmental condition (0 no, 1 yes)", range: [0, 1]}
+  parent2_work_weeks_12m: {column: jobdur2, type: number, label: "Parent 2: total time worked in the last 12 months, sick leave included, weeks", range: [0, 52], winsor: false, asked_if: parent2_work_12m}
+  parent2_job_full_time: {column: jobclas2, type: item, label: "Parent 2: works full time (1) or part time (0) (form 353; the thesaurus writes 1 full time, 2 part time)", range: [0, 1]}
+  parent2_work_percent: {column: jobcl2, type: number, label: "Parent 2: working time, per cent of a full-time job", range: [0, 100], winsor: false}
+  parent2_contract: {column: contra2, type: category, label: "Parent 2: kind of work contract", codes: {"1": fixed_term_contract, "2": permanent_contract, "3": liberal_profession, "4": sole_trader}}
+  parent2_absent_for_child_12m: {column: abse2, type: item, label: "Parent 2: was absent from work in the last 12 months to look after the child (0 no, 1 yes)", range: [0, 1]}
+  parent2_absent_days_12m: {column: durabse2, type: number, label: "Parent 2: absence from work to look after the child, days in the last 12 months", range: [0, 365], winsor: false, asked_if: parent2_absent_for_child_12m}
   saltypa_1_p: {column: saltypa_1_p, type: item, label: "Situation of the two parents: benefit received, independent living supplement (MVA) (box) (0 no, 1 yes)", range: [0, 1]}
   saltypa_2_p: {column: saltypa_2_p, type: item, label: "Situation of the two parents: benefit received, guaranteed income for disabled people (GRPH) (box) (0 no, 1 yes)", range: [0, 1]}
   saltypa_3_p: {column: saltypa_3_p, type: item, label: "Situation of the two parents: benefit received, disability compensation benefit (PCH) (box) (0 no, 1 yes)", range: [0, 1]}

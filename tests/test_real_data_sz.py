@@ -352,10 +352,11 @@ def test_medical_evaluation_care_and_social(result, qc):
     # The psychiatric sick leave since the last visit is the BP question, under the BP names; 0 after a "no" (BP D123).
     assert [qc.loc[name, "n_valid"] for name in ["sick_leave_fu", "n_sick_leaves_fu", "sick_leave_weeks_fu", "sick_leave_weeks_12m"]] == [1306, 1288, 1281, 800]
     assert (data.loc[data["sick_leave_fu"] == 0, "sick_leave_weeks_fu"] == 0).all()
-    assert shape_of(qc, "SOCIAL - PERINATALITE") == (11, 1, 0, 0)
-    # Lost answers: no patient is married or living as a couple, none has a salary or a disability pension.
+    assert shape_of(qc, "SOCIAL - PERINATALITE") == (10, 1, 0, 0)
+    # Lost answers: no patient is married or living as a couple (O22).
     assert data["marital_status"].value_counts().to_dict() == {"single": 1652, "divorced": 42, "separated": 30, "widowed": 4}
-    assert set(data["income_source"].dropna()) == {"disability_allowance", "other", "no_income", "minimum_income", "unemployment_benefit", "housing_benefit"}
+    # The source of income is not delivered: the export keeps one of the boxes ticked, the first its list finds (D94).
+    assert "income_source" not in data.columns
 
 
 def test_treatments(result, qc):
@@ -403,7 +404,7 @@ def test_coverage():
     """Every column of the extraction is read by a schema or ignored with a reason."""
     table = sz.coverage(EXTRACTION, THESAURUS)
     counts = table["status"].value_counts().to_dict()
-    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1668, 52, 0)
+    assert (counts["covered"], counts["ignored"], counts.get("not_assigned", 0)) == (1667, 53, 0)
     assert counts["covered"] + counts["ignored"] == 1720
 
 

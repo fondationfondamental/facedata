@@ -2,39 +2,80 @@ instrument: schooling
 title: "Schooling"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
   The school history: ordinary schooling, repeated years, support at school
   and its kind, the highest class reached, and the time at school.
-  2134 inclusion visits (866 of children, 1268 of adults) and 266 follow-up visits, from 2011 to 2026.
+  2134 inclusion visits (866 of children, 1268 of adults) and 266 follow-up
+  visits, from 2011 to 2026.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. A 9 is "not known". A support at school is reported
-  for 420 of 2018 inclusion visits with an answer; its kind (assistant,
-  specialised class, SESSAD, IME, day hospital...) is asked after a yes. The
-  highest class is free text (1904 visits, 586 different spellings): it is
-  delivered as written. The three boxes redoubc and the three boxes tempscola
-  hold a 0 or a 1 on every visit that has the form. The questions on full-time
-  schooling and on time out of school are asked from 2019. dmochang is a box of
+  The labels and the lists of answers are those of the forms (191 inclusion,
+  243 follow-up) and of the thesaurus V2.13 (PROGRESS.md D14). The output
+  names are descriptive English names since 2026-11-20 (the column names
+  before); the raw column stays in `column`. A 9 is "not known". A support at
+  school is reported for 420 of 2,018 inclusion visits with an answer; its
+  kind (assistant, specialised class, SESSAD, IME, day hospital...) is asked
+  after a yes. The highest class is free text (1904 visits, 586 different
+  spellings): it is delivered as written. schooling_changed_fu is a box of
   the follow-up form.
+
+  **Two forms (R31).** The time at school (three boxes) is on the inclusion
+  form of 2019 only (with the full-time schooling, the time out of school and
+  the help in class); the application writes 0 into its unticked boxes on
+  every save, also on the 1,183 records of the other form, where it was never
+  asked. The form of a visit is read from the questions that only the 2019 form
+  asks (`version: schooling_form`, `filled`): 1,217 inclusion visits of the 2019
+  form, 1,183 other records (917 inclusion, 266 follow-up); the boxes of the
+  time at school are read on the 2019 form only (3,549 zeros never asked become
+  missing; no 1 is lost). The ordinary schooling question is commented out of
+  the current inclusion form (191.php lines 24 and 118). The ULIS class
+  (191.php line 62) and the schooling fields of the follow-up form (243.php:
+  levels, primary, secondary, CAP/BEP, brevet, baccalauréat, higher studies)
+  are not exported (request R167). On load the form hides and clears the schooling
+  answers unless 'never went to school' is answered no (empty included; A96,
+  eASPERGER.js lines 4364 to 4380): a re-save erases them.
+
+  The years of education (EDULEVEL, two digits) are read as
+  education_years_as_stored, `keep: false`, not delivered: their scale
+  differs by centre (median 3 years in centre C with all of 102 values at 8
+  or below, 4 in centre B, 13.5 to 14 in centres D, E and H): a habit of the
+  centres (O17 (4)), until the data managers answer (M90); 382 cells leave the
+  delivery. The weeks out of school stop at 99 (20 of 92 values are 99:
+  right-censored, delivered as typed); the hours of help in class at 99.
 
   A section of the ASP cohort only.
 
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the support at school of children is 82% in centre C
+  to 2015 (all the children of those years) and 43% to 46% in A and B from
+  2016 to 2020, then 26% from 2021 (adults 4% to 18% in the groups of 20 or
+  more): the centre mix to 2015, then a fall within A and B with no known
+  cause. The kinds follow: the inclusion class (CLIS or UPI) 60% in C to 2015,
+  10% to 21% to 2020 and 0% to 2% from 2021 (the ULIS class of the current
+  form is not exported, R167); the day hospital 48% in C to 2015, 0% to 33%
+  after. The change box of the follow-up form is yes on 64% of the visits of C
+  (to 2015) and 11% to 16% in A and D. The box 'full time' of the time at
+  school (2019 form) is 4% in H and 31% to 65% elsewhere. Documented here.
+
+version:
+  name: schooling_form
+  filled:                            # tested top to bottom
+    schooling_2019: [tpscomp, descola, auxviesc_1, auxviesc_2]   # questions of the inclusion form 191 that came with the time at school
+    schooling_other: [passcola, sconorm, scolass, nivmaxc, redoubc_1, dmochang]
+
 variables:
-  dmochang: {column: dmochang, type: item, label: "Schooling: change since the last visit (0 no, 1 yes)", range: [0, 1]}
-  passcola: {column: passcola, type: item, label: "Schooling: never went to school (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  sconorm: {column: sconorm, type: item, label: "Schooling: ordinary schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  redoubc_1: {column: redoubc_1, type: item, label: "Schooling: repeated a year in nursery school (box) (0 no, 1 yes)", range: [0, 1]}
-  redoubc_2: {column: redoubc_2, type: item, label: "Schooling: repeated a year in primary school (box) (0 no, 1 yes)", range: [0, 1]}
-  redoubc_3: {column: redoubc_3, type: item, label: "Schooling: repeated a year in secondary school (box) (0 no, 1 yes)", range: [0, 1]}
-  tpscomp: {column: tpscomp, type: item, label: "Schooling: full-time schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  scolass: {column: scolass, type: item, label: "Schooling: assisted or specialised schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
-  nivas: {column: nivas, type: item, label: "Schooling: level of the assisted or specialised schooling (1 nursery, 2 primary, 3 secondary)", range: [1, 3]}
-  auxviesc_1: {column: auxviesc_1, type: number, label: "Schooling: hours a week the child receives specific help in class", range: [0, 200], winsor: false}
-  auxviesc_2: {column: auxviesc_2, type: category, label: "Schooling: status of the school assistant (AESH or AVS), public or private", codes: {"1": public, "2": private}}
-  auxviesc: {column: auxviesc, type: item, label: "Schooling: school assistant (AVS) or school life job (EVS) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  schooling_changed_fu: {column: dmochang, type: item, label: "Schooling: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  never_schooled: {column: passcola, type: item, label: "Schooling: never went to school (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  ordinary_schooling: {column: sconorm, type: item, label: "Schooling: ordinary schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  repeated_year_nursery: {column: redoubc_1, type: item, label: "Schooling: repeated a year in nursery school (box) (0 no, 1 yes)", range: [0, 1]}
+  repeated_year_primary: {column: redoubc_2, type: item, label: "Schooling: repeated a year in primary school (box) (0 no, 1 yes)", range: [0, 1]}
+  repeated_year_secondary: {column: redoubc_3, type: item, label: "Schooling: repeated a year in secondary school (box) (0 no, 1 yes)", range: [0, 1]}
+  full_time_schooling: {column: tpscomp, type: item, label: "Schooling: full-time schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  assisted_schooling: {column: scolass, type: item, label: "Schooling: assisted or specialised schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
+  assisted_schooling_level: {column: nivas, type: item, label: "Schooling: level of the assisted or specialised schooling (1 nursery, 2 primary, 3 secondary)", range: [1, 3]}
+  class_help_hours_week: {column: auxviesc_1, type: number, label: "Schooling: hours a week the child receives specific help in class", range: [0, 99], winsor: false}
+  school_assistant_sector: {column: auxviesc_2, type: category, label: "Schooling: status of the school assistant (AESH or AVS), public or private", codes: {"1": public, "2": private}}
+  school_assistant: {column: auxviesc, type: item, label: "Schooling: school assistant (AVS) or school life job (EVS) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   rased: {column: rased, type: item, label: "Schooling: specialised support network for pupils in difficulty (RASED) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   acspec: {column: acspec, type: item, label: "Schooling: specialised support worker (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   sessad: {column: sessad, type: item, label: "Schooling: special education and home care service (SESSAD) (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
@@ -45,11 +86,11 @@ variables:
   hopjour: {column: hopjour, type: item, label: "Schooling: day hospital or other health care structure (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   scolassc: {column: scolassc, type: item, label: "Schooling: other assisted or specialised schooling (0 no, 1 yes)", range: [0, 1], missing: {"9": unknown}}
   scolassa: {column: scolassa, type: text, label: "Schooling: other assisted or specialised schooling, which, free text"}
-  nivmaxc: {column: nivmaxc, type: text, label: "Schooling: highest level reached, class from first primary year (CP) to doctorate, free text"}
-  sd_edulevel: {column: edulevel, type: number, label: "Schooling: number of years of education, as stored (adults and children seem to count on two scales: open question O17)", range: [0, 200], winsor: false}
-  tempscola_1: {column: tempscola_1, type: item, label: "Schooling: time at school when schooled outside the home, full time (box) (0 no, 1 yes)", range: [0, 1]}
-  tempscola_2: {column: tempscola_2, type: item, label: "Schooling: time at school when schooled outside the home, half days (box) (0 no, 1 yes)", range: [0, 1]}
-  tempscola_3: {column: tempscola_3, type: item, label: "Schooling: time at school when schooled outside the home, other (box) (0 no, 1 yes)", range: [0, 1]}
-  tempscolaa: {column: tempscolaa, type: text, label: "Schooling: time at school when schooled outside the home, other, which, free text"}
-  descola: {column: descola, type: item, label: "Schooling: the child has ever been out of school (0 no, 1 yes)", range: [0, 1]}
-  descola_1: {column: descola_1, type: number, label: "Schooling: time out of school, weeks", range: [0, 200], winsor: false}
+  highest_class_text: {column: nivmaxc, type: text, label: "Schooling: highest level reached, class from first primary year (CP) to doctorate, free text"}
+  education_years_as_stored: {column: edulevel, type: number, label: "Schooling: number of years of education, as stored (two scales by centre, not delivered until the data managers answer: M90)", range: [0, 99], winsor: false, keep: false}
+  school_time_full: {column: tempscola_1, type: item, label: "Schooling: time at school when schooled outside the home, full time (box) (0 no, 1 yes)", range: [0, 1], versions: [schooling_2019]}
+  school_time_half_days: {column: tempscola_2, type: item, label: "Schooling: time at school when schooled outside the home, half days (box) (0 no, 1 yes)", range: [0, 1], versions: [schooling_2019]}
+  school_time_other: {column: tempscola_3, type: item, label: "Schooling: time at school when schooled outside the home, other (box) (0 no, 1 yes)", range: [0, 1], versions: [schooling_2019]}
+  school_time_other_text: {column: tempscolaa, type: text, label: "Schooling: time at school when schooled outside the home, other, which, free text"}
+  ever_out_of_school: {column: descola, type: item, label: "Schooling: the child has ever been out of school (0 no, 1 yes)", range: [0, 1]}
+  out_of_school_weeks: {column: descola_1, type: number, label: "Schooling: time out of school, weeks", range: [0, 99], winsor: false}

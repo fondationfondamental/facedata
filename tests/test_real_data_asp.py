@@ -83,10 +83,10 @@ def test_patient_table(result, qc):
     assert patients["earlier_asd_diagnosis"].value_counts().to_dict() == {0: 956, 1: 106}
     assert (qc.loc["earlier_asd_diagnosis", "missing_code"], qc.loc["other_earlier_diagnosis", "missing_code"]) == (10, 22)
     assert patients["screening_criterion_a1"].notna().sum() == 125                    # the checklist of the children
-    assert (patients["non_drug_care_04"].sum(), patients["non_drug_care_psychiatrist"].sum()) == (0, 320)
+    assert (patients["non_drug_care_ime"].sum(), patients["non_drug_care_psychiatrist"].sum()) == (0, 320)
     flags = result.flags[result.flags["variable"].isin(patients.columns)]
     # The answers about the birth are asked once: they are per patient, as in BP, with their flags.
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 809, "out_of_range": 21, "unit_inferred": 1}
+    assert flags["flag"].value_counts().to_dict() == {"missing_code": 809, "out_of_range": 21, "unit_inferred": 1, "period_removed": 2200}     # the five non-drug care boxes: the 0 from 2022 is missing (D79)
 
 
 def test_medical_evaluation(result, qc):
@@ -336,7 +336,7 @@ def test_history_family_and_treatments(result, qc):
     assert (drugs.groupby(["usubjid", "visit"]).ngroups, drugs["usubjid"].nunique(), drugs["molecule"].notna().sum()) == (966, 896, 1523)
     assert drugs["visit"].value_counts().head(2).to_dict() == {"V0": 903, "screening": 755}
     assert drugs["molecule"].value_counts().head(3).to_dict() == {"methylphenidate": 202, "melatonin": 142, "sertraline": 108}
-    assert "méthylphénidate" not in set(drugs["molecule"]) and (flags["flag"] == "unknown_code").sum() == 204
+    assert "méthylphénidate" not in set(drugs["molecule"]) and (flags["flag"] == "unknown_code").sum() == 203      # the code 2 of stpro2 is retired (D84)
     broken = sum(int(data[name].str.contains("Ã©", regex=False, na=False).sum()) for name in data.select_dtypes("object").columns)
     assert broken == 0                                                                       # the accents written twice are put back
 
@@ -344,16 +344,16 @@ def test_history_family_and_treatments(result, qc):
 def test_social_and_medico_economic(result, qc):
     data = result.data
     table = qc[qc["tab"] == "sociodemo_medicoeco"]
-    assert (table["instrument"].nunique(), len(table)) == (10, 399)
+    assert (table["instrument"].nunique(), len(table)) == (10, 398)
     flags = result.flags[result.flags["variable"].isin(table.index)]
-    assert flags["flag"].value_counts().to_dict() == {"missing_code": 1263, "out_of_range": 4, "unknown_code": 1}
+    assert flags["flag"].value_counts().to_dict() == {"missing_code": 1263, "derived_doubt": 7184}
     # "Not applicable" is a missing code, not an occupation or a kind of activity.
-    assert (qc.loc["profes", "missing_code"], qc.loc["activite", "missing_code"]) == (157, 852)
+    assert (qc.loc["job_class", "missing_code"], qc.loc["contract_type", "missing_code"]) == (157, 852)
     v0 = data[data["visit"] == "V0"]
-    assert v0["activite"].value_counts().to_dict() == {"permanent_contract": 237, "unemployed": 97, "fixed_term_contract": 48, "apprenticeship": 23}
-    assert ((v0["scolass"] == 1).sum(), v0["scolass"].notna().sum(), (v0["urg"] == 1).sum(), v0["urg"].notna().sum()) == (420, 2003, 101, 889)
+    assert v0["contract_type"].value_counts().to_dict() == {"permanent_contract": 237, "unemployed": 97, "fixed_term_contract": 48, "apprenticeship": 23}
+    assert ((v0["assisted_schooling"] == 1).sum(), v0["assisted_schooling"].notna().sum(), (v0["psychiatric_emergency_12m"] == 1).sum(), v0["psychiatric_emergency_12m"].notna().sum()) == (420, 2003, 101, 889)
     assert data[[f"pddqol{k:02d}" for k in range(1, 18)]].notna().all(axis=1).sum() == 363
-    assert (v0.loc[v0["urg"].notna(), "visit_date"].dt.year < 2020).sum() == 3              # the form added in 2020 and 2021
+    assert (v0.loc[v0["psychiatric_emergency_12m"].notna(), "visit_date"].dt.year < 2020).sum() == 3              # the form added in 2020 and 2021
 
 
 def test_coverage():
@@ -364,11 +364,13 @@ def test_coverage():
     assert set(finished["status"]) == {"covered", "ignored"}
     # The only cells left unread: the items of the communication checklist on the 2 visits whose form cannot be told,
     # and the SRS of a relative on the three visits whose date is impossible: no age to tell the child form from the adult form.
+    # The 39 others are the boxes of the adult or the child medico-economic form and the time at school of the 2019 form,
+    # on the visits whose form does not ask them: 0 never asked, missing (R31).
     unread = finished[finished["n_unread"] > 0]
     checklist = unread[unread["column"].str.fullmatch(r"comm\d+")]
     srs = unread[unread["column"].str.startswith("recs")]
     assert (len(checklist), checklist["n_unread"].sum()) == (70, 95)      # 1,351 when 21 visits had no form: the form is also read from the questions that only one form asks (D68)
-    assert (len(srs), srs["n_unread"].max(), len(unread) - len(checklist) - len(srs)) == (80, 3, 0)
+    assert (len(srs), srs["n_unread"].max(), len(unread) - len(checklist) - len(srs)) == (80, 3, 39)
     assert counts.sum() == 4364                                             # no column named by a schema is absent from the file
     assert lines.groupby("table")["column"].size().to_dict() == {
         "patient": 93, "autoquestionnaires": 1135, "autoquestionnaires_old_part1": 991, "autoquestionnaires_old_part2": 716,

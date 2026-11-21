@@ -2,15 +2,17 @@ instrument: mini_k_psychotic
 title: "MINI, module K: psychotic disorders"
 tab: MINI
 section: MINI K
-status: draft
+status: reviewed
 notes: >
   Module K: psychotic symptoms, current and in the life, and the mood
   disorder with psychotic features.
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -25,36 +27,120 @@ notes: >
   derived_doubt where that question is empty.
 
   Questions K1 to K7 have a third answer, "yes, bizarre", stored 2 (on 10
-  cells). The conclusions are delivered as stored: a psychotic syndrome in
-  the life on 7 visits, a mood disorder with psychotic features in the life
-  on 14.
+  cells). The a questions ask about the whole life, the b questions about
+  now or the past month.
+
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the lifetime yes answers of the screening visit that
+  are answered again at follow-up, all 14 are no (12 of them in K1a to K7a). The lifetime questions are therefore
+  delivered at inclusion (screening visit) only, and at follow-up in twins
+  named _fu (versions read from the visit label, block visit_form, as in the
+  treatment schemas); the current questions stay one variable.
+
+  Gates (rule R24). K1b to K7b are asked only after a yes or a "yes,
+  bizarre" to K1a to K7a: after a no they are 0 (asked_if; the a answer of
+  every visit is read once more by a hidden variable, because the a
+  answers are split by visit form): 3,708 cells. K6a1 follows K6a,
+  K6b1 follows K6b. Four visits hold a K6b after a K6a no: kept as
+  written. The form hides the wrong questions after K1b = yes: K7a and K6a1
+  instead of K2a to K5b (a list variable reused in formulaires.js; defect
+  A97).
+
+  Conclusions. K14 (psychotic syndrome in the life) is yes, the form says,
+  when K13 (the current syndrome) is yes: mini_psychotic_syndrome_lifetime
+  is the larger of the current syndrome and the stored lifetime
+  conclusion, and the stored value is its check (rule R33): 4 screening
+  visits have a current syndrome and a stored lifetime no (0 to 1,
+  score_mismatch), 11 visits have the lifetime syndrome. Either conclusion
+  is enough (min_items 1): where the current one is empty the stored
+  lifetime no stays no (2 visits), and where the stored lifetime one is
+  empty a current no gives a lifetime no (3 screening visits). A mood disorder with psychotic features in the
+  life is stored on 14 visits; the other conclusions are delivered as
+  stored. The dictionary sheet does not list the "yes, bizarre" code
+  (request R171).
+
+  Centres (2026-11-20). One centre (26 visits, from 2022) rates the current
+  disorganised speech, disorganised behaviour and negative symptoms (K8b,
+  K9b, K10b) yes on 10, 8 and 6 visits, against 0 to 4 visits of 20 to 63
+  in each other centre; this raises the shares of 2024 on to 12% to 18%
+  (3% to 5% in the cohort). No known cause.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_k01a: {column: k01a, range: [0, 2], label: "K1 a) Avez-vous déjà eu l’impression que quelqu’un vous espionnait, ou complotait contre vous, ou bien encore que l’on essayait de vous fair (2 = yes, bizarre)"}
-  mini_k01b: {column: k01b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
-  mini_k02a: {column: k02a, range: [0, 2], label: "K2 a) Avez-vous déjà eu l’impression que l’on pouvait lire ou entendre vos pensées ou que vous pouviez lire ou entendre les pensées des autr (2 = yes, bizarre)"}
-  mini_k02b: {column: k02b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
-  mini_k03a: {column: k03a, range: [0, 2], label: "K3 a) Avez-vous déjà cru que quelqu’un ou que quelque chose d’extérieur à vous introduisait dans votre tête des pensées étranges qui n’étaie (2 = yes, bizarre)"}
-  mini_k03b: {column: k03b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
-  mini_k04a: {column: k04a, range: [0, 2], label: "K4 a) Avez-vous déjà eu l’impression que l’on s’adressait directement à vous à travers la télévision ou la radio ou que certaines personnes  (2 = yes, bizarre)"}
-  mini_k04b: {column: k04b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
-  mini_k05a: {column: k05a, range: [0, 2], label: "K5 a) Vos proches ont-ils déjà jugé certaines de vos idées comme étranges ou hors de la réalité ? (2 = yes, bizarre)"}
-  mini_k05b: {column: k05b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE : Actuellement, CONSIDERENT-ILS VOS IDÉES COMME ÉTRANGES ? (2 = yes, bizarre)"}
-  mini_k06a: {column: k06a, range: [0, 2], label: "K6 a) Vous est-il déjà arrivé d’entendre des choses que d’autres personnes ne pouvaient pas entendre, comme des voix ? (2 = yes, bizarre)"}
-  mini_k06a1: {column: k06a1, label: "SI OUI OU HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler ent"}
-  mini_k06b: {column: k06b, range: [0, 2], label: "b) SI OUI OU OUI BIZARRE A K6a : Avez-vous entendu ces voix/autres choses au cours du mois écoulé ? (2 = yes, bizarre)"}
-  mini_k06b1: {column: k06b1, label: "SI OUI A HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler entr"}
-  mini_k07a: {column: k07a, range: [0, 2], label: "K7 a) Vous est-il déjà arrivé alors que vous étiez éveillé(e), d’avoir des visions ou de voir des choses que d’autres personnes ne pouvaient (2 = yes, bizarre)"}
-  mini_k07b: {column: k07b, range: [0, 2], label: "b) SI OUI : Cela vous est-il arrivé au cours du mois écoulé ? (2 = yes, bizarre)"}
+  mini_k01a: {column: k01a, range: [0, 2], versions: [inclusion], label: "K1 a) Avez-vous déjà eu l’impression que quelqu’un vous espionnait, ou complotait contre vous, ou bien encore que l’on essayait de vous fair (2 = yes, bizarre)"}
+  mini_k01a_fu: {column: k01a, range: [0, 2], versions: [follow_up], label: "K1 a) Avez-vous déjà eu l’impression que quelqu’un vous espionnait, ou complotait contre vous, ou bien encore que l’on essayait de vous fair (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k01a_gate: {column: k01a, range: [0, 2], keep: false, label: "K1a read on every visit, the gate of K1b (not delivered)"}
+  mini_k01b: {column: k01b, range: [0, 2], asked_if: mini_k01a_gate, label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k02a: {column: k02a, range: [0, 2], versions: [inclusion], label: "K2 a) Avez-vous déjà eu l’impression que l’on pouvait lire ou entendre vos pensées ou que vous pouviez lire ou entendre les pensées des autr (2 = yes, bizarre)"}
+  mini_k02a_fu: {column: k02a, range: [0, 2], versions: [follow_up], label: "K2 a) Avez-vous déjà eu l’impression que l’on pouvait lire ou entendre vos pensées ou que vous pouviez lire ou entendre les pensées des autr (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k02a_gate: {column: k02a, range: [0, 2], keep: false, label: "K2a read on every visit, the gate of K2b (not delivered)"}
+  mini_k02b: {column: k02b, range: [0, 2], asked_if: mini_k02a_gate, label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k03a: {column: k03a, range: [0, 2], versions: [inclusion], label: "K3 a) Avez-vous déjà cru que quelqu’un ou que quelque chose d’extérieur à vous introduisait dans votre tête des pensées étranges qui n’étaie (2 = yes, bizarre)"}
+  mini_k03a_fu: {column: k03a, range: [0, 2], versions: [follow_up], label: "K3 a) Avez-vous déjà cru que quelqu’un ou que quelque chose d’extérieur à vous introduisait dans votre tête des pensées étranges qui n’étaie (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k03a_gate: {column: k03a, range: [0, 2], keep: false, label: "K3a read on every visit, the gate of K3b (not delivered)"}
+  mini_k03b: {column: k03b, range: [0, 2], asked_if: mini_k03a_gate, label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k04a: {column: k04a, range: [0, 2], versions: [inclusion], label: "K4 a) Avez-vous déjà eu l’impression que l’on s’adressait directement à vous à travers la télévision ou la radio ou que certaines personnes  (2 = yes, bizarre)"}
+  mini_k04a_fu: {column: k04a, range: [0, 2], versions: [follow_up], label: "K4 a) Avez-vous déjà eu l’impression que l’on s’adressait directement à vous à travers la télévision ou la radio ou que certaines personnes  (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k04a_gate: {column: k04a, range: [0, 2], keep: false, label: "K4a read on every visit, the gate of K4b (not delivered)"}
+  mini_k04b: {column: k04b, range: [0, 2], asked_if: mini_k04a_gate, label: "b) SI OUI OU OUI BIZARRE : Actuellement, avez-vous cette impression ? (2 = yes, bizarre)"}
+  mini_k05a: {column: k05a, range: [0, 2], versions: [inclusion], label: "K5 a) Vos proches ont-ils déjà jugé certaines de vos idées comme étranges ou hors de la réalité ? (2 = yes, bizarre)"}
+  mini_k05a_fu: {column: k05a, range: [0, 2], versions: [follow_up], label: "K5 a) Vos proches ont-ils déjà jugé certaines de vos idées comme étranges ou hors de la réalité ? (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k05a_gate: {column: k05a, range: [0, 2], keep: false, label: "K5a read on every visit, the gate of K5b (not delivered)"}
+  mini_k05b: {column: k05b, range: [0, 2], asked_if: mini_k05a_gate, label: "b) SI OUI OU OUI BIZARRE : Actuellement, CONSIDERENT-ILS VOS IDÉES COMME ÉTRANGES ? (2 = yes, bizarre)"}
+  mini_k06a: {column: k06a, range: [0, 2], versions: [inclusion], label: "K6 a) Vous est-il déjà arrivé d’entendre des choses que d’autres personnes ne pouvaient pas entendre, comme des voix ? (2 = yes, bizarre)"}
+  mini_k06a_fu: {column: k06a, range: [0, 2], versions: [follow_up], label: "K6 a) Vous est-il déjà arrivé d’entendre des choses que d’autres personnes ne pouvaient pas entendre, comme des voix ? (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k06a_gate: {column: k06a, range: [0, 2], keep: false, label: "K6a read on every visit, the gate of K6b (not delivered)"}
+  mini_k06a1: {column: k06a1, asked_if: mini_k06a, versions: [inclusion], label: "SI OUI OU HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler ent"}
+  mini_k06a1_fu: {column: k06a1, asked_if: mini_k06a_fu, versions: [follow_up], label: "SI OUI OU HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler ent, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k06b: {column: k06b, range: [0, 2], asked_if: mini_k06a_gate, label: "b) SI OUI OU OUI BIZARRE A K6a : Avez-vous entendu ces voix/autres choses au cours du mois écoulé ? (2 = yes, bizarre)"}
+  mini_k06b1: {column: k06b1, asked_if: mini_k06b, label: "SI OUI A HALLUCINATIONS VERBALES : Ces voix commentaient-elles vos pensées ou vos actes ou entendiez-vous deux ou plusieurs voix parler entr"}
+  mini_k07a: {column: k07a, range: [0, 2], versions: [inclusion], label: "K7 a) Vous est-il déjà arrivé alors que vous étiez éveillé(e), d’avoir des visions ou de voir des choses que d’autres personnes ne pouvaient (2 = yes, bizarre)"}
+  mini_k07a_fu: {column: k07a, range: [0, 2], versions: [follow_up], label: "K7 a) Vous est-il déjà arrivé alors que vous étiez éveillé(e), d’avoir des visions ou de voir des choses que d’autres personnes ne pouvaient (2 = yes, bizarre), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_k07a_gate: {column: k07a, range: [0, 2], keep: false, label: "K7a read on every visit, the gate of K7b (not delivered)"}
+  mini_k07b: {column: k07b, range: [0, 2], asked_if: mini_k07a_gate, label: "b) SI OUI : Cela vous est-il arrivé au cours du mois écoulé ? (2 = yes, bizarre)"}
   mini_k08b: {column: k08b, label: "K8 b) Actuellement, le patient presente t-il un discours clairement incoherent ou desorganise, ou une perte nette des associations ?"}
   mini_k09b: {column: k09b, label: "K9 b) Actuellement, le patient presente t-il un comportement nettement désorganisé ou catatonique ?"}
   mini_k10b: {column: k10b, label: "K10 b) Des symptomes negatifs typiquement schizophreniques (affect abrase, pauvrete du discours/alogie, manque d’energie ou d’interet pour d"}
-  mini_k11a: {column: k11a, label: "K11)Les idées ou impressions dont nous venons de parler telles que (SYMPTÔMES COTÉS OUI DE K1a À K7a) sont-elles survenues uniquement pendan"}
-  mini_mood_disorder_psychotic_lifetime: {column: k11b, label: "Mood disorder psychotic lifetime: TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES VIE ENTIERE"}
+  mini_k11a: {column: k11a, versions: [inclusion], label: "K11)Les idées ou impressions dont nous venons de parler telles que (SYMPTÔMES COTÉS OUI DE K1a À K7a) sont-elles survenues uniquement pendan"}
+  mini_k11a_fu: {column: k11a, versions: [follow_up], label: "K11)Les idées ou impressions dont nous venons de parler telles que (SYMPTÔMES COTÉS OUI DE K1a À K7a) sont-elles survenues uniquement pendan, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_mood_disorder_psychotic_lifetime: {column: k11b, versions: [inclusion], label: "Mood disorder psychotic lifetime: TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES VIE ENTIERE"}
+  mini_mood_disorder_psychotic_lifetime_fu: {column: k11b, versions: [follow_up], label: "Mood disorder psychotic lifetime: TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES VIE ENTIERE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_mood_disorder_psychotic_current: {column: k12a, label: "Mood disorder psychotic current: K12) TROUBLE DE L’HUMEUR AVEC CARACTERISTIQUES PSYCHOTIQUES ACTUEL"}
   mini_k13b: {column: k13b, label: "K13) y-a-t-il 1 ou plusieurs questions « b », de k1b a k6b, cotée(s) oui bizarre ? ou Y a t-il 2 ou plusieurs questions « b », de k1b a k10b"}
   mini_psychotic_syndrome_current: {column: k13, label: "Psychotic syndrome current: SYNDROME PSYCHOTIQUE ACTUEL"}
-  mini_k14b: {column: k14b, label: "K14) k13 est-elle cotée oui ou y a-t-il 1 ou plusieurs questions ' a ', de k1a a k6a, cotées(s) oui bizarre ? ou y a-t-il 2 ou plusieurs que"}
-  mini_psychotic_syndrome_lifetime: {column: k14, label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE"}
+  mini_k14b: {column: k14b, versions: [inclusion], label: "K14) k13 est-elle cotée oui ou y a-t-il 1 ou plusieurs questions ' a ', de k1a a k6a, cotées(s) oui bizarre ? ou y a-t-il 2 ou plusieurs que"}
+  mini_k14b_fu: {column: k14b, versions: [follow_up], label: "K14) k13 est-elle cotée oui ou y a-t-il 1 ou plusieurs questions ' a ', de k1a a k6a, cotées(s) oui bizarre ? ou y a-t-il 2 ou plusieurs que, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_psychotic_syndrome_lifetime_stored: {column: k14, keep: false, versions: [inclusion], label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE, as stored"}
+  mini_psychotic_syndrome_lifetime_fu_stored: {column: k14, keep: false, versions: [follow_up], label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE, as stored (follow-up)"}
+
+scores:
+  mini_psychotic_syndrome_lifetime:
+    label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE (yes when K13, the current syndrome, is yes, as K14 says)"
+    max: [mini_psychotic_syndrome_current, mini_psychotic_syndrome_lifetime_stored]
+    min_items: 1
+    versions: [inclusion]
+    compare: mini_psychotic_syndrome_lifetime_stored
+  mini_psychotic_syndrome_lifetime_fu:
+    label: "Psychotic syndrome lifetime: SYNDROME PSYCHOTIQUE VIE ENTIERE (yes when K13 is yes, as K14 says), asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"
+    max: [mini_psychotic_syndrome_current, mini_psychotic_syndrome_lifetime_fu_stored]
+    min_items: 1
+    versions: [follow_up]
+    compare: mini_psychotic_syndrome_lifetime_fu_stored

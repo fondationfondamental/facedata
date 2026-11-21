@@ -2,57 +2,141 @@ instrument: mini_d_panic
 title: "MINI, module D: panic disorder"
 tab: MINI
 section: MINI D
-status: draft
+status: reviewed
 notes: >
-  Module D: panic disorder.
+  Module D: panic disorder (lifetime: the attacks of the life and the
+  worst one) and the attacks of the last month (D7).
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  mini_panic_symptoms counts the thirteen symptoms of the worst attack.
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the yes answers of the screening visit that are
+  answered again at the first follow-up, D1a 26 of 40 and the lifetime
+  panic disorder 11 of 14 are no. The lifetime and past-episode questions
+  are therefore delivered at inclusion (screening visit) only, and at
+  follow-up in twins named _fu (versions read from the visit label, block
+  visit_form, as in the treatment schemas); the current and past-month
+  questions stay one variable. Here D1a to D3, the thirteen symptoms of
+  the worst attack, the lifetime panic disorder and the limited-symptom
+  attacks (19 variables) and the symptom count; D7 and the current panic
+  disorder are one variable.
 
-  Conclusions against the criteria. Lifetime panic disorder (d05) is yes on
-  125 visits; 113 of them meet the criteria as the items give them (D1a,
-  D1b, D2, D3 and four symptoms), 12 do not, and no visit meets them with a
-  "no". Current panic disorder (d04) is the lifetime disorder with attacks
-  in the last month on 526 of 531 visits.
+  mini_panic_symptoms (mini_panic_symptoms_fu at follow-up) counts the
+  thirteen symptoms of the worst attack.
+
+  Skip. After the first no among D1a, D1b and D2 the page hides and clears
+  the next questions and sets D5, D7 and the conclusion to 0 (verif_d,
+  formulaires.js 1260): D5 is 0 on 391 of the 393 visits screened out, D7
+  on 389. 20 of them hold a later answer (6 a yes), scattered over the
+  years. D6 is cleared each time a saved interview is opened again where
+  D3 is not yes and no D4 symptom is ticked (cacher3(151), formulaires.js
+  1303-1310, defect A87): it is 0 on 69 of the 393 visits and empty on
+  324; it stays missing where empty.
+
+  Conclusions against the criteria. The lifetime panic disorder (d05) is
+  yes on 125 visits (115 at inclusion, 10 at follow-up); 113 of them meet
+  the criteria as the items give them (D1a, D1b, D2, D3 and four
+  symptoms), 12 do not, and no visit meets them with a no. The current
+  panic disorder (d04) is the lifetime disorder with attacks in the last
+  month on 526 of 531 visits. The form writes it from D7 (the MINID7
+  handler): the check mini_panic_current_check (not delivered) agrees on
+  all visits but 1 (D7 yes, conclusion no: score_mismatch). The
+  conclusions are delivered as stored.
+
+  Centres (2026-11-20). One centre (27 to 29 visits, 2013 to 2022)
+  answers yes far less often than the others in the anxiety modules: D1a
+  on 2 of 27 visits (31% to 80% elsewhere), N1a on 5 of 29 (46% to 81%),
+  generalised anxiety 1 of 29, H1 1 of 27, agoraphobia without panic 0 of
+  28; another (20 visits, 2019 to 2022) has H1 yes on 15 of 20 (4% to 44%
+  elsewhere) and generalised anxiety on 13 of 21. The answers are coherent
+  inside each module, so this is a difference of patients or of
+  interviewers, with no known cause.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_d01a: {column: d01a, label: "D1 a)Avez-vous, à plus d’une occasion, eu des périodes ou des crises durant lesquelles vous vous êtes senti(e) subitement très anxieux(se), "}
-  mini_d01b: {column: d01b, label: "b) Ces crises atteignaient-elles leur intensité maximale en moins de 10 minutes ?"}
-  mini_d02: {column: d02, label: "D2) Certaines de ces crises, même il y a longtemps, ont-elles été imprévisibles, ou sont-elles survenues sans que rien ne les provoque ?"}
-  mini_d03: {column: d03, label: "D3) A la suite de l'une ou plusieurs de ces crises, avez-vous déjà eu une période d'au moins un mois durant laquelle vous redoutiez d'avoir "}
-  mini_d04a: {column: d04a, label: "a) Aviez-vous des palpitations votre coeur battait-il très fort ou de façon irrégulière ?"}
-  mini_d04b: {column: d04b, label: "b) Transpiriez-vous ou aviez-vous les mains moites ?"}
-  mini_d04c: {column: d04c, label: "c) Aviez-vous des tremblements ou des secousses musculaires ?"}
-  mini_d04d: {column: d04d, label: "d) Aviez-vous du mal à respirer ou l'impression d'étouffer ?"}
-  mini_d04e: {column: d04e, label: "e) Aviez-vous l'impression de suffoquer ou d'avoir une boule dans la gorge ?"}
-  mini_d04f: {column: d04f, label: "f) Ressentiez-vous une douleur, une pression ou une gêne au niveau du thorax ?"}
-  mini_d04g: {column: d04g, label: "g) Aviez-vous la nausée, une gêne au niveau de l'estomac ou une diarrhée soudaine ?"}
-  mini_d04h: {column: d04h, label: "h) Vous sentiez-vous étourdi(e), pris(e) de vertige, ou sur le point de vous évanouir ?"}
-  mini_d04i: {column: d04i, label: "i) Aviez-vous l'impression que les choses qui vous entouraient étaient étranges ou irréelles où vous sentiez-vous détaché(e) de tout ou d'un"}
-  mini_d04j: {column: d04j, label: "j) Aviez-vous peur de perdre le contrôle ou de devenir fou (folle) ?"}
-  mini_d04k: {column: d04k, label: "k) Aviez-vous peur de mourir ?"}
-  mini_d04l: {column: d04l, label: "l) Aviez-vous des engourdissements des picotements ?"}
-  mini_d04m: {column: d04m, label: "m) Aviez-vous des bouffées de chaleur ou des frissons ?"}
-  mini_panic_lifetime: {column: d05, label: "Panic lifetime: D5) TROUBLE PANIQUE VIE ENTIÈRE"}
-  mini_limited_symptom_attacks_lifetime: {column: d06, label: "Limited symptom attacks lifetime: D6) SYMPÔMES ANXIEUX PAROXYSTIQUES LIMITES VIE ENTIERE"}
+  mini_d01a: {column: d01a, versions: [inclusion], label: "D1 a)Avez-vous, à plus d’une occasion, eu des périodes ou des crises durant lesquelles vous vous êtes senti(e) subitement très anxieux(se), "}
+  mini_d01a_fu: {column: d01a, versions: [follow_up], label: "D1 a)Avez-vous, à plus d’une occasion, eu des périodes ou des crises durant lesquelles vous vous êtes senti(e) subitement très anxieux(se), , asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d01b: {column: d01b, versions: [inclusion], label: "b) Ces crises atteignaient-elles leur intensité maximale en moins de 10 minutes ?"}
+  mini_d01b_fu: {column: d01b, versions: [follow_up], label: "b) Ces crises atteignaient-elles leur intensité maximale en moins de 10 minutes ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d02: {column: d02, versions: [inclusion], label: "D2) Certaines de ces crises, même il y a longtemps, ont-elles été imprévisibles, ou sont-elles survenues sans que rien ne les provoque ?"}
+  mini_d02_fu: {column: d02, versions: [follow_up], label: "D2) Certaines de ces crises, même il y a longtemps, ont-elles été imprévisibles, ou sont-elles survenues sans que rien ne les provoque ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d03: {column: d03, versions: [inclusion], label: "D3) A la suite de l'une ou plusieurs de ces crises, avez-vous déjà eu une période d'au moins un mois durant laquelle vous redoutiez d'avoir "}
+  mini_d03_fu: {column: d03, versions: [follow_up], label: "D3) A la suite de l'une ou plusieurs de ces crises, avez-vous déjà eu une période d'au moins un mois durant laquelle vous redoutiez d'avoir , asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04a: {column: d04a, versions: [inclusion], label: "a) Aviez-vous des palpitations votre coeur battait-il très fort ou de façon irrégulière ?"}
+  mini_d04a_fu: {column: d04a, versions: [follow_up], label: "a) Aviez-vous des palpitations votre coeur battait-il très fort ou de façon irrégulière ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04b: {column: d04b, versions: [inclusion], label: "b) Transpiriez-vous ou aviez-vous les mains moites ?"}
+  mini_d04b_fu: {column: d04b, versions: [follow_up], label: "b) Transpiriez-vous ou aviez-vous les mains moites ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04c: {column: d04c, versions: [inclusion], label: "c) Aviez-vous des tremblements ou des secousses musculaires ?"}
+  mini_d04c_fu: {column: d04c, versions: [follow_up], label: "c) Aviez-vous des tremblements ou des secousses musculaires ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04d: {column: d04d, versions: [inclusion], label: "d) Aviez-vous du mal à respirer ou l'impression d'étouffer ?"}
+  mini_d04d_fu: {column: d04d, versions: [follow_up], label: "d) Aviez-vous du mal à respirer ou l'impression d'étouffer ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04e: {column: d04e, versions: [inclusion], label: "e) Aviez-vous l'impression de suffoquer ou d'avoir une boule dans la gorge ?"}
+  mini_d04e_fu: {column: d04e, versions: [follow_up], label: "e) Aviez-vous l'impression de suffoquer ou d'avoir une boule dans la gorge ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04f: {column: d04f, versions: [inclusion], label: "f) Ressentiez-vous une douleur, une pression ou une gêne au niveau du thorax ?"}
+  mini_d04f_fu: {column: d04f, versions: [follow_up], label: "f) Ressentiez-vous une douleur, une pression ou une gêne au niveau du thorax ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04g: {column: d04g, versions: [inclusion], label: "g) Aviez-vous la nausée, une gêne au niveau de l'estomac ou une diarrhée soudaine ?"}
+  mini_d04g_fu: {column: d04g, versions: [follow_up], label: "g) Aviez-vous la nausée, une gêne au niveau de l'estomac ou une diarrhée soudaine ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04h: {column: d04h, versions: [inclusion], label: "h) Vous sentiez-vous étourdi(e), pris(e) de vertige, ou sur le point de vous évanouir ?"}
+  mini_d04h_fu: {column: d04h, versions: [follow_up], label: "h) Vous sentiez-vous étourdi(e), pris(e) de vertige, ou sur le point de vous évanouir ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04i: {column: d04i, versions: [inclusion], label: "i) Aviez-vous l'impression que les choses qui vous entouraient étaient étranges ou irréelles où vous sentiez-vous détaché(e) de tout ou d'un"}
+  mini_d04i_fu: {column: d04i, versions: [follow_up], label: "i) Aviez-vous l'impression que les choses qui vous entouraient étaient étranges ou irréelles où vous sentiez-vous détaché(e) de tout ou d'un, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04j: {column: d04j, versions: [inclusion], label: "j) Aviez-vous peur de perdre le contrôle ou de devenir fou (folle) ?"}
+  mini_d04j_fu: {column: d04j, versions: [follow_up], label: "j) Aviez-vous peur de perdre le contrôle ou de devenir fou (folle) ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04k: {column: d04k, versions: [inclusion], label: "k) Aviez-vous peur de mourir ?"}
+  mini_d04k_fu: {column: d04k, versions: [follow_up], label: "k) Aviez-vous peur de mourir ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04l: {column: d04l, versions: [inclusion], label: "l) Aviez-vous des engourdissements des picotements ?"}
+  mini_d04l_fu: {column: d04l, versions: [follow_up], label: "l) Aviez-vous des engourdissements des picotements ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_d04m: {column: d04m, versions: [inclusion], label: "m) Aviez-vous des bouffées de chaleur ou des frissons ?"}
+  mini_d04m_fu: {column: d04m, versions: [follow_up], label: "m) Aviez-vous des bouffées de chaleur ou des frissons ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_panic_lifetime: {column: d05, versions: [inclusion], label: "Panic lifetime: D5) TROUBLE PANIQUE VIE ENTIÈRE"}
+  mini_panic_lifetime_fu: {column: d05, versions: [follow_up], label: "Panic lifetime: D5) TROUBLE PANIQUE VIE ENTIÈRE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_limited_symptom_attacks_lifetime: {column: d06, versions: [inclusion], label: "Limited symptom attacks lifetime: D6) SYMPÔMES ANXIEUX PAROXYSTIQUES LIMITES VIE ENTIERE"}
+  mini_limited_symptom_attacks_lifetime_fu: {column: d06, versions: [follow_up], label: "Limited symptom attacks lifetime: D6) SYMPÔMES ANXIEUX PAROXYSTIQUES LIMITES VIE ENTIERE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_d07: {column: d07, label: "Au cours du mois écoulé, avez-vous eu de telles crises à plusieurs reprises (au moins 2 fois) en ayant constamment peur d’en avoir une autre"}
   mini_panic_current: {column: d04, label: "Panic current: TROUBLE PANIQUE ACTUEL"}
 
@@ -60,3 +144,9 @@ scores:
   mini_panic_symptoms:
     label: "Number of the thirteen symptoms of the worst panic attack"
     sum: [mini_d04a, mini_d04b, mini_d04c, mini_d04d, mini_d04e, mini_d04f, mini_d04g, mini_d04h, mini_d04i, mini_d04j, mini_d04k, mini_d04l, mini_d04m]
+    versions: [inclusion]
+  mini_panic_symptoms_fu:
+    label: "Number of the thirteen symptoms of the worst panic attack, at a follow-up visit"
+    sum: [mini_d04a_fu, mini_d04b_fu, mini_d04c_fu, mini_d04d_fu, mini_d04e_fu, mini_d04f_fu, mini_d04g_fu, mini_d04h_fu, mini_d04i_fu, mini_d04j_fu, mini_d04k_fu, mini_d04l_fu, mini_d04m_fu]
+    versions: [follow_up]
+  mini_panic_current_check: {sum: [mini_d07], compare: mini_panic_current, keep: false, label: "Check: the form writes the current panic disorder from D7 (formulaires.js MINID7 handler)"}

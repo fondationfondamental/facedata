@@ -2,14 +2,16 @@ instrument: mini_n_gad
 title: "MINI, module N: generalised anxiety disorder"
 tab: MINI
 section: MINI N
-status: draft
+status: reviewed
 notes: >
   Module N: generalised anxiety disorder over the last six months.
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -23,26 +25,44 @@ notes: >
   derived_from the first question of its module, and its 0 is flagged
   derived_doubt where that question is empty.
 
-  mini_gad_symptoms counts the six symptoms of N3.
+  mini_gad_symptoms counts the six symptoms of N3. N1b, N2, N3a to N3f and
+  N4 are asked only after a yes to N1a, and are 0 after a no (asked_if,
+  rule R24).
 
-  The conclusion (n) is yes on 175 visits; 152 of them meet the criteria as
-  the items give them (N1a, N1b, N2 and three symptoms), 23 do not, and 6
-  visits meet them with a "no".
+  The script of the form has two faults (defect A90). When a saved
+  interview is opened again, N4 is hidden and cleared where three or more
+  N3 symptoms are yes (the test is inverted, formulaires.js:2299-2302),
+  and the conclusion is set to yes only by a click on N4 (2319-2325): of
+  the 143 visits with N2 yes and three symptoms or more, 124 have N4
+  empty. And a "no" to N2 cannot be saved: it hides N2 itself (the list of
+  N1c is reused, 2286). The conclusion (n) is yes on 175 visits; 152 of
+  them meet the criteria as the items give them (N1a, N1b, N2 and three
+  symptoms), 23 do not, and 6 visits meet them with a "no". It is
+  delivered as stored (the clinician sees it and can change it, rule R33).
+
+  Centres (2026-11-20). One centre (27 to 29 visits, 2013 to 2022)
+  answers yes far less often than the others in the anxiety modules: D1a
+  on 2 of 27 visits (31% to 80% elsewhere), N1a on 5 of 29 (46% to 81%),
+  generalised anxiety 1 of 29, H1 1 of 27, agoraphobia without panic 0 of
+  28; another (20 visits, 2019 to 2022) has H1 yes on 15 of 20 (4% to 44%
+  elsewhere) and generalised anxiety on 13 of 21. The answers are coherent
+  inside each module, so this is a difference of patients or of
+  interviewers, with no known cause.
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
   mini_n01a: {column: n01a, label: "N1 a) Au cours des six derniers mois, vous êtes-vous senti(e), excessivement préoccupé(e), inquiet(e) ou anxieux(se), pour des problèmes de "}
-  mini_n01b: {column: n01b, label: "b) Avez-vous ce type de préoccupations presque tous les jours ?"}
+  mini_n01b: {column: n01b, asked_if: mini_n01a, label: "b) Avez-vous ce type de préoccupations presque tous les jours ?"}
   mini_n01c: {column: n01c, label: "c) Est-ce que l’anxiete et les inquietudes du patient sont uniquement restreintes a, ou mieux expliquees par, un des troubles explores prece"}
-  mini_n02: {column: n02, label: "N2) Vous-est-il difficile de contrôler ces préoccupations ?"}
-  mini_n03a: {column: n03a, label: "N3 a) De vous sentir agité(e), tendu(e), les nerfs à fleur de peau ?"}
-  mini_n03b: {column: n03b, label: "b) D’avoir les muscles tendus ?"}
-  mini_n03c: {column: n03c, label: "c) De vous sentir fatigué(e), faible, ou facilement épuisé(e) ?"}
-  mini_n03d: {column: n03d, label: "d) D’avoir des difficultés à vous concentrer ou des passages à vide ?"}
-  mini_n03e: {column: n03e, label: "e) D’être particulièrement irritable ?"}
-  mini_n03f: {column: n03f, label: "f) D’avoir des problèmes de sommeil(difficultés d’endormissement, réveils au milieu de la nuit, réveils précoces ou dormir trop) ?"}
-  mini_n04: {column: n04, label: "N4) Cette anxiété et ces inquiétudes entraînent-elles chez vous une souffrance importante ou vous perturbent-elles au travail/ à l’école ou "}
+  mini_n02: {column: n02, asked_if: mini_n01a, label: "N2) Vous-est-il difficile de contrôler ces préoccupations ?"}
+  mini_n03a: {column: n03a, asked_if: mini_n01a, label: "N3 a) De vous sentir agité(e), tendu(e), les nerfs à fleur de peau ?"}
+  mini_n03b: {column: n03b, asked_if: mini_n01a, label: "b) D’avoir les muscles tendus ?"}
+  mini_n03c: {column: n03c, asked_if: mini_n01a, label: "c) De vous sentir fatigué(e), faible, ou facilement épuisé(e) ?"}
+  mini_n03d: {column: n03d, asked_if: mini_n01a, label: "d) D’avoir des difficultés à vous concentrer ou des passages à vide ?"}
+  mini_n03e: {column: n03e, asked_if: mini_n01a, label: "e) D’être particulièrement irritable ?"}
+  mini_n03f: {column: n03f, asked_if: mini_n01a, label: "f) D’avoir des problèmes de sommeil(difficultés d’endormissement, réveils au milieu de la nuit, réveils précoces ou dormir trop) ?"}
+  mini_n04: {column: n04, asked_if: mini_n01a, label: "N4) Cette anxiété et ces inquiétudes entraînent-elles chez vous une souffrance importante ou vous perturbent-elles au travail/ à l’école ou "}
   mini_gad_current: {column: n, label: "Gad current: ANXIETE GENERALISEE ACTUELLE"}
 
 scores:

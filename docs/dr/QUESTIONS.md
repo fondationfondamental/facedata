@@ -141,7 +141,11 @@ is 2: 2 visits). (O13, D9, D69)
 - BFI: on 16 visits (four centres, 2014 to 2018) the stored
   conscientiousness and neuroticism are each other's value. (O19, D71)
 - Age: the stored `age` is the age at inclusion for the patients with one
-  visit and up to five years more for the others. (O5)
+  visit and up to five years more for the others. *Answered by the export
+  (2026-11-20, D75):* it is the calendar age at one visit of the patient,
+  taken in no order (`face_dr_1_patients.sql`, line 32, joined with every
+  visit at line 47): the age at the inclusion visit for 450 of 634 patients.
+  Request R10: compute it at V0. (O5)
 - SACHS (Bipolarity Index): the stored total is the sum of the five ratings
   each brought to its points, as the script of form 225 does, on 239 of 242
   visits; on the 3 others, the three earliest visits of one centre where the
@@ -172,8 +176,12 @@ episode with the box "current" at 0.
 *Question:* can the export leave these cells empty where the question has
 no answer, or can the conclusion be computed from the symptoms?
 *Today:* the boxes are delivered and flagged where their question is empty;
-counts of symptoms are delivered next to the MINI conclusions. (O24, O20,
-O29)
+counts of symptoms are delivered next to the MINI conclusions.
+*Answered in part by the source (2026-11-20, D78):* the MINI boxes are
+`tinyint NOT NULL` columns (`ecedr.sql`, lines 2540 and 2559), so every
+opened form stores 0; the box "recurrent" is set from A5 by the script
+(`formulaires.js`, lines 1017 to 1019). Request R169 asks the export to
+leave the boxes of an unanswered module empty. (O24, O20, O29)
 
 **DEV-6. STAI: three codings of the answers.** The twenty answers are
 stored from 0 to 3 (655 visits), from 1 to 4 (184) or from 2 to 5 (100, one
@@ -280,6 +288,12 @@ them to the dictionary.
 the shares agree (handedness, type of diabetes); the lists that a form gives
 are read from the form; every other list is delivered as `code_N`. (O4, O8,
 O9, O20, O23, O25, O26, O28, O29)
+*Answered by forms 1 and 168 (2026-11-20, D75, D77):* the purpose of the visit
+is 1 diagnostic advice, 2 therapeutic advice, 3 both (the BP and SZ question);
+the closest person is 1 spouse, 2 mother, 3 father, 4 flatmate, 5 friend,
+6 partner, 7 sibling, 8 grandparent, 9 other relative, 10 child, 11 other; the
+education level 12 is "BAC" (the dictionary says "Lycée = 10 à 12"). Both lists
+are delivered with the BP words. Please add them to the dictionary (R171).
 
 **DEV-12. Two defects of the mood forms.** The form of the depressive
 symptoms in boxes (182) is in no menu and in no list of simplified visits, and
@@ -326,6 +340,52 @@ is not in the extraction.
 corrected (A82; the data managers, M75: until when and in which centres)?
 *Today:* the BIS items are read as form 215; the BFI item 29 is delivered as
 stored. (O37, D71)
+
+**DEV-15. Patient, social and ECG fields of the export.**
+- The referrer: the form (`form/1.php`) stores 2 for the hospital
+  psychiatrist of the centre's catchment area and 3 for one outside it; the
+  clean model writes the two texts the other way round
+  (`edepression_patient.sql`, lines 22 and 23; R161). Was the order of the
+  form ever different?
+- The months in the present job and the work durations are exported as
+  whole numbers (`edepression_bilan_social.sql`, lines 29 to 34; R160).
+- "ECG done" and the boxes "sent to" and "read by the cardiologist" are on
+  the form and in the clean model but not in the extraction (R158).
+- The help text of the RR field says to divide the heart rate by 60, the
+  inverse of 60 / rate (A84): 51 of 1,013 typed RR equal the rate / 60, 10
+  of them in one centre.
+- The stored QTc is Bazett's formula on the typed QT and RR from 2017; on 106
+  visits of 2012 to 2016 it is a median 3% lower and no formula fits: which
+  formula did the form use then (M82)?
+*Today:* the referrer is read as the form says; the durations, the ECG
+values and the stored QTc are delivered as exported, the QTc recomputed from
+the heart rate of the ECG. (D75, D76, D77)
+
+**DEV-16. Defects of the MINI form (eCEDR, `js/formulaires.js`).**
+- The suicidality level: the button tests `>1 && <9`, `>9 && <17`, `>17`,
+  so the scores 1, 9 and 17 get no level (lines 933 to 935; A85).
+- The OCD conclusion is reset to "no" after G6 (lines 1530 to 1580; A86):
+  5 visits with G6 yes hold a stored no.
+- D6 is cleared when the form is reopened (lines 1303 to 1310; A87); the
+  option of C4 reads "3 jours ou moins" (142.php, 229.php; A88).
+- The alcohol dependence counts five of the seven criteria (`i<5`, line
+  1729; A89): 10 stored conclusions differ from three of seven.
+- N4 is cleared on load and a "no" to N2 cannot be saved (lines 2286 and
+  2301; A90); P2 is cleared on reopening and the antisocial conclusion is
+  computed from P2 alone (lines 2344 and 2363 to 2373; A91).
+- The diagnosis summary reads `attr('cheked')` (lines 2415 and 2447; A92),
+  so it ignores the psychotic features of module A.
+- K1b = yes hides K7a and K6a1 instead of K2a to K5b (a reused list,
+  A97); H5 is shown after 2 H4 yes on load but after 3 on a change (A98).
+- The export keeps the whole number only of the height and the weight of
+  module L (`edepression_mini.sql`, lines 828 to 834; R169); the dictionary
+  lacks the codings of several MINI fields (R171).
+*Question:* can these be fixed, and from which date are the stored values
+right?
+*Today:* the suicidality score is recomputed, the level kept as stored; the
+OCD and alcohol conclusions are recomputed (rule R27) with the stored ones
+as checks; the other conclusions are delivered as stored with checks where
+the form writes them from one item. (D78, D79)
 
 ## 2. For the data managers
 
@@ -535,6 +595,16 @@ no flag. (O25, O29)
 protocol? Antisocial personality disorder is concluded on 6 visits, none of
 which has the criteria in its items. Which version of the MINI is the form
 (the modules and the suicidality points are those of version 6)? (O24)
+*Answered in part (2026-11-20, D78, D79):* the 6 antisocial conclusions come
+from a script that concludes from P2 alone (A91, DEV-16). At the follow-up
+visits (form 229) the lifetime answers turn from yes to no within patients
+(A1a 21 of 73, D1a 26 of 40, H1 20 of 25, K 14 of 14): they are delivered in
+`_fu` twins, labelled as asked again at follow-up. Still open, sent to the
+data managers as M87: the version (6.0.0?), its suicidality points and
+bands, whether form 229 asks about the life or the time since the last MINI,
+and why a few rows exist at 3 and 5 years. M88 (the history of the display
+rule of the major depressive disorder) and M89 (the meaning of a "no" to O2,
+123 visits with no medicine or illness) are asked with it.
 
 ### Priority B
 

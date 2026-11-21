@@ -2,15 +2,17 @@ instrument: mini_p_antisocial
 title: "MINI, module P: antisocial personality disorder"
 tab: MINI
 section: MINI P
-status: draft
+status: reviewed
 notes: >
   Module P: antisocial personality disorder, with conduct before and after
   the age of 15.
 
   The MINI is a structured diagnostic interview; the modules and the
   points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
+  the screening visit and again at the visits of 2 and 4 years: 630 rows of
+  519 patients hold the form (515 screening visits, 77 at 2 years, 35 at 4
+  years, 1 at 3 years, 2 at 5 years), and a first question of a module is
+  answered on 583 visits of 493 patients (89%, 86% and 82% of the screening visits until
   2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
   question O24). Not in BP or SZ. The variables keep the number of the
   question (mini_a01a is question A1a); the conclusions have a name that
@@ -24,23 +26,66 @@ notes: >
   derived_from the first question of its module, and its 0 is flagged
   derived_doubt where that question is empty.
 
-  The conclusion (p) is yes on 6 visits, and none of them has the criteria
-  in its items (two of P1 and three of P2); the questions of P2 are
-  answered on 98 visits only. Open question O24.
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the lifetime yes answers of the screening visit that
+  are answered again at follow-up, 2 of 2 are no. The lifetime questions are therefore
+  delivered at inclusion (screening visit) only, and at follow-up in twins
+  named _fu (versions read from the visit label, block visit_form, as in the
+  treatment schemas); the current questions stay one variable.
+
+  The script of the form has two faults (defect A91). When a saved
+  interview is opened again, P2 is hidden and cleared where two or more P1
+  answers are yes, the opposite of the rule of the interview (the test is
+  inverted, formulaires.js:2344): the questions of P2 are answered on 98
+  visits only. And the conclusion is set from P2 alone (three yes or more),
+  whatever P1 (2363-2373). The conclusion (p) is yes on 6 visits (4
+  screening, 2 follow-up), and none of them has the criteria in its items
+  (two of P1 and three of P2): it is delivered as stored. P2 stays missing
+  where it is empty (a detail of a gate the script clears).
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_p01a: {column: p01a, label: "a) Fréquemment fait l’école buissonnière ou passé la nuit en dehors de chez vous ?"}
-  mini_p01b: {column: p01b, label: "b) Fréquemment menti, triché, arnaqué les gens ou volé ?"}
-  mini_p01c: {column: p01c, label: "c) Brutalisé, menacé ou intimidé les autres ?"}
-  mini_p01d: {column: p01d, label: "d) Volontairement détruit ou mis le feu ?"}
-  mini_p01e: {column: p01e, label: "e) Volontairement fait souffrir des animaux ou des gens ?"}
-  mini_p01f: {column: p01f, label: "f) Contraint quelqu’un à avoir des relations sexuelles avec vous ?"}
-  mini_p02a: {column: p02a, label: "a) Eu souvent des comportements que les autres trouvaient irresponsables comme ne pas rembourser des sommes dues, agir impulsivement ou évit"}
-  mini_p02b: {column: p02b, label: "b) Fait de choses illégales (même si vous n’aviez pas été pris), comme détruire le bien d’autrui, voler, vendre de la drogue ou commettre un"}
-  mini_p02c: {column: p02c, label: "c) Souvent été violent physiquement, y compris avec votre conjoint ou vos enfants ?"}
-  mini_p02d: {column: p02d, label: "d) Souvent menti ou arnaqué les autres dans le but d’obtenir de l’argent ou par plaisir, ou menti juste pour vous amuser ?"}
-  mini_p02e: {column: p02e, label: "e) Exposé des gens à des dangers sans vous préoccuper d’eux ?"}
-  mini_p02f: {column: p02f, label: "f) Ressenti aucune culpabilité après avoir menti, ou blessé, maltraité ou volé quelqu'un ou détruit le bien d’autrui ?"}
-  mini_antisocial_lifetime: {column: p, label: "Antisocial lifetime: TROUBLE DE LA PERSONNALITE ANTISOCIALE VIE ENTIERE"}
+  mini_p01a: {column: p01a, versions: [inclusion], label: "a) Fréquemment fait l’école buissonnière ou passé la nuit en dehors de chez vous ?"}
+  mini_p01a_fu: {column: p01a, versions: [follow_up], label: "a) Fréquemment fait l’école buissonnière ou passé la nuit en dehors de chez vous ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p01b: {column: p01b, versions: [inclusion], label: "b) Fréquemment menti, triché, arnaqué les gens ou volé ?"}
+  mini_p01b_fu: {column: p01b, versions: [follow_up], label: "b) Fréquemment menti, triché, arnaqué les gens ou volé ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p01c: {column: p01c, versions: [inclusion], label: "c) Brutalisé, menacé ou intimidé les autres ?"}
+  mini_p01c_fu: {column: p01c, versions: [follow_up], label: "c) Brutalisé, menacé ou intimidé les autres ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p01d: {column: p01d, versions: [inclusion], label: "d) Volontairement détruit ou mis le feu ?"}
+  mini_p01d_fu: {column: p01d, versions: [follow_up], label: "d) Volontairement détruit ou mis le feu ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p01e: {column: p01e, versions: [inclusion], label: "e) Volontairement fait souffrir des animaux ou des gens ?"}
+  mini_p01e_fu: {column: p01e, versions: [follow_up], label: "e) Volontairement fait souffrir des animaux ou des gens ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p01f: {column: p01f, versions: [inclusion], label: "f) Contraint quelqu’un à avoir des relations sexuelles avec vous ?"}
+  mini_p01f_fu: {column: p01f, versions: [follow_up], label: "f) Contraint quelqu’un à avoir des relations sexuelles avec vous ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02a: {column: p02a, versions: [inclusion], label: "a) Eu souvent des comportements que les autres trouvaient irresponsables comme ne pas rembourser des sommes dues, agir impulsivement ou évit"}
+  mini_p02a_fu: {column: p02a, versions: [follow_up], label: "a) Eu souvent des comportements que les autres trouvaient irresponsables comme ne pas rembourser des sommes dues, agir impulsivement ou évit, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02b: {column: p02b, versions: [inclusion], label: "b) Fait de choses illégales (même si vous n’aviez pas été pris), comme détruire le bien d’autrui, voler, vendre de la drogue ou commettre un"}
+  mini_p02b_fu: {column: p02b, versions: [follow_up], label: "b) Fait de choses illégales (même si vous n’aviez pas été pris), comme détruire le bien d’autrui, voler, vendre de la drogue ou commettre un, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02c: {column: p02c, versions: [inclusion], label: "c) Souvent été violent physiquement, y compris avec votre conjoint ou vos enfants ?"}
+  mini_p02c_fu: {column: p02c, versions: [follow_up], label: "c) Souvent été violent physiquement, y compris avec votre conjoint ou vos enfants ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02d: {column: p02d, versions: [inclusion], label: "d) Souvent menti ou arnaqué les autres dans le but d’obtenir de l’argent ou par plaisir, ou menti juste pour vous amuser ?"}
+  mini_p02d_fu: {column: p02d, versions: [follow_up], label: "d) Souvent menti ou arnaqué les autres dans le but d’obtenir de l’argent ou par plaisir, ou menti juste pour vous amuser ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02e: {column: p02e, versions: [inclusion], label: "e) Exposé des gens à des dangers sans vous préoccuper d’eux ?"}
+  mini_p02e_fu: {column: p02e, versions: [follow_up], label: "e) Exposé des gens à des dangers sans vous préoccuper d’eux ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_p02f: {column: p02f, versions: [inclusion], label: "f) Ressenti aucune culpabilité après avoir menti, ou blessé, maltraité ou volé quelqu'un ou détruit le bien d’autrui ?"}
+  mini_p02f_fu: {column: p02f, versions: [follow_up], label: "f) Ressenti aucune culpabilité après avoir menti, ou blessé, maltraité ou volé quelqu'un ou détruit le bien d’autrui ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_antisocial_lifetime: {column: p, versions: [inclusion], label: "Antisocial lifetime: TROUBLE DE LA PERSONNALITE ANTISOCIALE VIE ENTIERE"}
+  mini_antisocial_lifetime_fu: {column: p, versions: [follow_up], label: "Antisocial lifetime: TROUBLE DE LA PERSONNALITE ANTISOCIALE VIE ENTIERE, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}

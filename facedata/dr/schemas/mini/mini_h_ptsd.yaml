@@ -2,37 +2,99 @@ instrument: mini_h_ptsd
 title: "MINI, module H: post-traumatic stress disorder"
 tab: MINI
 section: MINI H
-status: draft
+status: reviewed
 notes: >
   Module H: post-traumatic stress disorder. The dictionary lists the seven
   questions H4 under module B; they are read here.
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  The conclusion (h) is yes on 24 visits; 19 of them meet the criteria as
-  the items give them (H1, H2, H3, three of H4, two of H5, H6), and no
-  visit meets them with a "no".
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the yes answers to H1 (a traumatic event in the life)
+  of the screening visit that are answered again at the first follow-up,
+  20 of 25 are no. The lifetime and past-episode questions are therefore
+  delivered at inclusion (screening visit) only, and at follow-up in twins
+  named _fu (versions read from the visit label, block visit_form, as in
+  the treatment schemas); the current and past-month questions stay one
+  variable. Here H1 and H2 (the reaction to that event); H3 to H6 and the
+  conclusion ask about the last month and are one variable.
+
+  Skip. After the first no among H1 to H3 the page hides and clears the
+  next questions: 1 of the 520 visits screened out holds a later answer (a
+  0). H5 is shown from two H4 yes when a saved interview is opened and
+  from three when H4 is changed (defect A98): H5 is answered on 29 visits,
+  all with three H4 yes or more, and the 7 visits with H3 yes and exactly
+  two H4 yes have no H5.
+
+  Counts and conclusion. mini_ptsd_avoidance_count and
+  mini_ptsd_arousal_count count the H4 symptoms (three needed) and the H5
+  symptoms (two needed). The conclusion (h) is yes on 24 visits; 19 of
+  them meet the criteria as the items give them (H1, H2, H3, three of H4,
+  two of H5, H6), and no visit meets them with a no. The form writes it
+  from H6: the check mini_ptsd_check (not delivered) disagrees on 1 visit
+  (a stored yes with H6 no: score_mismatch). The conclusion is delivered
+  as stored.
+
+  Centres (2026-11-20). One centre (27 to 29 visits, 2013 to 2022)
+  answers yes far less often than the others in the anxiety modules: D1a
+  on 2 of 27 visits (31% to 80% elsewhere), N1a on 5 of 29 (46% to 81%),
+  generalised anxiety 1 of 29, H1 1 of 27, agoraphobia without panic 0 of
+  28; another (20 visits, 2019 to 2022) has H1 yes on 15 of 20 (4% to 44%
+  elsewhere) and generalised anxiety on 13 of 21. The answers are coherent
+  inside each module, so this is a difference of patients or of
+  interviewers, with no known cause.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
 variables:
-  mini_h01: {column: h01, label: "H1) Avez-vous déjà vécu, ou été le témoin de ou eu à faire face à un évènement extrêmement traumatique, au cours duquel des personnes sont m"}
-  mini_h02: {column: h02, label: "H2) Avez-vous réagi avec un sentiment de peur intense, d’impuissance ou d’horreur ?"}
+  mini_h01: {column: h01, versions: [inclusion], label: "H1) Avez-vous déjà vécu, ou été le témoin de ou eu à faire face à un évènement extrêmement traumatique, au cours duquel des personnes sont m"}
+  mini_h01_fu: {column: h01, versions: [follow_up], label: "H1) Avez-vous déjà vécu, ou été le témoin de ou eu à faire face à un évènement extrêmement traumatique, au cours duquel des personnes sont m, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
+  mini_h02: {column: h02, versions: [inclusion], label: "H2) Avez-vous réagi avec un sentiment de peur intense, d’impuissance ou d’horreur ?"}
+  mini_h02_fu: {column: h02, versions: [follow_up], label: "H2) Avez-vous réagi avec un sentiment de peur intense, d’impuissance ou d’horreur ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_h03: {column: h03, label: "H3) Au cours du mois écoulé, avez-vous souvent pensé de façon pénible à cet événement"}
   mini_h04a: {column: h04a, label: "H4 a) Avez-vous essayé de ne plus penser à cet événement ?"}
   mini_h04b: {column: h04b, label: "b) Avez-vous évité les lieux, les gens ou les activités qui pouvaient vous le rappeler ?"}
@@ -48,3 +110,8 @@ variables:
   mini_h05e: {column: h05e, label: "e) Un rien vous faisait-il sursauter ?"}
   mini_h06: {column: h06, label: "H6) Au cours du mois écoulé, ces problèmes vous ont-ils causé une certaine souffrance ou vous ont-ils gênés dans votre travail/à l’école, da"}
   mini_ptsd_current: {column: h, label: "Ptsd current: ETAT DE STRESS POST-TRAUMATIQUE ACTUEL"}
+
+scores:
+  mini_ptsd_avoidance_count: {sum: [mini_h04a, mini_h04b, mini_h04c, mini_h04d, mini_h04e, mini_h04f, mini_h04g], label: "Number of the seven H4 symptoms (3 needed)"}
+  mini_ptsd_arousal_count: {sum: [mini_h05a, mini_h05b, mini_h05c, mini_h05d, mini_h05e], label: "Number of the five H5 symptoms (2 needed)"}
+  mini_ptsd_check: {sum: [mini_h06], compare: mini_ptsd_current, keep: false, label: "Check: the form writes the conclusion from H6"}

@@ -2,7 +2,7 @@ instrument: parametres_physiques
 title: Height, weight, body mass index and waist
 tab: VITAL SIGN et ECG
 section: Paramètres Physiques
-status: draft
+status: reviewed
 notes: >
   Height, weight and waist, measured at the inclusion and follow-up visits
   (about 1,280 visits), and the body mass index.
@@ -11,11 +11,16 @@ notes: >
   and are brought back (unit_inferred), as in BP; one height and 4 waists are
   impossible (out_of_range).
 
-  The body mass index is recomputed from the weight and the height. The stored
-  index differs on 59 of 1,275 visits: on 36 by less than 0.1, because from
-  2017 the stored value is cut to one decimal instead of rounded; on 9 by
-  more than 1, where a weight or a height was typed wrongly and the stored
-  index kept it.
+  The body mass index is recomputed from the weight and the height. The form
+  computes it on the typed height and weight and rounds it to two decimals
+  (imc(), js/class.javascript.js, lines 1656 to 1664, called from
+  js/formulaires.js, lines 2725 to 2750; the boxes take whole numbers): the
+  stored index equals the rounded one on 85% to 99.5% of the visits of each
+  period. It differs by more than 0.05 on 59 of 1,258 visits
+  (score_mismatch). On 50 the stored index is 0.05 to 0.99 below ours (median
+  0.08), 43 of them in 2017 to 2021 and 6 in 2026: the cause is not known.
+  On 9 it is more than 1 away: a weight typed on another scale, which the
+  stored index kept and which is brought back here (unit_inferred).
 
   Same instrument as in FACE BP and FACE SZ.
 

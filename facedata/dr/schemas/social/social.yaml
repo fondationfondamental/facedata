@@ -2,20 +2,52 @@ instrument: social
 title: "Social situation"
 tab: MODULE SOCIAL ET PERINATALITE
 section: MODULE SOCIAL
-status: draft
+status: reviewed
 notes: >
   The BP schema with the questions of this extraction: marital status,
-  education, work and the way of living. Filled at inclusion and at
-  the visits of 2 and 4 years: 681 visits (95% of the inclusions until
-  2014, 62% in 2021 to 2023, 74% since).
+  education, work and the way of living. One form (168), shown at the
+  inclusion and at the visits of 2 and 4 years (visit types 2, 6 and 8,
+  config/global.php): the same questions at every visit, so no _v0 and _fu
+  schemas. 681 visits; the form is filled at 95% of the inclusions until
+  2014, 88% in 2015-17, 84% in 2018-20, 62% in 2021-23 and 74% since. The
+  education level is lower at the later visit on 12 of the 156 pairs of an
+  inclusion and a follow-up answer (different on 34).
 
-  Codes are those of BP and of the dictionary. Three variables differ from
-  BP: the time in the present job is a number of months here (a class in
-  BP) and has its own name; the occupational class (empjob) is read with
-  the eight classes of the dictionary; the person with whom the patient
-  spends most time is stored as a code from 1 to 11 with no list in the
-  dictionary, and the order of the BP list does not fit the shares, so it
-  is delivered as code_N (open question O26).
+  Codes are those of BP and of the form. The education level code 12 is
+  "BAC" on the form (168.php), not a third year of upper secondary school
+  (87 visits; their median years of education on the neuropsychology form
+  is 12, as BP's "BAC"). The person with whom the patient spends most time
+  (lien) is read with the list of the form: 1 spouse, 2 mother, 3 father, 4
+  flatmate, 5 friend, 6 partner (concubin), 7 sibling, 8 grandparent, 9
+  other relative, 10 child, 11 other (672 visits).
+
+  Work. The form (js/formulaires.js, lines 4933 to 4987) asks the months in
+  the present job and whether it is full time of the employed only, the end
+  of the last job of the unemployed only, and the occupational class of
+  both: shown_if on the work status, 8 cells filled under another status
+  are delivered as missing (not_shown: 1 month count, 2 full time, 3
+  classes, 2 end dates). The months in the present job are the SZ question
+  and take the SZ name job_months (BP asks a class of duration); the export
+  writes them as whole numbers (request R160). The occupational class
+  (empjob) is the first level of the INSEE classes, read with the eight
+  classes of the dictionary: of the current job for the employed (207 of 225
+  visits), of the last job for the unemployed (109 of 131). An end of the
+  last job on or after the visit is impossible and is delivered as missing
+  (before_visit, out_of_range: 3 cells). The age at the first job is defined
+  in the form but never shown, and is not in the extraction.
+
+  Household. The number of persons under the same roof is 0 for 29 of the
+  165 visits of patients who live alone with an answer (1 for 123): some
+  count themselves and some do not, as in BP. Two values of two digits
+  above 20 are impossible (out_of_range).
+
+  Centres and years (2026-11-20). The shares differ between centres with 20
+  answers or more as the patients do: living in a couple 49% to 73%,
+  employed 17% to 50%, the spouse as closest person 24% to 64%, clerical or
+  service employees 24% to 70% of the occupational classes. By period they
+  stay within 10 points of the cohort, except the clerical or service
+  employees of 2022 and 2023 (5 of 23 classes, 22% against 43%): a small
+  group, no known cause.
 
   The legal protection measure (protec) is not delivered, as in BP and SZ
   (BP D111): it is administrative (ignored.yaml).
@@ -30,21 +62,22 @@ variables:
     column: edulevel
     label: Education level reached
     type: category
-    codes: {"1": primary_1, "2": primary_2, "3": primary_3, "4": primary_4, "5": primary_5, "6": lower_secondary_1, "7": lower_secondary_2, "8": lower_secondary_3, "9": lower_secondary_4, "10": upper_secondary_1, "11": upper_secondary_2, "12": upper_secondary_3, "13": cap, "14": bep, "15": bac_plus_1, "16": bac_plus_2, "17": bac_plus_3, "18": bac_plus_4, "19": bac_plus_5, "20": doctorate}
+    codes: {"1": primary_1, "2": primary_2, "3": primary_3, "4": primary_4, "5": primary_5, "6": lower_secondary_1, "7": lower_secondary_2, "8": lower_secondary_3, "9": lower_secondary_4, "10": upper_secondary_1, "11": upper_secondary_2, "12": bac, "13": cap, "14": bep, "15": bac_plus_1, "16": bac_plus_2, "17": bac_plus_3, "18": bac_plus_4, "19": bac_plus_5, "20": doctorate}
   work_status:
     column: stprof
     label: Current work status
     type: category
     codes: {"0": unemployed, "1": employed, "2": retired, "3": student, "4": disability_pension, "5": homemaker, "6": other}
-  job_duration_months: {column: jobdur, type: number, unit: months, range: [0, 600], winsor: false, label: "If employed: time in the present job"}
-  job_full_time: {column: jobclas, type: item, range: [0, 1], label: "The present job is full time"}
+  job_months: {column: jobdur, type: number, unit: months, range: [0, 600], winsor: false, shown_if: {work_status: [employed]}, label: "Months in the present job (the employed)"}
+  job_full_time: {column: jobclas, type: item, range: [0, 1], shown_if: {work_status: [employed]}, label: "Full-time job (the employed)"}
   job_class:
     column: empjob
-    label: Occupational class
+    label: "Occupational class (INSEE level 1) of the current job, or of the last job for the unemployed"
+    shown_if: {work_status: [employed, unemployed]}
     type: category
     codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_professional, "4": intermediate_occupation, "5": clerical_or_service_employee, "6": manual_worker, "7": retired, "8": no_occupation, "0": other}
   job_class_other: {column: empjob_specifier, type: text, label: "Occupational class: other, as written"}
-  last_job_end_date: {column: stprof_scdtc, type: date, range: [1950-01-01, 2026-12-31], label: "If unemployed: date the last job ended"}
+  last_job_end_date: {column: stprof_scdtc, type: date, shown_if: {work_status: [unemployed]}, range: [1950-01-01, 2026-12-31], before_visit: true, label: "If unemployed: date the last job ended"}
   longest_job_years: {column: profdur, type: number, unit: years, range: [0, 60], winsor: false, label: Longest stable period of work}
   total_work_years: {column: durtot, type: number, unit: years, range: [0, 60], winsor: false, label: Total time worked over the whole life}
   living_arrangement:
@@ -54,4 +87,4 @@ variables:
     codes: {"1": alone, "2": with_parents, "3": own_family_home, "4": with_children, "5": with_relatives, "6": shared_flat, "7": institution, "8": other}
   living_arrangement_other: {column: lvsbjind_specifier, type: text, label: "Living arrangement: other, as written"}
   household_size: {column: nbpers, type: item, range: [0, 20], label: Number of people living in the home}
-  closest_person_code: {column: lien, type: category, codes: {"1": code_1, "2": code_2, "3": code_3, "4": code_4, "5": code_5, "6": code_6, "7": code_7, "8": code_8, "9": code_9, "10": code_10, "11": code_11}, label: "Person with whom the patient spends most time (codes that the dictionary does not explain)"}
+  closest_person: {column: lien, type: category, codes: {"1": spouse, "2": mother, "3": father, "4": flatmate, "5": friend, "6": partner, "7": sibling, "8": grandparent, "9": other_relative, "10": child, "11": other}, label: Person the patient spends most time with}

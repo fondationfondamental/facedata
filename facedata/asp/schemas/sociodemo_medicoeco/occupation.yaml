@@ -2,19 +2,32 @@ instrument: occupation
 title: "Occupation and activity"
 tab: sociodemo_medicoeco
 section: social and medico-economic
-status: draft
+status: reviewed
 notes: >
-  The occupation (a code from 2 to 10) and the current activity (a code from 1
-  to 5): 1646 inclusion visits (446 of children, 1200 of adults) and 144 follow-up visits, from 2011 to 2026.
+  The occupation (a code from 1 to 10) and the current activity (a code from 1
+  to 5): 1646 inclusion visits (446 of children, 1200 of adults) and 144
+  follow-up visits, from 2011 to 2026.
 
-  The form was first read without a dictionary; the labels and the lists of
-  answers are now those of the thesaurus V2.13, which corrected several
-  meanings guessed from the column names (PROGRESS.md D14). The output names
-  stay the column names. prochang is a box of the follow-up form.
+  The labels and the lists of answers are those of the thesaurus V2.13
+  (PROGRESS.md D14). The output names are descriptive English names since
+  2026-11-20 (the column names before); the raw column stays in `column`.
+  occupation_changed_fu is a box of the follow-up form.
 
-  A section of the ASP cohort only.
+  job_class is the INSEE occupational class: the codes 1 to 8 carry the label
+  words of DR job_class (farmer, craft_trade_business_owner,
+  manager_or_professional, intermediate_occupation,
+  clerical_or_service_employee, manual_worker, retired, no_occupation); 9
+  student is ASP only, 10 'not applicable' is missing, and the DR code 0
+  'other' is DR only.
+
+  A section of the ASP cohort only, apart from job_class.
+
+  Years and centres (definition of done, D88; centres lettered as in D77, A
+  the children's centre): the occupation follows the age of the patients: 99%
+  students in centre A, 77% in B, 18% to 51% elsewhere; the apprenticeship is
+  41% of the contracts in B and 1% to 8% elsewhere. No other step.
 
 variables:
-  prochang: {column: prochang, type: item, label: "Occupation and activity: change since the last visit (0 no, 1 yes)", range: [0, 1]}
-  profes: {column: profes, type: category, label: "Occupation and activity: socio-professional category", codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_higher_professional, "4": intermediate_profession, "5": employee, "6": manual_worker, "7": retired, "8": other_without_occupation, "9": student}, missing: {"10": not_applicable}}
-  activite: {column: activite, type: category, label: "Occupation and activity: kind of activity", codes: {"1": permanent_contract, "2": fixed_term_contract, "3": unemployed, "5": apprenticeship}, missing: {"4": not_applicable}}
+  occupation_changed_fu: {column: prochang, type: item, label: "Occupation and activity: change since the last visit (0 no, 1 yes)", range: [0, 1]}
+  job_class: {column: profes, type: category, label: "Occupation and activity: occupational class (INSEE level 1; 9 student)", codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_professional, "4": intermediate_occupation, "5": clerical_or_service_employee, "6": manual_worker, "7": retired, "8": no_occupation, "9": student}, missing: {"10": not_applicable}}
+  contract_type: {column: activite, type: category, label: "Occupation and activity: kind of activity", codes: {"1": permanent_contract, "2": fixed_term_contract, "3": unemployed, "5": apprenticeship}, missing: {"4": not_applicable}}

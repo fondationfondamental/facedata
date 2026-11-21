@@ -2,37 +2,111 @@ instrument: mini_b_suicidality
 title: "MINI, module B: suicidality"
 tab: MINI
 section: MINI B
-status: draft
+status: reviewed
 notes: >
-  Module B: suicidality over the last month and attempts in the life.
+  Module B: suicidality over the last month (B1 to B10) and the attempts
+  of the life (B11).
 
-  The MINI is a structured diagnostic interview; the modules and the
-  points of the suicidality score are those of version 6. It is given at
-  the screening visit and again at the visits of 2 and 4 years: 583 visits
-  of 493 patients answer it (89%, 86% and 82% of the screening visits until
-  2020, 57% in 2021 to 2023, 66% since; 35% to 100% by centre; open
-  question O24). Not in BP or SZ. The variables keep the number of the
-  question (mini_a01a is question A1a); the conclusions have a name that
-  says what they are. Answers are 1 for yes and 0 for no. The form follows
-  the skips of the interview: a question that comes after a "no" is empty.
+  The MINI is a structured diagnostic interview, here version 6.0.0
+  (DSM-IV; the version, its suicidality points and the reading of form 229
+  are question M87). It is given at the screening visit (form 142) and
+  again at the visits of 2 and 4 years (form 229, the same form; 3 more
+  rows at 3 and 5 years): 583 visits of 493 patients answer it (89%, 86%
+  and 82% of the screening visits until 2020, 57% in 2021 to 2023, 66%
+  since; 35% to 100% by centre; open question O24). Not in BP or SZ. The
+  variables keep the number of the question (mini_a01a is question A1a);
+  the conclusions have a name that says what they are. Answers are 1 for
+  yes and 0 for no.
 
-  Boxes written by the form. Some columns are boxes that the form sets to 0
-  as soon as the interview is opened: they hold 0 on every one of the 630
-  rows that have the form, including 47 rows where no question is
+  Skips. After a "no" to the first questions of a module the page hides
+  and clears the later ones, or sets some of them to 0 (A1b, A2b, C1b,
+  C2b, D5 to D7, E2 and the conclusion boxes). Module A has no enforced
+  skip: the page shows a message only (formulaires.js 946-952), and 16 of
+  the 27 visits with A1a and A2a no hold a later answer (14 a yes, 12 of
+  them at follow-up). Module C is skipped from 2017 only: 137 of the 506
+  visits with C1a and C2a no hold later answers, all dated 2012 to 2017.
+  Elsewhere a later answer after the skip is rare (D 20 of 393 visits, E,
+  F, G and H 0 or 1).
+
+  Boxes written by the form. Some columns are boxes that the form sets to
+  0 as soon as the interview is opened: they hold 0 on every one of the
+  630 rows that have the form, including 47 rows where no question is
   answered. An unticked box is not an answer "no". Such a box is declared
-  derived_from the first question of its module, and its 0 is flagged
-  derived_doubt where that question is empty.
+  derived_from the question it follows, and its 0 is flagged derived_doubt
+  where that question is empty. Request R169 asks the export to leave the
+  boxes of an unanswered module empty.
 
-  Score. The stored score (bb) is the sum of the points of the MINI: 1 for
-  B2 and B3, 2 for B4, 6 for B5, 8 for B6 and B7, 9 for B8, 4 for B9, 9 for
-  B10 and 4 for B11; this weighted sum gives the stored value on each of
-  the 446 visits that have one. The form stores no score where no question
-  is answered yes: there mini_suicide_risk is 0, and the score is delivered
-  as 0 (asked_if). The level is 1 (low) for 1 to 8 points, 2 (moderate) for
-  9 to 16 and 3 (high) from 17: the stored level follows this on 433 of
-  442 visits.
+  Follow-up (rule R32). The form of the visits of 2 and 4 years (form 229)
+  is the screening form and asks the same lifetime questions, but the
+  answers show that the interviewers read them as "since the last visit"
+  (question M87): of the yes answers to B11 (an attempt in the life) of
+  the screening visit that are answered again at the first follow-up, 5 of
+  17 are no. The lifetime and past-episode questions are therefore
+  delivered at inclusion (screening visit) only, and at follow-up in twins
+  named _fu (versions read from the visit label, block visit_form, as in
+  the treatment schemas); the current and past-month questions stay one
+  variable. Here B11 alone (mini_b11_fu); B1 to B10 ask about the last
+  month.
 
-  b10a and b10b (after an attempt) are boxes written by the form.
+  Gates. The page shows B1a and B1b after B1 yes, B5a to B5c and B6 after
+  B5 yes, B10a and B10b after B10 yes; these details stay missing after a
+  no. b10a and b10b are boxes written by the form, derived_from B10:
+  derived_doubt where B10 is empty (83 visits each). B5a is the frequency
+  (1 occasionally, 2 often, 3 very often) and B5b the intensity (1 mild, 2
+  moderate, 3 severe), as form 142 asks; the dictionary codes B05A as an
+  intensity (request R171).
+
+  Score (rule R18). mini_suicide_risk_score is recomputed: the weighted
+  sum that the button 'Calculer' of the form writes (Calcul682,
+  formulaires.js 920-941): 1 point for B2 and B3, 2 for B4, 6 for B5, 8
+  for B6 and B7, 9 for B8 and B10, 4 for B9 and B11 (or its follow-up
+  twin), 0 to 52. It needs one answered item. The stored score (bb,
+  mini_suicide_risk_score_stored, not delivered) is its check: it is
+  stored on 446 visits and equals the recomputed score on each of them;
+  where no question is answered yes the form stores no score and
+  mini_suicide_risk (ba) is 0, read as 0 (asked_if). 6 visits answer the
+  items and have no stored score (the button was not pressed): they get
+  the recomputed score. Whether these points are those of the French MINI
+  6.0.0 is open (question M87). The schema holds the long item list (B1
+  accident to B11), not the 6-item list of the 1998 MINI (Lim 2014: weights
+  1, 2, 6, 10, 10 and 4; bands 1-5, 6-9, then high). The 9-item English
+  form of 2006 gives 10 points, not 9, to an attempt of the last month (here
+  B10) and has a single 1-point item (here B2 and B3), but its points were
+  read from a garbled copy; the points of the French 6.0.0 were not found
+  in the literature check of 2026-11-21 (local/out/scale_reference_rest.md).
+
+  Level. The same button writes the level (bc) from the score with the
+  tests >1 and <9, >9 and <17, >17 (formulaires.js 933-935, defect A85): a
+  score of 1, 9 or 17 gets no level from the button, and the rater ticks
+  one by hand (66 of the 73 visits at 1 point, 6 of 6 at 9, 1 of 1 at 17).
+  The published bands of MINI 7.0.2 are 1 to 8 low, 9 to 16 moderate, 17
+  or more high (MINI 7.0.2 form, 2016); the bands of the French 6.0.0 were
+  not found in the literature check of 2026-11-21 (question M87); the
+  stored level follows
+  them on 430 of 439 visits (3 visits at 9 points are low). The level is
+  delivered as stored.
+
+  Centres (2026-11-20). B2 (hopelessness) is yes on 8 of 26 visits in the
+  centre that started in 2022 (47% to 83% in the other centres with 20
+  visits or more), B3 on 10 of 30 in another (50% to 74% elsewhere), and
+  B5c on 7 of 26 in a third (52% to 76% in the three other centres with 20
+  answers); the other items, the risk and the score differ by 20 points or
+  less between centres. No known cause.
+
+version:
+  name: visit_form
+  column: visit
+  codes:
+    screening: inclusion
+    V0: inclusion
+    V6_mois: follow_up
+    V1_an: follow_up
+    V18_mois: follow_up
+    V2_ans: follow_up
+    V30_mois: follow_up
+    V3_ans: follow_up
+    V4_ans: follow_up
+    V5_ans: follow_up
 
 defaults: {type: item, range: [0, 1]}
 
@@ -44,18 +118,33 @@ variables:
   mini_b03: {column: b03, label: "B3) Avez-vous pensé qu’il vaudrait mieux que vous soyez mort(e), ou souhaité être mort(e) ?"}
   mini_b04: {column: b04, label: "B4) Avez-vous eu envie de vous faire du mal ou de vous blesser ou avez-vous eu en tête des images où vous vous faisiez du mal ?"}
   mini_b05: {column: b05, label: "B5) Avez-vous pensé à vous suicider ?"}
-  mini_b05a: {column: b05a, range: [1, 3], label: "Si oui, Fréquence?"}
-  mini_b05b: {column: b05b, range: [1, 3], label: "Si oui, intensité?"}
+  mini_b05a: {column: b05a, range: [1, 3], label: "B5 if yes: frequency (1 occasionally, 2 often, 3 very often)"}
+  mini_b05b: {column: b05b, range: [1, 3], label: "B5 if yes: intensity (1 mild, 2 moderate, 3 severe)"}
   mini_b05c: {column: b05c, label: "Si oui, Pouvez-vous dire qu’en ce qui concerne ces impulsions, vous n’allez pas passer à l’acte durant ce programme thérapeutique ?"}
   mini_b06: {column: b06, label: "B6) Vous êtes-vous senti(e) incapable de contrôler ces impulsions ?"}
   mini_b07: {column: b07, label: "B7) Avez-vous planifié un suicide ?"}
   mini_b08: {column: b08, label: "B8) Avez-vous commencé à agir pour vous préparer à vous blesser ou à faire une tentative de suicide dans laquelle vous vous attendiez à mour"}
   mini_b09: {column: b09, label: "B9) Vous êtes-vous délibérément blessé(e) sans avoir l’intention de vous donner la mort ?"}
   mini_b10: {column: b10, label: "B10) Avez-vous tenté de vous suicider ?"}
-  mini_b10a: {column: b10a, derived_from: mini_b01, label: "Si Oui Espériez-vous être secouru(e)/survivre ? (a box: 0 is not ticked)"}
-  mini_b10b: {column: b10b, derived_from: mini_b01, label: "Si oui, Avez-vous cru/eu l’intention de mourir ? (a box: 0 is not ticked)"}
-  mini_b11: {column: b11, label: "B11) Avez-vous déjà fait une tentative de suicide ?"}
+  mini_b10a: {column: b10a, derived_from: mini_b10, label: "Si Oui Espériez-vous être secouru(e)/survivre ? (a box: 0 is not ticked)"}
+  mini_b10b: {column: b10b, derived_from: mini_b10, label: "Si oui, Avez-vous cru/eu l’intention de mourir ? (a box: 0 is not ticked)"}
+  mini_b11: {column: b11, versions: [inclusion], label: "B11) Avez-vous déjà fait une tentative de suicide ?"}
+  mini_b11_fu: {column: b11, versions: [follow_up], label: "B11) Avez-vous déjà fait une tentative de suicide ?, asked again at a follow-up visit (lifetime wording, answered as since the last visit: see notes)"}
   mini_suicide_risk: {column: ba, label: "Current suicide risk"}
-  mini_suicide_risk_score: {column: bb, type: number, range: [0, 52], winsor: false, asked_if: mini_suicide_risk, label: "Suicide risk score (0 where there is no risk)"}
+  mini_suicide_risk_score_stored: {column: bb, type: number, range: [0, 52], winsor: false, asked_if: mini_suicide_risk, keep: false, label: "Suicide risk score as stored (0 where there is no risk)"}
   mini_suicide_risk_level: {column: bc, range: [1, 3], label: "Suicide risk level (1 low, 2 moderate, 3 high)"}
   mini_suicide_risk_comment: {column: bd, type: text, label: "Comment on the suicide risk, as written"}
+
+scores:
+  mini_suicide_points_1: {sum: [mini_b02, mini_b03], min_items: 1, keep: false, label: "B2, B3: 1 point each"}
+  mini_suicide_points_2: {sum: [mini_b04], scale: [2, 0], min_items: 1, keep: false, label: "B4: 2 points"}
+  mini_suicide_points_6: {sum: [mini_b05], scale: [6, 0], min_items: 1, keep: false, label: "B5: 6 points"}
+  mini_suicide_points_8: {sum: [mini_b06, mini_b07], scale: [8, 0], min_items: 1, keep: false, label: "B6, B7: 8 points each"}
+  mini_suicide_points_9: {sum: [mini_b08, mini_b10], scale: [9, 0], min_items: 1, keep: false, label: "B8, B10: 9 points each"}
+  mini_suicide_points_4: {sum: [mini_b09, mini_b11, mini_b11_fu], scale: [4, 0], min_items: 1, keep: false, label: "B9, B11 (or its follow-up twin): 4 points each"}
+  mini_suicide_risk_score:
+    label: "Suicide risk score: weighted sum of B2 to B11 (formulaires.js Calcul682)"
+    sum: [mini_suicide_points_1, mini_suicide_points_2, mini_suicide_points_6, mini_suicide_points_8, mini_suicide_points_9, mini_suicide_points_4]
+    range: [0, 52]
+    min_items: 1
+    compare: mini_suicide_risk_score_stored

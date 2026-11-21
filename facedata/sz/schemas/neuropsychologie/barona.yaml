@@ -2,7 +2,7 @@ instrument: barona
 title: Premorbid IQ expected from occupation and diploma (Barona)
 tab: NEUROPSYCHOLOGIE
 section: wais_version
-status: draft
+status: reviewed
 notes: >
   The IQ that the occupation, the diploma, the age and the sex of the patient
   let expect, and its difference with the IQ estimated from the WAIS. Filled
@@ -27,14 +27,34 @@ notes: >
   and 177 of 2015 to 2026); each script of the application knows one of them.
 
   Against the stored values. Full-scale IQ: 1,458 of the 1,507 visits that
-  have both are equal (to 0.01) and the 49 others are score_mismatch. 18 of
-  them equal the formula without the diploma term (WAIS-III visits of 2011 to
-  2014, a diploma of the first cycle or of the higher level; the reason is
-  unknown), 3 the formula without the occupation term (2015), 14 the formula
-  with another age (11 with the age typed in the form where it is more than a
-  year from the age at the visit) and 14 are not explained. Verbal and
-  performance IQs: 515 of the 547 WAIS-III visits that have both are equal and
-  32 are score_mismatch for each of the two IQs.
+  have both are equal (to 0.01) and the 49 others are score_mismatch. The 49
+  have a cause in the scripts on 47 visits. 29 lost a term of the formula: the
+  script gives no coefficient to an answer whose label it does not know, and
+  JavaScript counts that empty coefficient as 0
+  (psy_neuropsychologie_barona.js, lines 42 to 63;
+  psy_neuropsychologie_barona_sz_wais4.js, lines 45 to 68; defect A93). The
+  diploma term is lost on 18 WAIS-III visits of centre F in 2011 to 2014:
+  every visit of that centre and period whose diploma label holds a comma (23
+  of 23) lost it, and no visit without a comma did (0 of 25). Both the diploma
+  and the occupation terms are lost on 8 (centres F, A, C, 2011 to 2015), and
+  the occupation term alone on 3 (centre A, 2015; 'Artisans, commerçants' on 9
+  of these 11 occupations). Which labels the forms of these centres held then
+  is question M86. 17 used another age: 11 the age typed in the form where it
+  is more than a year from the age at the visit, 4 one class of age lower and
+  2 two classes higher. The script recomputes the expected IQ only when the
+  occupation or the diploma changes (lines 15 and 16 of the first script, 16
+  and 17 of the second), so an age typed or corrected afterwards leaves it
+  stale; the export gives one typed age for the three neuropsychology forms
+  (request R168). 1 used the other sex (2021): the WAIS-IV page reads the sex
+  of the patient record. 2 are not explained (2015; one is a visit labelled
+  WAIS-III that holds the WAIS-IV sequencing task). Verbal and performance
+  IQs: 515 of the 547 WAIS-III visits that have both are equal. Of the 32
+  others, the same visits for the two IQs, 24 lost the diploma term or both
+  terms (centre F, and one visit of A), 5 used the typed age, 2 another class
+  of age and 1 is not explained (2015). The mismatches are 12 of 218 visits to
+  2012, 26 of 413 in 2013 to 2015 and 11 of 876 after (full-scale IQ). On the
+  visits that lost the diploma term the stored differences are wrong by that
+  term too; they keep derived_doubt and are delivered as stored.
 
   More and fewer values than the application stored. 39 WAIS-IV visits of 2015
   and 2016 that have both answers had no stored expected full-scale IQ, and 8
@@ -82,17 +102,20 @@ notes: >
   the 266 patients seen at least twice. Two typed ages written 'NN ans' stay
   unparsed (the age at the visit is used, and both visits get their expected
   IQ), and 22 of the 33 visits read as WAIS-IV hold a stored expected verbal
-  IQ and a stored expected performance IQ (barona05_wais3 and
-  barona07_wais3: 44 cells) that the WAIS-III variables do not read there,
-  so they are not delivered. The full-scale difference steps down from 2019
-  (median 12.9 on the 308 WAIS-IV visits of 2015 to 2018 that have the
-  seven-subtest IQ, 4.0 on the 155 visits of 2016 to 2026 that have only the
-  two-subtest IQ, 114 of them in 2019 to 2021): the estimated IQ it implies
-  is 100 against 90 (medians) while the expected IQ stays within 2 points
-  (102 and 104), so the step is the change of the estimated IQ, not of the
-  expected one. Draft because: item 5, the 32 expected verbal IQ and the 32
-  expected performance IQ mismatches (5.9% of the 547 WAIS-III visits that
-  have both) and 14 full-scale ones (0.9% of 1,507) have no stated cause.
+  IQ and a stored expected performance IQ (barona05_wais3 and barona07_wais3:
+  44 cells) that the WAIS-III variables do not read there, so they are not
+  delivered. The full-scale difference steps down from 2019 (median 12.9 on
+  the 308 WAIS-IV visits of 2015 to 2018 that have the seven-subtest IQ, 4.0
+  on the 155 visits of 2016 to 2026 that have only the two-subtest IQ, 114 of
+  them in 2019 to 2021): the estimated IQ it implies is 100 against 90
+  (medians) while the expected IQ stays within 2 points (102 and 104), so the
+  step is the change of the estimated IQ, not of the expected one; the
+  centre shift of the full-scale difference follows from it (centre B,
+  median 2.7, has 12 of its 21 visits from 2019). The stored
+  values that differ are errors of the application's scripts (a label they do
+  not know, a value not recomputed after an edit); the recomputed values are
+  delivered. 2 full-scale and 1 verbal and performance mismatches are not
+  explained (0.1% and 0.2%).
 
 version:
   name: wais_version
