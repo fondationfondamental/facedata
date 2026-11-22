@@ -1744,7 +1744,7 @@ sogs:
     - The French version is 'To verify' in the literature notes.
 
 sqol:
-  description: Schizophrenia Quality of Life questionnaire, 18-item form, filled by the patient at every visit. Items of 1 to 5 and dimensions from 0 to 100. Seven of the eight dimensions are delivered.
+  description: Schizophrenia Quality of Life questionnaire, 18-item form, filled by the patient at every visit. Items of 1 to 5, a box 'does not concern me' beside each item, eight dimensions and an index from 0 to 100.
   version: S-QoL 18
   reference: "Boyer L, Simeoni MC, Loundou A, et al. The development of the S-QoL 18. Schizophr Res 2010;121:241-250"
   reference_confidence: "To verify (from memory). The 18 items and 8 dimensions are Confirmed (direct: Boyer 2022, J Clin Med, PMC8836740)"
@@ -1788,6 +1788,12 @@ sqol:
       polarity: better
       basis: literature
       source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_psychological_wellbeing:
+      meaning: Psychological well-being, the mean of items 16, 17 and 18 brought to 0 to 100.
+      higher_means: better psychological well-being
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
     sqol_physical_wellbeing:
       meaning: Physical well-being, the mean of items 8 and 9 brought to 0 to 100.
       higher_means: better physical well-being
@@ -1800,9 +1806,21 @@ sqol:
       polarity: better
       basis: literature
       source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+    sqol_index:
+      meaning: Index, the mean of the eight dimensions (seven at least), from 0 to 100.
+      higher_means: better quality of life
+      polarity: better
+      basis: literature
+      source: "section 30: 'Each dimension and the index 0-100, higher = better QoL', Confirmed (direct: Boyer 2022)"
+  variables:
+    "sqol*_pc":
+      meaning: "Box 'does not concern me' beside the item (1 ticked, 0 not ticked). The raw value 'def' is read as not ticked (to confirm with the data managers)."
+      polarity: not_applicable
+      source: "schema notes (sz sqol); the form autoq_qualite_vie of the application"
   flags:
-    - Items 17 and 18, the psychological well-being dimension and the index are not delivered. The export mis-codes the two items, so the dimension and every stored index carry the error.
-    - A dimension is computed when at most one of its items is missing.
+    - "Items 17 and 18 were read with the wrong labels by the export up to the extraction of 2026-11-17; they, the psychological well-being dimension and the index are delivered from the extraction of 2026-11-21, where the export reads them correctly."
+    - A dimension is computed when at most one of its items is missing; the index when at most one dimension is missing.
+    - "An answer beside a ticked box 'does not concern me' is delivered as recorded and counts in its dimension, as in the export; the application leaves it out (124 cells)."
     - The period of the questions (last 4 weeks) is 'To verify' in the literature notes. No cut-off is documented.
 
 stori:

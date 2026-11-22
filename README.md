@@ -257,7 +257,7 @@ import pandas as pd
 from facedata import bp, sz
 
 one = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
-two = sz.load("data/sz/SZALL_20261117.tsv", instruments=["identite", "ymrs"])
+two = sz.load("data/sz/SZALL_20261121.tsv", instruments=["identite", "ymrs"])
 patients = pd.concat([one.patients, two.patients], ignore_index=True)
 visits = pd.concat([one.data, two.data], ignore_index=True)
 ```
