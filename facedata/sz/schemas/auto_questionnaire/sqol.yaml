@@ -4,44 +4,46 @@ tab: AUTO-QUESTIONNAIRE
 section: Questionnaire QUALITE DE VIE
 status: reviewed
 notes: >
-  S-QoL 18, filled at every visit (4,334 visits): 18 items of 1 to 5, eight
+  S-QoL 18, filled at every visit (4,330 visits): 18 items of 1 to 5, eight
   dimensions and an index, each from 0 to 100.
 
   Scoring, fitted on the items: a dimension is the mean of its items brought
   to 0 to 100, (mean - 1) x 25, and the index is the mean of the eight
   dimensions. The dictionary gives the items of each dimension, and the data
-  agree: no score_mismatch on the seven dimensions recomputed here. The EMR
+  agree: no score_mismatch on the eight dimensions recomputed here. The EMR
   export stores a dimension when at most one of its items is missing (the
-  mean of the others, as the nucleus rule says), so the seven dimensions are
-  computed with min_items 1 (two items) or 2 (resilience, three items): 671
-  more cells than a strict mean, all equal to the stored ones. The stored
-  index is the mean of 7 or 8 dimensions rounded to one decimal, hence the
-  tolerance; the index checked here needs the eight: it equals the stored
-  one on the 3,346 visits where both exist, and 881 stored indexes rest on
-  seven dimensions.
+  mean of the others, as the nucleus rule says), so the dimensions are
+  computed with min_items 1 (two items) or 2 (three items: resilience and
+  psychological well-being), all equal to the stored ones (D87). The stored
+  index is the mean of seven or eight dimensions rounded to one decimal,
+  hence the tolerance: the index recomputed with min_items 7 equals the
+  stored one on its 4,256 visits (211 rest on seven dimensions).
 
-  Items 17 and 18 are mis-coded by the export. The form gives them the
-  answers of item 16 (from "much more than expected", 1, to "less than
-  expected", 5, the best), but the export reads them with the labels "much
-  less than expected" to "more than expected"
-  (eschizo_autoq_qualite_vie.sql, the two CASE blocks). So the answer 5 of
-  the form is delivered as 2, the answer 2 as 5, and the answers 1 and 3 are
-  lost: the two items hold only 2, 4 and 5, in every year, while item 16
-  holds 1 to 5. Item 17 and item 16 correlate at -0.35 as extracted and at
-  +0.37 once 2 and 5 are swapped; item 18 the same way (-0.36, +0.38). The
-  stored psychological dimension is the mean of the items as delivered
-  (1,991 of 1,991 visits with the three items, 1,509 of 1,509 with item 16
-  and one other), so it carries the error: put right, it would change on
-  1,505 of the 1,991 visits, by 30 points of 100 on average. The index is
-  built on it, so every index carries the error (decisions D8 and D87 and
-  open question O8 in PROGRESS.md).
+  Items 17 and 18 were mis-coded by the export up to SZALL_20261117: it read
+  them with the labels "much less than expected" to "more than expected",
+  where the form gives them the answers of item 16 (from "much more than
+  expected", 1, to "less than expected", 5, the best), so the answer 5 was
+  delivered as 2, the answer 2 as 5, and the answers 1 and 3 were lost
+  (D87, O8). The export reads them with the labels of item 16 since
+  SZALL_20261121 (request R150, export commit fcbdfb31): the two items hold
+  1 to 5 and correlate +0.39 and +0.44 with item 16 (rank correlation), and
+  the stored psychological dimension and index are computed again from
+  them. Items 17 and 18, the psychological dimension and the index are
+  delivered again (D104). The psychological dimension is recomputed like
+  the others (min_items 2, three items) and the index is the mean of at
+  least seven of the eight dimensions, the rule of the nucleus.
 
-  Items 17 and 18, the psychological dimension and the index are therefore
-  read and checked (keep: false) and not delivered, until the export labels
-  are put right (export request R150 of docs/EXPORT_REQUESTS.md). The
-  swap of 2 and 5 is not applied here: answers 1 and 3 would stay missing
-  and the dimension would still be biased. The 18 boxes "does not concern
-  me" of the form (chk_sqol_N_pc) are not exported either.
+  The 18 boxes "does not concern me" of the form (chk_sqol_N_pc, exported
+  as sqolNN_pc since SZALL_20261121) are delivered as 1 (ticked) and 0. The
+  raw cell holds OUI, NON or def, and is empty on the visits without the
+  questionnaire. def is read as a box not ticked: on 574 visits some boxes
+  are OUI and all the others def, as on the visits of NON (the meaning of def
+  is asked of the data managers, O47). The application leaves a ticked item
+  out of its dimension and a dimension whose items are all ticked out of
+  the index (autoq_qualite_vie.js); the export, and this schema, average
+  the answers present, which gives the same value except where an answer
+  sits beside a ticked box (124 cells): the answer is delivered as recorded
+  and the dimension keeps it (O47).
 
 defaults: {type: item, range: [1, 5]}
 
@@ -62,8 +64,26 @@ variables:
   sqol14: {label: "S-QoL item 14 (1 to 5)"}
   sqol15: {label: "S-QoL item 15 (1 to 5)"}
   sqol16: {label: "S-QoL item 16 (1 to 5)"}
-  sqol17: {label: "S-QoL item 17 (1 to 5), mis-coded by the export, not delivered", keep: false}
-  sqol18: {label: "S-QoL item 18 (1 to 5), mis-coded by the export, not delivered", keep: false}
+  sqol17: {label: "S-QoL item 17 (1 to 5)"}
+  sqol18: {label: "S-QoL item 18 (1 to 5)"}
+  sqol01_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 1: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol02_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 2: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol03_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 3: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol04_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 4: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol05_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 5: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol06_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 6: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol07_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 7: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol08_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 8: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol09_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 9: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol10_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 10: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol11_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 11: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol12_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 12: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol13_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 13: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol14_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 14: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol15_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 15: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol16_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 16: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol17_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 17: box \"does not concern me\" ticked (1) or not (0)"}
+  sqol18_pc: {type: item, range: [0, 1], codes: {OUI: 1, NON: 0, def: 0}, label: "S-QoL item 18: box \"does not concern me\" ticked (1) or not (0)"}
   sqol_sentimental_life_stored: {column: sqol19, type: number, label: S-QoL sentimental life as stored, range: [0, 100], winsor: false, keep: false}
   sqol_self_esteem_stored: {column: sqol20, type: number, label: S-QoL self-esteem as stored, range: [0, 100], winsor: false, keep: false}
   sqol_family_stored: {column: sqol21, type: number, label: S-QoL relations with the family as stored, range: [0, 100], winsor: false, keep: false}
@@ -71,13 +91,7 @@ variables:
   sqol_autonomy_stored: {column: sqol23, type: number, label: S-QoL autonomy as stored, range: [0, 100], winsor: false, keep: false}
   sqol_physical_wellbeing_stored: {column: sqol25, type: number, label: S-QoL physical well-being as stored, range: [0, 100], winsor: false, keep: false}
   sqol_resilience_stored: {column: sqol26, type: number, label: S-QoL resilience as stored, range: [0, 100], winsor: false, keep: false}
-  sqol_psychological_wellbeing:
-    column: sqol24
-    type: number
-    label: "S-QoL psychological well-being as stored (items 16 to 18), mean of mis-coded items, not delivered"
-    range: [0, 100]
-    winsor: false
-    keep: false
+  sqol_psychological_wellbeing_stored: {column: sqol24, type: number, label: S-QoL psychological well-being as stored, range: [0, 100], winsor: false, keep: false}
   sqol_index_stored: {column: sqol, type: number, label: S-QoL index as stored, range: [0, 100], winsor: false, keep: false}
 
 scores:
@@ -116,6 +130,13 @@ scores:
     min_items: 1
     compare: sqol_autonomy_stored
     compare_tolerance: 0.051
+  sqol_psychological_wellbeing:
+    label: "S-QoL psychological well-being (items 16, 17, 18; 0 to 100)"
+    mean: [sqol16, sqol17, sqol18]
+    scale: [25, -25]
+    min_items: 2
+    compare: sqol_psychological_wellbeing_stored
+    compare_tolerance: 0.051
   sqol_physical_wellbeing:
     label: "S-QoL physical well-being (items 8, 9; 0 to 100)"
     mean: [sqol08, sqol09]
@@ -131,9 +152,9 @@ scores:
     compare: sqol_resilience_stored
     compare_tolerance: 0.051
   sqol_index:
-    label: "S-QoL index, mean of the eight dimensions (0 to 100, higher is better), contains the psychological dimension, not delivered"
-    keep: false
+    label: "S-QoL index, mean of the eight dimensions, seven at least (0 to 100, higher is better)"
     mean: [sqol_sentimental_life, sqol_self_esteem, sqol_family, sqol_friends, sqol_autonomy,
            sqol_psychological_wellbeing, sqol_physical_wellbeing, sqol_resilience]
+    min_items: 7
     compare: sqol_index_stored
     compare_tolerance: 0.06

@@ -1,10 +1,11 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6) and on 2026-11-21 (the decisions on the held items: PI-1, DEV-19, PI-6, PI-7), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6) and on 2026-11-21 (the decisions on the held items: PI-1, DEV-19, PI-6, PI-7) and on 2026-11-22 (the S-QoL fixed by the export: DEV-7, DM-13, PI-7, O47), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
-4,941 visits and 1,675 screening rows of 2,353 patients) and the dictionary
+4,941 visits and 1,675 screening rows of 2,353 patients) and on 2026-11-22 by
+`SZALL_20261121.tsv` (6,612 rows, the same 2,353 patients; D104) and the dictionary
 `FACESZ_thesaurus_V4.20.xlsx`.
 
 Every column of the extraction is now read by the `facedata` package
@@ -207,6 +208,12 @@ for the Epworth scale in BP, the dimension and the index computed again, and
 the 18 boxes "does not concern me" (`chk_sqol_N_pc`) exported? (R150)
 *Today:* items 17 and 18, the psychological dimension and the index are read
 and checked and are not delivered. (O8, D87)
+*Answered on 2026-11-22: done by the export* (dataflow commit fcbdfb31,
+`SZALL_20261121.tsv`). The two items hold 1 to 5, the stored dimension and
+index are computed again, and the 18 boxes are exported as `sqol01_pc` to
+`sqol18_pc`. Items 17 and 18, the psychological dimension and the index are
+delivered again; the boxes are delivered as 1 (ticked) and 0 (D104). What
+the value `def` of a box means is asked below (O47).
 
 **DEV-8. Items that are a copy of another item.** On every WAIS-IV visit,
 `mat25_w` and `mat26_w` hold the value of `mat24_w`, and `simil10_w` and
@@ -717,6 +724,9 @@ the last visit"? The count "ever" is 0 at a yearly answer of 62 of 158 patients 
 (cannabis) who had a criterion at inclusion. (3) Are the 18 boxes "does not concern me" of the S-QoL
 (`chk_sqol_N_pc`) in the source database, and how many are ticked?
 *Today:* delivered as filled. (D87, D89, D90)
+*(3) answered on 2026-11-22 by the extraction `SZALL_20261121.tsv`* (D104): the boxes are exported; on the
+4,538 visits where they are filled, 1,652 boxes are ticked, on 703 visits. Their
+value `def` is a new question (O47).
 
 **PI-7. S-QoL, SOGS, EPHP, DSM-5: four choices (for the principal investigator).** (1) S-QoL: items 17 and 18, the
 psychological dimension and the index are withdrawn until the export is put right (Option A). The other option
@@ -728,7 +738,28 @@ scores) or as missing (here)? (4) DSM-5 forms: should the blocks that were never
 answered "no" or empty) be 0 (`asked_if` on the use question, 102,468 cells) or stay missing?
 *Today:* Option A; the SOGS total as stored; the EPHP score missing; the DSM-5 blocks missing. (O8, O44, O45, O46)
 *Decided by the user on 2026-11-21:* (1) Option A stays until the export is put right (R150); the user asks the
-data engineers (D103). (2) The SOGS total stays as stored until the export gives the lost answers back (R151,
+data engineers (D103). *Closed on 2026-11-22:* the export is put right and the four variables are delivered again
+(D104). (2) The SOGS total stays as stored until the export gives the lost answers back (R151,
 D103). (3) The code 7 counts 0 in the EPHP scores and stays a missing code in the items (D98). (4) The blocks
 never asked are 0: after a no to the use question of the substance, and for the five illicit drugs after a no
 to the illicit-drugs question (456,972 cells, D97). Points (1) and (2) come back when the export is corrected.
+
+## Added with the extraction of 2026-11-21 (2026-11-22)
+
+**S-QoL boxes "does not concern me" (DM-14, for the data managers; O47).** The export now gives the 18 boxes
+(`sqol01_pc` to `sqol18_pc`). A box holds `OUI`, `NON` or `def`: `def` on 3,707 visits dated 2012 to 2026 (all
+18 boxes `def` on 3,133; some `OUI` and the others `def` on 574), `NON` on 827 visits dated 2010 to 2016, never
+both on one visit. (1) What
+does `def` mean: a box not ticked on a later version of the form, or a box never saved? (2) 124 answers sit
+beside a ticked box: the application leaves such an item out of its dimension, the export keeps it. Which one
+holds? (3) 208 visits have the boxes and no answer (204 of them all `def`): forms opened and left empty?
+*Today:* `def` is read as not ticked (0); the answer beside a ticked box is delivered as recorded and counts in
+its dimension, as the export does. (D104)
+
+**Changes that came with the new extraction (DM-15, for the data managers).** Compared with `SZALL_20261117.tsv`
+through the loads of the package (the previous file was replaced, D104): (1) two patients have a new `usubjid`;
+one keeps its inclusion and loses its four yearly visits, and the reason for the end of follow-up changes for
+both. Is this the centre fix of 2026-11-19 (eSchizo v4.43) or an opt-out, and are the four visits removed on
+purpose? (2) On three other visits, two PSP ratings changed (6 cells) and one yearly visit lost its height,
+weight, waist, body mass index and supine blood pressure (6 cells). Were these corrected in the source?
+*Today:* delivered as the new extraction gives them. (D104)
