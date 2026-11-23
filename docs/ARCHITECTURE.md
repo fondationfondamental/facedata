@@ -720,6 +720,9 @@ git-ignored.
 - Columns left out on purpose are listed with a reason in
   `facedata/bp/ignored.yaml` (fully empty columns, duplicated keys, columns
   the export filled with defaults).
+- `coverage()` reads the thesaurus workbooks with openpyxl, an optional
+  dependency: `uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.3.0"`
+  (or `pip install` the same). In this repository, `uv sync` installs it.
 
 ## 9. Other cohorts
 
@@ -755,6 +758,20 @@ other). What cannot be so is listed in `facedata/shared_names.yaml` with its
 reason, and a line that is no longer true makes the test fail.
 
 ## 10. Tests and definition of done
+
+To work on the repository, install it with its tests and notebooks, then run
+the tests:
+
+```bash
+uv sync
+uv run pytest
+```
+
+To try a change in a research project, install your copy as editable there
+(`uv add --editable /path/to/facedata`, or `pip install -e /path/to/facedata`):
+the project sees your edits at once. The extractions go in `data/<cohort>/`,
+the thesauri in `thesauri/` and the norm tables in `norms/`, all git-ignored
+(`dictionary/config.yaml` names the files).
 
 - No real data in the repository. Tests use small hand-written tables with the
   token shapes found in the extractions (`<5`, `27,90`, `25 - 50`,

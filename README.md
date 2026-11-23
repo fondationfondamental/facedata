@@ -1,380 +1,295 @@
 # facedata
 
-Load, harmonise and quality-check data from the FACE psychiatric cohorts
-(bipolar disorder, schizophrenia, resistant depression, Asperger).
+Load the FACE psychiatric cohorts in Python:
 
-One module per cohort. Everything specific to an instrument is written in a
-small YAML schema; the Python code is generic and stays small.
+- FACE BP (bipolar disorder);
+- FACE SZ (schizophrenia);
+- FACE DR (treatment-resistant depression);
+- FACE ASP (autism spectrum, children and adults).
 
-**Status:** every column of the four extractions (BP, SZ, DR, ASP) is read or
-deliberately ignored. All the schemas are reviewed, tab by tab (BP 135, SZ 125, DR 139, ASP 146):
-each cohort's progress file
-lists the decisions taken and the questions still open
-([BP](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/PROGRESS.md), [SZ](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/PROGRESS.md), [DR](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/PROGRESS.md),
-[ASP](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/PROGRESS.md)).
+facedata reads the extraction file of a cohort, checks every cell and returns
+harmonised tables. A guide and a data dictionary come with the package and
+describe every variable it delivers.
 
-## Read first
-
-| Document | What it tells you |
-|---|---|
-| [The guide](https://github.com/fondationfondamental/facedata/blob/main/facedata/dictionary/FACE-guide.md) (`facedata guide`) | Start here: the four cohorts, their visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument. It ships with the package |
-| [docs/ARCHITECTURE.md](https://github.com/fondationfondamental/facedata/blob/main/docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
-| [docs/SCHEMA_SPEC.md](https://github.com/fondationfondamental/facedata/blob/main/docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
-| [docs/bp/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
-| [docs/bp/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/QUESTIONS.md) | The open questions of FACE BP as a list to close, sorted by who can close them (the application, the data, a choice of method, the data managers) and by priority, and the state of the norms |
-| [docs/sz/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
-| [docs/sz/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
-| [docs/dr/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
-| [docs/dr/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/QUESTIONS.md) | The same questions for FACE DR |
-| [docs/asp/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/PROGRESS.md) | FACE ASP (autism spectrum, children and adults) checklist, decisions taken, decisions still open. The dictionary arrived after the module was written: every instrument was identified from the data, then checked against it |
-| [docs/asp/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/QUESTIONS.md) | The same questions for FACE ASP |
-| [bipolar-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
-| [schizophrenia-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
-| [depression-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
-| [autism-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
-| [common-instruments.ipynb](https://github.com/fondationfondamental/facedata/blob/main/common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
-| [The data dictionary](#data-dictionary-what-the-package-delivers-and-what-to-pick) | Every delivered variable in one page for people and one JSON file for coding agents: meaning, direction, derivation, cohorts and visits, missing values, distribution. How it is built: [dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md) |
+- Every column of the four extractions is either read or left out for a
+  stated reason.
+- Scores are recomputed from their items. Where the database stored a score,
+  facedata compares the two, and corrects a stored score that is known to be
+  wrong.
+- An instrument shared by several cohorts has the same column names in each,
+  so the tables of several cohorts can be stacked.
+- Every value that is changed or doubtful is listed in `result.flags`, next to
+  its raw value.
 
 ## Install
 
-The repository is private: you need access to it on GitHub. The data, the
-norms and the dictionaries are not part of the package (see [Data](#data)).
+The repository is private: you need access to it on GitHub. The extractions
+and the norm tables are not part of the package (see
+[Patient data](#patient-data)).
 
-**In another project, with uv:**
+With uv:
 
 ```bash
 uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
-**In another project, with pip:**
+With pip:
 
 ```bash
 pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
-`@v0.3.0` pins a released version, so an analysis keeps giving the same
-results when the package changes. Leave it out to take the latest `main`.
+`@v0.3.0` pins a release, so an analysis keeps giving the same results when
+the package changes.
 
-`coverage()` reads the thesaurus workbooks and needs the extra `thesaurus`
-(openpyxl). With uv:
+## Set up your research project
 
-```bash
-uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
-```
-
-The same with pip:
-
-```bash
-pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
-```
-
-**From a local copy that you are changing:** an editable install sees your
-edits at once. With uv, run this from the other project:
-
-```bash
-uv add --editable /path/to/facedata
-```
-
-With pip:
-
-```bash
-pip install -e /path/to/facedata
-```
-
-**To work on this repository itself** (tests, notebooks):
-
-```bash
-uv sync
-```
-
-Outside this folder, give the full path of the extraction and of the norm
-tables: `bp.load("/path/to/BPALL_20261113_2.tsv", norms="/path/to/norms")`.
-By default `norms` is the folder `norms` of the current directory.
-
-**Then, once, in your research project:**
+Run this once, in the folder of your project:
 
 ```bash
 facedata init
 ```
 
-It writes a short block into `AGENTS.md` (read by Codex, Cursor, Copilot and
-other coding agents) and makes `CLAUDE.md` read it (Claude Code). The block
-tells an agent what the cohorts are, where the guide and the data dictionary
-are, how to search them, and the rules for patient data. The rest of both
-files is kept; run it again after an upgrade to refresh the block.
+It writes a short block into `AGENTS.md`, which Codex, Cursor, Copilot and
+other coding agents read, and makes `CLAUDE.md` read it, for Claude Code. The
+block tells an agent:
 
-What you and your agents can then run (with uv: `uv run facedata ...`;
-anywhere: `python -m facedata ...`):
+- what the cohorts are;
+- where the guide and the data dictionary are, and how to search them;
+- the rules for patient data.
+
+The rest of both files is kept. Run it again after an upgrade to refresh the
+block.
+
+You and your agents can then use these commands. In a uv project, run them as
+`uv run facedata ...`; anywhere, as `python -m facedata ...`.
 
 | Command | What it gives |
 |---|---|
-| `facedata guide` | The guide to the four cohorts (`--section 4` prints one section): loading, the rules before an analysis, each cohort with its visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument |
+| `facedata guide` | The guide to the four cohorts; `--section 4` prints one section |
 | `facedata find depression --cohort dr --level score` | The variables whose id, label or meaning holds every word |
-| `facedata show madrs_total madrs` | The records of variables or instruments (JSON; `--full` keeps the distributions) |
-| `facedata instruments --cohort sz` | The instruments of a cohort; `--shared`, those of two cohorts or more |
-| `facedata page` | The dictionary page in your browser |
-| `facedata files` | Where the guide, the JSON and the page are |
+| `facedata show madrs_total madrs` | The records of variables or instruments, as JSON; `--full` keeps the distributions |
+| `facedata instruments --cohort sz` | The instruments of a cohort; `--shared` lists those of two cohorts or more |
+| `facedata page` | Opens the data dictionary page in your browser |
+| `facedata files` | Prints where the guide, the dictionary and the page are |
 
-From Python: `from facedata import guide`, then `guide.find("depression", cohort="dr")`,
-`guide.variable("madrs_total")`, `guide.instruments(shared=True)`.
+The same from Python: `from facedata import guide`, then
+`guide.find("depression", cohort="dr")`, `guide.variable("madrs_total")` or
+`guide.instruments(shared=True)`.
 
-## Data dictionary: what the package delivers, and what to pick
+**Start with the guide.** It covers:
 
-Two files inside the package describe every variable that `load()` delivers
-for the four cohorts: 9,600 columns in 362 instruments. They hold the same
-content, and every install has them. A third, the guide, is the place to
-start: it is built from them.
+- loading, and the checks to make before an analysis;
+- each cohort, with its visits and its traps;
+- the instruments the cohorts share;
+- the same subject measured with other instruments;
+- the editions that must never share a column;
+- every instrument.
 
-| File | For whom |
-|---|---|
-| `facedata/dictionary/FACE-guide.md` | Everyone, first: the cohorts, their visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument (`facedata guide`) |
-| `facedata/dictionary/FACE-data-dictionary.html` | People: a page to browse, search and filter. It opens from the disk, with no network (`facedata page`) |
-| `facedata/dictionary/face_dictionary.json` | Programs and coding agents: one record per variable, one line each (`facedata find`, `facedata show`) |
+Read it on GitHub:
+[FACE-guide.md](https://github.com/fondationfondamental/facedata/blob/main/facedata/dictionary/FACE-guide.md).
 
-`facedata files` prints where they are on your computer. In a copy of this
-repository, double-click `facedata/dictionary/FACE-data-dictionary.html`.
-
-The name of a variable in the dictionary is the name of its column in the
-tables that `load()` returns, so what you pick is what you ask for. The
-figures were computed on the extractions named in the page ("How to read"):
-they describe those files, and are rebuilt when a new extraction arrives
-([dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md)). They are aggregates only: no
-row of a patient, no value of a free-text column, no centre, and no count
-from 1 to 4 (shown "<5").
-
-### The page, for people
-
-1. **Choose a cohort**, or "All cohorts", at the top. Each cohort shows the
-   tabs of its own Excel dictionary.
-2. **Search** any word: a variable name, a label, an instrument, a raw column
-   of the extraction. The search looks in every tab, and each tab shows how
-   many variables match.
-3. **Filter** on the left: level (score, sub-score, item, single), type
-   (continuous, ordinal, binary, nominal, date, text), instrument, construct,
-   the cohorts that deliver the variable, the timepoint, the share of missing
-   values at baseline, whether the cohorts can be stacked, and whether a
-   field is not documented.
-4. **Read a row**: the name, the label, the level and type, a dot per cohort
-   that delivers it, a small distribution and the share missing at baseline.
-   Open an instrument to see its rows; "About this instrument" gives its
-   description, version, reference and the notes of its schema.
-5. **Click a row** for its card. Before you use a variable, read on the card:
-   - *What it measures*: the construct, and what a higher value means, with
-     the source of that statement;
-   - *Hierarchy and derivation*: the score it is counted in or the items it
-     counts, the formula, the reversed items;
-   - *In each cohort*: the table and column, the raw column of the
-     extraction, the range or the categories, the number of values and of
-     patients, the missing values, the distribution, the values at each
-     visit, and the flags that facedata raised;
-   - *Across cohorts*: whether the cohorts can be put under one another, and
-     what differs.
-6. **Tick** the variables you want. The basket keeps them when you change tab
-   or cohort. It exports a CSV and a JSON with their metadata, a Python list,
-   an R vector, and the `load()` code for each cohort.
-
-| I want | In the page |
-|---|---|
-| Scores that two cohorts share, for a transdiagnostic analysis | "All cohorts", tick the two cohorts under *Delivered in*, Level *score*, Across cohorts *Instrument stacks* |
-| Variables with enough follow-up for a longitudinal model | A cohort, Timepoint *1 year*, tick *Repeated*, Missing *Less than 25%* |
-| Everything that measures one thing | Construct, for example *Depressive symptoms* |
-| To put several scores on one scale | The card of each: *Higher = ...* says which way it runs |
-| What is not documented | Metadata *A field is not documented*; the amber mark on a row lists the fields |
-
-"Baseline" is one row per patient: the inclusion visit, completed by the
-screening visit when the inclusion visit holds nothing of the instrument.
-The figures are those of `load(winsorise=False)`: the tails are not clipped.
-
-### The JSON, for coding agents
-
-Read one record, or search, from the terminal:
-
-```bash
-facedata show madrs_total
-facedata find depression --cohort dr --level score
-```
-
-Each variable is one line of the file that starts with its name, so
-`grep -m1 '^"madrs_total":' "$(python -c 'from facedata import guide; print(guide.DICTIONARY)')"`
-reads one record without loading the 18 MB. Or load it and filter:
+## Load a cohort
 
 ```python
-from facedata import guide
+from facedata import bp          # or sz, dr, asp
 
-dictionary = guide.read_dictionary()
-variables = dictionary["variables"]
+result = bp.load("/path/to/BPALL_20261113_2.tsv", norms="/path/to/norms")
 
-# the depression scores that FACE BP and FACE DR both deliver, with what a higher value means
-for name, record in variables.items():
-    if record["level"] == "score" and record.get("construct") == "depression" and {"bp", "dr"} <= set(record["cohorts"]):
-        print(name, "|", record["direction"].get("higher_means"), "|", record["cohorts"]["bp"]["missing"])
+result.data        # one row per patient visit
+result.patients    # one row per patient
+result.flags       # one row per changed or doubtful cell, with its raw value
+result.qc          # one row per variable: counts, range, flags
+result.treatments  # one row per patient (or visit) and medication
+result.relatives   # one row per patient and relative: the family history
 ```
 
-A record gives, for a variable: `label`, `meaning`, `level`, `kind`,
-`construct`, `direction` (what a higher value means, and how it is known),
-`cutoffs`, `parents` and `children`, `harmonisation` (can the cohorts be
-stacked, what differs), `incomplete`, and one block per cohort with the
-table, the raw columns, the range or categories, the derivation, the counts,
-the missing values, the values at each visit, the statistics and the
-distribution. `dictionary["instruments"]` gives the description, version,
-reference and schema notes of each instrument, and `dictionary["meta"]["fields"]`
-describes every field.
+- **To load only what you need**, name the instruments with
+  `bp.load(path, instruments=["madrs", "ymrs"])`. This takes seconds. Loading
+  all of FACE BP takes about a minute and a half.
+- **Each variable has a name** in the data dictionary, and that name is its
+  column in one of these tables. The field `instrument` of a variable is what
+  you pass to `instruments=`.
+- **The key of a patient is `cohort` with `usubjid`.** A `usubjid` is unique
+  only inside its cohort. `patients` also holds `fondacode`, the patient code
+  that is unique across cohorts and stays the same from one extraction to the
+  next.
+- **Extreme values of measures are clipped** to the 1st and 99th percentile,
+  with the flag `winsorised`. Vital signs and ECG intervals are not clipped.
+  `winsorise=False` keeps every value as it was typed.
+- **The norm tables** turn raw test scores into T-scores, percentiles and
+  z-scores; `norms` defaults to a folder named `norms` in the current
+  directory. Without the tables, the package still loads: those standard
+  scores are missing, and `result.flags` says so. Sums and means of items do
+  not need the tables.
+- **A quality report:** `bp.report(result, "reports/bp")` writes an HTML report
+  with plots. Open `reports/bp/index.html`. It takes about ten minutes.
 
-Rules for an agent:
+[ARCHITECTURE.md](https://github.com/fondationfondamental/facedata/blob/main/docs/ARCHITECTURE.md#4-what-load-returns)
+describes every column of the six tables. The flag codes are in section 7 of
+the guide.
 
-- **Pick by name.** A variable id is a column of `result.data`,
-  `result.patients`, `result.treatments` or `result.relatives`; the field
-  `table` of the cohort block says which. The instrument to give to
-  `load(instruments=[...])` is the field `instrument`.
-- **Check before you compute.** `direction` before putting variables on one
-  scale or reversing one; `harmonisation` before stacking cohorts; `missing`,
-  `timepoints` and `n.patients_2plus` before a longitudinal model; `edition`
-  for a variable that exists on some visits only; the `flags` of the
-  instrument for its caveats.
-- **An empty field means "not documented".** Its name is in `incomplete`. Do
-  not fill it from memory: say that it is not documented.
-- **A count of -1 means "fewer than 5"**, and a percentage that would give
-  such a count away is absent.
-- Do not print the whole file, and do not edit it: it is generated
-  ([dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md)).
+| Module | Patients | Worth knowing |
+|---|---|---|
+| `bp` | Adults with a bipolar disorder | A `_v0` column (inclusion, the whole life) and a `_fu` column (follow-up, since the last visit) are two different questions. Sex, diagnosis and family history are in `patients` |
+| `sz` | Adults with schizophrenia, a schizoaffective or a schizophreniform disorder | `_v0` and `_fu` as in BP. Some scores that the database stored wrong are delivered corrected. The Calgary scale has no total, because the export loses its item 9 |
+| `dr` | Adults with a treatment-resistant major depressive disorder | The screening visit is a row of its own (`visit == "screening"`), with the MINI and the inclusion criteria. `treatments` holds three lists, named in the column `list` |
+| `asp` | Children from 5 years and adults assessed for an autism spectrum disorder | `diagnosis` says whether the centre confirmed the disorder; both groups are delivered. Children and adults answer different forms, in different columns. `treatments` holds eleven lists |
 
-`facedata init` writes these rules, condensed, into the `AGENTS.md` of a
-research project.
+For each cohort's visits and traps, run `facedata guide --section 4`.
 
-## Use
+## Work across cohorts
 
-```python
-from facedata import bp
-
-result = bp.load("data/bp/BPALL_20261113_2.tsv")
-
-result.data       # one row per patient visit, harmonised
-result.patients   # one row per patient
-result.flags      # one row per flagged cell, with the raw value
-result.qc         # one row per variable
-result.treatments # one row per patient and medication, with its dates
-result.relatives  # one row per patient and relative: the family history
-
-bp.report(result, "reports/bp")          # open reports/bp/index.html
-bp.coverage("data/bp/BPALL_20261113_2.tsv", "thesauri/FACEBP_thesaurus_V4.34.xlsx")
-```
-
-Loading everything takes about a minute and a half (a few seconds when you
-name the instruments you need), the report about ten minutes.
-
-FACE SZ is read the same way (`from facedata import sz`): every column of its
-extraction is read by a schema or ignored with a reason, in 127 instruments.
-Its 125 schemas are reviewed, tab by tab, and
-the questions of `docs/sz/QUESTIONS.md` stay open until answered;
-`docs/sz/PROGRESS.md` logs each decision. The tables of the two
-cohorts have the same key columns and the same names for the instruments
-they share, so they can be stacked:
+All four modules deliver the same patient columns. An instrument that several
+cohorts share has the same column names in each. So the tables of several
+cohorts can be stacked:
 
 ```python
 import pandas as pd
 from facedata import bp, sz
 
-one = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
-two = sz.load("data/sz/SZALL_20261121.tsv", instruments=["identite", "ymrs"])
-patients = pd.concat([one.patients, two.patients], ignore_index=True)
+one = bp.load("/path/to/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
+two = sz.load("/path/to/SZALL_20261121.tsv", instruments=["identite", "ymrs"])
 visits = pd.concat([one.data, two.data], ignore_index=True)
+patients = pd.concat([one.patients, two.patients], ignore_index=True)
 ```
 
-FACE DR, the cohort of resistant depression, is read the same way too
-(`from facedata import dr`): every one of the 2,375 columns of its extraction
-is read by one of 138 schemas or ignored with a reason, and
-`docs/dr/PROGRESS.md` logs each decision. Its screening visit is a visit of
-its own (`visit == "screening"`), where the MINI is given. Its table
-`treatments` holds three lists, named in the column `list`.
+Before you stack, check the verdict for each instrument. `facedata.common` has
+them:
 
-FACE ASP, the cohort of autism spectrum disorders, has children and adults
-(`from facedata import asp`). Its extraction came without a dictionary: each
-of its 4,364 columns is read by one of 138 schemas or ignored with a reason,
-and every instrument was identified from its column names, its items and its
-stored scores. The thesaurus arrived afterwards: it confirmed the instruments,
-corrected eight readings and gave the wording of the lists and the labels; a
-code that it does not document is delivered as a numbered code. Its table `treatments` holds eleven lists (the treatments of each
-visit, the diseases of each body system, the relatives, the
-hospitalisations). `docs/asp/PROGRESS.md` logs each decision.
-
-The first column of every table is `cohort`. A `usubjid` is unique inside a
-cohort only (the same number can be another patient in the other cohort), so
-the key is `cohort` with `usubjid`. `patients` also holds `fondacode`, the
-patient code that is unique across cohorts and does not change from one
-extraction to the next.
-
-`facedata.common` is for work across cohorts. Its catalogue lists the
-instruments that two cohorts or more share, says which can be stacked as they
-are, and names the variables to use; `baseline()` puts the screening visit and
-the inclusion visit of a patient in one row:
+- `common.catalogue()` lists the instruments that two cohorts or more share.
+  For each one, it says whether it stacks as it is ("yes", "with care" or
+  "no") and names the variables to use.
+- `common.baseline()` returns one row per patient: the inclusion visit,
+  completed by the screening visit.
 
 ```python
-from facedata import bp, sz, common
+from facedata import bp, common
 
-table = common.catalogue()                                  # instrument, cohorts, stack (yes / with care / no), use, note
+table = common.catalogue()                     # instrument, cohorts, stack, use, note
 wanted = table[table["stack"] != "no"]
 
-bipolar = bp.load("data/bp/BPALL_20261113_2.tsv", instruments=common.instruments_of("bp", wanted), winsorise=False)
-first, source = common.baseline(bipolar)                    # one row per patient, and the visit each instrument comes from
+bipolar = bp.load("/path/to/BPALL_20261113_2.tsv", instruments=common.instruments_of("bp", wanted), winsorise=False)
+first, source = common.baseline(bipolar)       # one row per patient, and the visit each instrument comes from
 ```
 
-## Tutorial
+Some instruments are not on one scale: the same subject can be measured with
+different instruments in different cohorts (depression is rated with the MADRS
+in BP and DR, the Calgary scale in SZ and the HAM-D in ASP). Section 5 of the
+guide lists these instruments, and the editions that must stay in separate
+columns.
 
-```bash
-uv run jupyter lab bipolar-tutorial.ipynb
+## The data dictionary
+
+Three files in the package describe every variable that `load()` delivers in
+the four cohorts. Every install has them; `facedata files` prints where they
+are.
+
+| File | For whom |
+|---|---|
+| `FACE-guide.md` | Everyone, first: the guide described above (`facedata guide`) |
+| `FACE-data-dictionary.html` | People: a page to browse, search and filter. It opens from the disk and needs no network (`facedata page`) |
+| `face_dictionary.json` | Programs and coding agents: one record per variable, one line each (`facedata find`, `facedata show`) |
+
+For each variable, the dictionary gives:
+
+- its meaning, and what a higher value means;
+- how it is derived;
+- the cohorts and visits that have it;
+- its missing values and its distribution;
+- what differs between the cohorts.
+
+The figures describe the extractions named in the page, under "How to read".
+They are aggregates only: no row of a patient, no free text, no centre, and no
+count from 1 to 4 (the page shows "<5", the JSON -1).
+
+### The page
+
+1. **Choose a cohort**, or "All cohorts", at the top.
+2. **Search** any word: a variable name, a label, an instrument, or a raw
+   column of the extraction.
+3. **Filter** on the left: level, type, instrument, construct, the cohorts
+   that deliver it, the timepoint, the share missing at baseline, whether the
+   cohorts can be stacked.
+4. **Click a row** to open its card. It shows what the variable measures and
+   which way it runs, how it is derived, its figures in each cohort, and
+   whether the cohorts can be stacked.
+5. **Tick** the variables you want. The basket exports a CSV or JSON of their
+   metadata, a Python list, an R vector, and the `load()` code for each
+   cohort.
+
+| I want | In the page |
+|---|---|
+| Scores that two cohorts share | "All cohorts", tick the two cohorts under *Delivered in*, Level *score*, Across cohorts *Instrument stacks* |
+| Variables with enough follow-up for a longitudinal model | A cohort, Timepoint *1 year*, tick *Repeated*, Missing *Less than 25%* |
+| Everything that measures one thing | Construct, for example *Depressive symptoms* |
+| To put several scores on one scale | The card of each: *Higher = ...* says which way it runs |
+| What is not documented | Metadata *A field is not documented* |
+
+"Baseline" means one row per patient: the inclusion visit, completed by the
+screening visit when the inclusion visit has nothing of the instrument.
+
+### The JSON
+
+`facedata show <id>` prints one record, and `facedata find <words>` searches
+them. From Python:
+
+```python
+from facedata import guide
+
+dictionary = guide.read_dictionary()
+
+# the depression scores that FACE BP and FACE DR both deliver, with what a higher value means
+for name, record in dictionary["variables"].items():
+    if record["level"] == "score" and record.get("construct") == "depression" and {"bp", "dr"} <= set(record["cohorts"]):
+        print(name, "|", record["direction"].get("higher_means"))
 ```
 
-```bash
-uv run jupyter lab schizophrenia-tutorial.ipynb
-```
+`dictionary["meta"]["fields"]` describes every field of a record.
 
-```bash
-uv run jupyter lab depression-tutorial.ipynb
-```
+Check these fields before you compute:
 
-```bash
-uv run jupyter lab autism-tutorial.ipynb
-```
+- `direction`, before you put variables on one scale;
+- `harmonisation`, before you stack cohorts;
+- `missing` and `timepoints`, before a longitudinal model;
+- `edition`;
+- the `flags` of the instrument.
 
-```bash
-uv run jupyter lab common-instruments.ipynb
-```
+An empty field means "not documented"; the names of those fields are listed in
+`incomplete`. A count of -1 means "fewer than 5".
 
-One notebook per cohort. The second one ends with a section that loads the
-instruments shared by FACE BP and FACE SZ and stacks the two cohorts; the
-third one stacks the three, and the fourth one the four. The fifth notebook
-is about the four cohorts together: the catalogue of the common instruments,
-one baseline row per patient, and the stacked table.
+## Tutorials
 
-A notebook opens in the web browser. Run its cells from top to bottom with
-`Shift` + `Enter`. What appears under a cell is patient data: clear it
-(*Edit*, *Clear Outputs of All Cells*) before you save a notebook that will
-be shared or sent to GitHub.
+These notebooks are on GitHub. To use one, download it into your project,
+set the path of the extraction in its first cell, and open it with Jupyter, for
+example `uv run --with jupyterlab jupyter lab bipolar-tutorial.ipynb`.
 
-## Tests
+| Notebook | What it shows |
+|---|---|
+| [bipolar-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/bipolar-tutorial.ipynb) | A first tour of FACE BP for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
+| [schizophrenia-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, ending with BP and SZ in one table |
+| [depression-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/depression-tutorial.ipynb) | FACE DR, with four use cases: response and remission, resistance and treatments, MINI diagnoses, life events |
+| [autism-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/autism-tutorial.ipynb) | FACE ASP, with four use cases: diagnostic profile, children and adults, comorbidities and treatments, self-reported traits |
+| [common-instruments.ipynb](https://github.com/fondationfondamental/facedata/blob/main/common-instruments.ipynb) | The four cohorts together: the shared instruments, one baseline row per patient, the stacked table, what to check before comparing |
 
-```bash
-uv run pytest
-```
+Run the cells from top to bottom with `Shift` + `Enter`. The output under a
+cell is patient data. Before you save a notebook that will be shared, clear it
+(*Edit*, *Clear Outputs of All Cells*).
 
-The tests use small hand-written tables. One test file per cohort also checks
-the real extraction when it is on the computer, and is skipped otherwise.
+## Patient data
 
-## Data
+- **The extractions** (`.tsv` files) are pseudonymised patient records. Keep
+  them out of git, for example in a `data/` folder listed in `.gitignore`.
+- **Report aggregates only.** Never copy rows, identifiers (`usubjid`,
+  `fondacode`), the dates of a patient or free text into code, documents or
+  commits. Write a count from 1 to 4 as "fewer than 5". Do not name centres.
+- **The norm tables** come from the test manuals and are copyrighted. Keep
+  them out of git too, and never copy a value of them into code or notes.
 
-The extractions (`data/`) and the data dictionaries (`thesauri/`) are not part
-of the repository. Put them next to the code:
+## Working on facedata itself
 
-```
-data/bp/BPALL_20261113_2.tsv
-thesauri/FACEBP_thesaurus_V4.34.xlsx
-norms/wais3_vocabulary.csv
-```
-
-`norms/` holds the norm tables of the tests (age band and raw score to
-scaled score or percentile band). They are copyrighted, so they stay out of the repository
-too. Without them the package still loads; the checks that need a table say
-so in `result.flags`.
-
-They hold pseudonymised patient records. Never copy rows or identifiers into
-code, tests, documents or commits.
+How the package works, how to add an instrument and how to rebuild the data
+dictionary are explained in
+[docs/ARCHITECTURE.md](https://github.com/fondationfondamental/facedata/blob/main/docs/ARCHITECTURE.md),
+[docs/SCHEMA_SPEC.md](https://github.com/fondationfondamental/facedata/blob/main/docs/SCHEMA_SPEC.md)
+and [dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md).
