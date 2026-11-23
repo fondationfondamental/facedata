@@ -1,6 +1,6 @@
 """The data dictionary as one HTML page that opens from the disk, with no network.
 
-Step 3 of 3 (dictionary/README.md). Puts facedata/dictionary/face_dictionary.json
+Step 4 of 4 (dictionary/README.md). Puts facedata/dictionary/face_dictionary.json
 inside dictionary/template.html and writes facedata/dictionary/FACE-data-dictionary.html.
 The page reads nothing else: styles, script and data are in the one file.
 

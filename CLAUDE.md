@@ -15,8 +15,9 @@ instrument. Specs live in `docs/` and are the source of truth:
 - Special cases belong in a YAML schema, never in code. If code needs
   `if instrument == ...`, the schema spec is missing a field: change the spec.
 - The generic code (`facedata/*.py`, plots and report included) has a budget of
-  about 3,700 lines (raised from 3,600 on 2026-11-19 for the expected-value and
-  distance scores); it was 3,637 on 2026-11-21. Adding an instrument adds a
+  about 4,000 lines (raised from 3,600 on 2026-11-19 for the expected-value and
+  distance scores, and from 3,700 on 2026-11-23 for `facedata/guide.py`, the
+  `facedata` command); it was 3,876 on 2026-11-23. Adding an instrument adds a
   YAML file and, rarely, one small function in `facedata/custom.py`.
 - Change `docs/SCHEMA_SPEC.md` before changing what a schema field means.
 
@@ -50,8 +51,13 @@ of the four cohorts: meaning, construct, direction, derivation, raw column,
 range and codes, cohorts and visits, missing values, distribution, what
 differs between cohorts. Use it to choose variables and before using one in
 an analysis. The page for people is
-`facedata/dictionary/FACE-data-dictionary.html`. How to use both: `README.md`.
-Fields and rebuild: `dictionary/README.md`.
+`facedata/dictionary/FACE-data-dictionary.html`, and the guide to the cohorts
+(their visits and traps, shared instruments, the same subject under other
+instruments, editions) is `facedata/dictionary/FACE-guide.md`. The command
+`facedata` (`facedata/guide.py`: `guide`, `find`, `show`, `instruments`,
+`page`, `init`) reads them; `facedata init` writes `facedata/agents.md` into the
+AGENTS.md of a research project. How to use them: `README.md`. Fields and
+rebuild: `dictionary/README.md`.
 
 - A variable id is the column name that `load()` delivers. The file has one
   line per variable: read one record with
@@ -62,11 +68,12 @@ Fields and rebuild: `dictionary/README.md`.
   model, and `incomplete` for what no source documents.
 - An empty field means "not documented". Never fill it from memory: add it to
   `dictionary/annotations/` with its source, then rebuild.
-- The JSON, the page, `dictionary/incomplete.csv` and `dictionary/stats/` are
-  generated and committed. Never edit them by hand. Rebuild them when a
-  schema, an annotation or an extraction changes, and commit them with that
-  change: a test fails when the dictionary and the schemas do not list the
-  same variables.
+- The JSON, the guide, the page, `dictionary/incomplete.csv` and
+  `dictionary/stats/` are generated and committed. Never edit them by hand.
+  Rebuild them when a schema, an annotation, `dictionary/cohorts.yaml`,
+  `dictionary/same_subject.yaml` or an extraction changes, and commit them with
+  that change: a test fails when the dictionary and the schemas do not list
+  the same variables, or when the guide is not the one the JSON gives.
 
 ## Working method
 

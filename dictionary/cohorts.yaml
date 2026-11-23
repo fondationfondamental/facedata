@@ -1,0 +1,90 @@
+# What a newcomer must know about each FACE cohort, before choosing a variable.
+#
+# Written by hand from the opening of docs/<cohort>/PROGRESS.md and the section
+# "The traps of this cohort" of each tutorial. No figure that changes with an
+# extraction: the counts of patients, visits and ages come from the data and are
+# added by build_json.py and build_guide.py. No centre is named.
+#
+#   population  who the patients are
+#   design      the visits
+#   traps       what has cost someone a wrong result, most important first
+#   tutorial    the notebook of the repository that tours the cohort
+#
+# build_json.py copies each entry into face_dictionary.json (cohorts.<c>.about),
+# the page shows it under "How to read", and build_guide.py writes it into the
+# guide.
+
+bp:
+  population: >
+    Adults with a bipolar disorder (type 1, type 2 or not otherwise specified),
+    assessed in the FondaMental network of expert centres for bipolar disorder.
+  design: >
+    A screening record, then an inclusion visit (V0) and follow-up visits every
+    six months or every year. Few patients are followed beyond five years.
+  traps:
+    - "`_v0` and `_fu` are two different questions: the inclusion visit asks about the whole life, the later visits about the time since the last visit or about an update of the inclusion form. Never put the two in one column."
+    - "Editions and forms have their own columns: WAIS-III and WAIS-IV, BIS-10 and BIS-12, the long and short ALS, WURS-25 and WURS-61, DSM-IV and DSM-5. A column such as `wais_version`, `bis_form` or `dsm_version` says which one a visit used."
+    - "Empty does not mean no: an empty cell is not asked, not answered or not usable. A no is written 0."
+    - "Sex, diagnosis and family history are in the table `patients`: join them to the visits on `usubjid`."
+    - "The screening visits hold only a few questionnaires (Altman, QIDS, MDQ). Start from V0."
+    - "Patients leave: a figure over time mixes change and departures."
+    - "Centres differ, and the forms changed over the years, most of all around 2022 (a \"no for all\" shortcut leaves the diseases of a section empty). Look at a variable per centre and per year before concluding."
+    - "The suicide answers of the follow-up visits of 2022 and 2023 are not delivered: the form of these two years asked about the whole life again."
+  tutorial: bipolar-tutorial.ipynb
+
+sz:
+  population: >
+    Adults with schizophrenia, a schizoaffective or a schizophreniform
+    disorder, assessed in the FondaMental network of expert centres for
+    schizophrenia.
+  design: >
+    A screening record (an EQ-5D only), an inclusion visit (V0) and yearly
+    follow-up visits. Fewer than half of the patients are seen at one year.
+  traps:
+    - "`_v0` and `_fu` are two different questions (whole life, or since the last visit, or a yearly update of the inclusion form). Never put the two in one column."
+    - "WAIS-III and WAIS-IV have their own columns, for every subtest and every IQ; `wais_version` says which one a visit used."
+    - "Empty does not mean no: a no is written 0."
+    - "Some scores were wrong in the database and are delivered corrected (three PANSS factors, two WAIS-IV indices, the laterality quotient). Others are flagged: the CVLT z-scores of 2022 to mid-2025, and the Barona expected IQ, whose occupation is most often a copy of the diploma."
+    - "Some answers are lost by the export: no patient is married or living as a couple, no income is a salary, the Calgary scale has no item 9 and so no total, and `substance_disorder_v0` is missing on most inclusion visits (use the column of each substance)."
+    - "Patients leave, centres differ, and the tests changed around 2015 to 2018 and part of the medical history in 2022: look at a variable per centre and per year."
+  tutorial: schizophrenia-tutorial.ipynb
+
+dr:
+  population: >
+    Adults with a treatment-resistant major depressive disorder (TRD), assessed
+    in the FondaMental network of expert centres for resistant depression. The
+    inclusion criteria ask for a MADRS above 20.
+  design: >
+    A screening visit, a row of its own, then an inclusion visit (V0) and
+    follow-up visits at 6, 12, 18 and 24 months and later. Half of the patients
+    are seen at six months, a quarter at two years. The visits at 6 and 18
+    months are short: depression scales, weight and laboratory tests only.
+  traps:
+    - "The MINI, the Thase and Rush stage and the inclusion criteria are on the `screening` row of a patient, not on the V0 row. The MADRS is rated at both, on separate rows."
+    - "`_lifetime` and `_since_visit` are two different questions. Never put the two in one column."
+    - "Empty does not mean no, but a 0 in a box can mean not asked: in the MINI, the family form and the traumatic events, some boxes hold 0 wherever the form was opened. Look at the flag `derived_doubt`."
+    - "Since 2018 a simplified visit leaves out eleven self-questionnaires (STAI, Altman, MAThyS, Rosenberg, PSQI, Epworth, CSM, MARS, PRISE-M, BIS-10, BFI) and three clinician scales (YMRS, FAST, BAS). An empty scale is then not asked, and the extraction does not say which visits are simplified; some centres use it much more than others."
+    - "Some scores were wrong in the database and are delivered corrected: the CTQ, the BIS-10, the MARS, the SHAPS and the Fagerström total; the QIDS total is computed where the database stores none."
+    - "The medication lists are damaged: for a patient with several products there is no dose and no date, and the `on_...` columns are often empty."
+    - "Centres differ: look at a variable per centre and per year."
+  tutorial: depression-tutorial.ipynb
+
+asp:
+  population: >
+    Children from 5 years and adults assessed for an autism spectrum disorder
+    (Asperger syndrome and ASD) in the FondaMental network of expert centres.
+    `diagnosis` says whether the centre confirmed the disorder
+    (`asd_confirmed`) or not (`asd_not_confirmed`): both groups are delivered.
+  design: >
+    A screening record and an inclusion visit (V0). About one patient in ten
+    has a follow-up visit. The dictionary of the cohort arrived after the
+    module was written: every instrument was identified from the data, then
+    checked against it.
+  traps:
+    - "A child form and an adult form are two instruments with different columns and ranges: STAIC and STAI, CDI and BDI-II, BRIEF and BRIEF-A, the child and adult ADHD-RS. Never add them up or put them on one axis without saying so."
+    - "Two generations of forms: an old set of questionnaires until about 2017 (AQ, Empathy Quotient, RBS-R, Hamilton scales), a new set from 2019 to 2021 (RAADS-R, BDI-II, GSQ). An old scale is empty after the change because it was no longer asked."
+    - "The ADOS has four modules, each with its own columns and cut-offs; `ados_module` says which one was given."
+    - "The codes 7, 8 and 9 of the ADI-R and ADOS items are not levels. Never average the items: use the algorithm scores."
+    - "The centres do not give the same instruments: check that every centre fills a score before comparing them."
+    - "A treatment list belongs to a visit (in the other cohorts it is the history of the patient), and a missing list is not \"no treatment\"."
+  tutorial: autism-tutorial.ipynb

@@ -10,29 +10,30 @@ small YAML schema; the Python code is generic and stays small.
 deliberately ignored. All the schemas are reviewed, tab by tab (BP 135, SZ 125, DR 139, ASP 146):
 each cohort's progress file
 lists the decisions taken and the questions still open
-([BP](docs/bp/PROGRESS.md), [SZ](docs/sz/PROGRESS.md), [DR](docs/dr/PROGRESS.md),
-[ASP](docs/asp/PROGRESS.md)).
+([BP](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/PROGRESS.md), [SZ](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/PROGRESS.md), [DR](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/PROGRESS.md),
+[ASP](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/PROGRESS.md)).
 
 ## Read first
 
 | Document | What it tells you |
 |---|---|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
-| [docs/SCHEMA_SPEC.md](docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
-| [docs/bp/PROGRESS.md](docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
-| [docs/bp/QUESTIONS.md](docs/bp/QUESTIONS.md) | The open questions of FACE BP as a list to close, sorted by who can close them (the application, the data, a choice of method, the data managers) and by priority, and the state of the norms |
-| [docs/sz/PROGRESS.md](docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
-| [docs/sz/QUESTIONS.md](docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
-| [docs/dr/PROGRESS.md](docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
-| [docs/dr/QUESTIONS.md](docs/dr/QUESTIONS.md) | The same questions for FACE DR |
-| [docs/asp/PROGRESS.md](docs/asp/PROGRESS.md) | FACE ASP (autism spectrum, children and adults) checklist, decisions taken, decisions still open. The dictionary arrived after the module was written: every instrument was identified from the data, then checked against it |
-| [docs/asp/QUESTIONS.md](docs/asp/QUESTIONS.md) | The same questions for FACE ASP |
-| [bipolar-tutorial.ipynb](bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
-| [schizophrenia-tutorial.ipynb](schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
-| [depression-tutorial.ipynb](depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
-| [autism-tutorial.ipynb](autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
-| [common-instruments.ipynb](common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
-| [The data dictionary](#data-dictionary-what-the-package-delivers-and-what-to-pick) | Every delivered variable in one page for people and one JSON file for coding agents: meaning, direction, derivation, cohorts and visits, missing values, distribution. How it is built: [dictionary/README.md](dictionary/README.md) |
+| [The guide](https://github.com/fondationfondamental/facedata/blob/main/facedata/dictionary/FACE-guide.md) (`facedata guide`) | Start here: the four cohorts, their visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument. It ships with the package |
+| [docs/ARCHITECTURE.md](https://github.com/fondationfondamental/facedata/blob/main/docs/ARCHITECTURE.md) | What the package returns, the pipeline steps, the flag codes, the QC report |
+| [docs/SCHEMA_SPEC.md](https://github.com/fondationfondamental/facedata/blob/main/docs/SCHEMA_SPEC.md) | Every field a schema may contain, and how to add an instrument |
+| [docs/bp/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/PROGRESS.md) | FACE BP checklist, decisions taken, decisions still open |
+| [docs/bp/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/bp/QUESTIONS.md) | The open questions of FACE BP as a list to close, sorted by who can close them (the application, the data, a choice of method, the data managers) and by priority, and the state of the norms |
+| [docs/sz/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/PROGRESS.md) | FACE SZ checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
+| [docs/sz/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/sz/QUESTIONS.md) | The same questions for FACE SZ |
+| [docs/dr/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/PROGRESS.md) | FACE DR (resistant depression) checklist, decisions taken, decisions still open, and what was corrected, separated or flagged |
+| [docs/dr/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/dr/QUESTIONS.md) | The same questions for FACE DR |
+| [docs/asp/PROGRESS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/PROGRESS.md) | FACE ASP (autism spectrum, children and adults) checklist, decisions taken, decisions still open. The dictionary arrived after the module was written: every instrument was identified from the data, then checked against it |
+| [docs/asp/QUESTIONS.md](https://github.com/fondationfondamental/facedata/blob/main/docs/asp/QUESTIONS.md) | The same questions for FACE ASP |
+| [bipolar-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/bipolar-tutorial.ipynb) | A first tour of the FACE BP data for people who do not code much: load, find a variable, plot, follow patients, avoid the traps |
+| [schizophrenia-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/schizophrenia-tutorial.ipynb) | The same tour for FACE SZ, with a last section that puts the two cohorts in one table |
+| [depression-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/depression-tutorial.ipynb) | The same tour for FACE DR, with four use cases (response and remission, resistance and treatments, MINI diagnoses, life events) and a last section that puts the three cohorts in one table |
+| [autism-tutorial.ipynb](https://github.com/fondationfondamental/facedata/blob/main/autism-tutorial.ipynb) | The same tour for FACE ASP: children and adults, a dictionary that arrived after the work, four use cases (diagnostic profile, children and adults, comorbidities and treatments, self-reported traits) and a last section that puts the four cohorts in one table |
+| [common-instruments.ipynb](https://github.com/fondationfondamental/facedata/blob/main/common-instruments.ipynb) | The four cohorts together, for transdiagnostic work: the catalogue of the instruments they share, the screening and the inclusion visits in one row per patient, the stacked table, what to check before comparing |
+| [The data dictionary](#data-dictionary-what-the-package-delivers-and-what-to-pick) | Every delivered variable in one page for people and one JSON file for coding agents: meaning, direction, derivation, cohorts and visits, missing values, distribution. How it is built: [dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md) |
 
 ## Install
 
@@ -42,29 +43,29 @@ norms and the dictionaries are not part of the package (see [Data](#data)).
 **In another project, with uv:**
 
 ```bash
-uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
+uv add "facedata @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
 **In another project, with pip:**
 
 ```bash
-pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
+pip install "facedata @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
-`@v0.2.0` pins a released version, so an analysis keeps giving the same
+`@v0.3.0` pins a released version, so an analysis keeps giving the same
 results when the package changes. Leave it out to take the latest `main`.
 
 `coverage()` reads the thesaurus workbooks and needs the extra `thesaurus`
 (openpyxl). With uv:
 
 ```bash
-uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
+uv add "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
 The same with pip:
 
 ```bash
-pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.2.0"
+pip install "facedata[thesaurus] @ git+https://github.com/fondationfondamental/facedata@v0.3.0"
 ```
 
 **From a local copy that you are changing:** an editable install sees your
@@ -90,38 +91,54 @@ Outside this folder, give the full path of the extraction and of the norm
 tables: `bp.load("/path/to/BPALL_20261113_2.tsv", norms="/path/to/norms")`.
 By default `norms` is the folder `norms` of the current directory.
 
+**Then, once, in your research project:**
+
+```bash
+facedata init
+```
+
+It writes a short block into `AGENTS.md` (read by Codex, Cursor, Copilot and
+other coding agents) and makes `CLAUDE.md` read it (Claude Code). The block
+tells an agent what the cohorts are, where the guide and the data dictionary
+are, how to search them, and the rules for patient data. The rest of both
+files is kept; run it again after an upgrade to refresh the block.
+
+What you and your agents can then run (with uv: `uv run facedata ...`;
+anywhere: `python -m facedata ...`):
+
+| Command | What it gives |
+|---|---|
+| `facedata guide` | The guide to the four cohorts (`--section 4` prints one section): loading, the rules before an analysis, each cohort with its visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument |
+| `facedata find depression --cohort dr --level score` | The variables whose id, label or meaning holds every word |
+| `facedata show madrs_total madrs` | The records of variables or instruments (JSON; `--full` keeps the distributions) |
+| `facedata instruments --cohort sz` | The instruments of a cohort; `--shared`, those of two cohorts or more |
+| `facedata page` | The dictionary page in your browser |
+| `facedata files` | Where the guide, the JSON and the page are |
+
+From Python: `from facedata import guide`, then `guide.find("depression", cohort="dr")`,
+`guide.variable("madrs_total")`, `guide.instruments(shared=True)`.
+
 ## Data dictionary: what the package delivers, and what to pick
 
 Two files inside the package describe every variable that `load()` delivers
 for the four cohorts: 9,600 columns in 362 instruments. They hold the same
-content, and every install has them.
+content, and every install has them. A third, the guide, is the place to
+start: it is built from them.
 
 | File | For whom |
 |---|---|
-| `facedata/dictionary/FACE-data-dictionary.html` | People: a page to browse, search and filter. It opens from the disk, with no network |
-| `facedata/dictionary/face_dictionary.json` | Programs and coding agents: one record per variable, one line each |
+| `facedata/dictionary/FACE-guide.md` | Everyone, first: the cohorts, their visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument (`facedata guide`) |
+| `facedata/dictionary/FACE-data-dictionary.html` | People: a page to browse, search and filter. It opens from the disk, with no network (`facedata page`) |
+| `facedata/dictionary/face_dictionary.json` | Programs and coding agents: one record per variable, one line each (`facedata find`, `facedata show`) |
 
-Where they are on your computer, and the page opened in your browser:
-
-```python
-from pathlib import Path
-import webbrowser
-
-import facedata
-
-folder = Path(facedata.__file__).parent / "dictionary"
-print(folder)
-webbrowser.open((folder / "FACE-data-dictionary.html").as_uri())
-```
-
-In a copy of this repository, double-click
-`facedata/dictionary/FACE-data-dictionary.html`.
+`facedata files` prints where they are on your computer. In a copy of this
+repository, double-click `facedata/dictionary/FACE-data-dictionary.html`.
 
 The name of a variable in the dictionary is the name of its column in the
 tables that `load()` returns, so what you pick is what you ask for. The
 figures were computed on the extractions named in the page ("How to read"):
 they describe those files, and are rebuilt when a new extraction arrives
-([dictionary/README.md](dictionary/README.md)). They are aggregates only: no
+([dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md)). They are aggregates only: no
 row of a patient, no value of a free-text column, no centre, and no count
 from 1 to 4 (shown "<5").
 
@@ -170,23 +187,21 @@ The figures are those of `load(winsorise=False)`: the tails are not clipped.
 
 ### The JSON, for coding agents
 
-Read one record without loading the 18 MB: each variable is one line that
-starts with its name.
+Read one record, or search, from the terminal:
 
 ```bash
-grep -m1 '^"madrs_total":' facedata/dictionary/face_dictionary.json
+facedata show madrs_total
+facedata find depression --cohort dr --level score
 ```
 
-Or load it and filter:
+Each variable is one line of the file that starts with its name, so
+`grep -m1 '^"madrs_total":' "$(python -c 'from facedata import guide; print(guide.DICTIONARY)')"`
+reads one record without loading the 18 MB. Or load it and filter:
 
 ```python
-import json
-from pathlib import Path
+from facedata import guide
 
-import facedata
-
-path = Path(facedata.__file__).parent / "dictionary" / "face_dictionary.json"
-dictionary = json.loads(path.read_text(encoding="utf-8"))
+dictionary = guide.read_dictionary()
 variables = dictionary["variables"]
 
 # the depression scores that FACE BP and FACE DR both deliver, with what a higher value means
@@ -221,7 +236,10 @@ Rules for an agent:
 - **A count of -1 means "fewer than 5"**, and a percentage that would give
   such a count away is absent.
 - Do not print the whole file, and do not edit it: it is generated
-  ([dictionary/README.md](dictionary/README.md)).
+  ([dictionary/README.md](https://github.com/fondationfondamental/facedata/blob/main/dictionary/README.md)).
+
+`facedata init` writes these rules, condensed, into the `AGENTS.md` of a
+research project.
 
 ## Use
 

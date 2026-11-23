@@ -1,6 +1,6 @@
 """Statistics of every delivered variable, for the data dictionary.
 
-Step 1 of 3 (dictionary/README.md). Loads each cohort with facedata, without
+Step 1 of 4 (dictionary/README.md). Loads each cohort with facedata, without
 winsorising, and writes dictionary/stats/<cohort>.json: how many values each
 variable has, at which visits, how much is missing, and how the values are
 spread. Aggregates only: no row of a patient, no value of a text column, no

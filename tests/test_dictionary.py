@@ -161,7 +161,7 @@ def test_codings_of_the_excel_dictionary_are_read_as_answer_labels():
 
 
 def test_the_json_has_one_line_per_variable_and_the_page_holds_it(tmp_path):
-    dictionary = {"meta": {"title": "t"}, "cohorts": {}, "constructs": {}, "flags": {},
+    dictionary = {"meta": {"title": "t"}, "cohorts": {}, "subjects": {}, "constructs": {}, "flags": {},
                   "instruments": {"demo": {"id": "demo"}},
                   "variables": {"it1": {"id": "it1", "label": "a </script> in a label <!-- and a comment"}, "total": {"id": "total"}}}
     target = tmp_path / "face_dictionary.json"
@@ -215,6 +215,25 @@ def test_annotations_name_instruments_scores_and_constructs_that_exist():
     assert problems == []
 
 
+def test_the_cohorts_and_the_same_subjects_name_what_exists():
+    """dictionary/cohorts.yaml describes the four cohorts; same_subject.yaml names instruments of the cohort it puts them in."""
+    instruments_of = {cohort: set() for cohort in build_json.COHORTS}
+    for path in sorted(ROOT.glob("facedata/*/schemas/*/*.yaml")):
+        with open(path, encoding="utf-8") as file:
+            instruments_of[path.parts[-4]].add(yaml.load(file, Loader=yaml.BaseLoader)["instrument"])
+    abouts = build_json.read_yaml(ROOT / "dictionary" / "cohorts.yaml")
+    assert sorted(abouts) == sorted(build_json.COHORTS)
+    for cohort, about in abouts.items():
+        assert {"population", "design", "traps", "tutorial"} <= set(about), cohort
+        assert (ROOT / about["tutorial"]).exists(), about["tutorial"]
+    problems = []
+    for key, subject in build_json.read_yaml(ROOT / "dictionary" / "same_subject.yaml").items():
+        assert subject["title"], key
+        for cohort in build_json.COHORTS:
+            problems += ["%s: %s is not an instrument of %s" % (key, name, cohort) for name in subject[cohort] if name not in instruments_of[cohort]]
+    assert problems == []
+
+
 def small_counts(block):
     """The counts of a cohort block that would show 1 to 4 patients or cells."""
     counts = [count for key, count in (block.get("n") or {}).items() if key != "rows"]
@@ -244,6 +263,8 @@ def test_the_committed_files_follow_the_data_rules():
         for name, block in json.loads(path.read_text(encoding="utf-8"))["variables"].items():
             if small_counts(block):
                 problems.append("%s in %s: a count from 1 to 4" % (name, path.name))
+    for cohort, summary in dictionary["cohorts"].items():               # the guide writes these counts
+        problems += ["visit %s of %s: a count from 1 to 4" % (visit["visit"], cohort) for visit in summary.get("visits", []) if 0 < visit["n"] < 5]
     assert problems == []
 
 

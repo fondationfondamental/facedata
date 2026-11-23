@@ -4,23 +4,29 @@ One page and one JSON file that describe every variable that `facedata`
 delivers for the four cohorts (BP, SZ, DR, ASP): what it measures, what a
 higher value means, how it is derived, where it lives in the data, which
 cohorts and visits have it, how much is missing and how the values are spread.
+A guide in Markdown, built from the JSON, says what to know of the cohorts
+before choosing a variable.
 
 | File | What it is |
 |---|---|
 | `facedata/dictionary/FACE-data-dictionary.html` | The page for people. Opens from the disk, with no network. Inside the package: every install has it |
 | `facedata/dictionary/face_dictionary.json` | The same content for programs. One line per variable. Inside the package too |
+| `facedata/dictionary/FACE-guide.md` | The guide: the cohorts, their visits and traps, the instruments they share, the same subject under other instruments, the editions, every instrument, the flags. Inside the package; `facedata guide` prints it |
 | `dictionary/incomplete.csv` | The instruments and variables with a field that no source gives |
 | `dictionary/stats/<cohort>.json` | The figures of each cohort, written by step 1 |
 | `dictionary/annotations/*.yaml` | Written by hand: description, version, reference, construct, direction, cut-offs |
 | `dictionary/constructs.yaml` | The list of constructs that an annotation may name |
+| `dictionary/cohorts.yaml` | Written by hand: who the patients of each cohort are, its visits, its traps, its tutorial |
+| `dictionary/same_subject.yaml` | Written by hand: one subject (depression rated by the clinician, sleep...) and the instruments that measure it in each cohort |
+| `dictionary/guide_template.md` | The text of the guide, with the places that `build_guide.py` fills |
 | `dictionary/config.yaml` | The paths of the extractions and of the Excel dictionaries, the tabs of the view "all cohorts" |
-| `build_stats.py`, `build_json.py`, `build_html.py`, `template.html` | The three steps |
+| `build_stats.py`, `build_json.py`, `build_guide.py`, `build_html.py`, `template.html` | The four steps |
 | `check_numbers.py` | Checks the figures against the data by another road |
 
 How to use the page and the JSON is in the [README](../README.md) of the
 repository. This file says how they are built.
 
-**The four generated files are committed**, so that whoever installs the
+**The five generated files are committed**, so that whoever installs the
 package knows what it delivers. They hold figures computed from patient data,
 under these rules, which `tests/test_dictionary.py` checks on the committed
 files:
@@ -43,23 +49,27 @@ files:
 ```bash
 .venv/bin/python dictionary/build_stats.py     # 1. loads the four cohorts and counts (a few minutes)
 .venv/bin/python dictionary/build_json.py      # 2. schemas + annotations + figures -> facedata/dictionary/face_dictionary.json
-.venv/bin/python dictionary/build_html.py      # 3. JSON + template -> facedata/dictionary/FACE-data-dictionary.html
+.venv/bin/python dictionary/build_guide.py     # 3. JSON + guide_template.md -> facedata/dictionary/FACE-guide.md
+.venv/bin/python dictionary/build_html.py      # 4. JSON + template -> facedata/dictionary/FACE-data-dictionary.html
 .venv/bin/python dictionary/check_numbers.py   # the figures against the extractions
 ```
 
-- A new extraction: change its path in `config.yaml`, then run the four lines.
-- A schema changed: run the four lines. A test fails as long as the committed
+- A new extraction: change its path in `config.yaml`, then run the five lines.
+- A schema changed: run the five lines. A test fails as long as the committed
   dictionary does not list exactly the variables that the schemas deliver.
-- Only an annotation changed: steps 2 and 3 are enough.
+- Only an annotation, `cohorts.yaml` or `same_subject.yaml` changed: steps 2
+  to 4 are enough. Only `guide_template.md` changed: step 3.
 - Commit the regenerated files with the change that caused them, so that the
   dictionary of a version of the package describes that version.
 - `build_stats.py dr sz` computes some cohorts only. `--cached` keeps the
   loads in `local/cache/` and reuses them at the next run: use it while you
   work on the scripts, never after a schema or an extraction changed.
 
-`tests/test_dictionary.py` runs the three steps on a made-up cohort, checks
+`tests/test_dictionary.py` runs the steps on a made-up cohort, checks
 that every annotation still names an instrument, a score and a construct that
-exist, and checks the committed files against the rules above.
+exist (and `same_subject.yaml` instruments of the right cohorts), and checks
+the committed files against the rules above. `tests/test_guide.py` checks that
+the committed guide is the one that the committed JSON gives.
 
 ## Where each piece of information comes from
 
