@@ -711,6 +711,18 @@ function renderAbout() {
   const table = el("table", { class: "plain" }, el("tr", {}, ["Cohort", "Patients", "Visits", "Variables", "Extraction", "Figures of"].map(text => el("th", { text }))));
   for (const cohort of COHORTS) { const c = D.cohorts[cohort]; put(table, el("tr", {}, el("td", {}, cohortChip(cohort), " " + c.title), el("td", { class: "num", text: num(c.n_patients) }), el("td", { class: "num", text: num(c.n_visits) }), el("td", { class: "num", text: num(c.n_variables) }), el("td", { class: "mono small", text: c.extraction }), el("td", { class: "small", text: c.computed || "" }))); }
   put(box, el("h3", { text: "The data behind the figures" }), table);
+  put(box, el("h3", { text: "The cohorts" }));
+  for (const cohort of COHORTS) {
+    const about = D.cohorts[cohort].about || {};
+    const traps = el("ol", { class: "small" }); for (const trap of about.traps || []) put(traps, el("li", { text: trap }));
+    put(box, el("h4", {}, cohortChip(cohort), " " + D.cohorts[cohort].title), kv([["Patients", about.population], ["Visits", about.design], ["Traps", traps], ["Tutorial", about.tutorial ? el("code", { text: about.tutorial }) : ""]]));
+  }
+  const link = name => I[name] ? el("a", { href: "#instrument=" + name, title: I[name].title, text: name, onclick: () => { box.hidden = true; } }) : el("span", { text: name });
+  const subjects = el("table", { class: "plain" }, el("tr", {}, ["Subject", ...COHORTS.map(cohort => cohort.toUpperCase()), "Note"].map(text => el("th", { text }))));
+  for (const subject of Object.values(D.subjects || {})) {
+    put(subjects, el("tr", {}, el("td", { text: subject.title }), ...COHORTS.map(cohort => { const cell = el("td", { class: "mono small" }); (subject[cohort] || []).forEach((name, index) => put(cell, index ? ", " : "", link(name))); if (!(subject[cohort] || []).length) put(cell, "–"); return cell; }), el("td", { class: "small", text: subject.note || "" })));
+  }
+  put(box, el("h3", { text: "The same subject, another instrument" }), el("p", { class: "small", text: "The instruments of one row measure the same subject in different cohorts. They are not on one scale and never share a column: a comparison needs a method of its own (a z-score within the cohort, the cut-off of each instrument, a model)." }), subjects);
   put(box, el("h3", { text: "For a program" }), el("p", { class: "small" }, "The same content is the file ", el("code", { text: "facedata/dictionary/face_dictionary.json" }), " (one line per variable), and the JSON embedded in this page in the element ", el("code", { text: "script#face-dictionary" }), ". Its fields:"));
   put(box, kv(Object.entries(D.meta.fields).map(([key, text]) => [el("code", { text: key }), text])));
 }

@@ -1,6 +1,6 @@
 """The data dictionary as one JSON file.
 
-Step 2 of 3 (dictionary/README.md). Puts together, for every delivered
+Step 2 of 4 (dictionary/README.md). Puts together, for every delivered
 variable of the four cohorts:
 
 - what the schemas say (facedata/<cohort>/schemas): type, range, codes, unit,
@@ -11,6 +11,11 @@ variable of the four cohorts:
 - what differs between cohorts (common_instruments.yaml, shared_names.yaml,
   differences.yaml, and a comparison of the schemas);
 - the label and the coding of the Excel dictionaries, when they are on the computer.
+
+And, for the cohorts as a whole, what was written by hand in
+dictionary/cohorts.yaml (who the patients are, the visits, the traps) and
+dictionary/same_subject.yaml (one subject, the instruments that measure it in
+each cohort).
 
 Nothing is guessed: a field that no source gives is left empty and its name
 goes into `incomplete`.
@@ -829,15 +834,15 @@ def count_patients(instruments, variables):
                 target[key] = max(target.get(key, 0), block.get("n", {}).get(field, 0))
 
 
-def cohort_summary(cohort, context, config):
-    """What the page says about a cohort as a whole."""
+def cohort_summary(cohort, context, config, about):
+    """What the page says about a cohort as a whole: about is its entry of dictionary/cohorts.yaml."""
     stats = context["stats_file"]
     tabs = list(dict.fromkeys(context["tab_of"].values()))
     if context["workbook"]:                          # in the order of the workbook
         tabs = [sheet for sheet in context["workbook"]["sheets"] if sheet in tabs] + [tab for tab in tabs if tab not in context["workbook"]["sheets"]]
     summary = {"title": config["cohorts"][cohort], "extraction": config["extractions"][cohort],
                "excel_dictionary": config["thesauri"][cohort] if context["workbook"] else None, "tabs": tabs,
-               "n_instruments": len(context["schemas"]), "n_variables": len(context["blocks"])}
+               "n_instruments": len(context["schemas"]), "n_variables": len(context["blocks"]), "about": about}
     for field in ["n_patients", "n_visits", "visits", "tables", "computed", "git", "winsorised"]:
         if field in stats:
             summary[field] = stats[field]
@@ -846,7 +851,8 @@ def cohort_summary(cohort, context, config):
 
 FIELD_NOTES = {
     "meta": "Where the file comes from and how to read it.",
-    "cohorts.<cohort>": "Title, extraction file, Excel dictionary, tabs in the order of the workbook, patients, visits (label, planned month, number), tables (rows, columns).",
+    "cohorts.<cohort>": "Title, extraction file, Excel dictionary, tabs in the order of the workbook, patients, visits (label, planned month, number), tables (rows, columns), about (population, design, traps and tutorial, written by hand in dictionary/cohorts.yaml).",
+    "subjects.<key>": "One subject (depression rated by the clinician, sleep, impulsivity...) and the instruments that measure it in each cohort (dictionary/same_subject.yaml): title, bp, sz, dr, asp (lists of instrument ids), note. Instruments of one subject are not on one scale and never share a column.",
     "constructs.<key>": "area and label of each construct that a variable can measure (dictionary/constructs.yaml).",
     "flags.<code>": "severity and meaning of each flag code of facedata (docs/ARCHITECTURE.md, section 6).",
     "instruments.<name>": "title, description, version, reference, reference_confidence, respondent, construct, period, sources, flags (caveats written by hand), common (stack verdict across cohorts, variables to use, note), cohorts.<cohort> (tab, tab_all, section, level, table, schema file, notes of the schema, edition, difference from the other cohort), variables (ids), incomplete.",
@@ -876,7 +882,7 @@ def write_json(dictionary, path):
     def line(value):
         return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
     parts = ["{"]
-    for key in ["meta", "cohorts", "constructs", "flags"]:
+    for key in ["meta", "cohorts", "subjects", "constructs", "flags"]:
         parts.append('"%s":%s,' % (key, line(dictionary[key])))
     for key in ["instruments", "variables"]:
         parts.append('"%s":{' % key)
@@ -909,6 +915,8 @@ def build():
     """The whole dictionary as a dict."""
     config = read_yaml(FOLDER / "config.yaml")
     constructs = read_yaml(FOLDER / "constructs.yaml")
+    abouts = read_yaml(FOLDER / "cohorts.yaml")
+    subjects = read_yaml(FOLDER / "same_subject.yaml")
     annotations = read_annotations()
     catalogue = read_yaml(ROOT / "facedata" / "common_instruments.yaml", as_text=True)
     shared = read_yaml(ROOT / "facedata" / "shared_names.yaml", as_text=True)
@@ -934,8 +942,8 @@ def build():
             "how_to_load": "from facedata import bp; result = bp.load('<extraction>', instruments=[...]); result.data[['usubjid', 'visit', '<id>']]",
             "n_instruments": len(instruments), "n_variables": len(variables),
             "tabs_all": list(config["tabs"]), "fields": FIELD_NOTES}
-    return {"meta": meta, "cohorts": {cohort: cohort_summary(cohort, contexts[cohort], config) for cohort in COHORTS},
-            "constructs": constructs, "flags": flag_meanings(), "instruments": instruments, "variables": variables}
+    return {"meta": meta, "cohorts": {cohort: cohort_summary(cohort, contexts[cohort], config, abouts[cohort]) for cohort in COHORTS},
+            "subjects": subjects, "constructs": constructs, "flags": flag_meanings(), "instruments": instruments, "variables": variables}
 
 
 def main():

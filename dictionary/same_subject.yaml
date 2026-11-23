@@ -1,0 +1,165 @@
+# The same subject measured with another instrument in another cohort.
+#
+# facedata/common_instruments.yaml lists one instrument that several cohorts
+# share. This file is the other way round: one subject, and the instruments that
+# measure it in each cohort. Instruments in one row are not on one scale: they
+# never share a column, and a comparison across cohorts needs a method of its
+# own (a z-score within the cohort, a cut-off of each instrument, a model).
+#
+#   title   the subject
+#   bp, sz, dr, asp   the instrument ids (keys of `instruments` in the
+#                     dictionary) that measure it in that cohort; [] when the
+#                     cohort has none
+#   note    what to know first, when there is something
+#
+# build_json.py copies it into face_dictionary.json (`subjects`), the page shows
+# it under "How to read", and tests/test_dictionary.py checks every id.
+
+depression_clinician:
+  title: Depression, rated by the clinician
+  bp: [madrs]
+  sz: [calgary]
+  dr: [madrs]
+  asp: [hamd]
+  note: >
+    The Calgary scale is built for schizophrenia (it avoids the negative
+    symptoms); its total is not delivered while the export loses item 9
+    (`calgary_sum8` is the sum of the eight others). The HAM-D is on the old
+    forms of the autism cohort only.
+
+depression_patient:
+  title: Depression, rated by the patient
+  bp: [qids_sr16]
+  sz: []
+  dr: [qids_sr16]
+  asp: [bdi2, cdi]
+  note: The BDI-II is for adults and the CDI for children.
+
+mania:
+  title: Mania
+  bp: [ymrs, altman]
+  sz: [ymrs]
+  dr: [ymrs, altman]
+  asp: []
+
+anxiety:
+  title: Anxiety
+  bp: [stai_ya]
+  sz: []
+  dr: [stai_ya, bas]
+  asp: [stai_ya, staic, hama, lsas]
+  note: In the autism cohort the STAI Y-A is for adults and the STAIC for children.
+
+psychotic_symptoms:
+  title: Psychotic symptoms
+  bp: []
+  sz: [panss]
+  dr: []
+  asp: []
+
+functioning:
+  title: Functioning
+  bp: [cgi_egf, fast]
+  sz: [cgi_egf, psp, ephp]
+  dr: [cgi_egf, fast]
+  asp: [cgi_egf, vineland]
+  note: The EPHP is filled by someone close to the patient.
+
+quality_of_life:
+  title: Quality of life
+  bp: [eq5d]
+  sz: [eq5d, sqol]
+  dr: [eq5d]
+  asp: [eq5d]
+
+adherence:
+  title: Adherence to the treatment
+  bp: [mars]
+  sz: [mars, bars]
+  dr: [mars]
+  asp: [mars]
+
+side_effects:
+  title: Side effects of the treatment
+  bp: [prisem]
+  sz: [aims, barnes, extrapyramidal]
+  dr: [prisem]
+  asp: [prisem]
+
+sleep:
+  title: Sleep
+  bp: [psqi, epworth]
+  sz: [psqi]
+  dr: [psqi, epworth]
+  asp: [psqi, epworth, cshq]
+  note: In the autism cohort the CSHQ is for children.
+
+childhood_trauma:
+  title: Childhood trauma
+  bp: [ctq]
+  sz: [ctq]
+  dr: [ctq]
+  asp: [ctq]
+
+impulsivity:
+  title: Impulsivity
+  bp: [bis10, bis12]
+  sz: []
+  dr: [bis10]
+  asp: [bis_old_form]
+  note: >
+    BP used the BIS-10, then the BIS-12: two editions, two sets of columns.
+    The autism cohort has the BIS-10 in a pilot of its old forms only, on too
+    few visits to analyse.
+
+adhd_adults:
+  title: ADHD in adults
+  bp: [asrs, wurs25, wurs61, diva]
+  sz: [wurs25]
+  dr: []
+  asp: [asrs, adhd_rs_adult, adhd_rs_child]
+  note: The WURS-25 and the WURS-61 are two forms with their own columns.
+
+suicide:
+  title: Suicidal thoughts and acts
+  bp: [isf_lifetime, isf_since_visit, cssrs_v0, cssrs_fu]
+  sz: [isf_lifetime, isf_since_visit]
+  dr: [isf_lifetime, isf_lifetime_fu, cssrs_v0, cssrs_fu, sis]
+  asp: [suicide_and_self_harm_v0, suicide_and_self_harm_fu]
+  note: >
+    The inclusion visit asks about the whole life and the later visits about
+    the time since the last visit: two questions, never one column.
+
+comorbid_diagnoses:
+  title: Comorbid psychiatric diagnoses
+  bp: [anxiety_v0, anxiety_fu, eating_disorder_v0, substance_v0]
+  sz: [anxiety_v0, anxiety_fu, eating_disorder_v0, substance_v0, depressive_episodes]
+  dr: [mini_a_depression, mini_d_panic, mini_e_agoraphobia, mini_f_social_phobia, mini_g_ocd, mini_h_ptsd, mini_n_gad]
+  asp: [anxiety_disorders_v0, developmental_disorders_v0, earlier_diagnosis]
+  note: >
+    BP and SZ use the forms of the expert centres; DR uses the MINI, at the
+    screening visit; the autism cohort has forms of its own.
+
+intellectual_ability:
+  title: Intellectual ability
+  bp: [wais3_matrices, wais3_vocabulaire, wais4_matrices, wais4_vocabulaire, wais4_similitudes]
+  sz: [wais3_efficience, wais4_efficience, fnart, barona]
+  dr: [wais4_efficience, wais4_similitudes]
+  asp: [wais4_indices, wisc4_indices, wisc5_indices, barona]
+  note: >
+    WAIS-III and WAIS-IV are two editions with their own columns; the WISC is
+    the children's scale. BP has subtests only, no full-scale IQ.
+
+verbal_memory:
+  title: Verbal memory
+  bp: [cvlt]
+  sz: [cvlt]
+  dr: [rlri16]
+  asp: []
+
+attention_executive:
+  title: Attention and executive functions
+  bp: [tmt, stroop, cpt2, cpt3, verbal_fluency, errands_test]
+  sz: [tmt, verbal_fluency, cpt_ip, six_elements, errands_test]
+  dr: [tmt, d2, verbal_fluency, verbal_fluency_form2]
+  asp: [executive_functions]
