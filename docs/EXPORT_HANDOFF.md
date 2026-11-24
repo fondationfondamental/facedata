@@ -176,7 +176,7 @@ R132:
 R133: 
 R134: 
 R135: 
-R136: 
+R136: done (dataflow c39fd720; extraction SZALL_20261123, SZ D105)
 R137: 
 R138: 
 R139: 
@@ -203,7 +203,7 @@ R159:
 R160: 
 R161: 
 R162: 
-R163: 
+R163: half done (dataflow a800f12c; extraction SZALL_20261123 holds the cause of death, and the date of death in no column: still asked, SZ D105, O48)
 R164: 
 R165: 
 R166: 

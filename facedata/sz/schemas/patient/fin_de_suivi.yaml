@@ -10,27 +10,37 @@ notes: >
   lost_to_follow_up_demenage) that the extraction does not hold.
 
   Same instrument as in FACE BP, with what the SZ extraction holds of it:
-  the reason, the new centre after a move, and the date of death. The export
+  the reason, the new centre after a move, and the cause of death. The export
   leaves out the columns filled for fewer than 25 patients, and the SZ
   extraction has only the newer generation of columns (_stopsuivi).
 
-  Reason. 583 patients are no longer followed: the patient refused (239),
-  another reason (196), "Ne sais pas" (91, a missing code), a move (23), a
+  Reason. 581 patients are no longer followed: the patient refused (238),
+  another reason (195), "Ne sais pas" (91, a missing code), a move (23), a
   change of diagnosis (19), a death (12), the doctor refused (fewer than
   five).
 
-  Date of death. The column causedec_stopsuivi is named for the cause of
-  death, and in BP it holds the cause. Here it holds dates: the empty date
-  0000-00-00 for 996 patients and a real date for 8, all of them among the
-  12 patients recorded as deceased. The cause is in the export: the clean
-  model puts the date of death (date_fin_suivi_arret_decede) in
-  LOST_TO_FOLLOW_UP_DCD (eschizo_stop_suivi.sql, line 15), and the SZ
-  export writes that column as CAUSEDEC_STOPSUIVI (face_sz_1_patients.sql,
-  line 36; decision D4 in PROGRESS.md). It is delivered as what it holds,
-  death_date. The cause of death (rad_fin_suivi_arret_decede, "Spécifier la
-  cause principale du décès") and the other fields of the form (the other
-  reason, the change of diagnosis and its date, the date of the
-  consultation) are not exported (request R163).
+  Cause of death. Since SZALL_20261123 the column causedec_stopsuivi holds
+  what its name says, the main cause of death (rad_fin_suivi_arret_decede,
+  "Spécifier la cause principale du décès"), with the three answers of BP:
+  filled for the 12 patients recorded as deceased and for no one else, the
+  same answer on every visit of a patient; suicide for 5, a somatic cause,
+  another cause and "Ne sais pas" (a missing code) for fewer than five each.
+  The answer "Somatique" is written with a space before it, which the reader
+  removes. It is delivered as death_cause, as in BP.
+
+  Date of death: no longer in the extraction. Up to SZALL_20261121 the same
+  column held the date of death (date_fin_suivi_arret_decede: a real date
+  for 8 of the 12 patients, the empty date 0000-00-00 for about a thousand
+  others), because the clean model wrote the date into LOST_TO_FOLLOW_UP_DCD
+  and the SZ export writes that column as CAUSEDEC_STOPSUIVI
+  (face_sz_1_patients.sql, line 36; decision D4 in PROGRESS.md); it was
+  delivered as death_date. The export now puts the cause there
+  (eschizo_stop_suivi.sql, export commit a800f12c, eSchizo v4.45) and the
+  date in no column, so death_date is not delivered any more (decision D105;
+  request R163 asks for the date as dthdtc_stopsuivi, as in BP). The other
+  fields of the form (the other reason, the other cause, the change of
+  diagnosis and its date, the date of the consultation) are not exported
+  either (R163).
 
   The new centre is a free text, delivered as text; it never appears in the
   report.
@@ -51,8 +61,8 @@ variables:
     column: lost_to_follow_up_demenag_stopsuivi
     label: New expert centre after a move, free text
     type: text
-  death_date:
+  death_cause:
     column: causedec_stopsuivi
-    label: Date of death (read in the column named for the cause of death)
-    type: date
-    range: [2008-01-01, 2030-12-31]
+    label: Main cause of death
+    type: category
+    codes: {Suicide: suicide, Somatique: somatic, Autre: other}

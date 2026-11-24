@@ -132,7 +132,7 @@ the guide.
 | Module | Patients | Worth knowing |
 |---|---|---|
 | `bp` | Adults with a bipolar disorder | A `_v0` column (inclusion, the whole life) and a `_fu` column (follow-up, since the last visit) are two different questions. Sex, diagnosis and family history are in `patients` |
-| `sz` | Adults with schizophrenia, a schizoaffective or a schizophreniform disorder | `_v0` and `_fu` as in BP. Some scores that the database stored wrong are delivered corrected. The Calgary scale has no total, because the export loses its item 9 |
+| `sz` | Adults with schizophrenia, a schizoaffective or a schizophreniform disorder | `_v0` and `_fu` as in BP. Some scores that the database stored wrong are delivered corrected. Read an extraction of 2026-11-23 or later: in the earlier files two Calgary items are in the wrong columns |
 | `dr` | Adults with a treatment-resistant major depressive disorder | The screening visit is a row of its own (`visit == "screening"`), with the MINI and the inclusion criteria. `treatments` holds three lists, named in the column `list` |
 | `asp` | Children from 5 years and adults assessed for an autism spectrum disorder | `diagnosis` says whether the centre confirmed the disorder; both groups are delivered. Children and adults answer different forms, in different columns. `treatments` holds eleven lists |
 
@@ -149,7 +149,7 @@ import pandas as pd
 from facedata import bp, sz
 
 one = bp.load("/path/to/BPALL_20261113_2.tsv", instruments=["identite", "ymrs"])
-two = sz.load("/path/to/SZALL_20261121.tsv", instruments=["identite", "ymrs"])
+two = sz.load("/path/to/SZALL_20261123.tsv", instruments=["identite", "ymrs"])
 visits = pd.concat([one.data, two.data], ignore_index=True)
 patients = pd.concat([one.patients, two.patients], ignore_index=True)
 ```

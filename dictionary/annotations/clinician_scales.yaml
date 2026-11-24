@@ -385,8 +385,8 @@ bars:
     - "Doses per day: the form has no upper limit and a percentage was sometimes typed in this field; values above 20 end out_of_range, and 271 visits hold 0 doses."
 
 calgary:
-  description: "Calgary Depression Scale for Schizophrenia, rated by the clinician at every visit (SZ) in a structured interview: nine items from 0 (absent) to 3 (severe) over the last two weeks. The extraction holds items 1 to 8 only: item 9 (observed depression) is exported nowhere, so the delivered score is the sum of eight items, not the CDSS total."
-  version: "9 items in the form (French translation Bernard, Lancon, Auquier et al. 1998, credited on the form); 8 items in the extraction"
+  description: "Calgary Depression Scale for Schizophrenia, rated by the clinician at every visit (SZ) in a structured interview: nine items from 0 (absent) to 3 (severe) over the last two weeks; item 9 is the interviewer's own observation. The total is the sum of the nine items (0 to 27)."
+  version: "9 items in the form (French translation Bernard, Lancon, Auquier et al. 1998, credited on the form)"
   reference: "Addington D, Addington J, Schissel B. Schizophr Res 1990;3:247-251; Addington D, Addington J, Maticka-Tyndale E, Joyce J. Schizophr Res 1992;6:201-208; Addington D, Addington J, Maticka-Tyndale E. Br J Psychiatry Suppl 1993;(22):39-44"
   reference_confidence: "confirmed in source (abstracts)"
   respondent: clinician
@@ -399,16 +399,16 @@ calgary:
     basis: anchors
     source: "schema notes (sz calgary): 'nine items from 0 (absent) to 3 (severe)'"
   scores:
-    calgary_sum8:
-      meaning: "Sum of CDSS items 1 to 8 (0 to 24). Item 9, observed depression, is missing: it is not the CDSS total."
+    calgary_total:
+      meaning: "CDSS total, the sum of the nine items (0 to 27), given when the nine are answered."
       higher_means: more severe depressive symptoms
       polarity: worse
       basis: anchors
       source: "sum of items rated 0 (absent) to 3 (severe): schema notes and label (sz calgary)"
   flags:
-    - "The published cut-off (a total above 6, that is 7 or more, of the nine items: 85% sensitivity, 82% specificity) does not apply to calgary_sum8. The dictionary's '6 or more' is not the published rule."
-    - "calgary08 is item 8, suicide, read from the column named calgar09. It was delivered before as calgary09, 'observed depression'."
-    - "No CDSS total is delivered while item 9 is missing; calgary_total (0 to 27) comes back when the export is corrected."
+    - "The published cut-off is a total above 6, that is 7 or more (85% sensitivity, 82% specificity). The dictionary's '6 or more' is not the published rule."
+    - "Read an extraction of 2026-11-23 or later. In the earlier files the export wrote item 7 in the column of item 8 and item 8 (suicide) in the column of item 9, exported item 9 nowhere, and stored a total that counted item 7 twice: the package then delivered eight items and calgary_sum8, and no total."
+    - "calgary08 is item 8, suicide, and has not changed. Before 2026-11-20 it was delivered as calgary09, 'observed depression': a table made then does not hold item 9."
 
 extrapyramidal:
   description: "Extrapyramidal side effects (parkinsonism), rated by the clinician at every visit (SZ): the ten items of the Simpson-Angus Scale, from 0 (normal) to 4 (severe), and their mean."

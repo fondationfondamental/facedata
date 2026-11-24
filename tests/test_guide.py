@@ -24,21 +24,21 @@ DICTIONARY = {
         "madrs": {"title": "Montgomery-Asberg Depression Rating Scale", "tab": "HETERO", "construct": "depression",
                   "cohorts": {"bp": {}, "dr": {}}, "common": {"stack": "yes"}, "variables": ["madrs01", "madrs_total"]},
         "calgary": {"title": "Calgary Depression Scale", "tab": "HETERO", "construct": "depression",
-                    "cohorts": {"sz": {}}, "variables": ["calgary_sum8"]},
+                    "cohorts": {"sz": {}}, "variables": ["calgary_total"]},
     },
     "variables": {
         "madrs01": {"label": "Apparent sadness", "level": "item", "instrument": "madrs", "cohorts": {"bp": {}, "dr": {}}},
         "madrs_total": {"label": "MADRS total", "meaning": "Sum of the ten items", "level": "score", "instrument": "madrs",
                         "construct": "depression", "cohorts": {"bp": {}, "dr": {}}},
-        "calgary_sum8": {"label": "Calgary, sum of eight items", "level": "score", "instrument": "calgary",
+        "calgary_total": {"label": "Calgary total, sum of nine items", "level": "score", "instrument": "calgary",
                          "construct": "depression", "cohorts": {"sz": {}}},
     },
 }
 
 
 def test_find_keeps_the_variables_that_hold_every_word():
-    assert list(guide.find("depression", dictionary=DICTIONARY)["variable"]) == ["madrs01", "madrs_total", "calgary_sum8"]
-    assert list(guide.find("depression sum", dictionary=DICTIONARY)["variable"]) == ["madrs_total", "calgary_sum8"]
+    assert list(guide.find("depression", dictionary=DICTIONARY)["variable"]) == ["madrs01", "madrs_total", "calgary_total"]
+    assert list(guide.find("depression sum", dictionary=DICTIONARY)["variable"]) == ["madrs_total", "calgary_total"]
     assert list(guide.find("depression", cohort="dr", level="score", dictionary=DICTIONARY)["variable"]) == ["madrs_total"]
     assert list(guide.find(["SUM", "ten"], dictionary=DICTIONARY)["variable"]) == ["madrs_total"]      # case does not matter
     assert list(guide.find("depression", level="item", dictionary=DICTIONARY)["cohorts"]) == ["bp,dr"]

@@ -1,11 +1,12 @@
 # FACE SZ — questions for the EMR developers, the data managers and the principal investigator
 
 Written on 2026-11-13, updated on 2026-11-14 (DEV-14, DEV-15, the answers to
-PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6) and on 2026-11-21 (the decisions on the held items: PI-1, DEV-19, PI-6, PI-7) and on 2026-11-22 (the S-QoL fixed by the export: DEV-7, DM-13, PI-7, O47), from the
+PI-2 and PI-4) and on 2026-11-19 (DEV-2, DEV-9, DEV-10, DEV-13, DEV-14, DEV-15, DEV-16, DM-8, DM-9, O32, O33, O34, O35, O36, O37, O38, O39, O40) and on 2026-11-20 (DEV-1, DEV-5, DEV-13, DEV-17, DM-5, DM-7, PI-1, O31) and on 2026-11-20 (the auto-questionnaires: DEV-7, DEV-18, DEV-19, DM-12, DM-13, PI-6, PI-7) and on 2026-11-20 (the small tabs: DEV-3, DEV-4, DM-3, DM-6) and on 2026-11-21 (the decisions on the held items: PI-1, DEV-19, PI-6, PI-7) and on 2026-11-22 (the S-QoL fixed by the export: DEV-7, DM-13, PI-7, O47) and on 2026-11-24 (the Calgary scale fixed by the export: DEV-1, DEV-17, DM-15, DM-16, O48), from the
 extraction `SZALL_20261113.tsv`, replaced on
 2026-11-17 by `SZALL_20261117.tsv` (the same 6,616 rows:
 4,941 visits and 1,675 screening rows of 2,353 patients) and on 2026-11-22 by
-`SZALL_20261121.tsv` (6,612 rows, the same 2,353 patients; D104) and the dictionary
+`SZALL_20261121.tsv` (6,612 rows, the same 2,353 patients; D104) and on 2026-11-24 by
+`SZALL_20261123.tsv` (6,615 rows, 2,353 patients; D105) and the dictionary
 `FACESZ_thesaurus_V4.20.xlsx`.
 
 Every column of the extraction is now read by the `facedata` package
@@ -35,13 +36,14 @@ on request. The questions already answered for FACE BP are not asked again;
 the BP answers are in [the BP questions](../bp/QUESTIONS.md). Where a BP
 answer may not hold for SZ, the question says so.
 
-**Four questions to send first.** DEV-1 (Calgary items 8 and 9), DEV-3 (marital
-status and source of income), DEV-4 (occupation of the Barona estimate) and
-DEV-5 (scores computed wrongly). Each concerns a main variable of the cohort,
-and each looks like an error of the export or of the EMR that a developer can
-find quickly. Two others were answered: DM-10 (years of education), by the
-extraction of 17 November 2026, and DEV-2 (substance use disorder at
-inclusion), by the export model on 19 November 2026.
+**Three questions to send first.** DEV-3 (marital status and source of income),
+DEV-4 (occupation of the Barona estimate) and DEV-5 (scores computed wrongly).
+Each concerns a main variable of the cohort, and each looks like an error of
+the export or of the EMR that a developer can find quickly. Three others were
+answered: DM-10 (years of education), by the extraction of 17 November 2026,
+DEV-2 (substance use disorder at inclusion), by the export model on 19
+November 2026, and DEV-1 (Calgary items 8 and 9), by the extraction of 23
+November 2026.
 
 ## 1. For the EMR developers and whoever writes the export
 
@@ -63,6 +65,13 @@ outcome of the cohort: item 7 is above 0 on one visit in ten.
 R136)?
 *Today:* items 1 to 8 (`calgary08` is the suicide item, read in `calgar09`) and
 their sum (`calgary_sum8`); no total of the scale is delivered. (O4, D5, D76)
+*Answered on 2026-11-24: done by the export* (dataflow commit c39fd720,
+eSchizo v4.46, `SZALL_20261123.tsv`). `calgar08` is the suicide item (equal to
+the old `calgar09` on every visit that both files hold), `calgar09` is the
+observed depression (0 to 3 on 4,671 visits, the copy of no other item), items
+1 to 7 are unchanged, and the stored total is the sum of the nine items on
+the 4,669 visits that have the nine. The nine items and `calgary_total` are
+delivered; `calgary_sum8` is not any more (D105).
 
 **DEV-2. Substance use disorder at the inclusion visit: the first question
 is built by the export.** `rad_tb_subst` holds "Ne sais pas" on 975 of the
@@ -315,7 +324,8 @@ addiction form, "more than ten times in your life": D63), `rad_add_heroin7a`
 (the heroin question 7a, "a symptom of a use disorder over the whole life":
 D66; not delivered yet, O21) and the screening questions of the anxiety
 section (`rad_attaq_paniq`, `rad_peur_*`, `rad_trouble_compulsif`: D60). Other points: `causedec_stopsuivi`,
-named for the cause of death, holds the date of death; "Arme à feu" is
+named for the cause of death, held the date of death (it holds the cause since
+`SZALL_20261123.tsv`, and the date is in no column: DM-16); "Arme à feu" is
 written "Arme ? feu"; the sisters, brothers and children of the family
 history hold the same lists of disorders as the parents, not "yes, no,
 unknown". (O21, D4, D18, D20, D60, D63, D66, D80, D84)
@@ -635,7 +645,7 @@ Did the form or the practice stop asking for the history of treatments in
 **DEV-17. The clinical scales: what the forms and the export do wrongly (for the
 EMR developers and whoever writes the export).** (1) YMRS: the export gives the
 letters of items 5, 8 and 9 the levels 0 to 4 where the form, FACE BP and FACE DR
-give 0, 2, 4, 6, 8 (R135, D75). (2) Calgary: items 8 and 9 (DEV-1, R136). (3)
+give 0, 2, 4, 6, 8 (R135, D75). (2) Calgary: items 8 and 9 (DEV-1, R136; done by the export on 2026-11-23, D105). (3)
 SUMD: the script of the form ticks attribution radios for the three general items
 (`labelfieldsradhtml_attribu10`, 20, 30) that the form does not have, and stops
 with an error before it sets the attribution of a symptom to 0 where its
@@ -655,9 +665,9 @@ and the dictionary swaps the AIMS items 11 and 12 and gives the Barnes global
 item 0 to 4 (R144).
 *Question:* can they be corrected, and can the scores be computed when the form
 is saved?
-*Today:* the package reads the YMRS levels as points, delivers items 1 to 8 of the
-Calgary scale, recomputes the CGI index, and keeps the other cells as typed.
-(D75, D76, D78, D79)
+*Today:* the package reads the YMRS levels as points, delivers the nine items
+of the Calgary scale and its total (since `SZALL_20261123.tsv`), recomputes the
+CGI index, and keeps the other cells as typed. (D75, D76, D78, D79, D105)
 
 **Duplicates of the evaluation row (DM-11, for the data managers).** The model of
 the evaluation tab (`face_sz_9_evaluation_medicale.sql`, lines 118 to 133) keeps
@@ -763,3 +773,20 @@ both. Is this the centre fix of 2026-11-19 (eSchizo v4.43) or an opt-out, and ar
 purpose? (2) On three other visits, two PSP ratings changed (6 cells) and one yearly visit lost its height,
 weight, waist, body mass index and supine blood pressure (6 cells). Were these corrected in the source?
 *Today:* delivered as the new extraction gives them. (D104)
+
+**Changes that came with the extraction of 2026-11-23 (DM-16, for the data managers; follows DM-15).** Compared
+cell by cell with `SZALL_20261121.tsv`, on (`usubjid`, `visitnum`). The Calgary fix is as announced (DEV-1). Three
+other changes were not announced. (1) The date of death is gone. `causedec_stopsuivi` now holds the cause of death
+(`rad_fin_suivi_arret_decede`; dataflow commit a800f12c, eSchizo v4.45) where it held the date
+(`date_fin_suivi_arret_decede`), and no column holds the date any more: it was a real date for 8 of the 12
+deceased patients. Can the date be exported as `dthdtc_stopsuivi`, as in BP, with the other fields of the form
+(request R163)? The answer "Somatique" is written with a space before it. (2) Identifiers still move between two
+runs. The patient who had a new `usubjid` and lost four yearly visits in the file of 21 November (DM-15) is back
+under the earlier identifier with the five visits. Another patient, with an inclusion and a yearly visit under
+one identifier in the three files before, now has a new `usubjid`, another centre, and the inclusion only. Both
+changed centre. Which run is right for each, and can the identifier of a patient registered in two centres be
+made stable from one extraction to the next (BP D73)? (3) The two PSP ratings that changed in the file of 21
+November (6 cells, DM-15) are back to their values of 17 November, so they do not look like corrections in the
+source. Do these two visits have two PSP records, of which a run keeps one or the other? Which one should it keep?
+*Today:* `death_cause` is delivered and `death_date` is not; the visits and the PSP ratings are delivered as the
+new extraction gives them. (D105, O48)
