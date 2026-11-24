@@ -50,7 +50,7 @@ def test_visits(result):
 
 def test_the_four_cohorts_can_be_stacked(result):
     from facedata import bp, dr, sz
-    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261121.tsv",
+    files = {"bp": ROOT / "data" / "bp" / "BPALL_20261113_2.tsv", "sz": ROOT / "data" / "sz" / "SZALL_20261123.tsv",
              "dr": ROOT / "data" / "dr" / "DRALL_20261030.tsv"}
     if not all(path.exists() for path in files.values()):
         pytest.skip("the BP, the SZ or the DR extraction is not on this computer")

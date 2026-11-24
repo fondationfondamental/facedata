@@ -10,43 +10,49 @@ notes: >
   scale_reference.md, section 8). The dictionary does not name the items; the
   labels are those of the published scale and of the form.
 
-  What the columns hold (decision D76, request R136). The form numbers the
-  items 1 to 9 (depression, hopelessness, self-depreciation, guilty ideas of
-  reference, pathological guilt, morning depression, early wakening, suicide,
-  observed depression) and the script of the form adds the nine
-  (hetero_calgary.js, lines 20 to 22). The export reads the eight first fields
-  right and then goes wrong (eschizo_hetero_calgary.sql, lines 35 to 43):
-  CALGAR07 and CALGAR08 are both the early-wakening answer, CALGAR09 is the
-  suicide answer, and the observed-depression field is exported nowhere.
-  So calgar07 is item 7; calgar08 is a copy of item 7 (equal on 4,672 of
-  4,672 rows); calgar09 is item 8, the suicide item; item 9 is in no column.
-  The suicide reading of calgar09 is checked on the follow-up visits against
-  the questions of the suicide tab: its mean is 0.04 where the patient felt
-  that life is not worth living since the last visit is no and 0.49 where it
-  is yes (2,337 visits), and 0.16 against 0.58 where an attempt since the last
-  visit is no or yes (2,331); early wakening (calgar07) moves much less (0.10
-  against 0.20 on the first question). It was delivered until now as
-  calgary09, "observed depression": the variable is now named calgary08 and
-  labelled for what it holds (R12; same column, same values).
+  What the columns hold (decisions D76 and D105, request R136, done). The
+  form numbers the items 1 to 9 (depression, hopelessness, self-depreciation,
+  guilty ideas of reference, pathological guilt, morning depression, early
+  wakening, suicide, observed depression) and the script of the form adds the
+  nine (hetero_calgary.js, lines 20 to 22). Since SZALL_20261123 the export
+  reads each item in its own field (eschizo_hetero_calgary.sql, export commit
+  c39fd720, eSchizo v4.46): calgar08 is the suicide item and calgar09 the
+  observed depression. Checked against the file before, cell by cell on the
+  6,609 visits that both hold: items 1 to 7 are unchanged, the new calgar08
+  equals the old calgar09 on every visit, and calgar09 is new (0 to 3 on
+  4,671 visits, above 0 on 1,052; it is the copy of no other item, and its
+  rank correlation is highest with item 1, depression, +0.56, and lowest with
+  item 7, early wakening, +0.14).
 
-  The stored total (calgar) is the strict sum of the nine exported columns
-  (nucleus score definition calgary.yaml), so it is the true total, minus item
-  9, plus item 7 again: calgary_sum8 plus calgary07 on all 4,672 visits that
-  have one. It is not delivered (ignored.yaml). The published total is the sum
-  of the nine items (0 to 27) and the usual rule is "above 6", seven or more
-  (the form says "superieur a 6" and the author's table gives 85% sensitivity
-  and 82% specificity at 7); the dictionary says "6 or more", which is not the
-  published rule.
+  Up to SZALL_20261121 the export read the early-wakening field twice:
+  calgar08 was a copy of item 7, calgar09 held item 8 (suicide) and item 9
+  was exported nowhere. The package then delivered eight items (calgary08
+  read in calgar09) and their sum, calgary_sum8, and no total. calgary08 is
+  the same item with the same values as before; calgary09 is new;
+  calgary_sum8 is no longer delivered (it is calgary_total minus calgary09).
+  Before 2026-11-20 the suicide item was delivered as calgary09, "observed
+  depression" (D76): a table made with that version does not hold item 9.
+  Do not read a file older than SZALL_20261123 with this schema: its calgar08
+  is item 7 and its calgar09 is item 8, and nothing would flag it, since its
+  stored total is the sum of those columns.
 
-  What is delivered: the eight items that the extraction holds (calgary01 to
-  calgary08) and calgary_sum8, their sum (0 to 24; 0 to 20 observed). It is
-  not the CDSS total, and the threshold of 6 does not apply to it: the rule
-  "above 6" gives another answer than the stored total on 58 of 4,672 visits
-  (694 with this sum, 752 with the stored total). No total is delivered while
-  item 9 is missing. When the export is corrected (CALGAR08 from the suicide
-  field and CALGAR09 from the observed-depression field), item 9 and the total
-  come back with one line each (calgary_total, 0 to 27, compared with the
-  stored one).
+  The suicide reading of item 8 was checked on the follow-up visits against
+  the questions of the suicide tab (D76, on the file of 2026-11-17): its mean
+  is 0.04 where the patient felt that life is not worth living since the last
+  visit is no and 0.49 where it is yes (2,337 visits), and 0.16 against 0.58
+  where an attempt since the last visit is no or yes (2,331); early wakening
+  (item 7) moves much less (0.10 against 0.20 on the first question).
+
+  The total. calgary_total is the sum of the nine items (0 to 27; 0 to 23
+  observed), given when the nine are answered: 4,669 visits (4 visits have
+  seven or eight items and no total). The stored total (calgar) is read as a
+  check and equals it on every one of them, in every year; it is empty on the
+  4 incomplete visits. Up to SZALL_20261121 the stored total counted item 7
+  twice and held no item 9: it differed from the true total on 1,238 of
+  4,669 visits. The usual rule is "above 6", seven or more (the form says
+  "superieur a 6" and the author's table gives 85% sensitivity and 82%
+  specificity at 7): 815 visits. The dictionary says "6 or more", which is
+  not the published rule.
 
 defaults: {type: item, range: [0, 3]}
 
@@ -58,10 +64,13 @@ variables:
   calgary05: {column: calgar05, label: "CDSS 5: pathological guilt"}
   calgary06: {column: calgar06, label: "CDSS 6: morning depression"}
   calgary07: {column: calgar07, label: "CDSS 7: early wakening"}
-  calgary08: {column: calgar09, label: "CDSS 8: suicide (the column is named calgar09; see the notes)"}
+  calgary08: {column: calgar08, label: "CDSS 8: suicide"}
+  calgary09: {column: calgar09, label: "CDSS 9: observed depression"}
+  calgary_total_stored: {column: calgar, label: "CDSS total, as stored", range: [0, 27], keep: false}
 
 scores:
-  calgary_sum8:
-    label: Sum of CDSS items 1 to 8 (item 9, observed depression, is not in the extraction; not the CDSS total; 0 to 24)
-    sum: [calgary01, calgary02, calgary03, calgary04, calgary05, calgary06, calgary07, calgary08]
-    range: [0, 24]
+  calgary_total:
+    label: CDSS total (nine items, 0 to 27; depression above 6)
+    sum: [calgary01, calgary02, calgary03, calgary04, calgary05, calgary06, calgary07, calgary08, calgary09]
+    range: [0, 27]
+    compare: calgary_total_stored
