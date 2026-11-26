@@ -87,7 +87,7 @@ version:
     medeco_unidentified: [saltyp_1]  # the table is saved (its boxes are written 0) but no answer of either form tells which
 
 variables:
-  asd_diagnosis_date: {column: tsadtc, type: date, label: "Date of the diagnosis of autism spectrum disorder (ASD)", range: [1990-01-01, 2026-12-31]}
+  asd_diagnosis_date: {column: tsadtc, type: date, label: "Date of the diagnosis of autism spectrum disorder (ASD)", range: [1990-01-01, today]}
   asd_diagnosis_cost_eur: {column: tsaprix, type: number, label: "Diagnosis of ASD: price of the assessments linked to the diagnosis, in euros", range: [0, 99999], winsor: false}
   psychiatric_emergency_12m: {column: urg, type: item, label: "Use of care in the last year: visit to the psychiatric emergency department (0 no, 1 yes)", range: [0, 1]}
   n_psychiatric_emergency_12m: {column: nboccur_urg, type: number, label: "Psychiatric emergency department: number of visits in the last 12 months", range: [0, 50], winsor: false, asked_if: psychiatric_emergency_12m}

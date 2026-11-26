@@ -58,14 +58,14 @@ defaults: {type: item, range: [0, 1], versions: [inclusion]}
 variables:
   ever_ect: {column: proccur_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy: ever"}
   ect_sessions: {column: ect_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ever_ect, label: "Electroconvulsive therapy: ever: number of sessions"}
-  ect_start_date: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: ever: start"}
-  ect_end_date: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy: ever: end"}
+  ect_start_date: {column: prstdtc_ect, type: date, range: [1950-01-01, today], label: "Electroconvulsive therapy: ever: start"}
+  ect_end_date: {column: prendtc_ect, type: date, range: [1950-01-01, today], label: "Electroconvulsive therapy: ever: end"}
   ect_stimulation: {column: prlat_ect, type: category, codes: {"1": unilateral_right, "2": bilateral}, label: "Electroconvulsive therapy: ever: kind of stimulation"}
   ect_seizure_over_25s: {column: prdostxt_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy: ever: mean seizure on the EEG longer than 25 seconds"}
   ever_tms: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation: ever"}
   tms_sessions: {column: tms_procprfn_nb, type: number, range: [0, 1500], winsor: false, asked_if: ever_tms, label: "Transcranial magnetic stimulation: ever: number of sessions"}
-  tms_start_date: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: ever: start"}
-  tms_end_date: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation: ever: end"}
+  tms_start_date: {column: prstdtc_tms, type: date, range: [1950-01-01, today], label: "Transcranial magnetic stimulation: ever: start"}
+  tms_end_date: {column: prendtc_tms, type: date, range: [1950-01-01, today], label: "Transcranial magnetic stimulation: ever: end"}
   tms_stimulation: {column: prlat_tms, type: category, codes: {"1": high_frequency, "2": low_frequency}, missing: {"0": unknown}, label: "Transcranial magnetic stimulation: ever: kind of stimulation"}
   tms_high_frequency_over_30: {column: tms_procprfn_hf, shown_if: {tms_stimulation: [high_frequency]}, label: "TMS: ever, high frequency: more than 30 sessions"}
   tms_low_frequency_over_30: {column: tms_procprfn_bf, shown_if: {tms_stimulation: [low_frequency]}, label: "TMS: ever, low frequency: more than 30 sessions"}

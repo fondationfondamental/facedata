@@ -51,11 +51,11 @@ defaults: {type: item, range: [0, 1], versions: [follow_up]}
 
 variables:
   attempted_ever_fu: {column: isf05, keep: false, label: "Has ever attempted suicide, asked again at a follow-up visit (delivered as isf05_lifetime_fu)"}
-  first_attempt_date_fu: {column: isf05_qsdtc, type: date, label: "Date of the first suicide attempt, as typed at a follow-up visit", range: [1920-01-01, 2026-12-31], keep: false}
+  first_attempt_date_fu: {column: isf05_qsdtc, type: date, label: "Date of the first suicide attempt, as typed at a follow-up visit", range: [1920-01-01, today], keep: false}
   n_attempts_fu: {column: isf07, label: "Number of suicide attempts, asked again at a follow-up visit", range: [0, 50], asked_if: attempted_ever_fu}
   violent_attempts_fu: {column: isf08, label: "Has made violent suicide attempts, asked again at a follow-up visit", missing: {"2": unknown}, asked_if: n_attempts_fu}
   n_violent_attempts_fu: {column: isf08a, label: "Number of violent suicide attempts, asked again at a follow-up visit", range: [0, 20], asked_if: violent_attempts_fu}
-  most_violent_attempt_date_fu: {column: isf08_qsdtc, type: date, label: "Date of the most violent suicide attempt, asked again at a follow-up visit", range: [1920-01-01, 2026-12-31], before_visit: true}
+  most_violent_attempt_date_fu: {column: isf08_qsdtc, type: date, label: "Date of the most violent suicide attempt, asked again at a follow-up visit", range: [1920-01-01, today], before_visit: true}
   serious_attempts_fu: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care), asked again at a follow-up visit", missing: {"2": unknown}, asked_if: n_attempts_fu}
   n_serious_attempts_fu: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care), asked again at a follow-up visit", range: [0, 20], asked_if: serious_attempts_fu}
-  most_serious_attempt_date_fu: {column: isf09_qsdtc, type: date, label: "Date of the most serious suicide attempt, asked again at a follow-up visit", range: [1920-01-01, 2026-12-31], before_visit: true}
+  most_serious_attempt_date_fu: {column: isf09_qsdtc, type: date, label: "Date of the most serious suicide attempt, asked again at a follow-up visit", range: [1920-01-01, today], before_visit: true}

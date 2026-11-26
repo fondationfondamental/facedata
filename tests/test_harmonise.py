@@ -53,6 +53,17 @@ def test_check_range_removes_and_never_clips():
     assert flagged(flags, "out_of_range") == [2]
 
 
+def test_a_date_range_can_end_today():
+    today = pd.Timestamp.today().normalize()
+    dates = pd.Series([pd.Timestamp("1949-12-31"), pd.Timestamp("2000-01-01"), today, today + pd.Timedelta(days=1)])
+    values, flags = check_range(dates, "x", {"range": [pd.Timestamp("1950-01-01"), "today"]})
+    assert list(values[1:3]) == [pd.Timestamp("2000-01-01"), today]
+    assert flagged(flags, "out_of_range") == [0, 3]
+    planned = pd.Series([today + pd.Timedelta(days=60), today + pd.Timedelta(days=61)])
+    values, flags = check_range(planned, "x", {"range": [pd.Timestamp("1950-01-01"), "today+60"]})
+    assert flagged(flags, "out_of_range") == [1]
+
+
 def test_doubt_period_flags_and_keeps_the_values():
     values = pd.Series([1.0, 1.0, 0.0, np.nan, 1.0])
     dates = pd.Series(pd.to_datetime(["2021-12-31", "2022-01-01", "2022-06-01", "2022-06-02", "2023-12-31"]))

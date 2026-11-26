@@ -10,6 +10,7 @@ import pandas as pd
 from facedata import custom
 from facedata.flags import make_flags, stack_flags
 from facedata.parse import PERCENTILE_BAND, band_of_z, clean_text
+from facedata.schema import with_today
 from facedata.tokens import EMPTY_DATE, PLACEHOLDER_DATES
 
 
@@ -230,7 +231,7 @@ def fix_sign(values, keys, schema):
 
 def check_range(values, name, variable):
     """A value outside the hard range is impossible: it becomes missing, never clipped."""
-    low, high = variable["range"]
+    low, high = with_today(variable["range"])
     outside = values.notna() & ((values < low) | (values > high))
     if isinstance(low, pd.Timestamp):
         low, high = low.date(), high.date()

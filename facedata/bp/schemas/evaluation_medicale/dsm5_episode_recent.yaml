@@ -88,8 +88,8 @@ version:
 defaults: {versions: [dsm5]}
 
 variables:
-  dsm5_recent_start_date: {column: cestdtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "Start of the most recent episode"}
-  dsm5_recent_end_date: {column: ceendtcepisode_recent, type: date, range: [1950-01-01, 2026-12-31], label: "End of the most recent episode"}
+  dsm5_recent_start_date: {column: cestdtcepisode_recent, type: date, range: [1950-01-01, today], label: "Start of the most recent episode"}
+  dsm5_recent_end_date: {column: ceendtcepisode_recent, type: date, range: [1950-01-01, today], label: "End of the most recent episode"}
   dsm5_recent_type: {column: cetermepisode_recent, type: category, codes: {"Episode Dépressif Majeur": mde, "Hypomanie": hypomania, "Manie": mania, "Episode non spécifié": unspecified}, label: "Type of the most recent episode"}
   dsm5_recent_specifier: {column: cedecodepisode_recent, type: category, codes: {"Sans caractéristique mélancolique atypique ou catatonique": none, "Sans caractéristique mélancolique atypique catatonique ou mixte": none, "Mélancolique": melancholic, "Atypique": atypical, "Catatonique": catatonic, "Mixte": mixed}, label: "Most recent episode, if depressive: specifier"}
   dsm5_recent_chronic: {column: chronepisode_recent, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, label: "Most recent episode, if depressive: chronic"}

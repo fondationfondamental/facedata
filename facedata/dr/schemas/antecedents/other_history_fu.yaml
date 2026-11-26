@@ -49,7 +49,7 @@ defaults: {versions: [follow_up]}
 
 variables:
   cancer_fu: {column: somat_neo, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cancer, at follow-up"}
-  cancer_diagnosis_fu: {column: somat_all_neo_date, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of diagnosis, at follow-up"}
+  cancer_diagnosis_fu: {column: somat_all_neo_date, type: date, range: [1900-01-01, today], label: "Cancer: date of diagnosis, at follow-up"}
   cancer_gynaecological_fu: {column: cancergyn_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: cancer_fu, label: "Cancer, the type: gynaecological, at follow-up"}
   cancer_digestive_fu: {column: cancerdig_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: cancer_fu, label: "Cancer, the type: digestive, at follow-up"}
   cancer_ent_fu: {column: cancerorl_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: cancer_fu, label: "Cancer, the type: ear, nose and throat, at follow-up"}
@@ -57,11 +57,11 @@ variables:
   cancer_other_fu: {column: autcancer_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: cancer_fu, label: "Cancer, the type: another cancer, at follow-up"}
   cancer_text_fu: {column: autcancer_mhmodify, type: text, label: "Cancer: which one, as written, at follow-up"}
   hiv_fu: {column: vih_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "HIV infection, at follow-up"}
-  hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "HIV infection: date of diagnosis, at follow-up"}
+  hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, today], label: "HIV infection: date of diagnosis, at follow-up"}
   hiv_treated_fu: {column: vih_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "HIV infection: treated, at follow-up"}
   hiv_controlled_fu: {column: vih_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "HIV infection: controlled, at follow-up"}
   chronic_viral_hepatitis_fu: {column: hvc_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic viral hepatitis, at follow-up"}
-  chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
+  chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, today], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
   chronic_viral_hepatitis_virus_fu: {column: hvc_mhdecod, type: category, codes: {"1": hepatitis_b, "2": hepatitis_c, "3": hepatitis_d}, label: "Chronic viral hepatitis: the virus, at follow-up"}
   chronic_viral_hepatitis_treated_fu: {column: hvc_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic viral hepatitis: treated, at follow-up"}
   chronic_viral_hepatitis_controlled_fu: {column: hvc_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic viral hepatitis: controlled, at follow-up"}
@@ -73,14 +73,14 @@ variables:
   other_somatic_text_fu: {column: autsomat_mhmodify, type: text, label: "Another somatic disease: which one, as written, at follow-up"}
   eye_disease_fu: {column: rad_somat_opht, type: item, range: [0, 1], missing: {"2": unknown}, label: "An eye disease, at follow-up"}
   closed_angle_glaucoma_fu: {column: glaucomef_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: eye_disease_fu, label: "Angle-closure glaucoma, at follow-up"}
-  closed_angle_glaucoma_diagnosis_fu: {column: glaucomef_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Angle-closure glaucoma: date of diagnosis, at follow-up"}
+  closed_angle_glaucoma_diagnosis_fu: {column: glaucomef_mhstdtc, type: date, range: [1900-01-01, today], label: "Angle-closure glaucoma: date of diagnosis, at follow-up"}
   closed_angle_glaucoma_under_treatment_fu: {column: glaucomef_tt_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Angle-closure glaucoma: started under a treatment, at follow-up"}
   open_angle_glaucoma_fu: {column: glaucomeo_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: eye_disease_fu, label: "Chronic open-angle glaucoma, at follow-up"}
-  open_angle_glaucoma_start_fu: {column: glaucomeo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic open-angle glaucoma: date of onset, at follow-up"}
+  open_angle_glaucoma_start_fu: {column: glaucomeo_mhstdtc, type: date, range: [1900-01-01, today], label: "Chronic open-angle glaucoma: date of onset, at follow-up"}
   open_angle_glaucoma_treated_fu: {column: glaucomeo_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic open-angle glaucoma: treated, at follow-up"}
   open_angle_glaucoma_controlled_fu: {column: glaucomeo_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Chronic open-angle glaucoma: controlled, at follow-up"}
   cataract_fu: {column: cataracte_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, asked_if: eye_disease_fu, label: "Cataract, at follow-up"}
-  cataract_start_fu: {column: cataracte_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cataract: date of onset, at follow-up"}
+  cataract_start_fu: {column: cataracte_mhstdtc, type: date, range: [1900-01-01, today], label: "Cataract: date of onset, at follow-up"}
   cataract_treated_fu: {column: cataracte_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cataract: treated, at follow-up"}
   cataract_controlled_fu: {column: cataracte_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Cataract: controlled, at follow-up"}
   cancer_urological_fu: {column: canceruro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: cancer_fu, label: "Cancer: urological, at follow-up"}

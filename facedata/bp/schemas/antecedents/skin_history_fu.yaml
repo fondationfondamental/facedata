@@ -113,31 +113,31 @@ defaults: {versions: [follow_up]}
 variables:
   psoriasis_fu: {column: psoriasis_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis, at follow-up"}
   psoriasis_lithium_fu: {column: psoriasis_mhmodify_lithium, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: triggered or worsened by lithium, at follow-up"}
-  psoriasis_start_fu: {column: psoriasis_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Psoriasis: date of onset, at follow-up"}
+  psoriasis_start_fu: {column: psoriasis_mhstdtc, type: date, range: [1900-01-01, today], label: "Psoriasis: date of onset, at follow-up"}
   psoriasis_treated_fu: {column: psoriasis_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: treated, at follow-up"}
   psoriasis_controlled_fu: {column: psoriasis_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Psoriasis: controlled, at follow-up"}
   psoriasis_triggered_by_lithium_fu: {column: psoriasis_mhmodify_decl, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: psoriasis_lithium_fu, label: "Psoriasis: triggered by lithium, at follow-up"}
   psoriasis_worsened_by_lithium_fu: {column: psoriasis_mhmodify_agg, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: psoriasis_lithium_fu, label: "Psoriasis: worsened by lithium, at follow-up"}
   acne_fu: {column: acne_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne, at follow-up"}
-  acne_start_fu: {column: acne_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acne: date of onset, at follow-up"}
+  acne_start_fu: {column: acne_mhstdtc, type: date, range: [1900-01-01, today], label: "Acne: date of onset, at follow-up"}
   acne_treated_fu: {column: acne_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: treated, at follow-up"}
   acne_controlled_fu: {column: acne_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: controlled, at follow-up"}
   acne_lithium_fu: {column: acne_mhmodify_lithium, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acne: triggered or worsened by lithium, at follow-up"}
   acne_triggered_by_lithium_fu: {column: acne_mhmodify_decl, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: acne_lithium_fu, label: "Acne: triggered by lithium, at follow-up"}
   acne_worsened_by_lithium_fu: {column: acne_mhmodify_agg, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: acne_lithium_fu, label: "Acne: worsened by lithium, at follow-up"}
   eczema_fu: {column: eczema_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema, at follow-up"}
-  eczema_start_fu: {column: eczema_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Eczema: date of onset, at follow-up"}
+  eczema_start_fu: {column: eczema_mhstdtc, type: date, range: [1900-01-01, today], label: "Eczema: date of onset, at follow-up"}
   eczema_treated_fu: {column: eczema_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: treated, at follow-up"}
   eczema_controlled_fu: {column: eczema_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Eczema: controlled, at follow-up"}
   drug_eruption_fu: {column: toxidermi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Drug eruption, at follow-up"}
-  drug_eruption_start_fu: {column: toxidermi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Drug eruption: date of onset, at follow-up"}
+  drug_eruption_start_fu: {column: toxidermi_mhstdtc, type: date, range: [1900-01-01, today], label: "Drug eruption: date of onset, at follow-up"}
   drug_eruption_type_fu: {column: toxidermi_mhdecod, type: category, codes: {"Eruption cutanée simple": simple_rash, "Syndrome de Lyell": lyell, "Syndrome de Stevens-Johnson": stevens_johnson}, label: "Drug eruption: type, at follow-up"}
   drug_eruption_antibiotic_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 1, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 0}, asked_if: drug_eruption_fu, label: "Drug eruption, the drug: an antibiotic, at follow-up"}
   drug_eruption_nsaid_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 1, "Anticonvulsivants": 0, "Autres médicaments": 0}, asked_if: drug_eruption_fu, label: "Drug eruption, the drug: an anti-inflammatory drug, at follow-up"}
   drug_eruption_anticonvulsant_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 1, "Autres médicaments": 0}, asked_if: drug_eruption_fu, label: "Drug eruption, the drug: an anticonvulsant, at follow-up"}
   drug_eruption_other_drug_fu: {column: toxidermi_mhmodify, type: item, range: [0, 1], separator: ",", codes: {"Antibiotiques": 0, "AINS": 0, "Anticonvulsivants": 0, "Autres médicaments": 1}, asked_if: drug_eruption_fu, label: "Drug eruption, the drug: another drug, at follow-up"}
   hair_loss_fu: {column: cheveux_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss, at follow-up"}
-  hair_loss_start_fu: {column: cheveux_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Major hair loss: date of onset, at follow-up"}
+  hair_loss_start_fu: {column: cheveux_mhstdtc, type: date, range: [1900-01-01, today], label: "Major hair loss: date of onset, at follow-up"}
   hair_loss_treated_fu: {column: cheveux_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: treated, at follow-up"}
   hair_loss_controlled_fu: {column: cheveux_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: controlled, at follow-up"}
   hair_loss_valproate_fu: {column: cheveux_mhmodify_dep, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Major hair loss: triggered or worsened by valproic acid, at follow-up"}

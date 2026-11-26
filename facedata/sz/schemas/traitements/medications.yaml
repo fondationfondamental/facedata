@@ -120,11 +120,11 @@ variables:
       stimulant: stimulant
       other_nervous_system: other_nervous_system
       non_psychotropic: non_psychotropic
-  start_date: {column: med_psy_cmstdtc, type: date, range: [1951-01-01, 2026-12-31], missing: {"1950-01-01": unknown}, label: Start of the treatment}
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1951-01-01, today+60], missing: {"1950-01-01": unknown}, label: Start of the treatment}
   end_date:
     column: med_psy_cmendtc
     type: date
-    range: [1950-01-01, 2026-12-31]
+    range: [1950-01-01, today+60]
     missing: {"0000-00-15": running, "0000-00-00": running, "1950-01-02": unknown}
     label: End of the treatment
   strength: {column: med_psy_cmdose, type: text, label: "Strength and form, as stored (none for the medications typed since the public drug list, 2015)"}

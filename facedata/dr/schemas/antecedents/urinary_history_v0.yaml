@@ -56,16 +56,16 @@ defaults: {versions: [inclusion]}
 
 variables:
   nephropathy_v0: {column: nephropat_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy, at inclusion"}
-  nephropathy_start_v0: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Nephropathy: date of onset, at inclusion"}
+  nephropathy_start_v0: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, today], label: "Nephropathy: date of onset, at inclusion"}
   nephropathy_treated_v0: {column: nephropat_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: treated, at inclusion"}
   nephropathy_controlled_v0: {column: nephropat_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: controlled, at inclusion"}
   nephropathy_lithium_v0: {column: nephropat_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Nephropathy: probably linked to a past or current treatment by lithium, at inclusion"}
   prostate_adenoma_v0: {column: adenompro_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma, at inclusion"}
-  prostate_adenoma_start_v0: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Prostate adenoma: date of onset, at inclusion"}
+  prostate_adenoma_start_v0: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, today], label: "Prostate adenoma: date of onset, at inclusion"}
   prostate_adenoma_treated_v0: {column: adenompro_tr_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma: treated, at inclusion"}
   prostate_adenoma_controlled_v0: {column: adenompro_eq_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, label: "Prostate adenoma: controlled, at inclusion"}
   urinary_retention_v0: {column: returin_mhoccur, type: item, range: [0, 1], missing: {"2": unknown}, label: "Acute urinary retention, at inclusion"}
-  urinary_retention_start_v0: {column: returin_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acute urinary retention: date of onset, at inclusion"}
+  urinary_retention_start_v0: {column: returin_mhstdtc, type: date, range: [1900-01-01, today], label: "Acute urinary retention: date of onset, at inclusion"}
   urinary_retention_under_treatment_v0: {column: returin_mhmodify, type: item, range: [0, 1], missing: {"2": unknown}, label: "Acute urinary retention: started under a treatment, at inclusion"}
   urinary_retention_neuroleptic_v0: {column: returin_1_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: urinary_retention_v0, label: "Acute urinary retention, the treatment: a neuroleptic, at inclusion"}
   urinary_retention_antidepressant_v0: {column: returin_2_mhdecod, type: item, range: [0, 1], missing: {"2": unknown}, derived_from: urinary_retention_v0, label: "Acute urinary retention, the treatment: an antidepressant, at inclusion"}
