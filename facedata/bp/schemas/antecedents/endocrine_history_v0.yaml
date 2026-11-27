@@ -106,22 +106,22 @@ defaults: {versions: [inclusion]}
 
 variables:
   diabetes_v0: {column: diabete_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes, at inclusion"}
-  diabetes_start_v0: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at inclusion"}
+  diabetes_start_v0: {column: diabete_mhstdtc, type: date, range: [1900-01-01, today], label: "Diabetes: date of onset, at inclusion"}
   diabetes_treated_v0: {column: diabete_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes: treated, at inclusion"}
   diabetes_controlled_v0: {column: diabete_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Diabetes: controlled, at inclusion"}
   diabetes_type_v0: {column: diabete_mhmodify, type: category, codes: {"Type I": type_1, "Type II": type_2}, label: "Diabetes: type, at inclusion"}
   thyroid_disorder_v0: {column: dysthyro_mhoccur_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder, at inclusion"}
   thyroid_disorder_type_v0: {column: dysthyro_mhmodify, type: category, codes: {"Hypo-thyroïdie": hypothyroidism, "Hyper-thyroïdie": hyperthyroidism}, label: "Thyroid disorder: type, at inclusion"}
-  hyperthyroidism_start_v0: {column: dysthyro_mhstdtc_hyper, type: date, range: [1900-01-01, 2026-12-31], label: "Hyperthyroidism: date of onset, at inclusion"}
-  hypothyroidism_start_v0: {column: dysthyro_mhstdtc_hypo, type: date, range: [1900-01-01, 2026-12-31], label: "Hypothyroidism: date of onset, at inclusion"}
+  hyperthyroidism_start_v0: {column: dysthyro_mhstdtc_hyper, type: date, range: [1900-01-01, today], label: "Hyperthyroidism: date of onset, at inclusion"}
+  hypothyroidism_start_v0: {column: dysthyro_mhstdtc_hypo, type: date, range: [1900-01-01, today], label: "Hypothyroidism: date of onset, at inclusion"}
   thyroid_disorder_treated_v0: {column: dysthyro_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder: treated, at inclusion"}
   thyroid_disorder_induced_by_v0: {column: dysthyro_mhmodify_tt, type: category, codes: {"Induite par le Lithium": lithium, "Induite par un autre Traitement": other_treatment}, label: "Thyroid disorder: induced by a treatment, at inclusion"}
   thyroid_disorder_controlled_v0: {column: dysthyro_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Thyroid disorder: controlled, at inclusion"}
   dyslipidaemia_v0: {column: dyslipid_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia, at inclusion"}
-  dyslipidaemia_start_v0: {column: dyslipid_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at inclusion"}
+  dyslipidaemia_start_v0: {column: dyslipid_mhstdtc, type: date, range: [1900-01-01, today], label: "Dyslipidaemia: date of onset, at inclusion"}
   dyslipidaemia_treated_v0: {column: dyslipid_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia: treated, at inclusion"}
   dyslipidaemia_controlled_v0: {column: dyslipid_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Dyslipidaemia: controlled, at inclusion"}
   dyslipidaemia_type_v0: {column: dyslipid_mhmodify, type: category, codes: {"Hypercholestérolémie": hypercholesterolaemia, "Hypertriglycéridémie": hypertriglyceridaemia, "Les deux": both}, label: "Dyslipidaemia: type, at inclusion"}
   other_endocrine_v0: {column: autendoc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Another endocrine disease, at inclusion"}
-  other_endocrine_start_v0: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at inclusion"}
+  other_endocrine_start_v0: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, today], label: "Another endocrine disease: date of onset, at inclusion"}
   other_endocrine_text_v0: {column: autendoc_mhmodify, type: text, label: "Another endocrine disease: which one, as written, at inclusion"}

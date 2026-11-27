@@ -65,11 +65,11 @@ defaults: {type: item, range: [0, 1], versions: [inclusion]}
 
 variables:
   attempted_ever: {column: isf05, keep: false, label: "Has ever attempted suicide (delivered as isf05_lifetime)"}
-  first_attempt_date: {column: isf05_qsdtc, type: date, label: Date of the first suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}
+  first_attempt_date: {column: isf05_qsdtc, type: date, label: Date of the first suicide attempt, range: [1920-01-01, today], before_visit: true}
   n_attempts: {column: isf07, label: Number of suicide attempts, range: [0, 50], asked_if: attempted_ever}
   violent_attempts: {column: isf08, label: Has made violent suicide attempts, missing: {"2": unknown}, asked_if: n_attempts}
   n_violent_attempts: {column: isf08a, label: Number of violent suicide attempts, range: [0, 20], asked_if: violent_attempts}
-  most_violent_attempt_date: {column: isf08_qsdtc, type: date, label: Date of the most violent suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}
+  most_violent_attempt_date: {column: isf08_qsdtc, type: date, label: Date of the most violent suicide attempt, range: [1920-01-01, today], before_visit: true}
   serious_attempts: {column: isf09, label: "Has made serious non-violent suicide attempts (intensive care)", missing: {"2": unknown}, asked_if: n_attempts}
   n_serious_attempts: {column: isf09a, label: "Number of serious non-violent suicide attempts (intensive care)", range: [0, 20], asked_if: serious_attempts}
-  most_serious_attempt_date: {column: isf09_qsdtc, type: date, label: Date of the most serious suicide attempt, range: [1920-01-01, 2026-12-31], before_visit: true}
+  most_serious_attempt_date: {column: isf09_qsdtc, type: date, label: Date of the most serious suicide attempt, range: [1920-01-01, today], before_visit: true}

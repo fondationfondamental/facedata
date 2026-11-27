@@ -77,7 +77,7 @@ variables:
     type: category
     codes: {"1": farmer, "2": craft_trade_business_owner, "3": manager_or_professional, "4": intermediate_occupation, "5": clerical_or_service_employee, "6": manual_worker, "7": retired, "8": no_occupation, "0": other}
   job_class_other: {column: empjob_specifier, type: text, label: "Occupational class: other, as written"}
-  last_job_end_date: {column: stprof_scdtc, type: date, shown_if: {work_status: [unemployed]}, range: [1950-01-01, 2026-12-31], before_visit: true, label: "If unemployed: date the last job ended"}
+  last_job_end_date: {column: stprof_scdtc, type: date, shown_if: {work_status: [unemployed]}, range: [1950-01-01, today], before_visit: true, label: "If unemployed: date the last job ended"}
   longest_job_years: {column: profdur, type: number, unit: years, range: [0, 60], winsor: false, label: Longest stable period of work}
   total_work_years: {column: durtot, type: number, unit: years, range: [0, 60], winsor: false, label: Total time worked over the whole life}
   living_arrangement:

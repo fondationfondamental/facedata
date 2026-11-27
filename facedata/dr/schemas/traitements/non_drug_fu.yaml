@@ -59,14 +59,14 @@ defaults: {type: item, range: [0, 1], versions: [follow_up]}
 variables:
   ect_fu: {column: proccur_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy, asked again at a follow-up visit (the question has no period)"}
   ect_sessions_fu: {column: ect_procprfn, type: number, range: [0, 365], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy, asked again at follow-up: number of sessions"}
-  ect_start_date_fu: {column: prstdtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy, asked again at follow-up: start"}
-  ect_end_date_fu: {column: prendtc_ect, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy, asked again at follow-up: end"}
+  ect_start_date_fu: {column: prstdtc_ect, type: date, range: [1950-01-01, today+60], label: "Electroconvulsive therapy, asked again at follow-up: start"}
+  ect_end_date_fu: {column: prendtc_ect, type: date, range: [1950-01-01, today+60], label: "Electroconvulsive therapy, asked again at follow-up: end"}
   ect_stimulation_fu: {column: prlat_ect, type: category, codes: {"1": unilateral_right, "2": bilateral}, label: "Electroconvulsive therapy, asked again at follow-up: kind of stimulation"}
   ect_seizure_over_25s_fu: {column: prdostxt_ect, missing: {"2": unknown}, label: "Electroconvulsive therapy, asked again at follow-up: mean seizure on the EEG longer than 25 seconds"}
   tms_fu: {column: proccur_tms, missing: {"2": unknown}, label: "Transcranial magnetic stimulation, asked again at a follow-up visit (the question has no period)"}
   tms_sessions_fu: {column: tms_procprfn_nb, type: number, range: [0, 365], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation, asked again at follow-up: number of sessions"}
-  tms_start_date_fu: {column: prstdtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation, asked again at follow-up: start"}
-  tms_end_date_fu: {column: prendtc_tms, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation, asked again at follow-up: end"}
+  tms_start_date_fu: {column: prstdtc_tms, type: date, range: [1950-01-01, today+60], label: "Transcranial magnetic stimulation, asked again at follow-up: start"}
+  tms_end_date_fu: {column: prendtc_tms, type: date, range: [1950-01-01, today+60], label: "Transcranial magnetic stimulation, asked again at follow-up: end"}
   tms_stimulation_fu: {column: prlat_tms, type: category, codes: {"1": high_frequency, "2": low_frequency}, missing: {"0": unknown}, label: "Transcranial magnetic stimulation, asked again at follow-up: kind of stimulation"}
   tms_high_frequency_over_30_fu: {column: tms_procprfn_hf, shown_if: {tms_stimulation_fu: [high_frequency]}, label: "TMS, asked again at follow-up, high frequency: more than 30 sessions"}
   tms_low_frequency_over_30_fu: {column: tms_procprfn_bf, shown_if: {tms_stimulation_fu: [low_frequency]}, label: "TMS, asked again at follow-up, low frequency: more than 30 sessions"}

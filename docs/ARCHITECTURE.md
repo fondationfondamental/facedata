@@ -783,6 +783,21 @@ the thesauri in `thesauri/` and the norm tables in `norms/`, all git-ignored
 - `tests/test_common.py` checks the baseline row on a hand-written table and
   the catalogue of the common instruments against the schemas.
 
+### Notebooks are committed without their results
+
+A notebook file stores the output of its cells. After `load()` and `.head()`,
+that output is rows of patients. A notebook saved and committed with its
+results puts patient data into the git history, and once pushed it is on
+GitHub. Deleting it in a later commit does not remove it: the history has to
+be rewritten, and the data must be treated as disclosed.
+
+`tests/test_notebook.py` fails when a notebook holds results, but it runs
+only when someone runs the tests, after the commit is made. That catches the
+mistake too late. The check has to run before the commit exists: a
+pre-commit hook that refuses, or strips, a notebook with results. Until that
+hook is in the repository, clear every notebook (*Edit*, *Clear Outputs of
+All Cells*) before `git add`.
+
 An instrument is done when:
 
 1. its schema passes `check_schema` against the extraction's columns;

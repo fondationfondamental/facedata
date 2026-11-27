@@ -47,7 +47,7 @@ defaults: {versions: [follow_up]}
 
 variables:
   diabetes_fu: {column: diabete_mhoccur, type: item, range: [0, 1], label: "Diabetes, at follow-up"}
-  diabetes_start_fu: {column: diabete_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Diabetes: date of onset, at follow-up"}
+  diabetes_start_fu: {column: diabete_mhstdtc, type: date, range: [1900-01-01, today], label: "Diabetes: date of onset, at follow-up"}
   diabetes_treated_fu: {column: diabete_tr_mhdecod, type: item, range: [0, 1], label: "Diabetes: treated, at follow-up"}
   diabetes_controlled_fu: {column: diabete_eq_mhdecod, type: item, range: [0, 1], label: "Diabetes: controlled, at follow-up"}
   diabetes_type_fu: {column: diabete_mhmodify, type: category, codes: {"1": type_1, "2": type_2}, missing: {"0": unknown}, label: "Diabetes: type, at follow-up"}
@@ -57,11 +57,11 @@ variables:
   thyroid_disorder_induced_by_fu: {column: dysthyro_mhdecod, type: category, codes: {"1": lithium, "2": other_treatment}, label: "Thyroid disorder: induced by a treatment, at follow-up"}
   thyroid_disorder_controlled_fu: {column: dysthyro_eq_mhdecod, type: item, range: [0, 1], label: "Thyroid disorder: controlled, at follow-up"}
   dyslipidaemia_fu: {column: dyslipidemie_mhoccur, type: item, range: [0, 1], label: "Dyslipidaemia, at follow-up"}
-  dyslipidaemia_start_fu: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Dyslipidaemia: date of onset, at follow-up"}
+  dyslipidaemia_start_fu: {column: dyslipidemie_mhstdtc, type: date, range: [1900-01-01, today], label: "Dyslipidaemia: date of onset, at follow-up"}
   dyslipidaemia_treated_fu: {column: dyslipidemie_tr_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: treated, at follow-up"}
   dyslipidaemia_controlled_fu: {column: dyslipidemie_eq_mhdecod, type: item, range: [0, 1], label: "Dyslipidaemia: controlled, at follow-up"}
   other_endocrine_fu: {column: autendoc_mhoccur, type: item, range: [0, 1], label: "Another endocrine disease, at follow-up"}
-  other_endocrine_start_fu: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Another endocrine disease: date of onset, at follow-up"}
-  thyroid_disorder_start_fu: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Thyroid disorder: date of onset, at follow-up"}
+  other_endocrine_start_fu: {column: autendoc_mhstdtc, type: date, range: [1900-01-01, today], label: "Another endocrine disease: date of onset, at follow-up"}
+  thyroid_disorder_start_fu: {column: dysthyro_mhstdtc, type: date, range: [1900-01-01, today], label: "Thyroid disorder: date of onset, at follow-up"}
   hypercholesterolaemia_fu: {column: cholester_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_fu, label: "Dyslipidaemia: hypercholesterolaemia, at follow-up"}
   hypertriglyceridaemia_fu: {column: tryglicer_mhoccur, type: item, range: [0, 1], asked_if: dyslipidaemia_fu, label: "Dyslipidaemia: hypertriglyceridaemia, at follow-up"}

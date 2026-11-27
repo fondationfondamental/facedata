@@ -102,31 +102,31 @@ variables:
 
   ect_fu: {column: proccur_sismo_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Electroconvulsive therapy since the last visit"}
   ect_sessions_fu: {column: prdur_sismo_sem, type: number, range: [0, 365], winsor: false, asked_if: ect_fu, label: "Electroconvulsive therapy since the last visit: number of sessions"}
-  ect_start_date_fu: {column: prstdtc_sismo_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: start"}
-  ect_end_date_fu: {column: prendtc_sismo_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Electroconvulsive therapy since the last visit: end"}
+  ect_start_date_fu: {column: prstdtc_sismo_sem, type: date, range: [1950-01-01, today+60], label: "Electroconvulsive therapy since the last visit: start"}
+  ect_end_date_fu: {column: prendtc_sismo_sem, type: date, range: [1950-01-01, today+60], label: "Electroconvulsive therapy since the last visit: end"}
 
   tms_fu: {column: proccur_tms_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Transcranial magnetic stimulation since the last visit"}
   tms_sessions_fu: {column: prdur_tms_sem, type: number, range: [0, 365], winsor: false, asked_if: tms_fu, label: "Transcranial magnetic stimulation since the last visit: number of sessions"}
-  tms_start_date_fu: {column: prstdtc_tms_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: start"}
-  tms_end_date_fu: {column: prendtc_tms_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Transcranial magnetic stimulation since the last visit: end"}
+  tms_start_date_fu: {column: prstdtc_tms_sem, type: date, range: [1950-01-01, today+60], label: "Transcranial magnetic stimulation since the last visit: start"}
+  tms_end_date_fu: {column: prendtc_tms_sem, type: date, range: [1950-01-01, today+60], label: "Transcranial magnetic stimulation since the last visit: end"}
 
   cbt_fu: {column: proccur_tcc_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Cognitive behavioural therapy since the last visit"}
-  cbt_start_date_fu: {column: prstdtc_tcc_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy since the last visit: start"}
-  cbt_end_date_fu: {column: prendtc_tcc_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy since the last visit: end"}
+  cbt_start_date_fu: {column: prstdtc_tcc_sem, type: date, range: [1950-01-01, today+60], label: "Cognitive behavioural therapy since the last visit: start"}
+  cbt_end_date_fu: {column: prendtc_tcc_sem, type: date, range: [1950-01-01, today+60], label: "Cognitive behavioural therapy since the last visit: end"}
 
   psychoeducation_fu: {column: proccur_psychoed_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Psychoeducation group since the last visit"}
   psychoeducation_sessions_fu: {column: prdur_psychoed_sem, type: number, range: [0, 365], winsor: false, asked_if: psychoeducation_fu, label: "Psychoeducation group since the last visit: number of sessions"}
-  psychoeducation_end_date_fu: {column: prendtc_psychoed_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoeducation group since the last visit: end"}
+  psychoeducation_end_date_fu: {column: prendtc_psychoed_sem, type: date, range: [1950-01-01, today+60], label: "Psychoeducation group since the last visit: end"}
 
   ipsrt_fu: {column: proccur_ipsrt_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Interpersonal and social rhythm therapy since the last visit"}
   ipsrt_group_fu: {column: prdecod_iprst_sem, type: item, range: [0, 1], separator: ",", codes: {En groupe: 1, En individuel: 0}, missing: {Ne sais pas: unknown}, asked_if: ipsrt_fu, label: "IPSRT since the last visit: in a group"}
   ipsrt_individual_fu: {column: prdecod_iprst_sem, type: item, range: [0, 1], separator: ",", codes: {En groupe: 0, En individuel: 1}, missing: {Ne sais pas: unknown}, asked_if: ipsrt_fu, label: "IPSRT since the last visit: individual sessions"}
   ipsrt_sessions_fu: {column: prdur_ipsrt_sem, type: number, range: [0, 365], winsor: false, asked_if: ipsrt_fu, label: "Interpersonal and social rhythm therapy since the last visit: number of sessions"}
-  ipsrt_start_date_fu: {column: prstdtc_ipsrt_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy since the last visit: start"}
-  ipsrt_end_date_fu: {column: prendtc_ipsrt_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal and social rhythm therapy since the last visit: end"}
+  ipsrt_start_date_fu: {column: prstdtc_ipsrt_sem, type: date, range: [1950-01-01, today+60], label: "Interpersonal and social rhythm therapy since the last visit: start"}
+  ipsrt_end_date_fu: {column: prendtc_ipsrt_sem, type: date, range: [1950-01-01, today+60], label: "Interpersonal and social rhythm therapy since the last visit: end"}
 
   other_therapy_fu: {column: proccur_autre_sem, type: item, range: [0, 1], codes: {Oui: 1, Non: 0}, asked_if: non_drug_treatment_fu, box_list: non_drug_kinds, label: "Another non-drug treatment since the last visit"}
   other_therapy_name_fu: {column: prdecod_autre_sem, type: text, label: "Another non-drug treatment since the last visit: which one, as written"}
   other_therapy_sessions_fu: {column: prdur_autre_sem, type: number, range: [0, 365], winsor: false, asked_if: other_therapy_fu, label: "Another non-drug treatment since the last visit: number of sessions"}
-  other_therapy_start_date_fu: {column: prstdtc_autre_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Another non-drug treatment since the last visit: start"}
-  other_therapy_end_date_fu: {column: prendtc_autre_sem, type: date, range: [1950-01-01, 2026-12-31], label: "Another non-drug treatment since the last visit: end"}
+  other_therapy_start_date_fu: {column: prstdtc_autre_sem, type: date, range: [1950-01-01, today+60], label: "Another non-drug treatment since the last visit: start"}
+  other_therapy_end_date_fu: {column: prendtc_autre_sem, type: date, range: [1950-01-01, today+60], label: "Another non-drug treatment since the last visit: end"}

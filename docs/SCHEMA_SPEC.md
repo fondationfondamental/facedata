@@ -71,7 +71,7 @@ get a readable English name (`glucose`, `haemoglobin`).
 | `column` | all | Raw column. Default: the output name. A list of columns when the extraction moved the variable to another column (see below) |
 | `label` | all | Short label for the report |
 | `type` | all | `number`, `item`, `band`, `category`, `date`, `time` or `text`. Required (often through `defaults`) |
-| `range` | number, item, date, time | `[min, max]`: hard limits, in the target unit (hours for a time: `[0, 24]` for a time of day or a duration of a day). Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD`. A schema that gives `item` defaults must give a `time` its own range |
+| `range` | number, item, date, time | `[min, max]`: hard limits, in the target unit (hours for a time: `[0, 24]` for a time of day or a duration of a day). Outside is impossible. Required for `item`. For a date: `[earliest, latest]`, written `YYYY-MM-DD`; the latest can be `today`, the day facedata runs (a date in the future is impossible, and a fixed latest date would turn the dates of next year into errors), or `today+N`, N days after it, for a date that can be planned ahead (a treatment prescribed to start or stop after the visit). A schema that gives `item` defaults must give a `time` its own range |
 | `codes` | category, item, number, band | For a category: `{raw: label}`, required. For an item or a number: `{raw: number}`, the raw text is replaced by the number before parsing, so that answers written as letters can be counted (`{Y: 1, N: 0}`). For a band: `{raw: band}`, a label that the export cut short is written out in full before parsing (`{"25-5": "25-50"}`, section 6). Matching ignores case and surrounding spaces |
 | `missing` | all | `{token: reason}`: extra missing codes for this variable. Reasons: `unknown`, `not_applicable`, `not_recorded`, `running` (an end date not reached: the treatment was running when it was typed), `as_needed` (a dose taken as needed). A schema may name the codes of its scale (`code_994` of the ADI-R) |
 | `unit` | number | Target unit of the output |
@@ -1302,8 +1302,8 @@ variables:
   medication: {column: med_psy_cmtrt, type: text}
   molecule: {column: molecule, type: text}
   treatment_group: {column: treatment_group, type: category, codes: {lithium: lithium, antidepressant: antidepressant}}
-  start_date: {column: med_psy_cmstdtc, type: date, range: [1950-01-01, 2026-12-31]}
-  end_date: {column: med_psy_cmendtc, type: date, range: [1950-01-01, 2026-12-31]}
+  start_date: {column: med_psy_cmstdtc, type: date, range: [1950-01-01, today]}
+  end_date: {column: med_psy_cmendtc, type: date, range: [1950-01-01, today]}
 at_visit:
   title: Treatments on the day of the visit
   start: start_date
@@ -1439,7 +1439,7 @@ relatives:                 # prefix of the raw columns: what the rows of this re
 variables:
   kinship: {column: kinship, type: category, codes: {mother: mother, father: father, sister: sister}}
   relative_disorder: {column: trouble, type: category, codes: {Bipolaire: bipolar, Aucun: none}}
-  relative_birth_date: {column: brthdtc, type: date, range: [1840-01-01, 2026-12-31]}
+  relative_birth_date: {column: brthdtc, type: date, range: [1840-01-01, today]}
 per_patient:
   title: Family history, per patient
   by: kinship

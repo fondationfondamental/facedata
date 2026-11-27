@@ -72,86 +72,86 @@ defaults: {type: item, range: [0, 1], versions: [inclusion]}
 variables:
   therapy_supportive_lifetime: {column: proccur_tsnd, label: "Supportive or non-directive therapy: ever"}
   therapy_supportive_lifetime_sessions: {column: tsnd_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_supportive_lifetime, label: "Supportive or non-directive therapy: ever: number of sessions"}
-  therapy_supportive_lifetime_start_date: {column: prstdtc_tsnd, type: date, range: [1950-01-01, 2026-12-31], label: "Supportive or non-directive therapy: ever: start"}
-  therapy_supportive_lifetime_end_date: {column: prendtc_tsnd, type: date, range: [1950-01-01, 2026-12-31], label: "Supportive or non-directive therapy: ever: end"}
+  therapy_supportive_lifetime_start_date: {column: prstdtc_tsnd, type: date, range: [1950-01-01, today+60], label: "Supportive or non-directive therapy: ever: start"}
+  therapy_supportive_lifetime_end_date: {column: prendtc_tsnd, type: date, range: [1950-01-01, today+60], label: "Supportive or non-directive therapy: ever: end"}
   therapy_supportive_lifetime_therapist: {column: tsnd_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Supportive or non-directive therapy: ever: expertise of the therapist"}
   therapy_supportive_lifetime_result: {column: tsnd_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Supportive or non-directive therapy: ever: result"}
   therapy_group_lifetime: {column: proccur_tgroupe, label: "Group therapy: ever"}
   therapy_group_lifetime_sessions: {column: tgroupe_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_group_lifetime, label: "Group therapy: ever: number of sessions"}
-  therapy_group_lifetime_start_date: {column: prstdtc_tgroupe, type: date, range: [1950-01-01, 2026-12-31], label: "Group therapy: ever: start"}
-  therapy_group_lifetime_end_date: {column: prendtc_tgroupe, type: date, range: [1950-01-01, 2026-12-31], label: "Group therapy: ever: end"}
+  therapy_group_lifetime_start_date: {column: prstdtc_tgroupe, type: date, range: [1950-01-01, today+60], label: "Group therapy: ever: start"}
+  therapy_group_lifetime_end_date: {column: prendtc_tgroupe, type: date, range: [1950-01-01, today+60], label: "Group therapy: ever: end"}
   therapy_group_lifetime_therapist: {column: tgroupe_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Group therapy: ever: expertise of the therapist"}
   therapy_group_lifetime_result: {column: tgroupe_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Group therapy: ever: result"}
   therapy_psychoanalytic_lifetime: {column: proccur_tpsyanal, label: "Psychoanalytic psychotherapy: ever"}
   therapy_psychoanalytic_lifetime_sessions: {column: tpsyanal_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_psychoanalytic_lifetime, label: "Psychoanalytic psychotherapy: ever: number of sessions"}
-  therapy_psychoanalytic_lifetime_start_date: {column: prstdtc_tpsyanal, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoanalytic psychotherapy: ever: start"}
-  therapy_psychoanalytic_lifetime_end_date: {column: prendtc_tpsyanal, type: date, range: [1950-01-01, 2026-12-31], label: "Psychoanalytic psychotherapy: ever: end"}
+  therapy_psychoanalytic_lifetime_start_date: {column: prstdtc_tpsyanal, type: date, range: [1950-01-01, today+60], label: "Psychoanalytic psychotherapy: ever: start"}
+  therapy_psychoanalytic_lifetime_end_date: {column: prendtc_tpsyanal, type: date, range: [1950-01-01, today+60], label: "Psychoanalytic psychotherapy: ever: end"}
   therapy_psychoanalytic_lifetime_therapist: {column: tpsyanal_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Psychoanalytic psychotherapy: ever: expertise of the therapist"}
   therapy_psychoanalytic_lifetime_result: {column: tpsyanal_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Psychoanalytic psychotherapy: ever: result"}
   ever_psychodynamic: {column: proccur_tpsydyna, label: "Psychodynamic psychotherapy: ever"}
   psychodynamic_sessions: {column: tpsydyna_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ever_psychodynamic, label: "Psychodynamic psychotherapy: ever: number of sessions"}
-  psychodynamic_start_date: {column: prstdtc_tpsydyna, type: date, range: [1950-01-01, 2026-12-31], label: "Psychodynamic psychotherapy: ever: start"}
-  psychodynamic_end_date: {column: prendtc_tpsydyna, type: date, range: [1950-01-01, 2026-12-31], label: "Psychodynamic psychotherapy: ever: end"}
+  psychodynamic_start_date: {column: prstdtc_tpsydyna, type: date, range: [1950-01-01, today+60], label: "Psychodynamic psychotherapy: ever: start"}
+  psychodynamic_end_date: {column: prendtc_tpsydyna, type: date, range: [1950-01-01, today+60], label: "Psychodynamic psychotherapy: ever: end"}
   psychodynamic_therapist: {column: tpsydyna_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Psychodynamic psychotherapy: ever: expertise of the therapist"}
   psychodynamic_result: {column: tpsydyna_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Psychodynamic psychotherapy: ever: result"}
   ever_cbt: {column: proccur_tcec, label: "Cognitive behavioural therapy: ever"}
   cbt_sessions: {column: tcec_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ever_cbt, label: "Cognitive behavioural therapy: ever: number of sessions"}
-  cbt_start_date: {column: prstdtc_tcec, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy: ever: start"}
-  cbt_end_date: {column: prendtc_tcec, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive behavioural therapy: ever: end"}
+  cbt_start_date: {column: prstdtc_tcec, type: date, range: [1950-01-01, today+60], label: "Cognitive behavioural therapy: ever: start"}
+  cbt_end_date: {column: prendtc_tcec, type: date, range: [1950-01-01, today+60], label: "Cognitive behavioural therapy: ever: end"}
   cbt_therapist: {column: tcec_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Cognitive behavioural therapy: ever: expertise of the therapist"}
   cbt_result: {column: tcec_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Cognitive behavioural therapy: ever: result"}
   ever_other_therapy: {column: proccur_tautre, label: "Another therapy: ever"}
   other_therapy_sessions: {column: tautre_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: ever_other_therapy, label: "Another therapy: ever: number of sessions"}
-  other_therapy_start_date: {column: prstdtc_tautre, type: date, range: [1950-01-01, 2026-12-31], label: "Another therapy: ever: start"}
-  other_therapy_end_date: {column: prendtc_tautre, type: date, range: [1950-01-01, 2026-12-31], label: "Another therapy: ever: end"}
+  other_therapy_start_date: {column: prstdtc_tautre, type: date, range: [1950-01-01, today+60], label: "Another therapy: ever: start"}
+  other_therapy_end_date: {column: prendtc_tautre, type: date, range: [1950-01-01, today+60], label: "Another therapy: ever: end"}
   other_therapy_therapist: {column: tautre_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Another therapy: ever: expertise of the therapist"}
   other_therapy_result: {column: tautre_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Another therapy: ever: result"}
   other_therapy_name: {column: tautre_precis, type: text, label: "Another therapy: ever: which one, as written"}
   therapy_mindfulness_lifetime: {column: proccur_tpcons, label: "Mindfulness therapy: ever"}
   therapy_mindfulness_lifetime_sessions: {column: tpcons_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_mindfulness_lifetime, label: "Mindfulness therapy: ever: number of sessions"}
-  therapy_mindfulness_lifetime_start_date: {column: prstdtc_tpcons, type: date, range: [1950-01-01, 2026-12-31], label: "Mindfulness therapy: ever: start"}
-  therapy_mindfulness_lifetime_end_date: {column: prendtc_tpcons, type: date, range: [1950-01-01, 2026-12-31], label: "Mindfulness therapy: ever: end"}
+  therapy_mindfulness_lifetime_start_date: {column: prstdtc_tpcons, type: date, range: [1950-01-01, today+60], label: "Mindfulness therapy: ever: start"}
+  therapy_mindfulness_lifetime_end_date: {column: prendtc_tpcons, type: date, range: [1950-01-01, today+60], label: "Mindfulness therapy: ever: end"}
   therapy_mindfulness_lifetime_therapist: {column: tpcons_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Mindfulness therapy: ever: expertise of the therapist"}
   therapy_mindfulness_lifetime_result: {column: tpcons_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Mindfulness therapy: ever: result"}
   therapy_interpersonal_lifetime: {column: proccur_tinter, label: "Interpersonal therapy: ever"}
   therapy_interpersonal_lifetime_sessions: {column: tinter_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_interpersonal_lifetime, label: "Interpersonal therapy: ever: number of sessions"}
-  therapy_interpersonal_lifetime_start_date: {column: prstdtc_tinter, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal therapy: ever: start"}
-  therapy_interpersonal_lifetime_end_date: {column: prendtc_tinter, type: date, range: [1950-01-01, 2026-12-31], label: "Interpersonal therapy: ever: end"}
+  therapy_interpersonal_lifetime_start_date: {column: prstdtc_tinter, type: date, range: [1950-01-01, today+60], label: "Interpersonal therapy: ever: start"}
+  therapy_interpersonal_lifetime_end_date: {column: prendtc_tinter, type: date, range: [1950-01-01, today+60], label: "Interpersonal therapy: ever: end"}
   therapy_interpersonal_lifetime_therapist: {column: tinter_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Interpersonal therapy: ever: expertise of the therapist"}
   therapy_interpersonal_lifetime_result: {column: tinter_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Interpersonal therapy: ever: result"}
   therapy_act_lifetime: {column: proccur_teea, label: "Acceptance and commitment therapy: ever"}
   therapy_act_lifetime_sessions: {column: teea_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_act_lifetime, label: "Acceptance and commitment therapy: ever: number of sessions"}
-  therapy_act_lifetime_start_date: {column: prstdtc_teea, type: date, range: [1950-01-01, 2026-12-31], label: "Acceptance and commitment therapy: ever: start"}
-  therapy_act_lifetime_end_date: {column: prendtc_teea, type: date, range: [1950-01-01, 2026-12-31], label: "Acceptance and commitment therapy: ever: end"}
+  therapy_act_lifetime_start_date: {column: prstdtc_teea, type: date, range: [1950-01-01, today+60], label: "Acceptance and commitment therapy: ever: start"}
+  therapy_act_lifetime_end_date: {column: prendtc_teea, type: date, range: [1950-01-01, today+60], label: "Acceptance and commitment therapy: ever: end"}
   therapy_act_lifetime_therapist: {column: teea_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Acceptance and commitment therapy: ever: expertise of the therapist"}
   therapy_act_lifetime_result: {column: teea_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Acceptance and commitment therapy: ever: result"}
   therapy_behavioural_lifetime: {column: proccur_tcomp, label: "Behavioural therapy: ever"}
   therapy_behavioural_lifetime_sessions: {column: tcomp_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_behavioural_lifetime, label: "Behavioural therapy: ever: number of sessions"}
-  therapy_behavioural_lifetime_start_date: {column: prstdtc_tcomp, type: date, range: [1950-01-01, 2026-12-31], label: "Behavioural therapy: ever: start"}
-  therapy_behavioural_lifetime_end_date: {column: prendtc_tcomp, type: date, range: [1950-01-01, 2026-12-31], label: "Behavioural therapy: ever: end"}
+  therapy_behavioural_lifetime_start_date: {column: prstdtc_tcomp, type: date, range: [1950-01-01, today+60], label: "Behavioural therapy: ever: start"}
+  therapy_behavioural_lifetime_end_date: {column: prendtc_tcomp, type: date, range: [1950-01-01, today+60], label: "Behavioural therapy: ever: end"}
   therapy_behavioural_lifetime_therapist: {column: tcomp_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Behavioural therapy: ever: expertise of the therapist"}
   therapy_behavioural_lifetime_result: {column: tcom_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Behavioural therapy: ever: result"}
   therapy_cognitive_lifetime: {column: proccur_tcogn, label: "Cognitive therapy: ever"}
   therapy_cognitive_lifetime_sessions: {column: tcogn_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_cognitive_lifetime, label: "Cognitive therapy: ever: number of sessions"}
-  therapy_cognitive_lifetime_start_date: {column: prstdtc_tcogn, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive therapy: ever: start"}
-  therapy_cognitive_lifetime_end_date: {column: prendtc_tcogn, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive therapy: ever: end"}
+  therapy_cognitive_lifetime_start_date: {column: prstdtc_tcogn, type: date, range: [1950-01-01, today+60], label: "Cognitive therapy: ever: start"}
+  therapy_cognitive_lifetime_end_date: {column: prendtc_tcogn, type: date, range: [1950-01-01, today+60], label: "Cognitive therapy: ever: end"}
   therapy_cognitive_lifetime_therapist: {column: tcogn_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Cognitive therapy: ever: expertise of the therapist"}
   therapy_cognitive_lifetime_result: {column: tcogn_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Cognitive therapy: ever: result"}
   therapy_cognitive_analytic_lifetime: {column: proccur_tcoana, label: "Cognitive analytic therapy: ever"}
   therapy_cognitive_analytic_lifetime_sessions: {column: tcoana_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_cognitive_analytic_lifetime, label: "Cognitive analytic therapy: ever: number of sessions"}
-  therapy_cognitive_analytic_lifetime_start_date: {column: prstdtc_tcoana, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive analytic therapy: ever: start"}
-  therapy_cognitive_analytic_lifetime_end_date: {column: prendtc_tcoana, type: date, range: [1950-01-01, 2026-12-31], label: "Cognitive analytic therapy: ever: end"}
+  therapy_cognitive_analytic_lifetime_start_date: {column: prstdtc_tcoana, type: date, range: [1950-01-01, today+60], label: "Cognitive analytic therapy: ever: start"}
+  therapy_cognitive_analytic_lifetime_end_date: {column: prendtc_tcoana, type: date, range: [1950-01-01, today+60], label: "Cognitive analytic therapy: ever: end"}
   therapy_cognitive_analytic_lifetime_therapist: {column: tcoana_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Cognitive analytic therapy: ever: expertise of the therapist"}
   therapy_cognitive_analytic_lifetime_result: {column: tcoana_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Cognitive analytic therapy: ever: result"}
   therapy_couple_lifetime: {column: proccur_tcouple, label: "Couple therapy: ever"}
   therapy_couple_lifetime_sessions: {column: tcouple_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_couple_lifetime, label: "Couple therapy: ever: number of sessions"}
-  therapy_couple_lifetime_start_date: {column: prstdtc_tcouple, type: date, range: [1950-01-01, 2026-12-31], label: "Couple therapy: ever: start"}
-  therapy_couple_lifetime_end_date: {column: prendtc_tcouple, type: date, range: [1950-01-01, 2026-12-31], label: "Couple therapy: ever: end"}
+  therapy_couple_lifetime_start_date: {column: prstdtc_tcouple, type: date, range: [1950-01-01, today+60], label: "Couple therapy: ever: start"}
+  therapy_couple_lifetime_end_date: {column: prendtc_tcouple, type: date, range: [1950-01-01, today+60], label: "Couple therapy: ever: end"}
   therapy_couple_lifetime_therapist: {column: tcouple_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Couple therapy: ever: expertise of the therapist"}
   therapy_couple_lifetime_result: {column: tcouple_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Couple therapy: ever: result"}
   therapy_mbct_lifetime: {column: proccur_mbct, label: "Mindfulness-based cognitive therapy (MBCT): ever"}
   therapy_mbct_lifetime_sessions: {column: mbct_procprfn, type: number, range: [0, 1500], winsor: false, asked_if: therapy_mbct_lifetime, label: "Mindfulness-based cognitive therapy (MBCT): ever: number of sessions"}
-  therapy_mbct_lifetime_start_date: {column: prstdtc_mbct, type: date, range: [1950-01-01, 2026-12-31], label: "Mindfulness-based cognitive therapy (MBCT): ever: start"}
-  therapy_mbct_lifetime_end_date: {column: prendtc_mbct, type: date, range: [1950-01-01, 2026-12-31], label: "Mindfulness-based cognitive therapy (MBCT): ever: end"}
+  therapy_mbct_lifetime_start_date: {column: prstdtc_mbct, type: date, range: [1950-01-01, today+60], label: "Mindfulness-based cognitive therapy (MBCT): ever: start"}
+  therapy_mbct_lifetime_end_date: {column: prendtc_mbct, type: date, range: [1950-01-01, today+60], label: "Mindfulness-based cognitive therapy (MBCT): ever: end"}
   therapy_mbct_lifetime_therapist: {column: mbct_et, type: category, codes: {"1": no_specific_qualification, "2": trainee, "3": under_supervision, "4": senior_independent, "5": expert}, missing: {"0": unknown}, label: "Mindfulness-based cognitive therapy (MBCT): ever: expertise of the therapist"}
   therapy_mbct_lifetime_result: {column: mbct_result, type: category, codes: {"1": no_improvement, "2": minimal_improvement, "3": certain_improvement, "4": definite_improvement, "5": sustained_improvement, "6": complete_remission}, label: "Mindfulness-based cognitive therapy (MBCT): ever: result"}

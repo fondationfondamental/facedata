@@ -97,16 +97,16 @@ defaults: {versions: [follow_up]}
 
 variables:
   nephropathy_fu: {column: nephropat_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy, at follow-up"}
-  nephropathy_start_fu: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Nephropathy: date of onset, at follow-up"}
+  nephropathy_start_fu: {column: nephropat_mhstdtc, type: date, range: [1900-01-01, today], label: "Nephropathy: date of onset, at follow-up"}
   nephropathy_treated_fu: {column: nephropat_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: treated, at follow-up"}
   nephropathy_controlled_fu: {column: nephropat_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: controlled, at follow-up"}
   nephropathy_lithium_fu: {column: nephropat_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Nephropathy: probably linked to a past or current treatment by lithium, at follow-up"}
   prostate_adenoma_fu: {column: adenompro_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma, at follow-up"}
-  prostate_adenoma_start_fu: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Prostate adenoma: date of onset, at follow-up"}
+  prostate_adenoma_start_fu: {column: adenompro_mhstdtc, type: date, range: [1900-01-01, today], label: "Prostate adenoma: date of onset, at follow-up"}
   prostate_adenoma_treated_fu: {column: adenompro_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma: treated, at follow-up"}
   prostate_adenoma_controlled_fu: {column: adenompro_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Prostate adenoma: controlled, at follow-up"}
   urinary_retention_fu: {column: returin_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute urinary retention, at follow-up"}
-  urinary_retention_start_fu: {column: returin_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Acute urinary retention: date of onset, at follow-up"}
+  urinary_retention_start_fu: {column: returin_mhstdtc, type: date, range: [1900-01-01, today], label: "Acute urinary retention: date of onset, at follow-up"}
   urinary_retention_under_treatment_fu: {column: returin_mhmodify, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Acute urinary retention: started under a treatment, at follow-up"}
   urinary_retention_neuroleptic_fu: {column: returin_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Neuroleptiques": 1, "Antidépresseurs": 0, "Autres traitements": 0}, asked_if: urinary_retention_fu, label: "Acute urinary retention, the treatment: a neuroleptic, at follow-up"}
   urinary_retention_antidepressant_fu: {column: returin_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Neuroleptiques": 0, "Antidépresseurs": 1, "Autres traitements": 0}, asked_if: urinary_retention_fu, label: "Acute urinary retention, the treatment: an antidepressant, at follow-up"}

@@ -42,11 +42,28 @@ def to_dates(texts):
     """Texts written YYYY-MM-DD to dates. A text that is not a date is returned unchanged."""
     dates = []
     for text in texts:
+        if text.startswith("today"):                 # kept as text: with_today reads it when the range is used
+            dates.append(text)
+            continue
         try:
             dates.append(pd.Timestamp(text))
         except (TypeError, ValueError):
             dates.append(text)
     return dates
+
+
+def with_today(limits):
+    """The limits of a range, with "today" read as the day facedata runs and "today+60" as 60 days later."""
+    read = []
+    for limit in limits:
+        if isinstance(limit, str) and limit.startswith("today"):
+            days = limit.removeprefix("today").removeprefix("+") or "0"
+            if not days.isdigit():
+                read.append(limit)                   # not a date: check_schema reports the range
+                continue
+            limit = pd.Timestamp.today().normalize() + pd.Timedelta(days=int(days))
+        read.append(limit)
+    return read
 
 
 def load_schema(path):
@@ -246,7 +263,7 @@ def check_variable(name, variable, schema, columns):
         problems.append(f"{name}: only a band and a number can share a column")
     if "bands" in variable and (variable["bands"] != "middle" or kind != "number"):
         problems.append(f"{name}: bands can only be 'middle', on a number")
-    if "range" in variable and not is_range(variable["range"]):
+    if "range" in variable and not is_range(with_today(variable["range"])):
         problems.append(f"{name}: range must be [low, high]")
     if "units" in variable:
         target = variable["units"].get(variable.get("unit"), {})

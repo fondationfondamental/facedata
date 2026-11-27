@@ -114,7 +114,7 @@ defaults: {versions: [follow_up]}
 
 variables:
   cancer_fu: {column: neoplasi_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cancer, at follow-up"}
-  cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cancer: date of the first diagnosis, at follow-up"}
+  cancer_diagnosis_fu: {column: neoplasi_mhstdtc, type: date, range: [1900-01-01, today], label: "Cancer: date of the first diagnosis, at follow-up"}
   cancer_gynaecological_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 1, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: gynaecological, at follow-up"}
   cancer_digestive_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 1, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: digestive, at follow-up"}
   cancer_ent_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 1, "Cancers pulmonaires": 0, "Autre cancers": 0}, asked_if: cancer_fu, label: "Cancer, the type: ear, nose and throat, at follow-up"}
@@ -122,11 +122,11 @@ variables:
   cancer_other_fu: {column: neoplasi_mhdecod, type: item, range: [0, 1], separator: ",", codes: {"Cancers gynécologiques": 0, "Cancers digestifs": 0, "Cancers ORL": 0, "Cancers pulmonaires": 0, "Autre cancers": 1}, asked_if: cancer_fu, label: "Cancer, the type: another cancer, at follow-up"}
   cancer_text_fu: {column: neoplasi_mhmodify, type: text, label: "Cancer: which one, as written, at follow-up"}
   hiv_fu: {column: vih_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection, at follow-up"}
-  hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "HIV infection: date of diagnosis, at follow-up"}
+  hiv_diagnosis_fu: {column: vih_mhstdtc, type: date, range: [1900-01-01, today], label: "HIV infection: date of diagnosis, at follow-up"}
   hiv_treated_fu: {column: vih_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: treated, at follow-up"}
   hiv_controlled_fu: {column: vih_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "HIV infection: controlled, at follow-up"}
   chronic_viral_hepatitis_fu: {column: hvc_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis, at follow-up"}
-  chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
+  chronic_viral_hepatitis_diagnosis_fu: {column: hvc_mhstdtc, type: date, range: [1900-01-01, today], label: "Chronic viral hepatitis: date of diagnosis, at follow-up"}
   chronic_viral_hepatitis_virus_fu: {column: hvc_mhmodify, type: category, codes: {"Hépatite C": hepatitis_c, "Hépatite B": hepatitis_b, "Hépatite D": hepatitis_d, "Hépatite non classée": unclassified}, label: "Chronic viral hepatitis: the virus, at follow-up"}
   chronic_viral_hepatitis_treated_fu: {column: hvc_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: treated, at follow-up"}
   chronic_viral_hepatitis_controlled_fu: {column: hvc_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic viral hepatitis: controlled, at follow-up"}
@@ -138,13 +138,13 @@ variables:
   other_somatic_text_fu: {column: autsomat_mhmodify, type: text, label: "Another somatic disease: which one, as written, at follow-up"}
   eye_disease_fu: {column: rad_somat_opht, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "An eye disease, at follow-up"}
   closed_angle_glaucoma_fu: {column: glaucomef_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Angle-closure glaucoma, at follow-up"}
-  closed_angle_glaucoma_diagnosis_fu: {column: glaucomef_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Angle-closure glaucoma: date of diagnosis, at follow-up"}
+  closed_angle_glaucoma_diagnosis_fu: {column: glaucomef_mhstdtc, type: date, range: [1900-01-01, today], label: "Angle-closure glaucoma: date of diagnosis, at follow-up"}
   closed_angle_glaucoma_under_treatment_fu: {column: glaucomef_mhmodify_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Angle-closure glaucoma: started under a treatment, at follow-up"}
   open_angle_glaucoma_fu: {column: glaucomeo_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Chronic open-angle glaucoma, at follow-up"}
-  open_angle_glaucoma_start_fu: {column: glaucomeo_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Chronic open-angle glaucoma: date of onset, at follow-up"}
+  open_angle_glaucoma_start_fu: {column: glaucomeo_mhstdtc, type: date, range: [1900-01-01, today], label: "Chronic open-angle glaucoma: date of onset, at follow-up"}
   open_angle_glaucoma_treated_fu: {column: glaucomeo_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic open-angle glaucoma: treated, at follow-up"}
   open_angle_glaucoma_controlled_fu: {column: glaucomeo_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Chronic open-angle glaucoma: controlled, at follow-up"}
   cataract_fu: {column: cataracte_mhoccur, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, asked_if: eye_disease_fu, label: "Cataract, at follow-up"}
-  cataract_start_fu: {column: cataracte_mhstdtc, type: date, range: [1900-01-01, 2026-12-31], label: "Cataract: date of onset, at follow-up"}
+  cataract_start_fu: {column: cataracte_mhstdtc, type: date, range: [1900-01-01, today], label: "Cataract: date of onset, at follow-up"}
   cataract_treated_fu: {column: cataracte_mhdecod_tt, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cataract: treated, at follow-up"}
   cataract_controlled_fu: {column: cataracte_mhdecod_eq, type: item, range: [0, 1], codes: {Y: 1, N: 0, Oui: 1, Non: 0}, missing: {U: unknown}, label: "Cataract: controlled, at follow-up"}
